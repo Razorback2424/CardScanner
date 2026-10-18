@@ -355,7 +355,7 @@ struct ContentView: View {
 
     @MainActor
     private func updateFallbackAvailability() async {
-        let actor = PriceRefreshTargetModelActor(modelContainer: modelContext.container)
+        let actor = await PriceRefreshTargetModelActor.makeBackground(modelContainer: modelContext.container)
         let pending = await actor.pendingCount(
             usesPriceFallback: usesPriceFallback,
             includeImported: true

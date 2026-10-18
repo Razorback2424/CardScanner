@@ -143,6 +143,7 @@
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A00100F0 /* PriceSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F0 /* PriceSnapshotStore.swift */; };
+		A0090A02 /* BackgroundModelActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090A02 /* BackgroundModelActor.swift */; };
 		A00100F1 /* CollectionProjectionActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F1 /* CollectionProjectionActor.swift */; };
 		A00100F2 /* StoreRevisionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F2 /* StoreRevisionMonitor.swift */; };
 		A00100D0 /* PriceRefreshTargets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D0 /* PriceRefreshTargets.swift */; };
@@ -191,6 +192,7 @@
 		A0020154 /* RefreshStructuralWriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020154 /* RefreshStructuralWriteTests.swift */; };
 		A0020155 /* CSVImportResumeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020155 /* CSVImportResumeTests.swift */; };
 		A0020156 /* StoreRevisionMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020156 /* StoreRevisionMonitorTests.swift */; };
+		A0090A01 /* LaunchModelActorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090A01 /* LaunchModelActorTests.swift */; };
 		A0020157 /* PriceRefreshLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020157 /* PriceRefreshLifecycleTests.swift */; };
 		A0020158 /* ArtworkOrphanSweepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020158 /* ArtworkOrphanSweepTests.swift */; };
 		A00200C0 /* CollectionActivityHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200C0 /* CollectionActivityHistoryTests.swift */; };
@@ -480,6 +482,7 @@
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B00100F0 /* PriceSnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceSnapshotStore.swift; sourceTree = "<group>"; };
+		B0090A02 /* BackgroundModelActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundModelActor.swift; sourceTree = "<group>"; };
 		B00100F1 /* CollectionProjectionActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionProjectionActor.swift; sourceTree = "<group>"; };
 		B00100F2 /* StoreRevisionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitor.swift; sourceTree = "<group>"; };
 		B00100D0 /* PriceRefreshTargets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshTargets.swift; sourceTree = "<group>"; };
@@ -529,6 +532,7 @@
 		B0020154 /* RefreshStructuralWriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshStructuralWriteTests.swift; sourceTree = "<group>"; };
 		B0020155 /* CSVImportResumeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImportResumeTests.swift; sourceTree = "<group>"; };
 		B0020156 /* StoreRevisionMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitorTests.swift; sourceTree = "<group>"; };
+		B0090A01 /* LaunchModelActorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchModelActorTests.swift; sourceTree = "<group>"; };
 		B0020157 /* PriceRefreshLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshLifecycleTests.swift; sourceTree = "<group>"; };
 		B0020158 /* ArtworkOrphanSweepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkOrphanSweepTests.swift; sourceTree = "<group>"; };
 		B00200C0 /* CollectionActivityHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityHistoryTests.swift; sourceTree = "<group>"; };
@@ -891,6 +895,7 @@
 				B0010032 /* PriceStore.swift */,
 				B0010033 /* PriceRefreshController.swift */,
 				B00100F0 /* PriceSnapshotStore.swift */,
+				B0090A02 /* BackgroundModelActor.swift */,
 				B00100F1 /* CollectionProjectionActor.swift */,
 				B00100F2 /* StoreRevisionMonitor.swift */,
 				B00100D0 /* PriceRefreshTargets.swift */,
@@ -1062,6 +1067,7 @@
 				B0020154 /* RefreshStructuralWriteTests.swift */,
 				B0020155 /* CSVImportResumeTests.swift */,
 				B0020156 /* StoreRevisionMonitorTests.swift */,
+				B0090A01 /* LaunchModelActorTests.swift */,
 				B0020157 /* PriceRefreshLifecycleTests.swift */,
 				B0020158 /* ArtworkOrphanSweepTests.swift */,
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
@@ -1403,6 +1409,7 @@
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A00100F0 /* PriceSnapshotStore.swift in Sources */,
+				A0090A02 /* BackgroundModelActor.swift in Sources */,
 				A00100F1 /* CollectionProjectionActor.swift in Sources */,
 				A00100F2 /* StoreRevisionMonitor.swift in Sources */,
 				A00100D0 /* PriceRefreshTargets.swift in Sources */,
@@ -1535,6 +1542,7 @@
 				A0020154 /* RefreshStructuralWriteTests.swift in Sources */,
 				A0020155 /* CSVImportResumeTests.swift in Sources */,
 				A0020156 /* StoreRevisionMonitorTests.swift in Sources */,
+				A0090A01 /* LaunchModelActorTests.swift in Sources */,
 				A0020157 /* PriceRefreshLifecycleTests.swift in Sources */,
 				A0020158 /* ArtworkOrphanSweepTests.swift in Sources */,
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,

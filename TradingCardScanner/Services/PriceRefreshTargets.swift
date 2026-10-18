@@ -114,7 +114,12 @@ enum PriceRefreshTargets {
 /// affordance, not portfolio truth, so a failed read preserves the existing
 /// conservative empty-count behavior used by the foreground path.
 @ModelActor
-actor PriceRefreshTargetModelActor {
+actor PriceRefreshTargetModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func hasStaleTargets(usesPriceFallback: Bool, now: Date = .now) -> Bool? {
         guard let targets = try? PriceRefreshTargets.make(
             context: modelContext, usesPriceFallback: usesPriceFallback, includeImported: true

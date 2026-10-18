@@ -250,7 +250,12 @@ struct RefreshRowPatch: Sendable {
 /// SwiftData model object never has to cross back to the main actor while a
 /// provider request is suspended.
 @ModelActor
-actor PriceRefreshModelActor {
+actor PriceRefreshModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     private var gamePricing = PriceQuoteService()
     func configureGamePricing(_ service: PriceQuoteService) { gamePricing = service }
     private let tcgdex = TCGdexService()
@@ -3541,7 +3546,7 @@ final class PriceRefreshController: ObservableObject {
         activeQueueRequest = initialRequest
         lastProgressPublicationAt = nil
         lastPublishedProgressPercent = nil
-        let worker = PriceRefreshModelActor(modelContainer: container)
+        let worker = await PriceRefreshModelActor.makeBackground(modelContainer: container)
         await worker.configureGamePricing(gamePricing)
         if let pokemonFetchOverrideForTesting {
             await worker.setPokemonFetchOverrideForTesting(pokemonFetchOverrideForTesting)

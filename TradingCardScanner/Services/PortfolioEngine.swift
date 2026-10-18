@@ -417,7 +417,7 @@ final class PortfolioEngine: ObservableObject {
                     timeZone.identifier
                 )
             } else {
-                let actor = PortfolioComputationActor(modelContainer: container)
+                let actor = await PortfolioComputationActor.makeBackground(modelContainer: container)
                 computation = await actor.compute(
                     epoch: epoch,
                     liveInstant: now,

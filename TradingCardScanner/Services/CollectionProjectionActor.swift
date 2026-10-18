@@ -59,7 +59,7 @@ final class CollectionProjectionStore: ObservableObject {
                 var snapshot: CollectionProjectionSnapshot?
                 var readSucceeded = false
                 for attempt in 0..<Self.maximumReadAttempts {
-                    let actor = CollectionProjectionActor(modelContainer: container)
+                    let actor = await CollectionProjectionActor.makeBackground(modelContainer: container)
                     let candidate = await actor.snapshot()
                     if await actor.readSucceeded() {
                         snapshot = candidate
@@ -109,7 +109,12 @@ final class CollectionProjectionStore: ObservableObject {
 /// Mirrors the portfolio computation boundary: fetch, project, elect the
 /// representative and derive diagnostics away from the main actor.
 @ModelActor
-actor CollectionProjectionActor {
+actor CollectionProjectionActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     private var lastReadSucceeded = false
 
     func readSucceeded() -> Bool { lastReadSucceeded }

@@ -415,7 +415,7 @@ struct StoreRevisionMonitor: View {
                 try? await Task.sleep(for: .milliseconds(300))
                 guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
 
-                let actor = StoreRevisionModelActor(modelContainer: modelContext.container)
+                let actor = await StoreRevisionModelActor.makeBackground(modelContainer: modelContext.container)
                 let fingerprint = await actor.fingerprint()
                 guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled,
@@ -492,9 +492,10 @@ struct StoreRevisionMonitor: View {
             let didRunMigration = shouldRunMigration
             if didRunMigration {
                 guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
-                let refreshedKeys = await StoreRevisionModelActor(
+                let actor = await StoreRevisionModelActor.makeBackground(
                     modelContainer: modelContext.container
-                ).pendingMagicMigrationKeys()
+                )
+                let refreshedKeys = await actor.pendingMagicMigrationKeys()
                 UserDefaults.standard.set(
                     StoreRevisionFingerprinting.pendingMagicMigrationFingerprint(refreshedKeys),
                     forKey: Self.pendingMagicMigrationFingerprintKey
@@ -758,7 +759,7 @@ struct StoreRevisionMonitor: View {
             return
         }
         if reconsiderAge && !shouldForceUnsupportedRetry {
-            let actor = PriceRefreshTargetModelActor(modelContainer: modelContext.container)
+            let actor = await PriceRefreshTargetModelActor.makeBackground(modelContainer: modelContext.container)
             guard let hasStaleTargets = await actor.hasStaleTargets(usesPriceFallback: usesPriceFallback),
                   storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             if !hasStaleTargets {
@@ -849,7 +850,7 @@ struct StoreRevisionMonitor: View {
                   !self.writeCoordinator.isBulkWriteInFlight,
                   let storageToken = self.storageGeneration.currentToken() else { return }
 
-            let actor = StoreRevisionModelActor(modelContainer: self.modelContext.container)
+            let actor = await StoreRevisionModelActor.makeBackground(modelContainer: self.modelContext.container)
             let fingerprint = await actor.fingerprint()
             guard await actor.readSucceeded(),
                   self.pendingForcedFallbackRetry.isPending,
@@ -892,7 +893,12 @@ struct StoreRevisionHistoryMonitor: View {
 }
 
 @ModelActor
-actor StoreRevisionModelActor {
+actor StoreRevisionModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     private var lastReadSucceeded = false
 
     func readSucceeded() -> Bool { lastReadSucceeded }

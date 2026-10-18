@@ -1,3 +1,50 @@
+- Physical launch-hang follow-up (2026-10-18; local changes over `0748747`):
+  built, signature-verified and installed optimized `ReleaseLocal` updates in
+  place on the owner's iPhone 15 Pro Max / iOS 27.0.1 with explicit permission
+  for bounded device diagnostics. The initial background-construction fix below
+  was insufficient: the first device profile still attributed 1,652 ms of
+  running main-thread samples to portfolio computation and 762 ms to the
+  refresh worker, and the owner still observed hangs. Replaced the default
+  executor for all six launch workers with an explicitly owned private serial
+  model executor; context creation and every actor job use the same queue.
+  Contexts/models remain with their actor, and existing task identity,
+  cancellation/session guards and main-actor publication remain in place.
+  Added disk-backed regression coverage alongside the in-memory probe.
+  iOS 27 simulator verification passes 332 tests, four opt-in skips and zero
+  failures across 336 cases. Final optimized device build and strict signature
+  verification pass; the corrected build is installed and left open.
+  The final phone profile shows zero running main-thread samples in all six
+  sampled worker workloads, with the work present on background threads.
+  Total running main-thread sample weight fell from 3,197 ms to 692 ms in the
+  short recordings; these are CPU samples, not measured launch/hang durations
+  or a controlled speedup benchmark. Instruments warned about mixed sampling
+  periods; analysis consistently uses the 1 ms running-only table and excludes
+  the conflicting 5 ms/context-switch table. The owner confirmed Portfolio now
+  responds normally. Capture scope: two 15-second app-targeted profiles and two
+  12-second app-console sessions, all retained locally on the external SSD at
+  `CodexBuilds/LaunchHangs-20261018/`, including a privacy-safe comparison JSON.
+  Console streaming is stopped. No collection export, sysdiagnose, raw device
+  evidence in the repository, commit, push or general release certification.
+  `git diff --check` passes. This supersedes the simulator-only executor evidence
+  in the initial entry below.
+
+- Launch hang remediation, initial simulator pass (2026-10-18; local changes over `0748747`): reproduced
+  main-thread database execution in all six launch model actors: portfolio
+  replay, collection projection, price snapshots, store revision fingerprinting,
+  stale-price targets and the refresh worker. Added a shared background factory
+  and switched every production construction site for these workers to it.
+  Detached construction keeps SwiftData contexts on background executors while
+  existing awaited operations, cancellation/session guards and main-actor UI
+  publication remain in place. The synthetic executor regression first failed
+  with six threading assertions and then passed after the fix. Focused iOS 26.5
+  simulator verification passes 331 tests, with four opt-in skips and zero
+  failures across 335 cases, including portfolio accounting/history, collection
+  snapshots, refresh lifecycle, revision monitoring and cross-game pricing/
+  integration. `git diff --check` passes. Results are retained on the external
+  SSD under `CodexBuilds/LaunchHangs-20261018/`. No personal-device access or
+  collection capture; physical-device launch timing and confirmation that every
+  reported hang is resolved remain unmeasured. No commit or push.
+
 - Four-game specialty catalog coverage (2026-10-15; `35473ed` plus existing
   local changes): compared fresh Scryfall/TCGdex directories, all 87 One Piece
   marketplace groups, LorcanaJSON and eight fresh Lorcana product/finish feeds.
