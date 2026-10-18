@@ -1,3 +1,17 @@
+- Collection quote fix personal-device installation (2026-10-18; `23fd978`):
+  committed and pushed the quote-consistency, history-labeling and exact
+  marketplace-link fix with its documentation. After fetching all remotes,
+  every other local and remote branch was already an ancestor of main; no
+  additional merge was needed. The optimized, development-signed `ReleaseLocal`
+  iOS build succeeded on the external SSD, and strict signature verification
+  passed. Bundled One Piece owner catalog and public pins match the committed
+  source byte-for-byte. CoreDevice successfully installed the update over the
+  existing personal iPhone app and launched it normally, without uninstalling
+  or resetting app data. Build/install/launch evidence remains external under
+  `CodexBuilds/CollectionQuoteFix-20261018/`. The preceding 27 focused simulator
+  tests and rendered quote/ownership checks passed. Installation and process
+  launch do not establish physical-screen or live-provider price acceptance.
+
 - Personal-device installation (2026-10-18; `75601a1`): the One Piece
   availability fix, tests and simulator evidence were committed and pushed to
   `origin/main`. Every other fetched local/remote branch was already an ancestor
