@@ -1,3 +1,29 @@
+- Performance follow-up sweep (2026-10-18; local changes over `8e882eb`):
+  extended the dedicated serial model executor to the six remaining database
+  workers used by scanner writes, detail quantity reads, collection deletion,
+  CSV import/export and catalog-normalization inputs. Scanner startup prepares
+  its writer asynchronously; writes await that session's preparation inside
+  the existing tracked-write lifetime so session shutdown still drains them.
+  Moved value-history, unpriced-card, missing-artwork and sync-diagnostic
+  exports off the UI thread; only text/value results return to settings, with
+  single-flight and storage-generation guards. Diagnostic canonical sorting
+  now encodes each sort key once instead of encoding both records on every
+  comparison, preserving the version-1 byte ordering. All 13 database actors
+  pass background-thread probes after real reads in memory and on disk.
+  Final iOS 27 simulator regression passes 349 tests, one opt-in skip and zero
+  failures across 350 cases, covering scanner lifecycle/undo/corrections,
+  concurrent ownership, deletion, normalization, CSV recovery/exports and
+  portfolio reconciliation. The initial run exposed a missing local-artwork
+  table in the new test fixture; the fixture now uses the complete schema and
+  the selected suite passes on rerun. Evidence stays on the external SSD under
+  `CodexBuilds/PerformanceSweep-20261018/`. Concurrent pricing-model/controller
+  edits appeared after the simulator run and are outside this sweep's changes
+  and test claim. The owner requested no further builds/tests. Cancellation was
+  sent to the running optimized build, which completed successfully before the
+  cancellation took effect; no further validation was started. This follow-up uses synthetic local
+  fixtures; no additional personal-device capture or install, collection
+  export, measured latency claim, commit or push.
+
 - Physical launch-hang follow-up (2026-10-18; local changes over `0748747`):
   built, signature-verified and installed optimized `ReleaseLocal` updates in
   place on the owner's iPhone 15 Pro Max / iOS 27.0.1 with explicit permission
@@ -2691,3 +2717,20 @@ historical.
   privacy text, missing support route, provider/asset confirmation and distribution
   remain open. Evidence stays external under
   `CodexBuilds/LorcanaProductionChecks-20261013/`; no commit, push or release.
+- **2026-10-18 — Catalog set scrolling/navigation follow-up:** replaced the
+  game, set-directory and set-card navigation search drawers with native text
+  fields in each screen's top safe-area inset, removing the shared search
+  presentation dependency. Set cards now use a stable outer VStack around the
+  existing lazy card grid so loading-to-content layout does not depend on lazy
+  header estimation. The original intermittent failure did not reproduce in
+  the initial simulator sequence; the revised build shows the complete header
+  at rest and after returning to the top. Verified Lorcana search, Back while
+  focused, immediately responsive Catalog taps/reopening, and the filtered
+  Pokémon directory-to-set route on iPhone 17 / iOS 27.0 Simulator. Debug build
+  succeeds; all 8 BrowsePaginationRenderTests pass, including the new delayed
+  loading/scroll-origin regression. Existing compiler warnings remain. Final
+  reopened-set screenshot inspected; evidence is external under
+  `CodexBuilds/CatalogScrollFix-20261018/`, with the local checklist in
+  `artifacts/catalog_navigation_checklist.md`. No physical-device verification,
+  commit, push or release is claimed. Existing and concurrent user changes
+  were preserved.
