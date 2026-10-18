@@ -15,6 +15,12 @@ struct NormalizedPrice: Equatable, Sendable {
     let fetchedAt: Date
     /// Catalog-owned mapping evidence; nil for providers without this contract.
     var catalogIdentity: String? = nil
+
+    var isUsableUSD: Bool {
+        PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: unitMarketPriceUSD, currencyCode: currencyCode
+        ) != nil
+    }
 }
 
 enum PriceLookup: Equatable, Sendable {
@@ -49,7 +55,7 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
     static func exactLookup(_ lookup: PriceLookup) -> Self {
         switch lookup {
         case let .price(price):
-            guard price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame else {
+            guard price.isUsableUSD else {
                 return .noUSDQuote
             }
             return .priced(price.unitMarketPriceUSD)
@@ -110,6 +116,35 @@ enum CardPricing {
         }
     }
 
+    /// Exact provider product handles can recover a USD quote without a name
+    /// search. Unreviewed edition handles cannot be borrowed from Unlimited.
+    static func tcgplayerProductID(
+        for card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?
+    ) -> Int? {
+        guard case let .pokemon(pokemon, _) = card.legacyIdentity, let variant,
+              printRun == nil || printRun == .unlimited else { return nil }
+        let detailed = (pokemon.variantsDetailed ?? []).filter {
+            guard $0.isStandardEnglish, !$0.isFirstEdition else { return false }
+            if PokemonCatalogStampVariant.decode(variant.id) != nil {
+                return $0.stampedPhysicalVariant?.id == variant.id
+            }
+            return $0.physicalVariant == variant && $0.genericStamps.isEmpty
+                && ($0.subtype == nil || $0.subtype?.lowercased() == "unlimited")
+        }
+        let products = Set(detailed.compactMap { $0.thirdParty?.tcgplayer }.filter { $0 > 0 })
+        if products.count == 1 { return products.first }
+        guard detailed.isEmpty, let listing = tcgplayerListing(for: variant) else { return nil }
+        let pricing = pokemon.pricing?.tcgplayer
+        let point: TCGPlayerPricePoint?
+        switch listing {
+        case "normal": point = pricing?.normal
+        case "holofoil": point = pricing?.holofoil ?? pricing?.holo
+        case "reverse-holofoil": point = pricing?.reverseHolofoil ?? pricing?.reverse
+        default: point = nil
+        }
+        return point?.productID.flatMap { $0 > 0 ? $0 : nil }
+    }
+
     // MARK: - Lookups
 
     static func price(
@@ -123,11 +158,12 @@ enum CardPricing {
             for: card, variant: variant, magicTreatments: magicTreatments,
             pokemonPrintRun: pokemonPrintRun, at: fetchedAt
         )
-        if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
+        if case let .price(price) = catalog, price.isUsableUSD { return catalog }
         if case let .pokemon(pokemon, _) = card.legacyIdentity,
            let supplemental = pokemon.supplementalTCGCSV?.quote(
                cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun
            ) { return supplemental }
+        if case let .price(price) = catalog, !price.isUsableUSD { return .unavailable(price.source) }
         return catalog
     }
 
@@ -312,14 +348,18 @@ enum CardPricing {
     }
 
     private static func marketPrice(from pricing: TCGPlayerPricing, listing: String) -> Double? {
+        guard pricing.unit == nil || pricing.unit?.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
+        let amount: Double?
         switch listing {
-        case "normal": return pricing.normal?.marketPrice
+        case "normal": amount = pricing.normal?.marketPrice
         // TCGdex has published both spellings over time; either is the same
         // listing, so accept whichever is present rather than losing the price.
-        case "holofoil": return pricing.holofoil?.marketPrice ?? pricing.holo?.marketPrice
-        case "reverse-holofoil": return pricing.reverseHolofoil?.marketPrice ?? pricing.reverse?.marketPrice
-        default: return nil
+        case "holofoil": amount = pricing.holofoil?.marketPrice ?? pricing.holo?.marketPrice
+        case "reverse-holofoil": amount = pricing.reverseHolofoil?.marketPrice ?? pricing.reverse?.marketPrice
+        default: amount = nil
         }
+        guard let amount, amount >= 0, Money(rounding: amount) != nil else { return nil }
+        return amount
     }
 
     // MARK: - Per-object pricing
@@ -371,12 +411,10 @@ enum CardPricing {
     /// number, paired with its key.
     private static func pricedListings(in pricing: TCGPlayerPricing) -> [(listing: String, amount: Double)] {
         var result: [(listing: String, amount: Double)] = []
-        if let value = pricing.normal?.marketPrice { result.append(("normal", value)) }
-        if let value = pricing.holofoil?.marketPrice ?? pricing.holo?.marketPrice {
-            result.append(("holofoil", value))
-        }
-        if let value = pricing.reverseHolofoil?.marketPrice ?? pricing.reverse?.marketPrice {
-            result.append(("reverse-holofoil", value))
+        for listing in ["normal", "holofoil", "reverse-holofoil"] {
+            if let value = marketPrice(from: pricing, listing: listing) {
+                result.append((listing, value))
+            }
         }
         return result
     }

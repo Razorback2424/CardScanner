@@ -552,6 +552,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             $0.itemKind == .rawCard && $0.importedIdentity == nil
                 && gamePricing.supportsStoredPrintingRefresh(for: $0.game)
         }
+        let mappedTargetIDs = Set(mappedTargets.map(\.id))
         for target in mappedTargets {
             guard storageContinuation?() ?? true, !Task.isCancelled else { break }
             do {
@@ -585,6 +586,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             ($0.itemKind == .sealedProduct ? gamePricing.supportsSealedPricing(for: $0.game)
                 : CardGameRegistry.standard.supports($0.game, .pricing))
                 && !unsupportedIDs.contains($0.id)
+                && !mappedTargetIDs.contains($0.id)
         }
         let vendorNative = supportedTargets.filter(\.isVendorNative)
         // An unbound graded row is neither a catalog-card request nor a raw
@@ -1549,7 +1551,14 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 variantID: candidate.target.variantID,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
-            guard identities.fallbackCheckIsDue(
+            let cachedVariant = candidate.target.marketVariantID
+                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
+            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
+            let external = candidate.externalLookups
+            // An old failed name search must not suppress a newly available
+            // exact product handle. Once resolved, ordinary vendor pacing resumes.
+            let hasNewDirectLookup = cachedVariant == nil && cachedCard == nil && !external.isEmpty
+            guard hasNewDirectLookup || identities.fallbackCheckIsDue(
                 forKey: key,
                 minimumInterval: PriceRefreshController.fallbackRefreshInterval,
                 using: identityIndex
@@ -1558,17 +1567,13 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 await publishFallbackProgress()
                 continue
             }
-            let cachedVariant = candidate.target.marketVariantID
-                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
-            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
-            if cachedVariant == nil, cachedCard == nil,
+            if cachedVariant == nil, cachedCard == nil, external.isEmpty,
                !identities.needsResolution(forKey: key, using: identityIndex) {
                 completed += 1
                 await publishFallbackProgress()
                 continue
             }
 
-            let external = candidate.externalLookups
             guard cachedVariant != nil || !external.isEmpty else {
                 needsIdentity.append(candidate)
                 continue
@@ -1597,7 +1602,12 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     justTCGFetchedAt: candidate.target.justTCGFetchedAt,
                     magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
                     requiresFullResponse: !candidate.target.hasPrice
-                        || candidate.target.needsArtwork
+                        || candidate.target.needsArtwork,
+                    exactPhysicalProductID: candidate.card.flatMap {
+                        CardPricing.tcgplayerProductID(for: $0,
+                            variant: candidate.target.variantID.map(PhysicalVariant.resolving),
+                            printRun: candidate.target.pokemonPrintRun).map(String.init)
+                    }
                 )
             )
         }
@@ -3100,16 +3110,17 @@ final class PriceRefreshController: ObservableObject {
     /// miss is revisited weekly instead of treated as a stable capability gap.
     nonisolated static let gradedCoverageRetryInterval: TimeInterval = 7 * 24 * 60 * 60
 
-    /// The historical non-Pokémon rule: a provider's native-currency amount
-    /// counts when fallback is off, and requires USD when fallback is enabled.
+    /// Every game's current valuation uses USD, independently of whether the
+    /// optional paid fallback is enabled.
     nonisolated static func hasFinishedPrice(
         amount: Double?,
         currencyCode: String?,
         usesFallback: Bool
     ) -> Bool {
-        guard amount != nil else { return false }
-        return !usesFallback
-            || currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
+        guard let currencyCode else { return false }
+        return PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: amount, currencyCode: currencyCode
+        ) != nil
     }
 
     /// Pokémon collection valuation is always denominated in USD. Provider
@@ -3119,8 +3130,7 @@ final class PriceRefreshController: ObservableObject {
         amount: Double?,
         currencyCode: String?
     ) -> Bool {
-        amount != nil
-            && currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
+        hasFinishedPrice(amount: amount, currencyCode: currencyCode, usesFallback: false)
     }
 
     /// Sealed artwork is part of the owned product, not an optional price
@@ -3769,11 +3779,11 @@ final class PriceRefreshController: ObservableObject {
                !justTCGCardID.isEmpty {
                 return [.cardID(justTCGCardID)]
             }
-            guard case let .magic(magic)? = card?.legacyIdentity,
-                  let tcgplayerID = magic.tcgplayerID else {
-                return []
-            }
-            return [.tcgplayerID(String(tcgplayerID))]
+            guard let card else { return [] }
+            return PriceFallbackQuoteResolver.directLookups(
+                card: card, variant: target.variantID.map(PhysicalVariant.resolving),
+                pokemonPrintRun: target.pokemonPrintRun
+            )
         }
 
         func subject(vendorCardID: String?) -> ProductPriceSubject? {

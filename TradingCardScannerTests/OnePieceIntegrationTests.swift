@@ -1271,15 +1271,18 @@ final class OnePieceIntegrationTests: XCTestCase {
         let worker = PriceRefreshModelActor(modelContainer: container)
         await worker.configureGamePricing(.init(registry: runtimes.registry,
             adapters: try .init(adapters: [OnePiecePriceAdapter(registry: registry, source: source)])))
-        _ = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
             sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false),
             progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(result) = outcome else { return XCTFail("Expected completed refresh") }
+        XCTAssertEqual(result.failed, 0, "Mapped games must not also enter the legacy fetch path")
         let context = ModelContext(container)
         let record = try XCTUnwrap(PriceStore(context: context).record(forKey:
             PriceRecord.key(game: .onePiece, printingID: card.providerID, variantID: "foil")))
         XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 8.16)
         XCTAssertEqual(record.sourceRaw, PriceSource.tcgCSV.rawValue)
         XCTAssertEqual(record.sourceVariantID, "tcgplayer:454664:Foil")
+        XCTAssertNil(record.lastFailureAt)
     }
 
     func testOnePieceTCGCSVExactLaneAndDailyCache() async throws {

@@ -317,10 +317,10 @@ final class PriceRecord {
 
     var display: PriceDisplay {
         return PriceDisplay(
-            // Keep native-currency evidence visible in local views. USD-only
-            // portfolio valuation uses `effectiveUnitMarketPriceUSD` above.
-            amount: isInvalidated ? nil : unitMarketPriceUSD,
-            currencyCode: currencyCode,
+            // Legacy native-currency observations remain in storage/history,
+            // but a current card price must use the portfolio's USD contract.
+            amount: effectiveUnitMarketPriceUSD,
+            currencyCode: "USD",
             source: source,
             sourceUpdatedAt: sourceUpdatedAt,
             fetchedAt: fetchedAt,

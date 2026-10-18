@@ -3327,8 +3327,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(engine.summary?.currentValue, money(20))
         XCTAssertEqual(eurRecord.unitMarketPriceUSD, 20)
         XCTAssertNil(eurRecord.effectiveUnitMarketPriceUSD)
-        XCTAssertEqual(eurRecord.display.amount, 20)
-        XCTAssertEqual(eurRecord.display.currencyCode, "EUR")
+        XCTAssertNil(eurRecord.display.amount)
+        XCTAssertEqual(eurRecord.display.currencyCode, "USD")
         assertAllValuationSurfaces("initial mixed USD/EUR valuation")
 
         _ = usdRecord.apply(
@@ -3384,8 +3384,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(engine.summary?.currentValue, money(30))
         XCTAssertEqual(usdRecord.unitMarketPriceUSD, 25)
         XCTAssertNil(usdRecord.effectiveUnitMarketPriceUSD)
-        XCTAssertEqual(usdRecord.display.amount, 25)
-        XCTAssertEqual(usdRecord.display.currencyCode, "EUR")
+        XCTAssertNil(usdRecord.display.amount)
+        XCTAssertEqual(usdRecord.display.currencyCode, "USD")
         XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.unitPrice)
         XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.holdingValue)
         XCTAssertEqual(engine.holdings.first(where: { $0.priceStorageKey == eurRecord.key })?.holdingValue, money(30))
@@ -3744,7 +3744,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(replay.live?.attribution.unexplained, .zero)
     }
 
-    func testPortfolioHistoryExportPreservesAddedAndRemovedContributions() {
+    func testPortfolioHistoryExportPreservesAddedAndRemovedContributions() async throws {
         let close = PortfolioDailyClose(
             date: Date(timeIntervalSince1970: 1_700_000_000),
             revision: 1,
@@ -3772,6 +3772,12 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertTrue(csv.contains("removed_contribution_usd"))
         XCTAssertTrue(csv.contains("5.0000"))
         XCTAssertTrue(csv.contains("3.0000"))
+
+        let context = try makeContext()
+        context.insert(close)
+        try context.save()
+        let isolated = try await CollectionCSV.exportIsolated(from: context.container, kind: .portfolioHistory)
+        XCTAssertEqual(isolated.text, csv)
     }
 
     func testUnexplainedValueChangeBecomesAnIntegrityDefect() async throws {

@@ -265,12 +265,15 @@ final class LorcanaPricingTests: XCTestCase {
         }
         let worker = PriceRefreshModelActor(modelContainer: container)
         await worker.configureGamePricing(bound.makePriceQuoteService())
-        _ = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
             sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(result) = outcome else { return XCTFail("Expected completed refresh") }
+        XCTAssertEqual(result.failed, 0, "Mapped games must not also enter the legacy fetch path")
         let reopened = try self.container(url: root.appendingPathComponent("collection.store"))
         XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).count, 2)
         let prices = PriceStore(context: reopened.mainContext)
         XCTAssertEqual(prices.record(forKey: PriceRecord.key(game: .lorcana, printingID: id().uuidString.lowercased(), variantID: "foil"))?.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertNil(prices.record(forKey: PriceRecord.key(game: .lorcana, printingID: id().uuidString.lowercased(), variantID: "foil"))?.lastFailureAt)
         XCTAssertNil(prices.record(forKey: PriceRecord.key(game: .lorcana, printingID: id(2).uuidString.lowercased(), variantID: "foil"))?.effectiveUnitMarketPriceUSD)
     }
 

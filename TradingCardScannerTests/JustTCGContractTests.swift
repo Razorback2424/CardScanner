@@ -479,6 +479,37 @@ final class JustTCGContractTests: XCTestCase {
         }
     }
 
+    func testNamedPokemonParallelCanUseOnlyItsExactPhysicalProductAndSingleNearMintListing() throws {
+        func response(_ variants: String) throws -> JustTCGBatchResponse {
+            try JSONDecoder().decode(JustTCGBatchResponse.self, from: Data("""
+            {"data":[{"uuid":"cosmos-product","tcgplayerId":"694692","variants":[\(variants)]}]}
+            """.utf8))
+        }
+        let nearMint = #"{"uuid":"nm","condition":"Near Mint","printing":"Holofoil","price":2.34}"#
+        let played = #"{"uuid":"lp","condition":"Lightly Played","printing":"Holofoil","price":1.20}"#
+        var target = MarketPriceTarget(priceKey: "cosmos", game: .pokemon, printingID: "mep-078",
+            variantID: PhysicalVariant.pokemonFoilPattern("cosmos").id, itemKind: .rawCard,
+            marketVariantID: nil, lookupCandidates: [.tcgplayerID("694692")], currentAmount: nil,
+            lastCheckedAt: nil, exactPhysicalProductID: "694692")
+        guard case let .matched(_, variant) = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(played + "," + nearMint)
+        ) else { return XCTFail("Exact Cosmos product should be priceable") }
+        XCTAssertEqual(variant.variantId, "nm")
+
+        let anotherNM = #"{"uuid":"other-nm","condition":"Near Mint","printing":"Normal","price":99}"#
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(nearMint + "," + anotherNM)
+        ) else { return XCTFail("Multiple NM listings are ambiguous") }
+        target.exactPhysicalProductID = "999999"
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(nearMint)
+        ) else { return XCTFail("A different product must never answer this parallel") }
+        target.exactPhysicalProductID = nil
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(nearMint)
+        ) else { return XCTFail("A stored generic handle alone cannot authorize a named parallel") }
+    }
+
     // MARK: - Which identifier the vendor can actually resolve
 
     /// Verified live, one batch, two identifiers:

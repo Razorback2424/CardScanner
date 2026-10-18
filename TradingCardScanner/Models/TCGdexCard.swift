@@ -507,9 +507,10 @@ struct TCGPlayerPricing: Decodable, Sendable {
     let holofoil: TCGPlayerPricePoint?
     let reverse: TCGPlayerPricePoint?
     let reverseHolofoil: TCGPlayerPricePoint?
+    var unit: String? = nil
 
     enum CodingKeys: String, CodingKey {
-        case updated
+        case updated, unit
         case normal
         case holo
         case holofoil
@@ -566,6 +567,12 @@ enum FlexibleDate {
 
 struct TCGPlayerPricePoint: Decodable, Sendable {
     let marketPrice: Double?
+    var productID: Int? = nil
+
+    enum CodingKeys: String, CodingKey {
+        case marketPrice
+        case productID = "productId"
+    }
 }
 
 /// The exact Scryfall printing returned by the direct set/number/language lookup.

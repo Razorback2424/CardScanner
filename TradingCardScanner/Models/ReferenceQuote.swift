@@ -59,13 +59,15 @@ final class ReferenceQuote {
     var source: PriceSource? { sourceRaw.flatMap(PriceSource.init(rawValue:)) }
 
     var effectiveAmount: Double? {
-        invalidatedAt == nil ? amount : nil
+        guard invalidatedAt == nil,
+              PortfolioPriceEligibility.eligibleUnitPrice(amount: amount, currencyCode: currencyCode) != nil else { return nil }
+        return amount
     }
 
     var display: PriceDisplay {
         PriceDisplay(
             amount: effectiveAmount,
-            currencyCode: currencyCode,
+            currencyCode: "USD",
             source: source,
             sourceUpdatedAt: sourceUpdatedAt,
             fetchedAt: retrievedAt,

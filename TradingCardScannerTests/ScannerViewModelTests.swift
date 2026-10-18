@@ -1322,14 +1322,14 @@ final class ScannerViewModelTests: XCTestCase {
         let refreshedState = await waitUntil {
             guard let result = model.priceCheckResult else { return false }
             return !result.isRefreshing
-                && result.display.currencyCode == "EUR"
-                && result.display.amount == 12
+                && result.display.currencyCode == "USD"
+                && result.display.amount == nil
         }
 
         XCTAssertTrue(refreshedState)
         XCTAssertEqual(model.priceCheckResult?.quoteState, .checking)
-        XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "EUR")
-        XCTAssertEqual(model.priceCheckResult?.display.amount, 12)
+        XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "USD")
+        XCTAssertNil(model.priceCheckResult?.display.amount)
     }
 
     func testSameIdentityWithoutSpatialProofIsSuppressed() async throws {

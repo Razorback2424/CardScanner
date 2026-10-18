@@ -52,7 +52,7 @@ struct PriceQuoteService: Sendable {
         guard supportsStoredPrintingRefresh(for: game), let adapter = adapters.adapter(for: game) else {
             throw PriceQuoteError.pricingUnsupported
         }
-        return try await adapter.refreshStoredPrinting(printingID, variant: variant)
+        return try Self.validated(await adapter.refreshStoredPrinting(printingID, variant: variant))
     }
 
     func refresh(card: IdentifiedCard, variant: PhysicalVariant?,
@@ -71,7 +71,14 @@ struct PriceQuoteService: Sendable {
               let adapter = adapters.adapter(for: request.identity.game) else {
             throw PriceQuoteError.pricingUnsupported
         }
-        return try await adapter.refresh(request)
+        return try Self.validated(await adapter.refresh(request))
+    }
+
+    private static func validated(_ lookup: PriceLookup) throws -> PriceLookup {
+        if case let .price(price) = lookup, !price.isUsableUSD {
+            throw PriceQuoteError.providerUnavailable
+        }
+        return lookup
     }
 
     static func failureKind(for error: Error) -> TCGdexCircuitBreaker.Failure {
