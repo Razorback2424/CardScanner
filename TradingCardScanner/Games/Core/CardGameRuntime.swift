@@ -301,11 +301,13 @@ struct CardGameRuntimeContainer: Sendable {
         }
 #endif
         do {
-#if DEBUG && LOCAL_ONLY_SIGNING
+#if LOCAL_ONLY_SIGNING
             if let module = try OnePieceCatalogBootstrap.ownerRuntime() {
                 modules.append(module)
-                return try! Self(runtimes: modules)
+                return try! Self(runtimes: modules, unavailableGames: unavailable)
             }
+#endif
+#if DEBUG && LOCAL_ONLY_SIGNING
             if OnePieceCatalogBootstrap.isLocalReviewLaunch {
                 if let module = try OnePieceCatalogBootstrap.localReviewRuntime() { modules.append(module) }
                 return try! Self(runtimes: modules)

@@ -1,3 +1,21 @@
+- One Piece availability across local build configurations (2026-10-18): fixed
+  the bundled owner runtime being excluded from `ReleaseLocal` by a Debug-only
+  compilation guard. ProfileLocal can now replace Debug under the same app
+  identity while retaining One Piece. Signed catalog verification, collection
+  storage and production rollout settings are unchanged. The standalone
+  availability regression passed against the optimized ReleaseLocal simulator
+  app (1 test, zero failures), checking repeated bootstrap with fresh settings
+  and scan/Browse/pricing/sealed/collection-write capabilities. The first
+  full-target ReleaseLocal test attempt could not compile existing tests that
+  depend on Debug-only helpers; the passing isolated run excluded other test
+  sources and enabled testability. The signed Debug simulator follow-up passed
+  all 91 selected cases (90 One Piece integration tests plus the availability
+  regression), with zero failures. Both final runs reported `TEST SUCCEEDED`;
+  build data and result bundles used the external SSD. This is simulator
+  evidence; no physical-device install or production rollout was performed.
+  Added documentation links and `git diff --check` pass. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
 - Pricing correctness before coverage expansion (2026-10-18; `56d981f` plus
   local changes): completed the Priority 1 follow-up to the committed pricing
   baseline, preserving pre-existing navigation edits. Missing marketplace

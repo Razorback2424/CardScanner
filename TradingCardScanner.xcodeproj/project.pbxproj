@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D704E6EDC8D949928AA039F1 /* OnePieceAvailabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D704E6EDC8D949928AA039F2; };
 		F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000091 /* OnePieceOwnerCatalog */; };
 		C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */ = {isa = PBXBuildFile; fileRef = E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */; settings = {COMPILER_FLAGS = "-O2 -ffp-contract=off"; }; };
 		A0010070 /* CollectionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010070 /* CollectionActivity.swift */; };
@@ -343,6 +344,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D704E6EDC8D949928AA039F2 /* OnePieceAvailabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceAvailabilityTests.swift; sourceTree = "<group>"; };
 		F11D00000000000000000091 /* OnePieceOwnerCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = OnePieceOwnerCatalog; sourceTree = "<group>"; };
 		E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CardCenteringPixelKernels.c; sourceTree = "<group>"; };
 		86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardCenteringPixelKernels.h; sourceTree = "<group>"; };
@@ -1094,6 +1096,7 @@
 				B0020118 /* PokemonCatalogSliceDTests.swift */,
 				B0020119 /* PokemonCatalogSliceFTests.swift */,
 				B0020120 /* MagicCatalogBootstrapTests.swift */,
+				D704E6EDC8D949928AA039F2 /* OnePieceAvailabilityTests.swift */,
 				B0020121 /* MagicCatalogActivationTests.swift */,
 				B0020199 /* MagicRecognitionProfileTests.swift */,
 				B002019A /* MagicHistoricalIndexTests.swift */,
@@ -1570,6 +1573,7 @@
 				A0020118 /* PokemonCatalogSliceDTests.swift in Sources */,
 				A0020119 /* PokemonCatalogSliceFTests.swift in Sources */,
 				A0020120 /* MagicCatalogBootstrapTests.swift in Sources */,
+				D704E6EDC8D949928AA039F1 /* OnePieceAvailabilityTests.swift in Sources */,
 				A0020121 /* MagicCatalogActivationTests.swift in Sources */,
 				A0020199 /* MagicRecognitionProfileTests.swift in Sources */,
 				A002019A /* MagicHistoricalIndexTests.swift in Sources */,

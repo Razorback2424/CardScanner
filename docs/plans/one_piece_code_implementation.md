@@ -4,6 +4,18 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**Intermittent game availability repair — 2026-10-18:** the ProfileLocal scheme
+runs `ReleaseLocal`, while the signed bundled owner runtime was compiled only
+under `DEBUG && LOCAL_ONLY_SIGNING`. Installing that build over Debug used the
+same app identity but omitted One Piece. Owner bootstrap and registration now
+compile under `LOCAL_ONLY_SIGNING`, including optimized local builds. Debug UI
+routes and isolated review storage retain their debug-only guards. The signed
+catalog, trust pins, production rollout and collection schema are unchanged.
+A standalone availability regression also compiles in `ReleaseLocal`, checking
+fresh preferences, repeated bootstrap, all five game capabilities and variant
+menus. Existing Debug integration tests cover catalog content and trusted-key
+verification. Verification results are recorded in `progress.md`.
+
 **Specialty-printing review — 2026-10-15:** three independently reconciled original
 Romance Dawn printings (alternate Zoro, alternate Shanks and manga Shanks) are
 added to the durable review corpus, bringing it to 2,748 retained / 2,493 verified

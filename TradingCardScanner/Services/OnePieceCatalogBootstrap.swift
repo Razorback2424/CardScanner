@@ -101,6 +101,11 @@ enum OnePieceCatalogBootstrap {
         return review.contains("-one_piece_local_review") ? "OnePieceLocalReview" : nil
     }
 
+#endif
+
+#if LOCAL_ONLY_SIGNING
+    /// Available in both Debug and ReleaseLocal so profiling installs retain
+    /// the same games as ordinary local installs.
     /// The owner's installed app can use a signed local catalog with its normal
     /// collection. This does not select the isolated review storage paths.
     static func ownerRuntime(bundle: Bundle = .main, seedURL: URL? = nil, preferences: UserDefaults = .standard,

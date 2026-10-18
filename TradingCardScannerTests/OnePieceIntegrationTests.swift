@@ -253,6 +253,9 @@ final class OnePieceIntegrationTests: XCTestCase {
         let defaults = CardGameRuntimeContainer.appDefaults()
         XCTAssertTrue(defaults.registry.supports(.onePiece, .scan))
         XCTAssertTrue(defaults.registry.supports(.onePiece, .collectionWrite))
+        XCTAssertTrue(defaults.registry.supports(.onePiece, .browse))
+        XCTAssertTrue(defaults.registry.supports(.onePiece, .pricing))
+        XCTAssertTrue(defaults.registry.supports(.onePiece, .sealed))
         XCTAssertTrue(defaults.registry.variantLockMenu.contains { $0.game == .onePiece && !$0.options.isEmpty })
     }
 
