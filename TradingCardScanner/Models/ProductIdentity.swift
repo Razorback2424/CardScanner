@@ -102,7 +102,7 @@ final class ProductIdentity {
         // A resolved handle remains valid across matcher revisions. Only a
         // negative match needs reopening; invalidating handles would degrade
         // batch refreshes into one paid search per card.
-        if vendorCardID != nil { return true }
+        if vendorCardID != nil || vendorVariantID != nil { return true }
         guard attemptVersion >= Self.currentAttemptVersion else { return false }
         guard let unmatchedAt else { return false }
         // A miss is not necessarily permanent — vendors add products. Re-ask

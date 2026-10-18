@@ -240,7 +240,12 @@ struct ProductIdentityStore {
             identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         identity.attemptVersion = ProductIdentity.currentAttemptVersion
-        if let cardID { identity.vendorCardID = cardID }
+        if let cardID {
+            // A partial response can correct the product without returning a
+            // variant. Never attach the previous product's variant to it.
+            if cardID != identity.vendorCardID { identity.vendorVariantID = nil }
+            identity.vendorCardID = cardID
+        }
         if let variantID { identity.vendorVariantID = variantID }
         identity.resolvedAt = date
         identity.fallbackCheckedAt = date
@@ -298,12 +303,13 @@ struct ProductIdentityStore {
             identity.vendorVariantID = vendorVariantID
             identity.resolvedAt = date
             identity.fallbackCheckedAt = date
-            identity.unmatchedAt = vendorCardID == nil ? date : nil
+            identity.unmatchedAt = vendorCardID == nil && vendorVariantID == nil ? date : nil
 
         case let .noListingForVariant(vendorCardID):
             // The product exists. That it has no listing in this finish is a
             // fact about the listing, not about whether the card was found — so
             // the handle is kept and the search is not repeated.
+            if vendorCardID != identity.vendorCardID { identity.vendorVariantID = nil }
             identity.vendorCardID = vendorCardID
             identity.resolvedAt = date
             identity.fallbackCheckedAt = date
