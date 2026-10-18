@@ -1234,6 +1234,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
         let details = try await details(for: summary)
+        if let adapter = gameBrowseAdapters.adapter(for: summary.game),
+           let quote = try await adapter.price(for: summary, variant: variant) {
+            try validateBrowseGeneration(adapter)
+            return quote
+        }
         if priceQuoteService.supportsStoredPrintingRefresh(for: summary.game) {
             let quote = try await priceQuoteService.refresh(card: details.card, variant: variant,
                                                            pokemonPrintRun: summary.pokemonPrintRun)

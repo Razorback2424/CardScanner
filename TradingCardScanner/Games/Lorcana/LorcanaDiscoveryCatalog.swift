@@ -51,6 +51,13 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         let coverage: Coverage
     }
 
+    struct BrowsePrices: Decodable {
+        struct Entry: Decodable { let sourceID: String; let mapping: LorcanaMarketMapping }
+        let schemaVersion: Int
+        let discoverySHA256: String
+        let entries: [Entry]
+    }
+
     static let descriptor = CardGameDescriptor(game: .lorcana, displayName: "Disney Lorcana", sortOrder: 3,
                                                capabilities: [.scan, .browse, .sealed])
     static let bundled: Result<Self, Error> = Result {
@@ -70,8 +77,10 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
               try JSONDecoder().decode(SourceBinding.self, from: marketBytes).discoverySHA256
                 == SHA256.hash(data: sourceBytes).map({ String(format: "%02x", $0) }).joined()
         else { throw BrowseCatalogError.badResponse }
+        let browsePrices = Bundle.main.url(forResource: "browse-prices", withExtension: "json", subdirectory: "LorcanaCatalogSeed")
         return try Self(data: sourceBytes,
-            reviewedManifest: JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self, from: marketBytes))
+            reviewedManifest: JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self, from: marketBytes),
+            browsePriceData: browsePrices.map { try Data(contentsOf: $0) })
     }
 
     let game = CardGame.lorcana
@@ -87,9 +96,12 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
     private let capturedAt: Date
     private let physicalBySourceID: [String: UUID]
     private let sourceByPhysicalID: [String: Card]
+    private let browseMappings: [String: [LorcanaMarketMapping]]
+    private let browsePriceSource: TCGCSVProductPriceSource
     private var physical: LorcanaCatalogAdapter { .init(registry: registry) }
 
-    init(data: Data, asOf: Date = .now, reviewedManifest: LorcanaPhysicalCatalogManifest? = nil) throws {
+    init(data: Data, asOf: Date = .now, reviewedManifest: LorcanaPhysicalCatalogManifest? = nil,
+         browsePriceData: Data? = nil, browsePriceSource: TCGCSVProductPriceSource = .shared) throws {
         guard data.count <= 8 * 1_024 * 1_024 else { throw BrowseCatalogError.badResponse }
         let payload = try JSONDecoder().decode(Payload.self, from: data)
         guard payload.schemaVersion == 1, !payload.cards.isEmpty, payload.cards.count <= 20_000,
@@ -123,10 +135,33 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             .map(\.setCode)).sorted().joined(separator: ":")
         // Release labels advance on relaunch. Bind cursors/details to that
         // presentation phase so an old "Upcoming" page cannot survive it.
-        let generationBytes = data + Data(upcomingScopes.utf8)
+        let generationBytes = data + Data(upcomingScopes.utf8) + (browsePriceData ?? Data())
         var catalogGeneration = "lorcana:discovery:" + SHA256.hash(data: generationBytes).map { String(format: "%02x", $0) }.joined()
         capturedAt = captured
         cardsByID = Dictionary(uniqueKeysWithValues: payload.cards.map { ($0.id, $0) })
+        self.browsePriceSource = browsePriceSource
+        if let browsePriceData {
+            guard browsePriceData.count <= 4 * 1_024 * 1_024 else { throw BrowseCatalogError.badResponse }
+            let prices = try JSONDecoder().decode(BrowsePrices.self, from: browsePriceData)
+            guard prices.schemaVersion == 1,
+                  prices.discoverySHA256 == SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined(),
+                  prices.entries.count <= 10_000 else { throw BrowseCatalogError.badResponse }
+            var keys: Set<String> = []
+            for entry in prices.entries {
+                let mapping = entry.mapping
+                guard let card = cardsByID[entry.sourceID], mapping.hasValidMarketLane,
+                      mapping.groupID > 0, mapping.productID > 0, !mapping.productName.isEmpty,
+                      card.variants.contains(mapping.finish.variant),
+                      keys.insert(entry.sourceID + ":" + mapping.finish.rawValue).inserted,
+                      !mapping.evidenceReferences.isEmpty,
+                      (card.footer.map { mapping.productNumber == $0.collectorNumber
+                          || mapping.productNumber == $0.collectorNumber + "/" + $0.denominator }
+                       ?? (card.unnumberedSetMarker != nil && mapping.productNumber.isEmpty)) else {
+                    throw BrowseCatalogError.badResponse
+                }
+            }
+            browseMappings = Dictionary(grouping: prices.entries, by: \.sourceID).mapValues { $0.map(\.mapping) }
+        } else { browseMappings = [:] }
         cardsByFooter = Dictionary(grouping: payload.cards.filter { $0.footer != nil }, by: { $0.footer! })
         unnumberedCards = payload.cards.filter { $0.unnumberedSetMarker != nil }.sorted { $0.id < $1.id }
         products = payload.sealed
@@ -245,6 +280,18 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         }
         return .init(card: try resolution(card).card, set: set, retrievedAt: capturedAt,
             collectionWriteUnavailableReason: "This printing needs review before it can be added.")
+    }
+
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup? {
+        _ = try await details(for: summary)
+        // Reviewed physical UUIDs retain their existing exact pricing authority.
+        guard sourceByPhysicalID[summary.providerID] == nil else { return nil }
+        guard let mapping = browseMappings[summary.providerID]?.first(where: { $0.finish.variant == variant }) else {
+            return .unavailable(nil)
+        }
+        return try await browsePriceSource.quote(category: 71, group: mapping.groupID, productID: mapping.productID,
+            name: mapping.productName, number: mapping.productNumber.isEmpty ? nil : mapping.productNumber,
+            lane: mapping.providerVariantID, generation: generation, minimumFetchedAt: nil)
     }
 
     func identifierForRetry(_ identifier: ScanIdentifier) throws -> ScanIdentifier {

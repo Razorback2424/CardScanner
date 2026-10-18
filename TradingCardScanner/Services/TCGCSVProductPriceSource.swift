@@ -43,9 +43,9 @@ actor TCGCSVProductPriceSource {
         self.session = session; self.cacheDirectory = cacheDirectory
     }
 
-    func quote(category: Int, group: Int, productID: Int, name: String, number: String,
+    func quote(category: Int, group: Int, productID: Int, name: String, number: String?,
                lane: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup {
-        guard category > 0, group > 0, productID > 0, !name.isEmpty, !number.isEmpty,
+        guard category > 0, group > 0, productID > 0, !name.isEmpty, number != "",
               ["Normal", "Foil", "Cold Foil", "Holofoil"].contains(lane) else { throw PriceQuoteError.identityMismatch }
         let groupKey = GroupKey(category: category, group: group)
         let snapshot = try await snapshot(group: groupKey, generation: generation, minimumFetchedAt: minimumFetchedAt)
@@ -53,7 +53,7 @@ actor TCGCSVProductPriceSource {
         let products = snapshot.products.filter { $0.productId == productID }
         guard products.count == 1, let product = products.first,
               product.categoryId == category, product.groupId == group, product.name == name,
-              product.extendedData.filter({ $0.name == "Number" }).map(\.value) == [number] else {
+              product.extendedData.filter({ $0.name == "Number" }).map(\.value) == number.map({ [$0] }) ?? [] else {
             throw PriceQuoteError.identityMismatch
         }
         let rows = snapshot.prices.filter { $0.productId == productID && $0.subTypeName == lane }

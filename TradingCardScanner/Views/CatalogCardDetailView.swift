@@ -338,7 +338,7 @@ struct CatalogCardDetailView: View {
     }
 
     private func loadMappedPrices() async {
-        guard let loadedDetails = details, loadedDetails.collectionWriteUnavailableReason == nil,
+        guard let loadedDetails = details,
               catalog.gameRegistry.supports(loadedDetails.card.game, .pricing) else { return }
         let card = loadedDetails.card
         mappedPriceCheckFinished = false
