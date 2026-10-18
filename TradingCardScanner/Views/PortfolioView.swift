@@ -319,7 +319,8 @@ struct PortfolioView: View {
                     history: history,
                     fallbackSummary: destination.summary,
                     refresh: refresh,
-                    snapshotHistoryResult: destination.historyResult
+                    snapshotHistoryResult: destination.historyResult,
+                    onRemoved: presentUndo(for:)
                 )
             }
             .navigationDestination(item: $contributorContext) { context in
@@ -1536,6 +1537,7 @@ private struct PortfolioDetailsView: View {
     let fallbackSummary: PortfolioSummary
     @ObservedObject var refresh: PriceRefreshController
     let snapshotHistoryResult: PortfolioHistoryResult?
+    let onRemoved: (RemovedCardSnapshot) -> Void
 #if DEBUG
     @State private var showsAdditionsDebugScreen = false
 #endif
@@ -1595,7 +1597,10 @@ private struct PortfolioDetailsView: View {
 #if DEBUG
         .navigationDestination(isPresented: $showsAdditionsDebugScreen) {
             if let result = historyResult {
-                PortfolioAdditionsView(result: result, holdings: portfolio.holdings)
+                PortfolioAdditionsView(
+                    result: result, holdings: portfolio.holdings,
+                    history: history, onRemoved: onRemoved
+                )
             }
         }
         .task {
@@ -1614,7 +1619,10 @@ private struct PortfolioDetailsView: View {
                 LabeledContent("Portfolio value change", value: signed(accounting.totalChange))
                 if PortfolioHistoryDisplay.hasBreakdown(accounting) {
                     NavigationLink {
-                        PortfolioAdditionsView(result: result, holdings: portfolio.holdings)
+                        PortfolioAdditionsView(
+                            result: result, holdings: portfolio.holdings,
+                            history: history, onRemoved: onRemoved
+                        )
                     } label: {
                         LabeledContent(
                             "Cards added",
@@ -1752,13 +1760,54 @@ private struct PortfolioDetailsView: View {
 private struct PortfolioAdditionsView: View {
     let result: PortfolioHistoryResult
     let holdings: [PortfolioHoldingSnapshot]
+    let history: PortfolioHistoryStore
+    let onRemoved: (RemovedCardSnapshot) -> Void
     @Environment(\.modelContext) private var modelContext
-    @State private var historicalLabels: [String: CardLabel] = [:]
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @State private var historicalRows: [String: CollectionRow] = [:]
+    @State private var additionDates: [String: Date] = [:]
     @State private var historyLoadFailed = false
+    @State private var sort: SortOrder = .newestFirst
+    @ScaledMetric(relativeTo: .largeTitle) private var totalFontSize: CGFloat = 42
+    @ScaledMetric(relativeTo: .title2) private var fractionFontSize: CGFloat = 27
 
-    private struct CardLabel {
-        let name: String
-        let detail: String
+    private enum SortOrder: String, CaseIterable, Identifiable {
+        case newestFirst, oldestFirst, priceHighToLow, priceLowToHigh
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .newestFirst: return "Newest scan to oldest"
+            case .oldestFirst: return "Oldest scan to newest"
+            case .priceHighToLow: return "Highest price to lowest"
+            case .priceLowToHigh: return "Lowest price to highest"
+            }
+        }
+
+        var shortLabel: String {
+            switch self {
+            case .newestFirst: return "Newest"
+            case .oldestFirst: return "Oldest"
+            case .priceHighToLow, .priceLowToHigh: return "Price"
+            }
+        }
+
+        var directionSymbol: String {
+            switch self {
+            case .newestFirst, .priceHighToLow: return "arrow.down"
+            case .oldestFirst, .priceLowToHigh: return "arrow.up"
+            }
+        }
+    }
+
+    private struct AddedCard: Identifiable {
+        let row: CollectionRow
+        let value: Money
+        let addedAt: Date?
+
+        var id: String { row.id }
     }
 
     private var total: Money {
@@ -1770,95 +1819,258 @@ private struct PortfolioAdditionsView: View {
         total - result.additions.values.reduce(.zero, +)
     }
 
-    private var labelsByKey: [String: CardLabel] {
-        var labels = historicalLabels
-        for holding in holdings where result.additions[holding.collectionKey] != nil {
-            labels[holding.collectionKey] = CardLabel(name: holding.name, detail: holding.detail)
+    private var columns: [GridItem] {
+        if dynamicTypeSize.isAccessibilitySize {
+            return [GridItem(.flexible(), alignment: .top)]
         }
-        return labels
+        return [GridItem(.adaptive(minimum: 165), spacing: 16, alignment: .top)]
+    }
+
+    private var cards: [AddedCard] {
+        let liveRows = projectionStore.snapshot?.rowsByCollectionKey ?? [:]
+        let holdingsByKey = Dictionary(holdings.map { ($0.collectionKey, $0) }, uniquingKeysWith: { first, _ in first })
+        return result.additions.map { key, value in
+            let holding = holdingsByKey[key]
+            var row = liveRows[key] ?? historicalRows[key] ?? fallbackRow(key: key, holding: holding)
+            if liveRows[key] == nil {
+                row.lowImageURL = row.lowImageURL ?? holding?.artworkFallbackURL
+                row.highImageURL = row.highImageURL ?? holding?.artworkURL
+                row.userArtworkFilename = row.userArtworkFilename ?? holding?.userArtworkFilename
+            }
+            return AddedCard(
+                row: row,
+                value: value,
+                addedAt: additionDates[key] ?? (row.dateAdded == .distantPast ? nil : row.dateAdded)
+            )
+        }.sorted { lhs, rhs in
+            switch sort {
+            case .newestFirst, .oldestFirst:
+                switch (lhs.addedAt, rhs.addedAt) {
+                case let (left?, right?) where left != right:
+                    return sort == .newestFirst ? left > right : left < right
+                case (_?, nil): return true
+                case (nil, _?): return false
+                default: break
+                }
+            case .priceHighToLow, .priceLowToHigh:
+                if lhs.value != rhs.value {
+                    return sort == .priceHighToLow ? lhs.value > rhs.value : lhs.value < rhs.value
+                }
+            }
+            let names = lhs.row.name.localizedStandardCompare(rhs.row.name)
+            return names == .orderedSame ? lhs.id < rhs.id : names == .orderedAscending
+        }
     }
 
     var body: some View {
-        let labels = labelsByKey
-        let keys = result.additions.keys.sorted {
-            let lhs = labels[$0]?.name ?? $0
-            let rhs = labels[$1]?.name ?? $1
-            return lhs == rhs ? $0 < $1 : lhs.localizedStandardCompare(rhs) == .orderedAscending
-        }
-        List {
-            Section {
-                LabeledContent("Cards added", value: PortfolioHistoryDisplay.signedCurrency(total))
-            } header: {
-                Text("\(result.range.rawValue) total")
-            } footer: {
-                Text("Values reflect when cards were added, including first prices learned later in this period. Market price changes are shown separately in Pricing & Data.")
-            }
-
-            Section("Cards in this amount") {
-                ForEach(keys, id: \.self) { key in
-                    let card = labels[key] ?? CardLabel(
-                        name: "Card details unavailable",
-                        detail: "This card’s name is unavailable in this device’s history."
-                    )
-                    VStack(alignment: .leading, spacing: 4) {
-                        LabeledContent {
-                            Text(PortfolioHistoryDisplay.signedCurrency(result.additions[key] ?? .zero))
-                                .monospacedDigit()
-                        } label: {
-                            Text(card.name)
-                        }
-                        if !card.detail.isEmpty {
-                            Text(card.detail)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+        let cards = self.cards
+        let totalParts = total.heroParts()
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(totalParts.whole)
+                            .font(.system(size: totalFontSize, weight: .bold, design: .rounded))
+                            .foregroundStyle(PortfolioPalette.value)
+                        if !totalParts.fraction.isEmpty {
+                            Text(totalParts.fraction)
+                                .font(.system(size: fractionFontSize, weight: .bold, design: .rounded))
+                                .foregroundStyle(.secondary.opacity(0.75))
                         }
                     }
-                    .accessibilityElement(children: .combine)
-                }
-                if result.additions.isEmpty && unitemizedValue.isZero {
-                    Text("No cards contributed added value during this period.")
-                        .foregroundStyle(.secondary)
-                }
-            }
+                    .monospacedDigit()
+                    .tracking(-0.84)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Cards added value, \(total.formatted())")
 
-            if !unitemizedValue.isZero {
-                Section {
-                    LabeledContent("Unitemized value", value: PortfolioHistoryDisplay.signedCurrency(unitemizedValue))
-                } footer: {
-                    Text("The recorded total includes value whose card details are unavailable in this device’s replay history.")
-                }
-            }
-            if historyLoadFailed {
-                Section {
-                    Text("Some historical card names couldn’t be loaded.")
+                    Text("\(result.range.rawValue) added value")
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Button("Retry") { loadHistoricalLabels() }
+                    Text("Card amounts make up this period’s added value, including first prices learned later. Market movement is excluded.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 2)
+
+                HStack {
+                    Text("\(cards.count) \(cards.count == 1 ? "item" : "items")")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer(minLength: 8)
+                    sortMenu
+                }
+
+                if cards.isEmpty && unitemizedValue.isZero {
+                    ContentUnavailableView(
+                        "No Cards Added",
+                        systemImage: "rectangle.stack",
+                        description: Text("No cards contributed added value during this period.")
+                    )
+                } else {
+                    LazyVGrid(columns: columns, spacing: 28) {
+                        ForEach(cards) { card in
+                            NavigationLink {
+                                PortfolioOwnedCardDestination(
+                                    collectionKey: card.id,
+                                    history: history,
+                                    onRemoved: onRemoved
+                                )
+                            } label: {
+                                CollectionCardTile(
+                                    row: card.row,
+                                    unpricedReason: nil,
+                                    artworkReason: nil,
+                                    addedValue: card.value
+                                )
+                                .contentShape(.rect)
+                            }
+                            .buttonStyle(CollectionTileButtonStyle())
+                            .contentShape(.rect)
+                            .accessibilityHint("Opens card details")
+                        }
+                    }
+                    .padding(.top, 2)
+                }
+
+                if !unitemizedValue.isZero {
+                    VStack(alignment: .leading, spacing: 6) {
+                        LabeledContent("Unitemized value", value: PortfolioHistoryDisplay.signedCurrency(unitemizedValue))
+                        Text("The recorded total includes value whose card details are unavailable in this device’s replay history.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.top, 12)
+                }
+                if historyLoadFailed {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Some historical card details couldn’t be loaded.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        Button("Retry") { loadHistoricalRows() }
+                            .buttonStyle(.bordered)
+                    }
                 }
             }
+            .padding(.horizontal, 12)
+            .padding(.top, 12)
+            .padding(.bottom, 16)
+            .contentWidthLimit(.wide)
         }
         .navigationTitle("Cards Added")
         .navigationBarTitleDisplayMode(.inline)
-        .task { loadHistoricalLabels() }
+        .task { loadHistoricalRows() }
     }
 
-    private func loadHistoricalLabels() {
+    private var sortMenu: some View {
+        Menu {
+            ForEach(SortOrder.allCases) { option in
+                Button {
+                    sort = option
+                } label: {
+                    if sort == option {
+                        Label(option.label, systemImage: "checkmark")
+                    } else {
+                        Text(option.label)
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "arrow.up.arrow.down")
+                    .font(.system(size: 18, weight: .medium))
+                Text(sort.shortLabel)
+                    .font(.subheadline.weight(.semibold))
+                Image(systemName: sort.directionSymbol)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .foregroundStyle(.primary)
+            .padding(.horizontal, 10)
+            .frame(minHeight: 36)
+            .background(Color.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        }
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .tint(.primary)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Sort cards added: \(sort.label)")
+    }
+
+    private func fallbackRow(key: String, holding: PortfolioHoldingSnapshot?) -> CollectionRow {
+        CollectionRow(
+            id: key,
+            game: holding?.artworkGame ?? .pokemon,
+            name: holding?.name ?? "Card details unavailable",
+            setCode: holding?.artworkSetCode ?? "",
+            setName: holding?.detail ?? "",
+            setReleaseOrder: 0,
+            cardNumber: holding?.artworkCollectorNumber ?? "",
+            variantID: nil,
+            variantLabel: nil,
+            quantity: 1,
+            dateAdded: .distantPast,
+            price: .unknown,
+            lowImageURL: holding?.artworkFallbackURL,
+            highImageURL: holding?.artworkURL,
+            userArtworkFilename: holding?.userArtworkFilename
+        )
+    }
+
+    private func loadHistoricalRows() {
         let keys = Array(result.additions.keys)
+        let asOf = result.points.last?.instant ?? .now
         do {
             let activities = try modelContext.fetch(FetchDescriptor<CollectionActivity>(
                 predicate: #Predicate { keys.contains($0.collectionKey) },
                 sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
             ))
-            var labels: [String: CardLabel] = [:]
-            for activity in activities where labels[activity.collectionKey] == nil {
-                labels[activity.collectionKey] = CardLabel(
+            var snapshots: [String: RemovedCardSnapshot] = [:]
+            var dates: [String: Date] = [:]
+            for activity in activities {
+                if dates[activity.collectionKey] == nil,
+                   activity.kind.hasQuantityClaim, activity.signedQuantity > 0, activity.occurredAt <= asOf {
+                    dates[activity.collectionKey] = activity.occurredAt
+                }
+                if snapshots[activity.collectionKey] == nil,
+                   let data = activity.removalSnapshotData,
+                   let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
+                   snapshot.collectionKey == activity.collectionKey {
+                    snapshots[activity.collectionKey] = snapshot
+                }
+            }
+            var rows: [String: CollectionRow] = [:]
+            for activity in activities where rows[activity.collectionKey] == nil {
+                let snapshot = snapshots[activity.collectionKey]
+                let grade = [snapshot?.gradingCompanyRaw?.uppercased(), snapshot?.gradeRaw]
+                    .compactMap { $0 }.joined(separator: " ")
+                rows[activity.collectionKey] = CollectionRow(
+                    id: activity.collectionKey,
+                    game: activity.game,
                     name: activity.name,
-                    detail: [activity.game.label, activity.setName, activity.cardNumber,
-                             activity.pokemonPrintRun?.label, activity.variantLabel,
-                             activity.magicTreatmentEvidence.displayLabel]
-                        .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+                    setCode: activity.setCode,
+                    setName: activity.setName,
+                    setReleaseOrder: snapshot?.setReleaseOrder ?? 0,
+                    cardNumber: activity.cardNumber,
+                    variantID: activity.variantID,
+                    variantLabel: activity.variantLabel,
+                    quantity: 1,
+                    dateAdded: dates[activity.collectionKey] ?? snapshot?.dateAdded ?? .distantPast,
+                    price: .unknown,
+                    magicTreatmentIDsRaw: activity.magicTreatmentIDsRaw,
+                    magicTreatmentQualifiers: activity.magicTreatmentQualifiers,
+                    itemKind: activity.itemKind,
+                    itemKindLabel: activity.itemKind == .rawCard ? activity.variantLabel
+                        : (grade.isEmpty ? activity.itemKind.label : grade),
+                    lowImageURL: snapshot?.thumbnailURL.flatMap { URL(string: $0) },
+                    highImageURL: snapshot?.imageURL.flatMap { URL(string: $0) },
+                    userArtworkFilename: snapshot?.userArtworkFilename,
+                    variantResolution: snapshot?.variantResolution
                 )
             }
-            historicalLabels = labels
+            historicalRows = rows
+            additionDates = dates
             historyLoadFailed = false
         } catch {
             historyLoadFailed = true

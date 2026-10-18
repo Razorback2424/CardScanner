@@ -1418,7 +1418,7 @@ private struct CollectionMovementDestination: View {
     }
 }
 
-private struct CollectionTileButtonStyle: ButtonStyle {
+struct CollectionTileButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .opacity(configuration.isPressed ? 0.65 : 1)
@@ -1511,7 +1511,7 @@ private struct CollectionRefreshStatusLine: View {
     }
 }
 
-private struct CollectionCardTile: View {
+struct CollectionCardTile: View {
     let row: CollectionRow
     /// The projected quantity for the position, not a physical row's quantity.
     /// CloudKit can legitimately split a position across several rows; the
@@ -1519,6 +1519,9 @@ private struct CollectionCardTile: View {
     let unpricedReason: PricingDiagnosticReason?
     let artworkReason: ArtworkDiagnosticReason?
     let showDefaultFinish: Bool
+    /// Historical breakdowns keep the collection artwork and identity styling,
+    /// but display their attributed value instead of today's unit price/copies.
+    let addedValue: Money?
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.colorScheme) private var colorScheme
@@ -1539,12 +1542,14 @@ private struct CollectionCardTile: View {
         row: CollectionRow,
         unpricedReason: PricingDiagnosticReason?,
         artworkReason: ArtworkDiagnosticReason?,
-        showDefaultFinish: Bool = true
+        showDefaultFinish: Bool = true,
+        addedValue: Money? = nil
     ) {
         self.row = row
         self.unpricedReason = unpricedReason
         self.artworkReason = artworkReason
         self.showDefaultFinish = showDefaultFinish
+        self.addedValue = addedValue
     }
 
     private var artworkSource: ArtworkSource {
@@ -1623,7 +1628,7 @@ private struct CollectionCardTile: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(row.name), \(row.setName), \(accessiblePrice), \(accessibleStatus), quantity \(row.quantity)\(diagnosticAccessibilityText)"
+            "\(row.name), \(row.setName), \(accessiblePrice), \(accessibleStatus)\(addedValue == nil ? ", quantity \(row.quantity)" : "")\(diagnosticAccessibilityText)"
         )
         .task(id: artworkSource) {
             guard row.artworkAccent == nil else {
@@ -1653,6 +1658,9 @@ private struct CollectionCardTile: View {
     }
 
     private var accessiblePrice: String {
+        if let addedValue {
+            return "Added value, \(PortfolioHistoryDisplay.signedCurrency(addedValue))"
+        }
         if let amount = row.price.amount {
             return amount.formatted(.currency(code: row.price.currencyCode))
         }
@@ -1697,7 +1705,12 @@ private struct CollectionCardTile: View {
 
     @ViewBuilder
     private var tilePriceAndQuantity: some View {
-        if let caveat = priceReplacementCaveat {
+        if let addedValue {
+            Text(PortfolioHistoryDisplay.signedCurrency(addedValue))
+                .font(.headline)
+                .monospacedDigit()
+                .foregroundStyle(.primary)
+        } else if let caveat = priceReplacementCaveat {
             Text(caveat)
                 .font(dynamicTypeSize.isAccessibilitySize ? .subheadline.weight(.semibold) : .system(size: 15, weight: .semibold))
                 .foregroundStyle(.orange)
@@ -1709,7 +1722,7 @@ private struct CollectionCardTile: View {
                 .fixedSize(horizontal: true, vertical: false)
         }
 
-        if row.quantity > 1 {
+        if addedValue == nil, row.quantity > 1 {
             Text("×\(row.quantity)")
                 .font(.footnote)
                 .monospacedDigit()
