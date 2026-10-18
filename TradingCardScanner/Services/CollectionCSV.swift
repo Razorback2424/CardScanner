@@ -555,7 +555,7 @@ enum CollectionCSV {
             .replacingOccurrences(of: "\r", with: "\n")
 
         let delimiter = delimiter(in: text)
-        let table = parseRows(text, delimiter: delimiter)
+        let table = try parseRows(text, delimiter: delimiter)
         guard let rawHeaders = table.first, !rawHeaders.isEmpty else {
             throw CollectionCSVError.missingColumns
         }
@@ -591,7 +591,7 @@ enum CollectionCSV {
                 continue
             }
 
-            let parsed = entries(from: row)
+            let parsed = entries(from: row, isPortfolioExport: isPortfolioExport)
             if parsed.isEmpty {
                 skippedRows += 1
                 skippedValues.append(values)
@@ -1125,8 +1125,8 @@ enum CollectionCSV {
         )
     }
 
-    private static func entries(from row: [String: String]) -> [CollectionCSVEntry] {
-        if row["category"] != nil {
+    private static func entries(from row: [String: String], isPortfolioExport: Bool) -> [CollectionCSVEntry] {
+        if isPortfolioExport {
             return portfolioEntries(from: row)
         }
 
@@ -1827,14 +1827,25 @@ enum CollectionCSV {
     }
 
     private static func delimiter(in text: String) -> Character {
-        let firstLine = text.prefix { $0 != "\n" && $0 != "\r" }
         let candidates: [Character] = [";", ",", "\t"]
+        var counts: [Character: Int] = [:]
+        var inQuotes = false
+        // Header labels may contain delimiters or newlines inside quotes.
+        // Doubled quotes toggle twice and leave the enclosing quote state intact.
+        for character in text {
+            if character == "\"" {
+                inQuotes.toggle()
+            } else if !inQuotes {
+                if character == "\n" || character == "\r" { break }
+                if candidates.contains(character) { counts[character, default: 0] += 1 }
+            }
+        }
         return candidates.max { left, right in
-            firstLine.filter { $0 == left }.count < firstLine.filter { $0 == right }.count
+            counts[left, default: 0] < counts[right, default: 0]
         } ?? ","
     }
 
-    private static func parseRows(_ text: String, delimiter: Character) -> [[String]] {
+    private static func parseRows(_ text: String, delimiter: Character) throws -> [[String]] {
         let characters = Array(text)
         var rows: [[String]] = []
         var row: [String] = []
@@ -1871,6 +1882,8 @@ enum CollectionCSV {
             index += 1
         }
 
+        // Never offer a partial import from a truncated quoted record.
+        guard !inQuotes else { throw CollectionCSVError.unreadableFile }
         if !field.isEmpty || !row.isEmpty {
             row.append(field)
             if row.contains(where: { !$0.isEmpty }) { rows.append(row) }
