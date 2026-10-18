@@ -149,6 +149,24 @@ private struct CollectionRefreshFeedback: Equatable {
     let presentation: CollectionRefreshStatusPresentation
 }
 
+/// A closed inspector still wraps its content in a UIKit split controller.
+/// Created in an inactive phone tab, that wrapper can lose the navigation
+/// stack's safe-area insets and touch handling on subsequent pushes/pops.
+struct CollectionFilterPresentation<Filters: View>: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Binding var isPresented: Bool
+    let filters: Filters
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if horizontalSizeClass == .regular {
+            content.inspector(isPresented: $isPresented) { filters }
+        } else {
+            content.sheet(isPresented: $isPresented) { filters }
+        }
+    }
+}
+
 /// Collection is for finding, filtering, and managing owned items. Portfolio
 /// accounting and price refresh ownership remain app-scoped in `ContentView`.
 struct CollectionView: View {
@@ -179,9 +197,7 @@ struct CollectionView: View {
     /// debounce so a large grid is not rebuilt on every keystroke.
     @State private var searchQuery = ""
     @State private var filters = CollectionFilters.none
-    /// Filters are an inspector rather than a sheet: in a wide window they sit
-    /// beside the grid so the result of a change is visible as it is made, and
-    /// SwiftUI falls back to a sheet when there is no room for a column.
+    /// Wide windows keep filters beside the grid; phone filters use a sheet.
     @State private var isShowingFilters = false
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
@@ -294,23 +310,10 @@ struct CollectionView: View {
                 }
             }
         }
-        // The option tallies each walk every entry and sort the result, and a
-        // modifier's arguments are evaluated whenever `body` runs — so closed or
-        // not, they were paid for on every keystroke in the search field. Behind
-        // the presentation flag they are computed only when the inspector is up.
-        .inspector(isPresented: $isShowingFilters) {
-            if isShowingFilters {
-                CollectionFilterSheet(
-                    isPresented: $isShowingFilters,
-                    filters: $filters,
-                    setOptions: setOptions(optionRows),
-                    finishOptions: finishOptions(optionRows),
-                    treatmentOptions: treatmentOptions(optionRows),
-                    gradingCompanyOptions: gradingCompanyOptions(optionRows),
-                    gradeOptions: gradeOptions(optionRows)
-                )
-            }
-        }
+        .modifier(CollectionFilterPresentation(
+            isPresented: $isShowingFilters,
+            filters: collectionFilters(optionRows)
+        ))
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
@@ -373,6 +376,22 @@ struct CollectionView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(removalErrorMessage ?? "Please try again.")
+        }
+    }
+
+    @ViewBuilder
+    private func collectionFilters(_ optionRows: [CollectionRow]) -> some View {
+        // Keep tallying and sorting behind the presentation flag.
+        if isShowingFilters {
+            CollectionFilterSheet(
+                isPresented: $isShowingFilters,
+                filters: $filters,
+                setOptions: setOptions(optionRows),
+                finishOptions: finishOptions(optionRows),
+                treatmentOptions: treatmentOptions(optionRows),
+                gradingCompanyOptions: gradingCompanyOptions(optionRows),
+                gradeOptions: gradeOptions(optionRows)
+            )
         }
     }
 
