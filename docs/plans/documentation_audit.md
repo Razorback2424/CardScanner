@@ -8,6 +8,14 @@ history.
 
 ## Current authority boundary — updated 2026-10-15
 
+**Individual-card history decision — 2026-10-18:** the owner superseded the
+September rejection of provider history. The [current chart authority](price_history_chart_plan.md)
+now uses JustTCG's historical series independently of ownership dates and
+local check days, with separate persistence and unchanged portfolio replay.
+The former continuity/background-refresh proposal is preserved in the linked
+archive; it does not constrain the market chart. Provider window and simulator
+evidence limits remain explicit in the current authority and progress log.
+
 **Pricing correctness follow-up — 2026-10-18:** the
 [execution plan](pricing_correctness_and_coverage.md) separates correctness,
 reviewed mapping recovery, shared retrieval and the complete coverage census.

@@ -2,6 +2,10 @@
 
 **Status:** current navigation map — 2026-10-15
 
+The [individual-card market history authority](plans/price_history_chart_plan.md)
+records the 2026-10-18 decision to show JustTCG historical prices independently
+of acquisition and local checks, replacing the archived continuity proposal.
+
 The [four-game specialty coverage review](research/catalog-variant-coverage-2026-10-15/README.md)
 records exact Pokémon eligibility repairs, six Magic promo-footer mappings and
 132 enabled Lorcana Enchanted printings. Three new One Piece review printings

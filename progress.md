@@ -2792,3 +2792,34 @@ historical.
   build, strict signature verification, in-place installation and normal launch
   succeed; no uninstall or data reset. Owner confirmation of physical navigation
   remains distinct from install/launch success. No commit, push or release.
+- **2026-10-18 — Card detail holo bounds:** removed the flexible artwork stack
+  and outer fixed aspect ratio that let the sheen and border extend above and
+  below the fitted card. The finish is now an overlay of the naturally sized
+  artwork; absent artwork keeps a card-shaped placeholder. Debug simulator
+  build and focused finish-plan/detail-render tests pass. Inspected initial
+  and final settled holo-card captures on isolated iPhone 17 / iOS 27 Simulator;
+  no bands, cropping, or toolbar/content overlap. Evidence is external under
+  `CodexBuilds/CardArtworkBounds-20261018/`; local checklist is
+  `artifacts/card_artwork_bounds_checklist.md`. Preserved concurrent edits.
+  No physical-device verification, commit, push, or release.
+- **2026-10-18 — Individual-card provider history** (local changes over
+  `a0c707e`): collection and catalog details now request JustTCG's full supported
+  trailing year of history for the exact printing/finish or graded listing.
+  One Piece and Lorcana consume reviewed mappings from the active catalog.
+  The continuous linear chart and range movement use provider prices rather
+  than ownership dates or local check days. Separate persistent caching retains
+  older points for ALL, preserves history when raw vendor handles resolve,
+  and returns the complete merged series to concurrent viewers. Portfolio
+  observations/check days, inventory events and closes are not backfilled.
+  Final focused iPhone 17 / iOS 27 simulator run: 96 tests passed, zero failures;
+  provider v1/v2 contracts, exact-listing isolation, pre-acquisition dates,
+  cache merge/concurrency, range/scrubbing and module mapping tests are covered.
+  Evidence: external SSD `CardScannerBuild/DerivedData/Logs/Test/` result
+  `Test-TradingCardScanner-2026.10.18_08-03-06--0600.xcresult`. Main, empty and
+  retry/error simulator states were rendered and inspected using synthetic
+  provider-shaped history; checklist: `artifacts/card_market_history_checklist.md`.
+  The September rejection of provider history is archived and superseded in
+  the current chart authority and documentation audit. All 208 affected local
+  documentation links and `git diff --check` pass. Existing user changes were
+  preserved. No live-provider acceptance, physical-device install, commit,
+  push, archive or release claim.
