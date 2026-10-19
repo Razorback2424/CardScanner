@@ -2896,3 +2896,62 @@ historical.
   Simulator camera guides are absent without live camera input; no physical
   camera alignment, device installation or release claim. Concurrent scanner
   routing/test changes were preserved. Whitespace validation passed.
+- **2026-10-18 — Cards Added quantities:** added period-scoped acquisition
+  counts from the same replay as added value, exposed each card's copy count
+  visually and to VoiceOver, and clarified that displayed amounts are totals.
+  Delayed first prices do not count as new copies. The 67 focused replay/history
+  tests passed, including changing prices, disposals, undo, and range boundaries.
+  Inspected standard light and accessibility-large dark simulator captures;
+  quantity labels remain readable and scroll above the tab bar. Initial route
+  captures needed additional startup time. Fixed the DEBUG fixture's sealed-key
+  check after relaunch exposed repeated sample additions. Final fixture rebuild
+  passed; inspected the clean dark-mode capture showing 3 copies at $126.75
+  plus 1 copy at $39.39 reconciling to $166.14. HIG gate PASS; no new prompts
+  or navigation changes. Evidence on external SSD:
+  `CodexBuilds/PortfolioReview/CardsAdded-20261018/`. Concurrent scanner changes
+  preserved; no physical-device or release verification claimed.
+- **2026-10-18 — Cards Added search:** added native search scoped to the frozen
+  period's cards, matching name, set, number, and variant. Search reports the
+  matching count and a period-specific empty state. Simulator build and
+  whitespace checks passed. Inspected the rendered native search field and
+  period contents; source confines filtering to `result.additions`. Simulator
+  automation reported successful taps/types without UI changes, then timed out
+  after restarting the isolated simulator, so interactive typing/clearing and
+  filtered-state screenshots remain unverified. No physical-device claim.
+  Evidence: external SSD `CodexBuilds/PortfolioReview/CardsAddedSearch-20261018/`.
+- **2026-10-18 — Scanner band and disclosures:** supersedes the earlier scanner
+  confirmation placement above. Recent scans/session review and needs-attention
+  now live in separate, initially collapsed disclosures at the top. Other scan
+  controls and guidance also stay above the footer band; the name/price receipt
+  sits below it, using the preview's rendered bounds and a 12-point gap. Camera
+  ROI and production conversion are unchanged. Standard-size captures show a
+  38-card session and five attention items without footer overlap; expansion
+  reveals the rail and review actions. Simulator Debug build and whitespace
+  validation pass. Large text wraps the receipt name within a bounded scroll
+  surface, but automated swipes did not prove access to offscreen price/Undo;
+  recent-scans collapse automation also hits child content. Needs-attention
+  expansion and collapse are verified. The other checks remain
+  explicit verification limits, not passing interaction claims. Evidence:
+  external SSD `CodexBuilds/ScannerBandLayout-20261018/`; local checklist:
+  `artifacts/scanner_band_layout_checklist.md`. Preserved concurrent changes.
+  No physical-device installation, live-camera alignment or release claim.
+- **2026-10-18 — MEE Basic Energy recognition and exact catalog identity:**
+  explicitly onboarded denominator-free MEE through a rules-2 Energy descriptor
+  and a separate scan namespace, preserving expansion denominators and old
+  identities. TCGdex still has only 001–008; reviewed public product records
+  supply 009–016 with explicit secondary IDs, exact artwork, Holofoil-only price
+  joins, and generic anniversary stamp metadata. Psychic 013 maps to TCGplayer
+  713252; Darkness 015 maps to 713254. Bounded checklist regeneration preserves
+  every original primary row and produces 16 numbers / 24 slots. Catalog package
+  75 passed; final focused Simulator batch 275 passed after correcting fixture
+  access (first batch: 3 access failures). Exactly two app builds; no interactive
+  Simulator review. Original photo inputs were unavailable, so photo OCR and
+  live-camera acceptance remain open. Signed remote activation still requires
+  a release including the explicit override; no publication, personal-device
+  run, commit or normal-collection mutation. See
+  [MEE evidence and commands](publisher/mee-energy-evidence.md).
+  Final audit then added an Energy-only exclusion to historical fraction
+  matching and regression assertions for false /8 identities. Both app-build
+  slots were already used; final guard syntax parsing and diff checks pass,
+  but its new assertions were not rerun. The 275-pass result precedes that
+  final guard and does not certify the final source in Simulator.
