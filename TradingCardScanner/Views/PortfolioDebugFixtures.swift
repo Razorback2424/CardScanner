@@ -200,18 +200,20 @@ enum PortfolioDebugFixtures {
         try? performFixtureWrite(in: modelContext) { context in
             let existingIDs = Set(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.providerID))
             let store = CollectionStore(context: context)
-            for (id, name, price) in [
-                ("ui-additions-bundle", "QA Booster Bundle", 42.25),
-                ("ui-additions-box", "QA Collection Box", 39.39)
-            ] where !existingIDs.contains(id) {
-                _ = try store.addSealed(
-                    SealedProductSummary(
-                        id: id, name: name, setName: "Addition Details QA",
-                        variantID: "\(id)-variant", marketPriceUSD: price,
-                        updatedAt: .now, imageURL: nil
-                    ),
-                    game: .pokemon
+            for (id, name, price, quantity) in [
+                ("ui-additions-bundle", "QA Booster Bundle", 42.25, 3),
+                ("ui-additions-box", "QA Collection Box", 39.39, 1)
+            ] where !existingIDs.contains(CollectedCard.sealedCollectionKey(
+                game: .pokemon, productUUID: id, variantUUID: "\(id)-variant"
+            )) {
+                let product = SealedProductSummary(
+                    id: id, name: name, setName: "Addition Details QA",
+                    variantID: "\(id)-variant", marketPriceUSD: price,
+                    updatedAt: .now, imageURL: nil
                 )
+                for _ in 0..<quantity {
+                    _ = try store.addSealed(product, game: .pokemon)
+                }
             }
         }
     }

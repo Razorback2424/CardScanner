@@ -85,6 +85,8 @@ final class PortfolioReplayEngineTests: XCTestCase {
         ))
         let live = try XCTUnwrap(result.live)
         XCTAssertEqual(live.additions, ["a": usd(20), "b": usd(7)])
+        XCTAssertEqual(live.addedQuantities, ["a": 2, "b": 1])
+        XCTAssertEqual(result.contributionIndex.addedQuantitiesByDay[day(1)], live.addedQuantities)
         XCTAssertEqual(live.additions.values.reduce(.zero, +), live.attribution.added + live.attribution.newlyAddedValue)
         XCTAssertEqual(live.attribution.market, usd(4))
         XCTAssertEqual(result.contributionIndex.additionsByDay[day(1)], live.additions)
@@ -97,8 +99,10 @@ final class PortfolioReplayEngineTests: XCTestCase {
             epoch: day(1), through: at(2, hour: 12)
         ))
         XCTAssertEqual(result.days.first?.additions, ["position": .zero])
+        XCTAssertEqual(result.days.first?.addedQuantities, ["position": 3])
         let live = try XCTUnwrap(result.live)
         XCTAssertEqual(live.additions, ["position": usd(15)])
+        XCTAssertTrue(live.addedQuantities.isEmpty, "A later first price must not count the copies as added again")
         XCTAssertEqual(live.additions.values.reduce(.zero, +), live.attribution.added + live.attribution.newlyAddedValue)
     }
 
@@ -114,6 +118,7 @@ final class PortfolioReplayEngineTests: XCTestCase {
         ))
         let live = try XCTUnwrap(result.live)
         XCTAssertEqual(live.additions, ["a": usd(8), "b": usd(8)])
+        XCTAssertEqual(live.addedQuantities, ["a": 2, "b": 3], "Copies added remain visible after a disposal")
         XCTAssertEqual(live.additions.values.reduce(.zero, +), live.attribution.added + live.attribution.newlyAddedValue)
     }
 
@@ -130,6 +135,17 @@ final class PortfolioReplayEngineTests: XCTestCase {
             epoch: day(1), through: at(1, hour: 13)
         ))
         XCTAssertEqual(result.live?.additions, ["added": usd(10)])
+        XCTAssertEqual(result.live?.addedQuantities, ["added": 1])
+    }
+
+    func testAdditionQuantitiesAccumulateSeparateAcquisitionsAtDifferentPrices() throws {
+        let result = PortfolioReplayEngine.replay(input(
+            events: [event(delta: 2, at: at(1, hour: 9)), event(delta: 3, at: at(1, hour: 11))],
+            observations: [observation(5, at: at(1, hour: 8)), observation(7, at: at(1, hour: 10))],
+            epoch: day(1), through: at(1, hour: 12)
+        ))
+        XCTAssertEqual(result.live?.addedQuantities, ["position": 5])
+        XCTAssertEqual(result.live?.additions, ["position": usd(31)])
     }
 
     // MARK: - Equivalence with the engine being replaced

@@ -1769,6 +1769,7 @@ private struct PortfolioAdditionsView: View {
     @State private var additionDates: [String: Date] = [:]
     @State private var historyLoadFailed = false
     @State private var sort: SortOrder = .newestFirst
+    @State private var searchText = ""
     @ScaledMetric(relativeTo: .largeTitle) private var totalFontSize: CGFloat = 42
     @ScaledMetric(relativeTo: .title2) private var fractionFontSize: CGFloat = 27
 
@@ -1863,7 +1864,16 @@ private struct PortfolioAdditionsView: View {
     }
 
     var body: some View {
-        let cards = self.cards
+        let periodCards = self.cards
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let terms = query.split(whereSeparator: { $0.isWhitespace }).map(String.init)
+        let cards = periodCards.filter { card in
+            let searchableText = [
+                card.row.name, card.row.setName, card.row.setCode,
+                card.row.cardNumber, card.row.variantLabel ?? ""
+            ].joined(separator: " ")
+            return terms.allSatisfy { searchableText.localizedStandardContains($0) }
+        }
         let totalParts = total.heroParts()
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 14) {
@@ -1888,21 +1898,29 @@ private struct PortfolioAdditionsView: View {
                     Text("\(result.range.rawValue) added value")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Text("Card amounts make up this period’s added value, including first prices learned later. Market movement is excluded.")
+                    Text("Each amount is the total for that card’s copies this period, including first prices learned later. Market movement is excluded.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 2)
 
                 HStack {
-                    Text("\(cards.count) \(cards.count == 1 ? "item" : "items")")
+                    Text(query.isEmpty
+                         ? "\(cards.count) \(cards.count == 1 ? "card" : "cards")"
+                         : "\(cards.count) of \(periodCards.count) cards")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     Spacer(minLength: 8)
                     sortMenu
                 }
 
-                if cards.isEmpty && unitemizedValue.isZero {
+                if !query.isEmpty && cards.isEmpty {
+                    ContentUnavailableView(
+                        "No Matching Cards",
+                        systemImage: "magnifyingglass",
+                        description: Text("No cards in this period match your search.")
+                    )
+                } else if cards.isEmpty && unitemizedValue.isZero {
                     ContentUnavailableView(
                         "No Cards Added",
                         systemImage: "rectangle.stack",
@@ -1922,7 +1940,8 @@ private struct PortfolioAdditionsView: View {
                                     row: card.row,
                                     unpricedReason: nil,
                                     artworkReason: nil,
-                                    addedValue: card.value
+                                    addedValue: card.value,
+                                    addedQuantity: result.addedQuantities[card.id] ?? 0
                                 )
                                 .contentShape(.rect)
                             }
@@ -1960,6 +1979,12 @@ private struct PortfolioAdditionsView: View {
         }
         .navigationTitle("Cards Added")
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(
+            text: $searchText,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: "Search cards in this period"
+        )
+        .scrollDismissesKeyboard(.interactively)
         .task { loadHistoricalRows() }
     }
 

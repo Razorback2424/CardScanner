@@ -221,6 +221,9 @@ struct PortfolioContributionIndex: Equatable, Sendable {
     /// Acquisition value and first prices learned later, keyed by the exact
     /// collection identity. Kept separate from market movement.
     var additionsByDay: [Date: [String: Money]] = [:]
+    /// Gross copies added by the same replay events as added value. Disposals,
+    /// corrections and later first prices do not add copies to this count.
+    var addedQuantitiesByDay: [Date: [String: Int]] = [:]
     /// Enriched contribution data from the same replay that produced `byDay`.
     /// `byDay` remains as a compatibility projection for portfolio rows and
     /// existing history consumers.
@@ -259,6 +262,18 @@ struct PortfolioContributionIndex: Equatable, Sendable {
         for day in days {
             for (key, amount) in additionsByDay[day, default: [:]] {
                 result[key, default: .zero] += amount
+            }
+        }
+        return result
+    }
+
+    func addedQuantities(in interval: PortfolioAccountingInterval) -> [String: Int] {
+        var result: [String: Int] = [:]
+        let days = interval.includedClosedDays
+            + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
+        for day in days {
+            for (key, quantity) in addedQuantitiesByDay[day, default: [:]] {
+                result[key, default: 0] += quantity
             }
         }
         return result
@@ -382,6 +397,7 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     var contributions: [String: Money]
     var movementDetails: [String: PortfolioContributionDetail] = [:]
     var additions: [String: Money] = [:]
+    var addedQuantities: [String: Int] = [:]
     var hasEligibleMarketMovement: Bool
 
     var isEmpty: Bool { points.isEmpty }

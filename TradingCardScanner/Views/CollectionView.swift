@@ -1522,6 +1522,7 @@ struct CollectionCardTile: View {
     /// Historical breakdowns keep the collection artwork and identity styling,
     /// but display their attributed value instead of today's unit price/copies.
     let addedValue: Money?
+    let addedQuantity: Int?
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.colorScheme) private var colorScheme
@@ -1543,13 +1544,15 @@ struct CollectionCardTile: View {
         unpricedReason: PricingDiagnosticReason?,
         artworkReason: ArtworkDiagnosticReason?,
         showDefaultFinish: Bool = true,
-        addedValue: Money? = nil
+        addedValue: Money? = nil,
+        addedQuantity: Int? = nil
     ) {
         self.row = row
         self.unpricedReason = unpricedReason
         self.artworkReason = artworkReason
         self.showDefaultFinish = showDefaultFinish
         self.addedValue = addedValue
+        self.addedQuantity = addedQuantity
     }
 
     private var artworkSource: ArtworkSource {
@@ -1623,6 +1626,12 @@ struct CollectionCardTile: View {
 
                 quietLine
                     .frame(maxWidth: .infinity, alignment: .leading)
+                if addedValue != nil {
+                    Text(additionQuantityLabel)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(maxWidth: .infinity)
         }
@@ -1659,12 +1668,18 @@ struct CollectionCardTile: View {
 
     private var accessiblePrice: String {
         if let addedValue {
-            return "Added value, \(PortfolioHistoryDisplay.signedCurrency(addedValue))"
+            return "Period total, \(PortfolioHistoryDisplay.signedCurrency(addedValue)), \(additionQuantityLabel)"
         }
         if let amount = row.price.amount {
             return amount.formatted(.currency(code: row.price.currencyCode))
         }
         return row.price.state() == .unavailable ? "Price unavailable" : "Not checked yet"
+    }
+
+    private var additionQuantityLabel: String {
+        guard let addedQuantity else { return "Added quantity unavailable" }
+        if addedQuantity == 0 { return "First priced this period" }
+        return "\(addedQuantity) \(addedQuantity == 1 ? "copy" : "copies") added"
     }
 
     private var accessibleStatus: String {

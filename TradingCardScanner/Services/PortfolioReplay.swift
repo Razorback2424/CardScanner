@@ -93,6 +93,7 @@ struct PortfolioReplayDay: Sendable, Equatable {
     var movementDetails: [String: PortfolioContributionDetail]
     var hasEligibleMarketMovement: Bool
     var additions: [String: Money] = [:]
+    var addedQuantities: [String: Int] = [:]
 
     var flow: Money { added - removed }
 }
@@ -108,6 +109,7 @@ struct PortfolioReplayLive: Sendable, Equatable {
     var movementDetails: [String: PortfolioContributionDetail]
     var hasEligibleMarketMovement: Bool
     var additions: [String: Money] = [:]
+    var addedQuantities: [String: Int] = [:]
 }
 
 extension PortfolioReplayLive {
@@ -411,12 +413,14 @@ enum PortfolioReplayEngine {
                 contributions: accumulator.contributions,
                 movementDetails: accumulator.movementDetails,
                 hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement,
-                additions: accumulator.additions
+                additions: accumulator.additions,
+                addedQuantities: accumulator.addedQuantities
             )
         }
 
         var contributionIndex = PortfolioContributionIndex()
         for finished in days {
+            contributionIndex.addedQuantitiesByDay[finished.displayDay] = finished.addedQuantities
             if !finished.additions.isEmpty {
                 contributionIndex.additionsByDay[finished.displayDay] = finished.additions
             }
@@ -431,6 +435,7 @@ enum PortfolioReplayEngine {
             }
         }
         if let live {
+            contributionIndex.addedQuantitiesByDay[live.day] = live.addedQuantities
             if !live.additions.isEmpty {
                 contributionIndex.additionsByDay[live.day] = live.additions
             }
@@ -468,6 +473,7 @@ enum PortfolioReplayEngine {
         var movementDetails: [String: PortfolioContributionDetail] = [:]
         var hasEligibleMarketMovement = false
         var additions: [String: Money] = [:]
+        var addedQuantities: [String: Int] = [:]
     }
 
     /// Preserve the existing instrument-level pending total while retaining
@@ -610,6 +616,7 @@ enum PortfolioReplayEngine {
                 case .acquire, .recordExisting, .initialBalance:
                     accumulator.added += value
                     accumulator.additions[event.collectionKey, default: .zero] += value
+                    accumulator.addedQuantities[event.collectionKey, default: 0] += event.deltaQuantity
                 }
             }
 
@@ -681,7 +688,8 @@ enum PortfolioReplayEngine {
             contributions: accumulator.contributions,
             movementDetails: accumulator.movementDetails,
             hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement,
-            additions: accumulator.additions
+            additions: accumulator.additions,
+            addedQuantities: accumulator.addedQuantities
         )
     }
 
