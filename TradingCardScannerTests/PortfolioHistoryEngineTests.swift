@@ -2,6 +2,24 @@ import XCTest
 @testable import TradingCardScanner
 
 final class PortfolioHistoryEngineTests: XCTestCase {
+    func testAdditionDisplayUsesPerCopyValueRatherThanExtendedTotal() {
+        let multiple = PortfolioAdditionDisplay(total: money(30), quantity: 3)
+        let single = PortfolioAdditionDisplay(total: money(20), quantity: 1)
+        XCTAssertEqual(multiple.unitAmount, 10)
+        XCTAssertEqual(single.unitAmount, 20)
+        XCTAssertLessThan(multiple.unitAmount!, single.unitAmount!)
+        XCTAssertTrue(multiple.subtitle.contains("3 ×"))
+        XCTAssertTrue(multiple.accessibilitySummary.contains("3 copies added"))
+        XCTAssertTrue(multiple.subtitle.contains(multiple.total.formatted()))
+    }
+
+    func testAdditionDisplayDoesNotInventUnitPriceForLaterFirstPrice() {
+        let display = PortfolioAdditionDisplay(total: money(30), quantity: 0)
+        XCTAssertNil(display.unitAmount)
+        XCTAssertTrue(display.subtitle.contains("First priced"))
+        XCTAssertTrue(display.subtitle.contains(display.total.formatted()))
+    }
+
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!

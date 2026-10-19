@@ -1630,7 +1630,9 @@ struct CollectionCardTile: View {
                     Text(additionQuantityLabel)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.65)
+                        .allowsTightening(true)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -1667,8 +1669,8 @@ struct CollectionCardTile: View {
     }
 
     private var accessiblePrice: String {
-        if let addedValue {
-            return "Period total, \(PortfolioHistoryDisplay.signedCurrency(addedValue)), \(additionQuantityLabel)"
+        if let additionDisplay {
+            return additionDisplay.accessibilitySummary
         }
         if let amount = row.price.amount {
             return amount.formatted(.currency(code: row.price.currencyCode))
@@ -1677,9 +1679,11 @@ struct CollectionCardTile: View {
     }
 
     private var additionQuantityLabel: String {
-        guard let addedQuantity else { return "Added quantity unavailable" }
-        if addedQuantity == 0 { return "First priced this period" }
-        return "\(addedQuantity) \(addedQuantity == 1 ? "copy" : "copies") added"
+        additionDisplay?.subtitle ?? "Added quantity unavailable"
+    }
+
+    private var additionDisplay: PortfolioAdditionDisplay? {
+        addedValue.map { PortfolioAdditionDisplay(total: $0, quantity: addedQuantity ?? -1) }
     }
 
     private var accessibleStatus: String {
@@ -1720,8 +1724,8 @@ struct CollectionCardTile: View {
 
     @ViewBuilder
     private var tilePriceAndQuantity: some View {
-        if let addedValue {
-            Text(PortfolioHistoryDisplay.signedCurrency(addedValue))
+        if let additionDisplay {
+            Text(additionDisplay.unitPriceLabel)
                 .font(.headline)
                 .monospacedDigit()
                 .foregroundStyle(.primary)

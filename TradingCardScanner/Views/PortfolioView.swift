@@ -1782,8 +1782,8 @@ private struct PortfolioAdditionsView: View {
             switch self {
             case .newestFirst: return "Newest scan to oldest"
             case .oldestFirst: return "Oldest scan to newest"
-            case .priceHighToLow: return "Highest price to lowest"
-            case .priceLowToHigh: return "Lowest price to highest"
+            case .priceHighToLow: return "Highest price per card to lowest"
+            case .priceLowToHigh: return "Lowest price per card to highest"
             }
         }
 
@@ -1806,9 +1806,13 @@ private struct PortfolioAdditionsView: View {
     private struct AddedCard: Identifiable {
         let row: CollectionRow
         let value: Money
+        let addedQuantity: Int
         let addedAt: Date?
 
         var id: String { row.id }
+        var unitAmount: Double? {
+            PortfolioAdditionDisplay(total: value, quantity: addedQuantity).unitAmount
+        }
     }
 
     private var total: Money {
@@ -1841,6 +1845,7 @@ private struct PortfolioAdditionsView: View {
             return AddedCard(
                 row: row,
                 value: value,
+                addedQuantity: result.addedQuantities[key] ?? 0,
                 addedAt: additionDates[key] ?? (row.dateAdded == .distantPast ? nil : row.dateAdded)
             )
         }.sorted { lhs, rhs in
@@ -1854,8 +1859,12 @@ private struct PortfolioAdditionsView: View {
                 default: break
                 }
             case .priceHighToLow, .priceLowToHigh:
-                if lhs.value != rhs.value {
-                    return sort == .priceHighToLow ? lhs.value > rhs.value : lhs.value < rhs.value
+                switch (lhs.unitAmount, rhs.unitAmount) {
+                case let (left?, right?) where left != right:
+                    return sort == .priceHighToLow ? left > right : left < right
+                case (_?, nil): return true
+                case (nil, _?): return false
+                default: break
                 }
             }
             let names = lhs.row.name.localizedStandardCompare(rhs.row.name)
@@ -1898,7 +1907,7 @@ private struct PortfolioAdditionsView: View {
                     Text("\(result.range.rawValue) added value")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Text("Each amount is the total for that card’s copies this period, including first prices learned later. Market movement is excluded.")
+                    Text("Card prices are per copy, averaged across additions this period. Each subtitle shows the added quantity and total value, including first prices learned later. Market movement is excluded.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -1941,7 +1950,7 @@ private struct PortfolioAdditionsView: View {
                                     unpricedReason: nil,
                                     artworkReason: nil,
                                     addedValue: card.value,
-                                    addedQuantity: result.addedQuantities[card.id] ?? 0
+                                    addedQuantity: card.addedQuantity
                                 )
                                 .contentShape(.rect)
                             }

@@ -1,5 +1,36 @@
 import Foundation
 
+/// Display-only average of the frozen period's addition value. Never feeds
+/// back into ledger arithmetic or substitutes today's market price.
+struct PortfolioAdditionDisplay {
+    let total: Money
+    let quantity: Int
+
+    var unitAmount: Double? {
+        guard quantity > 0, total.isValid else { return nil }
+        return total.doubleValue / Double(quantity)
+    }
+
+    var unitPriceLabel: String {
+        unitAmount?.formatted(.currency(code: "USD").precision(.fractionLength(2)))
+            ?? "Per-card price unavailable"
+    }
+
+    var subtitle: String {
+        guard unitAmount != nil else {
+            return "\(quantity == 0 ? "First priced" : "Qty unknown") · \(total.formatted())"
+        }
+        return "\(quantity) × \(unitPriceLabel) = \(total.formatted())"
+    }
+
+    var accessibilitySummary: String {
+        guard unitAmount != nil else {
+            return "\(quantity == 0 ? "First priced this period" : "Added quantity unavailable"), \(total.formatted()) total value added"
+        }
+        return "\(unitPriceLabel) per card, \(quantity) copies added, \(total.formatted()) total value added"
+    }
+}
+
 enum PortfolioHistoryRange: String, CaseIterable, Codable, Sendable {
     case oneDay = "1D"
     case oneWeek = "1W"
