@@ -354,7 +354,7 @@ final class PokemonCatalogRegistryTests: XCTestCase {
         let future = CatalogFixture.expansion(
             providerSetID: "future1",
             printedCode: "FUT",
-            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules + 1
+            rulesVersion: 3
         )
         let current = CatalogFixture.expansion(
             providerSetID: "current1",

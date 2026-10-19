@@ -146,10 +146,10 @@ enum VariantResolver {
         // Master Ball parallels really is a fact about the cards on the table.
         // It is not an override: it applies only where the catalog agrees the
         // variant is physically possible.
-        // A finish lock describes Normal/Holo/Reverse, not whether the pumpkin
-        // stamp is present. It must not silently answer the stamped question.
-        let includesCatalogStampChoice = possible.contains(where: PokemonCatalogStampVariant.isStamped)
-        if let finishLock, stamped.isEmpty, !includesCatalogStampChoice {
+        // Locks select an exact physical variant: Normal means plain Normal,
+        // not Normal with a Prize Pack or championship stamp. Other catalog
+        // variants must not disable that explicit choice (Auto still asks).
+        if let finishLock {
             // One Piece finish IDs are exact ownership/price keys. Preserve
             // legacy games' fallback, but always return the catalog's finish.
             let catalogFinish = possible.first(where: { $0.id == finishLock.finish.id })
@@ -181,6 +181,7 @@ enum VariantResolver {
         // so later audits can tell the two automatic paths apart. It must stay
         // below the unique-catalog tier and the user's Finish Lock, and it must
         // never answer a stamped-release question.
+        let includesCatalogStampChoice = possible.contains(where: PokemonCatalogStampVariant.isStamped)
         if let printedFinish, stamped.isEmpty, !includesCatalogStampChoice {
             if possible.contains(printedFinish) {
                 return .resolved(

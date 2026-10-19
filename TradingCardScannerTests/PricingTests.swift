@@ -1218,12 +1218,10 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(pokemon.variantsDetailed?[2].thirdParty?.tcgplayer, 101)
 
         let card = IdentifiedCard.pokemon(pokemon, setCode: "SVP")
-        guard case .needsChoice = VariantResolver.resolve(
-            card.variantEvidence,
-            finishLock: .holo
-        ) else {
-            return XCTFail("A finish lock must not silently answer the stamp question")
-        }
+        XCTAssertEqual(
+            VariantResolver.resolve(card.variantEvidence, finishLock: .holo),
+            .resolved(ResolvedVariant(variant: .holo, resolution: .finishLock))
+        )
         guard case let .price(price) = CardPricing.price(
             for: card,
             variant: staff,

@@ -314,6 +314,38 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
         XCTAssertFalse(stale.valid)
     }
 
+    func testModernIslandCannotBecomeAnOlderTitleOnlyPrintingChoice() {
+        let title = RecognizedLine(text: "Island", boundingBox: CGRect(x: 0.1, y: 0.9, width: 0.5, height: 0.03))
+        let footer = RecognizedLine(text: "SPM ★ EN", boundingBox: CGRect(x: 0.1, y: 0.03, width: 0.3, height: 0.02))
+        let adapter = MagicRecognitionAdapter(profile: MagicScanProfile(definitions: [.init(code: "SPM", printedSize: nil)]))
+        guard case let .rejected(rejection) = adapter.identify([footer]) else {
+            return XCTFail("A modern footer without a readable number must block historical fallback")
+        }
+        XCTAssertTrue(rejection.blocksFallbackRecognition)
+        let registry = try! GameRecognitionRegistry(recognizers: [adapter])
+        XCTAssertEqual(registry.identify([footer]), .fallbackBlocked)
+        let copyright = RecognizedLine(text: "™ & © 2025 Wizards of the Coast",
+            boundingBox: CGRect(x: 0.5, y: 0.03, width: 0.45, height: 0.02))
+        XCTAssertNil(MagicHistoricalLiveOCR.parse(lines: [title, copyright], encounterID: UUID()),
+            "Full-card OCR must reject modern reprints even when the narrow footer pass missed their identity")
+        XCTAssertNotNil(MagicHistoricalLiveOCR.parse(lines: [title], encounterID: UUID()),
+            "Title-only historical cards must remain supported")
+        guard case let .identified(subject) = adapter.identify([.init(text: "L 0190"), .init(text: "SPM ★ EN")]) else {
+            return XCTFail("The photographed footer must still resolve through the modern path")
+        }
+        XCTAssertEqual(subject.identifier, .magic(setCode: "SPM", collectorNumber: "190", language: "en"))
+    }
+
+    func testModernFooterBlocksHistoricalFallbackThroughoutFooterCrop() {
+        let profile = RecognitionProfile(magic: MagicScanProfile(definitions: [.init(code: "SPM", printedSize: nil)]))
+        for y in [0.05, 0.35, 0.7, 0.9] {
+            let footer = RecognizedLine(text: "SPM ★ EN",
+                boundingBox: CGRect(x: 0.1, y: y, width: 0.3, height: 0.03))
+            XCTAssertEqual(profile.identify([footer]), .fallbackBlocked,
+                "Footer observations use crop-relative coordinates; missing numbers must wait for a clearer read")
+        }
+    }
+
     func testHistoricalEraTypographyLevelersAndNumberSuffixes() throws {
         for (printed, canonical) in [("Æther Vial", "Aether Vial"), ("Lim-Dûl’s Vault", "Lim-Dûl's Vault"),
                                      ("Kongming, “Sleeping Dragon”", "Kongming, \"Sleeping Dragon\""),

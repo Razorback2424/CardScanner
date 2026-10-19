@@ -95,6 +95,16 @@ enum MagicHistoricalLiveOCR {
     }
 
     static func parse(lines: [RecognizedLine], encounterID: UUID) -> MagicHistoricalLiveEvidence? {
+        // Full-card OCR may recover the date that the narrow foil-footer pass
+        // missed. A post-2014 printing cannot belong to the pre-M15 provider
+        // search, even when its title also appears on many historical cards.
+        guard !lines.contains(where: { line in
+            guard let rect = line.boundingBox, rect.midY <= 0.18 else { return false }
+            guard line.text.range(of: #"©|\bCOPYRIGHT\b|\bWIZARDS\b"#,
+                options: [.regularExpression, .caseInsensitive]) != nil else { return false }
+            return line.text.range(of: #"\b(?:201[5-9]|20[2-9][0-9]|2100)\b"#,
+                options: .regularExpression) != nil
+        }) else { return nil }
         let titleLines = lines.compactMap { line -> RecognizedLine? in
             guard let rect = line.boundingBox, rect.midX < 0.85,
                   (rect.midY >= 0.55 || (rect.midX < 0.3 && rect.height > rect.width * 0.6)),

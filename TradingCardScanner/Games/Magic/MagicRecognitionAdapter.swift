@@ -21,7 +21,12 @@ struct MagicRecognitionAdapter: GameRecognitionAdapter {
             return .rejected(.init(reason: "Promo footer requires its release label and year", blocksFallbackRecognition: true))
         }
         switch ordinary {
-        case .nothing: return .nothing
+        case .nothing:
+            if profile.hasModernFooterEvidence(lines) {
+                return .rejected(.init(reason: "Modern Magic footer requires its collector number",
+                    blocksFallbackRecognition: true))
+            }
+            return .nothing
         case .ambiguous: return .ambiguous
         case let .identified(identifier): return .identified(ScanSubject(identifier: identifier))
         case .spatiallyRejectedCollector:

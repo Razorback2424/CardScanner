@@ -1,0 +1,649 @@
+{
+  "sourceProducts": "https://tcgcsv.com/tcgplayer/3/24461/products",
+  "sourceFinishes": "https://tcgcsv.com/tcgplayer/3/24461/prices",
+  "reviewedAt": "2026-10-19",
+  "primarySource": "https://api.tcgdex.net/v2/en/sets/mee",
+  "primaryNumberedCards": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006",
+    "007",
+    "008"
+  ],
+  "products": {
+    "totalItems": 16,
+    "success": true,
+    "errors": [],
+    "results": [
+      {
+        "productId": 656263,
+        "name": "Basic Grass Energy - 001",
+        "cleanName": "Basic Grass Energy 001",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656263_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656263/pokemon-mee-mega-evolution-energies-basic-grass-energy-001",
+        "modifiedOn": "2026-08-18T23:45:03.163",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "1"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656264,
+        "name": "Basic Fire Energy - 002",
+        "cleanName": "Basic Fire Energy 002",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656264_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656264/pokemon-mee-mega-evolution-energies-basic-fire-energy-002",
+        "modifiedOn": "2026-06-16T21:16:06.937",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "2"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656265,
+        "name": "Basic Water Energy - 003",
+        "cleanName": "Basic Water Energy 003",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656265_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656265/pokemon-mee-mega-evolution-energies-basic-water-energy-003",
+        "modifiedOn": "2026-09-22T21:49:20.16",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "3"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656266,
+        "name": "Basic Lightning Energy - 004",
+        "cleanName": "Basic Lightning Energy 004",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656266_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656266/pokemon-mee-mega-evolution-energies-basic-lightning-energy-004",
+        "modifiedOn": "2026-09-22T21:48:21.133",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "4"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656267,
+        "name": "Basic Psychic Energy - 005",
+        "cleanName": "Basic Psychic Energy 005",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656267_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656267/pokemon-mee-mega-evolution-energies-basic-psychic-energy-005",
+        "modifiedOn": "2026-09-22T21:48:52.497",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "5"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656268,
+        "name": "Basic Fighting Energy - 006",
+        "cleanName": "Basic Fighting Energy 006",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656268_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656268/pokemon-mee-mega-evolution-energies-basic-fighting-energy-006",
+        "modifiedOn": "2026-09-22T21:47:50.48",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "6"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656269,
+        "name": "Basic Darkness Energy - 007",
+        "cleanName": "Basic Darkness Energy 007",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656269_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656269/pokemon-mee-mega-evolution-energies-basic-darkness-energy-007",
+        "modifiedOn": "2026-06-16T21:14:41.743",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "7"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 656270,
+        "name": "Basic Metal Energy - 008",
+        "cleanName": "Basic Metal Energy 008",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/656270_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/656270/pokemon-mee-mega-evolution-energies-basic-metal-energy-008",
+        "modifiedOn": "2026-08-18T23:59:14.247",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "8"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713248,
+        "name": "Basic Grass Energy - 009 (30th Celebration)",
+        "cleanName": "Basic Grass Energy 009 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713248_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713248/pokemon-mee-mega-evolution-energies-basic-grass-energy-009-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:35.87",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "009"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713249,
+        "name": "Basic Fire Energy - 010 (30th Celebration)",
+        "cleanName": "Basic Fire Energy 010 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713249_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713249/pokemon-mee-mega-evolution-energies-basic-fire-energy-010-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:32.64",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "010"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713250,
+        "name": "Basic Water Energy - 011 (30th Celebration)",
+        "cleanName": "Basic Water Energy 011 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713250_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713250/pokemon-mee-mega-evolution-energies-basic-water-energy-011-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:50.16",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "011"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713251,
+        "name": "Basic Lightning Energy - 012 (30th Celebration)",
+        "cleanName": "Basic Lightning Energy 012 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713251_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713251/pokemon-mee-mega-evolution-energies-basic-lightning-energy-012-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:39.403",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "012"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713252,
+        "name": "Basic Psychic Energy - 013 (30th Celebration)",
+        "cleanName": "Basic Psychic Energy 013 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713252_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713252/pokemon-mee-mega-evolution-energies-basic-psychic-energy-013-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:45.697",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "013"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713253,
+        "name": "Basic Fighting Energy - 014 (30th Celebration)",
+        "cleanName": "Basic Fighting Energy 014 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713253_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713253/pokemon-mee-mega-evolution-energies-basic-fighting-energy-014-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:30.583",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "014"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713254,
+        "name": "Basic Darkness Energy - 015 (30th Celebration)",
+        "cleanName": "Basic Darkness Energy 015 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713254_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713254/pokemon-mee-mega-evolution-energies-basic-darkness-energy-015-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:25.587",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "015"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      },
+      {
+        "productId": 713255,
+        "name": "Basic Metal Energy - 016 (30th Celebration)",
+        "cleanName": "Basic Metal Energy 016 30th Celebration",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/713255_200w.jpg",
+        "categoryId": 3,
+        "groupId": 24461,
+        "url": "https://www.tcgplayer.com/product/713255/pokemon-mee-mega-evolution-energies-basic-metal-energy-016-30th-celebration",
+        "modifiedOn": "2026-08-28T18:38:42.277",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "016"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Futuristic Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Basic Energy"
+          }
+        ]
+      }
+    ]
+  },
+  "finishes": [
+    {
+      "productId": 656263,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656263,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656264,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656264,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656265,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656265,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656266,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656266,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656267,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656267,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656268,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656268,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656269,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656269,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 656270,
+      "subTypeName": "Reverse Holofoil"
+    },
+    {
+      "productId": 656270,
+      "subTypeName": "Normal"
+    },
+    {
+      "productId": 713248,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713249,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713250,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713251,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713252,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713253,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713254,
+      "subTypeName": "Holofoil"
+    },
+    {
+      "productId": 713255,
+      "subTypeName": "Holofoil"
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 import Foundation
 
+/// Registered Basic Energy numbering has no printed expansion denominator.
+struct PokemonEnergySetDefinition: Equatable, Hashable, Sendable {
+    let printedCode: String
+    let tcgdexSetID: String
+    let localIDPadWidth: Int
+}
+
 struct PokemonSetDefinition: Equatable, Hashable, Sendable {
     let printedCode: String
     let tcgdexSetID: String

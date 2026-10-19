@@ -2740,6 +2740,44 @@ final class ScannerViewModelTests: XCTestCase {
 
         XCTAssertTrue(committed)
         XCTAssertEqual(model.recent.count, 1)
+        XCTAssertNil(model.note, "The recovered scan must not still say it needs attention beside its Added receipt")
+        XCTAssertEqual(model.transientRetryCountForTesting(for: scannerIdentifier().suppressionKey), 0)
+    }
+
+    func testFreshConfirmationClearsPreviousLookupWarningWhileResolving() async throws {
+        let failureSwitch = ScannerCatalogFailureSwitch()
+        let model = try makeModel(variants: [.normal], delayNanoseconds: 500_000_000,
+            sourceFailure: .transient, failureSwitch: failureSwitch)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.scanAcknowledgement?.phase == .failed && model.note != nil }
+        await failureSwitch.allowSuccess()
+        let encounter = UUID()
+        confirm(model, scannerIdentifier(), encounterID: encounter)
+        XCTAssertNil(model.note, "An older warning must not accompany the new scan's spinner")
+        XCTAssertEqual(model.scanAcknowledgement?.encounterID, encounter)
+        await assertEventually { model.successCount == 1 }
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+    }
+
+    func testLateLookupFailureDoesNotCoverNewerConfirmedCard() async throws {
+        let first = ScannerFetchGate()
+        let second = ScannerFetchGate()
+        let failureSwitch = ScannerCatalogFailureSwitch()
+        let model = try makeModel(variants: [.normal], fetchHoldGates: ["1": first, "2": second],
+            sourceFailure: .transient, failureSwitch: failureSwitch)
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: UUID())
+        await first.waitUntilStarted()
+        let nextEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: nextEncounter)
+        await first.release()
+        await second.waitUntilStarted()
+        XCTAssertEqual(model.unresolvedScans.count, 1, "The earlier failure remains recoverable")
+        XCTAssertEqual(model.scanAcknowledgement?.encounterID, nextEncounter)
+        XCTAssertEqual(model.scanAcknowledgement?.phase, .recognized)
+        XCTAssertNil(model.note, "An earlier card's failure must not label the current card as needing attention")
+        await failureSwitch.allowSuccess()
+        await second.release()
+        await assertEventually { model.successCount == 1 }
     }
 
     func testChooseFromNeedsAttentionReachesFinishPickerAndKeepsDuplicateProtection() async throws {

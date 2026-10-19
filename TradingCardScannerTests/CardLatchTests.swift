@@ -213,6 +213,68 @@ final class CardLatchTests: XCTestCase {
         XCTAssertEqual(scanner.cameraIssue, .configurationFailed)
     }
 
+    func testHealthyLongStackRearmsRecoveryForALaterCameraReset() async {
+        let scanner = CardScanner()
+        var restarts = 0
+        var recoveries = 0
+        scanner.prepareRuntimeRecoveryForTesting(wantsRunning: true) {
+            restarts += 1
+            return true
+        }
+        scanner.onCameraInterruptionEnded = { recoveries += 1 }
+        func resetCamera() {
+            NotificationCenter.default.post(
+                name: AVCaptureSession.runtimeErrorNotification, object: scanner.session,
+                userInfo: [AVCaptureSessionErrorKey: NSError(
+                    domain: AVFoundationErrorDomain, code: AVError.Code.mediaServicesWereReset.rawValue
+                )]
+            )
+        }
+        resetCamera()
+        await flushCameraCallbacks(scanner)
+        for number in 1...120 {
+            let card = subject(pokemon(number))
+            let now = Double(number) * 3
+            scanner.receiveFooterOutcomeForTesting(.identified(card), at: now)
+            scanner.receiveFooterOutcomeForTesting(.identified(card), at: now + 0.25)
+            scanner.receiveVisionFrameResultForTesting()
+            await flushCameraCallbacks(scanner)
+            XCTAssertEqual(scanner.latchedSubjectForTesting, card, "Card \(number) stopped recognizing")
+            if number == 91 {
+                resetCamera()
+                await flushCameraCallbacks(scanner)
+                XCTAssertEqual(restarts, 2, "A recovered earlier reset must not disable recovery for the rest of the stack")
+                XCTAssertNil(scanner.cameraIssue)
+            }
+        }
+        XCTAssertEqual(recoveries, 2)
+    }
+
+    func testAFrameStartedBeforeTheResetCannotRearmItsRestartBudget() async {
+        let scanner = CardScanner()
+        var restarts = 0
+        scanner.prepareRuntimeRecoveryForTesting(wantsRunning: true) {
+            restarts += 1
+            return true
+        }
+        func resetCamera() {
+            NotificationCenter.default.post(
+                name: AVCaptureSession.runtimeErrorNotification, object: scanner.session,
+                userInfo: [AVCaptureSessionErrorKey: NSError(
+                    domain: AVFoundationErrorDomain, code: AVError.Code.mediaServicesWereReset.rawValue
+                )]
+            )
+        }
+        resetCamera()
+        await flushCameraCallbacks(scanner)
+        scanner.receiveVisionFrameResultForTesting(at: 0)
+        await flushCameraCallbacks(scanner)
+        resetCamera()
+        await flushCameraCallbacks(scanner)
+        XCTAssertEqual(restarts, 1)
+        XCTAssertEqual(scanner.cameraIssue, .configurationFailed)
+    }
+
     private func flushCameraCallbacks(_ scanner: CardScanner) async {
         scanner.drainSessionQueueForTesting()
         scanner.drainVisionQueueForTesting()

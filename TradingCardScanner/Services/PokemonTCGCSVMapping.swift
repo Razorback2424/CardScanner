@@ -9,10 +9,18 @@ enum PokemonTCGCSVMapping {
         let productID: Int
         let printedNumber: String
         let productName: String
-        var setID: String { groupID == 24722 ? "30th" : "30th-c" }
+        var setID: String { groupID == 24461 ? "mee" : (groupID == 24722 ? "30th" : "30th-c") }
     }
 
     static let entries: [Entry] = [
+        Entry(cardID: "tcgplayer:713248", groupID: 24461, productID: 713248, printedNumber: "009", productName: "Basic Grass Energy - 009 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713249", groupID: 24461, productID: 713249, printedNumber: "010", productName: "Basic Fire Energy - 010 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713250", groupID: 24461, productID: 713250, printedNumber: "011", productName: "Basic Water Energy - 011 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713251", groupID: 24461, productID: 713251, printedNumber: "012", productName: "Basic Lightning Energy - 012 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713252", groupID: 24461, productID: 713252, printedNumber: "013", productName: "Basic Psychic Energy - 013 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713253", groupID: 24461, productID: 713253, printedNumber: "014", productName: "Basic Fighting Energy - 014 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713254", groupID: 24461, productID: 713254, printedNumber: "015", productName: "Basic Darkness Energy - 015 (30th Celebration)"),
+        Entry(cardID: "tcgplayer:713255", groupID: 24461, productID: 713255, printedNumber: "016", productName: "Basic Metal Energy - 016 (30th Celebration)"),
         Entry(cardID: "30th-001", groupID: 24722, productID: 716435, printedNumber: "001/128", productName: "Exeggcute"),
         Entry(cardID: "30th-002", groupID: 24722, productID: 716436, printedNumber: "002/128", productName: "Alolan Exeggutor - 002/128"),
         Entry(cardID: "30th-003", groupID: 24722, productID: 716437, printedNumber: "003/128", productName: "Volbeat"),
@@ -208,7 +216,53 @@ enum PokemonTCGCSVMapping {
         switch setID.lowercased() {
         case "30th": return 24722
         case "30th-c": return 24837
+        case "mee": return 24461
         default: return nil
+        }
+    }
+}
+
+/// Reviewed secondary catalog rows absent from TCGdex. IDs explicitly name
+/// their real provider; never request `mee-013` from a primary provider that
+/// has not published it. See publisher/fixtures/mee-reviewed-products.json.
+enum PokemonReviewedEnergyCatalog {
+    static var entries: [PokemonTCGCSVMapping.Entry] {
+        PokemonTCGCSVMapping.entries.filter { $0.setID == "mee" }
+    }
+
+    static func card(setID: String, localID: String) -> TCGdexCard? {
+        guard setID.lowercased() == "mee", let entry = entries.first(where: { $0.printedNumber == localID }) else { return nil }
+        return card(for: entry)
+    }
+
+    static func card(providerID: String) -> TCGdexCard? {
+        entries.first { $0.cardID == providerID }.map(card(for:))
+    }
+
+    private static func card(for entry: PokemonTCGCSVMapping.Entry) -> TCGdexCard {
+        TCGdexCard(id: entry.cardID, localId: entry.printedNumber,
+            name: entry.productName.components(separatedBy: " - ")[0],
+            image: "https://tcgplayer-cdn.tcgplayer.com/product/\(entry.productID)_200w.jpg",
+            rarity: "Futuristic Rare",
+            set: .init(id: "mee", name: "Mega Evolution Energy", cardCount: .init(total: 16, official: 8)),
+            variants: .init(firstEdition: false, holo: true, normal: false, reverse: false, wPromo: false),
+            pricing: nil,
+            variantsDetailed: [.init(type: "holo", subtype: nil, stamp: ["30th-anniversary"],
+                foil: nil, size: nil, variantId: nil, pricing: nil, languages: ["en"], thirdParty: nil)])
+    }
+
+    static func addingSummaries(_ summaries: [CatalogCardSummary], set: CatalogSet) -> [CatalogCardSummary] {
+        guard set.game == .pokemon, set.providerID == "mee", set.pokemonPrintRun == nil else { return summaries }
+        // Preserve every primary row. A future provider backfill is a conflict
+        // requiring review, never a reason to rewrite an existing holding ID.
+        let existingNumbers = Set(summaries.map(\.collectorNumber))
+        return summaries + entries.filter { !existingNumbers.contains($0.printedNumber) }.map { entry in
+            let card = card(for: entry)
+            return CatalogCardSummary(game: .pokemon, providerID: entry.cardID,
+                setID: set.catalogID, setName: set.name, setCode: "MEE", name: card.name,
+                collectorNumber: entry.printedNumber, thumbnailURL: card.highImageURL,
+                imageURL: card.highImageURL, masterSetVariant: .holo,
+                isExpandedMasterSetVariant: false, isSoleSlotForCard: true)
         }
     }
 }

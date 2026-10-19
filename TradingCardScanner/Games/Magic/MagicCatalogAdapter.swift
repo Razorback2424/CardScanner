@@ -15,6 +15,7 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
     /// Explicit local pilot injection; the production default remains off.
     var historicalEnabled = false
     var historicalNow: @Sendable () -> Date = { .now }
+    var resolvedCache: ResolvedMagicCardCache? = nil
 
     func prepareLookupIdentifier(_ identifier: ScanIdentifier) throws -> ScanIdentifier {
         guard identifier.game == game,
@@ -241,17 +242,19 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
         let scryfall = source
         let magicCatalogCoordinator = coordinator
         guard contentKind != .regular else {
-            // Unchanged fast path. An ordinary footer resolves exactly
-            // as it always has.
-            return CardCatalog.CatalogResolution(
-                .magic(
-                    try await scryfall.fetchCard(
-                        setCode: setCode,
-                        collectorNumber: collectorNumber,
-                        language: language
-                    )
-                )
-            )
+            guard let url = ScryfallService.cardLookupURL(setCode: setCode,
+                collectorNumber: collectorNumber, language: language) else { throw ScryfallError.invalidURL }
+            let key = url.absoluteString
+            if let cached = await resolvedCache?.entry(for: key),
+               (try? scryfall.validate(cached.card, setCode: setCode,
+                    collectorNumber: collectorNumber, language: language)) != nil {
+                return .init(.magic(cached.card), retrievedAt: cached.retrievedAt, path: .cacheHit)
+            }
+            let card = try await scryfall.fetchCard(setCode: setCode,
+                collectorNumber: collectorNumber, language: language)
+            let retrievedAt = Date.now
+            await resolvedCache?.store(card, for: key, retrievedAt: retrievedAt)
+            return .init(.magic(card), retrievedAt: retrievedAt)
         }
 
         // A token or art card prints its *parent's* code, so the printed
@@ -321,9 +324,98 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
     }
 }
 
+/// A bounded cache of exact modern printings, shared across scanner sessions.
+/// Historical families and token/art child routing keep their live authority.
+actor ResolvedMagicCardCache {
+    static let shared = ResolvedMagicCardCache()
+    static let maxAge: TimeInterval = 24 * 60 * 60
+    private static let ioQueue = DispatchQueue(label: "TradingCardScanner.ResolvedMagicCards", qos: .utility)
+    struct Entry: Codable, Sendable {
+        let card: ScryfallCard
+        let retrievedAt: Date
+    }
+    private struct File: Codable, Sendable {
+        let generation: String
+        let entries: [String: Entry]
+    }
+    private let fileURL: URL
+    private let now: @Sendable () -> Date
+    private var entries: [String: Entry] = [:]
+    private var loadTask: Task<File?, Never>?
+    private var didLoad = false
+
+    init(root: URL? = nil, now: @escaping @Sendable () -> Date = { .now }) {
+        let root = root ?? FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("ResolvedMagicCards", isDirectory: true)
+        fileURL = root.appendingPathComponent("modern-v1.json")
+        self.now = now
+    }
+
+    func entry(for key: String) async -> Entry? {
+        await load()
+        guard let entry = entries[key] else { return nil }
+        let age = now().timeIntervalSince(entry.retrievedAt)
+        guard age >= 0, age <= Self.maxAge, Self.isComplete(entry.card) else { entries[key] = nil; return nil }
+        return entry
+    }
+
+    func store(_ card: ScryfallCard, for key: String, retrievedAt: Date) async {
+        // Incomplete finish evidence must never shadow a later live response.
+        guard Self.isComplete(card) else { return }
+        await load()
+        entries[key] = Entry(card: card, retrievedAt: retrievedAt)
+        if entries.count > 512 {
+            for key in entries.sorted(by: { $0.value.retrievedAt < $1.value.retrievedAt })
+                .prefix(entries.count - 512).map(\.key) { entries[key] = nil }
+        }
+        let snapshot = File(generation: MagicCatalogAdapter.providerGeneration, entries: entries)
+        let fileURL = fileURL
+        // Writes are ordered, off the scan path, and best effort. Cache storage
+        // failure never turns an otherwise valid scan into Needs attention.
+        Self.ioQueue.async {
+            guard let data = try? JSONEncoder().encode(snapshot) else { return }
+            do {
+                try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try data.write(to: fileURL, options: .atomic)
+            } catch {}
+        }
+    }
+
+    private static func isComplete(_ card: ScryfallCard) -> Bool {
+        guard UUID(uuidString: card.id) != nil, let finishes = card.finishes,
+              !finishes.isEmpty, Set(finishes).count == finishes.count else { return false }
+        return finishes.allSatisfy { ["nonfoil", "foil", "etched"].contains($0) }
+    }
+
+    private func load() async {
+        guard !didLoad else { return }
+        if loadTask == nil {
+            let fileURL = fileURL
+            loadTask = Task.detached(priority: .utility) {
+                guard let data = try? Data(contentsOf: fileURL), data.count <= 16 * 1024 * 1024,
+                      let file = try? JSONDecoder().decode(File.self, from: data), file.entries.count <= 512,
+                      file.generation == MagicCatalogAdapter.providerGeneration else { return nil }
+                return file
+            }
+        }
+        let file = await loadTask?.value
+        // Another waiter may already have installed the file and added cards.
+        guard !didLoad else { return }
+        entries = file?.entries ?? [:]
+        didLoad = true
+        loadTask = nil
+    }
+
+    func waitForPersistence() async {
+        await withCheckedContinuation { continuation in
+            Self.ioQueue.async { continuation.resume() }
+        }
+    }
+}
+
 extension GameCatalogAdapterRegistry {
     func installingLegacyDefaults(magicCoordinator: MagicCatalogCoordinator?) -> Self {
         guard adapter(for: .magic) == nil else { return self }
-        return replacing(MagicCatalogAdapter(coordinator: magicCoordinator))
+        return replacing(MagicCatalogAdapter(coordinator: magicCoordinator, resolvedCache: .shared))
     }
 }

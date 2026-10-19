@@ -25,6 +25,10 @@ Ordinary new expansions can enter through the live discovery path when
 card details validate. Exceptional rows such as promos and non-scannable sets
 remain explicit here.
 
+MEE Basic Energy is an explicit denominator-free Energy override. Its reviewed
+secondary printings and maintenance boundary are documented in
+[MEE onboarding evidence](mee-energy-evidence.md).
+
 The proposed revision 10 Classic Collection membership was checked against
 public provider names and marketplace printed numbers on 2026-09-30. See the
 [row evidence and revision 11 correction boundary](classic-collection-evidence.md).

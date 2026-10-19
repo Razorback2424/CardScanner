@@ -7,6 +7,71 @@ import Foundation
 /// The bug these protect against is silent: scanning a Clue token added
 /// Invisible Woman, with no error and a plausible-looking result.
 final class MagicContentKindTests: XCTestCase {
+    func testModernMagicDiskCacheAvoidsAnotherRequestAndPreservesPriceAge() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("MagicResolved-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root); MagicAdapterTestProtocol.recorder = nil }
+        let recorder = MagicAdapterTestRecorder()
+        recorder.setCardChanges(["id": "00000000-0000-4000-8000-000000000021",
+            "finishes": ["nonfoil", "foil"], "prices": ["usd": "2.50", "usd_foil": "4.00"],
+            "frame_effects": ["showcase"], "image_uris": ["small": "https://example.com/front.jpg"]])
+        MagicAdapterTestProtocol.recorder = recorder
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MagicAdapterTestProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let source = ScryfallService(breaker: TCGdexCircuitBreaker(), session: session)
+        let identity = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "21", language: "en")
+        let cache = ResolvedMagicCardCache(root: root)
+        let firstCatalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [MagicCatalogAdapter(source: source, resolvedCache: cache)]))
+        let first = try await firstCatalog.resolution(for: identity)
+        await cache.waitForPersistence()
+
+        // A different cache and catalog represent returning to scan in a later session.
+        let nextCatalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [MagicCatalogAdapter(
+            source: source, resolvedCache: ResolvedMagicCardCache(root: root))]))
+        let next = try await nextCatalog.resolution(for: identity)
+        XCTAssertEqual(recorder.paths, ["/cards/trk/21/en"])
+        XCTAssertEqual(next.path, .cacheHit)
+        XCTAssertEqual(next.retrievedAt.timeIntervalSince1970, first.retrievedAt.timeIntervalSince1970, accuracy: 0.001)
+        guard case let .magic(card) = next.card.legacyIdentity else { return XCTFail("Magic payload") }
+        XCTAssertEqual(card.finishes, ["nonfoil", "foil"])
+        XCTAssertEqual(card.frameEffects, ["showcase"])
+        XCTAssertEqual(card.prices?.usdFoil, "4.00")
+        XCTAssertEqual(card.thumbnailImageURL?.absoluteString, "https://example.com/front.jpg")
+
+        let expiredTime = first.retrievedAt.addingTimeInterval(ResolvedMagicCardCache.maxAge + 1)
+        let expired = MagicCatalogAdapter(source: source,
+            resolvedCache: ResolvedMagicCardCache(root: root, now: { expiredTime }))
+        _ = try await expired.lookup(identity)
+        XCTAssertEqual(recorder.paths.count, 2, "An expired disk entry must earn fresh provider evidence")
+    }
+
+    func testModernMagicDiskCacheCannotBypassIdentityValidationOrHideMissingFinishes() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("MagicCacheValidation-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root); MagicAdapterTestProtocol.recorder = nil }
+        let recorder = MagicAdapterTestRecorder()
+        recorder.setCardChanges(["id": "00000000-0000-4000-8000-000000000022"])
+        MagicAdapterTestProtocol.recorder = recorder
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MagicAdapterTestProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let source = ScryfallService(breaker: TCGdexCircuitBreaker(), session: session)
+        let cache = ResolvedMagicCardCache(root: root)
+        let key = ScryfallService.cardLookupURL(setCode: "TRK", collectorNumber: "22", language: "en")!.absoluteString
+        let other = try await source.fetchCard(setCode: "TRK", collectorNumber: "23", language: "en")
+        await cache.store(other, for: key, retrievedAt: .now)
+        let adapter = MagicCatalogAdapter(source: source, resolvedCache: cache)
+        _ = try await adapter.lookup(.magic(setCode: "TRK", collectorNumber: "22", language: "en"))
+        XCTAssertEqual(recorder.paths, ["/cards/trk/23/en", "/cards/trk/22/en"], "A wrong-number cache entry cannot resolve")
+        recorder.setCardChanges(["id": "00000000-0000-4000-8000-000000000024", "finishes": []])
+        let incomplete = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "24", language: "en")
+        _ = try await adapter.lookup(incomplete)
+        _ = try await adapter.lookup(incomplete)
+        XCTAssertEqual(recorder.paths.suffix(2), ["/cards/trk/24/en", "/cards/trk/24/en"])
+        await cache.waitForPersistence()
+    }
+
     func testModernMagicRejectsFutureOversizedAndIncompletePrintingMetadata() async throws {
         let recorder = MagicAdapterTestRecorder()
         MagicAdapterTestProtocol.recorder = recorder

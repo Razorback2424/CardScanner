@@ -1,0 +1,934 @@
+{
+  "set": {
+    "cardCount": {
+      "firstEd": 0,
+      "holo": 0,
+      "normal": 8,
+      "official": 8,
+      "reverse": 8,
+      "total": 8
+    },
+    "cards": [
+      {
+        "id": "mee-001",
+        "localId": "001",
+        "name": "Grass Energy"
+      },
+      {
+        "id": "mee-002",
+        "localId": "002",
+        "name": "Fire Energy"
+      },
+      {
+        "id": "mee-003",
+        "localId": "003",
+        "name": "Water Energy"
+      },
+      {
+        "id": "mee-004",
+        "localId": "004",
+        "name": "Lightning Energy"
+      },
+      {
+        "id": "mee-005",
+        "localId": "005",
+        "name": "Psychic Energy"
+      },
+      {
+        "id": "mee-006",
+        "localId": "006",
+        "name": "Fighting Energy"
+      },
+      {
+        "id": "mee-007",
+        "localId": "007",
+        "name": "Darkness Energy"
+      },
+      {
+        "id": "mee-008",
+        "localId": "008",
+        "name": "Metal Energy"
+      }
+    ],
+    "id": "mee",
+    "legal": {
+      "expanded": true,
+      "standard": false
+    },
+    "name": "Mega Evolution Energy",
+    "releaseDate": "2025-09-25",
+    "serie": {
+      "id": "me",
+      "name": "Mega Evolution"
+    },
+    "abbreviation": {
+      "official": "MEE"
+    }
+  },
+  "cards": [
+    {
+      "category": "Energy",
+      "id": "mee-001",
+      "localId": "001",
+      "name": "Grass Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851008,
+            "tcgplayer": 656263
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.751Z",
+              "unit": "EUR",
+              "idProduct": 851008,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.02,
+              "avg1": 0.04,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.13,
+              "low-holo": 0.02,
+              "trend-holo": 0.1,
+              "avg1-holo": 0.04,
+              "avg7-holo": 0.13,
+              "avg30-holo": 0.13
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851008,
+            "tcgplayer": 656263
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.751Z",
+              "unit": "EUR",
+              "idProduct": 851008,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.02,
+              "avg1": 0.04,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.13,
+              "low-holo": 0.02,
+              "trend-holo": 0.1,
+              "avg1-holo": 0.04,
+              "avg7-holo": 0.13,
+              "avg30-holo": 0.13
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.751Z",
+          "unit": "EUR",
+          "idProduct": 851008,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.02,
+          "avg1": 0.04,
+          "avg7": 0.02,
+          "avg30": 0.02,
+          "avg-holo": 0.13,
+          "low-holo": 0.02,
+          "trend-holo": 0.1,
+          "avg1-holo": 0.04,
+          "avg7-holo": 0.13,
+          "avg30-holo": 0.13
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-002",
+      "localId": "002",
+      "name": "Fire Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851009,
+            "tcgplayer": 656264
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.767Z",
+              "unit": "EUR",
+              "idProduct": 851009,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.03,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.12,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.02,
+              "avg7-holo": 0.11,
+              "avg30-holo": 0.12
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851009,
+            "tcgplayer": 656264
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.767Z",
+              "unit": "EUR",
+              "idProduct": 851009,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.03,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.12,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.02,
+              "avg7-holo": 0.11,
+              "avg30-holo": 0.12
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.767Z",
+          "unit": "EUR",
+          "idProduct": 851009,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.03,
+          "avg1": 0.02,
+          "avg7": 0.02,
+          "avg30": 0.02,
+          "avg-holo": 0.12,
+          "low-holo": 0.02,
+          "trend-holo": 0.09,
+          "avg1-holo": 0.02,
+          "avg7-holo": 0.11,
+          "avg30-holo": 0.12
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-003",
+      "localId": "003",
+      "name": "Water Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851010,
+            "tcgplayer": 656265
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.706Z",
+              "unit": "EUR",
+              "idProduct": 851010,
+              "avg": 0.04,
+              "low": 0.02,
+              "trend": 0.5,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.03,
+              "avg-holo": 0.11,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.19,
+              "avg7-holo": 0.12,
+              "avg30-holo": 0.11
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851010,
+            "tcgplayer": 656265
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.706Z",
+              "unit": "EUR",
+              "idProduct": 851010,
+              "avg": 0.04,
+              "low": 0.02,
+              "trend": 0.5,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.03,
+              "avg-holo": 0.11,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.19,
+              "avg7-holo": 0.12,
+              "avg30-holo": 0.11
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.706Z",
+          "unit": "EUR",
+          "idProduct": 851010,
+          "avg": 0.04,
+          "low": 0.02,
+          "trend": 0.5,
+          "avg1": 0.02,
+          "avg7": 0.02,
+          "avg30": 0.03,
+          "avg-holo": 0.11,
+          "low-holo": 0.02,
+          "trend-holo": 0.09,
+          "avg1-holo": 0.19,
+          "avg7-holo": 0.12,
+          "avg30-holo": 0.11
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-004",
+      "localId": "004",
+      "name": "Lightning Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851011,
+            "tcgplayer": 656266
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.782Z",
+              "unit": "EUR",
+              "idProduct": 851011,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.02,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.11,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.02,
+              "avg7-holo": 0.08,
+              "avg30-holo": 0.12
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851011,
+            "tcgplayer": 656266
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.782Z",
+              "unit": "EUR",
+              "idProduct": 851011,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.02,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.11,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.02,
+              "avg7-holo": 0.08,
+              "avg30-holo": 0.12
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.782Z",
+          "unit": "EUR",
+          "idProduct": 851011,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.02,
+          "avg1": 0.02,
+          "avg7": 0.02,
+          "avg30": 0.02,
+          "avg-holo": 0.11,
+          "low-holo": 0.02,
+          "trend-holo": 0.09,
+          "avg1-holo": 0.02,
+          "avg7-holo": 0.08,
+          "avg30-holo": 0.12
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-005",
+      "localId": "005",
+      "name": "Psychic Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851012,
+            "tcgplayer": 656267
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.757Z",
+              "unit": "EUR",
+              "idProduct": 851012,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.03,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.14,
+              "low-holo": 0.02,
+              "trend-holo": 0.15,
+              "avg1-holo": 0.19,
+              "avg7-holo": 0.15,
+              "avg30-holo": 0.15
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851012,
+            "tcgplayer": 656267
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.757Z",
+              "unit": "EUR",
+              "idProduct": 851012,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.03,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.14,
+              "low-holo": 0.02,
+              "trend-holo": 0.15,
+              "avg1-holo": 0.19,
+              "avg7-holo": 0.15,
+              "avg30-holo": 0.15
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.757Z",
+          "unit": "EUR",
+          "idProduct": 851012,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.03,
+          "avg1": 0.02,
+          "avg7": 0.02,
+          "avg30": 0.02,
+          "avg-holo": 0.14,
+          "low-holo": 0.02,
+          "trend-holo": 0.15,
+          "avg1-holo": 0.19,
+          "avg7-holo": 0.15,
+          "avg30-holo": 0.15
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-006",
+      "localId": "006",
+      "name": "Fighting Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851013,
+            "tcgplayer": 656268
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.757Z",
+              "unit": "EUR",
+              "idProduct": 851013,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.02,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.03,
+              "avg-holo": 0.11,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.06,
+              "avg7-holo": 0.09,
+              "avg30-holo": 0.13
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851013,
+            "tcgplayer": 656268
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.757Z",
+              "unit": "EUR",
+              "idProduct": 851013,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.02,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.03,
+              "avg-holo": 0.11,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.06,
+              "avg7-holo": 0.09,
+              "avg30-holo": 0.13
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.757Z",
+          "unit": "EUR",
+          "idProduct": 851013,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.02,
+          "avg1": 0.02,
+          "avg7": 0.02,
+          "avg30": 0.03,
+          "avg-holo": 0.11,
+          "low-holo": 0.02,
+          "trend-holo": 0.09,
+          "avg1-holo": 0.06,
+          "avg7-holo": 0.09,
+          "avg30-holo": 0.13
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-007",
+      "localId": "007",
+      "name": "Darkness Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851014,
+            "tcgplayer": 656269
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.751Z",
+              "unit": "EUR",
+              "idProduct": 851014,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.04,
+              "avg1": 0.02,
+              "avg7": 0.03,
+              "avg30": 0.02,
+              "avg-holo": 0.15,
+              "low-holo": 0.02,
+              "trend-holo": 0.11,
+              "avg1-holo": 0.02,
+              "avg7-holo": 0.17,
+              "avg30-holo": 0.17
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851014,
+            "tcgplayer": 656269
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.751Z",
+              "unit": "EUR",
+              "idProduct": 851014,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.04,
+              "avg1": 0.02,
+              "avg7": 0.03,
+              "avg30": 0.02,
+              "avg-holo": 0.15,
+              "low-holo": 0.02,
+              "trend-holo": 0.11,
+              "avg1-holo": 0.02,
+              "avg7-holo": 0.17,
+              "avg30-holo": 0.17
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.751Z",
+          "unit": "EUR",
+          "idProduct": 851014,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.04,
+          "avg1": 0.02,
+          "avg7": 0.03,
+          "avg30": 0.02,
+          "avg-holo": 0.15,
+          "low-holo": 0.02,
+          "trend-holo": 0.11,
+          "avg1-holo": 0.02,
+          "avg7-holo": 0.17,
+          "avg30-holo": 0.17
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "category": "Energy",
+      "id": "mee-008",
+      "localId": "008",
+      "name": "Metal Energy",
+      "rarity": "Common",
+      "set": {
+        "cardCount": {
+          "official": 8,
+          "total": 8
+        },
+        "id": "mee",
+        "name": "Mega Evolution Energy"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851015,
+            "tcgplayer": 656270
+          },
+          "variantId": "endfynwn4n10gzq",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.706Z",
+              "unit": "EUR",
+              "idProduct": 851015,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.04,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.12,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.06,
+              "avg7-holo": 0.08,
+              "avg30-holo": 0.12
+            },
+            "tcgplayer": null
+          }
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 851015,
+            "tcgplayer": 656270
+          },
+          "variantId": "cm4kqul3x1bwlz1f",
+          "pricing": {
+            "cardmarket": {
+              "updated": "2026-10-18T22:54:32.706Z",
+              "unit": "EUR",
+              "idProduct": 851015,
+              "avg": 0.02,
+              "low": 0.02,
+              "trend": 0.04,
+              "avg1": 0.02,
+              "avg7": 0.02,
+              "avg30": 0.02,
+              "avg-holo": 0.12,
+              "low-holo": 0.02,
+              "trend-holo": 0.09,
+              "avg1-holo": 0.06,
+              "avg7-holo": 0.08,
+              "avg30-holo": 0.12
+            },
+            "tcgplayer": null
+          }
+        }
+      ],
+      "energyType": "Normal",
+      "legal": {
+        "standard": true,
+        "expanded": true
+      },
+      "updated": "2026-09-16T20:25:32Z",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-18T22:54:32.706Z",
+          "unit": "EUR",
+          "idProduct": 851015,
+          "avg": 0.02,
+          "low": 0.02,
+          "trend": 0.04,
+          "avg1": 0.02,
+          "avg7": 0.02,
+          "avg30": 0.02,
+          "avg-holo": 0.12,
+          "low-holo": 0.02,
+          "trend-holo": 0.09,
+          "avg1-holo": 0.06,
+          "avg7-holo": 0.08,
+          "avg30-holo": 0.12
+        },
+        "tcgplayer": null
+      }
+    }
+  ]
+}

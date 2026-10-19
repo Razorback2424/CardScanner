@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A00904E1 /* mee-primary.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E1; };
+		A00904E2 /* mee-reviewed-products.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E2; };
+		A00904E3 /* catalog-input.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E3; };
 		D704E6EDC8D949928AA039F1 /* OnePieceAvailabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D704E6EDC8D949928AA039F2; };
 		F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000091 /* OnePieceOwnerCatalog */; };
 		C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */ = {isa = PBXBuildFile; fileRef = E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */; settings = {COMPILER_FLAGS = "-O2 -ffp-contract=off"; }; };
@@ -344,6 +347,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B00904E1 /* mee-primary.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/fixtures/mee-primary.json; sourceTree = SOURCE_ROOT; };
+		B00904E2 /* mee-reviewed-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/fixtures/mee-reviewed-products.json; sourceTree = SOURCE_ROOT; };
+		B00904E3 /* catalog-input.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/catalog-input.json; sourceTree = SOURCE_ROOT; };
 		D704E6EDC8D949928AA039F2 /* OnePieceAvailabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceAvailabilityTests.swift; sourceTree = "<group>"; };
 		F11D00000000000000000091 /* OnePieceOwnerCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = OnePieceOwnerCatalog; sourceTree = "<group>"; };
 		E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CardCenteringPixelKernels.c; sourceTree = "<group>"; };
@@ -1065,6 +1071,9 @@
 				B0020024 /* BrowseFeatureTests.swift */,
 				B0090303 /* PokemonTCGCSVPriceTests.swift */,
 				B0090304 /* TCGCSV30th.json */,
+				B00904E1 /* mee-primary.json */,
+				B00904E2 /* mee-reviewed-products.json */,
+				B00904E3 /* catalog-input.json */,
 				B0020150 /* BrowsePriceHistoryTests.swift */,
 				B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */,
 				B0020152 /* DetailDeletionRenderTests.swift */,
@@ -1245,6 +1254,9 @@
 			files = (
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
 				A0090304 /* TCGCSV30th.json in Resources */,
+				A00904E1 /* mee-primary.json in Resources */,
+				A00904E2 /* mee-reviewed-products.json in Resources */,
+				A00904E3 /* catalog-input.json in Resources */,
 				F30A00000000000000000007 /* Lorcana source fixtures in Resources */,
 				A00200E3 /* MagicTreatmentCatalog in Resources */,
 				A6F06E16B0A2C00200000001 /* TradingCards fixtures in Resources */,

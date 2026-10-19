@@ -103,6 +103,11 @@ struct ScanIdentifier: Hashable, Sendable {
             values = ["prefix": prefix, "localID": localID, "providerSetID": definition.tcgdexSetID,
                       "catalogLocalIDPrefix": definition.catalogLocalIDPrefix,
                       "localIDPadWidth": String(definition.localIDPadWidth)]
+        case let .pokemonEnergy(code, localID, definition):
+            namespace = "energy"
+            values = ["printedCode": code, "localID": localID,
+                      "providerSetID": definition.tcgdexSetID,
+                      "localIDPadWidth": String(definition.localIDPadWidth)]
         case let .pokemonHistorical(evidence):
             namespace = "historical"
             let prefix: String
@@ -146,6 +151,9 @@ struct ScanIdentifier: Hashable, Sendable {
     static func pokemonHistorical(_ evidence: PokemonHistoricalScanEvidence) -> Self {
         Self(.pokemonHistorical(evidence))
     }
+    static func pokemonEnergy(code: String, localID: String, setDefinition: PokemonEnergySetDefinition) -> Self {
+        Self(.pokemonEnergy(code: code, localID: localID, setDefinition: setDefinition))
+    }
     static func magic(setCode: String, collectorNumber: String, language: String,
                       contentKind: MagicContentKind = .regular) -> Self {
         Self(.magic(setCode: setCode, collectorNumber: collectorNumber,
@@ -156,6 +164,12 @@ struct ScanIdentifier: Hashable, Sendable {
     /// move with the Pokémon/Magic adapters when their service seams are extracted.
     var legacyIdentity: LegacyScanIdentifier {
         let values = Dictionary(uniqueKeysWithValues: fields.map { ($0.key, $0.value) })
+        if game == .pokemon, namespace == "energy",
+           let code = values["printedCode"], let number = values["localID"],
+           let provider = values["providerSetID"], let width = values["localIDPadWidth"].flatMap(Int.init) {
+            return .pokemonEnergy(code: code, localID: number,
+                setDefinition: .init(printedCode: code, tcgdexSetID: provider, localIDPadWidth: width))
+        }
         if game == .pokemon, namespace == "modern",
            let code = values["printedCode"], let number = values["localID"],
            let total = values["denominator"].flatMap(Int.init),
@@ -226,6 +240,7 @@ enum LegacyScanIdentifier: Equatable, Hashable, Sendable {
     /// A Black Star Promo whose printed prefix is the set identity. It is kept
     /// separate from modern expansions because promo cards have no `/total`.
     case pokemonPromo(prefix: String, localID: String, setDefinition: PokemonPromoSetDefinition)
+    case pokemonEnergy(code: String, localID: String, setDefinition: PokemonEnergySetDefinition)
     /// A pre-Scarlet & Violet Pokémon card whose printed number is useful
     /// evidence but does not carry a textual expansion code. The evidence stays
     /// separate from catalog identity: it may resolve to exactly one provider
@@ -244,7 +259,7 @@ enum LegacyScanIdentifier: Equatable, Hashable, Sendable {
 
     var game: CardGame {
         switch self {
-        case .pokemon, .pokemonPromo, .pokemonHistorical: return .pokemon
+        case .pokemon, .pokemonPromo, .pokemonEnergy, .pokemonHistorical: return .pokemon
         case .magic: return .magic
         case let .opaque(game, _): return game
         }
@@ -252,7 +267,7 @@ enum LegacyScanIdentifier: Equatable, Hashable, Sendable {
 
     var magicContentKind: MagicContentKind {
         switch self {
-        case .pokemon, .pokemonPromo, .pokemonHistorical: return .regular
+        case .pokemon, .pokemonPromo, .pokemonEnergy, .pokemonHistorical: return .regular
         case let .magic(_, _, _, contentKind): return contentKind
         case .opaque: return .regular
         }
@@ -274,6 +289,7 @@ enum LegacyScanIdentifier: Equatable, Hashable, Sendable {
                 ? String(localID.dropFirst(prefix.count))
                 : localID
             return "\(prefix) \(visibleNumber)"
+        case let .pokemonEnergy(code, localID, _): return "\(code) \(localID)"
         case let .pokemonHistorical(evidence):
             return evidence.number.displayIdentifier
         case let .magic(setCode, collectorNumber, _, contentKind):
@@ -783,6 +799,10 @@ struct PokemonScanProfile: Sendable {
     )
     private let setCodeRegex: NSRegularExpression
     private let promoRegex: NSRegularExpression
+    private let energyRegex: NSRegularExpression
+    private let energyTokenRegex: NSRegularExpression
+    private static let energyNumberRegex = try! NSRegularExpression(
+        pattern: #"(?<![A-Z0-9/])[0-9OIL]{3}(?![A-Z0-9/])"#)
     private let foreignLanguageRegex: NSRegularExpression
     let inferableDefinitions: [Int: PokemonSetDefinition]
 
@@ -839,7 +859,14 @@ struct PokemonScanProfile: Sendable {
                 : #"(?<![A-Z0-9])("# + promoAlternation + #")\s*(?:EN\s*)?([0-9OIL]{2,3})(?![A-Z0-9/])"#,
             options: []
         )
-        let languagePrefixes = ScanText.unique(expansionCodes + promoPrefixes)
+        let energyCodes = registry.descriptors.filter { $0.recognitionKind == .energy && $0.scanEnabled }
+            .compactMap(\.printedPrefix).sorted()
+        let energyAlternation = energyCodes.map(NSRegularExpression.escapedPattern).joined(separator: "|")
+        self.energyRegex = try! NSRegularExpression(pattern: energyCodes.isEmpty ? "(?!)" :
+            #"(?<![A-Z0-9])("# + energyAlternation + #")\s*(?:EN\s*)?([0-9OIL]{3})(?![A-Z0-9]|\s*/)"#)
+        self.energyTokenRegex = try! NSRegularExpression(pattern: energyCodes.isEmpty ? "(?!)" :
+            #"^(?:(?:"# + energyAlternation + #")(?:\s*EN)?|EN|[0-9OIL]{3})$"#)
+        let languagePrefixes = ScanText.unique(expansionCodes + promoPrefixes + energyCodes)
             .sorted { $0.count > $1.count }.map(NSRegularExpression.escapedPattern).joined(separator: "|")
         self.foreignLanguageRegex = try! NSRegularExpression(pattern: languagePrefixes.isEmpty ? "(?!)" :
             "(?<![A-Z0-9])[D-J]?(?:" + languagePrefixes + ")[\\t ]*[•·]?[\\t ]*(?:FR|DE|ES|IT|PT|JA|JP|KO|KR|ZH|ZHS|ZHT)(?![A-Z])")
@@ -870,7 +897,8 @@ struct PokemonScanProfile: Sendable {
     }
 
     var customWords: [String] {
-        ScanText.unique(vocabulary.expansionCodes + vocabulary.promoPrefixes)
+        ScanText.unique(vocabulary.expansionCodes + vocabulary.promoPrefixes + registry.descriptors
+            .filter { $0.recognitionKind == .energy && $0.scanEnabled }.compactMap(\.printedPrefix))
     }
 
     /// Prefer Vision's individual observations so a code stays paired with the
@@ -883,10 +911,19 @@ struct PokemonScanProfile: Sendable {
     }
 
     func parseOutcome(_ recognizedLines: [String]) -> GameRecognitionOutcome {
+        parseOutcome(recognizedLines.map { RecognizedLine(text: $0) })
+    }
+
+    func parseOutcome(_ lines: [RecognizedLine]) -> GameRecognitionOutcome {
+        let recognizedLines = lines.map(\.text)
         if hasForeignLanguageFooter(recognizedLines.joined(separator: " ")) {
             return .rejected(.init(reason: "pokemon-non-english-footer", blocksFallbackRecognition: true))
         }
-        let lineCandidates = recognizedLines.flatMap { candidates(in: $0) }
+        let energy = energyCandidates(lines)
+        if energy.conflicting { return .ambiguous }
+        // Energy observations are never fed to the unrestricted joined-text
+        // fallback. Split footers must consist of adjacent, bounded tokens.
+        let lineCandidates = recognizedLines.flatMap { candidates(in: $0) } + energy.identifiers
         if !lineCandidates.isEmpty { return .identities(lineCandidates) }
         return .identities(candidates(in: recognizedLines.joined(separator: " ")))
     }
@@ -896,8 +933,53 @@ struct PokemonScanProfile: Sendable {
     }
 
     private func uniqueCandidate(in recognizedText: String) -> ScanIdentifier? {
-        let unique = candidates(in: recognizedText)
-        return unique.count == 1 ? unique[0] : nil
+        parse([recognizedText])
+    }
+
+    private func energyCandidates(_ lines: [RecognizedLine]) -> (identifiers: [ScanIdentifier], conflicting: Bool) {
+        var candidates: [ScanIdentifier] = []
+        for start in lines.indices {
+            for count in 1...min(3, lines.count - start) {
+                let group = Array(lines[start..<(start + count)])
+                if count > 1 {
+                    guard group.allSatisfy({ line in
+                        let text = line.text.uppercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                        return energyTokenRegex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) != nil
+                    }) else { continue }
+                    let boxes = group.compactMap(\.boundingBox)
+                    if !boxes.isEmpty {
+                        guard boxes.count == group.count else { continue }
+                        let union = boxes.dropFirst().reduce(boxes[0]) { $0.union($1) }
+                        guard union.width <= 0.75, union.height <= 0.25 else { continue }
+                        guard zip(boxes, boxes.dropFirst()).allSatisfy({ a, b in
+                            let gapX = max(0, max(a.minX - b.maxX, b.minX - a.maxX))
+                            let gapY = max(0, max(a.minY - b.maxY, b.minY - a.maxY))
+                            let height = max(a.height, b.height)
+                            return gapX <= height * 3 && gapY <= height * 2
+                        }) else { continue }
+                    }
+                }
+                let text = group.map { $0.text.uppercased() }.joined(separator: " ")
+                let matches = energyRegex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+                for match in matches {
+                    guard let codeRange = Range(match.range(at: 1), in: text),
+                          let numberRange = Range(match.range(at: 2), in: text),
+                          let definition = registry.energyDefinition(forCode: String(text[codeRange])),
+                          let number = ScanText.pokemonLocalID(digits: String(text[numberRange]), suffix: "", minimumDigits: definition.localIDPadWidth) else { continue }
+                    candidates.append(.pokemonEnergy(code: definition.printedCode, localID: number, setDefinition: definition))
+                }
+            }
+        }
+        // Additional isolated collector numbers are conflicting evidence, even
+        // when one line already contains a complete footer.
+        guard !candidates.isEmpty else { return ([], false) }
+        let numbers = Set(lines.flatMap { line -> [String] in
+            let text = line.text.uppercased()
+            return ScanText.matchedSubstrings(Self.energyNumberRegex, in: text).compactMap {
+                ScanText.pokemonLocalID(digits: $0, suffix: "", minimumDigits: 3)
+            }
+        })
+        return (ScanText.unique(candidates), !candidates.isEmpty && numbers.count > 1)
     }
 
     private func candidates(in recognizedText: String) -> [ScanIdentifier] {
@@ -1093,6 +1175,17 @@ struct MagicScanProfile: Sendable {
         parseOutcome(recognizedLines.map { RecognizedLine(text: $0) }).identifier
     }
 
+    /// A readable modern set/language line still establishes the era when
+    /// glare hides the collector number. It must not become a title-only
+    /// historical lookup for a reprinted name such as Island.
+    func hasModernFooterEvidence(_ lines: [RecognizedLine]) -> Bool {
+        // These observations are already from the footer ROI. Their bounds
+        // are relative to that crop, not the whole card: EN can be near its top.
+        let footer = lines.map { $0.text.uppercased() }.joined(separator: " ")
+        return containsEnglishMarker(in: footer)
+            && !ScanText.matchedSubstrings(setCodeRegex, in: footer).isEmpty
+    }
+
     /// Geometry-aware production result. A spatial rejection is kept distinct
     /// from `nothing` so a Magic P/T fraction cannot immediately become a
     /// historical-Pokemon trigger in the same frame.
@@ -1276,7 +1369,20 @@ struct MagicScanProfile: Sendable {
         return Self.collectorNumberRegex.matches(in: text, options: [], range: range)
             .enumerated()
             .compactMap { index, match in
-                reading(
+                // Foils print a star between the set and language. It is not
+                // another collector number: `0190` + `SPM ★ EN` must produce
+                // one identity. A standalone star on the number line remains
+                // a supported, genuine collector-number value.
+                if let token = Range(match.range(at: 1), in: text), text[token] == "★" {
+                    let before = text[..<token.lowerBound].trimmingCharacters(in: .whitespaces)
+                    let after = text[token.upperBound...].trimmingCharacters(in: .whitespaces)
+                    if let code = before.split(whereSeparator: \.isWhitespace).last,
+                       definitions[String(code)] != nil,
+                       after.range(of: #"^EN(?![A-Z])"#, options: .regularExpression) != nil {
+                        return nil
+                    }
+                }
+                return reading(
                     from: match,
                     in: text,
                     sourceBounds: sourceBounds,

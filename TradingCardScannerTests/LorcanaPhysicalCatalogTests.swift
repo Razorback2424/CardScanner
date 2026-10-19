@@ -230,6 +230,50 @@ final class LorcanaPhysicalCatalogTests: XCTestCase {
         XCTAssertEqual(PhysicalPrintingCandidate.compactChoiceLabels(among: [first])[first.id], "Original")
     }
 
+    func testLargeDatedIslandPrintingFamilyPreparesLabelsWithoutBlocking() {
+        var choices: [PhysicalPrintingCandidate] = []
+        for index in 0..<1200 {
+            let release = "Release \(index / 5)"
+            let date = Date(timeIntervalSince1970: Double(index / 5) * 86400)
+            choices.append(.init(id: String(index), game: .magic, canonicalCardID: "island", language: "en",
+                catalogGeneration: "fixture", name: "Island", printedIdentifier: String(index),
+                releaseLabel: release, releaseDate: date, distinctionLabels: ["SET", String(index)]))
+        }
+        let started = Date()
+        let labels = PhysicalPrintingCandidate.compactChoiceLabels(among: choices)
+        let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: choices)
+        XCTAssertLessThan(Date().timeIntervalSince(started), 1,
+            "Printing labels are prepared on the UI thread; repeated sibling date formatting caused multi-second hangs")
+        XCTAssertEqual(labels.count, choices.count)
+        XCTAssertEqual(Set(labels.values).count, choices.count)
+        for choice in choices {
+            XCTAssertEqual(labels[choice.id], choice.printedIdentifier)
+            XCTAssertEqual(evidence[choice.id], .labels)
+        }
+    }
+
+    func testBatchedSelectionKeepsArtworkAndMissingEvidenceRequirements() {
+        func candidate(_ id: String, artwork: String?, image: Bool = true, release: String = "Same release") -> PhysicalPrintingCandidate {
+            .init(id: id, game: .magic, canonicalCardID: "island", language: "en", catalogGeneration: "fixture",
+                name: "Island", printedIdentifier: "190", releaseLabel: release,
+                thumbnailURL: image ? URL(string: "https://fixture.invalid/\(id).jpg") : nil, artworkID: artwork)
+        }
+        let choices = [candidate("first", artwork: "same"), candidate("second", artwork: "same"),
+                       candidate("third", artwork: "distinct"), candidate("missing-image", artwork: "other", image: false),
+                       candidate("unique", artwork: nil, release: "Different release")]
+        let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: choices)
+        XCTAssertEqual(evidence["first"], .insufficient)
+        XCTAssertEqual(evidence["second"], .insufficient)
+        XCTAssertEqual(evidence["third"], .artwork)
+        XCTAssertEqual(evidence["missing-image"], .insufficient)
+        XCTAssertEqual(evidence["unique"], .labels)
+        for choice in choices {
+            XCTAssertEqual(evidence[choice.id], choice.selectionEvidence(among: choices))
+        }
+        let missingArtwork = choices + [candidate("missing-artwork", artwork: nil)]
+        XCTAssertEqual(PhysicalPrintingCandidate.selectionEvidenceByID(among: missingArtwork)["third"], .insufficient)
+    }
+
     func testTamperedCrossGameAndStaleChoicesCannotResolve() async throws {
         let registry = try registry([printing(), printing(id: secondID, size: .oversized)])
         let adapter = LorcanaCatalogAdapter(registry: registry), identifier = try identifier(registry)

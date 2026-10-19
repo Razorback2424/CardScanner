@@ -821,7 +821,7 @@ public struct PokemonCatalogBuilder: Sendable {
                     membershipRecognition: humanInput.membershipRecognition
                 ))
 
-            case .promo, .notScannable:
+            case .promo, .energy, .notScannable:
                 return result(PokemonCatalogSetDescriptor(
                     providerSetID: row.id.lowercased(),
                     displayName: humanInput.displayName ?? providerSet.name,
@@ -903,7 +903,7 @@ public struct PokemonCatalogBuilder: Sendable {
                 membershipRecognition: nil
             ))
 
-        case .promo:
+        case .promo, .energy:
             throw PokemonCatalogBuildError.invalidDescriptor(
                 "automatic provider discovery cannot produce a promo descriptor"
             )

@@ -20,18 +20,24 @@ enum LegacyResolvedCard: Identifiable, Sendable {
     }
 
     var providerPurchaseURL: String? {
+        if case let .pokemon(card, _) = self, let mapping = PokemonTCGCSVMapping.byCardID[card.id], mapping.setID == "mee" {
+            return "https://www.tcgplayer.com/product/\(mapping.productID)"
+        }
         guard case let .magic(card) = self else { return nil }
         return card.purchaseURIs?.tcgplayer?.absoluteString
     }
 
     var updatesProviderPurchaseURL: Bool {
         if case .magic = self { return true }
+        if case let .pokemon(card, _) = self { return PokemonTCGCSVMapping.byCardID[card.id]?.setID == "mee" }
         return false
     }
 
     var catalogMetadataThumbnailURL: String? {
         switch self {
-        case let .pokemon(card, _): return card.image.map { $0 + "/low.png" }
+        case let .pokemon(card, _): return card.image.map {
+            URL(string: $0)?.pathExtension.isEmpty == false ? $0 : $0 + "/low.png"
+        }
         case .magic: return thumbnailImageURL?.absoluteString
         }
     }
@@ -113,6 +119,9 @@ enum LegacyResolvedCard: Identifiable, Sendable {
     var displayCardNumber: String {
         switch self {
         case let .pokemon(card, _):
+            if PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: card.set.id)?.recognitionKind == .energy {
+                return card.localId
+            }
             return "\(card.localId)/\(card.set.cardCount.official)"
         case let .magic(card):
             return card.collectorNumber
@@ -121,8 +130,8 @@ enum LegacyResolvedCard: Identifiable, Sendable {
 
     var identifier: String {
         switch self {
-        case let .pokemon(card, _):
-            return "\(setCode) \(card.localId)/\(card.set.cardCount.official)"
+        case .pokemon:
+            return "\(setCode) \(displayCardNumber)"
         case let .magic(card):
             return "\(card.setCode.uppercased()) \(card.collectorNumber)"
         }

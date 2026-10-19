@@ -284,6 +284,16 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             magicCollectorNumber = nil
             magicContentKind = nil
             magicLanguage = nil
+        case let .pokemonEnergy(code, localID, definition):
+            pokemonLocalID = localID
+            pokemonDenominator = nil
+            pokemonSubsetPrefix = nil
+            setPrintedCode = code
+            providerSetID = definition.tcgdexSetID
+            magicSetCode = nil
+            magicCollectorNumber = nil
+            magicContentKind = nil
+            magicLanguage = nil
         case let .pokemonPromo(prefix, localID, definition):
             pokemonLocalID = localID
             pokemonDenominator = nil
@@ -342,6 +352,10 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             case let .pokemonPromo(prefix, number, _):
                 if let definition = registry.pokemonPromoSetDefinition(forPrefix: prefix) {
                     current = .pokemonPromo(prefix: prefix, localID: number, setDefinition: definition)
+                } else { readOnly = true }
+            case let .pokemonEnergy(code, number, _):
+                if let definition = registry.energyDefinition(forCode: code) {
+                    current = .pokemonEnergy(code: code, localID: number, setDefinition: definition)
                 } else { readOnly = true }
             case let .magic(code, _, _, _):
                 if magicByCode[code.uppercased()] == nil { readOnly = true }

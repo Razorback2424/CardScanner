@@ -4,6 +4,140 @@ import XCTest
 @testable import TradingCardScanner
 
 final class PokemonTCGCSVPriceTests: XCTestCase {
+    private func sourceData(_ name: String) throws -> Data {
+        try Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: name, withExtension: "json")))
+    }
+
+    func testReviewedEnergyProductsAndChecklistRegenerationPreserveOldRows() async throws {
+        let decoder = JSONDecoder()
+        let data = try sourceData("mee-primary")
+        struct Primary: Decodable { let set: TCGdexSetCatalog; let cards: [TCGdexCard] }
+        let fixture = try decoder.decode(Primary.self, from: data)
+        let store = PokemonChecklistStore(root: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        let oldEntry = try XCTUnwrap(snapshot.entry(forProviderID: "mee"))
+        let old = try XCTUnwrap(snapshot.checklist(for: oldEntry.set.catalogID))
+        let built = try XCTUnwrap(PokemonMasterSetChecklistBuilder.build(providerSet: fixture.set,
+            baseSet: oldEntry.set, cardDetails: Dictionary(uniqueKeysWithValues: fixture.cards.map { ($0.id, $0) })).first)
+        XCTAssertEqual(built.cards.count, 24)
+        XCTAssertEqual(built.set.cardCount, 24)
+        let original = old.filter { $0.providerID.hasPrefix("mee-") }
+        XCTAssertEqual(built.cards.filter { $0.providerID.hasPrefix("mee-") }, original)
+        XCTAssertEqual(Set(built.cards.map(\.collectorNumber)).count, 16)
+        XCTAssertEqual(built.officialCount, 8, "Provider count is not a printed denominator on Energy")
+        let energySnapshot = PokemonChecklistSnapshot.from(builtSets: [built])
+        for number in ["005", "013", "015"] {
+            XCTAssertTrue(PokemonOfflineCardFactory.candidates(in: energySnapshot,
+                number: .init(localID: number, denominator: 8, scheme: .officialSet)).isEmpty,
+                "An Energy provider count must never become a printed fraction")
+        }
+        XCTAssertEqual(PokemonReviewedEnergyCatalog.addingSummaries(built.cards, set: built.set), built.cards)
+        let oldPayload = try XCTUnwrap(fixture.cards.first { $0.id == "mee-005" })
+        guard case .needsChoice = VariantResolver.resolve(IdentifiedCard.pokemon(oldPayload, setCode: "MEE").variantEvidence) else {
+            return XCTFail("Existing Energy Normal/Reverse uncertainty must still ask")
+        }
+
+        let records = try XCTUnwrap(JSONSerialization.jsonObject(with: sourceData("mee-reviewed-products")) as? [String: Any])
+        let products = try JSONSerialization.data(withJSONObject: records["products"]!)
+        let finishes = try XCTUnwrap(records["finishes"] as? [[String: Any]])
+        let prices = try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": finishes])
+        let quoted = try PokemonTCGCSVPriceService.decodeSnapshot(products: products, prices: prices,
+            setID: "mee", feedBuild: "reviewed-fixture", fetchedAt: date)
+        XCTAssertTrue(quoted.valuesByCardID.isEmpty, "Recorded finishes contain no prices")
+        for entry in PokemonReviewedEnergyCatalog.entries {
+            XCTAssertEqual(quoted.quote(cardID: entry.cardID, variant: .holo, printRun: nil), .unavailable(.tcgCSV))
+            XCTAssertNil(quoted.quote(cardID: entry.cardID, variant: .normal, printRun: nil))
+            XCTAssertEqual(finishes.filter { $0["productId"] as? Int == entry.productID }.map { $0["subTypeName"] as? String }, ["Holofoil"])
+        }
+
+        // Opt-in bounded regeneration through the same checklist builder and
+        // atomic publisher used for downloaded sets. No other set is fetched.
+        let output = FileManager.default.temporaryDirectory.appendingPathComponent("MEE-GeneratedChecklist")
+        let generated = PokemonChecklistSnapshot.from(builtSets: [built], generatedAt: Date(timeIntervalSince1970: 1_792_368_000))
+        let target = PokemonChecklistStore(root: output, bundle: nil)
+        try await target.publish(generated)
+        let reread = await target.downloadedSnapshot()
+        XCTAssertEqual(reread?.checklists[built.set.id], built.cards)
+        print("MEE_GENERATED_CHECKLIST=\(output.path)")
+    }
+
+    @MainActor
+    func testEnergyResolutionAndCollectionExportKeepExactPhysicalIdentity() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let adapter = PokemonCatalogAdapter(resolvedDiskCache: ResolvedPokemonCardCache(root: root))
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        struct PrimaryCards: Decodable { let cards: [TCGdexCard] }
+        let oldPayload = try XCTUnwrap(JSONDecoder().decode(PrimaryCards.self,
+            from: sourceData("mee-primary")).cards.first { $0.id == "mee-005" })
+        let oldCard = IdentifiedCard.pokemon(oldPayload, setCode: "MEE")
+        _ = try CollectionStore(context: context).add(oldCard,
+            resolved: .init(variant: .normal, resolution: .userConfirmed), source: .scan)
+        let oldKey = oldCard.collectionKey(variant: .normal)
+        var keys = Set<String>()
+        for (number, product, name) in [("013", 713252, "Basic Psychic Energy"), ("015", 713254, "Basic Darkness Energy")] {
+            let identifier = try XCTUnwrap(ScanParser.parsePokemon("MEE EN \(number)"))
+            guard case let .resolved(result) = try await adapter.lookup(identifier) else { return XCTFail("Expected exact Energy resolution") }
+            let card = result.card
+            XCTAssertEqual(card.providerID, "tcgplayer:\(product)")
+            XCTAssertEqual(card.name, name)
+            XCTAssertEqual(card.cardNumber, number)
+            XCTAssertEqual(card.displayCardNumber, number)
+            XCTAssertEqual(card.identifier, "MEE \(number)")
+            XCTAssertEqual(card.providerPurchaseURL, "https://www.tcgplayer.com/product/\(product)")
+            guard case let .resolved(variant) = VariantResolver.resolve(card.variantEvidence) else { return XCTFail("Unique reviewed finish should resolve") }
+            XCTAssertEqual(variant.variant, .holo)
+            guard case let .pokemon(payload, code) = card.legacyIdentity else { return XCTFail("Expected Pokemon") }
+            XCTAssertEqual(code, "MEE")
+            XCTAssertEqual(payload.catalogVariants, [.holo])
+            XCTAssertEqual(payload.variantsDetailed?.first?.stamp, ["30th-anniversary"])
+            XCTAssertTrue(payload.highImageURL?.absoluteString.contains("\(product)_200w.jpg") == true)
+            XCTAssertNil(payload.pricing)
+            let browseSet = CatalogSet(catalogID: .init(game: .pokemon, providerID: "mee"),
+                name: payload.set.name, code: "MEE", logoURL: nil, symbolURL: nil,
+                cardCount: 24, releaseDate: nil, sortRank: 0)
+            let summary = try XCTUnwrap(PokemonReviewedEnergyCatalog.addingSummaries([], set: browseSet)
+                .first { $0.providerID == card.providerID })
+            let emptyQuote = PokemonTCGCSVSnapshot(schemaVersion: 1, setID: "mee", feedBuild: "missing",
+                fetchedAt: date, validatedAt: date, valuesByCardID: [:])
+            let browse = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("browse-\(number)")),
+                pokemonTransport: UnavailablePokemonTransport(), tcgCSVSource: RecordedTCGCSV(snapshot: emptyQuote),
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists-\(number)")))
+            let detail = try await browse.details(for: summary)
+            XCTAssertEqual(detail.card.providerID, card.providerID)
+            XCTAssertEqual(detail.card.displayImageURL, card.displayImageURL)
+            XCTAssertEqual(detail.card.variantEvidence.catalogVariants, [.holo])
+            let holding = CollectedCard(card: card, resolved: .init(variant: .holo, resolution: .uniqueInCatalog))
+            _ = try CollectionStore(context: context).add(card,
+                resolved: .init(variant: .holo, resolution: .uniqueInCatalog), source: .scan)
+            keys.insert(holding.collectionKey)
+            let plan = try CollectionCSV.parse(Data(CollectionCSV.export([holding]).text.utf8))
+            let entry = try XCTUnwrap(plan.entries.first)
+            XCTAssertEqual(entry.collectionKey, holding.collectionKey)
+            XCTAssertEqual(entry.variant, .holo)
+            let refreshed = try await TCGdexService().fetchCard(id: "tcgplayer:\(product)")
+            XCTAssertEqual(refreshed.id, card.providerID)
+            let nextSession = PokemonCatalogAdapter(resolvedDiskCache: ResolvedPokemonCardCache(root: root))
+            guard case let .resolved(repeated) = try await nextSession.lookup(identifier) else { return XCTFail("Expected repeat resolution") }
+            XCTAssertEqual(repeated.card.collectionKey(variant: .holo), holding.collectionKey)
+        }
+        XCTAssertEqual(keys.count, 2)
+        let sourceRows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(sourceRows.count, 3)
+        XCTAssertTrue(sourceRows.contains { $0.collectionKey == oldKey && $0.providerID == "mee-005" })
+        let importContainer = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let roundTrip = try CollectionCSV.parse(Data(CollectionCSV.export(sourceRows).text.utf8))
+        _ = try CollectionCSV.apply(roundTrip, to: importContainer.mainContext)
+        let importedRows = try importContainer.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(importedRows.map(\.collectionKey)), Set(sourceRows.map(\.collectionKey)))
+        XCTAssertNil(PokemonReviewedEnergyCatalog.card(setID: "mee", localID: "005"))
+        XCTAssertNil(PokemonReviewedEnergyCatalog.card(setID: "30th", localID: "013"))
+        XCTAssertNil(PokemonReviewedEnergyCatalog.card(setID: "mee", localID: "999"))
+    }
     private let date = Date(timeIntervalSince1970: 1_790_740_800)
 
     private func fixtures() throws -> [String: [String: Any]] {
@@ -54,9 +188,9 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
     }
 
     func testAll188MappingsJoinExactProductsAndHolofoilPrices() throws {
-        XCTAssertEqual(PokemonTCGCSVMapping.entries.count, 188)
-        XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.cardID)).count, 188)
-        XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.productID)).count, 188)
+        XCTAssertEqual(PokemonTCGCSVMapping.entries.count, 196)
+        XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.cardID)).count, 196)
+        XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.productID)).count, 196)
         for (setID, count) in [("30th", 158), ("30th-c", 30)] {
             let value = try snapshot(setID)
             XCTAssertEqual(value.valuesByCardID.count, count)

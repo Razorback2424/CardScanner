@@ -488,15 +488,42 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)))
     }
 
-    func testFinishLockCannotSilentlyDismissAStampedRelease() {
+    func testFinishLockSelectsExactUnstampedVariantAlongsideSupplementalStampedRelease() {
         let outcome = VariantResolver.resolve(
             pokemon(setID: "swsh11", variants: [.holo, .reverse], number: "066"),
             finishLock: .holo
         )
-        guard case let .needsChoice(options, _) = outcome else {
-            return XCTFail("A finish lock is not evidence that the stamp is absent")
+        XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .finishLock)))
+    }
+
+    func testLilliesDeterminationNormalLockResolvesAlongsideCatalogStampsAndPatterns() throws {
+        let prizePack = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .normal, stamps: ["prize-pack"]))
+        let regional = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .normal, stamps: ["regional-championships"]))
+        let staff = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .normal, stamps: ["regional-championships", "staff"]))
+        let evidence = pokemon(
+            setID: "me01", variants: [.reverse, .normal, .holo, .pokemonFoilPattern("cosmos"), prizePack, regional, staff],
+            number: "119"
+        )
+
+        XCTAssertEqual(
+            VariantResolver.resolve(evidence, finishLock: .normal),
+            .resolved(ResolvedVariant(variant: .normal, resolution: .finishLock))
+        )
+        guard case let .needsChoice(options, _) = VariantResolver.resolve(evidence) else {
+            return XCTFail("Auto should retain all seven physical variants")
         }
-        XCTAssertTrue(options.contains { $0.id == "trickOrTrade2023Holofoil" })
+        XCTAssertEqual(Set(options), Set(evidence.catalogVariants))
+    }
+
+    func testFinishLockDoesNotMatchStampedBaseWhenPlainFinishIsUnavailable() throws {
+        let prizePack = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .normal, stamps: ["prize-pack"]))
+        let regional = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .normal, stamps: ["regional-championships"]))
+        let evidence = pokemon(setID: "me01", variants: [prizePack, regional], number: "119")
+        guard case let .needsChoice(options, rejected) = VariantResolver.resolve(evidence, finishLock: .normal) else {
+            return XCTFail("Normal must never substitute for a stamped Normal variant")
+        }
+        XCTAssertEqual(Set(options), [prizePack, regional])
+        XCTAssertEqual(rejected, VariantLock(finish: .normal))
     }
 
     func testSerializedStampedVariantKeepsItsReadableLabel() throws {

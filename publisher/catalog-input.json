@@ -1,5 +1,6 @@
 {
   "sets": [
+    {"providerSetID":"mee","recognitionKind":"energy","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"MEE","catalogLocalIDPrefix":"","localIDPadWidth":3,"displayName":"Mega Evolution Energy","releaseDate":"2025-09-25","releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":2},
     {"providerSetID":"sv01","recognitionKind":"expansion","printedCode":"SVI","claimedOfficialCount":198,"printedPrefix":null,"catalogLocalIDPrefix":null,"localIDPadWidth":null,"displayName":null,"releaseDate":null,"releaseOrder":0,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
     {"providerSetID":"sv02","recognitionKind":"expansion","printedCode":"PAL","claimedOfficialCount":193,"printedPrefix":null,"catalogLocalIDPrefix":null,"localIDPadWidth":null,"displayName":null,"releaseDate":null,"releaseOrder":1,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
     {"providerSetID":"sv03","recognitionKind":"expansion","printedCode":"OBF","claimedOfficialCount":197,"printedPrefix":null,"catalogLocalIDPrefix":null,"localIDPadWidth":null,"displayName":null,"releaseDate":null,"releaseOrder":2,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},

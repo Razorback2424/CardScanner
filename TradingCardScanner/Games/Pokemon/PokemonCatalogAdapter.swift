@@ -35,12 +35,13 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
         switch identifier.namespace {
         case "modern": expectedFields = ["printedCode", "localID", "denominator", "providerSetID", "officialCount", "releaseIndex"]
         case "promo": expectedFields = ["prefix", "localID", "providerSetID", "catalogLocalIDPrefix", "localIDPadWidth"]
+        case "energy": expectedFields = ["printedCode", "localID", "providerSetID", "localIDPadWidth"]
         case "historical": expectedFields = ["localID", "denominator", "subsetPrefix", "titleReadings"]
         default: throw CatalogLookupError.invalidAdapterOutcome
         }
         guard Set(identifier.fields.map(\.key)) == expectedFields else { throw CatalogLookupError.invalidAdapterOutcome }
         switch identifier.legacyIdentity {
-        case .pokemon, .pokemonPromo: break // Keep the scan's captured definition.
+        case .pokemon, .pokemonPromo, .pokemonEnergy: break // Keep the scan's captured definition.
         case .pokemonHistorical:
             guard identifier.catalogGeneration == nil || identifier.catalogGeneration == generation else {
                 throw CatalogLookupError.staleCatalog
@@ -55,7 +56,7 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
     func acceptsCompletion(for identifier: ScanIdentifier, fromGeneration: String) -> Bool {
         guard identifier.game == game else { return false }
         switch identifier.legacyIdentity {
-        case .pokemon, .pokemonPromo: return true
+        case .pokemon, .pokemonPromo, .pokemonEnergy: return true
         case .pokemonHistorical: return generation == fromGeneration
         default: return false
         }
@@ -231,6 +232,12 @@ actor PokemonCatalogEngine {
         let registry = catalogRegistry
         let diskKey = Self.persistentKey(for: identifier)
         let load: @Sendable () async throws -> CatalogResolution = {
+            // The reviewed source retains generic stamp provenance that legacy
+            // disk entries do not encode. It is deterministic and needs no I/O.
+            if case let .pokemonEnergy(code, number, definition) = identifier.legacyIdentity,
+               let card = PokemonReviewedEnergyCatalog.card(setID: definition.tcgdexSetID, localID: number) {
+                return CatalogResolution(.pokemon(card, setCode: code), path: .cacheHit)
+            }
             if let diskKey,
                let cached = await resolvedDiskCache.card(for: diskKey) {
                 let historicalCacheIsStale: Bool
@@ -282,6 +289,18 @@ actor PokemonCatalogEngine {
                     source: pokemonSource,
                     breaker: tcgdexBreaker
                 )
+
+            case let .pokemonEnergy(code, localID, definition):
+                if let card = await offline.card(providerSetID: definition.tcgdexSetID,
+                    localID: localID, expectedOfficialCount: nil) {
+                    return CatalogResolution(.pokemon(card, setCode: code), path: .cacheHit)
+                }
+                // Existing 001–008 use the same exact set/local-ID transport
+                // contract as promos, without acquiring a promo identity.
+                return try await Self.resolvePromoPokemon(prefix: code, localID: localID,
+                    setDefinition: .init(printedPrefix: code, tcgdexSetID: definition.tcgdexSetID,
+                        catalogLocalIDPrefix: "", localIDPadWidth: definition.localIDPadWidth),
+                    source: pokemonSource, breaker: tcgdexBreaker)
 
             case let .pokemonPromo(prefix, localID, setDefinition):
                 if let card = await offline.card(
@@ -337,6 +356,8 @@ actor PokemonCatalogEngine {
             return "pokemon|\(setDefinition.tcgdexSetID.lowercased())|\(PokemonHistoricalIdentityResolver.canonicalLocalID(cardNumber))|\(printedTotal)"
         case let .pokemonPromo(prefix, localID, setDefinition):
             return "pokemon-promo|\(prefix.uppercased())|\(setDefinition.tcgdexSetID.lowercased())|\(PokemonHistoricalIdentityResolver.canonicalLocalID(localID))"
+        case let .pokemonEnergy(code, localID, definition):
+            return "pokemon-energy|\(code)|\(definition.tcgdexSetID)|\(localID)"
         case .pokemonHistorical:
             // Historical identity is resolved from unstable OCR title evidence;
             // there is no safe stable key before the catalog response arrives.

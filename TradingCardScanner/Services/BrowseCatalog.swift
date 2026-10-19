@@ -99,11 +99,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
         _ summaries: [CatalogCardSummary],
         set: CatalogSet
     ) -> [CatalogCardSummary] {
+        let augmented = PokemonReviewedEnergyCatalog.addingSummaries(summaries, set: set)
         // Older signed checklists contain generated Normal slots for these
         // reviewed Holofoil products. Correct presentation locally without
         // modifying the signed payload or its provider fingerprint.
         var seenReviewedIDs: Set<String> = []
-        let summaries = summaries.compactMap { summary -> CatalogCardSummary? in
+        let summaries = augmented.compactMap { summary -> CatalogCardSummary? in
             guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
                   PokemonTCGCSVMapping.byCardID[summary.providerID]?.setID == set.providerID else { return summary }
             guard seenReviewedIDs.insert(summary.providerID).inserted else { return nil }
@@ -1146,6 +1147,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
         case .pokemon:
             let revision = catalogRevision
             let context = try await authorizedPokemonDetailSet(for: summary)
+            if summary.setID.providerID == "mee",
+               let card = PokemonReviewedEnergyCatalog.card(providerID: summary.providerID) {
+                return await addingTCGCSVPrices(to: CatalogCardDetails(
+                    card: .pokemon(card, setCode: "MEE"), set: context, retrievedAt: now()))
+            }
             let catalog = try await pokemonSet(id: summary.setID.providerID)
             guard let brief = catalog.cards.first(where: { $0.id == summary.providerID }) else { throw BrowseCatalogError.unknownSet }
             let set = PokemonMasterSetChecklistBuilder.enrichedSet(context, providerSet: catalog)
@@ -1197,11 +1203,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
         await loadPokemonSnapshotIfNeeded()
         if let entry = pokemonSnapshotEntries.first(where: { $0.set.catalogID == summary.setID }) {
             guard let cards = await checklistStore.mergedChecklist(for: summary.setID),
-                  cards.contains(where: { $0.providerID == summary.providerID }) else { throw BrowseCatalogError.unknownSet }
+                  PokemonReviewedEnergyCatalog.addingSummaries(cards, set: entry.set)
+                    .contains(where: { $0.providerID == summary.providerID }) else { throw BrowseCatalogError.unknownSet }
             return pokemonSets(from: [entry])[0]
         }
         let provider = try await pokemonSet(id: summary.setID.providerID)
-        guard provider.cards.contains(where: { $0.id == summary.providerID }) else { throw BrowseCatalogError.unknownSet }
+        guard provider.cards.contains(where: { $0.id == summary.providerID })
+            || PokemonReviewedEnergyCatalog.card(providerID: summary.providerID)?.set.id == provider.id else {
+            throw BrowseCatalogError.unknownSet
+        }
         if catalogRegistry.descriptor(forProviderSetID: provider.id) != nil {
             let base = try reconciliationBaseSet(provider: provider, providerSetID: provider.id)
             if summary.pokemonPrintRun == nil { return base }

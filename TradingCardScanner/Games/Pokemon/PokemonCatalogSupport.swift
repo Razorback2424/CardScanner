@@ -16,6 +16,9 @@ enum PokemonOfflineCardFactory {
         officialCount: Int,
         localID: String? = nil
     ) -> TCGdexCard {
+        if let reviewed = PokemonReviewedEnergyCatalog.card(providerID: summaries[0].providerID) {
+            return reviewed
+        }
         // One numbered Pokémon card may occupy several checklist rows: normal,
         // holo, reverse, and named parallels are all distinct physical objects.
         // The offline snapshot has no live prices, but it does have authoritative
@@ -306,6 +309,9 @@ enum PokemonOfflineCardFactory {
         switch number.scheme {
         case .officialSet:
             return Set(entries.compactMap { entry in
+                let descriptor = registry.descriptor(forProviderSetID: entry.providerID)
+                    ?? PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: entry.providerID)
+                guard descriptor?.recognitionKind != .energy else { return nil }
                 let officialCount = entry.officialCount
                     ?? registry.officialCount(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
@@ -493,6 +499,9 @@ actor PokemonOfflineCatalog {
         switch evidence.number.scheme {
         case .officialSet:
             let liveCandidateSetIDs = Set(entries.compactMap { entry in
+                let descriptor = registry.descriptor(forProviderSetID: entry.providerID)
+                    ?? PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: entry.providerID)
+                guard descriptor?.recognitionKind != .energy else { return nil }
                 let officialCount = entry.officialCount
                     ?? registry.officialCount(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)

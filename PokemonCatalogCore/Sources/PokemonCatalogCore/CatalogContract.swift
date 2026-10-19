@@ -12,7 +12,7 @@ public enum PokemonCatalogCoreContract {
     // Codable safely ignores fields it does not know yet.
     public static let releaseSchemaVersion = 1
     public static let snapshotSchemaVersion = 1
-    public static let rulesVersion = 1
+    public static let rulesVersion = 2
     public static let catalogKind = "pokemon"
 }
 
@@ -105,6 +105,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     public enum RecognitionKind: String, Codable, Sendable {
         case expansion
         case promo
+        case energy
         case notScannable
     }
 
@@ -309,7 +310,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     }
 
     public func catalogLocalID(number: Int) -> String? {
-        guard recognitionKind == .promo,
+        guard recognitionKind == .promo || recognitionKind == .energy,
               let prefix = catalogLocalIDPrefix,
               let padWidth = localIDPadWidth else { return nil }
         return prefix + String(format: "%0\(padWidth)d", number)
@@ -549,7 +550,10 @@ public enum PokemonCatalogReleaseValidator {
                 guard expansionCodes.insert(normalized).inserted else {
                     throw ValidationError.duplicatePrintedCode(code)
                 }
-            case .promo:
+            case .promo, .energy:
+                if descriptor.recognitionKind == .energy, descriptor.rulesVersion < 2 {
+                    throw ValidationError.invalidDescriptor("energy numbering requires rules version 2")
+                }
                 guard let prefix = descriptor.printedPrefix,
                       isValidPromoPrefix(prefix),
                       let width = descriptor.localIDPadWidth,
@@ -563,6 +567,11 @@ public enum PokemonCatalogReleaseValidator {
                     throw ValidationError.invalidDescriptor(
                         "promo descriptors must not claim an expansion denominator"
                     )
+                }
+                if descriptor.recognitionKind == .energy {
+                    guard width == 3, descriptor.catalogLocalIDPrefix == "", descriptor.printedCode == nil else {
+                        throw ValidationError.invalidDescriptor("energy requires numeric three-digit IDs and a registered prefix")
+                    }
                 }
                 let normalized = prefix.uppercased()
                 guard promoPrefixes.insert(normalized).inserted else {

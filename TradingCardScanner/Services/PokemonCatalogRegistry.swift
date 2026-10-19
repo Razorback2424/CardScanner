@@ -12,7 +12,7 @@ struct PokemonCatalogRegistry: Sendable {
     /// A descriptor this binary can interpret. Kept in one place so `init` and
     /// `validate` cannot drift apart about which descriptors are in scope.
     static func isSupported(_ descriptor: PokemonCatalogSetDescriptor) -> Bool {
-        descriptor.rulesVersion <= PokemonChecklistSnapshotVersion.masterSetRules
+        descriptor.rulesVersion <= 2 && (descriptor.recognitionKind != .energy || descriptor.rulesVersion >= 2)
     }
 
     init(release: PokemonCatalogRelease) {
@@ -31,7 +31,7 @@ struct PokemonCatalogRegistry: Sendable {
                 if let code = descriptor.printedCode {
                     codes[code.uppercased()] = descriptor
                 }
-            case .promo:
+            case .promo, .energy:
                 if let prefix = descriptor.printedPrefix {
                     promos[prefix.uppercased()] = descriptor
                 }
@@ -52,7 +52,7 @@ struct PokemonCatalogRegistry: Sendable {
     }
 
     func promo(forPrefix prefix: String) -> PokemonCatalogSetDescriptor? {
-        byPromoPrefix[prefix.uppercased()]
+        byPromoPrefix[prefix.uppercased()].flatMap { $0.recognitionKind == .promo ? $0 : nil }
     }
 
     func descriptor(forProviderSetID id: String) -> PokemonCatalogSetDescriptor? {
@@ -68,7 +68,7 @@ struct PokemonCatalogRegistry: Sendable {
     }
 
     var promoPrefixes: [String] {
-        byPromoPrefix.keys.sorted()
+        byPromoPrefix.filter { $0.value.recognitionKind == .promo }.keys.sorted()
     }
 
     // MARK: - Bridge to existing definition types
@@ -88,6 +88,7 @@ struct PokemonCatalogRegistry: Sendable {
 
     func pokemonPromoSetDefinition(forPrefix prefix: String) -> PokemonPromoSetDefinition? {
         guard let d = promo(forPrefix: prefix),
+              d.recognitionKind == .promo,
               let printedPfx = d.printedPrefix,
               let catalogPfx = d.catalogLocalIDPrefix,
               let padWidth = d.localIDPadWidth else { return nil }
@@ -103,7 +104,7 @@ struct PokemonCatalogRegistry: Sendable {
         guard let d = descriptor(forProviderSetID: id) else { return nil }
         switch d.recognitionKind {
         case .expansion: return d.printedCode
-        case .promo: return d.printedPrefix
+        case .promo, .energy: return d.printedPrefix
         case .notScannable:
             let parent = d.parentProviderSetID.flatMap { descriptor(forProviderSetID: $0) }
             return d.printedCode ?? d.printedPrefix ?? parent?.printedCode ?? parent?.printedPrefix
@@ -172,7 +173,7 @@ struct PokemonCatalogRegistry: Sendable {
                     }
                     seenCodes[key] = d.providerSetID
                 }
-            case .promo:
+            case .promo, .energy:
                 if let prefix = d.printedPrefix {
                     let key = prefix.uppercased()
                     if let existing = seenPrefixes[key] {
@@ -310,10 +311,24 @@ struct PokemonCatalogRegistry: Sendable {
             schemaVersion: PokemonCatalogRelease.currentSchemaVersion,
             revision: 0,
             generatedAt: Date(timeIntervalSince1970: 0),
-            sets: expansions + promos + [classic]
+            sets: expansions + promos + [classic, Self.energyDescriptor]
         )
         return PokemonCatalogRegistry(release: release)
     }()
+}
+
+extension PokemonCatalogRegistry {
+    static let energyDescriptor = PokemonCatalogSetDescriptor(
+        providerSetID: "mee", displayName: "Mega Evolution Energy", releaseDate: "2025-09-25",
+        releaseOrder: nil, recognitionKind: .energy, printedCode: nil, officialCount: nil,
+        printedPrefix: "MEE", catalogLocalIDPrefix: "", localIDPadWidth: 3,
+        scanEnabled: true, logoURL: nil, symbolURL: nil, rulesVersion: 2)
+
+    func energyDefinition(forCode code: String) -> PokemonEnergySetDefinition? {
+        guard let d = byPromoPrefix[code.uppercased()], d.recognitionKind == .energy,
+              let code = d.printedPrefix, let width = d.localIDPadWidth else { return nil }
+        return .init(printedCode: code, tcgdexSetID: d.providerSetID, localIDPadWidth: width)
+    }
 }
 
 // MARK: - Diagnostic counters

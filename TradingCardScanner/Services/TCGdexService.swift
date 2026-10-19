@@ -64,6 +64,9 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         locale: TCGdexLocale = .en,
         ignoringCache: Bool = false
     ) async throws -> TCGdexCard {
+        if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(setID: setID, localID: localID) {
+            return reviewed
+        }
         guard let encodedSetID = setID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let encodedLocalID = localID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/sets/\(encodedSetID)/\(encodedLocalID)") else {
@@ -96,6 +99,9 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         ignoringCache: Bool = false,
         timeout: TimeInterval = 8
     ) async throws -> TCGdexCard {
+        if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(providerID: id) {
+            return reviewed
+        }
         guard let encoded = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/cards/\(encoded)") else {
             throw TCGdexError.invalidURL
@@ -698,17 +704,25 @@ struct ScryfallService: Sendable {
         }
 
         let card = try JSONDecoder().decode(ScryfallCard.self, from: data)
-        guard card.setCode.lowercased() == normalizedSet,
+        try validate(card, setCode: normalizedSet, collectorNumber: collectorNumber,
+            language: normalizedLanguage, requiresScannableCard: requiresScannableCard)
+        return card
+    }
+
+    /// Disk hits must pass the same identity and supported-printing checks as
+    /// a fresh provider response, including when those rules change later.
+    func validate(_ card: ScryfallCard, setCode: String, collectorNumber: String,
+                  language: String, requiresScannableCard: Bool = true) throws {
+        guard card.setCode.lowercased() == setCode.lowercased(),
               Self.canonicalProviderCollectorNumber(card.collectorNumber)
                 == Self.canonicalScannedCollectorNumber(collectorNumber),
-              card.language.lowercased() == normalizedLanguage,
+              card.language.lowercased() == language.lowercased(),
               !card.digital else {
             throw ScryfallError.identityMismatch
         }
         if requiresScannableCard {
             try validateSupported(card)
         }
-        return card
     }
 
     /// A single guarded transport seam keeps every Scryfall endpoint behind the

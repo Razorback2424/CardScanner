@@ -74,49 +74,68 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
     /// Prefer the shortest published distinction, retaining longer evidence
     /// when otherwise identical labels would collapse two physical choices.
     func compactChoiceLabel(among candidates: [Self]) -> String {
-        let short = shortChoiceLabel(among: candidates)
-        if candidates.contains(where: { $0.id != id && $0.shortChoiceLabel(among: candidates) == short
-            && ($0.choiceLabel != choiceLabel || $0.releaseDate != releaseDate) }) {
-            return ([choiceLabel, releaseDateLabel].compactMap { $0 }).joined(separator: " · ")
-        }
-        return short
+        Self.compactChoiceLabels(among: candidates.contains(where: { $0.id == id }) ? candidates : candidates + [self])[id] ?? choiceLabel
     }
 
     /// Whole-family consumers compute each short label once rather than
     /// repeating every sibling's disambiguation for every returned card.
     static func compactChoiceLabels(among candidates: [Self]) -> [String: String] {
-        let choices = candidates.map { (candidate: $0, short: $0.shortChoiceLabel(among: candidates)) }
+        // Island can have hundreds of printings. Prepare each field and date
+        // once, before comparing labels; formatting dates in the nested sibling
+        // scans can block the main thread for seconds even for visible rows.
+        let formatter = releaseDateFormatter()
+        let dates = candidates.map { $0.releaseDate.map { formatter.string(from: $0) } }
+        let parts = candidates.enumerated().map { index, candidate in
+            let release = candidate.releaseLabel?.components(separatedBy: " · ")
+                .filter { $0 != "English" }.joined(separator: " · ")
+            return [candidate.treatmentLabel ?? "", candidate.distributionLabel ?? "", release ?? ""]
+                + candidate.identificationDetails + [dates[index] ?? ""]
+        }
+        var indexesByPart: [[String: Set<Int>]] = []
+        for (index, fields) in parts.enumerated() {
+            for (column, value) in fields.enumerated() {
+                if indexesByPart.count <= column { indexesByPart.append([:]) }
+                indexesByPart[column][value, default: []].insert(index)
+            }
+        }
+        let choices = candidates.enumerated().map { index, candidate in
+            (candidate: candidate, short: candidate.shortChoiceLabel(parts: parts[index], indexesByPart: indexesByPart,
+                candidateCount: candidates.count, excluding: index),
+             full: candidate.choiceLabel, date: dates[index])
+        }
+        let groups = Dictionary(grouping: choices, by: \.short)
         var labels: [String: String] = [:]
-        for (candidate, short) in choices {
-            let collides = choices.contains { $0.candidate.id != candidate.id && $0.short == short
-                && ($0.candidate.choiceLabel != candidate.choiceLabel || $0.candidate.releaseDate != candidate.releaseDate) }
-            labels[candidate.id] = collides
-                ? ([candidate.choiceLabel, candidate.releaseDateLabel].compactMap { $0 }).joined(separator: " · ") : short
+        for choice in choices {
+            let collides = groups[choice.short, default: []].contains {
+                $0.candidate.id != choice.candidate.id
+                    && ($0.full != choice.full || $0.candidate.releaseDate != choice.candidate.releaseDate)
+            }
+            labels[choice.candidate.id] = collides
+                ? ([choice.full, choice.date].compactMap { $0 }).joined(separator: " · ") : choice.short
         }
         return labels
     }
 
-    private func shortChoiceLabel(among candidates: [Self]) -> String {
-        func parts(_ candidate: Self) -> [String] {
-            let release = candidate.releaseLabel?.components(separatedBy: " · ")
-                .filter { $0 != "English" }.joined(separator: " · ")
-            return [candidate.treatmentLabel ?? "", candidate.distributionLabel ?? "", release ?? ""]
-                + candidate.identificationDetails + [candidate.releaseDateLabel ?? ""]
-        }
-        let own = parts(self)
-        var remaining = candidates.filter { $0.id != id }.map(parts)
+    private func shortChoiceLabel(parts own: [String], indexesByPart: [[String: Set<Int>]],
+                                  candidateCount: Int, excluding candidateIndex: Int) -> String {
+        var remaining: Set<Int>?
         var labels: [String] = []
         // A release or stamp that alone distinguishes the candidate beats
         // combining several individually repeated pieces of metadata.
         if let unique = own.enumerated().first(where: { index, value in
-            !value.isEmpty && !remaining.isEmpty
-                && remaining.allSatisfy({ !$0.indices.contains(index) || $0[index] != value })
+            !value.isEmpty && candidateCount > 1 && indexesByPart[index][value]?.count == 1
         }) { return unique.element }
         for (index, value) in own.enumerated() where !value.isEmpty {
-            guard remaining.contains(where: { !$0.indices.contains(index) || $0[index] != value }) else { continue }
+            let matching = indexesByPart[index][value, default: []]
+            if let remaining {
+                guard !remaining.isSubset(of: matching) else { continue }
+            } else {
+                guard matching.count < candidateCount else { continue }
+            }
             labels.append(value)
-            remaining = remaining.filter { $0.indices.contains(index) && $0[index] == value }
-            if remaining.isEmpty { break }
+            remaining = remaining.map { $0.intersection(matching) } ?? matching
+            remaining?.remove(candidateIndex)
+            if remaining?.isEmpty == true { break }
         }
         return labels.isEmpty ? (own.first(where: { !$0.isEmpty }) ?? name)
             : labels.joined(separator: " · ")
@@ -124,17 +143,45 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
 
     var releaseDateLabel: String? {
         guard let releaseDate else { return nil }
+        return Self.releaseDateFormatter().string(from: releaseDate)
+    }
+
+    private static func releaseDateFormatter() -> DateFormatter {
         // Product release dates are UTC calendar dates, not local instants.
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter.string(from: releaseDate)
+        return formatter
     }
 
     enum SelectionEvidence: Equatable {
         case labels
         case artwork
         case insufficient
+    }
+
+    private struct VisibleChoice: Hashable {
+        let label: String
+        let date: Date?
+    }
+
+    /// Compute the whole family's selection requirements once per presentation.
+    /// Calling the per-row helper for every printing repeats all label building.
+    static func selectionEvidenceByID(among candidates: [Self]) -> [String: SelectionEvidence] {
+        let groups = Dictionary(grouping: candidates) { VisibleChoice(label: $0.choiceLabel, date: $0.releaseDate) }
+        var result: [String: SelectionEvidence] = [:]
+        for group in groups.values {
+            let artworkCounts = Dictionary(grouping: group.compactMap(\.artworkID), by: { $0 }).mapValues(\.count)
+            let allHaveArtwork = group.allSatisfy { $0.artworkID != nil }
+            for candidate in group {
+                if group.count == 1 { result[candidate.id] = .labels }
+                else if allHaveArtwork, let artwork = candidate.artworkID,
+                        candidate.thumbnailURL != nil, artworkCounts[artwork] == 1 {
+                    result[candidate.id] = .artwork
+                } else { result[candidate.id] = .insufficient }
+            }
+        }
+        return result
     }
 
     /// Identical visible text cannot prove which printing a person chose.

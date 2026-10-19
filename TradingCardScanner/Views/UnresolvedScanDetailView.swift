@@ -21,6 +21,8 @@ struct UnresolvedScanDetailView: View {
     }
 
     var body: some View {
+        let labels = PhysicalPrintingCandidate.compactChoiceLabels(among: scan.printingCandidates)
+        let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: scan.printingCandidates)
         List {
             Section("Read") {
                 LabeledContent("Identifier", value: scan.displayIdentifier)
@@ -52,10 +54,10 @@ struct UnresolvedScanDetailView: View {
                                 .accessibilityIdentifier("magic-english-confirmation")
                         }
                         ForEach(scan.printingCandidates) { candidate in
-                            Button(candidate.compactChoiceLabel(among: scan.printingCandidates)) {
+                            Button(labels[candidate.id] ?? candidate.choiceLabel) {
                                 onResolve(requiresEnglish ? .englishPrinting(candidate) : .printing(candidate))
                             }
-                            .disabled(candidate.selectionEvidence(among: scan.printingCandidates) != .labels
+                            .disabled(evidence[candidate.id] != .labels
                                 || (requiresEnglish && !englishConfirmed))
                         }
                         Button("Compare printing details") { isShowingPrintingDetails = true }

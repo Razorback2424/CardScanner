@@ -913,7 +913,7 @@ enum UnresolvedReason: Equatable, Sendable {
             guard CardCatalog.isProviderNotFound(error) else { return .noConfirmedMatch }
             switch identifier.legacyIdentity {
             case .opaque: return .noConfirmedMatch
-            case .pokemon, .pokemonPromo, .magic:
+            case .pokemon, .pokemonPromo, .pokemonEnergy, .magic:
                 return .noCatalogEntry
             case .pokemonHistorical:
                 return .noConfirmedMatch
@@ -1019,7 +1019,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             )
         case let .pokemonHistorical(evidence):
             return evidence.number
-        case .pokemonPromo, .magic, .opaque:
+        case .pokemonPromo, .pokemonEnergy, .magic, .opaque:
             return nil
         }
     }
@@ -1028,6 +1028,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         switch identifier.legacyIdentity {
         case let .pokemon(_, _, _, definition): return definition.tcgdexSetID
         case let .pokemonPromo(_, _, definition): return definition.tcgdexSetID
+        case let .pokemonEnergy(_, _, definition): return definition.tcgdexSetID
         case .pokemonHistorical, .magic, .opaque: return nil
         }
     }
@@ -1303,6 +1304,14 @@ struct ScanNote: Identifiable, Equatable {
     let id = UUID()
     let text: String
     let tone: Tone
+    /// Lookup warnings belong to a particular read, unlike storage/session notes.
+    let scanKey: ScanSuppressionKey?
+
+    init(text: String, tone: Tone, scanKey: ScanSuppressionKey? = nil) {
+        self.text = text
+        self.tone = tone
+        self.scanKey = scanKey
+    }
 
     static func == (lhs: ScanNote, rhs: ScanNote) -> Bool { lhs.id == rhs.id }
 }
@@ -1752,6 +1761,7 @@ final class ScannerViewModel: ObservableObject {
                         "encounter=\(encounterID.uuidString)"
                     )
                 }
+                self.clearLookupNote()
                 if self.purpose == .collection {
                     // Keep the recognition acknowledgement visible across the
                     // identity and persistence gap. The message is upgraded to
@@ -2238,6 +2248,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func persistUnresolvedScans() {
+#if DEBUG
+        guard !usesInMemoryScreenshotFixtures else { return }
+#endif
         // A load must merge earlier disk records before acknowledging its
         // token. Keep new encounters in memory until the serialized reloads
         // settle; their final merge schedules the complete durable snapshot.
@@ -2298,6 +2311,9 @@ final class ScannerViewModel: ObservableObject {
                 gameCatalogAdapters: await catalog.registeredGameCatalogAdapters
             )
             guard revision == unresolvedPersistenceRevision else { continue }
+#if DEBUG
+            guard !usesInMemoryScreenshotFixtures else { return false }
+#endif
 
             let stored: [UnresolvedScan]
             let loadID: UUID?
@@ -4913,6 +4929,8 @@ final class ScannerViewModel: ObservableObject {
         // finishing. Do not erase that newer acknowledgement when the older
         // card becomes durable.
         clearAcknowledgement(for: candidate.encounterID)
+        clearLookupNote(for: candidate.subject.suppressionKey)
+        transientRetryCounts[candidate.subject.suppressionKey] = nil
         scanner.acceptedPresentation(
             encounterID: candidate.encounterID,
             presentationToken: committed.presentationToken
@@ -5844,6 +5862,12 @@ final class ScannerViewModel: ObservableObject {
         let subject = request.subject
         let failure = CardCatalog.classify(error)
         let unresolvedReason = UnresolvedReason.reason(for: request.identifier, error: error)
+        // Catalog work can finish after the camera has confirmed the next
+        // card. Preserve the failed read for recovery without putting its
+        // warning over that newer card's recognition or saving state.
+        let shouldPresentFailure = request.purpose != .collection
+            || scanAcknowledgement == nil
+            || scanAcknowledgement?.encounterID == request.encounterID
         let retryCount = transientRetryCounts[subject.suppressionKey, default: 0]
         let willRetry: Bool
         if case .transient = failure {
@@ -5872,7 +5896,7 @@ final class ScannerViewModel: ObservableObject {
         } else {
             endOneCardScan(encounterID: request.encounterID, outcome: "price-check-failure")
         }
-        feedback.problem()
+        if shouldPresentFailure { feedback.problem() }
 
         switch failure {
         case .transient:
@@ -5880,16 +5904,17 @@ final class ScannerViewModel: ObservableObject {
                 transientRetryCounts[subject.suppressionKey] = retryCount + 1
                 scanner.allowRetry(of: subject.suppressionKey)
             }
-            show(ScanNote(text: message, tone: .problem))
 
         case .providerUnavailable:
-            show(ScanNote(text: message, tone: .problem))
+            break
 
         case .notInCatalog:
             if unresolvedReason == .noCatalogEntry {
                 catalogMissSuppressionKey = subject.suppressionKey
             }
-            show(ScanNote(text: message, tone: .problem))
+        }
+        if shouldPresentFailure {
+            show(ScanNote(text: message, tone: .problem, scanKey: subject.suppressionKey))
         }
 
         // Price Check paused at confirmation to enforce its one-card contract;
@@ -6078,12 +6103,21 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    private func clearLookupNote(for key: ScanSuppressionKey? = nil) {
+        guard let noteKey = note?.scanKey, key == nil || noteKey == key else { return }
+        noteTask?.cancel()
+        note = nil
+    }
+
 #if DEBUG
+    private var usesInMemoryScreenshotFixtures = false
+
     /// Seeds the deterministic `WholeCardScanner` route with a receipt so the
     /// bottom card can be captured without a camera. The values are the layout's
     /// hard case on purpose: a long name, a full identifier line, and a priced
     /// printing all competing for one row.
     func seedReceiptFixtureForScreenshot() {
+        usesInMemoryScreenshotFixtures = true
         defer { seedLongSessionFixtureForScreenshot() }
         let isTrustReceipt = ProcessInfo.processInfo.arguments.contains("TrustScanReceipt")
         let resolution = isTrustReceipt ? PortfolioDebugFixtures.debugResolution() : nil
@@ -6125,7 +6159,9 @@ final class ScannerViewModel: ObservableObject {
 
     /// Reproduce a sustained session without collection writes or the camera.
     private func seedLongSessionFixtureForScreenshot() {
-        guard ProcessInfo.processInfo.arguments.contains("long-session") else { return }
+        let showsAttention = ProcessInfo.processInfo.arguments.contains("attention-session")
+        guard showsAttention || ProcessInfo.processInfo.arguments.contains("long-session") else { return }
+        let pricedReceipt = receipt
         let card = IdentifiedCard.pokemon(
             TCGdexCard(
                 id: "debug-set-035", localId: "035", name: "Duskull",
@@ -6157,10 +6193,18 @@ final class ScannerViewModel: ObservableObject {
         }
         recent = Array(sessionScans.prefix(5))
         receipt = ScanReceipt(
-            scanID: sessionScans[0].id, name: "Duskull", identifier: "PRE 035/131",
+            scanID: sessionScans[0].id,
+            name: showsAttention ? "Ragavan, Nimble Pilferer" : "Duskull",
+            identifier: "PRE 035/131",
             variantLabel: "Normal", treatmentDiagnostics: [], thumbnailURL: nil,
-            price: .unavailable(nil), resolution: .finishLock
+            price: showsAttention ? (pricedReceipt?.price ?? .unavailable(nil)) : .unavailable(nil),
+            resolution: .finishLock
         )
+        if showsAttention {
+            unresolvedScans = (0..<5).map { _ in
+                UnresolvedScan(subject: subject, reason: .noConfirmedMatch)
+            }
+        }
     }
 
     /// Replays the reported path for the deterministic UI harness: a card was

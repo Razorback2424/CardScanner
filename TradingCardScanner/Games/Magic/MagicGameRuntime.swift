@@ -18,7 +18,7 @@ struct MagicGameRuntime: Sendable {
     var runtime: CardGameRuntime {
         .init(descriptor: Self.descriptor, variantPolicy: MagicVariantPolicy(),
               pricing: MagicPriceAdapter(),
-              catalog: MagicCatalogAdapter(coordinator: coordinator),
+              catalog: MagicCatalogAdapter(coordinator: coordinator, resolvedCache: .shared),
               legacyCatalogBindings: .init(magic: coordinator))
     }
 }

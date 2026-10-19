@@ -278,7 +278,7 @@ enum PokemonMasterSetChecklistBuilder {
             if let registryCode = descriptor.flatMap({ descriptor in
                 switch descriptor.recognitionKind {
                 case .expansion: return descriptor.printedCode
-                case .promo: return descriptor.printedPrefix
+                case .promo, .energy: return descriptor.printedPrefix
                 case .notScannable: return descriptor.printedCode ?? descriptor.printedPrefix
                 }
             })?.uppercased() {
@@ -350,7 +350,7 @@ enum PokemonMasterSetChecklistBuilder {
             throw PokemonChecklistError.incompleteProviderSet(providerSet.id)
         }
         return virtualSets.map { set in
-            let summaries = orderedCards
+            let primarySummaries = orderedCards
                 .filter {
                     !PokemonMasterSetDefinition.excludes(
                         card: $0.0,
@@ -373,6 +373,7 @@ enum PokemonMasterSetChecklistBuilder {
                         return value
                     }
                 }
+            let summaries = PokemonReviewedEnergyCatalog.addingSummaries(primarySummaries, set: set)
             return BuiltSet(
                 set: withArtworkFallbacks(set, from: summaries),
                 cards: summaries,
@@ -507,7 +508,7 @@ enum PokemonMasterSetChecklistBuilder {
                     cardCount: $0,
                     setName: providerSet.name,
                     printRun: set.pokemonPrintRun
-                )
+                ) + (providerSet.id == "mee" ? PokemonReviewedEnergyCatalog.entries.count : 0)
             } ?? set.cardCount,
             releaseDate: set.releaseDate
                 ?? providerSet.releaseDate.flatMap(FlexibleDate.parse),

@@ -883,6 +883,7 @@ final class CardScanner: NSObject, ObservableObject {
     private var wantsRunning = false
     private var startRequestID = UUID()
     private var runtimeRecoveryRequestID: UUID?
+    private var runtimeRecoveryStartedAt: CFAbsoluteTime?
     /// Wall-clock time at which recognition was paused. The latch's absence
     /// clock is compensated on resume because no OCR observations were produced
     /// during this interval.
@@ -1132,6 +1133,7 @@ final class CardScanner: NSObject, ObservableObject {
             guard error?.code == .mediaServicesWereReset,
                   self.runtimeRecoveryRequestID != self.startRequestID else { return }
             self.runtimeRecoveryRequestID = self.startRequestID
+            self.runtimeRecoveryStartedAt = CFAbsoluteTimeGetCurrent()
             let recovered: Bool
 #if DEBUG
             if let restart = self.runtimeRestartOverrideForTesting {
@@ -1727,7 +1729,20 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    private func recordVisionFrameSuccess() {
+    private func recordVisionFrameSuccess(at frameStartedAt: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()) {
+        sessionQueue.async { [weak self] in
+            guard let self, self.wantsRunning,
+                  self.runtimeRecoveryRequestID == self.startRequestID,
+                  let recoveryStartedAt = self.runtimeRecoveryStartedAt,
+                  frameStartedAt >= recoveryStartedAt else { return }
+            // One restart per failure episode, rather than one per entire
+            // stack. A fresh healthy frame proves the previous reset recovered;
+            // another reset later in a long session deserves its own attempt.
+            // A frame already being processed before the reset is not proof.
+            self.runtimeRecoveryRequestID = nil
+            self.runtimeRecoveryStartedAt = nil
+            Self.logger.notice("Camera reset recovery rearmed after healthy OCR")
+        }
         guard consecutiveVisionFailures > 0 else { return }
         consecutiveVisionFailures = 0
         updateUI { $0.setRecognitionFailed(false) }
@@ -3061,10 +3076,10 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.sync { footerRequest }
     }
 
-    func receiveVisionFrameResultForTesting(error: Error? = nil) {
+    func receiveVisionFrameResultForTesting(error: Error? = nil, at frameStartedAt: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()) {
         visionQueue.sync {
             if let error { recordVisionFrameFailure(error) }
-            else { recordVisionFrameSuccess() }
+            else { recordVisionFrameSuccess(at: frameStartedAt) }
         }
     }
 
@@ -3875,7 +3890,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 footerIdentifier: footerIdentifier,
                 at: now
             )
-            recordVisionFrameSuccess()
+            recordVisionFrameSuccess(at: now)
         } catch {
             recordVisionFrameFailure(error)
 #if DEBUG

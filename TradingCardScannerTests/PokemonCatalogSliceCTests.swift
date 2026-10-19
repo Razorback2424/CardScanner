@@ -1,5 +1,6 @@
 import CryptoKit
 import struct PokemonCatalogCore.PokemonCatalogHumanInput
+import struct PokemonCatalogCore.PokemonCatalogHumanInputFile
 import XCTest
 @testable import TradingCardScanner
 
@@ -134,6 +135,24 @@ private enum SliceCFixture {
 
 @MainActor
 final class PokemonCatalogSliceCTests: XCTestCase {
+    func testBundledAndRefreshedEnergyDescriptorsMatchExplicitPublisherAuthority() throws {
+        let input = try JSONDecoder().decode(PokemonCatalogHumanInputFile.self, from: Data(contentsOf:
+            XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))))
+        let row = try XCTUnwrap(input.sets.first { $0.providerSetID == "mee" })
+        let seed = PokemonCatalogRegistry.bundledSeed
+        let descriptor = try XCTUnwrap(seed.descriptor(forProviderSetID: "mee"))
+        XCTAssertEqual(row.recognitionKind, descriptor.recognitionKind)
+        XCTAssertEqual(row.printedPrefix, descriptor.printedPrefix)
+        XCTAssertEqual(row.localIDPadWidth, descriptor.localIDPadWidth)
+        XCTAssertEqual(row.rulesVersion, descriptor.rulesVersion)
+        XCTAssertNil(seed.promo(forPrefix: "MEE"))
+        XCTAssertNil(seed.expansion(forPrintedCode: "MEE"))
+        let release = PokemonCatalogRelease(schemaVersion: 1, revision: 99, generatedAt: .now, sets: seed.descriptors)
+        try PokemonCatalogRegistry.validate(release)
+        let refreshed = PokemonScanProfile(registry: PokemonCatalogRegistry(release: release))
+        XCTAssertEqual(refreshed.parse("MEE EN 013"), ScanParser.parsePokemon("MEE EN 013"))
+        XCTAssertEqual(refreshed.parse("MEP EN 013"), ScanParser.parsePokemon("MEP EN 013"))
+    }
     func testPokemonAdapterRejectsUnknownLiveAndRecoveryIdentityFields() throws {
         let adapter = PokemonCatalogAdapter()
         let definition = try XCTUnwrap(SetCodeMap.definitions["SVI"])
@@ -157,12 +176,9 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         struct Input: Decodable {
             let sets: [PokemonCatalogHumanInput]
         }
-        let repositoryRoot = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
         let input = try JSONDecoder().decode(
             Input.self,
-            from: Data(contentsOf: repositoryRoot.appendingPathComponent("publisher/catalog-input.json"))
+            from: Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json")))
         )
         let registry = PokemonCatalogRegistry.bundledSeed
         let parentInput = try XCTUnwrap(input.sets.first { $0.providerSetID == "30th" })

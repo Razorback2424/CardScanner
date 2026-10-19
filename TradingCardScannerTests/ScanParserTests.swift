@@ -2,6 +2,55 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScanParserTests: XCTestCase {
+    func testRegisteredEnergyFootersAndSafeNegativeEvidence() throws {
+        let profile = PokemonScanProfile.bundledSeed
+        for number in ["001", "005", "007", "008", "009", "013", "015", "016"] {
+            for lines in [["MEE EN \(number)"], ["MEEEN \(number)"], ["MEE \(number)"],
+                          ["MEE", "EN", number], ["MEEEN", number], ["MEE", number]] {
+                let id = try XCTUnwrap(profile.parse(lines), lines.joined(separator: " | "))
+                XCTAssertEqual(id.namespace, "energy")
+                XCTAssertEqual(id.displayIdentifier, "MEE \(number)")
+                XCTAssertEqual(try JSONDecoder().decode(ScanIdentifierSnapshot.self,
+                    from: JSONEncoder().encode(ScanIdentifierSnapshot(identifier: id))).identifier(), id)
+            }
+        }
+        XCTAssertEqual(profile.parse("MEE EN OI3"), profile.parse("MEE EN 013"))
+        XCTAssertTrue(profile.customWords.contains("MEE"))
+        for lines in [["XYZ EN 013"], ["013"], ["015"], ["MEE EN 2026"], ["MEE 013/8"],
+                      ["MEE 013/16"], ["MEE 013/128"], ["MEE 013 / 8"], ["MEE FR 013"], ["MEEFR013"],
+                      ["MEE", "FR", "013"], ["MEE", "unrelated card body", "013"],
+                      ["MEE EN 013", "015"], ["MEE EN 013", "MEE EN 015"]] {
+            XCTAssertNil(profile.parse(lines), lines.joined(separator: " | "))
+        }
+        XCTAssertNil(profile.parse("30C 013"))
+        XCTAssertNil(profile.parse("30C 013/16"))
+        XCTAssertNotNil(profile.parse("MEP EN 013"))
+        XCTAssertNotNil(profile.parse("30C EN 013/128"))
+        XCTAssertNil(profile.parse("MEP FR 013"))
+        XCTAssertNil(profile.parse("MEP 013/128"))
+        XCTAssertNil(profile.parse("SVE EN 013"), "Do not onboard unrelated Energy families")
+        let ids = try ["MEE EN 013", "MEE EN 015", "MEP EN 013", "30C 013/128"].map {
+            try XCTUnwrap(profile.parse($0))
+        }
+        XCTAssertEqual(Set(ids).count, 4)
+        XCTAssertEqual(Set(ids.map(\.suppressionKey)).count, 4)
+        var window = CandidateConfirmationWindow()
+        XCTAssertNil(window.observeSubject(.init(identifier: ids[0])))
+        XCTAssertEqual(window.observeSubject(.init(identifier: ids[0]))?.identifier, ids[0])
+        XCTAssertNil(window.observeSubject(.init(identifier: ids[1])))
+        XCTAssertEqual(window.observeSubject(.init(identifier: ids[1]))?.identifier, ids[1])
+    }
+
+    func testEnergySplitObservationsRequireNearbyGeometry() {
+        let profile = PokemonScanProfile.bundledSeed
+        func line(_ text: String, _ x: Double) -> RecognizedLine {
+            .init(text: text, boundingBox: CGRect(x: x, y: 0.3, width: 0.1, height: 0.05))
+        }
+        guard case .identified = profile.parseOutcome([line("MEE", 0.1), line("EN", 0.22), line("013", 0.34)]) else {
+            return XCTFail("Adjacent footer should resolve")
+        }
+        XCTAssertEqual(profile.parseOutcome([line("MEE", 0.05), line("EN", 0.2), line("013", 0.8)]), .nothing)
+    }
     func testPokemonForeignFooterBlocksEnglishResolutionAndSecondaryFallback() throws {
         let profile = PokemonScanProfile.bundledSeed
         for text in ["SVI FR 001/198", "GSVIFR 001/198", "GSVIFR001/198", "SVI • DE 001/198",
@@ -921,6 +970,17 @@ final class ScanParserTests: XCTestCase {
             profile.parse(["★", "FIN", "EN"])?.displayIdentifier,
             "FIN ★ EN"
         )
+    }
+
+    func testMagicFoilSeparatorStarCannotCompeteWithTheCollectorNumber() {
+        let profile = MagicScanProfile(definitions: [.init(code: "SPM", printedSize: nil)])
+        for footer in ["SPM ★ EN", "SPM★EN", "spm ★ en"] {
+            XCTAssertNil(profile.parse([footer]), "The finish separator alone is not a collector number")
+            XCTAssertEqual(profile.parse(["L 0190", footer]),
+                .magic(setCode: "SPM", collectorNumber: "190", language: "en"))
+            XCTAssertEqual(profile.parse(["0190 " + footer]),
+                .magic(setCode: "SPM", collectorNumber: "190", language: "en"))
+        }
     }
 
     func testMagicRejectsAnAmbiguousStarCollectorNumberByGeometry() {
