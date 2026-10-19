@@ -498,7 +498,7 @@ actor PokemonOfflineCatalog {
         let candidateSetIDs: Set<String>
         switch evidence.number.scheme {
         case .officialSet:
-            let liveCandidateSetIDs = Set(entries.compactMap { entry in
+            let liveCandidateSetIDs = Set(entries.compactMap { entry -> String? in
                 let descriptor = registry.descriptor(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: entry.providerID)
                 guard descriptor?.recognitionKind != .energy else { return nil }
