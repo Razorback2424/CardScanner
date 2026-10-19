@@ -586,6 +586,8 @@ struct PrintingChoiceBar: View {
 
     var body: some View {
         let candidates = choice.displayCandidates
+        let labels = PhysicalPrintingCandidate.compactChoiceLabels(among: candidates)
+        let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: candidates)
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
@@ -634,14 +636,14 @@ struct PrintingChoiceBar: View {
             }
             if candidates.count <= 2 && !dynamicTypeSize.isAccessibilitySize {
                 HStack(spacing: 10) {
-                    ForEach(candidates) { compactButton($0, among: candidates) }
+                    ForEach(candidates) { compactButton($0, label: labels[$0.id] ?? $0.choiceLabel, evidence: evidence[$0.id] ?? .insufficient) }
                 }
             } else {
                 ScrollView {
                     LazyVGrid(columns: dynamicTypeSize.isAccessibilitySize
                         ? [GridItem(.flexible())]
                         : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                        ForEach(candidates) { compactButton($0, among: candidates) }
+                        ForEach(candidates) { compactButton($0, label: labels[$0.id] ?? $0.choiceLabel, evidence: evidence[$0.id] ?? .insufficient) }
                     }
                     .padding(.vertical, 4)
                 }
@@ -649,7 +651,7 @@ struct PrintingChoiceBar: View {
                 .scrollBounceBehavior(.basedOnSize)
                 .accessibilityIdentifier("printing-choice-list")
             }
-            if candidates.contains(where: { $0.selectionEvidence(among: candidates) != .labels }) {
+            if evidence.values.contains(where: { $0 != .labels }) {
                 Text("Compare artwork and markings in Details.")
                     .font(.caption).foregroundStyle(.white.opacity(0.75))
             }
@@ -675,11 +677,11 @@ struct PrintingChoiceBar: View {
         .environment(\.colorScheme, .dark)
     }
 
-    private func compactButton(_ candidate: PhysicalPrintingCandidate, among candidates: [PhysicalPrintingCandidate]) -> some View {
+    private func compactButton(_ candidate: PhysicalPrintingCandidate, label: String, evidence: PhysicalPrintingCandidate.SelectionEvidence) -> some View {
         Button {
             if requiresEnglish { onChooseEnglish?(candidate) } else { onChoose(candidate) }
         } label: {
-            Text(candidate.compactChoiceLabel(among: candidates))
+            Text(label)
                 .font(.subheadline.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
@@ -691,8 +693,8 @@ struct PrintingChoiceBar: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)
-        .disabled(candidate.selectionEvidence(among: candidates) != .labels || (requiresEnglish && !englishConfirmed))
-        .accessibilityLabel("Select \(candidate.compactChoiceLabel(among: candidates)) for \(candidate.name)")
+        .disabled(evidence != .labels || (requiresEnglish && !englishConfirmed))
+        .accessibilityLabel("Select \(label) for \(candidate.name)")
         .accessibilityIdentifier("printing-choice-\(candidate.id)")
     }
 }
@@ -738,7 +740,8 @@ struct PrintingChoiceDetails: View {
     }
 
     private var printingList: some View {
-            List {
+            let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: candidates)
+            return List {
                 if requiresEnglishConfirmation {
                     Toggle("This card is in English", isOn: englishBinding)
                         .accessibilityIdentifier("magic-english-confirmation")
@@ -748,7 +751,7 @@ struct PrintingChoiceDetails: View {
                 }
                 ForEach(filteredCandidates) { candidate in
                     PrintingCandidateButton(candidate: candidate,
-                        evidence: candidate.selectionEvidence(among: candidates), onChoose: { selected in
+                        evidence: evidence[candidate.id] ?? .insufficient, onChoose: { selected in
                             if requiresEnglishConfirmation { onChooseEnglish?(selected) } else { onChoose(selected) }
                         })
                         .disabled(requiresEnglishConfirmation && !englishBinding.wrappedValue)
@@ -990,16 +993,43 @@ struct ScanReceiptCard: View {
     let receipt: ScanReceipt
     let onUndo: () -> Void
     let onOpen: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if dynamicTypeSize.isAccessibilitySize {
+                Button(action: onOpen) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label {
+                            Text(receipt.name)
+                                .fixedSize(horizontal: false, vertical: true)
+                        } icon: {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        ScanPriceValue(
+                            lookup: receipt.price,
+                            isGradedPricePending: receipt.isGradedPricePending
+                        )
+                        Text("\(receipt.identifier) · \(receipt.variantLabel)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.white.opacity(0.72))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                undoButton
+            } else {
             HStack(spacing: 12) {
                 Button(action: onOpen) {
                     HStack(spacing: 10) {
                         // No thumbnail. At 40 pt over a live preview it was too
                         // small to identify a card by, and it cost the name the
                         // width that actually confirms the right card was added
-                        // while scanning fast. The rail below still carries the
+                        // while scanning fast. The recent scans disclosure carries the
                         // artwork for anyone who wants to look back.
                         Image(systemName: "checkmark.circle.fill")
                             .font(.subheadline)
@@ -1035,18 +1065,8 @@ struct ScanReceiptCard: View {
                 }
                 .buttonStyle(.plain)
 
-                // Insurance, not a step in the workflow: it keeps a full 44 pt
-                // target and its complete VoiceOver label, but stops being the
-                // loudest and widest thing on a card about the card just added.
-                Button(action: onUndo) {
-                    Image(systemName: "arrow.uturn.backward")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(width: 44, height: 44)
-                }
-                .buttonStyle(.bordered)
-                .tint(.red)
-                .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
-                .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
+                undoButton
+            }
             }
 
             VariantProvenanceLabel(
@@ -1068,6 +1088,18 @@ struct ScanReceiptCard: View {
         .foregroundStyle(.white)
         .padding(10)
         .appGlass(cornerRadius: 16)
+    }
+
+    private var undoButton: some View {
+        Button(action: onUndo) {
+            Image(systemName: "arrow.uturn.backward")
+                .font(.subheadline.weight(.semibold))
+                .frame(width: 44, height: 44)
+        }
+        .buttonStyle(.plain)
+        .background(.red.opacity(0.18), in: Circle())
+        .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
+        .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
     }
 }
 

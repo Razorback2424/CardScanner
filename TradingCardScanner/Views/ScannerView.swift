@@ -3,7 +3,7 @@ import SwiftUI
 
 /// One continuous session. The camera is the product surface and never goes
 /// away: there is no result screen, no confirm step, and no dismiss animation
-/// between cards. Success is a receipt below the top controls while the next
+/// between cards. Success is a receipt below the footer guide while the next
 /// card is already being read.
 struct ScannerView: View {
     let browseCatalog: BrowseCatalog
@@ -19,6 +19,7 @@ struct ScannerView: View {
     @State private var isShowingSessionReview = false
     @State private var isShowingUnresolved = false
     @State private var pendingUnresolvedResolution: PendingUnresolvedResolution?
+    @State private var footerGuideFrame: CGRect?
 #if DEBUG && LOCAL_ONLY_SIGNING
     @Environment(\.cardGameRuntimes) private var runtimes
     @State private var acceptanceNumber = OnePieceCatalogBootstrap.acceptanceNumber()
@@ -90,13 +91,15 @@ struct ScannerView: View {
             CameraPreview(
                 scanner: model.scanner,
                 successCount: model.successCount,
-                recognitionCount: model.recognitionCount
+                recognitionCount: model.recognitionCount,
+                onFooterGuideFrameChange: { footerGuideFrame = $0 }
             )
                 .ignoresSafeArea()
 
             ScannerChrome(
                 model: model,
                 scanner: model.scanner,
+                footerGuideFrame: footerGuideFrame,
                 openSettings: {
                     model.pauseForSettingsPresentation()
                     isShowingSettings = true
@@ -271,13 +274,11 @@ struct ScannerView: View {
         .sheet(isPresented: $isShowingSessionReview, onDismiss: model.resumeAfterPresentation) {
             ScanSessionReviewSheet()
         }
-        .toolbar(isThumbZoneContested ? .hidden : .visible, for: .tabBar)
+        .toolbar(isScanChoicePending ? .hidden : .visible, for: .tabBar)
     }
 
-    /// The tab bar only yields its space while a choice or confirmation surface
-    /// is occupying the lower thumb zone. Informational receipts and
-    /// acknowledgements keep the scanner's bottom layout stable.
-    private var isThumbZoneContested: Bool {
+    /// Keep the existing focused choice flow until the current scan is resolved.
+    private var isScanChoicePending: Bool {
         model.pendingChoice != nil
             || model.pendingPrintRunChoice != nil
             || model.pendingIdentityChoice != nil
@@ -291,47 +292,81 @@ struct ScannerView: View {
 private struct ScannerChrome: View {
     @ObservedObject var model: ScannerViewModel
     let scanner: CardScanner
+    let footerGuideFrame: CGRect?
     let openSettings: () -> Void
     let openReview: (RecentScan) -> Void
     let openUnresolved: () -> Void
     let openSessionReview: () -> Void
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Namespace private var glassNamespace
+    @State private var isSessionExpanded = false
+    @State private var isAttentionExpanded = false
 
     var body: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            let frame = geometry.frame(in: .global)
+            let topHeight = max(0, (footerGuideFrame?.minY ?? frame.midY) - frame.minY - 12)
+            let feedbackHeight = max(0, frame.maxY - (footerGuideFrame?.maxY ?? frame.midY) - 12)
+            ZStack(alignment: .top) {
+                VStack(spacing: 10) {
+                    topBar
+                    ScrollView {
+                        topStack
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                }
+                .frame(height: topHeight, alignment: .top)
+                .accessibilityIdentifier("scanner-top-controls")
+
                 ScrollView {
-                    chromeStack.frame(minHeight: geometry.size.height)
+                    scanFeedback.fixedSize(horizontal: false, vertical: true)
                 }
                 .scrollBounceBehavior(.basedOnSize)
-                .accessibilityIdentifier("scanner-accessibility-content")
+                .frame(height: feedbackHeight)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .accessibilityIdentifier("scanner-bottom-feedback")
             }
-        } else {
-            chromeStack
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 6)
+        .padding(.bottom, 8)
+        .contentWidthLimit(.standard)
+        .overlay {
+            ScannerCameraIssueOverlay(state: scanner.uiState)
+        }
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.scanAcknowledgement)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingDuplicateConfirmation)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
+        .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
+        .animation(.easeOut(duration: 0.18), value: model.sessionScans.count)
+        .animation(.easeOut(duration: 0.18), value: model.note)
     }
 
-    private var chromeStack: some View {
-        VStack(spacing: 10) {
-            ScannerTopBar(
-                purpose: model.purpose,
-                subjectMode: model.subjectMode,
-                finishLocks: model.finishLocks,
-                variantLockMenu: model.gameRegistry.variantLockMenu,
-                isSlowIdentifying: model.isSlowIdentifying,
-                setPurpose: model.setPurpose,
-                setSubjectMode: model.setSubjectMode,
-                setFinishLock: model.setFinishLock,
-                clearFinishLocks: model.clearFinishLocks,
-                openSettings: openSettings
-            )
-            .equatable()
+    private var topBar: some View {
+        ScannerTopBar(
+            purpose: model.purpose,
+            subjectMode: model.subjectMode,
+            finishLocks: model.finishLocks,
+            variantLockMenu: model.gameRegistry.variantLockMenu,
+            isSlowIdentifying: model.isSlowIdentifying,
+            setPurpose: model.setPurpose,
+            setSubjectMode: model.setSubjectMode,
+            setFinishLock: model.setFinishLock,
+            clearFinishLocks: model.clearFinishLocks,
+            openSettings: openSettings
+        )
+        .equatable()
+    }
 
-            // Keep transient feedback above the card footer. The preview and
-            // its reading region stay fixed as receipts arrive during a run.
-            scanFeedback
+    private var topStack: some View {
+        VStack(spacing: 10) {
+            sessionHistory
+
+            scanActions
 
             if let note = model.note {
                 ScanNoteView(note: note)
@@ -365,36 +400,12 @@ private struct ScannerChrome: View {
                 )
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
-
-            Spacer(minLength: 0)
-
-            bottomStack
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 6)
-        .padding(.bottom, 8)
-        // The camera preview fills the window; its controls should not. Stretched
-        // to the full width of an iPad these become a very long way to travel
-        // between a mode toggle and the shutter beneath it.
-        .contentWidthLimit(.standard)
-        .overlay {
-            ScannerCameraIssueOverlay(state: scanner.uiState)
-        }
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.scanAcknowledgement)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingDuplicateConfirmation)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
-        .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
-        .animation(.easeOut(duration: 0.18), value: model.sessionScans.count)
-        .animation(.easeOut(duration: 0.18), value: model.note)
     }
 
-    // MARK: - Bottom
+    // MARK: - Top actions
 
-    private var bottomStack: some View {
+    private var scanActions: some View {
         VStack(spacing: 9) {
             if let confirmation = model.pendingDuplicateConfirmation {
                 DuplicateConfirmationBar(
@@ -402,8 +413,8 @@ private struct ScannerChrome: View {
                     onSameCard: model.chooseSameCard,
                     onAddAnother: model.addAnother
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .appGlassEffectID("scanner-top-actions", in: glassNamespace)
             } else if let choice = model.pendingIdentityChoice {
                 PrintingChoiceBar(
                     choice: choice,
@@ -412,39 +423,37 @@ private struct ScannerChrome: View {
                     onChooseEnglish: model.chooseWithEnglishConfirmation
                 )
                 .id(choice.id)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .appGlassEffectID("scanner-top-actions", in: glassNamespace)
             } else if let choice = model.pendingPrintRunChoice {
                 PrintRunChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
                     onDismiss: model.dismissPrintRunChoice
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .appGlassEffectID("scanner-top-actions", in: glassNamespace)
             } else if let choice = model.pendingChoice {
                 VariantChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
                     onDismiss: model.dismissChoice
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .appGlassEffectID("scanner-top-actions", in: glassNamespace)
             }
 
             ScannerSlabPromptView(
                 state: scanner.uiState,
                 switchToRaw: { model.setSubjectMode(.raw) }
             )
-
-            sessionHistory
         }
     }
 
     @ViewBuilder
     private var scanFeedback: some View {
-        // Explicit choices retain the lower, reachable action surface and
-        // suppress passive feedback just as they did in the original stack.
+        // Only the current scan's feedback belongs below the reading band.
+        // Explicit choices suppress it until the scan can be confirmed.
         if model.pendingDuplicateConfirmation == nil,
            model.pendingIdentityChoice == nil,
            model.pendingPrintRunChoice == nil,
@@ -456,7 +465,7 @@ private struct ScannerChrome: View {
                         model.retryFailedScan(encounterID: acknowledgement.encounterID)
                     }
                 )
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .transition(.opacity)
                     .appGlassEffectID("scanner-feedback", in: glassNamespace)
             } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
@@ -471,60 +480,69 @@ private struct ScannerChrome: View {
                         openReview(scan)
                     }
                 )
-                .transition(.move(edge: .top).combined(with: .opacity))
+                .transition(.opacity)
                 .appGlassEffectID("scanner-feedback", in: glassNamespace)
             }
         }
     }
 
     private var sessionHistory: some View {
-        VStack(alignment: .trailing, spacing: 8) {
+        VStack(spacing: 8) {
             if model.purpose == .collection, !model.recent.isEmpty {
-                RecentScanRail(
-                    scans: model.recent,
-                    gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
-                    onSelect: openReview,
-                    onDelete: model.deleteRecentScan
-                )
+                DisclosureGroup(isExpanded: $isSessionExpanded) {
+                    RecentScanRail(
+                        scans: model.recent,
+                        gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
+                        onSelect: openReview,
+                        onDelete: model.deleteRecentScan
+                    )
                     .frame(maxWidth: .infinity)
 
-                if model.sessionScans.count > 5 {
-                    Button {
-                        openSessionReview()
-                    } label: {
-                        Label(
-                            "Review session · \(model.sessionScans.count) cards",
-                            systemImage: "list.bullet.rectangle"
-                        )
+                    Button(action: openSessionReview) {
+                        Label("Review session", systemImage: "list.bullet.rectangle")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 7)
-                        .appPillGlass()
+                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("scanner-session-review")
                     .accessibilityLabel("Review session, \(model.sessionScans.count) cards")
                     .accessibilityHint("Opens every card added during this scanner visit.")
+                } label: {
+                    Label("Recent scans · \(model.sessionScans.count)", systemImage: "list.bullet.rectangle")
+                        .frame(minHeight: 44)
+                        .accessibilityIdentifier("scanner-session-disclosure")
                 }
+                .padding(.horizontal, 12)
+                .appGlass(cornerRadius: 14)
             }
 
             if model.unresolvedCount > 0 {
-                unresolvedChip
+                DisclosureGroup(isExpanded: $isAttentionExpanded) {
+                    Button(action: openUnresolved) {
+                        Label("Review needs attention", systemImage: "exclamationmark.circle")
+                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("scanner-attention-review")
+                    .accessibilityHint("Shows what was read and why it was not added")
+                } label: {
+                    Label(attentionTitle, systemImage: "exclamationmark.circle.fill")
+                        .foregroundStyle(.orange)
+                        .frame(minHeight: 44)
+                        .accessibilityIdentifier("scanner-attention-disclosure")
+                }
+                .padding(.horizontal, 12)
+                .appGlass(cornerRadius: 14)
             }
         }
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(.white)
+        .tint(.white)
     }
 
-    private var unresolvedChip: some View {
-        Button(action: openUnresolved) {
-            Text("\(model.unresolvedCount) need\(model.unresolvedCount == 1 ? "s" : "") attention")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 11)
-                .padding(.vertical, 7)
-                .appPillGlass(tint: .orange, fallbackTintOpacity: 0.85)
-        }
-        .buttonStyle(.plain)
-        .accessibilityHint("Shows what was read and why it was not added")
+    private var attentionTitle: String {
+        "\(model.unresolvedCount) need\(model.unresolvedCount == 1 ? "s" : "") attention"
     }
 
 }

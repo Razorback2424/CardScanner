@@ -18,11 +18,14 @@ struct CameraPreview: UIViewRepresentable {
     /// Increments at OCR confirmation, before catalog resolution and persistence.
     /// This is the immediate "recognized" pulse, distinct from the green add pulse.
     var recognitionCount: Int
+    var onFooterGuideFrameChange: ((CGRect) -> Void)? = nil
 
-    init(scanner: CardScanner, successCount: Int, recognitionCount: Int = 0) {
+    init(scanner: CardScanner, successCount: Int, recognitionCount: Int = 0,
+         onFooterGuideFrameChange: ((CGRect) -> Void)? = nil) {
         self.scanner = scanner
         self.successCount = successCount
         self.recognitionCount = recognitionCount
+        self.onFooterGuideFrameChange = onFooterGuideFrameChange
         _scannerState = ObservedObject(wrappedValue: scanner.uiState)
 #if DEBUG
         _debugVisionOverlay = ObservedObject(wrappedValue: scanner.debugVisionOverlay)
@@ -38,6 +41,7 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
+        view.onFooterGuideFrameChange = onFooterGuideFrameChange
         view.subjectMode = scannerState.subjectMode
         view.slabFraming = scannerState.slabFraming
         view.footerVisionRect = scannerState.footerRegionOfInterest
@@ -50,6 +54,7 @@ struct CameraPreview: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
+        uiView.onFooterGuideFrameChange = onFooterGuideFrameChange
         let rotationChanged = uiView.rotation !== scanner.rotation
             || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
         let subjectModeChanged = uiView.subjectMode != scannerState.subjectMode
@@ -95,6 +100,8 @@ final class PreviewView: UIView {
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
     private var lastRecognitionCount = 0
+    var onFooterGuideFrameChange: ((CGRect) -> Void)?
+    private var lastFooterGuideFrame: CGRect?
 #if DEBUG
     private var debugBoxLayers: [CAShapeLayer] = []
     var debugVisionBoxes: [CGRect] = [] {
@@ -164,18 +171,8 @@ final class PreviewView: UIView {
             innerVisionRect = nil
         }
 
-        scanRegionLayer.frame = previewLayer.layerRectConverted(
-            fromMetadataOutputRect: CardFramingRegion.metadataRect(
-                fromVisionRect: scanVisionRect,
-                rotationAngle: rotationAngle
-            )
-        )
-        let cardRect = previewLayer.layerRectConverted(
-            fromMetadataOutputRect: CardFramingRegion.metadataRect(
-                fromVisionRect: outerVisionRect,
-                rotationAngle: rotationAngle
-            )
-        )
+        scanRegionLayer.frame = previewRect(for: scanVisionRect)
+        let cardRect = previewRect(for: outerVisionRect)
         cardRegionLayer.frame = cardRect
         cardRegionLayer.path = UIBezierPath(
             roundedRect: cardRegionLayer.bounds,
@@ -187,6 +184,16 @@ final class PreviewView: UIView {
         slabCardRegionLayer.lineDashPattern = nil
         scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
         scanRegionLayer.borderColor = UIColor.systemGreen.cgColor
+
+        // Share the rendered band, including aspect-fill cropping, with the
+        // SwiftUI chrome. Receipts must fit below it; controls stay above it.
+        let footerFrame = convert(scanRegionLayer.frame, to: nil)
+        if window != nil, !footerFrame.isEmpty, footerFrame != lastFooterGuideFrame {
+            lastFooterGuideFrame = footerFrame
+            DispatchQueue.main.async { [weak self] in
+                self?.onFooterGuideFrameChange?(footerFrame)
+            }
+        }
 
         if let innerVisionRect {
             slabCardRegionLayer.isHidden = false
@@ -207,6 +214,32 @@ final class PreviewView: UIView {
 #if DEBUG
         layoutDebugVisionBoxes()
 #endif
+    }
+
+    private func previewRect(for visionRect: CGRect) -> CGRect {
+#if DEBUG
+        // A simulator has no camera aperture. Render the same 16:9 source
+        // geometry for these isolated layout fixtures only, without OCR input.
+        if previewLayer.connection == nil,
+           ProcessInfo.processInfo.arguments.contains(where: {
+               ["WholeCardScanner", "TrustScanReceipt"].contains($0)
+           }) {
+            let source = CGSize(width: 9, height: 16)
+            let scale = max(bounds.width / source.width, bounds.height / source.height)
+            let size = CGSize(width: source.width * scale, height: source.height * scale)
+            return CGRect(
+                x: (bounds.width - size.width) / 2 + visionRect.minX * size.width,
+                y: (bounds.height - size.height) / 2 + (1 - visionRect.maxY) * size.height,
+                width: visionRect.width * size.width,
+                height: visionRect.height * size.height
+            )
+        }
+#endif
+        return previewLayer.layerRectConverted(
+            fromMetadataOutputRect: CardFramingRegion.metadataRect(
+                fromVisionRect: visionRect, rotationAngle: rotationAngle
+            )
+        )
     }
 
     /// Flashes the band brightly and lets it settle back to green. Explicitly
