@@ -1108,6 +1108,7 @@ struct MagicScanProfile: Sendable {
     /// loop, which put two `NSRegularExpression` compiles on every OCR line of
     /// every frame.
     private let setCodeRegex: NSRegularExpression
+    private let foilSeparatorRegex: NSRegularExpression
     private static let collectorNumberRegex = try! NSRegularExpression(
         // Keep a one-letter collector suffix attached to the numeric stem. The
         // optional whitespace is intentional: Vision sometimes separates the
@@ -1164,7 +1165,10 @@ struct MagicScanProfile: Sendable {
         self.definitions = keyed
         // Magic codes are alphanumeric (MH3, 40K), so digits are a word boundary
         // here in a way they are not for Pokémon's always-alphabetic codes.
-        self.setCodeRegex = ScanText.setCodeRegex(codes: keyed.keys, boundary: "A-Z0-9")
+        let setCodeRegex = ScanText.setCodeRegex(codes: keyed.keys, boundary: "A-Z0-9")
+        self.setCodeRegex = setCodeRegex
+        self.foilSeparatorRegex = try! NSRegularExpression(
+            pattern: setCodeRegex.pattern + #"\s*(★)\s*EN(?![A-Z])"#)
     }
 
     var customWords: [String] {
@@ -1190,7 +1194,7 @@ struct MagicScanProfile: Sendable {
     /// from `nothing` so a Magic P/T fraction cannot immediately become a
     /// historical-Pokemon trigger in the same frame.
     func parseOutcome(_ recognizedLines: [RecognizedLine]) -> MagicParseOutcome {
-        let lines = recognizedLines
+        let normalizedLines = recognizedLines
             .map {
                 RecognizedLine(
                     text: $0.text
@@ -1201,6 +1205,7 @@ struct MagicScanProfile: Sendable {
                 )
             }
             .filter { !$0.text.isEmpty }
+        let lines = removingFoilSeparators(from: normalizedLines)
         guard !lines.isEmpty else { return .nothing }
 
         // Every line is examined once, then windows just combine the results.
@@ -1226,6 +1231,45 @@ struct MagicScanProfile: Sendable {
         }
         if unique.count > 1 { return .ambiguous }
         return rejectedCollectorInMagicFooter ? .spatiallyRejectedCollector : .nothing
+    }
+
+    /// Vision may split `SPM ★ EN` into three observations. Strip only that
+    /// separator, before applying the three-observation footer window, so the
+    /// actual collector number still fits. Keep every surviving line's bounds.
+    private func removingFoilSeparators(from lines: [RecognizedLine]) -> [RecognizedLine] {
+        guard lines.contains(where: { $0.text.contains("★") }) else { return lines }
+        let text = lines.map(\.text).joined(separator: "\n")
+        var offset = 0
+        let ranges = lines.map { line -> NSRange in
+            let range = NSRange(location: offset, length: line.text.utf16.count)
+            offset += range.length + 1
+            return range
+        }
+        var removals: [Int: [NSRange]] = [:]
+        for match in foilSeparatorRegex.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
+            let indexes = lines.indices.filter { NSIntersectionRange(ranges[$0], match.range).length > 0 }
+            let bounds = indexes.compactMap { lines[$0].boundingBox }
+            if bounds.count == indexes.count, bounds.count > 1 {
+                let height = bounds.map(\.height).max() ?? 0
+                let verticalSpread = (bounds.map(\.midY).max() ?? 0) - (bounds.map(\.midY).min() ?? 0)
+                // A real collector star above the set/language row is not a
+                // finish separator, even if OCR returned it between those lines.
+                guard verticalSpread <= height * 0.75,
+                      zip(bounds, bounds.dropFirst()).allSatisfy({ $0.minX <= $1.minX }) else { continue }
+            }
+            let star = match.range(at: 1)
+            guard let index = indexes.first(where: { NSIntersectionRange(ranges[$0], star).length > 0 }) else { continue }
+            removals[index, default: []].append(NSRange(location: star.location - ranges[index].location, length: star.length))
+        }
+        return lines.enumerated().compactMap { index, line in
+            guard let ranges = removals[index] else { return line }
+            let result = NSMutableString(string: line.text)
+            for range in ranges.sorted(by: { $0.location > $1.location }) {
+                result.replaceCharacters(in: range, with: " ")
+            }
+            let text = (result as String).trimmingCharacters(in: .whitespacesAndNewlines)
+            return text.isEmpty ? nil : RecognizedLine(text: text, boundingBox: line.boundingBox)
+        }
     }
 
     /// What one observation contributes to a footer, worked out once.
@@ -1369,19 +1413,6 @@ struct MagicScanProfile: Sendable {
         return Self.collectorNumberRegex.matches(in: text, options: [], range: range)
             .enumerated()
             .compactMap { index, match in
-                // Foils print a star between the set and language. It is not
-                // another collector number: `0190` + `SPM ★ EN` must produce
-                // one identity. A standalone star on the number line remains
-                // a supported, genuine collector-number value.
-                if let token = Range(match.range(at: 1), in: text), text[token] == "★" {
-                    let before = text[..<token.lowerBound].trimmingCharacters(in: .whitespaces)
-                    let after = text[token.upperBound...].trimmingCharacters(in: .whitespaces)
-                    if let code = before.split(whereSeparator: \.isWhitespace).last,
-                       definitions[String(code)] != nil,
-                       after.range(of: #"^EN(?![A-Z])"#, options: .regularExpression) != nil {
-                        return nil
-                    }
-                }
                 return reading(
                     from: match,
                     in: text,

@@ -983,6 +983,36 @@ final class ScanParserTests: XCTestCase {
         }
     }
 
+    func testMagicFoilSeparatorWorksWhenVisionSplitsItsFooter() {
+        let profile = MagicScanProfile(definitions: [.init(code: "SPM", printedSize: nil)])
+        let footers = [["SPM", "★", "EN"], ["SPM ★", "EN"], ["SPM", "★ EN"],
+            ["SPM★", "EN"], ["SPM", "★EN"]]
+        for footer in footers {
+            XCTAssertNil(profile.parse(footer), "A split finish separator is not a collector number: \(footer)")
+            XCTAssertEqual(profile.parse(["L 0190"] + footer),
+                .magic(setCode: "SPM", collectorNumber: "190", language: "en"), "\(footer)")
+        }
+    }
+
+    func testMagicSplitFoilSeparatorPreservesCollectorGeometryAndRealStarNumbers() {
+        let profile = MagicScanProfile(definitions: [.init(code: "SPM", printedSize: nil)])
+        func line(_ text: String, x: Double, y: Double, width: Double) -> RecognizedLine {
+            .init(text: text, boundingBox: CGRect(x: x, y: y, width: width, height: 0.03))
+        }
+        let footer = [line("SPM", x: 0.10, y: 0.3, width: 0.1),
+            line("★", x: 0.23, y: 0.3, width: 0.03), line("EN", x: 0.30, y: 0.3, width: 0.06)]
+        XCTAssertEqual(profile.parseOutcome([line("0190", x: 0.1, y: 0.5, width: 0.12)] + footer).identifier,
+            .magic(setCode: "SPM", collectorNumber: "190", language: "en"))
+        XCTAssertNil(profile.parseOutcome([line("0190", x: 0.85, y: 0.5, width: 0.05)] + footer).identifier,
+            "Removing a separator cannot make a detached right-hand number eligible")
+        let realStar = [footer[0], line("★", x: 0.10, y: 0.5, width: 0.03), footer[2]]
+        XCTAssertEqual(profile.parseOutcome(realStar).identifier,
+            .magic(setCode: "SPM", collectorNumber: "★", language: "en"),
+            "A collector star on a different row must remain an identity")
+        XCTAssertEqual(profile.parse(["0190★", "SPM", "★", "EN"]),
+            .magic(setCode: "SPM", collectorNumber: "190★", language: "en"))
+    }
+
     func testMagicRejectsAnAmbiguousStarCollectorNumberByGeometry() {
         let profile = MagicScanProfile(definitions: [
             .init(code: "FIN", printedSize: nil)
