@@ -112,6 +112,7 @@ public struct MagicCatalogPublicationReceipt: Sendable {
 public enum MagicCatalogPublisherError: Error, CustomStringConvertible, Sendable, Equatable {
     case immutableRevisionConflict(Int)
     case activeRevisionNotMonotonic(received: Int, current: Int)
+    case invalidCurrentPointer
 
     public var description: String {
         switch self {
@@ -119,6 +120,8 @@ public enum MagicCatalogPublisherError: Error, CustomStringConvertible, Sendable
             return "Magic catalog immutable revision \(revision) already contains different bytes"
         case let .activeRevisionNotMonotonic(received, current):
             return "Magic catalog revision \(received) is not greater than active revision \(current)"
+        case .invalidCurrentPointer:
+            return "Cannot publish over an unreadable current Magic catalog pointer"
         }
     }
 }
@@ -145,6 +148,26 @@ public struct MagicCatalogFilesystemPublisher: Sendable {
         }
 
         let namespace = root.appendingPathComponent(environment.path, isDirectory: true)
+        let currentURL = namespace.appendingPathComponent("current.json")
+        let envelopeData = try MagicCatalogJSON.encode(signedBuild.envelope)
+        // A caller's baseline may be absent or stale. The persisted pointer is
+        // also authoritative and must never be rolled back or replaced blindly.
+        if FileManager.default.fileExists(atPath: currentURL.path) {
+            guard let currentData = try? Data(contentsOf: currentURL),
+                  let envelope = try? MagicCatalogJSON.decode(MagicCatalogReleaseEnvelope.self, from: currentData),
+                  let payload = MagicCatalogBase64URL.decode(envelope.payload),
+                  let current = try? MagicCatalogJSON.decode(MagicCatalogRelease.self, from: payload) else {
+                throw MagicCatalogPublisherError.invalidCurrentPointer
+            }
+            guard revision >= current.revision else {
+                throw MagicCatalogPublisherError.activeRevisionNotMonotonic(
+                    received: revision, current: current.revision
+                )
+            }
+            if revision == current.revision, currentData != envelopeData {
+                throw MagicCatalogPublisherError.immutableRevisionConflict(revision)
+            }
+        }
         let releaseDirectory = namespace
             .appendingPathComponent("releases", isDirectory: true)
             .appendingPathComponent(String(revision), isDirectory: true)
@@ -153,7 +176,6 @@ public struct MagicCatalogFilesystemPublisher: Sendable {
             withIntermediateDirectories: true
         )
 
-        let envelopeData = try MagicCatalogJSON.encode(signedBuild.envelope)
         let payloadData = try MagicCatalogJSON.encode(signedBuild.build.release)
         let reportData = try MagicCatalogJSON.encode(signedBuild.build.report)
         let objects: [(String, Data)] = [
@@ -175,7 +197,6 @@ public struct MagicCatalogFilesystemPublisher: Sendable {
             options: .atomic
         )
 
-        let currentURL = namespace.appendingPathComponent("current.json")
         try FileManager.default.createDirectory(at: namespace, withIntermediateDirectories: true)
         try envelopeData.write(to: currentURL, options: .atomic)
         return MagicCatalogPublicationReceipt(
