@@ -1178,6 +1178,9 @@ struct ScanReceiptCard: View {
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                             .layoutPriority(1)
+                            // A graded quote arriving after the add rolls in
+                            // rather than popping.
+                            .contentTransition(.numericText())
                     }
                     .contentShape(Rectangle())
                 }

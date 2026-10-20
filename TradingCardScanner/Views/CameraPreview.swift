@@ -305,7 +305,10 @@ final class PreviewView: UIView {
 
         scanRegionLayer.add(border, forKey: "successBorderFlash")
         scanRegionLayer.add(fill, forKey: "successFillFlash")
-        scanRegionLayer.add(pulse, forKey: "successScalePulse")
+        // Color alone still says "added" with Reduce Motion on.
+        if !UIAccessibility.isReduceMotionEnabled {
+            scanRegionLayer.add(pulse, forKey: "successScalePulse")
+        }
         cardCornerLayer.add(corners, forKey: "successCornerFlash")
     }
 

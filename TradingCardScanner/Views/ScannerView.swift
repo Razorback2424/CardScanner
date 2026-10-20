@@ -343,6 +343,17 @@ private struct ScannerChrome: View {
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
         .animation(.easeOut(duration: 0.18), value: model.sessionScans.count)
         .animation(.easeOut(duration: 0.18), value: model.note)
+        .animation(.easeOut(duration: 0.18), value: isScanChoicePending)
+        .onChange(of: model.receipt?.id) { _, id in
+            // The receipt is visual; say the same thing for someone scanning
+            // by ear. Only collection adds produce a receipt.
+            guard id != nil, let receipt = model.receipt, model.purpose == .collection else { return }
+            var message = "Added \(receipt.name)"
+            if case let .price(price) = receipt.price, !receipt.isGradedPricePending {
+                message += ", \(price.unitMarketPriceUSD.formatted(.currency(code: price.currencyCode)))"
+            }
+            AccessibilityNotification.Announcement(message).post()
+        }
     }
 
     private var topBar: some View {
@@ -363,7 +374,12 @@ private struct ScannerChrome: View {
 
     private var topStack: some View {
         VStack(spacing: 10) {
-            sessionHistory
+            // A question owns the screen until it is answered: history steps
+            // aside so the only thing above the band is the one decision.
+            if !isScanChoicePending {
+                sessionHistory
+                    .transition(.opacity)
+            }
 
             scanActions
 
@@ -495,10 +511,7 @@ private struct ScannerChrome: View {
     private var sessionHistory: some View {
         VStack(alignment: .leading, spacing: 8) {
             if showsSessionTray || model.unresolvedCount > 0 {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { sessionPills }
-                    VStack(alignment: .leading, spacing: 8) { sessionPills }
-                }
+                sessionPillCluster
             }
 
             if showsSessionTray, isSessionExpanded {
@@ -508,6 +521,37 @@ private struct ScannerChrome: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(.white)
+    }
+
+    /// Pills share one glass container so neighbouring capsules blend as a
+    /// single cluster on Liquid Glass, as the top bar already does.
+    @ViewBuilder
+    private var sessionPillCluster: some View {
+        let pills = ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { sessionPills }
+            VStack(alignment: .leading, spacing: 8) { sessionPills }
+        }
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: 8) { pills }
+        } else {
+            pills
+        }
+    }
+
+    private var isScanChoicePending: Bool {
+        model.pendingChoice != nil
+            || model.pendingPrintRunChoice != nil
+            || model.pendingIdentityChoice != nil
+            || model.pendingDuplicateConfirmation != nil
+    }
+
+    /// What the stack is worth so far, shown only when at least one card has a
+    /// quote. Unpriced cards are left out rather than counted as zero; the
+    /// spoken label says how many were priced.
+    private var sessionValueText: String? {
+        let value = model.sessionKnownValue
+        guard value.pricedCount > 0, value.total.isValid else { return nil }
+        return value.total.formatted()
     }
 
     @ViewBuilder
@@ -524,6 +568,15 @@ private struct ScannerChrome: View {
                         .font(.subheadline.weight(.semibold).monospacedDigit())
                         .contentTransition(.numericText())
                         .lineLimit(1)
+                    if let sessionValueText {
+                        Text("·")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(.white.opacity(0.45))
+                        Text(sessionValueText)
+                            .font(.system(.subheadline, design: .rounded).weight(.bold).monospacedDigit())
+                            .contentTransition(.numericText())
+                            .lineLimit(1)
+                    }
                     Image(systemName: "chevron.down")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(.white.opacity(0.7))
@@ -538,7 +591,7 @@ private struct ScannerChrome: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("scanner-session-disclosure")
-            .accessibilityLabel("Recent scans, \(model.sessionScans.count) cards")
+            .accessibilityLabel(sessionAccessibilityLabel)
             .accessibilityValue(isSessionExpanded ? "Expanded" : "Collapsed")
             .accessibilityHint("Shows the cards added during this scanner visit.")
         }
@@ -566,6 +619,14 @@ private struct ScannerChrome: View {
             .accessibilityIdentifier("scanner-attention-review")
             .accessibilityHint("Shows what was read and why it was not added")
         }
+    }
+
+    private var sessionAccessibilityLabel: String {
+        let count = model.sessionScans.count
+        guard let sessionValueText else { return "Recent scans, \(count) cards" }
+        let priced = model.sessionKnownValue.pricedCount
+        let pricedNote = priced == count ? "" : ", from \(priced) priced"
+        return "Recent scans, \(count) cards, \(sessionValueText) known value\(pricedNote)"
     }
 
     private var sessionTrayContent: some View {
