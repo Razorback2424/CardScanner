@@ -360,6 +360,31 @@ final class CardCenteringViewModel: ObservableObject {
 }
 
 struct CardCenteringView: View {
+    @ObservedObject private var collectorTools = CollectorToolsStore.shared
+    @State private var isShowingOffer = false
+
+    var body: some View {
+        Group {
+            if collectorTools.canUseCentering {
+                GuidedCardCenteringView()
+            } else if collectorTools.ownership == .loading {
+                ProgressView("Checking purchases…")
+            } else {
+                ContentUnavailableView {
+                    Label("Guided Card Centering", systemImage: "square.dashed.inset.filled")
+                } description: {
+                    Text("Collector Tools includes unlimited guided centering and annotated output, plus unlimited batch listing photos. Guided estimates are not professional grading or a predicted grade.")
+                } actions: {
+                    Button("View Collector Tools and price") { isShowingOffer = true }
+                }
+            }
+        }
+        .navigationTitle("Centering")
+        .sheet(isPresented: $isShowingOffer) { CollectorToolsOfferView() }
+    }
+}
+
+private struct GuidedCardCenteringView: View {
     @StateObject private var model = CardCenteringViewModel()
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @FocusState private var focusedEdgeField: EdgeField?
@@ -415,6 +440,9 @@ struct CardCenteringView: View {
                         ScrollView {
                             VStack(spacing: 18) {
                                 resultSummary(measurement)
+                                Text("Guided estimate only. Not professional grading or a predicted grade.")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
                                 rotationControls
                                     .id("rotation-controls")
                                 guideControls(measurement)
@@ -464,7 +492,7 @@ struct CardCenteringView: View {
                             ContentUnavailableView {
                                 Label("Check Card Centering", systemImage: "square.dashed.inset.filled")
                             } description: {
-                                Text("Choose a clear, straight-on card photo or scan.")
+                                Text("Choose a clear, straight-on card photo or scan. Review and confirm both frames. Guided estimates are not professional grading or a predicted grade.")
                             } actions: {
                                 VStack(spacing: 10) {
                                     Button("Take Photo", systemImage: "camera") {

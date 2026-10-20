@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C011EC700000000000000001 = {isa = PBXBuildFile; fileRef = C011EC700000000000000011; };
+		C011EC700000000000000002 = {isa = PBXBuildFile; fileRef = C011EC700000000000000012; };
+		C011EC700000000000000003 = {isa = PBXBuildFile; fileRef = C011EC700000000000000013; };
+		C011EC700000000000000004 = {isa = PBXBuildFile; fileRef = C011EC700000000000000014; };
 		A00904E1 /* mee-primary.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E1; };
 		A00904E2 /* mee-reviewed-products.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E2; };
 		A00904E3 /* catalog-input.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E3; };
@@ -347,6 +351,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C011EC700000000000000011 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectorToolsStore.swift; sourceTree = "<group>"; };
+		C011EC700000000000000012 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectorToolsOfferView.swift; sourceTree = "<group>"; };
+		C011EC700000000000000013 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectorToolsTests.swift; sourceTree = "<group>"; };
+		C011EC700000000000000014 = {isa = PBXFileReference; lastKnownFileType = text; path = CollectorTools.storekit; sourceTree = SOURCE_ROOT; };
 		B00904E1 /* mee-primary.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/fixtures/mee-primary.json; sourceTree = SOURCE_ROOT; };
 		B00904E2 /* mee-reviewed-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/fixtures/mee-reviewed-products.json; sourceTree = SOURCE_ROOT; };
 		B00904E3 /* catalog-input.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/catalog-input.json; sourceTree = SOURCE_ROOT; };
@@ -840,6 +848,7 @@
 			isa = PBXGroup;
 			children = (
 				B0010106 /* CollectionStorageBootstrap.swift */,
+				C011EC700000000000000011 /* CollectorToolsStore.swift */,
 				B0010155 /* CollectionWriteSerializer.swift */,
 				B0010156 /* DeterministicUUID.swift */,
 				B0010107 /* CardScannerExternalLinks.swift */,
@@ -958,6 +967,7 @@
 			isa = PBXGroup;
 			children = (
 				B0010108 /* CollectionStorageBootstrapView.swift */,
+				C011EC700000000000000012 /* CollectorToolsOfferView.swift */,
 				BF0A0001 /* AppOpeningView.swift */,
 				B0010109 /* PrivacyAndSupportSettingsView.swift */,
 				B0010071 /* CollectionActivityLogView.swift */,
@@ -1066,6 +1076,8 @@
 				B0020026 /* ProductCatalogIdentityTests.swift */,
 				B0020025 /* ProductIdentityTests.swift */,
 				B0020022 /* CenteringExportTests.swift */,
+				C011EC700000000000000013 /* CollectorToolsTests.swift */,
+				C011EC700000000000000014 /* CollectorTools.storekit */,
 				B0020113 /* EbayQuadrantCropperTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
@@ -1252,6 +1264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C011EC700000000000000004 /* CollectorTools.storekit in Resources */,
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
 				A0090304 /* TCGCSV30th.json in Resources */,
 				A00904E1 /* mee-primary.json in Resources */,
@@ -1272,6 +1285,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C011EC700000000000000001 /* CollectorToolsStore.swift in Sources */,
+				C011EC700000000000000002 /* CollectorToolsOfferView.swift in Sources */,
 				A0010106 /* CollectionStorageBootstrap.swift in Sources */,
 				A0010155 /* CollectionWriteSerializer.swift in Sources */,
 				A0010156 /* DeterministicUUID.swift in Sources */,
@@ -1494,6 +1509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C011EC700000000000000003 /* CollectorToolsTests.swift in Sources */,
 				A002010B /* CollectionStorageBootstrapTests.swift in Sources */,
 				A002010C /* PrivacyAndSupportSurfaceTests.swift in Sources */,
 				A002010D /* CollectionSyncDiagnosticsTests.swift in Sources */,

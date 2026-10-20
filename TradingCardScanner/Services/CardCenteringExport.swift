@@ -198,9 +198,8 @@ enum CardCenteringExport {
             self.canvasWidth = canvasWidth
             self.unit = unit
             self.padding = padding
-            let text = measurement.warnings.isEmpty
-                ? nil
-                : measurement.warnings.joined(separator: " ")
+            let text: String? = (["Guided estimate only. Not professional grading or a predicted grade."]
+                + measurement.warnings).joined(separator: " ")
             warningText = text
             if let text {
                 let width = canvasWidth - padding * 2 - unit * 46

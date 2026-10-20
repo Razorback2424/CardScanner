@@ -9,6 +9,8 @@ struct TradingCardScannerApp: App {
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
     @StateObject private var storageBootstrap = CollectionStorageBootstrap()
     @StateObject private var opening = AppOpeningModel()
+    @StateObject private var collectorTools = CollectorToolsStore.shared
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         CollectionWriteSerializer.enforcesOwnershipRule =
@@ -47,6 +49,10 @@ struct TradingCardScannerApp: App {
                 }
             }
             .environmentObject(opening)
+            .task { collectorTools.start() }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { Task { await collectorTools.reconcile() } }
+            }
             .task {
                 guard runtimes == nil else { return }
 #if DEBUG && LOCAL_ONLY_SIGNING

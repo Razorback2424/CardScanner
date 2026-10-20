@@ -1,8 +1,37 @@
 import PhotosUI
+import CoreTransferable
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
+
+/// Recheck ownership when the share system requests the file, including if
+/// access changes after the share button was rendered.
+struct CollectorToolsPhotoArchive: Transferable {
+    let url: URL
+    let cardCount: Int
+
+    @MainActor
+    func authorizedURL(using store: CollectorToolsStore) throws -> URL {
+        guard store.canPreparePhotos(cardCount: cardCount) else { throw AccessError.purchaseRequired }
+        return url
+    }
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .zip) { archive in
+            let url = try await archive.authorizedURL(using: .shared)
+            return SentTransferredFile(url)
+        }
+    }
+
+    private enum AccessError: LocalizedError {
+        case purchaseRequired
+        var errorDescription: String? { "Collector Tools is required to export multiple cards." }
+    }
+}
 
 struct EbayListingPhotosView: View {
+    @ObservedObject private var collectorTools = CollectorToolsStore.shared
+    @State private var isShowingOffer = false
     private enum Mode: String, CaseIterable, Identifiable {
         case single
         case batch
@@ -89,6 +118,8 @@ struct EbayListingPhotosView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                Text("Single-card photos are free. Collector Tools unlocks unlimited batches and guided centering with annotated output in one purchase.")
+                    .font(.subheadline)
                 Picker("Workflow", selection: $mode) {
                     ForEach(Mode.allCases) { mode in
                         Text(mode.title).tag(mode)
@@ -107,6 +138,7 @@ struct EbayListingPhotosView: View {
         }
         .navigationTitle("eBay Listing Photos")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isShowingOffer) { CollectorToolsOfferView() }
         .toolbar {
             if mode == .single, let singleOutput, singleOutput.urls.count == 10 {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -130,9 +162,13 @@ struct EbayListingPhotosView: View {
                     .accessibilityLabel("Export listing photos")
                 }
             }
-            if mode == .batch, let batchArchiveURL {
+            if mode == .batch, let batchArchiveURL,
+               collectorTools.canPreparePhotos(cardCount: batchPairs.count) {
                 ToolbarItem(placement: .topBarTrailing) {
-                    ShareLink(item: batchArchiveURL) {
+                    ShareLink(
+                        item: CollectorToolsPhotoArchive(url: batchArchiveURL, cardCount: batchPairs.count),
+                        preview: SharePreview("Listing photos", icon: Image(systemName: "doc.zipper"))
+                    ) {
                         Label("Export batch ZIP", systemImage: "doc.zipper")
                     }
                     .labelStyle(.iconOnly)
@@ -253,6 +289,12 @@ struct EbayListingPhotosView: View {
     @ViewBuilder
     private var batchContent: some View {
         VStack(alignment: .leading, spacing: 16) {
+            if !collectorTools.isOwned {
+                Button("View Collector Tools and price") { isShowingOffer = true }
+                Text("One card is free here too. Review the one-time price before preparing multiple cards.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             PhotosPicker(
                 selection: $batchPickerItems,
                 maxSelectionCount: nil,
@@ -632,6 +674,10 @@ struct EbayListingPhotosView: View {
 
     private func startBatch() {
         guard !isPreparingBatch, !batchPairs.isEmpty else { return }
+        guard collectorTools.canPreparePhotos(cardCount: batchPairs.count) else {
+            isShowingOffer = true
+            return
+        }
         // The flag must be raised here, not inside the task body: `Task` does
         // not run synchronously, so two taps landing before the first hop
         // would otherwise start two pipelines and leak the first directory.
@@ -643,6 +689,10 @@ struct EbayListingPhotosView: View {
     }
 
     private func processBatch(generation: Int) async {
+        guard collectorTools.canPreparePhotos(cardCount: batchPairs.count) else {
+            isPreparingBatch = false
+            return
+        }
         guard generation == batchSelectionGeneration, !Task.isCancelled else { return }
         guard !batchPairs.isEmpty else {
             // startBatch raised this flag; it must not survive an early return.

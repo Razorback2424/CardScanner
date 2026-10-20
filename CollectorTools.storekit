@@ -1,0 +1,28 @@
+{
+  "identifier" : "CollectorToolsLocal",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "1000001",
+      "localizations" : [
+        {
+          "description" : "Unlimited batch listing photos and guided centering with annotated output. One-time purchase.",
+          "displayName" : "CardScanner Collector Tools",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.seankeller.CardScanner.collectorTools",
+      "referenceName" : "Collector Tools",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA"
+  },
+  "subscriptionGroups" : [],
+  "version" : { "major" : 3, "minor" : 0 }
+}

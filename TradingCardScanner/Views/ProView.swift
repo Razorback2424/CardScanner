@@ -15,9 +15,9 @@ struct ProView: View {
         var subtitle: String {
             switch self {
             case .centering:
-                return "Measure borders and export a centering report."
+                return "Collector Tools: guided centering and annotated output."
             case .ebayPhotos:
-                return "Prepare ten numbered photos for a card listing."
+                return "Single-card photos free. Unlimited batches with Collector Tools."
             }
         }
 
@@ -31,6 +31,7 @@ struct ProView: View {
 
     private static let modules: [Module] = [.centering, .ebayPhotos]
     @State private var path: [Module]
+    @State private var isShowingCollectorTools = false
 
     init() {
 #if DEBUG
@@ -58,13 +59,18 @@ struct ProView: View {
                         Text(module.subtitle)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                            .lineLimit(1)
                     }
                     .padding(.vertical, 3)
                 }
             }
             .contentWidthLimit(.standard)
             .navigationTitle("Pro")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Collector Tools") { isShowingCollectorTools = true }
+                }
+            }
+            .sheet(isPresented: $isShowingCollectorTools) { CollectorToolsOfferView() }
             .navigationDestination(for: Module.self) { module in
                 switch module {
                 case .centering:
