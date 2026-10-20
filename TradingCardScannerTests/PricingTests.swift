@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import SwiftData
 @testable import TradingCardScanner
@@ -28,6 +29,38 @@ private actor UpgradeProbeTransport: PokemonBrowseTransport {
 }
 
 final class PricingTests: XCTestCase {
+    @MainActor
+    func testPriceSnapshotPublishesOneBatchAndKeepsForeignPriceDiagnostics() {
+        let store = PriceSnapshotStore()
+        let keys = (0..<200).map { "price-\($0)" }
+        store.replace(with: PriceSnapshot(prices: [:],
+            diagnosticsByCollectionKey: Dictionary(uniqueKeysWithValues: keys.map {
+                ($0, PriceSnapshotDiagnostics(unpricedReason: .noExactVariantPrice, artworkReason: .lookupPending))
+            }), priceStorageKeyByCollectionKey: Dictionary(uniqueKeysWithValues: keys.map { ($0, $0) })))
+        var pricePublications = 0
+        var diagnosticPublications = 0
+        let prices = store.$prices.dropFirst().sink { _ in pricePublications += 1 }
+        let diagnostics = store.$diagnosticsByCollectionKey.dropFirst().sink { _ in diagnosticPublications += 1 }
+        defer { prices.cancel(); diagnostics.cancel() }
+        var deltas = keys.map { PriceDelta(key: $0, display: PriceDisplay(amount: 10, source: .tcgplayer)) }
+        deltas.append(PriceDelta(key: keys[0], display: PriceDisplay(amount: 12, source: .tcgplayer)))
+        deltas.append(PriceDelta(key: keys[199], display: PriceDisplay(amount: 9, currencyCode: "EUR", source: .cardmarket)))
+
+        store.apply(deltas)
+
+        XCTAssertEqual(pricePublications, 1, "A checkpoint must not invalidate the collection once per price")
+        XCTAssertEqual(diagnosticPublications, 1)
+        XCTAssertEqual(store.display(for: keys[0])?.amount, 12)
+        XCTAssertNil(store.diagnosticsByCollectionKey[keys[0]]?.unpricedReason)
+        XCTAssertEqual(store.diagnosticsByCollectionKey[keys[0]]?.artworkReason, .lookupPending)
+        XCTAssertEqual(store.diagnosticsByCollectionKey[keys[199]]?.unpricedReason, .noExactVariantPrice)
+        let revision = store.revision
+        store.apply(Array(deltas.suffix(2)))
+        XCTAssertEqual(pricePublications, 1, "Repeated values must not publish again")
+        XCTAssertEqual(diagnosticPublications, 1)
+        XCTAssertEqual(store.revision, revision)
+    }
+
     @MainActor
     func testGradedIncompletePassesAggregateAndKeepAttentionAndPriorState() async throws {
         for unresolved in [false, true] {

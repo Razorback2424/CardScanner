@@ -122,6 +122,9 @@ struct MarketRefreshReport: Equatable, Sendable {
     var batchesPlanned = 0
     var variantsUpdated = 0
     var variantsRequested = 0
+    /// Collection targets covered by completed responses, including multiple
+    /// finishes sharing one lookup. Planned or failed requests do not advance it.
+    var targetsChecked = 0
     /// Metadata can be persisted even when the provider has no current price.
     var metadataUpdated = 0
     /// Only a non-nil, accepted USD market amount belongs in priced progress.
@@ -382,6 +385,7 @@ struct JustTCGRefreshCoordinator {
                     return report
                 }
                 report.batchesCompleted += 1
+                report.targetsChecked += chunkOwners.count
                 report.variantsUpdated += batchAppliedCount
                 report.metadataUpdated += batchMetadataUpdatedCount
                 report.pricesWritten += batchPricesWrittenCount

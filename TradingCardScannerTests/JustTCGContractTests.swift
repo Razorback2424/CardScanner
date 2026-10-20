@@ -1,6 +1,16 @@
 import XCTest
 @testable import TradingCardScanner
 
+private actor MarketRefreshProgressProbe {
+    private var samples: [(checked: Int, requests: Int)] = []
+
+    func record(_ report: MarketRefreshReport, requests: Int) {
+        samples.append((report.targetsChecked, requests))
+    }
+
+    func snapshot() -> [(checked: Int, requests: Int)] { samples }
+}
+
 /// Slice 1: the wire contract, pinned against fixtures.
 ///
 /// These exist because the expensive mistakes in this layer are silent ones — a
@@ -1879,6 +1889,34 @@ final class JustTCGContractTests: XCTestCase {
 
     // MARK: - Delta safety
 
+    @MainActor
+    func testBatchProgressCountsOwnersBeforeTheWholeGameCompletes() async throws {
+        let suite = "JustTCGProgress.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+        let (coordinator, _) = makeCoordinator(defaults: defaults)
+        let probe = MarketRefreshProgressProbe()
+        var targets = (0..<21).map {
+            target(key: "owner-\($0)", variant: "variant-\($0)", requiresFullResponse: true)
+        }
+        targets.append(target(key: "another-owner", variant: "variant-0", requiresFullResponse: true))
+
+        let report = await coordinator.refresh(targets, game: .pokemon,
+            onProgress: { report in
+                await probe.record(report, requests: RecordingURLProtocol.recorded().count)
+            }, checkpoint: { true })
+
+        let samples = await probe.snapshot()
+        XCTAssertEqual(samples.map(\.checked), [0, 21, 22],
+            "Progress counts every owner, including owners sharing one network lookup")
+        XCTAssertEqual(samples.map(\.requests), [0, 1, 2],
+            "The first batch must publish before the second request runs")
+        XCTAssertEqual(report.variantsRequested, 21, "Network lookup accounting stays deduplicated")
+        XCTAssertEqual(report.targetsChecked, targets.count)
+        XCTAssertTrue(report.completedFully)
+    }
+
     /// Records every outbound request so a test can assert on `updated_after`.
     private final class RecordingURLProtocol: URLProtocol, @unchecked Sendable {
         nonisolated(unsafe) static var requestedURLs: [URL] = []
@@ -2235,6 +2273,7 @@ final class JustTCGContractTests: XCTestCase {
             checkpoint: { false }
         )
 
+        XCTAssertEqual(report.targetsChecked, 0, "A failed checkpoint cannot count planned targets as checked")
         XCTAssertTrue(report.persistenceFailed)
         XCTAssertFalse(report.completedFully)
         XCTAssertNil(

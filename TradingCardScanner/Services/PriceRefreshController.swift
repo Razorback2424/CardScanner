@@ -635,26 +635,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var pricedTargetIDs = Set<String>()
         var consecutiveUnreachable = 0
         var providerUnreachable = false
-        var lastCatalogProgressAt: Date?
-        var lastCatalogProgressPercent: Int?
 
-        func publishCatalogProgress(force: Bool = false) async {
-            let now = Date.now
-            let percent: Int = {
-                guard !order.isEmpty else { return completed == 0 ? 0 : 100 }
-                return min(
-                    100,
-                    max(0, Int((Double(completed) / Double(order.count) * 100).rounded(.down)))
-                )
-            }()
-            let intervalElapsed = lastCatalogProgressAt.map {
-                now.timeIntervalSince($0) >= PriceRefreshController.progressPublishInterval
-            } ?? true
-            guard force || (intervalElapsed && lastCatalogProgressPercent != percent) else {
-                return
-            }
-            lastCatalogProgressAt = now
-            lastCatalogProgressPercent = percent
+        func publishCatalogProgress() async {
             await progress(.catalog(completed: completed, total: order.count))
         }
 
@@ -723,7 +705,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             )
         }
 
-        await publishCatalogProgress(force: true)
+        await publishCatalogProgress()
 
         // A stored exact identity with no USD quote can use the reviewed local
         // product/finish evidence immediately. No per-card catalog request is
@@ -746,24 +728,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             return PriceFetchOutcome(printing: printing, result: .card(.pokemon(card, setCode: printing.setCode)))
         }
         let reviewedPrintings = Set(reviewedOutcomes.map(\.printing))
-        var requestBatches: [[PriceTarget.Printing]] = []
-        var magicBatch: [PriceTarget.Printing] = []
-        for printing in order where !reviewedPrintings.contains(printing) {
-            if printing.game == .magic, printing.importedIdentity == nil {
-                magicBatch.append(printing)
-                if magicBatch.count == 75 {
-                    requestBatches.append(magicBatch)
-                    magicBatch.removeAll(keepingCapacity: true)
-                }
-            } else {
-                if !magicBatch.isEmpty {
-                    requestBatches.append(magicBatch)
-                    magicBatch.removeAll(keepingCapacity: true)
-                }
-                requestBatches.append([printing])
-            }
-        }
-        if !magicBatch.isEmpty { requestBatches.append(magicBatch) }
+        let requestBatches = PriceRefreshController.catalogRequestBatches(
+            order.filter { !reviewedPrintings.contains($0) }
+        )
 
         var cursor = 0
         await withTaskGroup(of: [PriceFetchOutcome].self) { group in
@@ -923,7 +890,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             }
         }
 
-        await publishCatalogProgress(force: true)
+        await publishCatalogProgress()
         // A card's successful response is complete evidence on its own. Keep
         // those staged sightings even if the enclosing refresh was cancelled;
         // a storage-generation change still blocks writes to the stale store.
@@ -1484,29 +1451,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var completed = 0
         var stoppedByAllowance = false
         var budget = await fallbackService.budgetSnapshot()
-        var lastFallbackProgressAt: Date?
-        var lastFallbackProgressPercent: Int?
 
-        func publishFallbackProgress(force: Bool = false) async {
-            let now = Date.now
-            let percent: Int = {
-                guard !eligibleCandidates.isEmpty else { return completed == 0 ? 0 : 100 }
-                return min(
-                    100,
-                    max(
-                        0,
-                        Int((Double(completed) / Double(eligibleCandidates.count) * 100).rounded(.down))
-                    )
-                )
-            }()
-            let intervalElapsed = lastFallbackProgressAt.map {
-                now.timeIntervalSince($0) >= PriceRefreshController.progressPublishInterval
-            } ?? true
-            guard force || (intervalElapsed && lastFallbackProgressPercent != percent) else {
-                return
-            }
-            lastFallbackProgressAt = now
-            lastFallbackProgressPercent = percent
+        func publishFallbackProgress() async {
             await progress(.fallback(
                 completed: completed,
                 total: eligibleCandidates.count,
@@ -1514,7 +1460,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             ))
         }
 
-        await publishFallbackProgress(force: true)
+        await publishFallbackProgress()
 
         @discardableResult
         func checkpoint(force: Bool = false) async -> Bool {
@@ -1633,11 +1579,21 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             let useDelta = JustTCGSyncLedger()
                 .checkpoint(game: game, apiVersion: JustTCGV1Client.apiVersion)
                 .supportsDeltaSync
+            let completedBeforeGame = completed
+            let total = eligibleCandidates.count
+            let remainingToday = budget.remainingToday
             let report = await coordinator.refresh(
                 targets,
                 game: game,
                 lane: .background,
                 useDelta: useDelta,
+                onProgress: { report in
+                    await progress(.fallback(
+                        completed: completedBeforeGame + report.targetsChecked,
+                        total: total,
+                        remainingToday: remainingToday
+                    ))
+                },
                 applyDetailed: { [self] card, variant, owners in
                     await self.applyActiveBatch(card: card, variant: variant, owners: owners)
                 },
@@ -1660,7 +1616,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 changedPrices: &changedPrices
             )
             persistenceFailed = persistenceFailed || report.persistenceFailed
-            completed += report.variantsRequested
+            completed += report.targetsChecked
             await publishFallbackProgress()
 
             switch report.stoppedReason {
@@ -1760,7 +1716,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         }
 
         _ = await checkpoint(force: true)
-        await publishFallbackProgress(force: true)
+        await publishFallbackProgress()
         if !stoppedByAllowance, !Task.isCancelled {
             budget = await fallbackService.budgetSnapshot()
             await progress(.fallbackFinished(
@@ -2664,7 +2620,7 @@ enum PriceRefreshProgress: Sendable {
 /// the actor from waking the main actor once per printing: the latest
 /// presentation value is enough, while price deltas are merged losslessly and
 /// a final flush preserves terminal progress.
-private actor PriceRefreshProgressRelay {
+actor PriceRefreshProgressRelay {
     private let consumer: @MainActor @Sendable (PriceRefreshProgress) -> Void
     private var pendingProgress: PriceRefreshProgress?
     private var pendingPriceDeltas: [String: PriceDelta] = [:]
@@ -2698,7 +2654,7 @@ private actor PriceRefreshProgressRelay {
     private func scheduleFlushIfNeeded() {
         guard flushTask == nil else { return }
         flushTask = Task { [weak self] in
-            try? await Task.sleep(for: .milliseconds(100))
+            try? await Task.sleep(for: .seconds(PriceRefreshController.progressPublishInterval))
             guard !Task.isCancelled else { return }
             await self?.flush()
         }
@@ -2909,8 +2865,6 @@ final class PriceRefreshController: ObservableObject {
     private var statusBeforeWriteSuspension: Status?
     private var suspendedContainer: ModelContainer?
     private var suspendedContinuation: StorageGenerationContinuation?
-    private var lastProgressPublicationAt: Date?
-    private var lastPublishedProgressPercent: Int?
     private weak var registeredPortfolio: PortfolioEngine?
     private weak var registeredPriceSnapshotStore: PriceSnapshotStore?
     private weak var registeredRevisionStore: StoreRevisionStore?
@@ -2941,26 +2895,13 @@ final class PriceRefreshController: ObservableObject {
         activeRefresh != nil || isRefreshing
     }
 
-    /// Publishes progress at a human-visible cadence while keeping terminal
-    /// states immediate. Fallback progress is carried in the same publication
-    /// so the two observers do not each update once per candidate.
+    /// The relay owns publication cadence. Never discard a newer count here:
+    /// it may be the last answer before a slow request or a provider backoff.
     private func publishRefreshingProgress(
         completed: Int,
         total: Int,
-        fallbackRemainingToday: Int? = nil,
-        force: Bool = false
+        fallbackRemainingToday: Int? = nil
     ) {
-        let now = Date.now
-        let intervalElapsed = lastProgressPublicationAt.map {
-            now.timeIntervalSince($0) >= Self.progressPublishInterval
-        } ?? true
-        let percent: Int = {
-            guard total > 0 else { return completed == 0 ? 0 : 100 }
-            return min(100, max(0, Int((Double(completed) / Double(total) * 100).rounded(.down))))
-        }()
-        let percentChanged = lastPublishedProgressPercent != percent
-        guard force || (intervalElapsed && percentChanged) else { return }
-
         status = .refreshing(completed: completed, total: total)
         if let fallbackRemainingToday {
             fallbackStatus = .running(
@@ -2969,8 +2910,6 @@ final class PriceRefreshController: ObservableObject {
                 remainingToday: fallbackRemainingToday
             )
         }
-        lastProgressPublicationAt = now
-        lastPublishedProgressPercent = percent
     }
 
     private func consume(_ progress: PriceRefreshProgress) {
@@ -2978,8 +2917,7 @@ final class PriceRefreshController: ObservableObject {
         case let .catalog(completed, total):
             publishRefreshingProgress(
                 completed: completed,
-                total: total,
-                force: completed == 0
+                total: total
             )
         case let .reconciling(completed, total):
             status = .reconciling(completed: completed, total: total)
@@ -2990,8 +2928,7 @@ final class PriceRefreshController: ObservableObject {
             publishRefreshingProgress(
                 completed: completed,
                 total: total,
-                fallbackRemainingToday: remainingToday,
-                force: completed == 0
+                fallbackRemainingToday: remainingToday
             )
         case .fallbackIdle:
             fallbackStatus = .idle
@@ -3609,8 +3546,6 @@ final class PriceRefreshController: ObservableObject {
         registeredPortfolio?.beginPriceRefresh()
         didBeginPortfolioRefresh = true
         activeQueueRequest = initialRequest
-        lastProgressPublicationAt = nil
-        lastPublishedProgressPercent = nil
         let worker = await PriceRefreshModelActor.makeBackground(modelContainer: container)
         await worker.configureGamePricing(gamePricing)
         if let pokemonFetchOverrideForTesting {
@@ -4196,9 +4131,8 @@ final class PriceRefreshController: ObservableObject {
     nonisolated fileprivate static let checkpointBudget: TimeInterval = 10
     /// Bound staged writes if a busy provider keeps the wall-clock budget open.
     nonisolated fileprivate static let stagedWriteCeiling = 500
-    /// Progress is presentation-only. Publishing it more often than a few
-    /// times per second makes every observer rebuild while provider work is
-    /// still in flight.
+    /// The relay publishes the newest count and price deltas once per second,
+    /// with a final flush when the pass ends. Percentage boundaries never gate it.
     nonisolated fileprivate static let progressPublishInterval: TimeInterval = 1.0
 
     func registerPortfolio(_ portfolio: PortfolioEngine) {
@@ -4310,6 +4244,29 @@ final class PriceRefreshController: ObservableObject {
         case .idle, .disabled, .unconfigured, .available, .running, .finished:
             return nil
         }
+    }
+
+    /// Fill exact-ID Magic requests even when other games are interleaved in
+    /// collection order. Each batch keeps the position of its first member;
+    /// imported identities still resolve independently with full validation.
+    nonisolated static func catalogRequestBatches(
+        _ printings: [PriceTarget.Printing]
+    ) -> [[PriceTarget.Printing]] {
+        var batches: [[PriceTarget.Printing]] = []
+        var magicBatchIndex: Int?
+        for printing in printings {
+            guard printing.game == .magic, printing.importedIdentity == nil else {
+                batches.append([printing])
+                continue
+            }
+            if let index = magicBatchIndex, batches[index].count < 75 {
+                batches[index].append(printing)
+            } else {
+                magicBatchIndex = batches.count
+                batches.append([printing])
+            }
+        }
+        return batches
     }
 
     fileprivate nonisolated static func fetchBatch(

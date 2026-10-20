@@ -49,6 +49,71 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testMixedCollectionKeepsExactMagicIDsInFullBatches() {
+        let magic = (0..<151).map {
+            PriceTarget.Printing(game: .magic, printingID: "magic-\($0)", setCode: "TST", importedIdentity: nil)
+        }
+        let pokemon = (0..<151).map {
+            PriceTarget.Printing(game: .pokemon, printingID: "pokemon-\($0)", setCode: "TST", importedIdentity: nil)
+        }
+        let imported = PriceTarget.Printing(game: .magic, printingID: "csv:imported", setCode: "TST",
+            importedIdentity: .init(name: "Imported", setName: "Test", cardNumber: "1"))
+        let interleaved = zip(magic, pokemon).flatMap { [$0, $1] } + [imported]
+
+        let batches = PriceRefreshController.catalogRequestBatches(interleaved)
+        let magicBatches = batches.filter { $0.first?.game == .magic && $0.first?.importedIdentity == nil }
+
+        XCTAssertEqual(magicBatches.map(\.count), [75, 75, 1])
+        XCTAssertEqual(magicBatches.flatMap { $0 }, magic, "Every exact ID stays in order within Magic batches")
+        XCTAssertEqual(batches.filter { $0.first?.game == .pokemon }.flatMap { $0 }, pokemon)
+        XCTAssertEqual(batches.last, [imported], "Imports still require individual identity resolution")
+        XCTAssertEqual(batches.count, 155, "An interleaved collection must not cost 303 requests")
+        XCTAssertEqual(Set(batches.flatMap { $0 }), Set(interleaved))
+        XCTAssertEqual(batches.flatMap { $0 }.count, interleaved.count)
+        XCTAssertTrue(PriceRefreshController.catalogRequestBatches([]).isEmpty)
+    }
+
+    func testProgressRelayPublishesTrailingCountWhileProviderIsIdle() async {
+        let published = expectation(description: "Trailing count publishes without another provider answer")
+        var counts: [Int] = []
+        let relay = PriceRefreshProgressRelay { value in
+            guard case let .catalog(completed, _) = value else { return }
+            counts.append(completed)
+            published.fulfill()
+        }
+        await relay.offer(.catalog(completed: 116, total: 826))
+        await relay.offer(.catalog(completed: 117, total: 826))
+
+        await fulfillment(of: [published], timeout: 3)
+        XCTAssertEqual(counts, [117], "The timer delivers the latest count without waiting for 15 percent")
+        await relay.flushNow()
+    }
+
+    func testProgressRelayKeepsCountsWithinOnePercentAndLatestPricePerKey() async {
+        var counts: [Int] = []
+        var receivedPrices: [String: PriceDisplay] = [:]
+        let relay = PriceRefreshProgressRelay { value in
+            switch value {
+            case let .catalog(completed, _): counts.append(completed)
+            case let .prices(deltas):
+                for delta in deltas { receivedPrices[delta.key] = delta.display }
+            default: break
+            }
+        }
+        let old = PriceDisplay(amount: 10, source: .tcgplayer)
+        let latest = PriceDisplay(amount: 12, source: .tcgplayer)
+        await relay.offer(.catalog(completed: 116, total: 826))
+        await relay.flushNow()
+        await relay.offer(.prices([PriceDelta(key: "one", display: old), PriceDelta(key: "two", display: old)]))
+        await relay.offer(.catalog(completed: 117, total: 826))
+        await relay.offer(.prices([PriceDelta(key: "one", display: latest)]))
+        await relay.offer(.catalog(completed: 118, total: 826))
+        await relay.flushNow()
+
+        XCTAssertEqual(counts, [116, 118], "A trailing count must publish even within the same percentage")
+        XCTAssertEqual(receivedPrices, ["one": latest, "two": old], "Progress coalescing must not lose price changes")
+    }
+
     func testCappedRefreshSkipsDisabledSealedRowsBeforeSelectingRawWork() async throws {
         let container = try makeContainer(withCard: true)
         let context = container.mainContext

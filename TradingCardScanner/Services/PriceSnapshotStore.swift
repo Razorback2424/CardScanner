@@ -67,11 +67,17 @@ final class PriceSnapshotStore: ObservableObject {
                 "deltas=\(deltas.count),changed=\(changedCount)"
             )
         }
-        var changed = false
-        for delta in deltas {
-            if prices[delta.key] != delta.display {
-                prices[delta.key] = delta.display
-                changed = true
+        // Mutating an @Published dictionary publishes for every subscript
+        // write. Build the batch locally so observers see one final value and
+        // the dictionary only needs one copy for the whole checkpoint.
+        var nextPrices = prices
+        var nextDiagnostics = diagnosticsByCollectionKey
+        var diagnosticsChanged = false
+        let latestByKey = Dictionary(deltas.map { ($0.key, $0.display) },
+            uniquingKeysWith: { _, latest in latest })
+        for (key, display) in latestByKey {
+            if nextPrices[key] != display {
+                nextPrices[key] = display
                 changedCount += 1
             }
 
@@ -81,21 +87,23 @@ final class PriceSnapshotStore: ObservableObject {
             // failure reason remain projection facts until the authoritative
             // rebuild at pass completion.
             guard PortfolioPriceEligibility.participatesInPortfolioValue(
-                amount: delta.display.amount,
-                currencyCode: delta.display.currencyCode
+                amount: display.amount,
+                currencyCode: display.currencyCode
             ) else { continue }
-            for collectionKey in collectionKeysByPriceKey[delta.key] ?? [] {
-                guard var diagnostics = diagnosticsByCollectionKey[collectionKey],
+            for collectionKey in collectionKeysByPriceKey[key] ?? [] {
+                guard var diagnostics = nextDiagnostics[collectionKey],
                       diagnostics.unpricedReason != nil else { continue }
                 diagnostics = PriceSnapshotDiagnostics(
                     unpricedReason: nil,
                     artworkReason: diagnostics.artworkReason
                 )
-                diagnosticsByCollectionKey[collectionKey] = diagnostics
-                changed = true
+                nextDiagnostics[collectionKey] = diagnostics
+                diagnosticsChanged = true
             }
         }
-        if changed {
+        if changedCount > 0 { prices = nextPrices }
+        if diagnosticsChanged { diagnosticsByCollectionKey = nextDiagnostics }
+        if changedCount > 0 || diagnosticsChanged {
             revision &+= 1
             if rebuildTask != nil { rebuildRequested = true }
         }
