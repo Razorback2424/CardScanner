@@ -155,9 +155,12 @@ extension Money {
     /// two-part decimal. Currency symbols retain their localized position.
     func heroParts(currencyCode: String = "USD", locale: Locale = .current) -> (whole: String, fraction: String) {
         let full = formatted(currencyCode: currencyCode, locale: locale)
-        guard isValid,
-              let separator = locale.decimalSeparator,
-              !separator.isEmpty,
+        guard isValid else { return (full, "") }
+        let formatter = NumberFormatter()
+        formatter.locale = locale
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currencyCode
+        guard let separator = formatter.currencyDecimalSeparator, !separator.isEmpty,
               let boundary = full.range(of: separator, options: .backwards) else { return (full, "") }
         return (String(full[..<boundary.lowerBound]), String(full[boundary.lowerBound...]))
     }

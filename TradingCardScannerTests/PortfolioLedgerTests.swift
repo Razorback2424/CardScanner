@@ -119,12 +119,16 @@ final class PortfolioLedgerTests: XCTestCase {
 
     func testHeroCurrencyPartsSplitAtTheLocalizedDecimalSeparator() {
         let amount = Money(rounding: 12482.17)!
-        for identifier in ["en_US", "de_DE", "fr_FR"] {
+        for identifier in ["en_US", "de_DE", "fr_FR", "fr_CH"] {
             let locale = Locale(identifier: identifier)
             let parts = amount.heroParts(locale: locale)
+            let formatter = NumberFormatter()
+            formatter.locale = locale
+            formatter.numberStyle = .currency
+            formatter.currencyCode = "USD"
 
             XCTAssertEqual(parts.whole + parts.fraction, amount.formatted(locale: locale), identifier)
-            XCTAssertTrue(parts.fraction.hasPrefix(locale.decimalSeparator! + "17"), identifier)
+            XCTAssertTrue(parts.fraction.hasPrefix(formatter.currencyDecimalSeparator + "17"), identifier)
             XCTAssertFalse(parts.whole.isEmpty, identifier)
         }
     }
