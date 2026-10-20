@@ -131,7 +131,7 @@ enum GradedVariantBinding {
 /// leaving the collection cannot turn an abandoned request into a recorded check.
 /// File scope rather than nested, so it cannot inherit the controller's
 /// main-actor isolation.
-fileprivate struct PriceFetchOutcome: Sendable {
+struct PriceFetchOutcome: Sendable {
     let printing: PriceTarget.Printing
     let result: Result
 
@@ -633,8 +633,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var deferredCatalogRepairs: [(repair: PokemonFinishReconciliation.Repair, card: IdentifiedCard)] = []
         var deferredPriceTargets: [String: (target: PriceTarget, card: IdentifiedCard)] = [:]
         var pricedTargetIDs = Set<String>()
-        var consecutiveUnreachable = 0
-        var providerUnreachable = false
+        var catalogAvailability = PriceRefreshController.CatalogAvailability()
+        var skippedCatalogRequests = false
 
         func publishCatalogProgress() async {
             await progress(.catalog(completed: completed, total: order.count))
@@ -753,6 +753,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             }
 
             while let outcomes = await group.next() {
+                // A batch is one transport request, regardless of the number
+                // of cards returned. Outages only suspend that game's provider.
+                catalogAvailability.record(outcomes)
                 for outcome in outcomes {
                     guard storageContinuation?() ?? true, !Task.isCancelled else {
                         wasCancelled = true
@@ -836,27 +839,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                         fallbackSubjects.append(contentsOf: (byPrinting[printing] ?? []).map {
                             PriceRefreshController.FallbackCandidate(target: $0, card: nil)
                         })
-                        consecutiveUnreachable += 1
-                        if !providerUnreachable,
-                           consecutiveUnreachable >= PriceRefreshController.unreachableThreshold {
-                            providerUnreachable = true
-                            for pending in requestBatches.dropFirst(cursor).flatMap({ $0 }) {
-                                fallbackSubjects.append(contentsOf: (byPrinting[pending] ?? []).map {
-                                    PriceRefreshController.FallbackCandidate(target: $0, card: nil)
-                                })
-                            }
-                        }
 
                     case .cancelled:
                         wasCancelled = true
                     }
 
-                    switch outcome.result {
-                    case .card, .failed:
-                        consecutiveUnreachable = 0
-                    case .unreachable, .cancelled:
-                        break
-                    }
                     completed += 1
                     await publishCatalogProgress()
 
@@ -869,8 +856,18 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     }
                 }
 
+                while cursor < requestBatches.count,
+                      let game = requestBatches[cursor].first?.game,
+                      catalogAvailability.isUnavailable(game) {
+                    skippedCatalogRequests = true
+                    for pending in requestBatches[cursor] {
+                        fallbackSubjects.append(contentsOf: (byPrinting[pending] ?? []).map {
+                            PriceRefreshController.FallbackCandidate(target: $0, card: nil)
+                        })
+                    }
+                    cursor += 1
+                }
                 if cursor < requestBatches.count,
-                   !providerUnreachable,
                    !wasCancelled,
                    !Task.isCancelled {
                     let batch = requestBatches[cursor]
@@ -1036,7 +1033,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 checkedUnstampedProvider: checkedUnstampedProvider,
                 changedPrices: changedPrices,
                 foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
-                providerUnreachable: providerUnreachable || mappedProviderUnreachable,
+                providerUnreachable: skippedCatalogRequests || catalogAvailability.hasUnavailableProvider || mappedProviderUnreachable,
                 persistenceFailed: persistenceFailed,
                 gradedLookupMisses: gradedLookupMisses,
                 gradedTransportFailures: gradedTransportFailures,
@@ -4271,6 +4268,40 @@ final class PriceRefreshController: ObservableObject {
             }
         }
         return batches
+    }
+
+    struct CatalogAvailability {
+        private var consecutiveUnreachable: [CardGame: Int] = [:]
+
+        var hasUnavailableProvider: Bool {
+            consecutiveUnreachable.values.contains { $0 >= PriceRefreshController.unreachableThreshold }
+        }
+
+        func isUnavailable(_ game: CardGame) -> Bool {
+            consecutiveUnreachable[game, default: 0] >= PriceRefreshController.unreachableThreshold
+        }
+
+        mutating func record(_ outcomes: [PriceFetchOutcome]) {
+            for (game, results) in Dictionary(grouping: outcomes, by: { $0.printing.game }) {
+                if results.contains(where: {
+                    switch $0.result {
+                    case .card, .failed: return true
+                    case .unreachable, .cancelled: return false
+                    }
+                }) {
+                    recordRequest(game: game, unreachable: false)
+                } else if results.contains(where: {
+                    if case .unreachable = $0.result { return true }
+                    return false
+                }) {
+                    recordRequest(game: game, unreachable: true)
+                }
+            }
+        }
+
+        private mutating func recordRequest(game: CardGame, unreachable: Bool) {
+            consecutiveUnreachable[game] = unreachable ? consecutiveUnreachable[game, default: 0] + 1 : 0
+        }
     }
 
     fileprivate nonisolated static func fetchBatch(

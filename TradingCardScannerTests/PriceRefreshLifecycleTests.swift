@@ -49,6 +49,30 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testCatalogOutageCountsRequestsAndIsolatesProviders() {
+        func outcomes(_ game: CardGame, count: Int, result: PriceFetchOutcome.Result) -> [PriceFetchOutcome] {
+            (0..<count).map {
+                .init(printing: .init(game: game, printingID: "card-\($0)", setCode: "TST", importedIdentity: nil), result: result)
+            }
+        }
+        var availability = PriceRefreshController.CatalogAvailability()
+        // One failed 75-card HTTP request cannot exhaust the retry budget.
+        availability.record(outcomes(.magic, count: 75, result: .unreachable))
+        XCTAssertFalse(availability.isUnavailable(.magic))
+        XCTAssertFalse(availability.isUnavailable(.pokemon))
+        for _ in 0..<3 {
+            availability.record(outcomes(.pokemon, count: 1, result: .failed))
+            availability.record(outcomes(.magic, count: 75, result: .unreachable))
+        }
+        XCTAssertTrue(availability.isUnavailable(.magic))
+        XCTAssertFalse(availability.isUnavailable(.pokemon), "Magic outages must not skip pending Pokémon requests")
+        availability.record(outcomes(.magic, count: 1, result: .failed))
+        XCTAssertFalse(availability.isUnavailable(.magic), "A completed in-flight response clears that provider's cutoff")
+        availability.record(outcomes(.pokemon, count: 1, result: .unreachable))
+        availability.record(outcomes(.pokemon, count: 1, result: .cancelled))
+        XCTAssertFalse(availability.isUnavailable(.pokemon))
+    }
+
     func testMixedCollectionKeepsExactMagicIDsInFullBatches() {
         let magic = (0..<151).map {
             PriceTarget.Printing(game: .magic, printingID: "magic-\($0)", setCode: "TST", importedIdentity: nil)
