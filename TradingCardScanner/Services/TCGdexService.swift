@@ -672,7 +672,11 @@ struct ScryfallService: Sendable {
             let (data, _) = try await requestData(
                 for: request(for: url, ignoringCache: ignoringCache)
             )
-            return try JSONDecoder().decode(ScryfallCard.self, from: data)
+            let card = try JSONDecoder().decode(ScryfallCard.self, from: data)
+            guard card.id.caseInsensitiveCompare(id) == .orderedSame else {
+                throw ScryfallError.identityMismatch
+            }
+            return card
         } catch ScryfallError.endpointNotFound {
             throw ScryfallError.cardNotFound
         }
@@ -788,7 +792,7 @@ struct ScryfallService: Sendable {
     nonisolated private static func retryAfter(from value: String?, now: Date) -> TimeInterval? {
         guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines),
               !value.isEmpty else { return nil }
-        if let seconds = TimeInterval(value), seconds >= 0 { return seconds }
+        if let seconds = TimeInterval(value), seconds.isFinite, seconds >= 0 { return seconds }
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)

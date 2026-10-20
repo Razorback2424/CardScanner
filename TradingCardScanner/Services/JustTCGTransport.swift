@@ -482,7 +482,7 @@ actor JustTCGTransport {
         guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else {
             return nil
         }
-        if let seconds = TimeInterval(value), seconds >= 0 {
+        if let seconds = TimeInterval(value), seconds.isFinite, seconds >= 0 {
             return now.addingTimeInterval(seconds)
         }
         return HTTPDateParser.rfc1123Date(from: value)

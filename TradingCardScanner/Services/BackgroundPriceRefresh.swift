@@ -266,7 +266,7 @@ enum BackgroundPriceRefresh {
         // portfolio epoch. It may only publish a close from an epoch the person
         // has already opened in the app.
         await PortfolioEngine().recomputeAndWait(context: context)
-        return !Task.isCancelled && shouldContinue()
+        return !refreshResult.targetBuildFailed && !Task.isCancelled && shouldContinue()
     }
 }
 

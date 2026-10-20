@@ -157,6 +157,33 @@ final class PricingTests: XCTestCase {
             sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false, gradedOnly: true)
     }
 
+    @MainActor
+    func testLabelOnlyGradedImportCanBindAndRefreshWithoutANumericGrade() async throws {
+        let (container, context) = try makePriceContext()
+        let row = gradedImport(name: "Authentic", catalogID: "ex7-78", finish: .normal)
+        row.gradeRaw = nil
+        row.gradeLabel = "Authentic"
+        context.insert(row)
+        try context.save()
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setGradedLookupOverrideForTesting { _, _ in
+            .matched([GradedVariant(id: "authentic-variant", cardID: "authentic-card", company: .cgc,
+                grade: .init(value: nil, label: "Authentic"), printing: "Normal",
+                marketPriceUSD: 30, updatedAt: nil)])
+        }
+
+        guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+            return XCTFail("Expected a completed graded refresh")
+        }
+        XCTAssertEqual(result.priced, 1)
+        let fresh = ModelContext(container)
+        let refreshed = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(refreshed.justTCGVariantID, "authentic-variant")
+        XCTAssertNil(refreshed.gradeRaw)
+        XCTAssertEqual(refreshed.gradeLabel, "Authentic")
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: refreshed.priceKey)?.effectiveUnitMarketPriceUSD, 30)
+    }
+
     private func gradedImport(name: String, catalogID: String, finish: PhysicalVariant?) -> CollectedCard {
         let row = CollectedCard(collectionKey: "graded:fixture:\(name)", game: .pokemon, providerID: "csv:\(name)",
             name: name, setName: "Team Rocket Returns", setCode: "TRR", cardNumber: "78", rarity: nil,

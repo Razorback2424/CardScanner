@@ -1886,6 +1886,10 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 persistenceFailed = true
                 pendingRowPatches.removeAll()
                 identityIndex?.reload()
+                // PriceStore discards this checkpoint's staged writes after a
+                // failed save. Do not count them in a later successful batch.
+                stagedPriced = 0
+                stagedWriteCount = 0
                 checkpointOutcome = "failed"
             }
         }
@@ -2146,14 +2150,14 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     }
 
     /// An unbound graded row can be asked about by the v2 catalogue when its
-    /// underlying card, grader and numeric grade are all persisted. The vendor
-    /// variant UUID is deliberately not required here: acquiring that UUID is
-    /// the job of the background graded refresh.
+    /// underlying card, grader and grade value or label are all persisted. The
+    /// vendor variant UUID is deliberately not required here: acquiring that
+    /// UUID is the job of the background graded refresh.
     var canResolveGradedVariant: Bool {
         itemKind == .gradedCard
             && gradedIdentity != nil
             && gradingCompany != nil
-            && grade != nil
+            && (grade != nil || gradeLabel != nil)
     }
 
     var id: String {

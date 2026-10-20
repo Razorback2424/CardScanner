@@ -967,6 +967,31 @@ final class JustTCGContractTests: XCTestCase {
             JustTCGTransport.retryDate(from: "Wed, 21 Oct 2015 07:28:00 GMT", now: now)
         )
         XCTAssertNil(JustTCGTransport.retryDate(from: nil, now: now))
+        for value in ["inf", "Infinity", "1e999", "NaN", "-1"] {
+            XCTAssertNil(JustTCGTransport.retryDate(from: value, now: now), value)
+        }
+    }
+
+    func testDirectScryfallRefreshRequiresTheRequestedPrintingID() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [RecordingURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        let service = ScryfallService(breaker: TCGdexCircuitBreaker(), session: session)
+        let requestedID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        for returnedID in [requestedID, "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"] {
+            RecordingURLProtocol.reset(body: """
+                {"id":"\(returnedID)","name":"Fixture","set":"tst","set_name":"Test Set",
+                 "collector_number":"1","lang":"en","digital":false,"finishes":["nonfoil"]}
+                """)
+            do {
+                let card = try await service.fetchCard(id: requestedID.uppercased(), ignoringCache: true)
+                XCTAssertEqual(returnedID, requestedID, "A different printing must be rejected")
+                XCTAssertEqual(card.id, requestedID)
+            } catch ScryfallError.identityMismatch {
+                XCTAssertNotEqual(returnedID, requestedID)
+            }
+        }
     }
 
     func testDeltaCutoffConvertsDeviceClockAheadOrBehindToServerTime() {
