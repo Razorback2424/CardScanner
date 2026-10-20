@@ -167,6 +167,48 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         )
     }
 
+    func testSupersededAnchorClaimCannotReplaceNewerReadyState() async throws {
+        for existingStore in [false, true] {
+            weak var retryTarget: CollectionStorageBootstrap?
+            var claimCount = 0
+            var dependencies = try makeDependencies(
+                account: { .available(fingerprint: "account-a") },
+                claim: { storeID in
+                    claimCount += 1
+                    if claimCount == 1 {
+                        // A newer retry finishes while the first claim is in flight.
+                        await retryTarget?.retry()
+                        return .temporarilyUnavailable
+                    }
+                    return .claimed(CloudCollectionAnchor(
+                        storeID: storeID,
+                        formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                        remoteGeneration: "test-generation"
+                    ))
+                },
+                structuredStoreFilePresent: existingStore
+            )
+            dependencies.storageGeneration = CollectionStorageGeneration()
+            if existingStore {
+                try dependencies.manifestStore.save(CollectionStoreManifest(
+                    storeID: localID,
+                    lastAttachedAccountFingerprint: "account-a",
+                    attachmentState: .attached,
+                    storeFileIdentity: "test-store-file-identity"
+                ))
+            }
+            let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+            retryTarget = bootstrap
+            await bootstrap.start()
+
+            XCTAssertEqual(claimCount, 2)
+            guard case .ready = bootstrap.state else {
+                return XCTFail("A superseded claim replaced the newer ready session")
+            }
+            XCTAssertNotNil(dependencies.storageGeneration.currentToken())
+        }
+    }
+
     func testProductionPathsPreserveThePreBootstrapStoreLocations() {
         let paths = CollectionStoragePaths.production()
         XCTAssertEqual(paths.structuredStoreURL.lastPathComponent, "default.store")

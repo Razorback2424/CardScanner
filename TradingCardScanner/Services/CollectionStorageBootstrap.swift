@@ -1137,7 +1137,9 @@ final class CollectionStorageBootstrap: ObservableObject {
         generation currentGeneration: UInt
     ) async {
         guard currentGeneration == generation else { return }
-        switch await dependencies.claimAnchor(storeID) {
+        let result = await dependencies.claimAnchor(storeID)
+        guard currentGeneration == generation else { return }
+        switch result {
         case let .claimed(anchor) where isUsableAnchor(anchor, storeID: storeID):
             guard let anchorGeneration = anchorGeneration(from: anchor) else {
                 state = .recoveryRequired(
@@ -1212,7 +1214,9 @@ final class CollectionStorageBootstrap: ObservableObject {
         generation currentGeneration: UInt
     ) async {
         guard currentGeneration == generation else { return }
-        switch await dependencies.claimAnchor(storeID) {
+        let result = await dependencies.claimAnchor(storeID)
+        guard currentGeneration == generation else { return }
+        switch result {
         case let .claimed(anchor) where isUsableAnchor(anchor, storeID: storeID):
             guard let anchorGeneration = anchorGeneration(from: anchor) else {
                 state = .recoveryRequired(
