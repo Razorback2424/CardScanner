@@ -2,6 +2,52 @@
 
 Status: native repairs verified; goal blocked on the remaining interactive UI acceptance checks. The continuation audit repaired an F2 preservation regression and an F4 interrupted-copy intent gap, recorded below.
 
+## Review follow-up at `0c04c63` — 20 October 2026
+
+Two remaining P2 edges are repaired in the working tree:
+
+- Certified rescans refine finish and edition together before checking the
+  existing vendor binding. Incompatible pricing is invalidated and resolved
+  against that final durable identity, under the pricing gate. The rescan adds
+  no copy, inventory event, activity, or acquisition receipt. Compatible quotes
+  remain usable. A delayed replacement must still match the durable finish and
+  edition inside the serialized writer.
+- Failed authorized additional-copy writes keep their Needs attention recovery
+  record, but return a stale presentation outcome after request-generation
+  invalidation. Neither ordinary duplicate confirmation nor a held-repeat offer
+  can return after switching to Price Check, changing subject mode, or
+  backgrounding. Background recognition remains paused by the lifecycle policy;
+  a current presentation still offers retry after failure.
+
+The four focused simulator regressions pass with zero failures:
+`CollectionItemKindTests.testCertifiedRescanValidatesFinalFinishAndEditionBeforeReturningDuplicate`,
+`ScannerViewModelTests.testCertifiedRescanRefinesUnknownEditionAndReplacesIncompatiblePrice`,
+`testFailedAdditionalCopyCannotRevivePromptAfterSameSessionTransition`, and
+`testHeldRepeatSaveFailureRepublishesOfferOnlyWhilePresentationIsCurrent`.
+The slab cases cover both known and initially unknown finish, compatible quote
+preservation, corrected pricing, and unchanged ownership/accounting. The two
+copy paths cover all three transitions and retained recovery intent.
+Focused log: `/tmp/cardscanner-review-edges-final.log`.
+
+The final affected-suite run passes **167 tests, zero failures, zero skips**:
+`ScannerViewModelTests` (118), `CollectionItemKindTests` (30),
+`ScannedGradedResolverTests` (13), `OwnershipConcurrencyStressTests` (1), and
+`RefreshStructuralWriteTests` (5). It includes the four focused cases above;
+the counts must not be added together. The test action also built the app and
+test target successfully. It used the project, scheme, configuration,
+destination, DerivedData and SourcePackages paths from the command below, with
+only those five suites selected and result bundle
+`/Volumes/Keller Family Photos/CodexBuilds/CollectorTools-20261020/Review-Edges-0c04c63.xcresult`.
+Log: `/tmp/cardscanner-review-edges-suites.log`. `git diff --check` and local
+Markdown-link validation also pass. Initial new-fixture compilation and
+session/lifecycle assertion failures were corrected before these final runs.
+
+These checks do not close the interactive acceptance or physical-device gates,
+or establish a cause for the reported Meditite freeze. The earlier 804- and
+508-test evidence remains historical and overlapping.
+
+## Original repair baseline
+
 Starting HEAD: `e2c37ad` (clean worktree), following the report's reviewed baseline
 `be183f22cdfec5febd9091608d23bf5d1e65213d`. The two intervening Collector Tools
 commits remain intact. No commits, pushes, normal-device installs, purchases,

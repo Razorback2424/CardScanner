@@ -1,3 +1,15 @@
+- Review follow-up (2026-10-20; starting HEAD `0c04c63`): repaired the two
+  remaining P2 edges. Certified rescans validate final finish/edition together,
+  invalidate incompatible pricing and resolve it without another acquisition;
+  compatible quotes and ownership accounting remain intact. Failed authorized
+  additional-copy writes retain recovery intent while abandoned prompts stay
+  dismissed after Price Check, subject-mode and background transitions. Four
+  focused regressions pass; the final affected-suite run includes those cases
+  and passes 167 tests, zero failures/skips. App/test compilation, local links
+  and `git diff --check` pass. No device, provider, interactive acceptance or
+  Meditite incident-causation claim; no commit or push.
+  [Evidence](docs/release/verified-bug-repairs-2026-10-20.md).
+
 - Bounded card-detail cleanup (2026-10-20; starting HEAD `e2c37ad` plus retained
   local F1–F13 work): chart-domain reuse, stable same-source image derivatives,
   one live artwork-override query, explicit manual primary-refresh intent and
@@ -3195,3 +3207,9 @@ historical.
   passes. The requested source-only workflow audit is complete; all authored
   regression cases remain unrun. No builds, tests, simulator runs, commits,
   device/provider/CloudKit validation, or runtime/release certification.
+- Workflow source review (2026-10-20; HEAD `0c04c63` plus preserved local work):
+  traced major app workflows and catalog publication. Fixed photo retry in
+  listing/centering, CSV preparation ordering and stale import errors, and
+  Magic publisher pointer rollback. Source/diff and local-link checks only;
+  no builds, tests or simulator runs, per request. No runtime acceptance claim,
+  commit or push. [Coverage and repairs](docs/release/workflow-source-review-2026-10-20.md).

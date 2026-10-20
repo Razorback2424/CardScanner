@@ -8,6 +8,12 @@ history.
 
 ## Current authority boundary — updated 2026-10-20
 
+**Workflow source review — 2026-10-20:** the
+[source review record](../release/workflow-source-review-2026-10-20.md) lists
+major workflow traces and five additional repairs from `0c04c63` plus preserved
+local changes. Per the user, no builds, tests or simulator runs were performed.
+Earlier native evidence below does not validate these new edits.
+
 **Bounded card-detail cleanup — 2026-10-20:** the
 [cleanup evidence](../release/card-detail-cleanup-2026-10-20.md) covers chart
 domain reuse, stable artwork, observed overrides, manual primary refresh and
@@ -24,6 +30,10 @@ The continuation audit adds compatible graded-quote preservation and interrupted
 held-repeat copy intent; its final affected native run passes 804 tests with
 zero failures and one opt-in skip, and the app builds. Full interactive UI
 acceptance remains incomplete in the handoff; the full goal is not certified.
+The later review follow-up from `0c04c63` repairs certified-slab edition pricing
+and same-session failed-copy prompt restoration. Its affected suites pass 167
+tests with zero failures/skips; these overlap earlier counts and do not replace
+the broader historical run or close interactive acceptance.
 
 **Launch commercial reconciliation — 2026-10-20:**
 [CARDSCANNER_LAUNCH_MONETIZATION.md](CARDSCANNER_LAUNCH_MONETIZATION.md) is the
