@@ -395,21 +395,6 @@ struct PriceObservationLog {
         ).written
     }
 
-    /// The computation actor already materialises the observation log for its
-    /// replay. Return that same in-memory set with any newly seeded rows so the
-    /// builder does not issue a second full-table fetch.
-    func backfillFromRecordsAndReturnObservations(
-        receivedAt localKnowledgeTime: Date = .now,
-        existingObservations: [PriceObservation]? = nil,
-        defaults: UserDefaults = .standard
-    ) -> [PriceObservation] {
-        reconcileSyncedRecordsAndReturnObservations(
-            learnedAt: localKnowledgeTime,
-            existingObservations: existingObservations,
-            defaults: defaults
-        )
-    }
-
     /// Reconciles changed or invalidated synced records into the local
     /// observation history and returns the materialised rows for replay.
     func reconcileSyncedRecordsAndReturnObservations(

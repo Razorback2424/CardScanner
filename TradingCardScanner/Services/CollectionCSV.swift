@@ -1692,21 +1692,6 @@ enum CollectionCSV {
     // cards with artwork and numbering and carry Cardmarket prices. Excluding
     // them here meant the app supported a set it refused to let anyone import.
 
-    private static func canonicalImportText(_ value: String) -> String {
-        let folded = value.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
-        )
-        let cleaned = folded.unicodeScalars.reduce(into: "") { result, scalar in
-            if CharacterSet.alphanumerics.contains(scalar) {
-                result.unicodeScalars.append(scalar)
-            } else {
-                result.append(" ")
-            }
-        }
-        return cleaned.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
-    }
-
     private static func portfolioMarketPrice(
         in row: [String: String]
     ) -> (amount: Double, asOf: Date?)? {

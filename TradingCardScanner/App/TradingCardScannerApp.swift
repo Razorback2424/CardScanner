@@ -68,18 +68,6 @@ struct TradingCardScannerApp: App {
             }
         }
     }
-
-    /// Legacy synchronous callers may only borrow the process-authoritative
-    /// session. Fresh/background launches must use the async headless
-    /// preflight, which owns the single-container creation decision.
-    @MainActor
-    static func makeBackgroundContainer() throws -> ModelContainer {
-        guard let session = CollectionStorageGeneration.shared.activeSession(),
-              session.isAuthoritative else {
-            throw CollectionStorageBootstrapError.storageSessionUnavailable
-        }
-        return session.container
-    }
 }
 
 /// Runtime consumers are created only after their actual storage session exists.

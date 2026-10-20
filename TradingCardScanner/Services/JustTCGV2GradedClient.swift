@@ -451,25 +451,6 @@ struct JustTCGV2GradedClient: Sendable {
             : .cardFoundWithoutGradedVariants
     }
 
-    func gradedVariants(
-        identity: GradedCardIdentity,
-        game: CardGame,
-        companies: Set<GradingCompany> = [],
-        grades: Set<String> = [],
-        lane: JustTCGRequestLane = .interactive
-    ) async throws -> [GradedVariant] {
-        switch try await lookup(
-            identity: identity,
-            game: game,
-            companies: companies,
-            grades: grades,
-            lane: lane
-        ) {
-        case let .matched(variants): return variants
-        case .cardFoundWithoutGradedVariants, .noProductMatch, .incompleteSearch, .localIdentityUnresolved: return []
-        }
-    }
-
     /// Only the cursor is consumed. The original identity/grade/region filters
     /// stay authoritative; a provider link cannot replace them or receive a key.
     static func nextCursor(from link: String?) throws -> String? {

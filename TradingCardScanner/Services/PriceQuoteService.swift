@@ -93,8 +93,4 @@ struct PriceQuoteService: Sendable {
     static func shouldRecordCircuitFailure(for error: Error) -> Bool {
         PokemonPriceAdapter.shouldRecordCircuitFailure(for: error)
     }
-
-    static func matchesResolvedIdentity(returned: IdentifiedCard, resolved: IdentifiedCard) -> Bool {
-        GamePriceIdentity.legacy(resolved).matches(.legacy(returned))
-    }
 }

@@ -2955,3 +2955,17 @@ historical.
   slots were already used; final guard syntax parsing and diff checks pass,
   but its new assertions were not rerun. The 275-pass result precedes that
   final guard and does not certify the final source in Simulator.
+- **2026-10-20 — Unused-code cleanup:** removed the 11 owner-approved
+  declarations listed in the [documentation audit](docs/plans/documentation_audit.md)
+  after reconfirming no app or test callers. The six source files lose 259 lines;
+  active helpers and archived documentation remain intact. Base: `main` at
+  `c695da8` plus existing local pricing/history work, preserved throughout.
+  A reference scan across 309 app/test Swift files finds none of the removed
+  names. Xcode Debug `build-for-testing` for the `TradingCardScanner` scheme on
+  the iPhone 17 iOS Simulator destination succeeded, compiling both app and test
+  targets with signing disabled. Tests were not executed. Concurrency warnings
+  were reported in scanner/storage code outside this cleanup. Build artifacts:
+  external SSD `CodexBuilds/DeadCodeCleanup-20261020/`, including
+  `Compile.xcresult`; command output: `/tmp/trading-card-dead-code-build.log`.
+  Updated-document links and `git diff --check` pass. No physical-device,
+  provider, CloudKit, archive, or release-readiness claim.

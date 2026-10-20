@@ -1,12 +1,32 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-15
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-20
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-15
+## Current authority boundary — updated 2026-10-20
+
+**Unused-code cleanup — 2026-10-20:** on `main`, base `c695da8` plus
+existing local pricing/history changes, removed 11 owner-approved declarations
+after confirming no app or test callers. In
+[`CollectionCardDetailView.swift`](../../TradingCardScanner/Views/CollectionCardDetailView.swift),
+these were `AppCardBadge`, `AppCardSurface`, `CardDetailSourceLegend`,
+`PortfolioMovementSummaryCard`, `conditionRow`, and
+`CollectionArtworkStore.removeUnreferencedFiles(keeping:olderThan:)`.
+The remaining removals were `CollectionCSV.canonicalImportText(_:)`,
+`PriceObservationLog.backfillFromRecordsAndReturnObservations(...)`,
+`PriceQuoteService.matchesResolvedIdentity(returned:resolved:)`,
+`JustTCGV2GradedClient.gradedVariants(...)`, and
+`TradingCardScannerApp.makeBackgroundContainer()`.
+Active identity matching, observation reconciliation, graded lookup, headless
+storage preflight, and reference-validated artwork cleanup retain their existing
+implementations. Archived badge examples remain historical; they are not current
+component guidance. Browse history and gated catalog/scanner work remain outside
+this cleanup. Verification is recorded in the
+[progress log](../../progress.md); this maintenance does not establish release
+or physical-device readiness.
 
 **Individual-card history decision — 2026-10-18:** the owner superseded the
 September rejection of provider history. The [current chart authority](price_history_chart_plan.md)

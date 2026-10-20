@@ -617,15 +617,6 @@ struct CollectionCardDetailView: View {
     }
 
     @ViewBuilder
-    private var conditionRow: some View {
-        if let conditionLine {
-            Text(conditionLine)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primary)
-        }
-    }
-
-    @ViewBuilder
     private var gradedVariantCorrectionBlock: some View {
         if let activity = latestGradedAcquisition {
             VStack(alignment: .leading, spacing: 8) {
@@ -1473,46 +1464,6 @@ struct CollectionCardDetailView: View {
     }
 }
 
-struct AppCardBadge: View {
-    let text: String
-    let systemImage: String?
-    let tint: Color
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-
-    init(text: String, systemImage: String? = nil, tint: Color = .accentColor) {
-        self.text = text
-        self.systemImage = systemImage
-        self.tint = tint
-    }
-
-    var body: some View {
-        Group {
-            if let systemImage {
-                Label(text, systemImage: systemImage)
-            } else {
-                Text(text)
-            }
-        }
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(tint)
-        .lineLimit(2)
-        .multilineTextAlignment(.leading)
-        .padding(.horizontal, 9)
-        .padding(.vertical, 6)
-        .background {
-            if reduceTransparency {
-                Capsule().fill(Color(uiColor: .secondarySystemBackground))
-            } else {
-                Capsule().fill(tint.opacity(0.15))
-            }
-        }
-        .overlay {
-            Capsule().stroke(tint.opacity(reduceTransparency ? 0.35 : 0.2), lineWidth: 1)
-        }
-        .accessibilityElement(children: .combine)
-    }
-}
-
 /// A compact, stable vocabulary for the common rarity families. The enum
 /// classifies the provider value for tinting, but keeps the provider's exact
 /// label because named rarities such as "Illustration Rare" are distinct facts.
@@ -1606,45 +1557,6 @@ struct RarityChip: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Rarity")
             .accessibilityValue(rarity.label)
-    }
-}
-
-struct AppCardSurface<Content: View>: View {
-    private let content: Content
-    private let accent: Color?
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-
-    init(accent: Color? = nil, @ViewBuilder content: () -> Content) {
-        self.accent = accent
-        self.content = content()
-    }
-
-    var body: some View {
-        content
-            .padding(16)
-            .background {
-                ZStack {
-                    if reduceTransparency {
-                        RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .fill(Color(uiColor: .secondarySystemBackground))
-                    } else {
-                        RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    }
-
-                    if let accent {
-                        // A small, local tint makes the identity surface feel
-                        // connected to its artwork without recolouring every
-                        // card surface on the page.
-                        RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .fill(accent.opacity(reduceTransparency ? 0.07 : 0.11))
-                    }
-                }
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(.primary.opacity(0.08), lineWidth: 1)
-            }
     }
 }
 
@@ -1830,44 +1742,6 @@ private struct CardDetailRangeSelector: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Price history range")
         .accessibilityHint("Choose how much per-card price history to show.")
-    }
-}
-
-private struct CardDetailSourceLegend: View {
-    let sourceDescription: String?
-    let hasGaps: Bool
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 8) {
-            Text(sourceDescription ?? "Price source unavailable")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Spacer(minLength: 8)
-
-            if hasGaps {
-                HStack(spacing: 6) {
-                    Canvas { context, size in
-                        var path = Path()
-                        path.move(to: CGPoint(x: 0, y: size.height / 2))
-                        path.addLine(to: CGPoint(x: size.width, y: size.height / 2))
-                        context.stroke(
-                            path,
-                            with: .color(Color.secondary.opacity(0.7)),
-                            style: StrokeStyle(lineWidth: 1.5, dash: [3, 3])
-                        )
-                    }
-                    .frame(width: 16, height: 6)
-
-                    Text("not checked")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .fixedSize(horizontal: true, vertical: false)
-            }
-        }
-        .padding(.horizontal, 16)
     }
 }
 
@@ -2844,61 +2718,6 @@ private struct CardDetailSinglePricePoint: View {
     }
 }
 
-struct PortfolioMovementSummaryCard: View {
-    let state: PortfolioCardMovementState
-    let range: PortfolioHistoryRange
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Market movement · \(range.rawValue)")
-                    .font(.subheadline.weight(.semibold))
-
-                switch state {
-                case .historyRecording:
-                    Text("History is being recorded")
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                case .noRecordedMarketMovement:
-                    Text("No recorded market movement")
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                case let .recorded(detail):
-                    Text("\(signed(detail.totalImpact)) holding impact")
-                        .font(.headline.weight(.semibold).monospacedDigit())
-                        .foregroundStyle(PortfolioPalette.direction(detail.totalImpact))
-                    if let secondaryText = secondaryText(for: detail) {
-                        Text(secondaryText)
-                            .font(.subheadline.monospacedDigit())
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
-        .accessibilityHint("Opens Movement Details")
-    }
-
-    private func secondaryText(for detail: PortfolioContributionDetail) -> String? {
-        if detail.hasConsistentQuantity,
-           let quantity = detail.affectedQuantities.first,
-           quantity > 1,
-           !detail.cumulativeUnitMovement.isZero {
-            return "\(signed(detail.cumulativeUnitMovement)) per card × \(quantity)"
-        }
-        if detail.affectedQuantities.count > 1 {
-            return "Different quantities were affected"
-        }
-        return nil
-    }
-
-    private func signed(_ amount: Money) -> String {
-        PortfolioHistoryDisplay.signedCurrency(amount)
-    }
-}
-
 struct MovementDetailsView: View {
     let card: CollectedCard
     let price: PriceDisplay
@@ -3384,19 +3203,6 @@ enum CollectionArtworkStore {
             // may still exist. Rekey cleanup retries this after a later save.
             return false
         }
-    }
-
-    /// Removes old device-local files after the owning override was committed
-    /// away. A one-day age floor protects an image written just before its model
-    /// transaction finishes or rolls back.
-    @discardableResult
-    static func removeUnreferencedFiles(
-        keeping referencedFilenames: Set<String>,
-        olderThan cutoff: Date
-    ) -> Int {
-        let candidates = agedFilenames(olderThan: cutoff)
-            .subtracting(referencedFilenames)
-        return removeFiles(named: candidates)
     }
 
     /// Enumerates the artwork directory without holding the collection writer.
