@@ -11,6 +11,47 @@ enum PokemonChecklistSnapshotVersion {
     static let masterSetRules = 1
 }
 
+/// Read-time repair of reviewed identities only. Source resources and provider
+/// fingerprints remain untouched, including when an unchanged probe skips a crawl.
+enum PokemonChecklistReviewedProjection {
+    static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        var emitted = Set<String>()
+        return cards.flatMap { base -> [CatalogCardSummary] in
+            guard base.game == .pokemon, base.setID.providerID == "me02.5",
+                  base.pokemonPrintRun == nil,
+                  let variants = PokemonVariantRules.reviewedVariants(cardID: base.providerID) else { return [base] }
+            guard emitted.insert(base.providerID).inserted else { return [] }
+            return PokemonMasterSetDefinition.requiredSlots(for: variants).map { slot in
+                var value = cards.first {
+                    $0.providerID == base.providerID && $0.setID == base.setID
+                        && $0.masterSetVariant == slot.variant
+                } ?? base
+                value.masterSetVariant = slot.variant
+                value.isExpandedMasterSetVariant = slot.isExpanded
+                value.isSoleSlotForCard = slot.isSole
+                return value
+            }
+        }
+    }
+
+    static func entry(_ entry: PokemonChecklistSnapshotEntry, cards: [CatalogCardSummary]) -> PokemonChecklistSnapshotEntry {
+        guard entry.providerID == "me02.5", entry.set.pokemonPrintRun == nil else { return entry }
+        let old = entry.set
+        let set = CatalogSet(catalogID: old.catalogID, name: old.name, code: old.code,
+            logoURL: old.logoURL, symbolURL: old.symbolURL, cardCount: cards.count,
+            releaseDate: old.releaseDate, sortRank: old.sortRank,
+            bundledArtworkSourceID: old.bundledArtworkSourceID,
+            artworkFallbackURLs: old.artworkFallbackURLs,
+            limitlessArtworkAuthorized: old.limitlessArtworkAuthorized,
+            cardArtwork: old.cardArtwork, physicalPrintingIDs: old.physicalPrintingIDs)
+        return PokemonChecklistSnapshotEntry(set: set, providerID: entry.providerID,
+            providerFingerprint: entry.providerFingerprint, providerProbeFingerprint: entry.providerProbeFingerprint,
+            officialCount: entry.officialCount,
+            standardSlotCount: cards.filter { !$0.isExpandedMasterSetVariant }.count,
+            expandedSlotCount: cards.count, resource: entry.resource)
+    }
+}
+
 struct PokemonChecklistSnapshotManifest: Codable, Sendable, Equatable {
     let schemaVersion: Int
     let rulesVersion: Int
@@ -198,12 +239,14 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                     entriesByID[entry.set.id] = entry
                 }
                 if let cards = snapshot.checklists[entry.set.id] {
-                    checklists[entry.set.id] = cards
+                    checklists[entry.set.id] = PokemonChecklistReviewedProjection.cards(cards)
                 }
             }
         }
 
-        let entries = order.compactMap { entriesByID[$0] }
+        let entries = order.compactMap { entriesByID[$0] }.map { entry in
+            checklists[entry.set.id].map { PokemonChecklistReviewedProjection.entry(entry, cards: $0) } ?? entry
+        }
         guard !entries.isEmpty else { return nil }
         let manifest = PokemonChecklistSnapshotManifest(
             schemaVersion: first.manifest.schemaVersion,
@@ -809,14 +852,17 @@ actor PokemonChecklistStore {
     }
 
     /// Returns only manifest entries and verifies that the referenced resource
-    /// exists. No checklist JSON is decoded here, so Browse and scanning can
-    /// share one store without materialising the entire Pokémon corpus.
+    /// exists. Only the narrowly repaired set is decoded for corrected counts,
+    /// so Browse and scanning need not materialise the entire Pokémon corpus.
     func mergedEntries() -> [PokemonChecklistSnapshotEntry] {
         installMemoryWarningObserverIfNeeded()
         return mergeEntries(
             bundled: bundledValidEntries(),
             downloaded: downloadedValidEntries()
-        )
+        ).map { entry in
+            guard entry.providerID == "me02.5", let cards = mergedChecklist(for: entry.set.catalogID) else { return entry }
+            return PokemonChecklistReviewedProjection.entry(entry, cards: cards)
+        }
     }
 
     /// The full checklist's ranks remain independent of a scanner-only registry.
@@ -926,9 +972,9 @@ actor PokemonChecklistStore {
     ) -> ChecklistLoadOutcome {
         let key = entry.set.id
         if isDownloaded {
-            if let cached = downloadedChecklistCache[key] { return .loaded(cached) }
+            if let cached = downloadedChecklistCache[key] { return .loaded(PokemonChecklistReviewedProjection.cards(cached)) }
         } else if let cached = bundledChecklistCache[key] {
-            return .loaded(cached)
+            return .loaded(PokemonChecklistReviewedProjection.cards(cached))
         }
 
         let outcome = loadChecklist(for: entry, in: directory)
@@ -1430,7 +1476,7 @@ actor PokemonChecklistStore {
                 // an otherwise useful offline catalog.
                 continue
             }
-            validEntries.append(entry)
+            validEntries.append(PokemonChecklistReviewedProjection.entry(entry, cards: cards))
             checklists[entry.set.id] = cards
         }
         guard !validEntries.isEmpty else { return nil }
@@ -1529,7 +1575,7 @@ actor PokemonChecklistStore {
             return .unreadable
         }
         do {
-            return .loaded(try decoder.decode([CatalogCardSummary].self, from: data))
+            return .loaded(PokemonChecklistReviewedProjection.cards(try decoder.decode([CatalogCardSummary].self, from: data)))
         } catch {
             return .undecodable
         }

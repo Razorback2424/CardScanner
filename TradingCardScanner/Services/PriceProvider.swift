@@ -163,7 +163,18 @@ enum CardPricing {
             }
             let reviewedAnniversary = $0.genericStamps.map { $0.lowercased() } == ["30th-anniversary"]
                 && PokemonTCGCSVMapping.byCardID[card.id]?.setID == card.set.id
-            return $0.physicalVariant == variant && ($0.genericStamps.isEmpty || reviewedAnniversary)
+            // A modern catalog may represent its sole stamped object as Holo.
+            // Only that existing representation, with exact quote/product proof,
+            // can be recovered. Explicit edition requests retain their strict gate.
+            let soleCatalogObject = printRun == nil
+                && variant == .holo
+                && PokemonMasterSetDefinition.printRuns(forSetProviderID: card.set.id).isEmpty
+                && card.variantsDetailed?.count == 1
+                && card.catalogVariants == [variant]
+                && $0.subtype == nil
+                && productIDs(in: $0).count == 1
+                && $0.pricing?.tcgplayer.flatMap { marketPrice(from: $0, listing: "holofoil") } != nil
+            return $0.physicalVariant == variant && ($0.genericStamps.isEmpty || reviewedAnniversary || soleCatalogObject)
         }
     }
 

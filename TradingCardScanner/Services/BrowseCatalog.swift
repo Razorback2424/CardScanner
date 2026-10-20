@@ -3232,6 +3232,10 @@ enum PokemonMasterSetDefinition {
             variants = [.normal]
         }
 
+        return requiredSlots(for: variants)
+    }
+
+    static func requiredSlots(for variants: [PhysicalVariant]) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
         var seen = Set<String>()
         let slots = variants.filter { seen.insert($0.id).inserted }
         return slots.map { variant in
