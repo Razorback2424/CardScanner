@@ -117,6 +117,18 @@ final class PortfolioLedgerTests: XCTestCase {
         XCTAssertEqual(Set([clean, overflowed]).count, 1)
     }
 
+    func testHeroCurrencyPartsSplitAtTheLocalizedDecimalSeparator() {
+        let amount = Money(rounding: 12482.17)!
+        for identifier in ["en_US", "de_DE", "fr_FR"] {
+            let locale = Locale(identifier: identifier)
+            let parts = amount.heroParts(locale: locale)
+
+            XCTAssertEqual(parts.whole + parts.fraction, amount.formatted(locale: locale), identifier)
+            XCTAssertTrue(parts.fraction.hasPrefix(locale.decimalSeparator! + "17"), identifier)
+            XCTAssertFalse(parts.whole.isEmpty, identifier)
+        }
+    }
+
     // MARK: - When an observation is worth writing
 
     func testUnchangedValueAndProvenanceWritesNoObservation() {

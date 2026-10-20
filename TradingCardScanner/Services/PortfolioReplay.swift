@@ -226,11 +226,13 @@ enum PortfolioReplayEngine {
         // audit rows, not economic activity: collapsing both makes an add+Undo
         // disappear, and makes a remove+Undo behave as though the temporary
         // mutation never happened. A reversal of an *earlier* day's operation
-        // is today's correction and stays in the walk.
+        // is today's correction and stays in the walk. An undo beyond the
+        // requested cutoff cannot erase a holding that still existed then.
         let eventByID = Dictionary(input.events.map { ($0.eventID, $0) }, uniquingKeysWith: { first, _ in first })
         var collapsed: Set<UUID> = []
         for reversal in input.events {
-            guard let originalID = reversal.reversesEventID,
+            guard reversal.occurredAt <= input.through,
+                  let originalID = reversal.reversesEventID,
                   let original = eventByID[originalID],
                   PortfolioCalendar.day(containing: original.occurredAt, in: timeZone)
                     == PortfolioCalendar.day(containing: reversal.occurredAt, in: timeZone)

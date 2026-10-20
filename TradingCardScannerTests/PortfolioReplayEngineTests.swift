@@ -148,6 +148,28 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(result.live?.additions, ["position": usd(31)])
     }
 
+    func testSameDayUndoAfterReplayCutoffDoesNotEraseTheEarlierHolding() throws {
+        let original = event(delta: 1, at: at(1, hour: 9))
+        let events = [
+            original,
+            event(delta: -1, at: at(1, hour: 11), reverses: original.eventID)
+        ]
+        let observations = [observation(10, at: at(1, hour: 8))]
+        let beforeUndo = PortfolioReplayEngine.replay(input(
+            events: events, observations: observations,
+            epoch: day(1), through: at(1, hour: 10)
+        ))
+        let afterUndo = PortfolioReplayEngine.replay(input(
+            events: events, observations: observations,
+            epoch: day(1), through: at(1, hour: 12)
+        ))
+
+        XCTAssertEqual(beforeUndo.live?.attribution.currentValue, usd(10))
+        XCTAssertEqual(beforeUndo.live?.addedQuantities, ["position": 1])
+        XCTAssertEqual(afterUndo.live?.attribution.currentValue, .zero)
+        XCTAssertTrue(try XCTUnwrap(afterUndo.live).addedQuantities.isEmpty)
+    }
+
     // MARK: - Equivalence with the engine being replaced
 
     /// The replay's still-open day must attribute exactly as

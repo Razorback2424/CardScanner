@@ -143,21 +143,23 @@ extension Money {
     /// Currency formatting for display. Two fraction digits, matching every
     /// existing price surface in the app; the extra stored precision exists for
     /// arithmetic, not for the user.
-    func formatted(currencyCode: String = "USD") -> String {
+    func formatted(currencyCode: String = "USD", locale: Locale = .current) -> String {
         guard isValid else { return "Value unavailable" }
-        return doubleValue.formatted(.currency(code: currencyCode).precision(.fractionLength(2)))
+        return doubleValue.formatted(.currency(code: currencyCode).precision(.fractionLength(2)).locale(locale))
     }
 
-    /// Splits the formatted amount into a leading whole-dollar part (with
-    /// currency symbol and grouping) and a trailing fractional part, so a
+    /// Splits the formatted amount at its localized decimal separator, so a
     /// hero display can render them at different sizes/weights — e.g.
     /// "$12,482" + ".17". Falls back to the plain formatted string as the
     /// whole part with an empty fraction when the formatter doesn't produce a
-    /// two-part decimal (invalid amounts, some locales).
-    func heroParts(currencyCode: String = "USD") -> (whole: String, fraction: String) {
-        let full = formatted(currencyCode: currencyCode)
-        guard let dot = full.lastIndex(of: "."), isValid else { return (full, "") }
-        return (String(full[full.startIndex..<dot]), String(full[dot...]))
+    /// two-part decimal. Currency symbols retain their localized position.
+    func heroParts(currencyCode: String = "USD", locale: Locale = .current) -> (whole: String, fraction: String) {
+        let full = formatted(currencyCode: currencyCode, locale: locale)
+        guard isValid,
+              let separator = locale.decimalSeparator,
+              !separator.isEmpty,
+              let boundary = full.range(of: separator, options: .backwards) else { return (full, "") }
+        return (String(full[..<boundary.lowerBound]), String(full[boundary.lowerBound...]))
     }
 }
 

@@ -1904,6 +1904,45 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(newest.effectiveAt, remoteFetch)
     }
 
+    func testSyncedForeignCurrencyTransitionWithdrawsUSDValueFromReplay() throws {
+        let context = try makeContext()
+        let epoch = Date(timeIntervalSince1970: 1_900_000_000)
+        let remoteFetch = epoch.addingTimeInterval(120)
+        let learnedAt = epoch.addingTimeInterval(180)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(NormalizedPrice(
+            unitMarketPriceUSD: 20, currencyCode: "EUR", source: .cardmarket,
+            sourceVariantID: "eur-listing", sourceUpdatedAt: remoteFetch, fetchedAt: remoteFetch
+        ))
+        context.insert(record)
+        context.insert(PriceObservation(
+            instrumentKey: "instrument", kind: .marketUpdate, amount: money(10),
+            currencyCode: "USD", source: .justTCG, sourceVariantID: "usd-listing",
+            marketVariantID: nil, effectiveAt: epoch, receivedAt: epoch, isSourceStamped: true
+        ))
+        try context.save()
+
+        let log = PriceObservationLog(context: context)
+        let rows = log.reconcileSyncedRecordsAndReturnObservations(learnedAt: learnedAt)
+        let newest = try XCTUnwrap(rows.max { $0.receivedAt < $1.receivedAt })
+        XCTAssertEqual(newest.currencyCode, "EUR")
+        XCTAssertEqual(newest.amount, money(20))
+        XCTAssertEqual(newest.receivedAt, learnedAt)
+
+        let replay = PortfolioReplayEngine.replay(PortfolioReplayInput(
+            events: [entry(kind: .initialBalance, delta: 1, at: epoch.addingTimeInterval(60), instrument: "instrument")],
+            observations: rows.map(PortfolioEngine.observationEntry(from:)),
+            epoch: epoch, through: learnedAt, timeZoneIdentifier: "UTC"
+        ))
+        XCTAssertEqual(replay.live?.attribution.currentValue, .zero)
+        XCTAssertEqual(replay.live?.attribution.pricingAdjustment, money(-10))
+        XCTAssertEqual(replay.live?.attribution.market, .zero)
+        XCTAssertEqual(replay.live?.attribution.unexplained, .zero)
+        XCTAssertEqual(log.reconcileSyncedRecordsAndReturnObservations(
+            learnedAt: learnedAt.addingTimeInterval(1)
+        ).count, 2)
+    }
+
     func testOutOfOrderSyncedPriceDoesNotOverwriteNewerLocalKnowledge() throws {
         let context = try makeContext()
         let newerKnowledge = Date(timeIntervalSince1970: 2_000)

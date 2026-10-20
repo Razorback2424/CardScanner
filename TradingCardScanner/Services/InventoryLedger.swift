@@ -342,8 +342,8 @@ struct InventoryLedger {
             // PriceRecord is the mutable current-state projection while the
             // observation is the append-only local knowledge history. A
             // record can legitimately be newer than the latest local
-            // observation (including a USD -> EUR transition, which the USD
-            // observation log deliberately does not append). Let its current
+            // observation (including a USD -> EUR transition before local
+            // reconciliation appends it). Let its current
             // state win when the same source chronology says it supersedes
             // the observation; otherwise an old USD observation would keep a
             // newly ineligible record in the portfolio total.

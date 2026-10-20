@@ -542,10 +542,12 @@ struct PriceObservationLog {
                 continue
             }
 
-            guard let money = PortfolioPriceEligibility.eligibleUnitPrice(
-                amount: record.effectiveUnitMarketPriceUSD,
-                currencyCode: record.currencyCode
-            ) else { continue }
+            // Preserve native-currency evidence just as ingestion does. A
+            // USD -> non-USD transition withdraws portfolio priceability and
+            // must reach replay even though its amount cannot enter the total.
+            guard let nativeAmount = record.unitMarketPriceUSD,
+                  nativeAmount.isFinite, nativeAmount >= 0,
+                  let money = Money(rounding: nativeAmount) else { continue }
             let source = record.source
             if let previous, isOutOfOrder(record: record, comparedTo: previous) {
                 continue
