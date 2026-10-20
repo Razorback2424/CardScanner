@@ -8,6 +8,26 @@ import XCTest
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testKnownJapaneseGradedFinishUsesTrustedCatalogLanguage() throws {
+        for (catalogID, printing, gameID, accepted) in [
+            ("M2-001", "Holofoil - Japanese", "pokemon-japan", true),
+            ("M2-001", "Normal - Japanese", "pokemon-japan", false),
+            ("M2-001", "Holofoil", "pokemon-japan", false),
+            ("M2-001", "Holofoil - Japanese", "pokemon", false),
+            ("ex7-78", "Holofoil", "pokemon", true),
+            ("ex7-78", "Holofoil - Japanese", "pokemon", false)
+        ] {
+            let card = try JSONDecoder().decode(JustTCGCard.self, from: Data("""
+                {"id":"fixture","name":"Imported","number":"1","game":"\(gameID)",
+                 "set_name":"Fixture Set","variants":[{"id":"graded","type":"graded",
+                 "printing":"\(printing)","grading":{"company":"CGC","grade":10}}]}
+                """.utf8))
+            let identity = GradedCardIdentity(name: "Imported", setName: "Fixture Set", collectorNumber: "1",
+                catalogID: catalogID, finish: .holo)
+            XCTAssertEqual(identity.matches(card, variant: try XCTUnwrap(card.variants?.first), game: .pokemon), accepted)
+        }
+    }
+
     @MainActor
     func testDetailFetchesFullProviderHistoryAndCachesItWithoutOwnershipCutoff() async throws {
         let suite = "MarketHistory-\(UUID().uuidString)"

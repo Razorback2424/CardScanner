@@ -9,7 +9,235 @@ private extension PriceLookup {
     }
 }
 
+private actor UpgradeProbeTransport: PokemonBrowseTransport {
+    let provider: TCGdexSetCatalog
+    var detailRequests = 0
+    var setRequests = 0
+    init(provider: TCGdexSetCatalog) { self.provider = provider }
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] {
+        [try JSONDecoder().decode(TCGdexBrowseSet.self, from: Data(#"{"id":"me02.5","name":"Ascended Heroes","cardCount":{"total":2,"official":2}}"#.utf8))]
+    }
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog {
+        setRequests += 1
+        return provider
+    }
+    func fetchCard(id: String) async throws -> TCGdexCard {
+        detailRequests += 1
+        throw URLError(.notConnectedToInternet)
+    }
+}
+
 final class PricingTests: XCTestCase {
+    @MainActor
+    func testGradedIncompletePassesAggregateAndKeepAttentionAndPriorState() async throws {
+        for unresolved in [false, true] {
+            for mixed in [false, true] {
+                let (container, context) = try makePriceContext()
+                let row = gradedImport(name: "Attention", catalogID: "ex7-78", finish: .normal)
+                row.justTCGVariantID = "prior-variant"
+                row.justTCGAPIVersion = "v2"
+                context.insert(row)
+                let at = Date.now.addingTimeInterval(-30 * 24 * 60 * 60)
+                let record = PriceRecord(key: row.priceKey, game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID)
+                record.apply(.init(unitMarketPriceUSD: 12, currencyCode: "USD", source: .justTCG,
+                    sourceVariantID: "prior-variant", sourceUpdatedAt: at, fetchedAt: at))
+                record.gradedMarketCoverage = .init(status: .cardNotTracked)
+                context.insert(record)
+                let coverage = record.gradedMarketCoverage
+                if mixed { context.insert(gradedImport(name: "Success", catalogID: "ex7-79", finish: .normal)) }
+                try context.save()
+                let worker = PriceRefreshModelActor(modelContainer: container)
+                await worker.setGradedLookupOverrideForTesting { identity, _ in
+                    if identity.name == "Success" {
+                        return .matched([GradedVariant(id: "success-variant", cardID: "success-card",
+                            company: .cgc, grade: .init(value: "10"), printing: "Normal", marketPriceUSD: 20, updatedAt: nil)])
+                    }
+                    return unresolved ? .localIdentityUnresolved : .incompleteSearch
+                }
+                let outcome = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil)
+                guard case let .completed(result) = outcome else { return XCTFail("Expected completed bounded pass") }
+                XCTAssertEqual(result.gradedIncompleteChecks, unresolved ? 0 : 1)
+                XCTAssertEqual(result.gradedUnresolvedIdentities, unresolved ? 1 : 0)
+                XCTAssertEqual(result.priced, mixed ? 1 : 0)
+                XCTAssertEqual(result.failed, 0)
+                XCTAssertEqual(result.gradedLookupMisses, 0)
+                XCTAssertEqual(result.gradedTransportFailures, 0)
+                let summary = PriceRefreshController.Summary(checkedAt: result.checkedAt, priced: result.priced,
+                    failed: result.failed, latestSourceUpdate: result.latestSourceUpdate,
+                    checkedUnstampedProvider: result.checkedUnstampedProvider, changedPrices: result.changedPrices,
+                    foundNothingNewer: result.foundNothingNewer,
+                    gradedIncompleteChecks: result.gradedIncompleteChecks,
+                    gradedUnresolvedIdentities: result.gradedUnresolvedIdentities)
+                XCTAssertFalse(PriceRefreshController.isTransientSuccessStatus(.finished(summary)))
+                let presentation = CollectionRefreshStatusResolver.presentation(for: .init(status: .finished(summary), fallbackStatus: .idle))
+                XCTAssertEqual(presentation?.isWarning, true)
+                XCTAssertEqual(presentation?.isTransient, false)
+                XCTAssertTrue(presentation?.message.contains(unresolved ? "identities" : "incomplete") == true)
+                XCTAssertTrue(portfolioPriceRefreshMessage(summary).contains(unresolved ? "identities" : "incomplete"))
+                let fresh = PriceStore(context: ModelContext(container))
+                let retained = try XCTUnwrap(fresh.record(forKey: row.priceKey))
+                XCTAssertEqual(retained.unitMarketPriceUSD, 12)
+                XCTAssertEqual(retained.source, .justTCG)
+                XCTAssertEqual(retained.sourceVariantID, "prior-variant")
+                XCTAssertEqual(retained.fetchedAt, at)
+                XCTAssertEqual(retained.sourceUpdatedAt, at)
+                XCTAssertEqual(retained.lastSuccessfulCheckAt, at)
+                XCTAssertEqual(retained.gradedMarketCoverage, coverage)
+                XCTAssertEqual(retained.lastFailureReasonRaw, (unresolved ? PricingDiagnosticReason.gradedIdentityUnresolved : .gradedSearchIncomplete).rawValue)
+                XCTAssertNil(retained.lastFailureAt)
+            }
+        }
+    }
+
+    @MainActor
+    func testAcceptedJapaneseGradedImportKnownFinishThroughRefreshSelection() async throws {
+        for (catalogID, finish, printing, expected) in [
+            ("M2-001", PhysicalVariant.holo as PhysicalVariant?, "Holofoil - Japanese", true),
+            ("M2-001", .holo, "Normal - Japanese", false),
+            ("M2-001", .holo, "Holofoil", false),
+            ("ex7-78", .holo, "Holofoil - Japanese", false),
+            ("ex7-78", .holo, "Holofoil", true),
+            ("M2-001", nil, "Holofoil - Japanese", true)
+        ] {
+            let (container, context) = try makePriceContext()
+            let row = gradedImport(name: "Imported", catalogID: catalogID, finish: finish)
+            context.insert(row)
+            try context.save()
+            let worker = PriceRefreshModelActor(modelContainer: container)
+            await worker.setGradedLookupOverrideForTesting { identity, game in
+                XCTAssertEqual(identity.vendorGame(for: game) == .pokemonJapan, catalogID == "M2-001")
+                return .matched([GradedVariant(id: "localized-variant", cardID: "localized-card", company: .cgc,
+                    grade: .init(value: "10"), printing: printing, marketPriceUSD: 30, updatedAt: nil)])
+            }
+            guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+                return XCTFail("Expected completed import refresh")
+            }
+            XCTAssertEqual(result.priced, expected ? 1 : 0, "\(catalogID) / \(printing)")
+            let fresh = ModelContext(container)
+            let refreshed = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(refreshed.justTCGVariantID, expected ? "localized-variant" : nil)
+        }
+    }
+
+    private func gradedRequest() -> PriceRefreshRequest {
+        .init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false, gradedOnly: true)
+    }
+
+    private func gradedImport(name: String, catalogID: String, finish: PhysicalVariant?) -> CollectedCard {
+        let row = CollectedCard(collectionKey: "graded:fixture:\(name)", game: .pokemon, providerID: "csv:\(name)",
+            name: name, setName: "Team Rocket Returns", setCode: "TRR", cardNumber: "78", rarity: nil,
+            imageURL: nil, thumbnailURL: nil, variant: finish, variantResolution: .imported)
+        row.catalogProviderID = catalogID
+        row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        row.gradingCompanyRaw = GradingCompany.cgc.rawValue
+        row.gradeRaw = "10"
+        return row
+    }
+
+    func testReadableOldOverlayProjectsReviewedSlotsOfflineWithoutChangingSource() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("upgrade-\(UUID())")
+        let store = PokemonChecklistStore(root: root)
+        let bundled = await store.bundledSnapshot()
+        let bundle = try XCTUnwrap(bundled)
+        let bundledEntry = try XCTUnwrap(bundle.entry(forProviderID: "me02.5"))
+        let probe = try JSONDecoder().decode(TCGdexSetCatalog.self, from: Data(#"{"id":"me02.5","name":"Ascended Heroes","cards":[{"id":"me02.5-155","localId":"155","name":"Zekrom"},{"id":"me02.5-178","localId":"178","name":"Terapagos"}],"cardCount":{"total":2,"official":2}}"#.utf8))
+        let entry = PokemonChecklistSnapshotEntry(set: bundledEntry.set, providerID: bundledEntry.providerID,
+            providerFingerprint: bundledEntry.providerFingerprint,
+            providerProbeFingerprint: PokemonMasterSetChecklistBuilder.providerProbeFingerprint(of: probe),
+            officialCount: bundledEntry.officialCount, standardSlotCount: bundledEntry.standardSlotCount,
+            expandedSlotCount: bundledEntry.expandedSlotCount, resource: bundledEntry.resource)
+        let current = try XCTUnwrap(bundle.checklist(for: entry.set.catalogID))
+        let ids: Set<String> = ["me02.5-155", "me02.5-178"]
+        var old: [CatalogCardSummary] = []
+        var seen = Set<String>()
+        for row in current {
+            guard ids.contains(row.providerID) else { old.append(row); continue }
+            guard seen.insert(row.providerID).inserted else { continue }
+            for variant in [PhysicalVariant.normal, .holo, .reverse] {
+                var value = row
+                value.masterSetVariant = variant
+                value.isExpandedMasterSetVariant = false
+                value.isSoleSlotForCard = true // stale metadata must also be repaired
+                old.append(value)
+            }
+        }
+        let manifest = PokemonChecklistSnapshotManifest(schemaVersion: bundle.manifest.schemaVersion,
+            rulesVersion: bundle.manifest.rulesVersion, generatedAt: bundle.manifest.generatedAt,
+            directoryFingerprint: bundle.manifest.directoryFingerprint, entries: [entry])
+        try await store.replace(.init(manifest: manifest, checklists: [entry.set.id: old]))
+        let resource = root.appendingPathComponent(entry.resource)
+        let before = try Data(contentsOf: resource)
+        let manifestBefore = try Data(contentsOf: root.appendingPathComponent("manifest.json"))
+        // Reopen like an upgraded installation. No provider is available or needed.
+        let upgraded = PokemonChecklistStore(root: root)
+        for _ in 0..<2 {
+            let loaded = await upgraded.mergedChecklist(for: entry.set.catalogID)
+            let repaired = try XCTUnwrap(loaded)
+            for id in ids {
+                let rows = repaired.filter { $0.providerID == id }
+                let expected = PokemonMasterSetDefinition.requiredSlots(for: try XCTUnwrap(PokemonVariantRules.reviewedVariants(cardID: id)))
+                XCTAssertEqual(rows.compactMap(\.masterSetVariant), expected.map(\.variant))
+                XCTAssertEqual(rows.map(\.isExpandedMasterSetVariant), expected.map(\.isExpanded))
+                XCTAssertTrue(rows.allSatisfy { !$0.isSoleSlotForCard })
+            }
+            XCTAssertEqual(repaired.filter { !ids.contains($0.providerID) }, old.filter { !ids.contains($0.providerID) })
+            let entries = await upgraded.mergedEntries()
+            let metadata = try XCTUnwrap(entries.first { $0.set.id == entry.set.id })
+            XCTAssertEqual(metadata.standardSlotCount, repaired.filter { !$0.isExpandedMasterSetVariant }.count)
+            XCTAssertEqual(metadata.expandedSlotCount, repaired.count)
+            XCTAssertEqual(metadata.set.cardCount, repaired.count)
+            XCTAssertEqual(metadata.providerProbeFingerprint, entry.providerProbeFingerprint)
+            XCTAssertEqual(metadata.providerFingerprint, entry.providerFingerprint)
+            let merged = await upgraded.mergedSnapshot()
+            XCTAssertEqual(merged?.checklist(for: entry.set.catalogID), repaired)
+            await upgraded.discardDecodedChecklists()
+        }
+        XCTAssertEqual(try Data(contentsOf: resource), before)
+        XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")), manifestBefore)
+        let transport = UpgradeProbeTransport(provider: probe)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport, checklistStore: upgraded)
+        await catalog.refreshCatalogNow()
+        let setRequests = await transport.setRequests
+        let detailRequests = await transport.detailRequests
+        XCTAssertEqual(setRequests, 1)
+        XCTAssertEqual(detailRequests, 0, "An unchanged probe must skip rebuilding the old overlay")
+        let page = try await catalog.cards(in: entry.set, cursor: nil)
+        XCTAssertEqual(Set(page.items.filter { $0.providerID == "me02.5-178" }.compactMap { $0.masterSetVariant?.id }),
+            ["holo", "loveBall", "energy"])
+        XCTAssertEqual(try Data(contentsOf: resource), before)
+        XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")), manifestBefore)
+    }
+
+    func testNilPrintRunSoleStampedHoloNeedsExactObjectQuoteAndProduct() throws {
+        func card(extra: [[String: Any]] = [], product: Int? = 123, quoteProduct: Int = 123,
+                  quote: Bool = true, normal: Bool = false, listing: String = "holofoil") throws -> IdentifiedCard {
+            var detail: [String: Any] = ["type": "holo", "size": "standard", "stamp": ["set-logo"]]
+            if let product { detail["thirdParty"] = ["tcgplayer": product] }
+            if quote { detail["pricing"] = ["tcgplayer": [listing: ["marketPrice": 25, "productId": quoteProduct]]] }
+            let object: [String: Any] = ["id": "mep-083", "localId": "083", "name": "Slowbro",
+                "set": ["id": "mep", "name": "Mega Evolution Promos", "cardCount": ["total": 89, "official": 0]],
+                "variants": ["firstEdition": false, "holo": true, "normal": normal, "reverse": false],
+                "variants_detailed": [detail] + extra]
+            return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object)), setCode: "MEP")
+        }
+        let sole = try card()
+        XCTAssertEqual(sole.variantEvidence.catalogVariants, [.holo])
+        XCTAssertEqual(CardPricing.price(for: sole, variant: .holo, magicTreatments: []).value, 25)
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: sole, variant: .holo, printRun: nil), 123)
+        for run in [PokemonPrintRun.unlimited, .firstEdition, .shadowless] {
+            XCTAssertNil(CardPricing.price(for: sole, variant: .holo, magicTreatments: [], pokemonPrintRun: run).value)
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: sole, variant: .holo, printRun: run))
+        }
+        for unsafe in [try card(extra: [["type": "holo", "stamp": ["staff"]]]),
+                       try card(product: 999), try card(product: nil, quoteProduct: 0), try card(quote: false),
+                       try card(normal: true), try card(listing: "reverse-holofoil")] {
+            XCTAssertNil(CardPricing.price(for: unsafe, variant: .holo, magicTreatments: []).value)
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: unsafe, variant: .holo, printRun: nil))
+        }
+    }
+
     private func recordedPokemon(_ id: String) throws -> TCGdexCard {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: id, withExtension: "json",
             subdirectory: "TradingCards/PricingIdentity"))
@@ -108,6 +336,30 @@ final class PricingTests: XCTestCase {
         record.recordFailure(at: at.addingTimeInterval(120))
         XCTAssertEqual(PricingDiagnostics.unpricedReason(for: foreign, record: record), .providerRequestFailed)
         XCTAssertEqual(record.fetchedAt, at)
+        let failedExport = CollectionCSV.exportUnpriced([foreign], priceRecords: [record]).text
+        let lines = failedExport.split(separator: "\n")
+        let fields = Dictionary(uniqueKeysWithValues: zip(
+            lines[0].split(separator: ",", omittingEmptySubsequences: false).map(String.init),
+            lines[1].split(separator: ",", omittingEmptySubsequences: false).map(String.init)))
+        XCTAssertEqual(fields["valuation_exclusion_reason"], PricingDiagnosticReason.otherCurrency.rawValue)
+        XCTAssertEqual(fields["latest_attempt_status"], "refresh_failed")
+        XCTAssertEqual(fields["latest_attempt_reason"], PricingDiagnosticReason.providerRequestFailed.rawValue)
+        XCTAssertEqual(fields["retained_native_amount"], "12.5")
+        XCTAssertEqual(fields["retained_native_currency"], "EUR")
+        XCTAssertEqual(fields["retained_quote_fetched_at"], ISO8601DateFormatter().string(from: at))
+        XCTAssertEqual(fields["retained_quote_updated_at"], ISO8601DateFormatter().string(from: at))
+        XCTAssertEqual(record.sourceUpdatedAt, at)
+        XCTAssertEqual(record.fetchedAt, at)
+        XCTAssertEqual(PricingDiagnostics.valuationExclusionReason(for: first, record: nil), .notChecked)
+        let usd = PriceRecord(key: first.priceKey, game: .pokemon, printingID: first.priceStorageID, variantID: first.variantID)
+        usd.apply(.init(unitMarketPriceUSD: 10, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "normal", sourceUpdatedAt: at, fetchedAt: at))
+        XCTAssertNil(PricingDiagnostics.valuationExclusionReason(for: first, record: usd))
+        XCTAssertEqual(CollectionCSV.exportUnpriced([first], priceRecords: [usd]).text.split(separator: "\n").count, 1,
+            "A successful USD row is excluded from the unpriced export")
+        let neverPriced = CollectionCSV.exportUnpriced([second], priceRecords: []).text
+        XCTAssertTrue(neverPriced.contains("never_checked"))
+        XCTAssertTrue(neverPriced.contains(",not_checked,,,"))
     }
 
     @MainActor
