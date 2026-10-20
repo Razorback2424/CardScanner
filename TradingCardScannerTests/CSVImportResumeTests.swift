@@ -151,7 +151,16 @@ final class CSVImportResumeTests: XCTestCase {
             )
         )
 
-        let resumedAttempt = original.importingAgainAsAdditionalCopies()
+        // File preparation must restore the pending run before counting ledger
+        // entries or offering "Import remaining" after a relaunch.
+        let resumedAttempt = try parsedPlan(rows: [
+            "a,Card A,Set,SET,1,2",
+            "b,Card B,Set,SET,2,3"
+        ]).resumingAdditionalCopyRunIfNeeded()
+        XCTAssertEqual(
+            try CollectionCSV.alreadyImportedEntryCount(for: resumedAttempt, in: ModelContext(container)),
+            1
+        )
         XCTAssertEqual(
             firstAttempt.operationID(for: firstAttempt.entries[0]),
             resumedAttempt.operationID(for: resumedAttempt.entries[0])

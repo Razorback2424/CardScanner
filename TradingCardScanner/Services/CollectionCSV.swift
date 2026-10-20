@@ -55,6 +55,12 @@ struct CollectionCSVImportPlan: Sendable {
         copy.operationSalt = CollectionCSV.importAgainSalt(for: effectiveFingerprint)
         return copy
     }
+
+    func resumingAdditionalCopyRunIfNeeded() -> Self {
+        var copy = self
+        copy.operationSalt = CollectionCSV.pendingImportAgainSalt(for: effectiveFingerprint) ?? operationSalt
+        return copy
+    }
 }
 
 struct CollectionCSVImportResult: Sendable {
@@ -179,6 +185,13 @@ enum CollectionCSVError: LocalizedError, Sendable {
 enum CollectionCSV {
     private static let importAgainSaltLock = NSLock()
     private static let importAgainSaltDefaultsKey = "collectionCSV.importAgainSalts"
+
+    fileprivate static func pendingImportAgainSalt(for fingerprint: String) -> String? {
+        importAgainSaltLock.lock()
+        defer { importAgainSaltLock.unlock() }
+        let salts = UserDefaults.standard.dictionary(forKey: importAgainSaltDefaultsKey) as? [String: String] ?? [:]
+        return salts[fingerprint]
+    }
 
     fileprivate static func importAgainSalt(for fingerprint: String) -> String {
         importAgainSaltLock.lock()

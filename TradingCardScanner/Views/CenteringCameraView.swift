@@ -50,7 +50,8 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     /// A centering capture is a one-shot interaction. Keep the request marked
     /// active until the view stops so rapid taps cannot queue multiple photos
     /// before the first result dismisses the camera.
-    nonisolated(unsafe) private var isCaptureInFlight = false
+    nonisolated(unsafe) private var activeCapture: (photoID: Int64, lifecycleID: UUID)?
+    private var captureLifecycleID = UUID()
     /// All start/stop decisions are serialized with capture-session work. This
     /// prevents a delayed permission callback from starting the camera after the
     /// full-screen camera has already disappeared.
@@ -85,21 +86,23 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     func stop() {
+        captureLifecycleID = UUID()
         motionManager.stopDeviceMotionUpdates()
         sessionQueue.async { [weak self] in
             guard let self else { return }
             self.requestedStartID = nil
-            self.isCaptureInFlight = false
+            self.activeCapture = nil
             guard self.session.isRunning else { return }
             self.session.stopRunning()
         }
     }
 
     func capture() {
+        let lifecycleID = captureLifecycleID
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning, !self.isCaptureInFlight else { return }
-            self.isCaptureInFlight = true
+            guard let self, self.session.isRunning, self.activeCapture == nil else { return }
             let settings = AVCapturePhotoSettings()
+            self.activeCapture = (settings.uniqueID, lifecycleID)
             settings.photoQualityPrioritization = .quality
             if self.configuration == .listingPhotos {
                 // Read back from the output rather than from a cached format
@@ -123,18 +126,24 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         error: Error?
     ) {
         let data = error == nil ? photo.fileDataRepresentation() : nil
+        let photoID = photo.resolvedSettings.uniqueID
         sessionQueue.async { [weak self] in
-            guard let self, self.isCaptureInFlight else { return }
+            guard let self, let capture = self.activeCapture,
+                  capture.photoID == photoID else { return }
             guard let data else {
-                self.isCaptureInFlight = false
-                self.setIssue(.configurationFailed)
+                self.activeCapture = nil
+                DispatchQueue.main.async { [weak self] in
+                    guard let self, self.captureLifecycleID == capture.lifecycleID else { return }
+                    self.cameraIssue = .configurationFailed
+                }
                 return
             }
             // Keep the one-shot occupied until stop() runs. The SwiftUI
             // observer dismisses the view from the main queue, and this closes
             // the small window in which a second tap could otherwise enqueue.
             DispatchQueue.main.async { [weak self] in
-                self?.capturedData = data
+                guard let self, self.captureLifecycleID == capture.lifecycleID else { return }
+                self.capturedData = data
             }
         }
     }

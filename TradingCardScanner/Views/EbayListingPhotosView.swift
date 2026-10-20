@@ -739,7 +739,8 @@ struct EbayListingPhotosView: View {
     }
 
     private func invalidateBatchResults() {
-        guard batchDirectory != nil || batchArchiveURL != nil else { return }
+        // Pair edits must also invalidate previews still loading before the
+        // first export. Otherwise an old front/back request can overwrite a swap.
         batchSelectionGeneration &+= 1
         batchProcessingTask?.cancel()
         batchProcessingTask = nil

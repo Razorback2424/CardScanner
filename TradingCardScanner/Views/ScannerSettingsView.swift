@@ -519,19 +519,23 @@ private struct SettingsContentView: View {
 
     @MainActor
     private func prepareCSVImport(from url: URL) async {
+        guard let storageToken = storageGeneration.currentToken() else { return }
         do {
             let container = modelContext.container
             let prepared = try await Task.detached(priority: .userInitiated) {
                 let hasAccess = url.startAccessingSecurityScopedResource()
                 defer { if hasAccess { url.stopAccessingSecurityScopedResource() } }
                 let plan = try CollectionCSV.parse(Data(contentsOf: url, options: .mappedIfSafe))
+                    .resumingAdditionalCopyRunIfNeeded()
                 let context = ModelContext(container)
                 let count = try CollectionCSV.alreadyImportedEntryCount(for: plan, in: context)
                 return (plan, count)
             }.value
+            guard storageGeneration.isCurrent(storageToken) else { return }
             pendingCSVImport = prepared.0
             pendingCSVAlreadyImportedEntryCount = prepared.1
         } catch {
+            guard storageGeneration.isCurrent(storageToken) else { return }
             writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
         }
     }
