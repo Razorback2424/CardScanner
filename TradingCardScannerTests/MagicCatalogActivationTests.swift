@@ -164,6 +164,31 @@ final class MagicCatalogActivationTests: XCTestCase {
         XCTAssertEqual(recoveredRevision, revision)
     }
 
+    func testConcurrentInitialLoadsAllWaitForThePersistedRegistry() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pinnedKey = MagicCatalogSignatureVerifier.PinnedKey(id: keyID, publicKey: key.publicKey)
+        let writer = MagicCatalogCoordinator(
+            store: MagicCatalogReleaseStore(root: root), keys: [pinnedKey], rolloutMode: .remoteAuthority
+        )
+        _ = await writer.activateEnvelope(try envelope(revision: 5))
+        let reader = MagicCatalogCoordinator(
+            store: MagicCatalogReleaseStore(root: root), keys: [pinnedKey], rolloutMode: .remoteAuthority
+        )
+        let revisions = await withTaskGroup(of: Int?.self) { group in
+            for _ in 0..<12 {
+                group.addTask {
+                    await reader.loadPersistedOrBundled()
+                    return await reader.revision
+                }
+            }
+            var revisions: [Int?] = []
+            for await revision in group { revisions.append(revision) }
+            return revisions
+        }
+        XCTAssertEqual(revisions, Array(repeating: Optional(5), count: 12))
+    }
+
     func testConcurrentActivationEventsCompareAgainstTheirPublishedPredecessor() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

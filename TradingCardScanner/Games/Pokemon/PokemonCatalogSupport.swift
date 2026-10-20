@@ -361,6 +361,7 @@ actor PokemonOfflineCatalog {
     private var entries: [PokemonChecklistSnapshotEntry] = []
     private var didLoad = false
     private var loadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
+    private var loadGeneration: UInt = 0
     private var registry: PokemonCatalogRegistry
 
     init(
@@ -551,6 +552,7 @@ actor PokemonOfflineCatalog {
     }
 
     func invalidate() {
+        loadGeneration &+= 1
         didLoad = false
         loadTask?.cancel()
         loadTask = nil
@@ -558,24 +560,30 @@ actor PokemonOfflineCatalog {
     }
 
     private func loadIfNeeded() async {
-        guard !didLoad else { return }
-        let task: Task<[PokemonChecklistSnapshotEntry], Never>
-        if let existing = loadTask {
-            task = existing
-        } else {
-            let store = store
-            let newTask = Task<[PokemonChecklistSnapshotEntry], Never> {
-                await store.mergedEntries()
+        while !didLoad {
+            let generation = loadGeneration
+            let task: Task<[PokemonChecklistSnapshotEntry], Never>
+            if let existing = loadTask {
+                task = existing
+            } else {
+                let store = store
+                let newTask = Task<[PokemonChecklistSnapshotEntry], Never> {
+                    await store.mergedEntries()
+                }
+                loadTask = newTask
+                task = newTask
             }
-            loadTask = newTask
-            task = newTask
-        }
 
-        let loaded = await task.value
-        guard !Task.isCancelled else { return }
-        loadTask = nil
-        entries = loaded
-        didLoad = true
+            let loaded = await task.value
+            guard !Task.isCancelled else { return }
+            // Cancellation does not guarantee that mergedEntries stops. Join
+            // the new load instead of publishing pre-invalidation entries.
+            guard generation == loadGeneration else { continue }
+            guard !didLoad else { return }
+            loadTask = nil
+            entries = loaded
+            didLoad = true
+        }
     }
 
     private func snapshot(
@@ -836,8 +844,9 @@ actor ResolvedPokemonCardCache {
         persist()
     }
 
-    func invalidateEntries(forSetIDs setIDs: Set<String>) {
+    func invalidateEntries(forSetIDs setIDs: Set<String>) async {
         guard !setIDs.isEmpty else { return }
+        await loadIfNeeded()
         var changed = false
         for (key, entry) in entries {
             if setIDs.contains(entry.setID.lowercased()) {

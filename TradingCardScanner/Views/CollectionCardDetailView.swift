@@ -55,6 +55,11 @@ private struct CardDetailFact: Identifiable {
     let value: String
 }
 
+private struct MarketHistoryLoadID: Hashable {
+    let request: CardMarketHistoryRequest
+    let retry: Int
+}
+
 private struct CardDetailMovementDisplay: Equatable {
     enum Direction: Equatable {
         case positive
@@ -225,9 +230,8 @@ struct CollectionCardDetailView: View {
             }
         }
         .environment(\.colorScheme, .dark)
-        .task(id: marketHistoryRequest) { await loadMarketHistory() }
-        .task(id: marketHistoryRetry) {
-            if marketHistoryRetry > 0 { await loadMarketHistory() }
+        .task(id: MarketHistoryLoadID(request: marketHistoryRequest, retry: marketHistoryRetry)) {
+            await loadMarketHistory()
         }
         .onChange(of: history.range) { _, _ in selectedPriceDate = nil }
         .navigationTitle("")
@@ -904,10 +908,16 @@ struct CollectionCardDetailView: View {
     @MainActor
     private func loadMarketHistory() async {
         let request = marketHistoryRequest
-        marketHistory = await CardMarketHistoryService.shared.cached(request)
+        let cached = await CardMarketHistoryService.shared.cached(request)
+        guard !Task.isCancelled, request == marketHistoryRequest else { return }
+        marketHistory = cached
         marketHistoryError = nil
         isLoadingMarketHistory = true
-        defer { isLoadingMarketHistory = false }
+        defer {
+            if !Task.isCancelled, request == marketHistoryRequest {
+                isLoadingMarketHistory = false
+            }
+        }
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         if let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1) {
@@ -926,7 +936,10 @@ struct CollectionCardDetailView: View {
             guard request == marketHistoryRequest else { return }
             marketHistory = points
         } catch is CancellationError { return }
-        catch { marketHistoryError = error.localizedDescription }
+        catch {
+            guard !Task.isCancelled, request == marketHistoryRequest else { return }
+            marketHistoryError = error.localizedDescription
+        }
     }
 
     private func movementDisplay(for model: PriceHistoryChartModel) -> CardDetailMovementDisplay {
@@ -2423,23 +2436,27 @@ struct CardMarketHistoryPanel: View {
             MarketHistoryStatusView(isLoading: isLoading, error: error, hasHistory: !points.isEmpty,
                                     retry: { retryID += 1 }).padding(.horizontal, 16)
         }
-        .task(id: request) { await load() }
-        .task(id: retryID) { if retryID > 0 { await load() } }
+        .task(id: MarketHistoryLoadID(request: request, retry: retryID)) { await load() }
     }
 
     @MainActor
     private func load() async {
-        points = await CardMarketHistoryService.shared.cached(request)
+        let cached = await CardMarketHistoryService.shared.cached(request)
+        guard !Task.isCancelled else { return }
+        points = cached
         isLoading = true
         error = nil
-        defer { isLoading = false }
+        defer { if !Task.isCancelled { isLoading = false } }
         do {
             let resolved = await request.resolvingMarketMapping(in: runtimes)
             let result = try await CardMarketHistoryService.shared.history(for: resolved)
             try Task.checkCancellation()
             points = result
         } catch is CancellationError { return }
-        catch { self.error = error.localizedDescription }
+        catch {
+            guard !Task.isCancelled else { return }
+            self.error = error.localizedDescription
+        }
     }
 }
 

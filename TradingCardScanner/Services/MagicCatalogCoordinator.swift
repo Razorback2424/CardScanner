@@ -31,6 +31,7 @@ actor MagicCatalogCoordinator {
     private var activeRegistry: MagicCatalogRegistry
     private var activeRevision: Int?
     private var didPerformInitialLoad = false
+    private var initialLoadTask: Task<Void, Never>?
     private var continuations: [UUID: AsyncStream<ActivationEvent>.Continuation] = [:]
     private var lastParityMismatches: [MagicCatalogParityMismatch] = []
 
@@ -63,7 +64,18 @@ actor MagicCatalogCoordinator {
     }
 
     func loadPersistedOrBundled() async {
+        if let initialLoadTask {
+            await initialLoadTask.value
+            return
+        }
         guard !didPerformInitialLoad else { return }
+        let task = Task { await self.performInitialLoad() }
+        initialLoadTask = task
+        await task.value
+        initialLoadTask = nil
+    }
+
+    private func performInitialLoad() async {
         didPerformInitialLoad = true
         guard rolloutMode == .remoteAuthority else {
             activeRegistry = store.recoverFromBundledSeed()

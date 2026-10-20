@@ -23,7 +23,8 @@ actor OnePieceCatalogReleaseStore {
         let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!.appendingPathComponent("BrowseCatalogCache/OnePieceCatalogReleases", isDirectory: true)
         core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,
-            revisionPolicy: .activeRelease, strictRevisionContent: true, rejectLowerRevision: true, fallback: fallback,
+            revisionPolicy: .activeRelease, strictRevisionContent: true, rejectLowerRevision: true,
+            validateRecovery: true, fallback: fallback,
             revision: { $0.release.revision }, encode: { envelope in
                 let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
                 return try encoder.encode(envelope)

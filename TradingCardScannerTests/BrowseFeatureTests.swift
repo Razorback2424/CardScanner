@@ -4532,6 +4532,27 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertNil(cachedEntry, "A prior cache generation must always be treated as a miss.")
     }
 
+    func testResolvedCardSetInvalidationLoadsColdDiskEntriesBeforeRemovingThem() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cacheRoot = root.appendingPathComponent("resolved")
+        let key = "pokemon|sv10|085|182"
+        let writer = ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test")
+        await writer.store(card: try makeTCGdexCard(setID: "sv10", localID: "085"),
+                           setCode: "DRI", key: key)
+        let originalEntry = await writer.card(for: key)
+        XCTAssertNotNil(originalEntry)
+
+        let coldCache = ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test")
+        await coldCache.invalidateEntries(forSetIDs: ["sv10"])
+        let entry = await coldCache.card(for: key)
+        XCTAssertNil(entry)
+
+        let reopenedCache = ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test")
+        let persistedEntry = await reopenedCache.card(for: key)
+        XCTAssertNil(persistedEntry, "Invalidation must survive the next cache instance")
+    }
+
     func testVariantlessStorePreservesAnExistingResolvedCard() async throws {
         let root = try temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: root) }

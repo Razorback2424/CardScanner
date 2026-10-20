@@ -505,6 +505,74 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
         XCTAssertNil(rev)
     }
 
+    func testConcurrentInitialLoadsAllWaitForThePersistedRegistry() async throws {
+        let release = SliceBFixture.release(revision: 5)
+        let store = PokemonCatalogReleaseStore(root: root)
+        _ = try await store.activate(
+            envelope: SliceBFixture.signedEnvelope(release: release),
+            release: release, registry: PokemonCatalogRegistry(release: release)
+        )
+        let coordinator = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            keys: [SliceBFixture.pinnedKey], rolloutMode: .remoteAuthority
+        )
+        let revisions = await withTaskGroup(of: Int?.self) { group in
+            for _ in 0..<12 {
+                group.addTask {
+                    await coordinator.loadPersistedOrBundled()
+                    return await coordinator.revision
+                }
+            }
+            var revisions: [Int?] = []
+            for await revision in group { revisions.append(revision) }
+            return revisions
+        }
+        XCTAssertEqual(revisions, Array(repeating: Optional(5), count: 12))
+    }
+
+    func testConcurrentActivationsPublishMonotonicRegistriesAndAccurateChanges() async throws {
+        let coordinator = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            keys: [SliceBFixture.pinnedKey], rolloutMode: .remoteAuthority
+        )
+        await coordinator.loadPersistedOrBundled()
+        _ = await coordinator.activateEnvelope(try SliceBFixture.signedEnvelope(
+            release: SliceBFixture.release(revision: 1)
+        ))
+        let envelopes = try (2...12).map { revision in
+            try SliceBFixture.signedEnvelope(release: SliceBFixture.release(
+                revision: revision, sets: [SliceBFixture.descriptor(officialCount: 99 + revision)]
+            ))
+        }
+        let events = await withTaskGroup(of: PokemonCatalogCoordinator.RefreshResult.self) { group in
+            for envelope in envelopes { group.addTask { await coordinator.activateEnvelope(envelope) } }
+            var events: [PokemonCatalogCoordinator.ActivationEvent] = []
+            for await result in group {
+                if case let .activated(event) = result { events.append(event) }
+            }
+            return events.sorted { $0.revision < $1.revision }
+        }
+        var previous = 1
+        for event in events {
+            XCTAssertGreaterThan(event.revision, previous)
+            XCTAssertEqual(event.previousRevision, previous)
+            XCTAssertTrue(event.changedOfficialCountSetIDs.contains("sv99"))
+            previous = event.revision
+        }
+        XCTAssertEqual(previous, 12)
+        let revision = await coordinator.revision
+        let registry = await coordinator.registry
+        XCTAssertEqual(revision, 12)
+        XCTAssertEqual(registry.officialCount(forProviderSetID: "sv99"), 111)
+        let recovered = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            keys: [SliceBFixture.pinnedKey], rolloutMode: .remoteAuthority
+        )
+        await recovered.loadPersistedOrBundled()
+        let recoveredRevision = await recovered.revision
+        XCTAssertEqual(recoveredRevision, revision)
+    }
+
     func testActivateEnvelopeUpdatesRegistry() async throws {
         let coordinator = PokemonCatalogCoordinator(
             store: PokemonCatalogReleaseStore(root: root),

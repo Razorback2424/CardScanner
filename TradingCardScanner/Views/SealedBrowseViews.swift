@@ -269,6 +269,7 @@ final class SealedBrowseModel: ObservableObject {
             return
         }
 
+        guard token == searchGeneration, !Task.isCancelled else { return }
         guard isConfigured else {
             lane.isLoading = false
             lane.nextOffset = nil
@@ -348,6 +349,7 @@ final class SealedBrowseModel: ObservableObject {
                 return
             }
         }
+        guard requestID == setsRequestID, !Task.isCancelled else { return }
         guard isConfigured else {
             loadedGame = game
             return
@@ -413,6 +415,7 @@ final class SealedBrowseModel: ObservableObject {
                 return
             }
         }
+        guard requestID == productsRequestID, !Task.isCancelled else { return }
         guard isConfigured else {
             errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
             return
@@ -464,6 +467,7 @@ final class SealedBrowseModel: ObservableObject {
                 return
             }
         }
+        guard requestID == productsRequestID, !Task.isCancelled else { return }
         guard isConfigured else {
             hasMore = false
             errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)

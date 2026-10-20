@@ -269,6 +269,17 @@ final class OnePieceCatalogActivationTests: XCTestCase {
         XCTAssertEqual(fallbackRevision, 1)
     }
 
+    func testNewerBundleCannotBeReplacedByOlderPersistedRelease() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let old = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: envelope(1), now: now)
+        _ = try await old.activate(envelope(2), now: now)
+
+        let upgraded = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: envelope(3), now: now)
+        await upgraded.load(now: now)
+        let revision = await upgraded.activeRevision
+        XCTAssertEqual(revision, 3)
+    }
+
     private actor UpdateFixture: OnePieceCatalogUpdateFetching {
         var envelopes: [OnePieceCatalogReleaseEnvelope]
         private(set) var fetches = 0

@@ -31,6 +31,7 @@ actor PokemonCatalogCoordinator {
     private var activeRevision: Int?
     private var continuations: [UUID: AsyncStream<ActivationEvent>.Continuation] = [:]
     private var didPerformInitialLoad = false
+    private var initialLoadTask: Task<Void, Never>?
 
     // MARK: - Init
 
@@ -69,7 +70,18 @@ actor PokemonCatalogCoordinator {
     }
 
     func loadPersistedOrBundled() async {
+        if let initialLoadTask {
+            await initialLoadTask.value
+            return
+        }
         guard !didPerformInitialLoad else { return }
+        let task = Task { await self.performInitialLoad() }
+        initialLoadTask = task
+        await task.value
+        initialLoadTask = nil
+    }
+
+    private func performInitialLoad() async {
         didPerformInitialLoad = true
 
         let start = Date()
@@ -103,9 +115,11 @@ actor PokemonCatalogCoordinator {
         }
 
         await store.load(keys: keys)
-        if let stored = await store.activeRegistry {
-            activeRegistry = stored
-            activeRevision = await store.activeRevision
+        if let stored = await store.activeRelease {
+            if activeRevision.map({ stored.release.revision > $0 }) ?? true {
+                activeRegistry = stored.registry
+                activeRevision = stored.release.revision
+            }
             await diagnostics.recordLaunchLoad(
                 mode: rolloutMode,
                 duration: Date().timeIntervalSince(start),
@@ -236,16 +250,6 @@ actor PokemonCatalogCoordinator {
             }
         }
 
-        let changedCounts = officialCountChanges(
-            from: activeRegistry,
-            to: newRegistry,
-            release: release
-        )
-        let changedContent = providerContentChanges(
-            from: activeRegistry,
-            release: release
-        )
-
         let result: PokemonCatalogReleaseStore.ActivationResult
         do {
             result = try await store.activate(
@@ -264,7 +268,20 @@ actor PokemonCatalogCoordinator {
             await diagnostics.recordNotModified()
             return .notModified
 
-        case .activated(let rev, let prev):
+        case .activated(let rev, _):
+            // Actor reentrancy allows a newer activation to publish while the
+            // store is awaited. Never reinstall an older registry afterward.
+            guard activeRevision.map({ rev > $0 }) ?? true else { return .notModified }
+            let prev = activeRevision
+            let changedCounts = officialCountChanges(
+                from: activeRegistry,
+                to: newRegistry,
+                release: release
+            )
+            let changedContent = providerContentChanges(
+                from: activeRegistry,
+                release: release
+            )
             activeRegistry = newRegistry
             activeRevision = rev
 
