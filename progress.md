@@ -1,3 +1,58 @@
+- Bounded card-detail cleanup (2026-10-20; starting HEAD `e2c37ad` plus retained
+  local F1–F13 work): chart-domain reuse, stable same-source image derivatives,
+  one live artwork-override query, explicit manual primary-refresh intent and
+  distinct source/check/failure attribution. Combined affected native suites:
+  508 tests, zero failures; final focused fallback/failure checks: 5 passed;
+  final image guard checks: 3 passed; app build passed. Hosted dense-chart
+  layout/snapshot median was 3180.59 ms with repeated domain evaluation and
+  2560.97 ms with domain reuse on the same QA simulator; no physical-device or
+  incident causation claim. Existing Cards Added sealed-fixture detail opened
+  cold and warm. Full delayed raw-normal UI scenario remains unexecuted.
+  [Evidence and exact checks](docs/release/card-detail-cleanup-2026-10-20.md)
+  distinguish those limits. Existing repairs, Collector Tools, provider policy,
+  owner data and commercial scope preserved; no commits or pushes.
+
+- F1–F13 final audited native verification (2026-10-20): 804 tests, 0 failures,
+  1 unchanged opt-in performance skip. In addition to the compatible-quote F2
+  regression repaired below, the F4 choice regression now covers interruption
+  of held-repeat finish/print-run choices: both initially lost additional-copy
+  intent. Recovery now retains that marker only for a matching consumed permit;
+  native checks verify no second copy is written before fresh confirmation.
+  The final run includes the distinct $250 Holo → corrected $80 Normal case and
+  stable certificate/ledger quantity checks; the final app build also passes.
+  Requested full interactive UI
+  acceptance remains blocked/unexecuted as recorded in the
+  [handoff](docs/release/verified-bug-repairs-2026-10-20.md), so the full goal is
+  not marked complete. Scope and unrelated work remain preserved.
+
+- F1–F13 continuation audit (2026-10-20): a new native case exposed a regression
+  in the initial F2 repair: a compatible graded quote disappeared unless a
+  second lookup succeeded. The serialized correction now returns only a proven
+  compatible durable quote; incompatible identities still use the graded
+  resolver. Native affected suites pass again: 803 tests, 0 failures, 1 existing
+  opt-in skip. Four focused F2 cases and two final price-preservation/replacement
+  cases pass, including $250 Holo → corrected $80 Normal without changing
+  certificate or ownership quantity. Full requested UI acceptance remains
+  incomplete for the entitlement/automation reasons in the
+  [handoff](docs/release/verified-bug-repairs-2026-10-20.md); the full goal is not
+  claimed complete. No commercial boundary, rollout, collection-data reset,
+  commit, push or normal-device deployment changes.
+
+- Bounded F1–F13 bug-review repairs (2026-10-20; starting HEAD `e2c37ad`, clean
+  worktree): repaired recovery isolation, graded price identity/races, scanner
+  lifecycle/held choices, independent restores, edition/sealed normalization,
+  portfolio trust/first-price attribution and export/history edge cases. Native
+  affected suites pass: 802 tests, 0 failures, 1 existing opt-in performance
+  skip; two strengthened F1/F2 tests pass separately; Debug simulator app build
+  passes. UI smoke is partial: Needs attention fixture renders, centering is
+  entitlement-gated, system Photos picker cannot be driven by available UI
+  automation, and full interactive held/graded camera flows remain unexecuted.
+  See the [repair handoff](docs/release/verified-bug-repairs-2026-10-20.md) for
+  finding/file/regression mapping, exact command arguments and intermediate
+  failures. Collector Tools work, rollout flags and the free/paid boundary are
+  preserved; no commits, pushes, purchases, normal-device deployment, collection
+  resets or commercial configuration changes.
+
 - Collector Tools one-time unlock implementation (2026-10-20; clean starting
   checkout `be183f2`): added one StoreKit 2 non-consumable, shared verified
   entitlement, explicit restore, localized-price offer, multi-card action/share

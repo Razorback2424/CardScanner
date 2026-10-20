@@ -8,6 +8,23 @@ history.
 
 ## Current authority boundary — updated 2026-10-20
 
+**Bounded card-detail cleanup — 2026-10-20:** the
+[cleanup evidence](../release/card-detail-cleanup-2026-10-20.md) covers chart
+domain reuse, stable artwork, observed overrides, manual primary refresh and
+source/check attribution. It preserves current provider priority and source-age
+freshness policy. The reported hang remains unconfirmed; this separate work
+does not absorb the F1–F13 or Collector Tools scope.
+
+**Bounded bug repair evidence — 2026-10-20:** the
+[F1–F13 repair handoff](../release/verified-bug-repairs-2026-10-20.md) records
+native regressions against `e2c37ad` plus local repairs. Earlier source-only
+review notes do not describe this runtime verification. This does not certify
+physical-device, provider, CloudKit, purchase or release readiness.
+The continuation audit adds compatible graded-quote preservation and interrupted
+held-repeat copy intent; its final affected native run passes 804 tests with
+zero failures and one opt-in skip, and the app builds. Full interactive UI
+acceptance remains incomplete in the handoff; the full goal is not certified.
+
 **Launch commercial reconciliation — 2026-10-20:**
 [CARDSCANNER_LAUNCH_MONETIZATION.md](CARDSCANNER_LAUNCH_MONETIZATION.md) is the
 single authority for retained founder rationale and the owner-authorized offer:

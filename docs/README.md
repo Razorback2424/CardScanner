@@ -2,6 +2,13 @@
 
 **Status:** current navigation map — 2026-10-15
 
+The [20 October card-detail cleanup](release/card-detail-cleanup-2026-10-20.md)
+records bounded chart, artwork, explicit refresh and provenance work separately
+from the unconfirmed hang incident.
+
+The [20 October bounded bug repairs](release/verified-bug-repairs-2026-10-20.md)
+record F1–F13 changes and native regression evidence separately from UI and release gates.
+
 The [individual-card market history authority](plans/price_history_chart_plan.md)
 records the 2026-10-18 decision to show JustTCG historical prices independently
 of acquisition and local checks, replacing the archived continuity proposal.
