@@ -168,7 +168,8 @@ struct GradedCardIdentity: Hashable, Sendable {
         guard matches(card, game: game, expectedSetSlug: expectedSetSlug),
               variant.type?.caseInsensitiveCompare("graded") == .orderedSame
         else { return false }
-        if let finish, !Self.matchesFinish(finish, printing: variant.printing, printRun: pokemonPrintRun) {
+        if let finish, !Self.matchesFinish(finish, printing: variant.printing, printRun: pokemonPrintRun,
+                                         isJapanese: vendorGame(for: game) == .pokemonJapan) {
             return false
         }
 
@@ -177,8 +178,8 @@ struct GradedCardIdentity: Hashable, Sendable {
         return ProductEdition.from(pokemonPrintRun).admits(printing: printing)
     }
 
-    static func matchesFinish(_ finish: PhysicalVariant, printing: String?, printRun: PokemonPrintRun? = nil) -> Bool {
-        guard let printing, case let .printings(allowed) = ProductFinish.requirement(for: finish, printRun: printRun) else { return false }
+    static func matchesFinish(_ finish: PhysicalVariant, printing: String?, printRun: PokemonPrintRun? = nil, isJapanese: Bool = false) -> Bool {
+        guard let printing, case let .printings(allowed) = ProductFinish.requirement(for: finish, printRun: printRun, isJapanese: isJapanese) else { return false }
         return allowed.contains { $0.caseInsensitiveCompare(printing) == .orderedSame }
     }
 

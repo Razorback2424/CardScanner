@@ -36,7 +36,7 @@ enum PortfolioPalette {
     }
 }
 
-private func portfolioPriceRefreshMessage(_ result: PriceRefreshController.Summary) -> String {
+func portfolioPriceRefreshMessage(_ result: PriceRefreshController.Summary) -> String {
     let finishText = portfolioFinishUpdateText(result)
     let baseMessage: String
     if result.wasCancelled {
@@ -49,6 +49,10 @@ private func portfolioPriceRefreshMessage(_ result: PriceRefreshController.Summa
         baseMessage = "Some price updates could not be saved. Try again."
     } else if result.gradedTransportFailures > 0 {
         baseMessage = "Some graded price checks could not be completed. Try again."
+    } else if result.gradedUnresolvedIdentities > 0 {
+        baseMessage = "Some graded identities couldn’t be resolved. Coverage remains unverified."
+    } else if result.gradedIncompleteChecks > 0 {
+        baseMessage = "Some graded price checks are incomplete. Try again."
     } else if result.gradedLookupMisses > 0 {
         baseMessage = "Prices checked; no graded listing was found for \(result.gradedLookupMisses) owned \(result.gradedLookupMisses == 1 ? "slab" : "slabs")."
     } else if result.reconciledDuplicateRecords > 0 {
@@ -1733,6 +1737,8 @@ private struct PortfolioDetailsView: View {
                             || result.failed > 0
                             || result.persistenceFailed
                             || result.gradedTransportFailures > 0
+                            || result.gradedIncompleteChecks > 0
+                            || result.gradedUnresolvedIdentities > 0
                             || result.gradedLookupMisses > 0
                             || result.reconciledDuplicateRecords > 0
                             ? PortfolioPalette.attention
@@ -2164,6 +2170,8 @@ private struct PortfolioAttentionBadge: ViewModifier {
                 || result.failed > 0
                 || result.persistenceFailed
                 || result.gradedTransportFailures > 0
+                || result.gradedIncompleteChecks > 0
+                || result.gradedUnresolvedIdentities > 0
                 || result.gradedLookupMisses > 0
                 || result.reconciledDuplicateRecords > 0
         }

@@ -521,7 +521,7 @@ enum CollectionCSV {
                 encodedTreatmentIDs(card.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
                 card.magicContentKindRaw,
-                record?.effectiveUnitMarketPriceUSD == nil ? PricingDiagnostics.unpricedReason(for: card, record: record).rawValue : "",
+                PricingDiagnostics.valuationExclusionReason(for: card, record: record)?.rawValue ?? "",
                 record?.unitMarketPriceUSD.map(String.init(describing:)) ?? "",
                 record?.unitMarketPriceUSD == nil ? "" : (record?.currencyCode ?? ""),
                 record?.fetchedAt.map { formatter.string(from: $0) } ?? "",

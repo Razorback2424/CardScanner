@@ -277,6 +277,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
     private var priceKeysWritten: Set<String> = []
     private var storageContinuation: StorageGenerationContinuation?
     private var pokemonFetchOverride: PriceRefreshPokemonFetchOverride?
+    private var gradedLookupOverride: (@Sendable (GradedCardIdentity, CardGame) async throws -> GradedVariantLookupResult)?
+
+    func setGradedLookupOverrideForTesting(_ override: (@Sendable (GradedCardIdentity, CardGame) async throws -> GradedVariantLookupResult)?) {
+        gradedLookupOverride = `override`
+    }
 
     func setPokemonFetchOverrideForTesting(_ override: PriceRefreshPokemonFetchOverride?) {
         pokemonFetchOverride = `override`
@@ -442,6 +447,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var persistenceFailed = false
         var gradedLookupMisses = 0
         var gradedTransportFailures = 0
+        var gradedIncompleteChecks = 0
+        var gradedUnresolvedIdentities = 0
         var reconciledDuplicateRecords = 0
         var repairedFinishes = 0
         var backfilledFinishes = 0
@@ -1040,6 +1047,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         persistenceFailed = persistenceFailed || gradedResult.persistenceFailed
         gradedLookupMisses += gradedResult.lookupMisses
         gradedTransportFailures += gradedResult.transportFailures
+        gradedIncompleteChecks += gradedResult.incompleteChecks
+        gradedUnresolvedIdentities += gradedResult.unresolvedIdentities
 
         if Task.isCancelled || !(storageContinuation?() ?? true) {
             refreshOutcome = "cancelled"
@@ -1068,7 +1077,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 repairedFinishes: repairedFinishes,
                 backfilledFinishes: backfilledFinishes,
                 priceDeltas: finalPriceDeltas,
-                missingMappings: missingMappings
+                missingMappings: missingMappings,
+                gradedIncompleteChecks: gradedIncompleteChecks,
+                gradedUnresolvedIdentities: gradedUnresolvedIdentities
             )
         )
     }
@@ -1789,7 +1800,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         priced: Int,
         persistenceFailed: Bool,
         lookupMisses: Int,
-        transportFailures: Int
+        transportFailures: Int,
+        incompleteChecks: Int,
+        unresolvedIdentities: Int
     ) {
         let gradedState = PerformanceSignpost.beginInterval(
             "priceRefresh.refreshGraded",
@@ -1810,8 +1823,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             if $0.marketVariantID != nil { return true }
             return $0.canResolveGradedVariant
         }
-        guard !slabs.isEmpty, PriceVendorCredentials.hasKey else {
-            return (0, false, 0, 0)
+        guard !slabs.isEmpty, gradedLookupOverride != nil || PriceVendorCredentials.hasKey else {
+            return (0, false, 0, 0, 0, 0)
         }
         gradedOutcome = "running"
 
@@ -1826,6 +1839,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var persistenceFailed = false
         var lookupMisses = 0
         var transportFailures = 0
+        var incompleteChecks = 0
+        var unresolvedIdentities = 0
         var stagedPriced = 0
         var stagedWriteCount = 0
         var lastCommitAt = Date.now
@@ -1865,7 +1880,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     labelCardText: []
                 ),
                 finish: target.variantID.map(PhysicalVariant.resolving),
-                printRun: target.pokemonPrintRun
+                printRun: target.pokemonPrintRun,
+                isJapanese: target.gradedIdentity?.vendorGame(for: target.game) == .pokemonJapan
             )
         }
 
@@ -1954,11 +1970,12 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                   let game = group.first?.game else { continue }
             let variants: [GradedVariant]
             do {
-                let lookup = try await client.lookup(
-                    identity: identity,
-                    game: game,
-                    lane: .background
-                )
+                let lookup: GradedVariantLookupResult
+                if let gradedLookupOverride {
+                    lookup = try await gradedLookupOverride(identity, game)
+                } else {
+                    lookup = try await client.lookup(identity: identity, game: game, lane: .background)
+                }
                 switch lookup {
                 case let .matched(values):
                     variants = values
@@ -1977,6 +1994,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     await checkpoint()
                     continue
                 case .incompleteSearch, .localIdentityUnresolved:
+                    if lookup == .incompleteSearch { incompleteChecks += group.count }
+                    else { unresolvedIdentities += group.count }
                     for target in group {
                         if store.recordLookupStatus(lookup == .incompleteSearch ? .gradedSearchIncomplete : .gradedIdentityUnresolved,
                             game: target.game, printingID: target.printingID, variantID: target.variantID,
@@ -2090,7 +2109,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         }
         await checkpoint(force: true)
         gradedOutcome = Task.isCancelled ? "cancelled" : "completed"
-        return (priced, persistenceFailed, lookupMisses, transportFailures)
+        return (priced, persistenceFailed, lookupMisses, transportFailures, incompleteChecks, unresolvedIdentities)
     }
 }
 
@@ -2724,6 +2743,10 @@ struct PriceRefreshWorkResult: Sendable {
     let backfilledFinishes: Int
     let priceDeltas: [PriceDelta]
     var missingMappings = 0
+    /// Bounded searches without a complete provider answer, never negative coverage.
+    var gradedIncompleteChecks = 0
+    /// Targets whose trusted local identity could not resolve a vendor set.
+    var gradedUnresolvedIdentities = 0
 }
 
 enum PriceRefreshWorkOutcome: Sendable {
@@ -2807,6 +2830,10 @@ final class PriceRefreshController: ObservableObject {
         /// The target snapshot could not be read, so no refresh claim is safe.
         var targetBuildFailed = false
         var missingMappings = 0
+        /// Retryable searches without a complete answer; prior coverage is retained.
+        var gradedIncompleteChecks = 0
+        /// Local identity gaps, separate from provider absence and transport errors.
+        var gradedUnresolvedIdentities = 0
     }
 
     enum Status: Equatable {
@@ -3002,7 +3029,9 @@ final class PriceRefreshController: ObservableObject {
                 backfilledFinishes: result.backfilledFinishes,
                 gradedLookupMisses: result.gradedLookupMisses,
                 gradedTransportFailures: result.gradedTransportFailures,
-                missingMappings: result.missingMappings
+                missingMappings: result.missingMappings,
+                gradedIncompleteChecks: result.gradedIncompleteChecks,
+                gradedUnresolvedIdentities: result.gradedUnresolvedIdentities
             )
         )
     }
@@ -3024,7 +3053,9 @@ final class PriceRefreshController: ObservableObject {
             backfilledFinishes: result.backfilledFinishes,
             wasCancelled: true,
             gradedLookupMisses: result.gradedLookupMisses,
-            gradedTransportFailures: result.gradedTransportFailures
+            gradedTransportFailures: result.gradedTransportFailures,
+            gradedIncompleteChecks: result.gradedIncompleteChecks,
+            gradedUnresolvedIdentities: result.gradedUnresolvedIdentities
         )
     }
 
@@ -4227,6 +4258,8 @@ final class PriceRefreshController: ObservableObject {
                 && !summary.persistenceFailed
                 && summary.gradedLookupMisses == 0
                 && summary.gradedTransportFailures == 0
+                && summary.gradedIncompleteChecks == 0
+                && summary.gradedUnresolvedIdentities == 0
                 && summary.reconciledDuplicateRecords == 0
         case .recentlyChecked:
             return true

@@ -81,6 +81,12 @@ enum CollectionRefreshStatusResolver {
             if let fallbackWarning {
                 return warningWithFinishUpdates(fallbackWarning.message, updates)
             }
+            if summary.gradedUnresolvedIdentities > 0 {
+                return warningWithFinishUpdates("Some graded identities couldn’t be resolved", updates)
+            }
+            if summary.gradedIncompleteChecks > 0 {
+                return warningWithFinishUpdates("Some graded price checks are incomplete. Try again.", updates)
+            }
             if summary.failed > 0
                 || summary.gradedLookupMisses > 0
                 || summary.gradedTransportFailures > 0

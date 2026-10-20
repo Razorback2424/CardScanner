@@ -143,6 +143,17 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
 }
 
 enum PricingDiagnostics {
+    /// A retained quote's valuation eligibility is independent of the latest
+    /// refresh attempt. Keep the general diagnostic's attempt-first precedence.
+    static func valuationExclusionReason(for card: CollectedCard, record: PriceRecord?) -> PricingDiagnosticReason? {
+        guard record?.effectiveUnitMarketPriceUSD == nil else { return nil }
+        if let record, record.unitMarketPriceUSD != nil,
+           record.currencyCode.caseInsensitiveCompare("USD") != .orderedSame {
+            return .otherCurrency
+        }
+        return unpricedReason(for: card, record: record)
+    }
+
     static func unpricedReason(
         for card: CollectedCard,
         record: PriceRecord?

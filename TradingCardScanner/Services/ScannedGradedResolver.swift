@@ -143,11 +143,12 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         in variants: [GradedVariant],
         for slab: GradedSlabEvidence,
         finish: PhysicalVariant? = nil,
-        printRun: PokemonPrintRun? = nil
+        printRun: PokemonPrintRun? = nil,
+        isJapanese: Bool = false
     ) -> GradedVariant? {
         let candidates = variants.filter { variant in
             ((finish ?? slab.printedFinish).map {
-                GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun)
+                GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun, isJapanese: isJapanese)
             } ?? (variant.printing != nil))
                 && variant.company == slab.company
                 && normalized(variant.grade.value) == normalized(slab.grade.value)
