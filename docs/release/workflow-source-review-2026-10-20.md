@@ -1,14 +1,18 @@
 # Workflow source review — 20 October 2026
 
-**Status:** source review complete; fixes have not been compiled or run.
+**Status:** source review complete; the requested ReleaseLocal app build and
+installation succeeded on 2026-10-20. The app was not launched, so workflow
+runtime behavior remains unverified.
 **Starting point:** HEAD `0c04c63` with existing local scanner, collection,
 regression and documentation changes preserved.
 
 The requested review followed major workflow entry points through their service
-and persistence boundaries. No builds, tests, simulator runs, purchases,
-publication, device operations, commits or pushes were performed. Earlier native
-verification in the [repair handoff](verified-bug-repairs-2026-10-20.md) predates
-these changes and does not validate them.
+and persistence boundaries. At the end of that source-only review, no builds,
+tests, simulator runs, purchases, publication, device operations, commits or
+pushes had been performed. The later requested commits, build and install are
+recorded below. Earlier native verification in the
+[repair handoff](verified-bug-repairs-2026-10-20.md) predates the source-review
+changes and does not validate them.
 
 ## Coverage
 
@@ -56,11 +60,31 @@ these changes and does not validate them.
    stricter caller baseline rejects it. See
    [CatalogPublisher.swift](../../MagicCatalogCore/Sources/MagicCatalogCore/CatalogPublisher.swift).
 
+## Requested device build and installation — 2026-10-20
+
+The source-review changes were committed and pushed to `origin/main` before the
+requested device build. Xcode 27.1 built the `TradingCardScanner-ProfileLocal`
+scheme with the `ReleaseLocal` configuration for the paired iPhone 15 Pro Max.
+The first attempt exposed a mismatch between the local provisioning profile and
+the available Apple Development certificate. After the user's keychain
+authorization, Xcode automatic provisioning resolved the mismatch and the app
+build succeeded. `codesign --verify --deep --strict` confirmed the app signature.
+CoreDevice installed bundle `com.seankeller.CardScanner` over the existing app;
+the app was not uninstalled, reset or launched.
+
+DerivedData, package caches and the build log remain on the external build
+volume under `CodexBuilds/WorkflowReviewBuild-20261020/`. The app-target build
+compiled the source-review fixes. No tests were run for those fixes, and the
+earlier 167-test result applies to the certified-rescan/scanner-prompt repairs.
+No device UI, purchase, provider or collection-data behavior was checked after
+installation.
+
 ## Verification boundary
 
 Changes were checked by reading their callers, state/generation guards, error
 paths, related existing contracts and final diffs. Local document links and
-`git diff --check` pass. Runtime behavior and compilation remain unverified by
-explicit user instruction. No additional concrete, high-confidence issues were
-identified in the traced paths. This source-review completion does not certify
-release readiness or close previously recorded runtime acceptance gaps.
+`git diff --check` pass. The app compiles and installs, but the source-review
+changes have no test-suite or post-install runtime evidence. No additional
+concrete, high-confidence issues were identified in the traced paths. This does
+not certify release readiness or close previously recorded runtime acceptance
+gaps.

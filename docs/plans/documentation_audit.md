@@ -11,8 +11,11 @@ history.
 **Workflow source review — 2026-10-20:** the
 [source review record](../release/workflow-source-review-2026-10-20.md) lists
 major workflow traces and five additional repairs from `0c04c63` plus preserved
-local changes. Per the user, no builds, tests or simulator runs were performed.
-Earlier native evidence below does not validate these new edits.
+local changes. At source-review completion, no builds, tests or simulator runs
+had been performed. The later requested ReleaseLocal build, signature check and
+physical-device installation are recorded there; the app was not launched and
+those source-review changes have no test-suite or post-install runtime evidence.
+Earlier native evidence below does not validate those edits.
 
 **Bounded card-detail cleanup — 2026-10-20:** the
 [cleanup evidence](../release/card-detail-cleanup-2026-10-20.md) covers chart

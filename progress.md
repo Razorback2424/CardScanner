@@ -1,3 +1,14 @@
+- Workflow repairs and requested device install (2026-10-20): the four source
+  repair groups and their review record were committed in auditable commits and
+  pushed to `origin/main`; all local branches were merged into `main`. After the
+  user's keychain authorization, Xcode automatic provisioning completed a
+  successful `ReleaseLocal` device build, strict signature verification passed,
+  and CoreDevice installed the app over the existing app on the paired iPhone.
+  It was not launched. The source-review fixes have no test-suite or post-install
+  runtime evidence; the earlier 167-test result applies only to the rescan and
+  scanner-prompt repairs. Build artifacts and caches remain on the external
+  build volume. [Review and installation record](docs/release/workflow-source-review-2026-10-20.md).
+
 - Review follow-up (2026-10-20; starting HEAD `0c04c63`): repaired the two
   remaining P2 edges. Certified rescans validate final finish/edition together,
   invalidate incompatible pricing and resolve it without another acquisition;
