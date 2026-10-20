@@ -1712,6 +1712,20 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func recordVisionFrameFailure(_ error: Error) {
+        // Failure says nothing about whether the card left. Discard partial
+        // evidence, but never feed a synthetic empty band into the latch.
+        resetConfirmationWindow()
+        slabFooterIdentityConfirmationWindow.reset()
+        slabFooterRecognitionWindow.reset()
+        slabEvidenceWindow.reset()
+        certifiedCopyWindow.reset()
+        certifiedCopyCandidate = nil
+        historicalAttempt = nil
+        magicHistoricalWindow.reset()
+        magicHistoricalLiveWindow.reset()
+#if DEBUG
+        updateDebugVisionOverlay([])
+#endif
         // One bad frame is routine. Rebuild once after a sustained failure,
         // then explain the problem if the fresh requests also keep failing.
         // Retain the latch: recovery is not evidence that a new card arrived.
@@ -3681,9 +3695,8 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 
-    /// A frame that cannot be described. Routed through the existing catch so a
-    /// malformed buffer counts as absence evidence for the latch and the
-    /// confirmation window, exactly like a failed Vision pass.
+    /// A frame that cannot be described. Like a failed Vision pass, this
+    /// invalidates partial recognition evidence without proving card absence.
     private enum CameraFrameError: Error {
         case missingFormatDescription
         case missingImageBuffer
@@ -3717,9 +3730,8 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
 
         do {
-            // A frame with no image buffer is a bad frame, not a non-event. It
-            // has already consumed its cadence slot, so returning here silently
-            // skipped the absence evidence every other failed frame produces.
+            // A missing image buffer invalidates this recognition pass and
+            // participates in the normal Vision failure/recovery handling.
             guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 throw CameraFrameError.missingImageBuffer
             }
@@ -3893,22 +3905,6 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             recordVisionFrameSuccess(at: now)
         } catch {
             recordVisionFrameFailure(error)
-#if DEBUG
-            updateDebugVisionOverlay([])
-#endif
-            // A bad frame is expected occasionally. Run it through the normal
-            // pipeline as a miss so it counts as absence evidence for the latch
-            // as well as the confirmation window, then let the next frame try.
-            historicalAttempt = nil
-            magicHistoricalWindow.reset()
-            magicHistoricalLiveWindow.reset()
-            handleFooterOutcome(
-                .nothing,
-                footerLines: [],
-                historicalSubject: nil,
-                at: now,
-                pixelBuffer: nil
-            )
         }
     }
 }

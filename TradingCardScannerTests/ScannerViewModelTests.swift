@@ -2211,6 +2211,37 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(count, 1)
     }
 
+    func testInterruptionImmediatelyAfterFinishAnswerPreservesTheRequest() async throws {
+        let model = try makeModel(variants: [.normal, .holo])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.pendingChoice != nil }
+
+        model.choose(.normal)
+        XCTAssertNil(model.pendingChoice)
+        // Interrupt before the scheduled resolution task authorizes a write.
+        model.scenePhaseChanged(isActive: false)
+
+        XCTAssertEqual(model.unresolvedScans.count, 1)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .interrupted)
+        await settle()
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
+    func testInterruptionAfterFinishAnswerDoesNotFileAnAuthorizedWrite() async throws {
+        let gate = ScannerCollectionAddGate(outcome: .success)
+        let model = try makeModel(variants: [.normal, .holo], collectionAddOverride: { try await gate.add($0) })
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.pendingChoice != nil }
+        model.choose(.normal)
+        await gate.waitUntilStarted()
+
+        model.scenePhaseChanged(isActive: false)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        await gate.release()
+        await assertEventually { model.sessionScans.count == 1 }
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+    }
+
     func testDismissedChoiceAndPriceCheckDoNotBecomeInterruptedRows() async throws {
         let model = try makeModel(variants: [.normal, .holo])
         confirm(model, scannerIdentifier(), encounterID: UUID())

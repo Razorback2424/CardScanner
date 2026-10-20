@@ -113,6 +113,24 @@ final class CardLatchTests: XCTestCase {
         XCTAssertEqual(scanner.latchedSubjectForTesting, card)
     }
 
+    func testVisionFailureDiscardsPartialConfirmationWithoutReleasingConsumedCard() {
+        let scanner = CardScanner()
+        let consumed = subject(pokemon(1))
+        let partial = subject(pokemon(2))
+        scanner.receiveFooterOutcomeForTesting(.identified(consumed), at: 0)
+        scanner.receiveFooterOutcomeForTesting(.identified(consumed), at: 0.25)
+        XCTAssertNil(scanner.observeConfirmationSubjectForTesting(partial))
+
+        for _ in 0..<8 {
+            scanner.receiveVisionFrameResultForTesting(error: NSError(domain: "VisionTest", code: 1))
+        }
+
+        XCTAssertEqual(scanner.latchedSubjectForTesting, consumed)
+        XCTAssertNil(scanner.observeConfirmationSubjectForTesting(partial))
+        scanner.receiveFooterOutcomeForTesting(.identified(consumed), at: 10)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, consumed)
+    }
+
     func testVisionFailureRecoveryPreservesSlabModeAndSessionEndClearsFailure() async {
         let scanner = CardScanner()
         scanner.setSubjectMode(.slab)

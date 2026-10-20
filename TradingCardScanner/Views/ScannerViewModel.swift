@@ -1572,7 +1572,7 @@ final class ScannerViewModel: ObservableObject {
     private var identificationTask: Task<Void, Never>?
     private var activeIdentificationRequestID: UUID?
     private var activeIdentificationRequest: ScanRequest?
-    private var pendingResolutionRequestIDs: Set<UUID> = []
+    private var pendingResolutionRequests: [UUID: (request: ScanRequest, isAdditionalCopy: Bool)] = [:]
     private var authorizedWriteRequestIDs: Set<UUID> = []
     private var scannedGradedOutcomes: [UUID: ScannedGradedOutcome] = [:]
     private var oneCardScanIntervals: [UUID: OSSignpostIntervalState] = [:]
@@ -2600,6 +2600,7 @@ final class ScannerViewModel: ObservableObject {
         resetIdentificationProgress()
         activeIdentificationRequestID = nil
         activeIdentificationRequest = nil
+        pendingResolutionRequests.removeAll()
         isProcessingIdentification = false
         identificationQueue.removeAll()
         scannedGradedOutcomes.removeAll()
@@ -2628,7 +2629,6 @@ final class ScannerViewModel: ObservableObject {
                   printingCandidates: [PhysicalPrintingCandidate] = [],
                   pendingCommit: CollectionCommitCandidate? = nil, isAdditionalCopy: Bool = false) {
             guard !authorizedWriteRequestIDs.contains(request.id),
-                  !pendingResolutionRequestIDs.contains(request.id),
                   filed.insert(request.id).inserted else { return }
             fileUnresolved(request: request, reason: .interrupted, candidates: candidates,
                            printingCandidates: printingCandidates,
@@ -2648,6 +2648,9 @@ final class ScannerViewModel: ObservableObject {
             file(scanRequest(for: pending.candidate),
                  candidates: pokemonIdentity(for: pending.candidate.card).map { [$0] } ?? [],
                  pendingCommit: pending.candidate, isAdditionalCopy: true)
+        }
+        for pending in pendingResolutionRequests.values {
+            file(pending.request, isAdditionalCopy: pending.isAdditionalCopy)
         }
         if let request = activeIdentificationRequest { file(request) }
         for request in identificationQueue { file(request) }
@@ -2947,7 +2950,7 @@ final class ScannerViewModel: ObservableObject {
             processNextIdentificationIfPossible()
             return
         }
-        let accepted = beginPendingResolution(requestID: pending.candidate.requestID) { [weak self] in
+        let accepted = beginPendingResolution(request: scanRequest(for: pending.candidate), isAdditionalCopy: true) { [weak self] in
             guard let self else { return }
             let outcome = await self.commitAuthorizedCollectionCandidate(
                 pending.candidate,
@@ -3070,7 +3073,7 @@ final class ScannerViewModel: ObservableObject {
             options: pending.options,
             catalogRetrievedAt: pending.catalogRetrievedAt
         )
-        let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
+        let accepted = beginPendingResolution(request: pending.request, isAdditionalCopy: pending.duplicateChoiceContext != nil) { [weak self] in
             guard let self else { return }
             await self.route(
                 resolved,
@@ -3106,7 +3109,7 @@ final class ScannerViewModel: ObservableObject {
         guard let pending = pendingPrintRunChoice,
               pending.options.contains(printRun) else { return }
         feedback.choiceMade()
-        let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
+        let accepted = beginPendingResolution(request: pending.request) { [weak self] in
             guard let self else { return }
             await self.resolveVariant(
                 for: pending.request,
@@ -3158,7 +3161,7 @@ final class ScannerViewModel: ObservableObject {
         catch { return }
         feedback.choiceMade()
 
-        let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
+        let accepted = beginPendingResolution(request: request) { [weak self] in
             guard let self else { return }
             self.beginIdentification(request.id)
             defer { self.endIdentification(request.id) }
@@ -3424,7 +3427,7 @@ final class ScannerViewModel: ObservableObject {
         switch choice {
         case let .printing(candidate), let .englishPrinting(candidate):
             guard row.printingCandidates.contains(candidate) else { return }
-            let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
+            let accepted = beginPendingResolution(request: retryRequest, isAdditionalCopy: row.isAdditionalCopy) { [weak self] in
                 guard let self else { return }
                 self.beginIdentification(retryRequest.id)
                 defer { self.endIdentification(retryRequest.id) }
@@ -3461,7 +3464,7 @@ final class ScannerViewModel: ObservableObject {
                 gradedOutcome: pending.gradedOutcome
             )
             let retryCandidate = CollectionCommitCandidate(resolvedScan: resolved)
-            let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
+            let accepted = beginPendingResolution(request: retryRequest, isAdditionalCopy: row.isAdditionalCopy) { [weak self] in
                 guard let self else { return }
                 if retryCandidate.identifier.game == .lorcana {
                     do {
@@ -3527,7 +3530,7 @@ final class ScannerViewModel: ObservableObject {
             if !accepted { reportPendingResolutionRejected() }
         case let .catalog(details, selectedRun, selectedVariant):
             guard details.card.game == row.game else { return }
-            let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
+            let accepted = beginPendingResolution(request: retryRequest, isAdditionalCopy: row.isAdditionalCopy) { [weak self] in
                 guard let self, self.isCurrent(retryRequest) else { return }
                 let card = details.card
                 let request: ScanRequest
@@ -3589,7 +3592,7 @@ final class ScannerViewModel: ObservableObject {
                 generation: scanGeneration,
                 unresolvedScanID: row.id
             )
-            let accepted = beginPendingResolution(requestID: request.id) { [weak self] in
+            let accepted = beginPendingResolution(request: request, isAdditionalCopy: row.isAdditionalCopy) { [weak self] in
                 guard let self else { return }
                 self.beginIdentification(request.id)
                 defer { self.endIdentification(request.id) }
@@ -3837,15 +3840,20 @@ final class ScannerViewModel: ObservableObject {
     /// is waiting for the writer's background transaction.
     @discardableResult
     private func beginPendingResolution(
-        requestID: UUID,
+        request: ScanRequest,
+        isAdditionalCopy: Bool = false,
         operation: @escaping () async -> Void
     ) -> Bool {
         guard !isProcessingIdentification else { return false }
+        let requestID = request.id
         isProcessingIdentification = true
         activeIdentificationRequestID = requestID
-        pendingResolutionRequestIDs.insert(requestID)
+        // A tapped answer can still await catalog work before authorizing a
+        // write. Retain it so interruption cannot lose the cleared prompt.
+        pendingResolutionRequests[requestID] = (request, isAdditionalCopy)
         identificationTask = Task { @MainActor [weak self] in
-            defer { self?.pendingResolutionRequestIDs.remove(requestID) }
+            defer { self?.pendingResolutionRequests.removeValue(forKey: requestID) }
+            guard !Task.isCancelled, self?.isCurrent(request) == true else { return }
             await operation()
             self?.finishIdentificationRequest(requestID)
         }
