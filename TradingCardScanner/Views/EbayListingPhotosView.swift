@@ -72,6 +72,7 @@ struct EbayListingPhotosView: View {
     @State private var batchPickerItems: [PhotosPickerItem] = []
     @State private var batchPairs: [BatchPair] = []
     @State private var batchSelectionGeneration = 0
+    @State private var batchPreviewGeneration = 0
     @State private var batchProcessingTask: Task<Void, Never>?
     @State private var isPreparingBatch = false
     @State private var batchProgress: BatchProgress?
@@ -161,8 +162,8 @@ struct EbayListingPhotosView: View {
                 backData: backData
             )
         }
-        .task(id: batchSelectionGeneration) {
-            await loadBatchPreviews(generation: batchSelectionGeneration)
+        .task(id: batchPreviewGeneration) {
+            await loadBatchPreviews(generation: batchPreviewGeneration)
         }
         .fullScreenCover(item: $cameraSide) { side in
             CenteringCameraView(configuration: .listingPhotos) { data in
@@ -180,6 +181,7 @@ struct EbayListingPhotosView: View {
             backLoadGeneration &+= 1
             singleGeneration &+= 1
             batchSelectionGeneration &+= 1
+            batchPreviewGeneration &+= 1
             batchProcessingTask?.cancel()
             batchProcessingTask = nil
             removeSingleArtifacts()
@@ -282,7 +284,8 @@ struct EbayListingPhotosView: View {
                     BatchPairRow(
                         pair: $pair,
                         isEditable: !isPreparingBatch,
-                        onChange: invalidateBatchResults
+                        onSwap: invalidateBatchImages,
+                        onNameChange: invalidateBatchResults
                     )
                 }
 
@@ -568,6 +571,7 @@ struct EbayListingPhotosView: View {
 
     private func updateBatchPairs() {
         batchSelectionGeneration &+= 1
+        batchPreviewGeneration &+= 1
         batchProcessingTask?.cancel()
         batchProcessingTask = nil
         isPreparingBatch = false
@@ -597,22 +601,22 @@ struct EbayListingPhotosView: View {
     private func loadBatchPreviews(generation: Int) async {
         guard !batchPairs.isEmpty else { return }
         for index in batchPairs.indices {
-            guard !Task.isCancelled, generation == batchSelectionGeneration else { return }
+            guard !Task.isCancelled, generation == batchPreviewGeneration else { return }
             let pair = batchPairs[index]
             do {
                 let frontData = try await data(from: pair.front, side: "front")
                 let frontPreview = try await EbayListingPhotoExport.makeInputPreview(data: frontData)
-                guard !Task.isCancelled, generation == batchSelectionGeneration else { return }
+                guard !Task.isCancelled, generation == batchPreviewGeneration else { return }
                 batchPairs[index].frontPreview = frontPreview
 
                 let backData = try await data(from: pair.back, side: "back")
                 let backPreview = try await EbayListingPhotoExport.makeInputPreview(data: backData)
-                guard !Task.isCancelled, generation == batchSelectionGeneration else { return }
+                guard !Task.isCancelled, generation == batchPreviewGeneration else { return }
                 batchPairs[index].backPreview = backPreview
             } catch is CancellationError {
                 return
             } catch {
-                guard generation == batchSelectionGeneration else { return }
+                guard generation == batchPreviewGeneration else { return }
                 batchErrorMessage = "Card \(index + 1) could not be previewed: \(error.localizedDescription)"
                 return
             }
@@ -738,9 +742,14 @@ struct EbayListingPhotosView: View {
         }
     }
 
-    private func invalidateBatchResults() {
+    private func invalidateBatchImages() {
         // Pair edits must also invalidate previews still loading before the
         // first export. Otherwise an old front/back request can overwrite a swap.
+        batchPreviewGeneration &+= 1
+        invalidateBatchResults()
+    }
+
+    private func invalidateBatchResults() {
         batchSelectionGeneration &+= 1
         batchProcessingTask?.cancel()
         batchProcessingTask = nil
@@ -761,6 +770,7 @@ struct EbayListingPhotosView: View {
 
     private func startOverBatch() {
         batchSelectionGeneration &+= 1
+        batchPreviewGeneration &+= 1
         batchPickerItems = []
         batchPairs = []
         batchFailures = []
@@ -803,7 +813,8 @@ struct EbayListingPhotosView: View {
 private struct BatchPairRow: View {
     @Binding var pair: EbayListingPhotosView.BatchPair
     let isEditable: Bool
-    let onChange: () -> Void
+    let onSwap: () -> Void
+    let onNameChange: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -820,7 +831,7 @@ private struct BatchPairRow: View {
                     let frontPreview = pair.frontPreview
                     pair.frontPreview = pair.backPreview
                     pair.backPreview = frontPreview
-                    onChange()
+                    onSwap()
                 }
                 .labelStyle(.iconOnly)
                 .accessibilityLabel("Swap front and back for this pair")
@@ -835,7 +846,7 @@ private struct BatchPairRow: View {
         .padding(12)
         .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
         .onChange(of: pair.folderName) { _, _ in
-            onChange()
+            onNameChange()
         }
     }
 
