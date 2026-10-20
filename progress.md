@@ -2969,3 +2969,149 @@ historical.
   `Compile.xcresult`; command output: `/tmp/trading-card-dead-code-build.log`.
   Updated-document links and `git diff --check` pass. No physical-device,
   provider, CloudKit, archive, or release-readiness claim.
+- **2026-10-20 — Workflow source review, in progress:** reviewed CSV parsing,
+  import confirmation, durable per-row writes, interruption/retry, collection
+  export, and listing-photo selection, preview, processing, archive, Photos save,
+  and cleanup paths. File preparation now restores a pending additional-copy
+  import's operation salt before counting completed entries and fences its
+  result against collection-storage replacement. Batch pair edits now invalidate
+  thumbnail requests before an export directory exists, preventing an old
+  request from overwriting swapped front/back previews. Scanner tracing covered
+  identification routing, printing/run/finish choices, duplicate authorization,
+  collection commit, interruption, undo/correction, and Price Check routing.
+  Pending answer requests now remain recoverable until write authorization;
+  cancellation before that boundary files them to Needs attention, while
+  authorized writes remain excluded. Updated the CSV resume regression and
+  authored scanner boundary regressions. Source/diff inspection only; no builds,
+  tests, or simulator runs, as requested. This is a checkpoint, not completion
+  of the whole-workflow review: finish scanner/catalog/recognition internals,
+  collection editing/history/artwork and deletion, Browse/catalog activation,
+  foreground/background pricing, portfolio/history/reconciliation, storage
+  bootstrap/switching/sync recovery, and centering analysis/export before closing
+  the goal. No runtime, device, provider, CloudKit, or release claim.
+- **2026-10-20 — Workflow source review, collection and Browse continuation:**
+  traced collection filters/projection, quantity editing, activity finish
+  correction, removal/restore, local artwork writes and cleanup, and delete-all
+  entry points. Consolidated market-history identity changes and Retry into one
+  cancellable task in both detail surfaces; cancelled requests can no longer
+  overwrite the next chart's cached data, results, error, or loading state.
+  Continued through Browse search/pagination, set pages, raw/graded/sealed adds,
+  undo, and signed-catalog transport/storage/publication. Sealed cache-miss
+  continuations now recheck request ownership before publishing offline state
+  or beginning a provider request. Pokémon and Magic startup callers share and
+  await the complete persisted load. Pokémon publishes only increasing
+  revisions after the persistence await and computes change events from its
+  actual published predecessor; registry and revision startup reads use one
+  stored-release snapshot. One Piece recovery now validates cached revisions
+  and transitions against the bundled fallback, preventing an app update's
+  newer bundled catalog from being replaced by an older saved release.
+  Authored regression coverage for concurrent startup/activation and newer
+  bundled fallback recovery; none was executed. All verification remains
+  source/diff inspection, with `git diff --check` passing. No builds, tests, or
+  simulator runs. The goal remains open for the scanner/recognition internals,
+  catalog cache/provider details, pricing/background refresh, portfolio/history
+  reconciliation, storage bootstrap/switching/sync recovery, and centering
+  analysis/export passes; these changes do not certify runtime or release gates.
+- **2026-10-20 — Workflow source review, pricing continuation:** traced refresh
+  target construction/staleness, catalog fetch batching, mapped/free/paid price
+  lanes, finish/condition matching, graded resolution/binding, fresh-context
+  checkpoints, quote/identity caching, pacing/quota/cooldowns, queue suspension
+  and foreground/background handoff. Label-only slab grades such as Authentic
+  can now reach graded refresh instead of being stamped unsupported. A failed
+  graded checkpoint now discards its staged progress counts with its writes,
+  preventing a later save from counting rolled-back prices. Background work
+  reports target-build failure to iOS after settling any durable portfolio
+  work. JustTCG and Scryfall reject nonfinite Retry-After seconds rather than
+  keeping an infinite cooldown. Direct Scryfall card lookup now rejects a
+  response whose printing ID differs from the requested ID, protecting refresh
+  and metadata callers at the service boundary. Authored regression cases for
+  label-only graded refresh, malformed cooldown values, and direct Scryfall
+  identity checking; none was executed. Source/diff inspection only;
+  `git diff --check` passes. No builds, tests, simulator runs, commits, or
+  runtime/release claims. Remaining review: scanner/recognition internals,
+  catalog cache/provider details beyond the pricing path, portfolio/history
+  reconciliation, storage bootstrap/switching/sync recovery, and centering
+  analysis/export. The whole-workflow goal remains active.
+- **2026-10-20 — Workflow source review, portfolio/history continuation:**
+  traced bulk ledger/evidence snapshots, price-observation reconciliation,
+  forward replay and attribution, daily-close publication/revisions, history
+  range accounting, and chart/headline presentation. Currency hero values now
+  split at the locale's decimal separator, preventing grouping periods from
+  splitting German-style values. Same-day Undo collapsing respects the replay
+  cutoff, preserving ownership before a later Undo. Synced native-currency
+  price transitions now reach local observations, so a USD-to-EUR change is
+  explained as loss of USD priceability rather than leaving replay on the old
+  USD value. Authored regression cases for localized rendering, before/after
+  Undo cutoffs, and synced currency transitions; none was executed. Verification
+  is source/diff inspection only; `git diff --check` passes. No builds, tests,
+  simulator runs, commits, or runtime/release claims. The audit remains active
+  for the remaining portfolio ledger/bootstrap details, scanner/recognition
+  internals, catalog cache/provider details beyond pricing, storage
+  bootstrap/switching/sync recovery, and centering analysis/export.
+- **2026-10-20 — Workflow source review, ownership and storage continuation:**
+  completed the portfolio ownership pass through ledger append/deduplication,
+  correction and inverse operations, collection Undo lineage, quantity repair,
+  and epoch/initial-sync baseline establishment. Traced storage startup through
+  store discovery and legacy adoption, manifest/sidecar validation, account and
+  anchor policy, attachment confirmation, restoration probes/checkpoints,
+  local fallback, headless reuse, session-generation publication, and recovery
+  UI. Both fresh-store and existing-store anchor claims now recheck bootstrap
+  generation immediately after awaiting the claim, preventing a superseded
+  failure or conflict from replacing a newer session's state. Authored an
+  unrun regression case that completes a newer retry during each claim path
+  and verifies the older failure cannot replace its ready state. Source/diff
+  inspection only; `git diff --check` passes. No builds, tests, simulator runs,
+  commits, or cloud/runtime/release certification. The goal remains active for
+  scanner/recognition internals, remaining catalog cache/provider details, and
+  centering analysis/export.
+- **2026-10-20 — Workflow source review, scanner recognition continuation:**
+  traced camera start/stop and recovery, OCR cadence and frame processing,
+  footer/title/label evidence, physical-card latch and explicit repeat permits,
+  spatial exit tracking, modern/historical parser arbitration, and the shared
+  catalog lookup/printing-choice boundary; continued into Pokémon provider and
+  historical identity resolution. Failed Vision or malformed-buffer passes no
+  longer feed synthetic empty-band observations into duplicate protection:
+  failures clear partial confirmation/evidence windows while retaining the
+  consumed-card latch and established slab identity. This prevents an OCR
+  outage from counting as proof that a stationary card left. Authored an unrun
+  regression case for clearing partial confirmation while retaining consumed
+  identity through sustained failures and recovery. Source/diff inspection
+  only; `git diff --check` passes. No builds, tests, simulator runs, or commits.
+  Remaining audit: game-specific recognition/resolution and catalog caches,
+  then centering analysis/export. The whole-workflow goal remains active.
+- **2026-10-20 — Workflow source review, recognition/catalog continuation:**
+  continued through One Piece and Lorcana footer recognition, verified-printing
+  choices and acquisition checks, Magic modern/child-set/historical resolution
+  and exact hydration, Pokémon historical/offline resolution, and resolved-card
+  disk-cache loading, expiry, persistence, and invalidation. Pokémon offline
+  loads now carry an invalidation generation and join the replacement load
+  rather than allowing a canceled older load to republish stale entries.
+  Set-based resolved-card invalidation now loads the disk cache before removing
+  entries, so activation cannot miss saved entries in a cold cache instance.
+  Authored an unrun regression case that writes a complete cache entry,
+  invalidates it from a fresh instance, and checks another fresh instance still
+  misses it. Source/diff inspection only; `git diff --check` passes. No builds,
+  tests, simulator runs, or commits. Centering analysis/export and the final
+  workflow-coverage audit remain; the goal stays active.
+- **2026-10-20 — Workflow source review, centering and completion audit:**
+  traced centering image/file/camera input, analysis-generation ownership,
+  orientation/downscaling, outer/inner candidate selection and confidence,
+  coordinate mapping/rectification, manual guide edits and confirmation,
+  ratios/warnings, and snapshot-based image export. The shared still-camera
+  controller now matches callbacks to their AVFoundation photo request IDs and
+  checks the main-actor lifecycle before publishing either image data or a
+  capture error. A late callback after stop/restart can no longer consume a
+  newer capture or publish an old image into centering/listing photos.
+  Compared the app's Portfolio, Collection, Scan, and Pro routes plus Settings
+  actions against this review's workflow entries: scanner intake/questions/
+  recovery/Price Check; collection editing/history/artwork/deletion; Browse
+  raw/graded/sealed acquisition; CSV import/resume/export; listing-photo
+  preparation/export; catalog recognition/resolution/activation/caches;
+  foreground/background pricing; portfolio ledger/replay/history; storage
+  startup/identity/account transitions/recovery; and centering/export are all
+  covered at the source level. Re-read the accumulated implementation and
+  regression diffs and checked changed async call sites. No further
+  high-confidence concrete findings remain from this review. `git diff --check`
+  passes. The requested source-only workflow audit is complete; all authored
+  regression cases remain unrun. No builds, tests, simulator runs, commits,
+  device/provider/CloudKit validation, or runtime/release certification.
