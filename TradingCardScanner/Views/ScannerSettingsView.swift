@@ -30,6 +30,7 @@ private struct SettingsContentView: View {
     @State private var diagnosticsDocument: JSONExportDocument?
     @State private var csvExportFilename = "CardScanner Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
+    @State private var csvImportPreparationID = UUID()
     @State private var pendingCSVAlreadyImportedEntryCount = 0
     @State private var portfolioCloseCount = 0
     @State private var collectionCardCount = 0
@@ -520,6 +521,9 @@ private struct SettingsContentView: View {
     @MainActor
     private func prepareCSVImport(from url: URL) async {
         guard let storageToken = storageGeneration.currentToken() else { return }
+        let preparationID = UUID()
+        csvImportPreparationID = preparationID
+        pendingCSVImport = nil
         do {
             let container = modelContext.container
             let prepared = try await Task.detached(priority: .userInitiated) {
@@ -531,11 +535,13 @@ private struct SettingsContentView: View {
                 let count = try CollectionCSV.alreadyImportedEntryCount(for: plan, in: context)
                 return (plan, count)
             }.value
-            guard storageGeneration.isCurrent(storageToken) else { return }
+            guard storageGeneration.isCurrent(storageToken),
+                  csvImportPreparationID == preparationID else { return }
             pendingCSVImport = prepared.0
             pendingCSVAlreadyImportedEntryCount = prepared.1
         } catch {
-            guard storageGeneration.isCurrent(storageToken) else { return }
+            guard storageGeneration.isCurrent(storageToken),
+                  csvImportPreparationID == preparationID else { return }
             writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
         }
     }
@@ -635,6 +641,7 @@ private struct SettingsContentView: View {
                         : CollectionCSV.exportFailedEntries(result.failedEntries).text
                 )
             } catch {
+                guard storageGeneration.isCurrent(storageToken) else { return }
                 let message: String
                 if let csvError = error as? CollectionCSVError,
                    case let .importInterrupted(completedEntries, totalEntries) = csvError {
