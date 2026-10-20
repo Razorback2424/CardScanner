@@ -3133,7 +3133,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertNil(engine.holdings.first?.unitPrice)
     }
 
-    func testHistoryRangeRecalculatesSynchronouslyAndKeepsReplayAccountingDuringDeltas() async throws {
+    func testHistoryRangeRecalculatesOffMainAndKeepsReplayAccountingDuringDeltas() async throws {
         let context = try makeContext()
         let now = Date(timeIntervalSince1970: 2_000_000_000)
         let epoch = now.addingTimeInterval(-3 * 86_400)
@@ -3166,9 +3166,11 @@ final class PortfolioReconciliationTests: XCTestCase {
         history.range = .oneMonth
         history.recompute(context: context, summary: engine.replaySummary, factors: engine.performanceFactors,
                           contributions: engine.contributionIndex, now: now)
+        await history.waitForPendingComputation()
         XCTAssertFalse(try XCTUnwrap(history.activeResult).isEmpty)
         for range in PortfolioHistoryRange.allCases {
             history.range = range
+            await history.waitForPendingComputation()
             let result = try XCTUnwrap(history.activeResult)
             XCTAssertEqual(result.range, range)
             XCTAssertEqual(result.accounting?.unexplained, .zero)

@@ -1,7 +1,98 @@
+import Combine
+import SwiftData
 import XCTest
 @testable import TradingCardScanner
 
+private actor HistoryCalculationProbe {
+    private var ranges: [PortfolioHistoryRange] = []
+    private var values: [Money] = []
+    private var active = 0
+    private var maximumActive = 0
+    private var ranOnMain = false
+    private var started: CheckedContinuation<Void, Never>?
+    private var releaseFirst: CheckedContinuation<Void, Never>?
+
+    func calculate(_ input: PortfolioHistoryInput, range: PortfolioHistoryRange) async -> PortfolioHistoryResult {
+        ranges.append(range)
+        values.append(input.summary.currentValue)
+        active += 1
+        maximumActive = max(maximumActive, active)
+        ranOnMain = ranOnMain || Thread.isMainThread
+        if ranges.count == 1 {
+            await withCheckedContinuation { continuation in
+                releaseFirst = continuation
+                started?.resume()
+                started = nil
+            }
+        }
+        defer { active -= 1 }
+        return PortfolioHistoryEngine.calculate(input: input, range: range)
+    }
+
+    func waitUntilStarted() async {
+        guard ranges.isEmpty else { return }
+        await withCheckedContinuation { started = $0 }
+    }
+
+    func release() { releaseFirst?.resume(); releaseFirst = nil }
+    func snapshot() -> (ranges: [PortfolioHistoryRange], values: [Money], maximumActive: Int, ranOnMain: Bool) {
+        (ranges, values, maximumActive, ranOnMain)
+    }
+}
+
 final class PortfolioHistoryEngineTests: XCTestCase {
+    @MainActor
+    func testHistoryCoalescesRangeAndInputChangesWithoutPublishingStaleResults() async throws {
+        let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")
+        defer { UserDefaults.standard.set(previousRange, forKey: "portfolioHistoryRange") }
+        let container = try ModelContainer(for: PortfolioDailyClose.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let probe = HistoryCalculationProbe()
+        let store = PortfolioHistoryStore(calculate: { await probe.calculate($0, range: $1) })
+        var publications: [PortfolioHistoryRange] = []
+        let subscription = store.$result.compactMap { $0 }.sink { publications.append($0.range) }
+        defer { subscription.cancel() }
+        store.range = .oneDay
+        store.recompute(context: container.mainContext, summary: PortfolioSummary(currentValue: money(10)),
+            factors: .init(), contributions: .init())
+        await probe.waitUntilStarted()
+        for range in [PortfolioHistoryRange.oneWeek, .all, .threeMonths, .oneMonth] { store.range = range }
+        store.recompute(context: container.mainContext, summary: PortfolioSummary(currentValue: money(25)),
+            factors: .init(), contributions: .init())
+        await probe.release()
+        await store.waitForPendingComputation()
+
+        let recorded = await probe.snapshot()
+        XCTAssertEqual(recorded.ranges, [.oneDay, .oneMonth])
+        XCTAssertEqual(recorded.values, [money(10), money(25)])
+        XCTAssertEqual(recorded.maximumActive, 1, "Obsolete history work must drain before the latest request starts")
+        XCTAssertFalse(recorded.ranOnMain)
+        XCTAssertEqual(publications, [.oneMonth], "An old input/range must never replace the requested history")
+        XCTAssertEqual(store.activeResult?.range, .oneMonth)
+    }
+
+    @MainActor
+    func testClearedHistoryInputsCannotBeResurrectedByAnInFlightCalculation() async throws {
+        let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")
+        defer { UserDefaults.standard.set(previousRange, forKey: "portfolioHistoryRange") }
+        let container = try ModelContainer(for: PortfolioDailyClose.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let probe = HistoryCalculationProbe()
+        let store = PortfolioHistoryStore(calculate: { await probe.calculate($0, range: $1) })
+        store.recompute(context: container.mainContext, summary: PortfolioSummary(currentValue: money(10)),
+            factors: .init(), contributions: .init())
+        await probe.waitUntilStarted()
+        store.recompute(context: container.mainContext, summary: nil, factors: .init(), contributions: .init())
+        store.range = .all
+        await probe.release()
+        await store.waitForPendingComputation()
+
+        XCTAssertNil(store.activeResult)
+        XCTAssertNil(store.result)
+        let recorded = await probe.snapshot()
+        XCTAssertEqual(recorded.ranges.count, 1)
+    }
+
     func testAdditionDisplayUsesPerCopyValueRatherThanExtendedTotal() {
         let multiple = PortfolioAdditionDisplay(total: money(30), quantity: 3)
         let single = PortfolioAdditionDisplay(total: money(20), quantity: 1)

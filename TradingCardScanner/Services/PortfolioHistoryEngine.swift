@@ -2,9 +2,9 @@ import Foundation
 import CryptoKit
 import SwiftData
 
-/// Pure Phase 2 history calculations. SwiftData is only referenced by the
-/// main-actor controller at the bottom; all chart inputs and outputs are value
-/// snapshots.
+/// Pure history calculations over value snapshots. The background model actor
+/// below owns SwiftData reads; the main-actor store schedules work and publishes
+/// the result for the latest inputs and selected range.
 enum PortfolioHistoryEngine {
     static func calculate(
         input: PortfolioHistoryInput,
@@ -232,16 +232,23 @@ final class PortfolioHistoryStore: ObservableObject {
     @Published var range: PortfolioHistoryRange {
         didSet {
             UserDefaults.standard.set(range.rawValue, forKey: "portfolioHistoryRange")
-            if oldValue != range, let cachedInput {
-                result = PortfolioHistoryEngine.calculate(input: cachedInput, range: range)
-            }
+            if oldValue != range { scheduleComputation() }
         }
     }
 
     @Published private(set) var result: PortfolioHistoryResult?
     private var cachedInput: PortfolioHistoryInput?
+    private var loadRequest: PortfolioHistoryLoadRequest?
+    private var inputRevision: UInt = 0
+    private var requestRevision: UInt = 0
+    private var computationTask: Task<Void, Never>?
+    typealias Calculation = @Sendable (PortfolioHistoryInput, PortfolioHistoryRange) async -> PortfolioHistoryResult
+    private let calculate: Calculation
 
-    init() {
+    init(calculate: Calculation? = nil) {
+        self.calculate = calculate ?? { input, range in
+            await PortfolioHistoryCalculationWorker().calculate(input: input, range: range)
+        }
         range = PortfolioHistoryRange(
             rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryRange") ?? ""
         ) ?? .oneMonth
@@ -264,26 +271,87 @@ final class PortfolioHistoryStore: ObservableObject {
         contributions: PortfolioContributionIndex,
         now: Date = .now
     ) {
+        inputRevision &+= 1
+        requestRevision &+= 1
+        cachedInput = nil
         guard let summary else {
-            cachedInput = nil
+            loadRequest = nil
             result = nil
             return
         }
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
-        // Closes only. The chart plots published days and needs no replay of
-        // its own — the factors arrive from the computation the engine already
-        // performed.
-        let storedCloses: [PortfolioDailyClose]
-        do {
-            storedCloses = try PortfolioEngine.allCloses(in: context)
-        } catch {
-            // History is derived from persisted closes. If that read is
-            // unavailable, publishing an empty chart would make a storage
-            // problem look like missing history.
-            cachedInput = nil
-            result = nil
-            return
+        loadRequest = PortfolioHistoryLoadRequest(
+            container: context.container, summary: summary,
+            epoch: PortfolioEpoch.startedAt(), timeZoneIdentifier: timeZone.identifier,
+            now: now, factors: factors, contributions: contributions
+        )
+        scheduleComputation()
+    }
+
+    /// Range changes reuse the last immutable input. Only one read/calculation
+    /// runs at a time; a burst leaves one trailing request for the newest state.
+    private func scheduleComputation() {
+        requestRevision &+= 1
+        guard loadRequest != nil, computationTask == nil else { return }
+        computationTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { self.computationTask = nil }
+            while let request = self.loadRequest {
+                let revision = self.requestRevision
+                let inputRevision = self.inputRevision
+                let range = self.range
+                let input: PortfolioHistoryInput?
+                if let cached = self.cachedInput {
+                    input = cached
+                } else {
+                    let worker = await PortfolioHistoryModelActor.makeBackground(modelContainer: request.container)
+                    input = await worker.input(for: request)
+                }
+                guard inputRevision == self.inputRevision else { continue }
+                guard let input else {
+                    // An unreadable store is unavailable history, never a
+                    // fabricated empty chart. A later recompute can retry it.
+                    self.result = nil
+                    return
+                }
+                self.cachedInput = input
+                guard revision == self.requestRevision else { continue }
+                let result = await self.calculate(input, range)
+                guard revision == self.requestRevision else { continue }
+                self.result = result
+                return
+            }
         }
+    }
+
+    func waitForPendingComputation() async {
+        await computationTask?.value
+    }
+}
+
+private struct PortfolioHistoryLoadRequest: Sendable {
+    let container: ModelContainer
+    let summary: PortfolioSummary
+    let epoch: Date?
+    let timeZoneIdentifier: String
+    let now: Date
+    let factors: PortfolioPerformanceFactors
+    let contributions: PortfolioContributionIndex
+}
+
+/// No SwiftData objects cross back to the presentation store.
+@ModelActor
+private actor PortfolioHistoryModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    func input(for request: PortfolioHistoryLoadRequest) -> PortfolioHistoryInput? {
+        let descriptor = FetchDescriptor<PortfolioDailyClose>(
+            sortBy: [SortDescriptor(\.date, order: .forward), SortDescriptor(\.revision, order: .forward)]
+        )
+        guard let storedCloses = try? modelContext.fetch(descriptor) else { return nil }
         let closes = storedCloses.map {
             PortfolioPublishedClose(
                 date: $0.date, revision: $0.revision, timeZoneIdentifier: $0.timeZoneIdentifier,
@@ -298,17 +366,20 @@ final class PortfolioHistoryStore: ObservableObject {
                 removed: $0.removedContribution
             )
         }
-        let input = PortfolioHistoryInput(
+        return PortfolioHistoryInput(
             closes: closes,
-            summary: summary,
-            epoch: PortfolioEpoch.startedAt(),
-            timeZoneIdentifier: timeZone.identifier,
-            now: now,
-            factors: factors,
-            contributions: contributions
+            summary: request.summary,
+            epoch: request.epoch,
+            timeZoneIdentifier: request.timeZoneIdentifier,
+            now: request.now,
+            factors: request.factors,
+            contributions: request.contributions
         )
-        cachedInput = input
-        result = PortfolioHistoryEngine.calculate(input: input, range: range)
     }
+}
 
+private actor PortfolioHistoryCalculationWorker {
+    func calculate(input: PortfolioHistoryInput, range: PortfolioHistoryRange) -> PortfolioHistoryResult {
+        PortfolioHistoryEngine.calculate(input: input, range: range)
+    }
 }
