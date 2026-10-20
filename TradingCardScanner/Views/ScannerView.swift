@@ -300,7 +300,6 @@ private struct ScannerChrome: View {
 
     @Namespace private var glassNamespace
     @State private var isSessionExpanded = false
-    @State private var isAttentionExpanded = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -486,65 +485,143 @@ private struct ScannerChrome: View {
         }
     }
 
-    private var sessionHistory: some View {
-        VStack(spacing: 8) {
-            if model.purpose == .collection, !model.recent.isEmpty {
-                DisclosureGroup(isExpanded: $isSessionExpanded) {
-                    RecentScanRail(
-                        scans: model.recent,
-                        gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
-                        onSelect: openReview,
-                        onDelete: model.deleteRecentScan
-                    )
-                    .frame(maxWidth: .infinity)
+    private var showsSessionTray: Bool {
+        model.purpose == .collection && !model.recent.isEmpty
+    }
 
-                    Button(action: openSessionReview) {
-                        Label("Review session", systemImage: "list.bullet.rectangle")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("scanner-session-review")
-                    .accessibilityLabel("Review session, \(model.sessionScans.count) cards")
-                    .accessibilityHint("Opens every card added during this scanner visit.")
-                } label: {
-                    Label("Recent scans · \(model.sessionScans.count)", systemImage: "list.bullet.rectangle")
-                        .frame(minHeight: 44)
-                        .accessibilityIdentifier("scanner-session-disclosure")
+    /// The session at a glance: a fanned stack of the latest cards and a running
+    /// count, so progress through a stack is visible without opening anything.
+    /// Attention is one tap from the same row, never a second disclosure.
+    private var sessionHistory: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if showsSessionTray || model.unresolvedCount > 0 {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { sessionPills }
+                    VStack(alignment: .leading, spacing: 8) { sessionPills }
                 }
-                .padding(.horizontal, 12)
-                .appGlass(cornerRadius: 14)
             }
 
-            if model.unresolvedCount > 0 {
-                DisclosureGroup(isExpanded: $isAttentionExpanded) {
-                    Button(action: openUnresolved) {
-                        Label("Review needs attention", systemImage: "exclamationmark.circle")
-                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("scanner-attention-review")
-                    .accessibilityHint("Shows what was read and why it was not added")
-                } label: {
-                    Label(attentionTitle, systemImage: "exclamationmark.circle.fill")
-                        .foregroundStyle(.orange)
-                        .frame(minHeight: 44)
-                        .accessibilityIdentifier("scanner-attention-disclosure")
-                }
-                .padding(.horizontal, 12)
-                .appGlass(cornerRadius: 14)
+            if showsSessionTray, isSessionExpanded {
+                sessionTrayContent
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
-        .font(.caption.weight(.semibold))
+        .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(.white)
-        .tint(.white)
+    }
+
+    @ViewBuilder
+    private var sessionPills: some View {
+        if showsSessionTray {
+            Button {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+                    isSessionExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    SessionThumbnailStack(scans: Array(model.recent.prefix(3)))
+                    Text("\(model.sessionScans.count) added")
+                        .font(.subheadline.weight(.semibold).monospacedDigit())
+                        .contentTransition(.numericText())
+                        .lineLimit(1)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .rotationEffect(.degrees(isSessionExpanded ? 180 : 0))
+                }
+                .foregroundStyle(.white)
+                .padding(.leading, 10)
+                .padding(.trailing, 12)
+                .frame(minHeight: 44)
+                .appPillGlass(interactive: true)
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("scanner-session-disclosure")
+            .accessibilityLabel("Recent scans, \(model.sessionScans.count) cards")
+            .accessibilityValue(isSessionExpanded ? "Expanded" : "Collapsed")
+            .accessibilityHint("Shows the cards added during this scanner visit.")
+        }
+
+        if model.unresolvedCount > 0 {
+            Button(action: openUnresolved) {
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.orange)
+                    Text(attentionTitle)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .appPillGlass(tint: Color.orange.opacity(0.22), interactive: true)
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("scanner-attention-review")
+            .accessibilityHint("Shows what was read and why it was not added")
+        }
+    }
+
+    private var sessionTrayContent: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            RecentScanRail(
+                scans: model.recent,
+                gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
+                onSelect: openReview,
+                onDelete: model.deleteRecentScan
+            )
+
+            Button(action: openSessionReview) {
+                HStack(spacing: 8) {
+                    Label("Review session", systemImage: "list.bullet.rectangle")
+                    Spacer(minLength: 4)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.6))
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("scanner-session-review")
+            .accessibilityLabel("Review session, \(model.sessionScans.count) cards")
+            .accessibilityHint("Opens every card added during this scanner visit.")
+        }
+        .padding(.horizontal, 12)
+        .padding(.top, 10)
+        .appGlass(cornerRadius: 20)
     }
 
     private var attentionTitle: String {
         "\(model.unresolvedCount) need\(model.unresolvedCount == 1 ? "s" : "") attention"
     }
 
+}
+
+/// The latest few cards, fanned like the stack in your hand.
+private struct SessionThumbnailStack: View {
+    let scans: [RecentScan]
+
+    var body: some View {
+        ZStack {
+            ForEach(Array(Array(scans.enumerated()).reversed()), id: \.element.id) { index, scan in
+                CardThumbnail(url: scan.thumbnailURL, width: 20)
+                    .shadow(color: .black.opacity(0.3), radius: 1.5, y: 1)
+                    .rotationEffect(.degrees(Double(index) * -9), anchor: .bottom)
+                    .offset(x: CGFloat(index) * -4)
+            }
+        }
+        .frame(width: 30, height: 32)
+        .accessibilityHidden(true)
+    }
 }
 
 private struct ScannerStatusView: View {
@@ -582,14 +659,18 @@ private struct ScannerCameraIssueOverlay: View {
     var body: some View {
         Group {
             if let issue = state.cameraIssue {
-                VStack(spacing: 12) {
-                    Image(systemName: "camera.fill")
-                        .font(.largeTitle)
+                VStack(spacing: 14) {
+                    ScannerStatusBadge(tone: .neutral, systemName: "camera.fill", size: 56)
                     Text(issue.message)
+                        .font(.callout.weight(.medium))
+                        .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(24)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+                .padding(.horizontal, 24)
+                .padding(.vertical, 22)
+                .frame(maxWidth: 340)
+                .appGlass(cornerRadius: 28)
                 .padding(30)
             }
         }
@@ -657,8 +738,12 @@ private struct ScannerTopBar: View, Equatable {
             }
         } label: {
             HStack(spacing: 6) {
+                // The one bit of color in the bar: green while cards are being
+                // added, amber while only pricing, so the live consequence is
+                // legible without reading.
                 Image(systemName: purpose.symbolName)
                     .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(purpose == .collection ? Color.green : Color.yellow)
                 Text(purpose.title)
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)

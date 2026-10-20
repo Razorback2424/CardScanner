@@ -95,7 +95,12 @@ final class PreviewView: UIView {
 
     private var rotationAngle = CameraRotationTracker.defaultAngle
 
+    /// Dims everything outside the card so the frame reads as the subject and
+    /// the floating chrome sits on a calmer surface.
+    private let scrimLayer = CAShapeLayer()
+    /// A hairline of the full card frame; the corner brackets carry the shape.
     private let cardRegionLayer = CAShapeLayer()
+    private let cardCornerLayer = CAShapeLayer()
     private let slabCardRegionLayer = CAShapeLayer()
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
@@ -111,7 +116,7 @@ final class PreviewView: UIView {
 
     var slabFraming: GradedSlabEvidence?
     /// The band the scanner told us it is reading. Mirrored rather than derived
-    /// so the green guide and the debug boxes cannot drift from the real ROI.
+    /// so the read band and the debug boxes cannot drift from the real ROI.
     var footerVisionRect = CardFramingRegion.visionRect.union(
         SlabFramingRegion.footerVisionRect(for: nil)
     )
@@ -172,18 +177,38 @@ final class PreviewView: UIView {
         }
 
         scanRegionLayer.frame = previewRect(for: scanVisionRect)
+        scanRegionLayer.shadowPath = Self.ringPath(
+            in: scanRegionLayer.bounds,
+            cornerRadius: scanRegionLayer.cornerRadius,
+            lineWidth: scanRegionLayer.borderWidth
+        )
         let cardRect = previewRect(for: outerVisionRect)
+        let cardCornerRadius: CGFloat = innerVisionRect == nil ? 16 : 20
         cardRegionLayer.frame = cardRect
         cardRegionLayer.path = UIBezierPath(
             roundedRect: cardRegionLayer.bounds,
-            cornerRadius: innerVisionRect == nil ? 14 : 18
+            cornerRadius: cardCornerRadius
         ).cgPath
-        cardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.78).cgColor
-        cardRegionLayer.lineDashPattern = subjectMode == .slab ? nil : [8, 6]
-        slabCardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.52).cgColor
-        slabCardRegionLayer.lineDashPattern = nil
-        scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
-        scanRegionLayer.borderColor = UIColor.systemGreen.cgColor
+        cardCornerLayer.frame = cardRect
+        let cornerPath = Self.cornerBracketPath(
+            in: cardCornerLayer.bounds,
+            cornerRadius: cardCornerRadius,
+            armLength: min(34, cardRect.width * 0.16)
+        )
+        cardCornerLayer.path = cornerPath
+        cardCornerLayer.shadowPath = cornerPath.copy(
+            strokingWithWidth: cardCornerLayer.lineWidth,
+            lineCap: .round,
+            lineJoin: .round,
+            miterLimit: 0
+        )
+
+        let scrimPath = UIBezierPath(rect: bounds)
+        if !cardRect.isEmpty {
+            scrimPath.append(UIBezierPath(roundedRect: cardRect, cornerRadius: cardCornerRadius))
+        }
+        scrimLayer.frame = bounds
+        scrimLayer.path = scrimPath.cgPath
 
         // Share the rendered band, including aspect-fill cropping, with the
         // SwiftUI chrome. Receipts must fit below it; controls stay above it.
@@ -205,7 +230,7 @@ final class PreviewView: UIView {
             )
             slabCardRegionLayer.path = UIBezierPath(
                 roundedRect: slabCardRegionLayer.bounds,
-                cornerRadius: 8
+                cornerRadius: 10
             ).cgPath
         } else {
             slabCardRegionLayer.isHidden = true
@@ -253,16 +278,35 @@ final class PreviewView: UIView {
 
         let border = CABasicAnimation(keyPath: "borderColor")
         border.fromValue = UIColor.white.cgColor
-        border.toValue = UIColor.systemGreen.cgColor
+        border.toValue = Self.bandBorderColor
         border.duration = 0.45
 
         let fill = CABasicAnimation(keyPath: "backgroundColor")
         fill.fromValue = UIColor.systemGreen.withAlphaComponent(0.3).cgColor
-        fill.toValue = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
+        fill.toValue = Self.bandFillColor
         fill.duration = 0.45
+
+        // A small exhale of the band: felt in peripheral vision while the eyes
+        // are already on the next card, without moving anything that matters.
+        let pulse = CAKeyframeAnimation(keyPath: "transform.scale")
+        pulse.values = [1, 1.035, 1]
+        pulse.keyTimes = [0, 0.35, 1]
+        pulse.timingFunctions = [
+            CAMediaTimingFunction(name: .easeOut),
+            CAMediaTimingFunction(name: .easeInEaseOut)
+        ]
+        pulse.duration = 0.4
+
+        // The corners confirm the whole card was consumed, not just its footer.
+        let corners = CABasicAnimation(keyPath: "strokeColor")
+        corners.fromValue = UIColor.systemGreen.cgColor
+        corners.toValue = Self.cornerColor
+        corners.duration = 0.55
 
         scanRegionLayer.add(border, forKey: "successBorderFlash")
         scanRegionLayer.add(fill, forKey: "successFillFlash")
+        scanRegionLayer.add(pulse, forKey: "successScalePulse")
+        cardCornerLayer.add(corners, forKey: "successCornerFlash")
     }
 
     /// A lighter pulse at recognition confirmation. The later green pulse still
@@ -275,13 +319,13 @@ final class PreviewView: UIView {
         guard !didReset else { return }
 
         let border = CABasicAnimation(keyPath: "borderColor")
-        border.fromValue = UIColor.white.cgColor
-        border.toValue = UIColor.systemCyan.cgColor
+        border.fromValue = UIColor.systemCyan.cgColor
+        border.toValue = Self.bandBorderColor
         border.duration = 0.24
 
         let fill = CABasicAnimation(keyPath: "backgroundColor")
         fill.fromValue = UIColor.systemCyan.withAlphaComponent(0.26).cgColor
-        fill.toValue = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
+        fill.toValue = Self.bandFillColor
         fill.duration = 0.24
 
         scanRegionLayer.add(border, forKey: "recognitionBorderFlash")
@@ -300,24 +344,95 @@ final class PreviewView: UIView {
         // here will compete with the SwiftUI controls layered above it.
         isUserInteractionEnabled = false
 
+        scrimLayer.fillRule = .evenOdd
+        scrimLayer.fillColor = UIColor.black.withAlphaComponent(0.34).cgColor
+        previewLayer.addSublayer(scrimLayer)
+
         cardRegionLayer.fillColor = UIColor.clear.cgColor
-        cardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.78).cgColor
-        cardRegionLayer.lineWidth = 2
-        cardRegionLayer.lineDashPattern = [8, 6]
+        cardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.22).cgColor
+        cardRegionLayer.lineWidth = 1
         previewLayer.addSublayer(cardRegionLayer)
 
+        cardCornerLayer.fillColor = UIColor.clear.cgColor
+        cardCornerLayer.strokeColor = Self.cornerColor
+        cardCornerLayer.lineWidth = 3.5
+        cardCornerLayer.lineCap = .round
+        cardCornerLayer.lineJoin = .round
+        Self.applyLegibilityShadow(to: cardCornerLayer)
+        previewLayer.addSublayer(cardCornerLayer)
+
         slabCardRegionLayer.fillColor = UIColor.clear.cgColor
-        slabCardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.52).cgColor
-        slabCardRegionLayer.lineWidth = 1.5
-        slabCardRegionLayer.lineDashPattern = [5, 5]
+        slabCardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.42).cgColor
+        slabCardRegionLayer.lineWidth = 1
+        slabCardRegionLayer.lineDashPattern = [4, 5]
+        slabCardRegionLayer.lineCap = .round
         slabCardRegionLayer.isHidden = true
         previewLayer.addSublayer(slabCardRegionLayer)
 
-        scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
-        scanRegionLayer.borderColor = UIColor.systemGreen.cgColor
-        scanRegionLayer.borderWidth = 2
-        scanRegionLayer.cornerRadius = 8
+        // Added last: the band is the one thing the eye should land on, and it
+        // must draw above the corners where a short card brings them together.
+        scanRegionLayer.backgroundColor = Self.bandFillColor
+        scanRegionLayer.borderColor = Self.bandBorderColor
+        scanRegionLayer.borderWidth = 1.5
+        scanRegionLayer.cornerRadius = 10
+        Self.applyLegibilityShadow(to: scanRegionLayer)
         previewLayer.addSublayer(scanRegionLayer)
+    }
+
+    // MARK: - Guide styling
+
+    private static let cornerColor = UIColor.white.withAlphaComponent(0.95).cgColor
+    private static let bandBorderColor = UIColor.systemGreen.withAlphaComponent(0.92).cgColor
+    private static let bandFillColor = UIColor.systemGreen.withAlphaComponent(0.1).cgColor
+
+    /// A soft dark halo keeps white and green guides readable over a white
+    /// border, a bright table, or glare, without a heavier stroke.
+    private static func applyLegibilityShadow(to layer: CALayer) {
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.35
+        layer.shadowRadius = 3
+        layer.shadowOffset = .zero
+    }
+
+    /// The outline of a ring only, so the shadow never darkens the footer text
+    /// inside the band. An explicit path also avoids offscreen shadow passes
+    /// over the live preview.
+    private static func ringPath(in rect: CGRect, cornerRadius: CGFloat, lineWidth: CGFloat) -> CGPath? {
+        guard !rect.isEmpty else { return nil }
+        return UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath.copy(
+            strokingWithWidth: lineWidth,
+            lineCap: .round,
+            lineJoin: .round,
+            miterLimit: 0
+        )
+    }
+
+    /// Four rounded corner brackets that follow the frame's corner radius.
+    static func cornerBracketPath(in rect: CGRect, cornerRadius: CGFloat, armLength: CGFloat) -> CGPath {
+        let path = CGMutablePath()
+        guard rect.width > 0, rect.height > 0 else { return path }
+        let radius = min(cornerRadius, rect.width / 2, rect.height / 2)
+        let arm = max(0, min(armLength, rect.width / 2 - radius, rect.height / 2 - radius))
+        let (minX, minY, maxX, maxY) = (rect.minX, rect.minY, rect.maxX, rect.maxY)
+
+        // Each bracket runs from the vertical arm, around the corner, along the
+        // horizontal arm.
+        path.move(to: CGPoint(x: minX, y: minY + radius + arm))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + radius, y: minY), radius: radius)
+        path.addLine(to: CGPoint(x: minX + radius + arm, y: minY))
+
+        path.move(to: CGPoint(x: maxX - radius - arm, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: minY + radius), radius: radius)
+        path.addLine(to: CGPoint(x: maxX, y: minY + radius + arm))
+
+        path.move(to: CGPoint(x: maxX, y: maxY - radius - arm))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - radius, y: maxY), radius: radius)
+        path.addLine(to: CGPoint(x: maxX - radius - arm, y: maxY))
+
+        path.move(to: CGPoint(x: minX + radius + arm, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - radius), radius: radius)
+        path.addLine(to: CGPoint(x: minX, y: maxY - radius - arm))
+        return path
     }
 
 #if DEBUG
