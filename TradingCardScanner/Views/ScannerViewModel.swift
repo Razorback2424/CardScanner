@@ -2235,16 +2235,24 @@ final class ScannerViewModel: ObservableObject {
         let unresolvedCount = unresolvedScans.filter { sessionUnresolvedIDs.contains($0.id) }.count
         guard addedCount > 0 || unresolvedCount > 0 else { return nil }
 
+        let value = sessionKnownValue
+        return ScanSessionSummary(
+            addedCount: addedCount,
+            knownValue: value.total,
+            unpricedCount: sessionScans.count - value.pricedCount,
+            unresolvedCount: unresolvedCount
+        )
+    }
+
+    /// The value of this visit's adds, from the same per-scan quotes the
+    /// receipts showed. The live session pill and the departure summary share
+    /// it so the number never disagrees between the two.
+    var sessionKnownValue: (total: Money, pricedCount: Int) {
         let prices = sessionScans.compactMap { scan -> Money? in
             guard case let .price(price) = scan.price else { return nil }
             return Money(rounding: price.unitMarketPriceUSD)
         }
-        return ScanSessionSummary(
-            addedCount: addedCount,
-            knownValue: prices.sum(),
-            unpricedCount: sessionScans.count - prices.count,
-            unresolvedCount: unresolvedCount
-        )
+        return (prices.sum(), prices.count)
     }
 
     private func persistUnresolvedScans() {

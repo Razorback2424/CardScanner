@@ -1,15 +1,127 @@
 import SwiftUI
 
+/// One visual language for everything floating on the camera: event color is
+/// reserved for meaning (cyan read, green added, orange needs you), so a glance
+/// at a tint says what happened before any text is read.
+enum ScannerTone {
+    case recognized
+    case added
+    case attention
+    case neutral
+
+    var color: Color {
+        switch self {
+        case .recognized: return .cyan
+        case .added: return .green
+        case .attention: return .orange
+        case .neutral: return .white
+        }
+    }
+}
+
+/// A small tinted disc that anchors a scanner row. Every banner leads with one
+/// at the same size, so receipt, recognition, and problems line up and the
+/// eye finds the state in the same place each time.
+struct ScannerStatusBadge<Content: View>: View {
+    let tone: ScannerTone
+    var size: CGFloat = 32
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(tone.color.opacity(tone == .neutral ? 0.14 : 0.22))
+            Circle()
+                .strokeBorder(tone.color.opacity(tone == .neutral ? 0.18 : 0.4), lineWidth: 1)
+            content()
+                .foregroundStyle(tone.color)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
+    }
+}
+
+extension ScannerStatusBadge where Content == AnyView {
+    init(tone: ScannerTone, systemName: String, size: CGFloat = 32) {
+        self.tone = tone
+        self.size = size
+        self.content = {
+            AnyView(
+                Image(systemName: systemName)
+                    .font(.system(size: size * 0.42, weight: .bold))
+            )
+        }
+    }
+}
+
+/// A quiet, round close control with a full 44 pt target. Dismissing is always
+/// available on a camera question, but never louder than the answers.
+struct ScannerDismissButton: View {
+    let accessibilityLabel: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "xmark")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(.white.opacity(0.85))
+                .frame(width: 28, height: 28)
+                .background(.white.opacity(0.14), in: Circle())
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+    }
+}
+
+/// The printed identifier as a small token, so the number the person can see on
+/// the card reads as the same kind of thing everywhere on the scanner.
+struct ScannerIdentifierChip: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.caption.monospacedDigit().weight(.medium))
+            .foregroundStyle(.white.opacity(0.82))
+            .lineLimit(1)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 2)
+            .background(.white.opacity(0.12), in: Capsule())
+    }
+}
+
+/// The small instruction above a camera question: what you are being asked,
+/// before what about.
+struct ScannerQuestionEyebrow: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.caption2.weight(.bold))
+            .tracking(0.8)
+            .textCase(.uppercase)
+            .foregroundStyle(.white.opacity(0.6))
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
 struct ScanAssistanceView: View {
     let message: String
 
     var body: some View {
-        Label(message, systemImage: "viewfinder")
+        Label {
+            Text(message)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "viewfinder")
+                .foregroundStyle(.white.opacity(0.75))
+        }
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(.white)
-            .padding(.horizontal, 14)
+            .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .appGlass(cornerRadius: 14)
+            .appPillGlass()
             .accessibilityLabel("Scanner guidance: \(message)")
     }
 }
@@ -20,14 +132,14 @@ struct SlabLabelReadingOfferView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "viewfinder")
-                .accessibilityHidden(true)
+            ScannerStatusBadge(tone: .neutral, systemName: "viewfinder", size: 30)
             VStack(alignment: .leading, spacing: 2) {
                 Text(prompt.stage.title)
-                    .font(.caption.weight(.bold))
+                    .font(.subheadline.weight(.semibold))
                 Text(prompt.stage.message)
-                    .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.78))
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.72))
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 4)
             if prompt.stage.offersRawSwitch {
@@ -35,14 +147,16 @@ struct SlabLabelReadingOfferView: View {
                     .font(.caption.weight(.semibold))
                     .frame(minHeight: 44)
                     .buttonStyle(.bordered)
+                    .buttonBorderShape(.capsule)
                     .tint(.white)
                     .accessibilityHint("Changes scanning mode to raw cards.")
             }
         }
         .foregroundStyle(.white)
-        .padding(.horizontal, 12)
+        .padding(.leading, 10)
+        .padding(.trailing, 12)
         .padding(.vertical, 8)
-        .appGlass(cornerRadius: 14)
+        .appGlass(cornerRadius: 20)
         .accessibilityElement(children: .contain)
     }
 }
@@ -54,33 +168,32 @@ struct PendingSlabConversionOfferView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
+            ScannerStatusBadge(tone: .recognized, systemName: "rosette", size: 30)
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Looks like \(offer.gradeDescription) — Save as graded")
-                    .font(.subheadline.weight(.bold))
+                    .font(.subheadline.weight(.semibold))
                     .lineLimit(2)
                 Text(offer.cardName)
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.75))
+                    .foregroundStyle(.white.opacity(0.72))
                     .lineLimit(1)
             }
             Spacer(minLength: 0)
             Button("Convert", action: onConvert)
                 .font(.caption.weight(.semibold))
                 .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
                 .tint(.cyan)
+                .frame(minHeight: 44)
                 .accessibilityHint("Replaces the raw scan with the graded slab entry.")
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.caption.weight(.bold))
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Dismiss graded conversion offer")
+            ScannerDismissButton(accessibilityLabel: "Dismiss graded conversion offer", action: onDismiss)
+                .padding(.trailing, -8)
         }
         .foregroundStyle(.white)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .appGlass(cornerRadius: 14)
+        .padding(.leading, 10)
+        .padding(.trailing, 12)
+        .padding(.vertical, 8)
+        .appGlass(cornerRadius: 20)
         .accessibilityElement(children: .contain)
     }
 }
@@ -173,24 +286,34 @@ struct ScanAcknowledgementCard: View {
     }
 
     var body: some View {
-        HStack(spacing: 11) {
-            Image(systemName: isFailure ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
-                .font(.title3)
-                .foregroundStyle(isFailure ? .orange : .cyan)
-                .accessibilityHidden(true)
+        // Same geometry as the receipt that replaces it, so "recognized" turns
+        // into "added" in place instead of the banner jumping.
+        HStack(alignment: .top, spacing: 12) {
+            Group {
+                if isFailure {
+                    ScannerStatusBadge(tone: .attention, systemName: "exclamationmark")
+                } else {
+                    ScannerStatusBadge(tone: .recognized) {
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(.cyan)
+                            .accessibilityLabel("Saving")
+                    }
+                }
+            }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(isFailure ? "Not added" : "Recognized")
-                    .font(.subheadline.weight(.bold))
+                    .font(.subheadline.weight(.semibold))
                     .accessibilityAddTraits(.isHeader)
                 Text(acknowledgement.subject.displayIdentifier)
                     .font(.caption.monospacedDigit())
-                    .foregroundStyle(.white.opacity(0.76))
+                    .foregroundStyle(.white.opacity(0.7))
                     .lineLimit(1)
                 if let message = acknowledgement.message {
                     Text(message)
                         .font(.caption)
-                        .foregroundStyle(.white.opacity(0.86))
+                        .foregroundStyle(.white.opacity(0.78))
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
@@ -200,22 +323,19 @@ struct ScanAcknowledgementCard: View {
                             .font(.caption.weight(.semibold))
                     }
                     .buttonStyle(.bordered)
+                    .buttonBorderShape(.capsule)
                     .controlSize(.large)
                     .tint(.cyan)
+                    .padding(.top, 2)
                     .accessibilityHint("Adjust the card, then hold it steady for a clearer read.")
                 }
             }
-
-            Spacer(minLength: 8)
-            if !isFailure {
-                ProgressView()
-                    .tint(.cyan)
-                    .accessibilityLabel("Saving")
-            }
+            .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
         }
         .foregroundStyle(.white)
-        .padding(12)
-        .appGlass(cornerRadius: 16)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .appGlass(cornerRadius: 20)
         .accessibilityElement(children: showsRetryAction ? .contain : .combine)
         .accessibilityLabel(
             isFailure
@@ -233,17 +353,23 @@ struct HeldDuplicateOfferView: View {
     let onAddAnother: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Already added")
-                .font(.subheadline.weight(.bold))
-                .accessibilitySortPriority(3)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                ScannerStatusBadge(tone: .added, systemName: "checkmark", size: 30)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Already added")
+                        .font(.subheadline.weight(.semibold))
+                        .accessibilitySortPriority(3)
 
-            Text(offer.cardName + " — " + offer.printedIdentifier)
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.78))
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilitySortPriority(2)
+                    Text(offer.cardName + " — " + offer.printedIdentifier)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilitySortPriority(2)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
 
             Button(action: onAddAnother) {
                 Text("Add another copy")
@@ -251,15 +377,15 @@ struct HeldDuplicateOfferView: View {
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 44)
             }
-            .buttonStyle(.bordered)
-            .tint(.white)
+            .appGlassOptionButton()
+            .foregroundStyle(.white)
             .accessibilityLabel("Add another copy")
             .accessibilityHint("Authorizes one additional copy of this card.")
             .accessibilitySortPriority(1)
         }
         .foregroundStyle(.white)
         .padding(12)
-        .appGlass(cornerRadius: 14)
+        .appGlass(cornerRadius: 20)
         .accessibilityElement(children: .contain)
     }
 }
@@ -273,23 +399,21 @@ struct GradedVariantCorrectionOfferView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Label("Finish not confirmed", systemImage: "wand.and.stars")
-                    .font(.subheadline.weight(.bold))
-                Spacer(minLength: 4)
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.caption.weight(.bold))
-                        .frame(width: 30, height: 30)
+            HStack(alignment: .top, spacing: 12) {
+                ScannerStatusBadge(tone: .attention, systemName: "wand.and.stars", size: 30)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Finish not confirmed")
+                        .font(.subheadline.weight(.semibold))
+                    Text(correction.cardName)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                        .lineLimit(1)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Dismiss finish correction")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                ScannerDismissButton(accessibilityLabel: "Dismiss finish correction", action: onDismiss)
+                    .padding(.trailing, -8)
+                    .padding(.vertical, -6)
             }
-
-            Text(correction.cardName)
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.78))
-                .lineLimit(1)
 
             HStack(spacing: 8) {
                 ForEach(correction.options) { option in
@@ -301,16 +425,16 @@ struct GradedVariantCorrectionOfferView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: 40)
-                    .buttonStyle(.bordered)
-                    .tint(.white)
+                    .frame(minHeight: 44)
+                    .appGlassOptionButton()
+                    .foregroundStyle(.white)
                     .accessibilityLabel("Set \(label) for \(correction.cardName)")
                 }
             }
         }
         .foregroundStyle(.white)
         .padding(12)
-        .appGlass(cornerRadius: 14)
+        .appGlass(cornerRadius: 20)
         .accessibilityElement(children: .contain)
     }
 }
@@ -325,13 +449,17 @@ struct DuplicateConfirmationBar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Another copy?")
-                .font(.title3.bold())
-                .accessibilitySortPriority(3)
+            VStack(alignment: .leading, spacing: 4) {
+                ScannerQuestionEyebrow(text: "Already added this session")
+                    .accessibilityHidden(true)
+                Text("Another copy?")
+                    .font(.title3.bold())
+                    .accessibilitySortPriority(3)
+            }
 
             Text(duplicateDescription)
                 .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.78))
+                .foregroundStyle(.white.opacity(0.75))
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilitySortPriority(2)
 
@@ -343,6 +471,7 @@ struct DuplicateConfirmationBar: View {
                         .frame(minHeight: 48)
                 }
                 .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle(radius: 14))
                 .tint(.orange)
                 .accessibilityLabel("Same card")
                 .accessibilityHint("Dismisses this question without changing your collection.")
@@ -355,6 +484,7 @@ struct DuplicateConfirmationBar: View {
                         .frame(minHeight: 48)
                 }
                 .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: 14))
                 .tint(.white)
                 .accessibilityLabel("Add another copy")
                 .accessibilityHint("Adds one copy to your collection.")
@@ -362,8 +492,8 @@ struct DuplicateConfirmationBar: View {
             }
         }
         .foregroundStyle(.white)
-        .padding(14)
-        .appGlass()
+        .padding(16)
+        .appGlass(cornerRadius: 24)
         .accessibilityElement(children: .contain)
     }
 
@@ -394,34 +524,31 @@ struct VariantChoiceBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: 5) {
+                    ScannerQuestionEyebrow(text: "Which finish is this?")
+                        .accessibilityHidden(true)
                     Text(choice.card.name)
                         .font(.title3.bold())
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text(variantChoiceIdentifier)
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.white.opacity(0.7))
-                    Text(choice.card.setName)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.7))
-                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 8) {
+                        ScannerIdentifierChip(text: variantChoiceIdentifier)
+                        Text(choice.card.setName)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(
-                    choice.duplicateChoiceContext == nil
+                ScannerDismissButton(
+                    accessibilityLabel: choice.duplicateChoiceContext == nil
                         ? "Skip this card"
-                        : "Do not add another copy"
+                        : "Do not add another copy",
+                    action: onDismiss
                 )
+                .padding(.top, -8)
+                .padding(.trailing, -8)
             }
 
             if let missed = choice.lockDidNotApply {
@@ -441,8 +568,8 @@ struct VariantChoiceBar: View {
             options
         }
         .foregroundStyle(.white)
-        .padding(14)
-        .appGlass()
+        .padding(16)
+        .appGlass(cornerRadius: 24)
     }
 
     private var variantChoiceIdentifier: String {
@@ -508,36 +635,25 @@ struct PrintRunChoiceBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: 5) {
+                    ScannerQuestionEyebrow(text: "Which print run is this card?")
                     Text(choice.card.name)
                         .font(.title3.bold())
                         .lineLimit(2)
-                    Text(choice.identifier.scannerDisplayIdentifier(for: choice.card))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.white.opacity(0.7))
+                    HStack(spacing: 8) {
+                        ScannerIdentifierChip(text: choice.identifier.scannerDisplayIdentifier(for: choice.card))
+                        Text(choice.card.setName)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
+                            .lineLimit(2)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(choice.card.setName)
-                    .font(.title3.weight(.semibold))
-                    .multilineTextAlignment(.trailing)
-                    .lineLimit(2)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 30, height: 30)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Skip this card")
+                ScannerDismissButton(accessibilityLabel: "Skip this card", action: onDismiss)
+                    .padding(.top, -8)
+                    .padding(.trailing, -8)
             }
-
-            Text("Which print run is this card?")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.75))
 
             HStack(spacing: 10) {
                 ForEach(choice.options, id: \.self) { option in
@@ -558,8 +674,8 @@ struct PrintRunChoiceBar: View {
             }
         }
         .foregroundStyle(.white)
-        .padding(14)
-        .appGlass()
+        .padding(16)
+        .appGlass(cornerRadius: 24)
     }
 }
 
@@ -590,14 +706,12 @@ struct PrintingChoiceBar: View {
         let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: candidates)
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text(candidates.first?.name ?? "Card")
-                        .font(.headline)
+                        .font(.title3.bold())
                         .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(choice.identifier.displayIdentifier)
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.white.opacity(0.7))
+                    ScannerIdentifierChip(text: choice.identifier.displayIdentifier)
                     if let sharedRelease {
                         Text(sharedRelease)
                             .font(.caption)
@@ -606,28 +720,32 @@ struct PrintingChoiceBar: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Skip this card")
+                ScannerDismissButton(accessibilityLabel: "Skip this card", action: onDismiss)
+                    .padding(.top, -8)
+                    .padding(.trailing, -8)
             }
 
             HStack {
                 Text(candidates.count > 2 ? "Choose a printing · \(candidates.count) options" : "Choose a printing")
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer()
-                Button("Details") { showingDetails = true }
-                    .buttonStyle(.plain)
-                    .frame(minWidth: 44, minHeight: 44)
-                    .accessibilityLabel("Compare printing details")
+                Button {
+                    showingDetails = true
+                } label: {
+                    Label("Details", systemImage: "rectangle.on.rectangle")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(.white.opacity(0.14), in: Capsule())
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Compare printing details")
             }
-            .font(.caption)
-            .foregroundStyle(.white.opacity(0.75))
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white.opacity(0.65))
 
             if requiresEnglish {
                 Toggle("This card is in English", isOn: $englishConfirmed)
@@ -661,8 +779,8 @@ struct PrintingChoiceBar: View {
             }
         }
         .foregroundStyle(.white)
-        .padding(14)
-        .appGlass()
+        .padding(16)
+        .appGlass(cornerRadius: 24)
         .sheet(isPresented: $showingDetails) {
             PrintingChoiceDetails(candidates: candidates, onChoose: { selected in
                 showingDetails = false
@@ -688,8 +806,12 @@ struct PrintingChoiceBar: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 12)
                 .frame(minHeight: 48)
-                .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
-                .contentShape(RoundedRectangle(cornerRadius: 12))
+                .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(.white.opacity(0.16), lineWidth: 1)
+                )
+                .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)
@@ -939,7 +1061,7 @@ struct ScanPriceValue: View {
 
         var font: Font {
             switch self {
-            case .receipt: return .headline.weight(.bold)
+            case .receipt: return .system(.headline, design: .rounded).weight(.bold)
             case .review: return .title2.weight(.bold)
             }
         }
@@ -996,25 +1118,23 @@ struct ScanReceiptCard: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             if dynamicTypeSize.isAccessibilitySize {
                 Button(action: onOpen) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Label {
+                        HStack(spacing: 10) {
+                            addedBadge
                             Text(receipt.name)
+                                .font(.subheadline.weight(.semibold))
                                 .fixedSize(horizontal: false, vertical: true)
-                        } icon: {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
                         }
-                        .font(.subheadline.weight(.semibold))
                         ScanPriceValue(
                             lookup: receipt.price,
                             isGradedPricePending: receipt.isGradedPricePending
                         )
                         Text("\(receipt.identifier) · \(receipt.variantLabel)")
                             .font(.caption.monospacedDigit())
-                            .foregroundStyle(.white.opacity(0.72))
+                            .foregroundStyle(.white.opacity(0.7))
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -1023,17 +1143,15 @@ struct ScanReceiptCard: View {
                 .buttonStyle(.plain)
                 undoButton
             } else {
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 Button(action: onOpen) {
-                    HStack(spacing: 10) {
+                    HStack(spacing: 12) {
                         // No thumbnail. At 40 pt over a live preview it was too
                         // small to identify a card by, and it cost the name the
                         // width that actually confirms the right card was added
-                        // while scanning fast. The recent scans disclosure carries the
+                        // while scanning fast. The recent scans tray carries the
                         // artwork for anyone who wants to look back.
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.subheadline)
-                            .foregroundStyle(.green)
+                        addedBadge
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text(receipt.name)
@@ -1044,7 +1162,7 @@ struct ScanReceiptCard: View {
                                 .minimumScaleFactor(0.85)
                             Text("\(receipt.identifier) · \(receipt.variantLabel)")
                                 .font(.caption.monospacedDigit())
-                                .foregroundStyle(.white.opacity(0.72))
+                                .foregroundStyle(.white.opacity(0.7))
                                 .lineLimit(1)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -1060,6 +1178,9 @@ struct ScanReceiptCard: View {
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                             .layoutPriority(1)
+                            // A graded quote arriving after the add rolls in
+                            // rather than popping.
+                            .contentTransition(.numericText())
                     }
                     .contentShape(Rectangle())
                 }
@@ -1069,35 +1190,55 @@ struct ScanReceiptCard: View {
             }
             }
 
-            VariantProvenanceLabel(
-                finish: receipt.variantLabel,
-                resolution: receipt.resolution,
-                style: .receipt
-            )
+            // Aligned under the name rather than the badge, so the receipt
+            // keeps one clean text edge.
+            VStack(alignment: .leading, spacing: 4) {
+                VariantProvenanceLabel(
+                    finish: receipt.variantLabel,
+                    resolution: receipt.resolution,
+                    style: .receipt
+                )
 
-            // Full width under the row: a treatment warning is about the whole
-            // receipt, and inside the title column it stole the name's width.
-            ForEach(receipt.treatmentDiagnostics) { diagnostic in
-                Label(diagnostic.title, systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.orange)
-                    .lineLimit(2)
-                    .accessibilityValue(diagnostic.detail)
+                // Full width under the row: a treatment warning is about the whole
+                // receipt, and inside the title column it stole the name's width.
+                ForEach(receipt.treatmentDiagnostics) { diagnostic in
+                    Label(diagnostic.title, systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.orange)
+                        .lineLimit(2)
+                        .accessibilityValue(diagnostic.detail)
+                }
             }
+            .padding(.leading, dynamicTypeSize.isAccessibilitySize ? 0 : 44)
         }
         .foregroundStyle(.white)
-        .padding(10)
-        .appGlass(cornerRadius: 16)
+        .padding(.leading, 12)
+        .padding(.trailing, 6)
+        .padding(.vertical, 10)
+        .appGlass(cornerRadius: 20)
     }
 
+    /// Bounces once per new receipt: the "got it" beat while scanning a stack.
+    /// Keyed to the receipt, so a graded price refresh never replays it.
+    private var addedBadge: some View {
+        ScannerStatusBadge(tone: .added, systemName: "checkmark")
+            .symbolEffect(.bounce, value: receipt.id)
+    }
+
+    /// Insurance, not a warning: a quiet round control rather than a red one,
+    /// so routine receipts stay calm while it remains one tap away.
     private var undoButton: some View {
         Button(action: onUndo) {
             Image(systemName: "arrow.uturn.backward")
-                .font(.subheadline.weight(.semibold))
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.9))
+                .frame(width: 36, height: 36)
+                .background(.white.opacity(0.12), in: Circle())
+                .overlay(Circle().strokeBorder(.white.opacity(0.14), lineWidth: 1))
                 .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .background(.red.opacity(0.18), in: Circle())
         .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
         .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
     }
@@ -1113,18 +1254,15 @@ struct RecentScanRail: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
+            HStack(spacing: 10) {
                 ForEach(scans.prefix(5)) { scan in
                     Button {
                         onSelect(scan)
                     } label: {
-                        CardThumbnail(url: scan.thumbnailURL, width: 38)
-                            .overlay(alignment: .bottomTrailing) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(.green, .black)
-                                    .padding(2)
-                            }
+                        // Every card here was added; a per-card checkmark only
+                        // repeated that. The artwork is the content.
+                        CardThumbnail(url: scan.thumbnailURL, width: 44)
+                            .shadow(color: .black.opacity(0.35), radius: 3, y: 1)
                             .overlay(alignment: .topTrailing) {
                                 if scan.id == gradedPriceUpdatedScanID {
                                     Image(systemName: "sparkles")
@@ -1146,11 +1284,10 @@ struct RecentScanRail: View {
                     .transition(.scale(scale: 0.6).combined(with: .opacity))
                 }
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 2)
+            .padding(.vertical, 4)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
-        .appGlass(cornerRadius: 14)
         .accessibilityLabel("Recently scanned cards")
     }
 }
@@ -1169,7 +1306,11 @@ struct CardThumbnail: View {
             }
         }
         .frame(width: width, height: width / 0.716)
-        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: width * 0.1, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: width * 0.1, style: .continuous)
+                .strokeBorder(.white.opacity(0.18), lineWidth: 0.5)
+        )
     }
 }
 
@@ -1179,14 +1320,22 @@ struct ScanNoteView: View {
     let note: ScanNote
 
     var body: some View {
-        Label(note.text, systemImage: note.tone == .problem ? "exclamationmark.triangle.fill" : "info.circle.fill")
+        // Glass with a tinted icon rather than a solid orange slab: a problem
+        // still reads at a glance, without shouting over the card being read.
+        Label {
+            Text(note.text)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: note.tone == .problem ? "exclamationmark.triangle.fill" : "info.circle.fill")
+                .foregroundStyle(note.tone == .problem ? Color.orange : Color.white.opacity(0.75))
+        }
             .font(.footnote.weight(.medium))
             .foregroundStyle(.white)
-            .padding(.horizontal, 13)
+            .padding(.horizontal, 14)
             .padding(.vertical, 9)
-            .background(
-                (note.tone == .problem ? Color.orange.opacity(0.9) : Color.black.opacity(0.66)),
-                in: Capsule()
+            .appPillGlass(
+                tint: note.tone == .problem ? Color.orange.opacity(0.28) : nil,
+                fallbackTintOpacity: 1
             )
     }
 }
@@ -1199,28 +1348,23 @@ struct ScanSessionSummaryBanner: View {
     var body: some View {
         Group {
             if let summary = summaryStore.summary {
-                HStack(spacing: 10) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
+                HStack(spacing: 12) {
+                    ScannerStatusBadge(tone: .added, systemName: "checkmark", size: 30)
                     Text(summary.message)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 4)
-                    Button {
+                    ScannerDismissButton(accessibilityLabel: "Dismiss scan summary") {
                         summaryStore.dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.caption.weight(.bold))
-                            .frame(width: 34, height: 34)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Dismiss scan summary")
+                    .padding(.vertical, -6)
                 }
                 .foregroundStyle(.white)
-                .padding(.horizontal, 13)
-                .padding(.vertical, 10)
-                .appGlass(cornerRadius: 16)
+                .padding(.leading, 10)
+                .padding(.trailing, 4)
+                .padding(.vertical, 8)
+                .appGlass(cornerRadius: 20)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .transition(.move(edge: .top).combined(with: .opacity))
