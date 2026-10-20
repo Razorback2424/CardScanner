@@ -48,6 +48,7 @@ struct PriceFallbackCardInput: Sendable {
     let treatmentIDs: [String]
     let marketVariantID: String?
     let lookupCandidates: [JustTCGBatchLookup]
+    let exactPhysicalProductID: String?
 
     @MainActor
     init(
@@ -68,12 +69,21 @@ struct PriceFallbackCardInput: Sendable {
             ? card.justTCGVariantID
             : nil
 
-        var candidates: [JustTCGBatchLookup] = []
-        if let tcgplayerProductID = card.tcgplayerProductID,
+        let verified = PriceFallbackQuoteResolver.verifiedLookups(catalogID: catalogID ?? printingID, variant: variant)
+        exactPhysicalProductID = verified.compactMap { lookup -> String? in
+            guard case let .tcgplayerID(id) = lookup else { return nil }
+            return id
+        }.first
+        let canUseStored = variant?.id == card.variantID
+            && !(game == .pokemon && ProductFinish.printing(for: variant) == nil)
+            && !PokemonVariantRules.requiresPhysicalReview(cardID: catalogID ?? printingID,
+                variant: variant ?? PhysicalVariant(id: "unknown", label: "Unknown"))
+        var candidates = verified
+        if candidates.isEmpty, canUseStored, let tcgplayerProductID = card.tcgplayerProductID,
            !tcgplayerProductID.isEmpty {
             candidates.append(.tcgplayerID(tcgplayerProductID))
         }
-        if let justTCGCardID = card.justTCGCardID,
+        if candidates.isEmpty, canUseStored, let justTCGCardID = card.justTCGCardID,
            !justTCGCardID.isEmpty {
             candidates.append(.cardID(justTCGCardID))
         }
@@ -167,6 +177,27 @@ final class PriceFallbackQuoteResolver {
     }
 
     func resolve(_ input: PriceFallbackCardInput) async -> PriceFallbackQuoteResolution {
+        if input.game == .pokemon, input.exactPhysicalProductID == nil,
+           ProductFinish.printing(for: input.variant) == nil, let catalogID = input.catalogID {
+            do {
+                let provider = try await TCGdexService().fetchCard(id: catalogID)
+                guard provider.id == catalogID else { return .failed(.notMatched) }
+                let card = IdentifiedCard.pokemon(provider, setCode: "")
+                let quote = CardPricing.price(for: card, variant: input.variant, magicTreatments: [],
+                    pokemonPrintRun: input.pokemonPrintRun)
+                if case .price = quote { return .lookup(quote) }
+                let exact = CardPricing.tcgplayerProductID(for: card, variant: input.variant,
+                    printRun: input.pokemonPrintRun).map(String.init)
+                guard exact != nil else { return .failed(.unsupportedFinish) }
+                return await resolve(game: input.game, printingID: input.printingID, catalogID: catalogID,
+                    name: input.name, setName: input.setName, cardNumber: input.cardNumber, variant: input.variant,
+                    pokemonPrintRun: input.pokemonPrintRun, treatmentIDs: input.treatmentIDs,
+                    lookupCandidates: Self.directLookups(card: card, variant: input.variant, pokemonPrintRun: input.pokemonPrintRun),
+                    exactPhysicalProductID: exact)
+            } catch {
+                return .failed(Task.isCancelled ? .cancelled : .requestFailed)
+            }
+        }
         return await resolve(
             game: input.game,
             printingID: input.printingID,
@@ -178,7 +209,8 @@ final class PriceFallbackQuoteResolver {
             pokemonPrintRun: input.pokemonPrintRun,
             treatmentIDs: input.treatmentIDs,
             marketVariantID: input.marketVariantID,
-            lookupCandidates: input.lookupCandidates
+            lookupCandidates: input.lookupCandidates,
+            exactPhysicalProductID: input.exactPhysicalProductID
         )
     }
 
@@ -198,6 +230,12 @@ final class PriceFallbackQuoteResolver {
     ) async -> PriceFallbackQuoteResolution {
         // This free exact-product path is independent of the paid vendor setting/key.
         guard gameRegistry.supports(game, .pricing) else { return .failed(.unsupportedGame) }
+        if game == .pokemon, let variant {
+            guard !PokemonVariantRules.requiresPhysicalReview(cardID: catalogID ?? printingID, variant: variant),
+                  ProductFinish.printing(for: variant) != nil || exactPhysicalProductID != nil else {
+                return .failed(.unsupportedFinish)
+            }
+        }
         let bulkQuote: PriceLookup?
         var bulkFailed = false
         do {
@@ -258,9 +296,9 @@ final class PriceFallbackQuoteResolver {
             // A collection record's resolved variant is the same exact
             // printing-and-finish identity as ProductIdentity's cache. Either
             // one takes precedence over a stamped mapping or a text search.
-            marketVariantID: marketVariantID
+            marketVariantID: exactPhysicalProductID != nil ? nil : (marketVariantID
                 ?? recordedVariantID
-                ?? identities.cachedVariantID(forKey: key),
+                ?? identities.cachedVariantID(forKey: key)),
             lookupCandidates: lookupCandidates,
             currentAmount: nil,
             lastCheckedAt: nil,
@@ -351,7 +389,12 @@ final class PriceFallbackQuoteResolver {
            let tcgplayerID = magic.tcgplayerID {
             lookups.append(.tcgplayerID(String(tcgplayerID)))
         }
-        return lookups
+        let products = Set(lookups.compactMap { lookup -> String? in
+            guard case let .tcgplayerID(id) = lookup else { return nil }
+            return id
+        })
+        var seen = Set<JustTCGBatchLookup>()
+        return products.count > 1 ? [] : lookups.filter { seen.insert($0).inserted }
     }
 
     nonisolated static func verifiedLookups(

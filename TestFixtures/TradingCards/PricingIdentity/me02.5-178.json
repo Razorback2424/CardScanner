@@ -1,0 +1,177 @@
+{
+  "id": "me02.5-178",
+  "localId": "178",
+  "name": "Terapagos",
+  "set": {
+    "cardCount": {
+      "official": 217,
+      "total": 295
+    },
+    "id": "me02.5",
+    "logo": "https://assets.tcgdex.net/en/me/me02.5/logo",
+    "name": "Ascended Heroes",
+    "symbol": "https://assets.tcgdex.net/univ/me/me02.5/symbol"
+  },
+  "variants": {
+    "firstEdition": false,
+    "holo": true,
+    "normal": false,
+    "reverse": true,
+    "wPromo": false
+  },
+  "variants_detailed": [
+    {
+      "type": "holo",
+      "size": "standard",
+      "thirdParty": {
+        "cardmarket": 869789,
+        "tcgplayer": 675990
+      },
+      "variantId": "jr7oetx1mqug9",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.405Z",
+          "unit": "EUR",
+          "idProduct": 869789,
+          "avg": 0.06,
+          "low": 0.02,
+          "trend": 0.08,
+          "avg1": 0.18,
+          "avg7": 0.07,
+          "avg30": 0.06,
+          "avg-holo": null,
+          "low-holo": null,
+          "trend-holo": 0,
+          "avg1-holo": null,
+          "avg7-holo": null,
+          "avg30-holo": null
+        },
+        "tcgplayer": {
+          "unit": "USD",
+          "updated": "2026-10-14T22:55:13.436Z",
+          "holofoil": {
+            "productId": 675990,
+            "lowPrice": 0.01,
+            "midPrice": 0.2,
+            "highPrice": 19.8,
+            "marketPrice": 0.21,
+            "directLowPrice": 0.1
+          }
+        }
+      }
+    },
+    {
+      "type": "reverse",
+      "size": "standard",
+      "foil": "loveball",
+      "thirdParty": {
+        "cardmarket": 870414,
+        "tcgplayer": 676991
+      },
+      "variantId": "334f6ffhbf3bxitz7va48fs9a",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.405Z",
+          "unit": "EUR",
+          "idProduct": 870414,
+          "avg": null,
+          "low": 0.02,
+          "trend": 0.13,
+          "avg1": 0.11,
+          "avg7": 0.13,
+          "avg30": 0.13,
+          "avg-holo": 0.11,
+          "low-holo": 0.02,
+          "trend-holo": 0.11,
+          "avg1-holo": 0.15,
+          "avg7-holo": 0.13,
+          "avg30-holo": 0.11
+        },
+        "tcgplayer": {
+          "unit": "USD",
+          "updated": "2026-10-14T22:55:13.436Z",
+          "reverse-holofoil": {
+            "productId": 676991,
+            "lowPrice": 0.04,
+            "midPrice": 0.25,
+            "highPrice": 19.8,
+            "marketPrice": 0.24,
+            "directLowPrice": 0.2
+          }
+        }
+      }
+    },
+    {
+      "type": "reverse",
+      "size": "standard",
+      "foil": "energy",
+      "thirdParty": {
+        "cardmarket": 870413,
+        "tcgplayer": 677131
+      },
+      "variantId": "3wehmjjju11cdaad92gj82f",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.405Z",
+          "unit": "EUR",
+          "idProduct": 870413,
+          "avg": null,
+          "low": 0.02,
+          "trend": 0.72,
+          "avg1": 0.72,
+          "avg7": 0.71,
+          "avg30": 0.71,
+          "avg-holo": 0.28,
+          "low-holo": 0.02,
+          "trend-holo": 0.4,
+          "avg1-holo": 0.1,
+          "avg7-holo": 0.28,
+          "avg30-holo": 0.29
+        },
+        "tcgplayer": {
+          "unit": "USD",
+          "updated": "2026-10-14T22:55:13.436Z",
+          "reverse-holofoil": {
+            "productId": 677131,
+            "lowPrice": 0.15,
+            "midPrice": 0.31,
+            "highPrice": 19.8,
+            "marketPrice": 0.31,
+            "directLowPrice": 0.2
+          }
+        }
+      }
+    }
+  ],
+  "pricing": {
+    "cardmarket": {
+      "updated": "2026-10-19T22:54:33.405Z",
+      "unit": "EUR",
+      "idProduct": 869789,
+      "avg": 0.06,
+      "low": 0.02,
+      "trend": 0.08,
+      "avg1": 0.18,
+      "avg7": 0.07,
+      "avg30": 0.06,
+      "avg-holo": null,
+      "low-holo": null,
+      "trend-holo": 0,
+      "avg1-holo": null,
+      "avg7-holo": null,
+      "avg30-holo": null
+    },
+    "tcgplayer": {
+      "unit": "USD",
+      "updated": "2026-10-14T22:55:13.436Z",
+      "holofoil": {
+        "productId": 675990,
+        "lowPrice": 0.01,
+        "midPrice": 0.2,
+        "highPrice": 19.8,
+        "marketPrice": 0.21,
+        "directLowPrice": 0.1
+      }
+    }
+  }
+}

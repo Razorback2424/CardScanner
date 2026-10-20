@@ -125,18 +125,15 @@ enum CardPricing {
         for card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?
     ) -> Int? {
         guard case let .pokemon(pokemon, _) = card.legacyIdentity, let variant,
-              printRun == nil || printRun == .unlimited else { return nil }
-        let detailed = (pokemon.variantsDetailed ?? []).filter {
-            guard $0.isStandardEnglish, !$0.isFirstEdition else { return false }
-            if PokemonCatalogStampVariant.decode(variant.id) != nil {
-                return $0.stampedPhysicalVariant?.id == variant.id
-            }
-            return $0.physicalVariant == variant && $0.genericStamps.isEmpty
-                && ($0.subtype == nil || $0.subtype?.lowercased() == "unlimited")
+              printRun != .shadowless else { return nil }
+        guard !PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) else { return nil }
+        let detailed = exactDetailedVariants(on: pokemon, variant: variant, printRun: printRun)
+        let products = detailed.reduce(into: Set<Int>()) { $0.formUnion(productIDs(in: $1)) }
+        if products.count == 1, detailed.allSatisfy({ productIDs(in: $0) == products }) {
+            return products.first
         }
-        let products = Set(detailed.compactMap { $0.thirdParty?.tcgplayer }.filter { $0 > 0 })
-        if products.count == 1 { return products.first }
-        guard detailed.isEmpty, let listing = tcgplayerListing(for: variant) else { return nil }
+        guard detailed.isEmpty, printRun != .firstEdition,
+              let listing = tcgplayerListing(for: variant) else { return nil }
         let pricing = pokemon.pricing?.tcgplayer
         let point: TCGPlayerPricePoint?
         switch listing {
@@ -146,6 +143,70 @@ enum CardPricing {
         default: point = nil
         }
         return point?.productID.flatMap { $0 > 0 ? $0 : nil }
+    }
+
+    /// Shared by quote and product extraction. Provider variantId is scoped to
+    /// the card and is never a product binding.
+    private static func exactDetailedVariants(
+        on card: TCGdexCard, variant: PhysicalVariant, printRun: PokemonPrintRun?
+    ) -> [TCGdexDetailedVariant] {
+        (card.variantsDetailed ?? []).filter {
+            guard $0.isStandardEnglish else { return false }
+            if printRun == .firstEdition {
+                return $0.isFirstEdition && $0.genericStamps.isEmpty
+                    && (variant == .firstEdition || $0.physicalVariant == variant)
+            }
+            guard printRun != .shadowless, !$0.isFirstEdition,
+                  $0.subtype == nil || $0.subtype?.lowercased() == "unlimited" else { return false }
+            if PokemonCatalogStampVariant.decode(variant.id) != nil {
+                return $0.stampedPhysicalVariant?.id == variant.id
+            }
+            let reviewedAnniversary = $0.genericStamps.map { $0.lowercased() } == ["30th-anniversary"]
+                && PokemonTCGCSVMapping.byCardID[card.id]?.setID == card.set.id
+            return $0.physicalVariant == variant && ($0.genericStamps.isEmpty || reviewedAnniversary)
+        }
+    }
+
+    private static func unambiguousPrice(
+        from details: [TCGdexDetailedVariant], at date: Date
+    ) -> NormalizedPrice? {
+        let products = details.reduce(into: Set<Int>()) { $0.formUnion(productIDs(in: $1)) }
+        guard products.count <= 1 else { return nil }
+        let quotes = details.compactMap { price(from: $0, at: date) }
+        guard quotes.count == details.count, let quote = quotes.first,
+              quotes.allSatisfy({ $0.unitMarketPriceUSD == quote.unitMarketPriceUSD
+                  && $0.currencyCode == quote.currencyCode }) else { return nil }
+        // Equivalent duplicate quotes have deterministic provenance. Distinct
+        // products, amounts or missing quotes above remain unresolved.
+        return quotes.sorted { $0.sourceVariantID < $1.sourceVariantID }.first
+    }
+
+    private static func productIDs(in detail: TCGdexDetailedVariant) -> Set<Int> {
+        let pricing = detail.pricing?.tcgplayer
+        return Set([detail.thirdParty?.tcgplayer, pricing?.normal?.productID,
+            pricing?.holofoil?.productID, pricing?.holo?.productID,
+            pricing?.reverseHolofoil?.productID, pricing?.reverse?.productID]
+            .compactMap { $0 }.filter { $0 > 0 })
+    }
+
+    /// A missing detailed quote may use the flat listing only when both its
+    /// product and its finish agree. Product equality alone does not prove foil.
+    private static func verifiedFlatPrice(
+        for details: [TCGdexDetailedVariant], on card: TCGdexCard, at date: Date
+    ) -> NormalizedPrice? {
+        guard details.count == 1, let detail = details.first,
+              productIDs(in: detail).count == 1, let product = productIDs(in: detail).first,
+              let listing = detail.preferredListing, let pricing = card.pricing?.tcgplayer else { return nil }
+        let point: TCGPlayerPricePoint?
+        switch listing {
+        case "normal": point = pricing.normal
+        case "holofoil": point = pricing.holofoil ?? pricing.holo
+        case "reverse-holofoil": point = pricing.reverseHolofoil ?? pricing.reverse
+        default: point = nil
+        }
+        guard point?.productID == product, let amount = marketPrice(from: pricing, listing: listing) else { return nil }
+        return .init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: listing, sourceUpdatedAt: pricing.updatedAt, fetchedAt: date)
     }
 
     // MARK: - Lookups
@@ -183,11 +244,8 @@ enum CardPricing {
         case let .pokemon(pokemon, _):
             if pokemonPrintRun == .firstEdition {
                 guard let variant,
-                      let detailed = pokemon.variantsDetailed?.first(where: {
-                    $0.isStandardEnglish && $0.isFirstEdition && $0.genericStamps.isEmpty
-                        && (variant == .firstEdition || $0.physicalVariant == variant)
-                }),
-                      let resolved = price(from: detailed, at: fetchedAt) else {
+                      let resolved = unambiguousPrice(from: exactDetailedVariants(
+                        on: pokemon, variant: variant, printRun: pokemonPrintRun), at: fetchedAt) else {
                     return .unavailable(hasProviderPricingEvidence(on: pokemon) ? .tcgplayer : nil)
                 }
                 return .price(resolved)
@@ -201,21 +259,20 @@ enum CardPricing {
             // Per-object pricing first. It is the only representation that can
             // tell a Poké Ball copy from a Master Ball one, so when TCGdex
             // publishes it, it is strictly better evidence than the flat object.
-            let detailed: TCGdexDetailedVariant?
-            if pokemonPrintRun == .unlimited {
-                // A stamped First Edition or Shadowless record must never
-                // answer an Unlimited lookup, regardless of provider order.
-                detailed = pokemon.variantsDetailed?.first {
-                    variant != nil && $0.isStandardEnglish && $0.physicalVariant == variant
-                        && !$0.isFirstEdition && $0.genericStamps.isEmpty
-                        && ($0.subtype == nil || $0.subtype?.lowercased() == "unlimited")
+            let detailed = variant.map {
+                exactDetailedVariants(on: pokemon, variant: $0, printRun: pokemonPrintRun)
+            } ?? []
+            if !detailed.isEmpty {
+                guard let resolved = unambiguousPrice(from: detailed, at: fetchedAt)
+                    ?? verifiedFlatPrice(for: detailed, on: pokemon, at: fetchedAt) else {
+                    return .unavailable(.tcgplayer)
                 }
-            } else {
-                detailed = variant.flatMap { pokemon.detailedVariant(for: $0) }
-            }
-            if let detailed,
-               let resolved = price(from: detailed, at: fetchedAt) {
                 return .price(resolved)
+            }
+
+            // Reviewed catalog ambiguity cannot be repaired by a flat listing.
+            if let variant, PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) {
+                return .unavailable(.tcgplayer)
             }
 
             guard let tcg = pokemon.pricing?.tcgplayer else {

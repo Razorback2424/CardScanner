@@ -1,0 +1,103 @@
+{
+  "id": "mep-031",
+  "localId": "031",
+  "name": "N's Zekrom",
+  "set": {
+    "cardCount": {
+      "official": 0,
+      "total": 89
+    },
+    "id": "mep",
+    "name": "MEP Black Star Promos"
+  },
+  "variants": {
+    "firstEdition": false,
+    "holo": true,
+    "normal": false,
+    "reverse": false,
+    "wPromo": false
+  },
+  "variants_detailed": [
+    {
+      "type": "holo",
+      "size": "standard",
+      "thirdParty": {
+        "cardmarket": 873702,
+        "tcgplayer": 680480
+      },
+      "variantId": "jr7oetx1mqug9",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.405Z",
+          "unit": "EUR",
+          "idProduct": 873702,
+          "avg": 7.63,
+          "low": 2.8,
+          "trend": 7.28,
+          "avg1": 8.59,
+          "avg7": 7.52,
+          "avg30": 7.52,
+          "avg-holo": null,
+          "low-holo": null,
+          "trend-holo": 0,
+          "avg1-holo": null,
+          "avg7-holo": null,
+          "avg30-holo": null
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "type": "holo",
+      "size": "standard",
+      "stamp": [
+        "pokemon-center"
+      ],
+      "thirdParty": {
+        "cardmarket": 873704,
+        "tcgplayer": 680481
+      },
+      "variantId": "23hmnvtwdrrnjw8wxr5005pugcpk",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.405Z",
+          "unit": "EUR",
+          "idProduct": 873704,
+          "avg": 38.53,
+          "low": 24,
+          "trend": 44.75,
+          "avg1": 27,
+          "avg7": 40.7,
+          "avg30": 36.58,
+          "avg-holo": null,
+          "low-holo": null,
+          "trend-holo": 0,
+          "avg1-holo": null,
+          "avg7-holo": null,
+          "avg30-holo": null
+        },
+        "tcgplayer": null
+      }
+    }
+  ],
+  "pricing": {
+    "cardmarket": {
+      "updated": "2026-10-19T22:54:33.405Z",
+      "unit": "EUR",
+      "idProduct": 873702,
+      "avg": 7.63,
+      "low": 2.8,
+      "trend": 7.28,
+      "avg1": 8.59,
+      "avg7": 7.52,
+      "avg30": 7.52,
+      "avg-holo": null,
+      "low-holo": null,
+      "trend-holo": 0,
+      "avg1-holo": null,
+      "avg7-holo": null,
+      "avg30-holo": null
+    },
+    "tcgplayer": null
+  }
+}

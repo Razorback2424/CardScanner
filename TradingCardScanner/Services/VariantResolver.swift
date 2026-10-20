@@ -260,6 +260,24 @@ struct PokemonVariantRule: Equatable, Sendable {
 ///
 ///     TCGdex card + our set-specific variant metadata = possible physical variants
 enum PokemonVariantRules {
+    /// Reviewed public TCGdex objects (2026-10-20). Broad booleans do not
+    /// establish a plain reverse or a promotional stamp on these identities.
+    /// This is checklist evidence, not a claim that an unlisted object cannot exist.
+    static func reviewedVariants(cardID: String) -> [PhysicalVariant]? {
+        switch cardID {
+        case "me02.5-155":
+            return [.holo, .pokeBall, .pokemonFoilPattern("energy")] + [
+                PokemonCatalogStampVariant.make(base: .normal, stamps: ["player-rewards-program"]),
+                PokemonCatalogStampVariant.make(base: .pokemonFoilPattern("cosmos"), stamps: ["player-rewards-program"])
+            ].compactMap { $0 }
+        case "me02.5-178": return [.holo, .loveBall, .pokemonFoilPattern("energy")]
+        default: return nil
+        }
+    }
+
+    static func requiresPhysicalReview(cardID: String, variant: PhysicalVariant) -> Bool {
+        reviewedVariants(cardID: cardID).map { !$0.contains(variant) } ?? false
+    }
     /// Exact rows from the retained provider-explicit eligibility table, pinned to
     /// tcgdex/cards-database 99c994747cf7519a3e51166cc932de79a88bd4b3.
     /// Trainers and ex cards cannot inherit both patterns merely by having reverse.
@@ -353,6 +371,9 @@ enum PokemonVariantRules {
         }
 
         var variants = evidence.catalogVariants
+        if let reviewed = reviewedVariants(cardID: evidence.setID + "-" + evidence.cardNumber) {
+            variants = reviewed
+        }
         var applied = false
 
         for rule in rules where rule.setIDs.contains(evidence.setID) {

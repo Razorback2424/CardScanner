@@ -1555,6 +1555,46 @@ actor PokemonChecklistStore {
 /// Release tooling calls this from a test so the generator uses exactly the
 /// same builder as the app. It is excluded from production builds.
 enum PokemonChecklistSnapshotGenerator {
+    /// Offline, bounded regeneration for reviewed card evidence. Retains the
+    /// original provider fingerprint (the upstream input has not been crawled)
+    /// and republishes only affected set resources through the normal writer.
+    static func rebuildReviewedCards(root: URL, cards: [TCGdexCard]) async throws {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let manifest = try decoder.decode(PokemonChecklistSnapshotManifest.self,
+            from: Data(contentsOf: root.appendingPathComponent("manifest.json")))
+        var built: [PokemonMasterSetChecklistBuilder.BuiltSet] = []
+        for entry in manifest.entries where cards.contains(where: { $0.set.id == entry.providerID }) {
+            let old = try decoder.decode([CatalogCardSummary].self,
+                from: Data(contentsOf: root.appendingPathComponent(entry.resource)))
+            var summaries = old
+            for card in cards where card.set.id == entry.providerID {
+                guard let base = old.first(where: { $0.providerID == card.id }) else { continue }
+                summaries.removeAll { $0.providerID == card.id }
+                summaries += PokemonMasterSetDefinition.requiredVariants(for: card).map { slot in
+                    var summary = base
+                    summary.masterSetVariant = slot.variant
+                    summary.isExpandedMasterSetVariant = slot.isExpanded
+                    summary.isSoleSlotForCard = slot.isSole
+                    return summary
+                }
+            }
+            summaries.sort {
+                let order = CollectorNumber.compare($0.collectorNumber, $1.collectorNumber)
+                return order == .orderedSame
+                    ? ($0.masterSetVariant?.id ?? "") < ($1.masterSetVariant?.id ?? "")
+                    : order == .orderedAscending
+            }
+            built.append(.init(set: entry.set, cards: summaries,
+                providerFingerprint: entry.providerFingerprint ?? entry.providerProbeFingerprint,
+                providerProbeFingerprint: entry.providerProbeFingerprint, officialCount: entry.officialCount,
+                standardSlotCount: summaries.filter { !$0.isExpandedMasterSetVariant }.count,
+                expandedSlotCount: summaries.count))
+        }
+        guard !built.isEmpty else { throw PokemonChecklistError.malformedSnapshot }
+        try await PokemonChecklistStore(root: root, bundle: nil).publish(.from(builtSets: built))
+    }
+
     static func generate(
         transport: any PokemonBrowseTransport,
         outputDirectory: URL,

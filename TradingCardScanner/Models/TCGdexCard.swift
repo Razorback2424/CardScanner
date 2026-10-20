@@ -85,6 +85,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// The supplemental rules layer may still widen this for sets whose parallel
     /// patterns TCGdex does not model at all; no *rule* is applied here.
     var catalogVariants: [PhysicalVariant] {
+        if let reviewed = PokemonVariantRules.reviewedVariants(cardID: id) { return reviewed }
         // Reviewed exact products in both 30th sets are Holofoil. The upstream
         // generated Normal flag is incorrect; unrelated/unknown cards keep it.
         if PokemonTCGCSVMapping.byCardID[id]?.setID == set.id { return [.holo] }

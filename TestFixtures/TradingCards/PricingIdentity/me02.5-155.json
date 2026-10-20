@@ -1,0 +1,242 @@
+{
+  "id": "me02.5-155",
+  "localId": "155",
+  "name": "N's Zekrom",
+  "set": {
+    "cardCount": {
+      "official": 217,
+      "total": 295
+    },
+    "id": "me02.5",
+    "logo": "https://assets.tcgdex.net/en/me/me02.5/logo",
+    "name": "Ascended Heroes",
+    "symbol": "https://assets.tcgdex.net/univ/me/me02.5/symbol"
+  },
+  "variants": {
+    "firstEdition": false,
+    "holo": true,
+    "normal": true,
+    "reverse": true,
+    "wPromo": false
+  },
+  "variants_detailed": [
+    {
+      "type": "holo",
+      "size": "standard",
+      "thirdParty": {
+        "cardmarket": 869766,
+        "tcgplayer": 675967
+      },
+      "variantId": "jr7oetx1mqug9",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.390Z",
+          "unit": "EUR",
+          "idProduct": 869766,
+          "avg": 0.13,
+          "low": 0.02,
+          "trend": 0.18,
+          "avg1": 0.1,
+          "avg7": 0.16,
+          "avg30": 0.14,
+          "avg-holo": null,
+          "low-holo": null,
+          "trend-holo": 0,
+          "avg1-holo": null,
+          "avg7-holo": null,
+          "avg30-holo": null
+        },
+        "tcgplayer": {
+          "unit": "USD",
+          "updated": "2026-10-14T22:55:13.436Z",
+          "holofoil": {
+            "productId": 675967,
+            "lowPrice": 0.05,
+            "midPrice": 0.3,
+            "highPrice": 19.8,
+            "marketPrice": 0.31,
+            "directLowPrice": 0.2
+          }
+        }
+      }
+    },
+    {
+      "type": "normal",
+      "size": "standard",
+      "stamp": [
+        "player-rewards-program"
+      ],
+      "thirdParty": {
+        "cardmarket": 894179,
+        "tcgplayer": 704446
+      },
+      "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.390Z",
+          "unit": "EUR",
+          "idProduct": 894179,
+          "avg": 1.54,
+          "low": 0.75,
+          "trend": 1.09,
+          "avg1": 0.88,
+          "avg7": 1.19,
+          "avg30": 1.83,
+          "avg-holo": null,
+          "low-holo": null,
+          "trend-holo": 0,
+          "avg1-holo": null,
+          "avg7-holo": null,
+          "avg30-holo": null
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "type": "holo",
+      "size": "standard",
+      "stamp": [
+        "player-rewards-program"
+      ],
+      "foil": "cosmos",
+      "thirdParty": {
+        "cardmarket": 894178,
+        "tcgplayer": 704447
+      },
+      "variantId": "6x9wic2vzb5bfzn0gz10e76xy60nqt2vwbzzupgwp6",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.390Z",
+          "unit": "EUR",
+          "idProduct": 894178,
+          "avg": 0.27,
+          "low": 0.02,
+          "trend": 0.25,
+          "avg1": 0.3,
+          "avg7": 0.28,
+          "avg30": 0.37,
+          "avg-holo": null,
+          "low-holo": null,
+          "trend-holo": 0,
+          "avg1-holo": null,
+          "avg7-holo": null,
+          "avg30-holo": null
+        },
+        "tcgplayer": null
+      }
+    },
+    {
+      "type": "reverse",
+      "size": "standard",
+      "foil": "pokeball",
+      "thirdParty": {
+        "cardmarket": 870378,
+        "tcgplayer": 676973
+      },
+      "variantId": "3739bbtj3i910y5ynn9xc6ryf",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.390Z",
+          "unit": "EUR",
+          "idProduct": 870378,
+          "avg": null,
+          "low": 0.02,
+          "trend": 0.21,
+          "avg1": 0.22,
+          "avg7": 0.21,
+          "avg30": 0.21,
+          "avg-holo": 0.31,
+          "low-holo": 0.02,
+          "trend-holo": 0.22,
+          "avg1-holo": 0.65,
+          "avg7-holo": 0.23,
+          "avg30-holo": 0.29
+        },
+        "tcgplayer": {
+          "unit": "USD",
+          "updated": "2026-10-14T22:55:13.436Z",
+          "reverse-holofoil": {
+            "productId": 676973,
+            "lowPrice": 0.1,
+            "midPrice": 0.4,
+            "highPrice": 19.8,
+            "marketPrice": 0.32,
+            "directLowPrice": 0.2
+          }
+        }
+      }
+    },
+    {
+      "type": "reverse",
+      "size": "standard",
+      "foil": "energy",
+      "thirdParty": {
+        "cardmarket": 870377,
+        "tcgplayer": 677113
+      },
+      "variantId": "3wehmjjju11cdaad92gj82f",
+      "pricing": {
+        "cardmarket": {
+          "updated": "2026-10-19T22:54:33.390Z",
+          "unit": "EUR",
+          "idProduct": 870377,
+          "avg": null,
+          "low": 0.02,
+          "trend": 0,
+          "avg1": null,
+          "avg7": null,
+          "avg30": null,
+          "avg-holo": 0.56,
+          "low-holo": 0.02,
+          "trend-holo": 0.55,
+          "avg1-holo": 0.34,
+          "avg7-holo": 0.52,
+          "avg30-holo": 0.54
+        },
+        "tcgplayer": {
+          "unit": "USD",
+          "updated": "2026-10-14T22:55:13.436Z",
+          "reverse-holofoil": {
+            "productId": 677113,
+            "lowPrice": 0.19,
+            "midPrice": 0.47,
+            "highPrice": 37.02,
+            "marketPrice": 0.45,
+            "directLowPrice": null
+          }
+        }
+      }
+    }
+  ],
+  "pricing": {
+    "cardmarket": {
+      "updated": "2026-10-19T22:54:33.390Z",
+      "unit": "EUR",
+      "idProduct": 869766,
+      "avg": 0.13,
+      "low": 0.02,
+      "trend": 0.18,
+      "avg1": 0.1,
+      "avg7": 0.16,
+      "avg30": 0.14,
+      "avg-holo": null,
+      "low-holo": null,
+      "trend-holo": 0,
+      "avg1-holo": null,
+      "avg7-holo": null,
+      "avg30-holo": null
+    },
+    "tcgplayer": {
+      "unit": "USD",
+      "updated": "2026-10-14T22:55:13.436Z",
+      "holofoil": {
+        "productId": 675967,
+        "lowPrice": 0.05,
+        "midPrice": 0.3,
+        "highPrice": 19.8,
+        "marketPrice": 0.31,
+        "directLowPrice": 0.2
+      }
+    }
+  }
+}
