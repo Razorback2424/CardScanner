@@ -30,6 +30,7 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
     private let encode: @Sendable (Envelope) throws -> Data
     private let sameRevisionContent: @Sendable (StoredRelease, StoredRelease) -> Bool
     private let validateTransition: @Sendable (StoredRelease?, StoredRelease) throws -> Void
+    private let validateRecoveryTransition: @Sendable (StoredRelease?, StoredRelease) throws -> Void
     private let readData: @Sendable (URL) throws -> Data
     private let writeData: @Sendable (Data, URL) throws -> Void
     private var current: StoredRelease?
@@ -46,6 +47,7 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
          encode: @escaping @Sendable (Envelope) throws -> Data,
          sameRevisionContent: @escaping @Sendable (StoredRelease, StoredRelease) -> Bool = { $0.envelope == $1.envelope },
          validateTransition: @escaping @Sendable (StoredRelease?, StoredRelease) throws -> Void = { _, _ in },
+         validateRecoveryTransition: (@Sendable (StoredRelease?, StoredRelease) throws -> Void)? = nil,
          readData: @escaping @Sendable (URL) throws -> Data = { try Data(contentsOf: $0) },
          writeData: @escaping @Sendable (Data, URL) throws -> Void = { try $0.write(to: $1, options: .atomic) }) {
         self.root = root; self.currentName = currentName; self.previousName = previousName
@@ -55,6 +57,7 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
         self.fallback = fallback; self.revision = revision; self.encode = encode
         self.sameRevisionContent = sameRevisionContent
         self.validateTransition = validateTransition; self.readData = readData; self.writeData = writeData
+        self.validateRecoveryTransition = validateRecoveryTransition ?? validateTransition
     }
 
     var activeRelease: StoredRelease? { current ?? previous ?? fallback }
@@ -87,7 +90,7 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
                         guard nextRevision >= priorRevision else { throw SignedCatalogStoreError.revisionRollback }
                         if nextRevision == priorRevision {
                             guard sameRevisionContent(loaded, prior) else { throw SignedCatalogStoreError.revisionCollision }
-                        } else { try validateTransition(prior, loaded) }
+                        } else { try validateRecoveryTransition(prior, loaded) }
                     }
                     return true
                 } catch { rejectedSlot(url(slot).lastPathComponent); return false }

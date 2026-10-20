@@ -11,13 +11,15 @@ public struct OnePieceCatalogValidationError: Error, Sendable {
 
 public enum OnePieceCatalogCandidateValidator {
     public static func validate(_ release: OnePieceCatalogRelease,
-                                previous: OnePieceCatalogRelease? = nil) throws {
-        let issues = issues(in: release, previous: previous)
+                                previous: OnePieceCatalogRelease? = nil,
+                                allowingRetainedAliasChains: Bool = false) throws {
+        let issues = issues(in: release, previous: previous, allowingRetainedAliasChains: allowingRetainedAliasChains)
         if !issues.isEmpty { throw OnePieceCatalogValidationError(issues: issues) }
     }
 
     public static func issues(in release: OnePieceCatalogRelease,
-                              previous: OnePieceCatalogRelease? = nil) -> [OnePieceCatalogValidationIssue] {
+                              previous: OnePieceCatalogRelease? = nil,
+                              allowingRetainedAliasChains: Bool = false) -> [OnePieceCatalogValidationIssue] {
         var issues: [OnePieceCatalogValidationIssue] = []
         func fail(_ code: String, _ context: String) { issues.append(.init(code: code, context: context)) }
         func unique<T: Hashable>(_ values: [T], _ code: String) {
@@ -312,6 +314,21 @@ public enum OnePieceCatalogCandidateValidator {
             fail("incompleteSourceInventory", "automatic authority requires complete discovery inventories")
         }
         if let previous {
+            // Recovery can span revisions no longer present in the two slots.
+            // Only edges retaining this exact alias can bridge that gap; all
+            // correction review, permanent identity and history checks still run.
+            func retainedAliasPath(_ alias: OnePieceSourceAlias, from: UUID, to: UUID) -> Bool {
+                var pending = [from], visited: Set<UUID> = []
+                while let id = pending.popLast() {
+                    guard visited.insert(id).inserted else { continue }
+                    for correction in state.corrections where correction.movedAliases.contains(alias)
+                        && correction.fromPrintingIDs.contains(id) {
+                        if correction.toPrintingIDs.contains(to) { return true }
+                        pending.append(contentsOf: correction.toPrintingIDs)
+                    }
+                }
+                return false
+            }
             if release.revision <= previous.revision { fail("nonMonotonicRevision", String(release.revision)) }
             for old in previous.registry.printings {
                 guard let current = printings[old.id] else { fail("removedPermanentPrinting", old.id.uuidString); continue }
@@ -322,7 +339,8 @@ public enum OnePieceCatalogCandidateValidator {
                 for alias in old.sourceAliases where aliases[alias] != old.id {
                     guard let newID = aliases[alias], state.corrections.contains(where: {
                         $0.fromPrintingIDs.contains(old.id) && $0.toPrintingIDs.contains(newID) && $0.movedAliases.contains(alias)
-                    }) else { fail("unreviewedAliasChange", alias.sourceID); continue }
+                    }) || (allowingRetainedAliasChains && retainedAliasPath(alias, from: old.id, to: newID))
+                    else { fail("unreviewedAliasChange", alias.sourceID); continue }
                 }
             }
             for correction in previous.registry.corrections where !state.corrections.contains(correction) {

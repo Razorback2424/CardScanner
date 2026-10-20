@@ -269,6 +269,64 @@ final class OnePieceCatalogActivationTests: XCTestCase {
         XCTAssertEqual(fallbackRevision, 1)
     }
 
+    private func aliasEnvelope(_ revision: Int, omitCorrection: Int? = nil) throws -> OnePieceCatalogReleaseEnvelope {
+        let card = OnePieceCanonicalCard(printedNumber: "OP01-120", language: "en", name: "Alias fixture")
+        let observation = OnePieceProviderNormalizer.observation(provider: .bandai, capture: .init(
+            observationID: "alias-discovery", sourceID: "moving-alias", sourceURL: URL(string: "https://fixture.invalid/card")!,
+            observedAt: date, language: "en", payloadBytes: Data("alias discovery".utf8), printedEvidence: ["number": "OP01-120"]))
+        let review = OnePieceReview(reference: "alias-review", evidence: [
+            .init(kind: .printedIdentity, observationID: observation.id, detail: "Reviewed alias correction")
+        ])
+        let corrections: [OnePieceRegistryCorrection] = (2..<max(2, revision + 1)).filter { $0 != omitCorrection }.map {
+            .init(id: "move-\($0)", kind: .aliasReassignment, fromPrintingIDs: [uuid($0 - 1)],
+                  toPrintingIDs: [uuid($0)], movedAliases: [observation.alias], review: review)
+        }
+        let registry = OnePieceRegistryDocument(canonicalCards: [card],
+            artworks: [.init(id: uuid(900), observationIDs: [observation.id])],
+            printings: (1...4).map {
+                .init(id: uuid($0), canonicalCardID: card.id, artworkID: uuid(900), language: "en",
+                      supportedVariantIDs: ["normal"], status: .provisional,
+                      sourceAliases: $0 == revision ? [observation.alias] : [])
+            }, variants: [.init(id: "normal", label: "Normal")], corrections: corrections)
+        let release = try OnePieceCatalogBuilder.build(registry: registry, observations: [observation],
+            inventories: [.init(provider: "bandai", snapshotID: "alias-fixture", paginationComplete: true, observationIDs: [observation.id])],
+            revision: revision, generatedAt: date)
+        return try OnePieceCatalogSignature.sign(release, keyID: keyID, privateKey: key)
+    }
+
+    func testFourSequentialAliasRevisionsSurviveReopeningAndCurrentCorruption() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let seed = try aliasEnvelope(1)
+        let store = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: seed, now: now)
+        do {
+            _ = try await store.activate(aliasEnvelope(4), now: now)
+            XCTFail("Live activation still requires a direct correction from the active alias owner")
+        } catch let error as OnePieceCatalogValidationError {
+            XCTAssertTrue(error.issues.contains { $0.code == "unreviewedAliasChange" })
+        }
+        for revision in 2...4 { _ = try await store.activate(aliasEnvelope(revision), now: now) }
+        let reopened = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: seed, now: now)
+        await reopened.load(now: now)
+        let current = await reopened.activeRevision
+        XCTAssertEqual(current, 4)
+        try Data("corrupt".utf8).write(to: root.appendingPathComponent(OnePieceCatalogReleaseStore.Slot.current.rawValue))
+        let recovered = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: seed, now: now)
+        await recovered.load(now: now)
+        let previous = await recovered.activeRevision
+        XCTAssertEqual(previous, 3)
+    }
+
+    func testRecoveryRejectsAliasChainWithMissingReviewedEdge() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let incomplete = try aliasEnvelope(4, omitCorrection: 3)
+        try JSONEncoder().encode(incomplete).write(to: root.appendingPathComponent(OnePieceCatalogReleaseStore.Slot.current.rawValue))
+        let store = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: aliasEnvelope(1), now: now)
+        await store.load(now: now)
+        let revision = await store.activeRevision
+        XCTAssertEqual(revision, 1)
+    }
+
     func testNewerBundleCannotBeReplacedByOlderPersistedRelease() async throws {
         let root = root(); defer { try? FileManager.default.removeItem(at: root) }
         let old = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: envelope(1), now: now)

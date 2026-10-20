@@ -32,6 +32,11 @@ actor OnePieceCatalogReleaseStore {
                 if let previous {
                     try OnePieceCatalogCandidateValidator.validate(next.release.release, previous: previous.release.release)
                 }
+            }, validateRecoveryTransition: { previous, next in
+                if let previous {
+                    try OnePieceCatalogCandidateValidator.validate(next.release.release,
+                        previous: previous.release.release, allowingRetainedAliasChains: true)
+                }
             }, readData: { url in
                 let maximum = 48 * 1_024 * 1_024
                 let handle = try FileHandle(forReadingFrom: url)
