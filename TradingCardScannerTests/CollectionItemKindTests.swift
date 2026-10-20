@@ -6,6 +6,48 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testCertifiedRescanValidatesFinalFinishAndEditionBeforeReturningDuplicate() throws {
+        for unknownFinish in [false, true] {
+            for compatible in [false, true] {
+                let container = try ProductionRowFixtures.makeContainer()
+                let context = container.mainContext
+                let store = CollectionStore(context: context)
+                let card = try ProductionRowFixtures.pokemonCard()
+                let initial = try store.addGraded(underlying: card,
+                    variant: GradedVariant(id: "old-market", company: .psa,
+                        grade: CardGrade(value: "10"), marketPriceUSD: 90, updatedAt: nil),
+                    certificationNumber: "REFINE-CERT",
+                    resolved: ResolvedVariant(variant: unknownFinish ? nil : .normal, resolution: .userConfirmed))
+                let row = try XCTUnwrap(store.card(forKey: initial.collectionKey))
+                let record = try XCTUnwrap(PriceStore(context: context).record(forKey: row.priceKey))
+                record.gradedPrinting = compatible ? "1st Edition" : "Normal"
+                try context.save()
+                XCTAssertTrue(PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+                    container: container, game: card.game, providerID: card.providerID,
+                    grade: CardGrade(value: "10"), company: .psa, certificationNumber: "REFINE-CERT",
+                    pokemonPrintRun: .firstEdition, treatmentIDs: [], toVariantID: "normal"))
+                let events = try context.fetchCount(FetchDescriptor<InventoryEvent>())
+                let activities = try context.fetchCount(FetchDescriptor<CollectionActivity>())
+                let duplicate = try store.addScannedGraded(underlying: card, company: .psa,
+                    grade: CardGrade(value: "10"), certificationNumber: "REFINE-CERT",
+                    pokemonPrintRun: .firstEdition,
+                    resolved: ResolvedVariant(variant: .normal, resolution: .printedLabel))
+                XCTAssertTrue(duplicate.wasDuplicate)
+                XCTAssertNil(duplicate.activityID)
+                XCTAssertEqual(row.quantity, 1)
+                XCTAssertEqual(row.pokemonPrintRun, .firstEdition)
+                XCTAssertEqual(row.variant, .normal)
+                XCTAssertEqual(row.justTCGVariantID, compatible ? "old-market" : nil)
+                XCTAssertEqual(duplicate.gradedIdentityToResolve == nil, compatible)
+                XCTAssertEqual(PriceStore(context: context).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD,
+                    compatible ? 90 : nil)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), events)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectionActivity>()), activities)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectedCard>()), 1)
+            }
+        }
+    }
+
     func testDelayedGradedBindingRechecksDurableCorrectedFinish() async throws {
         let container = try ProductionRowFixtures.makeContainer()
         let context = container.mainContext

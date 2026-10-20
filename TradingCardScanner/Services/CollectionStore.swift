@@ -2,6 +2,11 @@ import Foundation
 import OSLog
 import SwiftData
 
+struct GradedRescanPriceIdentity: Equatable, Sendable {
+    let finish: PhysicalVariant?
+    let printRun: PokemonPrintRun?
+}
+
 /// A single recorded change, kept only so it can be taken back.
 struct CollectionMutation: Equatable, Sendable {
     let collectionKey: String
@@ -17,19 +22,24 @@ struct CollectionMutation: Equatable, Sendable {
     /// identifies the physical object, so it must not create a second row or a
     /// second ledger acquisition.
     let wasDuplicate: Bool
+    /// A certified rescan may refine identity without acquiring another copy.
+    /// Resolve its final durable identity when that refinement unbinds pricing.
+    let gradedIdentityToResolve: GradedRescanPriceIdentity?
 
     init(
         collectionKey: String,
         activityID: UUID?,
         didInsert: Bool,
         ledgerOperationIDs: [UUID] = [],
-        wasDuplicate: Bool = false
+        wasDuplicate: Bool = false,
+        gradedIdentityToResolve: GradedRescanPriceIdentity? = nil
     ) {
         self.collectionKey = collectionKey
         self.activityID = activityID
         self.didInsert = didInsert
         self.ledgerOperationIDs = ledgerOperationIDs
         self.wasDuplicate = wasDuplicate
+        self.gradedIdentityToResolve = gradedIdentityToResolve
     }
 }
 
@@ -1065,7 +1075,7 @@ enum PriceIdentityWritePreflight {
                 && row.gradeRaw == grade.value
                 && row.gradeLabel == grade.label
                 && row.gradingQualifier == grade.qualifier
-                && row.pokemonPrintRun == pokemonPrintRun
+                && (certificationNumber != nil || row.pokemonPrintRun == pokemonPrintRun)
                 && Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw))
                     == expectedTreatments
         }
@@ -1076,7 +1086,10 @@ enum PriceIdentityWritePreflight {
                     predicate: #Predicate { $0.certificationNumber == certification }
                 )
             ) else { return true }
-            return rows.contains { matchesIdentity($0) && $0.variantID != toVariantID }
+            return rows.contains {
+                matchesIdentity($0) && ($0.variantID != toVariantID
+                    || ($0.pokemonPrintRunRaw == nil && pokemonPrintRun != nil))
+            }
         }
 
         let gradedKind = CollectionItemKind.gradedCard.rawValue
@@ -3313,17 +3326,20 @@ struct CollectionStore {
                    certificationNumber: certificationNumber,
                    treatmentIDs: treatmentIDs
                ) {
-                // A bound row is kept bound; an unbound row is already the same
-                // physical slab and is deliberately not incremented.
-                if existing.variantID == nil, resolved.variant != nil {
+                // Refine the complete physical identity before validating its
+                // quote. The certificate still represents just one owned slab.
+                let refinesFinish = existing.variantID == nil && resolved.variant != nil
+                let refinesRun = existing.pokemonPrintRunRaw == nil && pokemonPrintRun != nil
+                if refinesRun {
+                    existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
+                }
+                if refinesFinish || refinesRun {
                     try updateGradedVariantIdentity(
                         on: existing,
-                        to: resolved.variant,
-                        resolution: resolved.resolution
+                        to: refinesFinish ? resolved.variant : existing.variant,
+                        resolution: refinesFinish ? resolved.resolution : (existing.variantResolution ?? .userConfirmed),
+                        revalidateBinding: true
                     )
-                }
-                if existing.pokemonPrintRunRaw == nil {
-                    existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 try commit(savesChanges: savesChanges)
@@ -3331,7 +3347,9 @@ struct CollectionStore {
                     collectionKey: existing.collectionKey,
                     activityID: nil,
                     didInsert: false,
-                    wasDuplicate: true
+                    wasDuplicate: true,
+                    gradedIdentityToResolve: (refinesFinish || refinesRun) && existing.justTCGVariantID == nil
+                        ? GradedRescanPriceIdentity(finish: existing.variant, printRun: existing.pokemonPrintRun) : nil
                 )
             }
 
@@ -3813,7 +3831,8 @@ struct CollectionStore {
     private func updateGradedVariantIdentity(
         on row: CollectedCard,
         to variant: PhysicalVariant?,
-        resolution: VariantResolution
+        resolution: VariantResolution,
+        revalidateBinding: Bool = false
     ) throws {
         let oldPriceKey = row.priceKey
         let oldRecord = PriceStore(context: context).record(forKey: oldPriceKey)
@@ -3821,7 +3840,7 @@ struct CollectionStore {
             GradedCardIdentity.matchesFinish(finish, printing: oldRecord?.gradedPrinting,
                 printRun: row.pokemonPrintRun)
         } ?? false
-        let changesKnownFinish = row.variantID != variant?.id && !compatibleBinding
+        let changesKnownFinish = (row.variantID != variant?.id || revalidateBinding) && !compatibleBinding
         let printingID = changesKnownFinish ? row.collectionKey : row.priceStorageID
         let treatmentIDs = row.priceTreatmentIDs
         let newPriceKey = PriceRecord.key(

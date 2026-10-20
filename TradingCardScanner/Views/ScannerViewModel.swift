@@ -5370,6 +5370,7 @@ final class ScannerViewModel: ObservableObject {
 
         let writeSessionID = scannerSessionID
         authorizedWriteRequestIDs.insert(candidate.requestID)
+        let writeGeneration = scanGeneration
         defer { authorizedWriteRequestIDs.remove(candidate.requestID) }
         scanAcknowledgement = ScanAcknowledgement(
             encounterID: candidate.encounterID,
@@ -5428,6 +5429,9 @@ final class ScannerViewModel: ObservableObject {
             }
 
             if mutation.wasDuplicate {
+                if let identity = mutation.gradedIdentityToResolve {
+                    queueCertifiedRescanPrice(candidate, mutation: mutation, identity: identity)
+                }
                 clearResolvedUnresolvedRows(
                     for: candidate.card,
                     sourceRowID: candidate.unresolvedScanID,
@@ -5487,6 +5491,12 @@ final class ScannerViewModel: ObservableObject {
                 pendingCommit: candidate,
                 isAdditionalCopy: isAdditionalCopy
             )
+            // The authorized write owns its recovery record after a transition,
+            // but its abandoned presentation must never return to the scanner.
+            guard writeGeneration == scanGeneration else {
+                clearAcknowledgement(for: candidate.encounterID)
+                return .stale
+            }
             let message = "Recognized, but saving failed. Saved to Needs attention to retry."
             if !failAcknowledgement(
                 for: candidate.encounterID,
@@ -5496,6 +5506,39 @@ final class ScannerViewModel: ObservableObject {
             }
             feedback.problem()
             return .failed
+        }
+    }
+
+    private func queueCertifiedRescanPrice(
+        _ candidate: CollectionCommitCandidate,
+        mutation: CollectionMutation,
+        identity: GradedRescanPriceIdentity
+    ) {
+        guard let slab = candidate.subject.slab, let collectionWriter else { return }
+        // A rescan has no acquisition or undo receipt. Resolve the durable row
+        // directly instead of appending a second scan to ownership history.
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let outcome = await self.gradedResolver.resolve(
+                card: candidate.card,
+                slab: GradedSlabEvidence(company: slab.company, grade: slab.grade,
+                    certificationNumber: slab.certificationNumber, labelCardText: slab.labelCardText,
+                    printedFinish: identity.finish, printedPrintRun: identity.printRun),
+                pokemonPrintRun: identity.printRun
+            )
+            guard self.isStorageGenerationCurrent, case let .bound(variant) = outcome else { return }
+            let writer = await collectionWriter.value
+            do {
+                _ = try await CollectionExclusiveWrites.withPriceIdentityExclusivity(waitForActivePassToFinish: true) {
+                    guard self.isStorageGenerationCurrent else { return nil as GradedVariantBindingReceipt? }
+                    return try await writer.bindScannedGraded(collectionKey: mutation.collectionKey,
+                        variant: variant,
+                        expectedIdentity: GradedBindingIdentity(finishID: identity.finish?.id, printRun: identity.printRun))
+                }
+            } catch {
+                // Ownership is already durable; an unavailable price can be
+                // retried through ordinary collection refresh.
+            }
         }
     }
 

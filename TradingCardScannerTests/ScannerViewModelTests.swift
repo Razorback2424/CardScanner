@@ -1089,6 +1089,57 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(reboundToCurrentKey)
     }
 
+    func testCertifiedRescanRefinesUnknownEditionAndReplacesIncompatiblePrice() async throws {
+        for unknownFinish in [false, true] {
+            let model = try makeModel(variants: [.normal],
+                gradedOutcome: .bound(GradedVariant(id: "ordinary", company: .psa,
+                    grade: CardGrade(value: "10"), printing: "Normal", marketPriceUSD: 90, updatedAt: nil)),
+                gradedRecheckOutcome: .bound(GradedVariant(id: "first-edition", company: .psa,
+                    grade: CardGrade(value: "10"), printing: "1st Edition", marketPriceUSD: 450, updatedAt: nil)),
+                setProviderID: "base1")
+            useSlabMode(model)
+            let identifier = scannerIdentifier(setProviderID: "base1")
+            let initial = ScanSubject(identifier: identifier, slab: GradedSlabEvidence(
+                company: .psa, grade: CardGrade(value: "10"), certificationNumber: "RESCAN-CERT", labelCardText: [],
+                printedFinish: .normal, printedPrintRun: .unlimited))
+            confirm(model, initial, encounterID: UUID())
+            await assertEventually {
+                (try? self.context().fetch(FetchDescriptor<CollectedCard>()).first?.justTCGVariantID) == "ordinary"
+            }
+            let context = try context()
+            let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+            row.pokemonPrintRunRaw = nil
+            if unknownFinish {
+                row.variantID = nil
+                row.variantLabel = nil
+            }
+            try context.save()
+            let eventCount = try context.fetchCount(FetchDescriptor<InventoryEvent>())
+            let activityCount = try context.fetchCount(FetchDescriptor<CollectionActivity>())
+            model.viewDisappeared()
+            model.start(context: context, startCamera: false, shouldRefreshMagicDirectory: false)
+            await assertEventually { model.isScannerSessionActiveForTesting }
+            let refined = ScanSubject(identifier: identifier, slab: GradedSlabEvidence(
+                company: .psa, grade: CardGrade(value: "10"), certificationNumber: "RESCAN-CERT", labelCardText: [],
+                printedFinish: .normal, printedPrintRun: .firstEdition))
+            confirm(model, refined, encounterID: UUID())
+            await assertEventually {
+                (try? self.context().fetch(FetchDescriptor<CollectedCard>()).first?.justTCGVariantID) == "first-edition"
+            }
+            let saved = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(saved.pokemonPrintRun, .firstEdition)
+            XCTAssertEqual(saved.variant, .normal)
+            XCTAssertEqual(saved.quantity, 1)
+            XCTAssertEqual(saved.certificationNumber, "RESCAN-CERT")
+            XCTAssertEqual(PriceStore(context: context).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD, 450)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectedCard>()), 1)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), eventCount)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectionActivity>()), activityCount)
+            XCTAssertTrue(model.recent.isEmpty, "A certified rescan must not create an acquisition receipt")
+            model.viewDisappeared()
+        }
+    }
+
     func testGradedLabelPrintRunIsPersistedWithoutBlockingOnVendorResolution() async throws {
         let recorder = ScannerPrintRunRecorder()
         let gate = ScannerGradedResolverGate()
@@ -1796,77 +1847,131 @@ final class ScannerViewModelTests: XCTestCase {
         }
     }
 
-    func testHeldRepeatSaveFailureRepublishesOfferAndKeepsFailureAcknowledgement() async throws {
-        let addGate = ScannerCollectionAddGate(
-            outcome: .failure,
-            successfulAddsBeforeBlocking: 1
-        )
-        let model = try makeModel(
-            variants: [.normal],
-            collectionAddOverride: { candidate in
-                try await addGate.add(candidate)
+    func testFailedAdditionalCopyCannotRevivePromptAfterSameSessionTransition() async throws {
+        for transition in 0..<3 {
+            let gate = ScannerCollectionAddGate(outcome: .failure, successfulAddsBeforeBlocking: 1)
+            let model = try makeModel(variants: [.normal], collectionAddOverride: { try await gate.add($0) })
+            let first = UUID()
+            confirm(model, scannerIdentifier(), encounterID: first)
+            await assertEventually { model.recent.count == 1 }
+            model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: first))
+            await settle()
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { model.pendingDuplicateConfirmation != nil }
+            model.addAnother()
+            await gate.waitUntilStarted()
+            switch transition {
+            case 0: model.setPurpose(.priceCheck)
+            case 1: useSlabMode(model)
+            default: model.scenePhaseChanged(isActive: false)
             }
-        )
-        let subject = ScanSubject(identifier: scannerIdentifier())
-        let start = CFAbsoluteTimeGetCurrent()
-        var firstEncounterID: UUID?
-        let originalConfirmation = model.scanner.onConfirmedSubjectCandidate
-        model.scanner.onConfirmedSubjectCandidate = { context, encounterID, confirmed, authorizationID in
-            if authorizationID == nil {
-                firstEncounterID = encounterID
+            await gate.release()
+            await assertEventually { model.unresolvedScans.count == 1 }
+            await settle()
+            XCTAssertNil(model.pendingDuplicateConfirmation)
+            XCTAssertNil(model.heldDuplicateOffer)
+            XCTAssertNil(model.scanAcknowledgement)
+            XCTAssertEqual(model.scanner.isRecognitionPausedForTesting, transition == 2)
+            XCTAssertTrue(model.unresolvedScans.first?.isAdditionalCopy == true)
+            XCTAssertNotNil(model.unresolvedScans.first?.pendingCommit)
+            XCTAssertEqual(model.recent.count, 1)
+            model.viewDisappeared()
+        }
+    }
+
+    func testHeldRepeatSaveFailureRepublishesOfferOnlyWhilePresentationIsCurrent() async throws {
+        for transition in 0..<4 {
+            let addGate = ScannerCollectionAddGate(
+                outcome: .failure,
+                successfulAddsBeforeBlocking: 1
+            )
+            let model = try makeModel(
+                variants: [.normal],
+                collectionAddOverride: { candidate in
+                    try await addGate.add(candidate)
+                }
+            )
+            let subject = ScanSubject(identifier: scannerIdentifier())
+            let start = CFAbsoluteTimeGetCurrent()
+            var firstEncounterID: UUID?
+            let originalConfirmation = model.scanner.onConfirmedSubjectCandidate
+            model.scanner.onConfirmedSubjectCandidate = { context, encounterID, confirmed, authorizationID in
+                if authorizationID == nil {
+                    firstEncounterID = encounterID
+                }
+                originalConfirmation?(context, encounterID, confirmed, authorizationID)
             }
-            originalConfirmation?(context, encounterID, confirmed, authorizationID)
+            model.scanner.drainProfileQueuesForTesting()
+
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.25)
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.5)
+            let firstCommit = await waitUntil { model.recent.count == 1 }
+            XCTAssertTrue(firstCommit)
+            XCTAssertEqual(model.sessionScans.first?.subject.suppressionKey, subject.suppressionKey)
+            XCTAssertEqual(model.committedSessionHistory.last?.encounterID, firstEncounterID)
+            await settle()
+
+            for offset in stride(from: 0.75, through: 2.5, by: 0.25) {
+                model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + offset)
+            }
+            guard let firstEncounterID else {
+                XCTFail("The initial scanner confirmation did not produce an encounter ID")
+                return
+            }
+            model.scanner.onLatchHolding?(subject, firstEncounterID)
+
+            let offerAppeared = await waitUntil { model.heldDuplicateOffer != nil }
+            XCTAssertTrue(offerAppeared)
+            guard offerAppeared else { return }
+            model.addAnotherHeldCopy()
+            await settle()
+            model.scanner.drainVisionQueueForTesting()
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.0)
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.25)
+
+            await addGate.waitUntilStarted()
+            switch transition {
+            case 1: model.setPurpose(.priceCheck)
+            case 2: useSlabMode(model)
+            case 3: model.scenePhaseChanged(isActive: false)
+            default: break
+            }
+            await addGate.release()
+
+            if transition != 0 {
+                await assertEventually { model.unresolvedScans.count == 1 }
+                await settle()
+                XCTAssertNil(model.heldDuplicateOffer)
+                XCTAssertNil(model.pendingDuplicateConfirmation)
+                XCTAssertNil(model.scanAcknowledgement)
+                XCTAssertEqual(model.scanner.isRecognitionPausedForTesting, transition == 3)
+                XCTAssertTrue(model.unresolvedScans.first?.isAdditionalCopy == true)
+                XCTAssertNotNil(model.unresolvedScans.first?.pendingCommit)
+                XCTAssertEqual(model.recent.count, 1)
+                model.viewDisappeared()
+                continue
+            }
+            let failed = await waitUntil {
+                model.heldDuplicateOffer != nil && model.scanAcknowledgement?.phase == .failed
+            }
+            XCTAssertTrue(failed)
+            XCTAssertNotNil(model.heldDuplicateOffer)
+            XCTAssertEqual(model.scanAcknowledgement?.phase, .failed)
+            XCTAssertFalse(model.scanAcknowledgement?.canRetryScan ?? true)
+            XCTAssertEqual(
+                model.scanAcknowledgement?.message,
+                "Recognized, but saving failed. Saved to Needs attention to retry."
+            )
+            XCTAssertEqual(model.unresolvedScans.count, 1)
+            XCTAssertEqual(
+                model.unresolvedScans.first?.reason,
+                .saveFailed(inMemoryCandidateID: model.unresolvedScans.first?.pendingCommit?.requestID)
+            )
+            XCTAssertEqual(model.recent.count, 1)
+            let addCount = await addGate.count()
+            XCTAssertEqual(addCount, 2)
+            model.viewDisappeared()
         }
-        model.scanner.drainProfileQueuesForTesting()
-
-        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.25)
-        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.5)
-        let firstCommit = await waitUntil { model.recent.count == 1 }
-        XCTAssertTrue(firstCommit)
-        XCTAssertEqual(model.sessionScans.first?.subject.suppressionKey, subject.suppressionKey)
-        XCTAssertEqual(model.committedSessionHistory.last?.encounterID, firstEncounterID)
-        await settle()
-
-        for offset in stride(from: 0.75, through: 2.5, by: 0.25) {
-            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + offset)
-        }
-        guard let firstEncounterID else {
-            XCTFail("The initial scanner confirmation did not produce an encounter ID")
-            return
-        }
-        model.scanner.onLatchHolding?(subject, firstEncounterID)
-
-        let offerAppeared = await waitUntil { model.heldDuplicateOffer != nil }
-        XCTAssertTrue(offerAppeared)
-        guard offerAppeared else { return }
-        model.addAnotherHeldCopy()
-        await settle()
-        model.scanner.drainVisionQueueForTesting()
-        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.0)
-        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.25)
-
-        await addGate.waitUntilStarted()
-        await addGate.release()
-
-        let failed = await waitUntil {
-            model.heldDuplicateOffer != nil && model.scanAcknowledgement?.phase == .failed
-        }
-        XCTAssertTrue(failed)
-        XCTAssertNotNil(model.heldDuplicateOffer)
-        XCTAssertEqual(model.scanAcknowledgement?.phase, .failed)
-        XCTAssertFalse(model.scanAcknowledgement?.canRetryScan ?? true)
-        XCTAssertEqual(
-            model.scanAcknowledgement?.message,
-            "Recognized, but saving failed. Saved to Needs attention to retry."
-        )
-        XCTAssertEqual(model.unresolvedScans.count, 1)
-        XCTAssertEqual(
-            model.unresolvedScans.first?.reason,
-            .saveFailed(inMemoryCandidateID: model.unresolvedScans.first?.pendingCommit?.requestID)
-        )
-        XCTAssertEqual(model.recent.count, 1)
-        let addCount = await addGate.count()
-        XCTAssertEqual(addCount, 2)
     }
 
     func testSpatialProofRoutesSameIdentityToDuplicateConfirmationAndSameCardDoesNotCommit() async throws {
