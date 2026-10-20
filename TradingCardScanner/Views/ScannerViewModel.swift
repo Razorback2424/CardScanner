@@ -2630,6 +2630,13 @@ final class ScannerViewModel: ObservableObject {
                   pendingCommit: CollectionCommitCandidate? = nil, isAdditionalCopy: Bool = false) {
             guard !authorizedWriteRequestIDs.contains(request.id),
                   filed.insert(request.id).inserted else { return }
+            // Until a write is authorized, an existing failed save still owns
+            // its resolved candidate and duplicate-check recovery path.
+            if let rowID = request.unresolvedScanID,
+               let row = unresolvedScans.first(where: { $0.id == rowID }),
+               case .saveFailed = row.reason, row.pendingCommit != nil {
+                return
+            }
             fileUnresolved(request: request, reason: .interrupted, candidates: candidates,
                            printingCandidates: printingCandidates,
                            pendingCommit: pendingCommit, isAdditionalCopy: isAdditionalCopy)

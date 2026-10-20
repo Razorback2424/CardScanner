@@ -2995,6 +2995,45 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(addCount, 2)
     }
 
+    func testInterruptedRetrySaveRetainsCandidateAndDuplicateProtection() async throws {
+        for interveningAdd in [false, true] {
+            let gate = ScannerCollectionAddGate(outcome: .failure)
+            let model = try makeModel(variants: [.normal], collectionAddOverride: { try await gate.add($0) })
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await gate.waitUntilStarted()
+            await gate.release()
+            await assertEventually {
+                model.unresolvedScans.count == 1 && !model.isIdentificationProcessingForTesting
+            }
+            let row = try XCTUnwrap(model.unresolvedScans.first)
+            let pending = try XCTUnwrap(row.pendingCommit)
+            model.resolveUnresolved(id: row.id, choice: .retrySave)
+            model.scenePhaseChanged(isActive: false)
+            let retained = try XCTUnwrap(model.unresolvedScans.first)
+            XCTAssertEqual(retained.reason, row.reason)
+            XCTAssertEqual(retained.pendingCommit?.requestID, pending.requestID)
+            await settle()
+            let interruptedAttempts = await gate.count()
+            XCTAssertEqual(interruptedAttempts, 1)
+
+            if interveningAdd {
+                let writer = ScannerCollectionWriter(modelContainer: context().container)
+                _ = try await writer.add(pending)
+            }
+            await gate.allowSuccess()
+            model.resolveUnresolved(id: row.id, choice: .retrySave)
+            await assertEventually { model.unresolvedScans.isEmpty && !model.isIdentificationProcessingForTesting }
+            let attempts = await gate.count()
+            XCTAssertEqual(attempts, interveningAdd ? 1 : 2)
+            if interveningAdd {
+                XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+            } else {
+                XCTAssertEqual(model.successCount, 1)
+            }
+            model.endSession()
+        }
+    }
+
     func testRetrySaveSuppressesACardAddedFromAnotherSurface() async throws {
         let addGate = ScannerCollectionAddGate(outcome: .failure)
         let model = try makeModel(
