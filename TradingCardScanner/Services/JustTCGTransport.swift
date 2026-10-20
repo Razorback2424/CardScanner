@@ -294,6 +294,16 @@ actor JustTCGTransport {
         return try await perform(request, lane: lane)
     }
 
+    /// Header metadata travels with its own response, avoiding shared mutable
+    /// pagination state when several lookups use the transport concurrently.
+    func getPage<Response: Decodable>(
+        _ path: String, query: [(String, String)], lane: JustTCGRequestLane,
+        as type: Response.Type = Response.self
+    ) async throws -> (value: Response, link: String?) {
+        let request = try buildRequest(path: path, query: query, method: "GET", body: nil)
+        return try await performPage(request, lane: lane)
+    }
+
     func post<Body: Encodable, Response: Decodable>(
         _ path: String,
         query: [(String, String)] = [],
@@ -310,6 +320,14 @@ actor JustTCGTransport {
         _ request: URLRequest,
         lane: JustTCGRequestLane
     ) async throws -> Response {
+        let page: (value: Response, link: String?) = try await performPage(request, lane: lane)
+        return page.value
+    }
+
+    private func performPage<Response: Decodable>(
+        _ request: URLRequest,
+        lane: JustTCGRequestLane
+    ) async throws -> (value: Response, link: String?) {
         // Pace before reserving. If a queued request is cancelled while waiting,
         // it never consumes the day's allowance.
         try await pace(lane: lane)
@@ -381,7 +399,7 @@ actor JustTCGTransport {
             ledger.syncFromServer(metadata)
         }
 
-        return try JSONDecoder().decode(Response.self, from: data)
+        return (try JSONDecoder().decode(Response.self, from: data), http.value(forHTTPHeaderField: "Link"))
     }
 
     private func buildRequest(

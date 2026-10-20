@@ -35,6 +35,47 @@ final class RefreshStructuralWriteTests: XCTestCase {
         super.tearDown()
     }
 
+    func testOldCatalogResponseCannotRestoreCorrectedFinishHandlesOrPrice() async throws {
+        let container = try makeContainer()
+        let card = IdentifiedCard.pokemon(Self.card(id: "structural-correction"), setCode: "STR")
+        let mutation = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            let added = try CollectionStore(context: context).add(card,
+                resolved: .init(variant: .holo, resolution: .userConfirmed))
+            let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: added.collectionKey))
+            row.tcgplayerProductID = "111"
+            row.tcgplayerURL = "https://www.tcgplayer.com/product/111"
+            row.justTCGCardID = "outgoing"
+            try context.save()
+            return added
+        }
+        let barrier = RefreshTestBarrier()
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setPokemonFetchOverrideForTesting { _ in
+            await barrier.pause()
+            return card
+        }
+        let pass = Task {
+            await worker.run(PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+                forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+                markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil)
+        }
+        await barrier.waitUntilPaused()
+        let corrected = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context).recordVariantCorrection(forCollectionKey: mutation.collectionKey,
+                to: .init(variant: .reverse, resolution: .userConfirmed),
+                activityID: XCTUnwrap(mutation.activityID), quantity: 1)
+        }
+        await barrier.release()
+        _ = await pass.value
+        let context = ModelContext(container)
+        let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: XCTUnwrap(corrected).collectionKey))
+        XCTAssertEqual(row.variant, .reverse)
+        XCTAssertNil(row.tcgplayerProductID)
+        XCTAssertNil(row.tcgplayerURL)
+        XCTAssertNil(row.justTCGCardID)
+        XCTAssertNil(PriceStore(context: context).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD)
+    }
+
     func testRemovingUnreachedRowDuringSlowRefreshKeepsLaterPatchesAndPrices() async throws {
         let container = try makeContainer()
         let blockedID = "structural-150"

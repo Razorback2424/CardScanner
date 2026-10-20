@@ -1772,12 +1772,98 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(serverClock.serverClockOffset, observedOffset)
     }
 
+    func testGradedSearchFindsSpinarakOnLaterPage() async throws {
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .pokemon) {
+            ProductSetDirectory(sets: [(id: "team-rocket-returns-pokemon", name: "Team Rocket Returns")])
+        }
+        RecordingURLProtocol.reset(headers: ["Link": "<https://api.justtcg.com/v2/cards?cursor=page2>; rel=\"next\""])
+        RecordingURLProtocol.laterPageBody = Data(#"{"data":[{"id":"fixture-card","name":"Spinarak","number":"78","game":{"id":"pokemon"},"set":{"id":"team-rocket-returns-pokemon","name":"Team Rocket Returns"},"variants":[{"id":"fixture-cgc10","type":"graded","printing":"Normal","grading":{"company":"CGC","grade":10,"grade_label":"Gem Mint"},"markets":[{"region":"NA","currency":"USD","price":40}]}]}]}"#.utf8)
+        let sessionConfig = URLSessionConfiguration.ephemeral
+        sessionConfig.protocolClasses = [RecordingURLProtocol.self]
+        var config = JustTCGTransport.Configuration()
+        config.minimumRequestInterval = 0
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "pagination-fixture-\(UUID())"))
+        let client = JustTCGV2GradedClient(transport: JustTCGTransport(configuration: config,
+            session: URLSession(configuration: sessionConfig), ledger: JustTCGRequestLedger(defaults: defaults),
+            pacer: JustTCGPacer(), apiKeyOverride: "synthetic-key"), setDirectoryProvider: directory)
+        let result = try await client.lookup(identity: GradedCardIdentity(name: "Spinarak",
+            setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78"), game: .pokemon)
+        guard case let .matched(values) = result else { return XCTFail("A first-page miss is not a complete search") }
+        XCTAssertEqual(values.map(\.id), ["fixture-cgc10"])
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 2)
+    }
+
+    func testGradedPaginationIncompleteAndLocalFailureAreNotCardMisses() async throws {
+        let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns",
+            collectorNumber: "78", catalogID: "ex7-78", pokemonPrintRun: .unlimited, finish: .normal)
+        for maximumPages in [1, 3] {
+            let directory = ProductSetDirectoryProvider()
+            _ = try await directory.directory(for: .pokemon) {
+                ProductSetDirectory(sets: [(id: "team-rocket-returns-pokemon", name: "Team Rocket Returns")])
+            }
+            // The same cursor on every page models an upstream pagination loop.
+            RecordingURLProtocol.reset(headers: ["Link": "<https://api.justtcg.com/v2/cards?cursor=repeated>; rel=\"next\""])
+            let client = try gradedFixtureClient(directory: directory, maximumPages: maximumPages)
+            let result = try await client.lookup(identity: identity, game: .pokemon)
+            XCTAssertEqual(result, .incompleteSearch)
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, maximumPages == 1 ? 1 : 2)
+        }
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .pokemon) { ProductSetDirectory(sets: []) }
+        RecordingURLProtocol.reset()
+        let client = try gradedFixtureClient(directory: directory)
+        let result = try await client.lookup(identity: identity, game: .pokemon)
+        XCTAssertEqual(result, .localIdentityUnresolved)
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+    }
+
+    func testGradedNextLinksOnlyContributeAValidatedCursor() throws {
+        XCTAssertEqual(try JustTCGV2GradedClient.nextCursor(from:
+            "<https://api.justtcg.com/v2/cards?q=untrusted&cursor=page2>; rel = \"next\""), "page2")
+        for url in ["https://evil.test/v2/cards?cursor=x", "http://api.justtcg.com/v2/cards?cursor=x",
+                    "https://api.justtcg.com/v1/cards?cursor=x", "https://api.justtcg.com/v2/cards?cursor=x&cursor=y",
+                    "https://user@api.justtcg.com/v2/cards?cursor=x"] {
+            XCTAssertThrowsError(try JustTCGV2GradedClient.nextCursor(from: "<\(url)>; rel=\"next\""))
+        }
+    }
+
+    func testGradedBudgetExhaustionDoesNotBecomeProviderAbsence() async throws {
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "graded-budget-fixture-\(UUID())"))
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        for _ in 0..<JustTCGQuota.dailyHardLimit { _ = ledger.reserve(lane: .interactive) }
+        RecordingURLProtocol.reset()
+        let sessionConfig = URLSessionConfiguration.ephemeral
+        sessionConfig.protocolClasses = [RecordingURLProtocol.self]
+        var config = JustTCGTransport.Configuration()
+        config.minimumRequestInterval = 0
+        let client = JustTCGV2GradedClient(transport: JustTCGTransport(configuration: config,
+            session: URLSession(configuration: sessionConfig), ledger: ledger, pacer: JustTCGPacer(),
+            apiKeyOverride: "synthetic-key"), setDirectoryProvider: ProductSetDirectoryProvider())
+        let result = try await client.lookup(identity: GradedCardIdentity(name: "Spinarak",
+            setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78"), game: .pokemon)
+        XCTAssertEqual(result, .incompleteSearch)
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+    }
+
+    private func gradedFixtureClient(directory: ProductSetDirectoryProvider, maximumPages: Int = 3) throws -> JustTCGV2GradedClient {
+        let sessionConfig = URLSessionConfiguration.ephemeral
+        sessionConfig.protocolClasses = [RecordingURLProtocol.self]
+        var config = JustTCGTransport.Configuration()
+        config.minimumRequestInterval = 0
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "graded-fixture-\(UUID())"))
+        return JustTCGV2GradedClient(transport: JustTCGTransport(configuration: config,
+            session: URLSession(configuration: sessionConfig), ledger: JustTCGRequestLedger(defaults: defaults),
+            pacer: JustTCGPacer(), apiKeyOverride: "synthetic-key"), setDirectoryProvider: directory, maximumPages: maximumPages)
+    }
+
     // MARK: - Delta safety
 
     /// Records every outbound request so a test can assert on `updated_after`.
     private final class RecordingURLProtocol: URLProtocol, @unchecked Sendable {
         nonisolated(unsafe) static var requestedURLs: [URL] = []
         nonisolated(unsafe) static var body = Data(#"{"data":[]}"#.utf8)
+        nonisolated(unsafe) static var laterPageBody: Data?
         nonisolated(unsafe) static var responseHeaders: [String: String] = [
             "Content-Type": "application/json"
         ]
@@ -1789,6 +1875,7 @@ final class JustTCGContractTests: XCTestCase {
         ) {
             lock.lock(); defer { lock.unlock() }
             requestedURLs = []
+            laterPageBody = nil
             body = Data(newBody.utf8)
             responseHeaders = newHeaders
         }
@@ -1800,7 +1887,7 @@ final class JustTCGContractTests: XCTestCase {
 
         private static func responseHeadersSnapshot() -> [String: String] {
             lock.lock(); defer { lock.unlock() }
-            return responseHeaders
+            return requestedURLs.count > 1 && laterPageBody != nil ? [:] : responseHeaders
         }
 
         override class func canInit(with request: URLRequest) -> Bool { true }
@@ -1820,7 +1907,7 @@ final class JustTCGContractTests: XCTestCase {
             )!
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             Self.lock.lock()
-            let payload = Self.body
+            let payload = Self.requestedURLs.count > 1 ? (Self.laterPageBody ?? Self.body) : Self.body
             Self.lock.unlock()
             client?.urlProtocol(self, didLoad: payload)
             client?.urlProtocolDidFinishLoading(self)

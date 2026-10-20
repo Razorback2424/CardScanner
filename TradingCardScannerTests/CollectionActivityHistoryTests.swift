@@ -368,6 +368,9 @@ final class CollectionActivityHistoryTests: XCTestCase {
             try context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.id == targetID }
         )
         let normalRow = try XCTUnwrap(store.card(forKey: normalKey))
+        normalRow.tcgplayerProductID = "111"
+        normalRow.tcgplayerURL = "https://www.tcgplayer.com/product/111"
+        normalRow.justTCGCardID = "outgoing-product"
         let correction = try XCTUnwrap(
             try store.recordVariantCorrection(
                 for: normalRow,
@@ -380,6 +383,10 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let correctedKey = correction.collectionKey
         XCTAssertEqual(store.card(forKey: normalKey)?.quantity, 2)
         XCTAssertEqual(store.card(forKey: correctedKey)?.quantity, 1)
+        XCTAssertNil(store.card(forKey: correctedKey)?.tcgplayerProductID)
+        XCTAssertNil(store.card(forKey: correctedKey)?.tcgplayerURL)
+        XCTAssertNil(store.card(forKey: correctedKey)?.justTCGCardID)
+        XCTAssertEqual(store.card(forKey: normalKey)?.tcgplayerProductID, "111")
 
         let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
         XCTAssertEqual(activities.count, 4)
@@ -397,6 +404,30 @@ final class CollectionActivityHistoryTests: XCTestCase {
             [normalKey: 2, correctedKey: 1]
         )
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+    }
+
+    func testCorrectionMergeKeepsIndependentlyBoundDestination() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try identifiedCard()
+        let original = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let destination = try store.add(card, resolved: .init(variant: .reverse, resolution: .userConfirmed))
+        let from = try XCTUnwrap(store.card(forKey: original.collectionKey))
+        from.tcgplayerProductID = "111"
+        from.justTCGCardID = "outgoing"
+        let to = try XCTUnwrap(store.card(forKey: destination.collectionKey))
+        to.tcgplayerProductID = "222"
+        to.justTCGCardID = "verified-destination"
+        to.justTCGVariantID = "verified-reverse"
+        let date = to.dateAdded
+        _ = try store.recordVariantCorrection(for: from, to: .init(variant: .reverse, resolution: .userConfirmed),
+            activityID: XCTUnwrap(original.activityID), quantity: 1)
+        let merged = try XCTUnwrap(store.card(forKey: destination.collectionKey))
+        XCTAssertEqual(merged.quantity, 2)
+        XCTAssertEqual(merged.tcgplayerProductID, "222")
+        XCTAssertEqual(merged.justTCGCardID, "verified-destination")
+        XCTAssertEqual(merged.justTCGVariantID, "verified-reverse")
+        XCTAssertEqual(merged.dateAdded, date)
     }
 
     func testRepeatingCorrectionTapDoesNotAppendAnotherMutation() throws {

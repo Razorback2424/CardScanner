@@ -79,7 +79,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         // completed. This covers the cold set-directory request plus the card
         // request at the transport's 25-second timeout and the shared pacer's
         // spacing. The resolver runs after save, so this does not hold scanning.
-        let identity = GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun)
+        let identity = GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun, finish: slab.printedFinish)
         for attempt in 0...timeoutRetryCount {
             do {
                 let result = try await withThrowingTaskGroup(of: GradedVariantLookupResult.self) { group in
@@ -102,7 +102,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
 
                 switch result {
                 case let .matched(variants):
-                    guard let exact = Self.matchingVariant(in: variants, for: slab) else {
+                    guard let exact = Self.matchingVariant(in: variants, for: slab, printRun: pokemonPrintRun) else {
                         return .gradeNotTracked(GradedMarketCoverage(
                             status: .gradeNotListed,
                             variants: variants,
@@ -115,6 +115,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
                     return .noGradedListings(GradedMarketCoverage(status: .noGradedListings))
                 case .noProductMatch:
                     return .cardNotTracked(GradedMarketCoverage(status: .cardNotTracked))
+                case .incompleteSearch, .localIdentityUnresolved:
+                    return .unavailable
                 }
             } catch is CancellationError {
                 return .unavailable
@@ -139,14 +141,21 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     /// variant remains usable; a conflicting Black Label never does.
     static func matchingVariant(
         in variants: [GradedVariant],
-        for slab: GradedSlabEvidence
+        for slab: GradedSlabEvidence,
+        finish: PhysicalVariant? = nil,
+        printRun: PokemonPrintRun? = nil
     ) -> GradedVariant? {
         let candidates = variants.filter { variant in
-            variant.company == slab.company
+            ((finish ?? slab.printedFinish).map {
+                GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun)
+            } ?? (variant.printing != nil))
+                && variant.company == slab.company
                 && normalized(variant.grade.value) == normalized(slab.grade.value)
                 && normalized(variant.grade.qualifier) == normalized(slab.grade.qualifier)
         }
         guard !candidates.isEmpty else { return nil }
+        if finish == nil, slab.printedFinish == nil,
+           Set(candidates.compactMap { $0.printing?.lowercased() }).count != 1 { return nil }
         if candidates.count == 1,
            isBlackLabel(candidates[0].grade.label),
            !isBlackLabel(slab.grade.label) {

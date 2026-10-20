@@ -490,7 +490,10 @@ enum CollectionCSV {
             "quantity", "diagnostic", "price_status", "price_usd", "price_source",
             "price_listing", "last_price_check", "price_refresh_failed",
             "image_url", "thumbnail_url", "catalog_metadata_checked_at",
-            "magic_treatment_ids", "magic_treatment_qualifiers", "magic_content_kind"
+            "magic_treatment_ids", "magic_treatment_qualifiers", "magic_content_kind",
+            "valuation_exclusion_reason", "retained_native_amount", "retained_native_currency",
+            "retained_quote_fetched_at", "retained_quote_updated_at", "latest_attempt_status",
+            "latest_attempt_reason", "prior_graded_coverage", "tcgplayer_product_id", "justtcg_card_id"
         ]
         let rows = cards.sorted(by: diagnosticSort).map { card -> [String] in
             let record = PriceStore.record(for: card, in: recordsByKey)
@@ -517,7 +520,17 @@ enum CollectionCSV {
                 card.catalogMetadataCheckedAt.map { formatter.string(from: $0) } ?? "",
                 encodedTreatmentIDs(card.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
-                card.magicContentKindRaw
+                card.magicContentKindRaw,
+                record?.effectiveUnitMarketPriceUSD == nil ? PricingDiagnostics.unpricedReason(for: card, record: record).rawValue : "",
+                record?.unitMarketPriceUSD.map(String.init(describing:)) ?? "",
+                record?.unitMarketPriceUSD == nil ? "" : (record?.currencyCode ?? ""),
+                record?.fetchedAt.map { formatter.string(from: $0) } ?? "",
+                record?.sourceUpdatedAt.map { formatter.string(from: $0) } ?? "",
+                priceStatus(record),
+                record?.lastFailureAt != nil ? PricingDiagnosticReason.providerRequestFailed.rawValue : (record?.lastFailureReasonRaw ?? ""),
+                record?.gradedMarketCoverage?.status.rawValue ?? "",
+                card.tcgplayerProductID ?? "",
+                card.justTCGCardID ?? ""
             ]
         }
         let text = ([headers] + rows)
@@ -547,6 +560,8 @@ enum CollectionCSV {
     private static func priceStatus(_ record: PriceRecord?) -> String {
         guard let record, record.lastCheckedAt != nil else { return "never_checked" }
         if record.lastFailureAt != nil { return "refresh_failed" }
+        if record.lastFailureReasonRaw == PricingDiagnosticReason.gradedSearchIncomplete.rawValue { return "incomplete_search" }
+        if record.lastFailureReasonRaw == PricingDiagnosticReason.gradedIdentityUnresolved.rawValue { return "local_identity_unresolved" }
         return record.effectiveUnitMarketPriceUSD == nil ? "unavailable" : "priced"
     }
 

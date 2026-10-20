@@ -3749,7 +3749,8 @@ struct CollectionStore {
         resolution: VariantResolution
     ) throws {
         let oldPriceKey = row.priceKey
-        let printingID = row.priceStorageID
+        let changesKnownFinish = row.variantID != nil && row.variantID != variant?.id
+        let printingID = changesKnownFinish ? row.collectionKey : row.priceStorageID
         let treatmentIDs = row.priceTreatmentIDs
         let newPriceKey = PriceRecord.key(
             game: row.cardGame,
@@ -3772,6 +3773,21 @@ struct CollectionStore {
         row.variantID = variant?.id
         row.variantLabel = variant?.label
         row.variantResolutionRaw = resolution.rawValue
+        if changesKnownFinish {
+            row.tcgplayerProductID = nil
+            row.tcgplayerSKUID = nil
+            row.tcgplayerURL = nil
+            row.justTCGCardID = nil
+            row.justTCGVariantID = nil
+            let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == newPriceKey }))
+            for record in records {
+                _ = PriceObservationLog(context: context).recordInvalidation(instrumentKey: newPriceKey,
+                    source: record.source ?? .justTCG)
+                record.marketVariantID = nil
+            }
+            let caches = try context.fetch(FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == oldPriceKey || $0.key == newPriceKey }))
+            for cache in caches { context.delete(cache) }
+        }
     }
 
     /// Scanner and catalog paths already carry the exact live provider evidence
@@ -4919,15 +4935,12 @@ struct CollectionStore {
                 clearPendingCatalogFinish(on: previous)
             }
 
-            let preserveDateAdded = source == .catalogUpdate || source == .catalogBackfill
-
             let correctedRow: CollectedCard
             if let existing = try self.card(
                 forAnyKey: destinationKey,
                 magicTreatmentIDsRaw: correctedTreatmentIDs
             ) {
                 existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, quantity)
-                if !preserveDateAdded { existing.dateAdded = .now }
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = correctedTreatmentIDs
                 }
@@ -4968,19 +4981,19 @@ struct CollectionStore {
                     identityResolution: previousSnapshot.identityResolution,
                     setReleaseOrder: previousSnapshot.setReleaseOrder,
                     quantity: quantity,
-                    dateAdded: preserveDateAdded ? previousSnapshot.dateAdded : .now,
+                    dateAdded: previousSnapshot.dateAdded,
                     magicTreatments: correctedTreatments,
                     magicTreatmentQualifiers: correctedTreatmentQualifiers
                 )
                 inserted.catalogProviderID = previousSnapshot.catalogProviderID
-                inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
-                inserted.tcgplayerProductID = previousSnapshot.tcgplayerProductID
+                inserted.tcgplayerURL = nil
+                inserted.tcgplayerProductID = nil
                 // A SKU is finish-specific just like the marketplace variant.
                 // The correction must resolve the destination independently.
                 inserted.tcgplayerSKUID = nil
                 inserted.userArtworkFilename = previousSnapshot.userArtworkFilename
                 inserted.itemKindRaw = previousSnapshot.itemKindRaw
-                inserted.justTCGCardID = previousSnapshot.justTCGCardID
+                inserted.justTCGCardID = nil
                 // The old marketplace variant is exact for the outgoing row;
                 // carrying it over would price the corrected finish as the old
                 // one during the next refresh.
@@ -5214,9 +5227,6 @@ struct CollectionStore {
                 clearPendingCatalogFinish(on: previous)
             }
 
-            let preserveDateAdded = mode == .quietBackfill
-                || source == .catalogUpdate
-                || source == .catalogBackfill
             let correctedRow: CollectedCard
             let didInsert: Bool
             if let existing = try self.card(
@@ -5227,7 +5237,6 @@ struct CollectionStore {
                     existing.quantity,
                     totalQuantity
                 )
-                if !preserveDateAdded { existing.dateAdded = .now }
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = correctedTreatmentIDs
                 }
@@ -5269,19 +5278,19 @@ struct CollectionStore {
                     identityResolution: previousSnapshot.identityResolution,
                     setReleaseOrder: previousSnapshot.setReleaseOrder,
                     quantity: totalQuantity,
-                    dateAdded: preserveDateAdded ? previousSnapshot.dateAdded : .now,
+                    dateAdded: previousSnapshot.dateAdded,
                     magicTreatments: correctedTreatments,
                     magicTreatmentQualifiers: correctedTreatmentQualifiers
                 )
                 inserted.catalogProviderID = previousSnapshot.catalogProviderID
-                inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
-                inserted.tcgplayerProductID = previousSnapshot.tcgplayerProductID
+                inserted.tcgplayerURL = nil
+                inserted.tcgplayerProductID = nil
                 // A finish-specific marketplace handle belongs to the outgoing
                 // row. The corrected finish must be resolved independently.
                 inserted.tcgplayerSKUID = nil
                 inserted.userArtworkFilename = previousSnapshot.userArtworkFilename
                 inserted.itemKindRaw = previousSnapshot.itemKindRaw
-                inserted.justTCGCardID = previousSnapshot.justTCGCardID
+                inserted.justTCGCardID = nil
                 inserted.justTCGVariantID = nil
                 inserted.justTCGAPIVersion = previousSnapshot.justTCGAPIVersion
                 inserted.pokemonPrintRunRaw = previousSnapshot.pokemonPrintRunRaw

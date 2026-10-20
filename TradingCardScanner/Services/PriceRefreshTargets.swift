@@ -68,7 +68,8 @@ enum PriceRefreshTargets {
                         collectorNumber: card.cardNumber,
                         catalogID: card.catalogProviderID
                             ?? (card.providerID.hasPrefix("csv:") ? nil : card.providerID),
-                        pokemonPrintRun: card.pokemonPrintRun
+                        pokemonPrintRun: card.pokemonPrintRun,
+                        finish: card.variant
                     )
                     : nil,
                 gradingCompany: card.gradingCompany,

@@ -197,7 +197,7 @@ struct RefreshRowPatch: Sendable {
     enum Change: Sendable {
         case catalogMetadata(ImportedCatalogMetadata, checkedAt: Date)
         case sealedArtwork(url: String?, checkedAt: Date)
-        case vendorBinding(productID: String?, sku: String?)
+        case vendorBinding(productID: String?, sku: String?, exactProductID: String?, cardID: String?, variantID: String?)
         case gradedBinding(
             marketVariantID: String,
             marketCardID: String?,
@@ -1147,13 +1147,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                                     at: checkedAt
                                 )
                                 if let url { row.imageURL = url }
-                            case let .vendorBinding(productID, sku):
-                                if row.tcgplayerProductID == nil, let productID {
-                                    row.tcgplayerProductID = productID
-                                }
-                                if row.tcgplayerSKUID == nil, let sku {
-                                    row.tcgplayerSKUID = sku
-                                }
+                            case let .vendorBinding(productID, sku, exactProductID, cardID, variantID):
+                                PriceRefreshController.applyVendorBinding(to: row, productID: productID,
+                                    sku: sku, exactProductID: exactProductID, cardID: cardID, variantID: variantID)
                             case let .gradedBinding(
                                 marketVariantID,
                                 marketCardID,
@@ -1267,7 +1263,10 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                             expectedMarketVariantID: row.marketVariantID,
                             change: .vendorBinding(
                                 productID: card.tcgplayerId,
-                                sku: variant.tcgplayerSkuId
+                                sku: variant.tcgplayerSkuId,
+                                exactProductID: owner.exactPhysicalProductID,
+                                cardID: card.uuid ?? card.id,
+                                variantID: variant.variantId
                             )
                         )
                     )
@@ -1558,8 +1557,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 variantID: candidate.target.variantID,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
-            let cachedVariant = candidate.target.marketVariantID
-                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
+            let cachedVariant = candidate.permitsStoredHandles && candidate.exactPhysicalProductID == nil
+                ? (candidate.target.marketVariantID ?? identities.cachedVariantID(forKey: key, using: identityIndex))
+                : nil
             let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
             let external = candidate.externalLookups
             guard identities.fallbackCheckIsDue(
@@ -1608,11 +1608,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
                     requiresFullResponse: !candidate.target.hasPrice
                         || candidate.target.needsArtwork,
-                    exactPhysicalProductID: candidate.card.flatMap {
-                        CardPricing.tcgplayerProductID(for: $0,
-                            variant: candidate.target.variantID.map(PhysicalVariant.resolving),
-                            printRun: candidate.target.pokemonPrintRun).map(String.init)
-                    }
+                    exactPhysicalProductID: candidate.exactPhysicalProductID
                 )
             )
         }
@@ -1867,7 +1863,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     ),
                     certificationNumber: nil,
                     labelCardText: []
-                )
+                ),
+                finish: target.variantID.map(PhysicalVariant.resolving),
+                printRun: target.pokemonPrintRun
             )
         }
 
@@ -1978,6 +1976,14 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     }
                     await checkpoint()
                     continue
+                case .incompleteSearch, .localIdentityUnresolved:
+                    for target in group {
+                        if store.recordLookupStatus(lookup == .incompleteSearch ? .gradedSearchIncomplete : .gradedIdentityUnresolved,
+                            game: target.game, printingID: target.printingID, variantID: target.variantID,
+                            treatmentIDs: target.magicTreatmentIDsRaw) { stagedWriteCount += 1 }
+                    }
+                    await checkpoint()
+                    continue
                 }
             } catch {
                 // A single graded product lookup is independent of the other
@@ -1986,18 +1992,22 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 // retry state remain honest, then continue the bounded pass.
                 if Task.isCancelled { break }
                 transportFailures += group.count
+                for target in group {
+                    if store.recordFailure(game: target.game, printingID: target.printingID,
+                        variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw) { stagedWriteCount += 1 }
+                }
+                await checkpoint()
                 continue
             }
 
-            let byVariantID = Dictionary(
-                variants.map { ($0.id, $0) },
-                uniquingKeysWith: { first, _ in first }
-            )
+            let byVariantID = Dictionary(grouping: variants, by: \.id).compactMapValues { values in
+                Set(values).count == 1 ? values.first : nil
+            }
             for target in group {
                 guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let variant: GradedVariant?
                 if let handle = target.marketVariantID {
-                    variant = byVariantID[handle]
+                    variant = byVariantID[handle].flatMap { selectGradedVariant(from: [$0], target: target) }
                 } else {
                     variant = selectGradedVariant(from: variants, target: target)
                 }
@@ -3058,6 +3068,7 @@ final class PriceRefreshController: ObservableObject {
                 return true
             }
             if target.itemKind == .gradedCard,
+               target.lastFailureAt == nil,
                target.lastFailureReasonRaw
                 .flatMap(PricingDiagnosticReason.init(rawValue:))?.isGradedCoverageResult == true {
                 guard target.canResolveGradedVariant else { return false }
@@ -3752,7 +3763,7 @@ final class PriceRefreshController: ObservableObject {
 
     /// One card the catalog could not finish, captured with whatever identity
     /// was available at the moment it fell through.
-    fileprivate struct FallbackCandidate {
+    struct FallbackCandidate {
         let target: PriceTarget
         /// Present when the catalog identified the card but could not price it.
         /// Absent when the catalog could not identify it at all.
@@ -3779,11 +3790,17 @@ final class PriceRefreshController: ObservableObject {
         /// no keyed route and must resolve by search once, after which the stored
         /// variant handle makes every later refresh a batch.
         var externalLookups: [JustTCGBatchLookup] {
+            if let card {
+                let exact = PriceFallbackQuoteResolver.directLookups(card: card,
+                    variant: target.variantID.map(PhysicalVariant.resolving), pokemonPrintRun: target.pokemonPrintRun)
+                if !exact.isEmpty { return exact }
+            }
             if let catalogID = card?.providerID ?? target.catalogPrintingID,
                let variant = target.variantID.map(PhysicalVariant.resolving) {
                 let stamped = PriceFallbackQuoteResolver.verifiedLookups(catalogID: catalogID, variant: variant)
                 if !stamped.isEmpty { return stamped }
             }
+            guard permitsStoredHandles else { return [] }
             if let tcgplayerProductID = target.tcgplayerProductID,
                !tcgplayerProductID.isEmpty {
                 return [.tcgplayerID(tcgplayerProductID)]
@@ -3797,6 +3814,31 @@ final class PriceRefreshController: ObservableObject {
                 card: card, variant: target.variantID.map(PhysicalVariant.resolving),
                 pokemonPrintRun: target.pokemonPrintRun
             )
+        }
+
+        var exactPhysicalProductID: String? {
+            let verified = (card.map { PriceFallbackQuoteResolver.directLookups(card: $0,
+                variant: target.variantID.map(PhysicalVariant.resolving), pokemonPrintRun: target.pokemonPrintRun) })
+                ?? PriceFallbackQuoteResolver.verifiedLookups(catalogID: target.catalogPrintingID ?? target.printingID,
+                    variant: target.variantID.map(PhysicalVariant.resolving))
+            let ids = Set(verified.compactMap { lookup -> String? in
+                guard case let .tcgplayerID(id) = lookup else { return nil }
+                return id
+            })
+            return ids.count == 1 ? ids.first : nil
+        }
+
+        var permitsStoredHandles: Bool {
+            if let fresh = exactPhysicalProductID { return target.tcgplayerProductID == fresh }
+            if target.game == .pokemon,
+               let id = target.variantID,
+               ProductFinish.printing(for: PhysicalVariant.resolving(id)) == nil { return false }
+            if let id = target.variantID,
+               PokemonVariantRules.requiresPhysicalReview(cardID: target.catalogPrintingID ?? target.printingID,
+                   variant: PhysicalVariant.resolving(id)) { return false }
+            // A fetched Pokémon catalog with no exact binding cannot validate a
+            // persisted card-level handle for a different finish.
+            return card == nil || target.game != .pokemon
         }
 
         func subject(vendorCardID: String?) -> ProductPriceSubject? {
@@ -4031,12 +4073,8 @@ final class PriceRefreshController: ObservableObject {
             // told us which TCGplayer product this printing is, that stays
             // local, so opening the marketplace never needs a live request.
             for row in identityRowsByPriceKey[owner.priceKey] ?? [] {
-                if let productID = card.tcgplayerId, row.tcgplayerProductID == nil {
-                    row.tcgplayerProductID = productID
-                }
-                if let sku = variant.tcgplayerSkuId, row.tcgplayerSKUID == nil {
-                    row.tcgplayerSKUID = sku
-                }
+                applyVendorBinding(to: row, productID: card.tcgplayerId, sku: variant.tcgplayerSkuId,
+                    exactProductID: owner.exactPhysicalProductID, cardID: card.uuid ?? card.id, variantID: variant.variantId)
             }
         }
 
@@ -4078,6 +4116,23 @@ final class PriceRefreshController: ObservableObject {
         return allStored
             ? .accepted(metadataApplied: true, priceWritten: true)
             : .rejected
+    }
+
+    nonisolated static func applyVendorBinding(
+        to row: CollectedCard, productID: String?, sku: String?, exactProductID: String?,
+        cardID: String?, variantID: String?
+    ) {
+        if let productID, productID == exactProductID, row.itemKind == .rawCard {
+            row.tcgplayerProductID = productID
+            row.tcgplayerURL = "https://www.tcgplayer.com/product/\(productID)"
+            row.tcgplayerSKUID = sku
+            row.justTCGCardID = cardID
+            row.justTCGVariantID = variantID
+            row.justTCGAPIVersion = "v1"
+        } else {
+            if row.tcgplayerProductID == nil { row.tcgplayerProductID = productID }
+            if row.tcgplayerSKUID == nil { row.tcgplayerSKUID = sku }
+        }
     }
 
     /// Compatibility overload for callers that already have one row index.

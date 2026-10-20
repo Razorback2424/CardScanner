@@ -985,7 +985,7 @@ struct CollectionView: View {
                 let verb = excludedFromValueCopyCount == 1 ? "is" : "are"
                 return "\(excludedFromValueCopyCount) \(copyLabel) \(verb) not included in the collection value."
             }
-            return "\(excludedFromValueCopyCount) \(copyLabel) unpriced, not included in the total."
+            return "\(excludedFromValueCopyCount) \(copyLabel) excluded from USD value."
         }
 
         static func make(

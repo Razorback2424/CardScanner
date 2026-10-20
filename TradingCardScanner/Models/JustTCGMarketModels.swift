@@ -601,6 +601,7 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
     let grade: CardGrade
     /// Exact provider display when available, e.g. `CGC Authentic`.
     let canonical: String?
+    let printing: String?
     let marketPriceUSD: Double?
     let updatedAt: Date?
 
@@ -610,6 +611,7 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         company: GradingCompany,
         grade: CardGrade,
         canonical: String? = nil,
+        printing: String? = nil,
         marketPriceUSD: Double?,
         updatedAt: Date?
     ) {
@@ -618,6 +620,7 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         self.company = company
         self.grade = grade
         self.canonical = canonical
+        self.printing = printing
         self.marketPriceUSD = marketPriceUSD
         self.updatedAt = updatedAt
     }
@@ -655,6 +658,7 @@ struct GradedMarketCoverage: Codable, Equatable, Sendable {
         let grade: CardGrade
         let canonical: String?
         let marketPriceUSD: Double?
+        var printing: String? = nil
 
         var displayName: String {
             if let canonical, !canonical.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -682,7 +686,8 @@ struct GradedMarketCoverage: Codable, Equatable, Sendable {
                 company: $0.company,
                 grade: $0.grade,
                 canonical: $0.canonical,
-                marketPriceUSD: $0.marketPriceUSD
+                marketPriceUSD: $0.marketPriceUSD,
+                printing: $0.printing
             )
         }.sorted { lhs, rhs in
             let lhsDistance = lhs.grade.value.flatMap(Double.init).map { abs($0 - (targetValue ?? $0)) }

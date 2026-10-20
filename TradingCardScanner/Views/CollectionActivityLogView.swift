@@ -593,7 +593,7 @@ struct CollectionActivityEditor: View {
             if activity.kind.hasQuantityClaim, activity.itemKind == .rawCard {
                 Section {
                     Picker("Finish", selection: $variantID) {
-                        ForEach(gameRegistry.variantPolicy(for: activity.game)?.selectableVariants ?? []) { variant in
+                        ForEach(correctionOptions) { variant in
                             Text(
                                 activity.magicTreatmentEvidence.displayLabel(with: variant)
                                     ?? variant.label
@@ -604,7 +604,7 @@ struct CollectionActivityEditor: View {
                 } header: {
                     Text("Correct Finish")
                 } footer: {
-                    Text("The correction applies to the copies claimed by this entry and is recorded in the ledger.")
+                    Text("Compare the physical card’s set, number, stamp and foil pattern before saving. A finish correction keeps the printed card identity and applies to the copies claimed by this entry.")
                 }
                 .disabled(!canCorrect)
             } else {
@@ -649,6 +649,18 @@ struct CollectionActivityEditor: View {
     }
 
     private var gameRegistry: CardGameRegistry { gameRuntimes?.registry ?? .standard }
+
+    private var correctionOptions: [PhysicalVariant] {
+        if let card = collectionCard, card.cardGame == .pokemon,
+           let reviewed = PokemonVariantRules.reviewedVariants(cardID: card.catalogProviderID ?? card.providerID) {
+            // Retain the current value for review; selecting a replacement is
+            // an explicit physical-card confirmation, never an automatic remap.
+            return reviewed + [card.variant].compactMap { variant in
+                variant.flatMap { reviewed.contains($0) ? nil : $0 }
+            }
+        }
+        return gameRegistry.variantPolicy(for: activity.game)?.selectableVariants ?? []
+    }
 
     private var errorBinding: Binding<Bool> {
         Binding(

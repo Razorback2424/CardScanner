@@ -67,7 +67,7 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertEqual(footer.visibleLogicalItemCount, 1)
         XCTAssertEqual(footer.excludedFromValueCopyCount, 7)
         XCTAssertEqual(footer.itemSummary, "1 item shown")
-        XCTAssertEqual(footer.exclusionSummary, "7 copies unpriced, not included in the total.")
+        XCTAssertEqual(footer.exclusionSummary, "7 copies excluded from USD value.")
     }
 
     func testCollectionFooterUsesGenericWordingForNonUSDExcludedQuotes() {

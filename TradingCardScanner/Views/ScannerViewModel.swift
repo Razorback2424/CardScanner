@@ -4541,7 +4541,10 @@ final class ScannerViewModel: ObservableObject {
             )
             let outcome = await self.gradedResolver.resolve(
                 card: scan.card,
-                slab: slab,
+                slab: GradedSlabEvidence(company: slab.company, grade: slab.grade,
+                    certificationNumber: slab.certificationNumber, labelCardText: slab.labelCardText,
+                    printedFinish: scan.resolved.variant ?? slab.printedFinish,
+                    printedPrintRun: scan.pokemonPrintRun ?? slab.printedPrintRun),
                 pokemonPrintRun: scan.pokemonPrintRun
             )
             let lookupResult: String

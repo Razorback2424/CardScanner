@@ -32,6 +32,7 @@ struct GradedCardIdentity: Hashable, Sendable {
         let collectorNumber: String
         let catalogID: String?
         let pokemonPrintRun: PokemonPrintRun?
+        let finish: PhysicalVariant?
 
         var groupingValues: [String] {
             [
@@ -39,7 +40,8 @@ struct GradedCardIdentity: Hashable, Sendable {
                 collectorNumber,
                 name,
                 catalogID ?? "none",
-                pokemonPrintRun?.rawValue ?? "none"
+                pokemonPrintRun?.rawValue ?? "none",
+                finish?.id ?? "none"
             ]
         }
 
@@ -49,7 +51,8 @@ struct GradedCardIdentity: Hashable, Sendable {
                 setName,
                 collectorNumber,
                 catalogID ?? "none",
-                pokemonPrintRun?.rawValue ?? "none"
+                pokemonPrintRun?.rawValue ?? "none",
+                finish?.id ?? "none"
             ]
         }
     }
@@ -59,28 +62,32 @@ struct GradedCardIdentity: Hashable, Sendable {
     let collectorNumber: String
     let catalogID: String?
     let pokemonPrintRun: PokemonPrintRun?
+    let finish: PhysicalVariant?
 
     init(
         name: String,
         setName: String,
         collectorNumber: String,
         catalogID: String? = nil,
-        pokemonPrintRun: PokemonPrintRun? = nil
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        finish: PhysicalVariant? = nil
     ) {
         self.name = name
         self.setName = setName
         self.collectorNumber = collectorNumber
         self.catalogID = catalogID
         self.pokemonPrintRun = pokemonPrintRun
+        self.finish = finish
     }
 
-    init(_ card: IdentifiedCard, pokemonPrintRun: PokemonPrintRun? = nil) {
+    init(_ card: IdentifiedCard, pokemonPrintRun: PokemonPrintRun? = nil, finish: PhysicalVariant? = nil) {
         self.init(
             name: card.name,
             setName: card.setName,
             collectorNumber: card.cardNumber,
             catalogID: card.providerID,
-            pokemonPrintRun: pokemonPrintRun
+            pokemonPrintRun: pokemonPrintRun,
+            finish: finish
         )
     }
 
@@ -98,7 +105,8 @@ struct GradedCardIdentity: Hashable, Sendable {
             setName: setName,
             collectorNumber: collectorNumber,
             catalogID: catalogID,
-            pokemonPrintRun: pokemonPrintRun
+            pokemonPrintRun: pokemonPrintRun,
+            finish: finish
         )
     }
 
@@ -160,10 +168,18 @@ struct GradedCardIdentity: Hashable, Sendable {
         guard matches(card, game: game, expectedSetSlug: expectedSetSlug),
               variant.type?.caseInsensitiveCompare("graded") == .orderedSame
         else { return false }
+        if let finish, !Self.matchesFinish(finish, printing: variant.printing, printRun: pokemonPrintRun) {
+            return false
+        }
 
         guard let pokemonPrintRun else { return true }
         guard let printing = variant.printing else { return false }
         return ProductEdition.from(pokemonPrintRun).admits(printing: printing)
+    }
+
+    static func matchesFinish(_ finish: PhysicalVariant, printing: String?, printRun: PokemonPrintRun? = nil) -> Bool {
+        guard let printing, case let .printings(allowed) = ProductFinish.requirement(for: finish, printRun: printRun) else { return false }
+        return allowed.contains { $0.caseInsensitiveCompare(printing) == .orderedSame }
     }
 
 }
@@ -172,6 +188,8 @@ enum GradedVariantLookupResult: Equatable, Sendable {
     case matched([GradedVariant])
     case cardFoundWithoutGradedVariants
     case noProductMatch
+    case incompleteSearch
+    case localIdentityUnresolved
 }
 
 struct JustTCGV2GradedClient: Sendable {
@@ -179,13 +197,16 @@ struct JustTCGV2GradedClient: Sendable {
 
     private let transport: JustTCGTransport
     private let setDirectoryProvider: ProductSetDirectoryProvider
+    private let maximumPages: Int
 
     init(
         transport: JustTCGTransport,
-        setDirectoryProvider: ProductSetDirectoryProvider = .shared
+        setDirectoryProvider: ProductSetDirectoryProvider = .shared,
+        maximumPages: Int = 3
     ) {
         self.transport = transport
         self.setDirectoryProvider = setDirectoryProvider
+        self.maximumPages = max(1, maximumPages)
     }
 
     /// Keep the outgoing query testable as a value. A missing set is a
@@ -318,20 +339,27 @@ struct JustTCGV2GradedClient: Sendable {
         grades: Set<String> = [],
         lane: JustTCGRequestLane = .interactive
     ) async throws -> GradedVariantLookupResult {
+        try Task.checkCancellation()
         guard let vendorGame = identity.vendorGame(for: game) else {
             throw CardGameSupportError.unsupportedGame(game)
         }
-        let directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
-            let response: GradedSetsResponse = try await transport.get(
-                "v1/sets",
-                query: [("game", vendorGame.rawValue)],
-                lane: lane
-            )
-            return ProductSetDirectory(
-                sets: response.data.compactMap { set in
-                    set.id.map { (id: $0, name: set.name) }
-                }
-            )
+        let directory: ProductSetDirectory
+        do {
+            directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
+                let response: GradedSetsResponse = try await transport.get(
+                    "v1/sets", query: [("game", vendorGame.rawValue)], lane: lane
+                )
+                return ProductSetDirectory(
+                    sets: response.data.compactMap { set in
+                        set.id.map { (id: $0, name: set.name) }
+                    }
+                )
+            }
+        } catch let error as JustTCGTransport.TransportError {
+            switch error {
+            case .budgetReached, .monthlyBudgetReached: return .incompleteSearch
+            default: throw error
+            }
         }
         let setSlug = Self.resolvedSetSlug(
             identity: identity,
@@ -342,7 +370,7 @@ struct JustTCGV2GradedClient: Sendable {
             // A known print run without a trustworthy vendor set projection is
             // ambiguous. Do not issue a browse request whose first result could
             // become an authoritative slab binding.
-            return .noProductMatch
+            return .localIdentityUnresolved
         }
         let query = Self.requestQuery(
             identity: identity,
@@ -352,20 +380,42 @@ struct JustTCGV2GradedClient: Sendable {
             grades: grades
         )
 
-        let response: JustTCGV2CardsResponse = try await transport.get(
-            "v2/cards",
-            query: query,
-            lane: lane
-        )
+        var cards: [JustTCGV2Card] = []
+        var cursor: String?
+        var visited = Set<String>()
+        for pageIndex in 0..<maximumPages {
+            try Task.checkCancellation()
+            var pageQuery = query
+            if let cursor { pageQuery.append(("cursor", cursor)) }
+            let page: (value: JustTCGV2CardsResponse, link: String?)
+            do {
+                page = try await transport.getPage("v2/cards", query: pageQuery, lane: lane)
+            } catch let error as JustTCGTransport.TransportError {
+                switch error {
+                case .budgetReached, .monthlyBudgetReached: return .incompleteSearch
+                default: throw error
+                }
+            }
+            cards.append(contentsOf: page.value.data)
+            do { cursor = try Self.nextCursor(from: page.link) }
+            catch { return .incompleteSearch }
+            guard let cursor else { break }
+            guard visited.insert(cursor).inserted, pageIndex + 1 < maximumPages else { return .incompleteSearch }
+        }
 
         // Only cards that are demonstrably the one asked for.
-        let matchingCards = response.data.filter {
+        let matchingCards = cards.filter {
             identity.matches($0, game: game, expectedSetSlug: setSlug)
         }
         var variants: [GradedVariant] = []
+        // Keep incompatible finish evidence visible to final selection. A card
+        // with Reverse-only slabs has graded listings, but cannot price Normal.
+        let cardIdentity = GradedCardIdentity(name: identity.name, setName: identity.setName,
+            collectorNumber: identity.collectorNumber, catalogID: identity.catalogID,
+            pokemonPrintRun: identity.pokemonPrintRun)
         for card in matchingCards {
             for variant in card.variants ?? [] {
-                guard identity.matches(
+                guard cardIdentity.matches(
                         card,
                         variant: variant,
                         game: game,
@@ -384,6 +434,7 @@ struct JustTCGV2GradedClient: Sendable {
                     company: company,
                     grade: grading.cardGrade,
                     canonical: grading.canonical,
+                    printing: variant.printing,
                     // `null` is a real answer: the vendor does not manufacture a
                     // number for every grader/grade permutation, and an absent
                     // price must read as "no reliable market price" rather than
@@ -414,8 +465,33 @@ struct JustTCGV2GradedClient: Sendable {
             lane: lane
         ) {
         case let .matched(variants): return variants
-        case .cardFoundWithoutGradedVariants, .noProductMatch: return []
+        case .cardFoundWithoutGradedVariants, .noProductMatch, .incompleteSearch, .localIdentityUnresolved: return []
         }
+    }
+
+    /// Only the cursor is consumed. The original identity/grade/region filters
+    /// stay authoritative; a provider link cannot replace them or receive a key.
+    static func nextCursor(from link: String?) throws -> String? {
+        guard let link, !link.isEmpty else { return nil }
+        let next = link.components(separatedBy: ",").filter {
+            $0.range(of: #"\brel\s*=\s*"?next\b"#, options: [.regularExpression, .caseInsensitive]) != nil
+        }
+        guard !next.isEmpty else {
+            if link.lowercased().contains("next") { throw JustTCGTransport.TransportError.invalidURL }
+            return nil
+        }
+        guard next.count == 1, let part = next.first,
+              let start = part.firstIndex(of: "<"), let end = part.firstIndex(of: ">"), start < end,
+              let url = URLComponents(string: String(part[part.index(after: start)..<end])),
+              url.scheme == "https", url.host == "api.justtcg.com", url.path == "/v2/cards",
+              url.user == nil, url.password == nil, url.port == nil, url.fragment == nil else {
+            throw JustTCGTransport.TransportError.invalidURL
+        }
+        let cursors = (url.queryItems ?? []).filter { $0.name == "cursor" }
+        guard cursors.count == 1, let cursor = cursors[0].value, !cursor.isEmpty else {
+            throw JustTCGTransport.TransportError.invalidURL
+        }
+        return cursor
     }
 
     /// The documented graders and numeric grades a set of owned slabs covers,

@@ -51,6 +51,12 @@ final class GradedVariantModel: ObservableObject {
             case .noProductMatch:
                 variants = []
                 errorMessage = "Couldn't find this card at the pricing vendor."
+            case .incompleteSearch:
+                variants = []
+                errorMessage = "The pricing search is incomplete. Try again later."
+            case .localIdentityUnresolved:
+                variants = []
+                errorMessage = "Confirm the card’s set and print run before checking graded prices."
             }
         } catch {
             errorMessage = SealedBrowseModel.message(for: error)
@@ -132,7 +138,12 @@ struct GradedVariantPickerView: View {
 
     private func gradeRow(_ variant: GradedVariant) -> some View {
         HStack {
-            Text(variant.displayName)
+            VStack(alignment: .leading) {
+                Text(variant.displayName)
+                Text(variant.printing ?? "Finish not confirmed")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             Spacer()
             if let price = variant.marketPriceUSD {
                 Text(price, format: .currency(code: "USD"))
@@ -196,6 +207,7 @@ struct GradedSlabConfirmationView: View {
             Section {
                 LabeledContent("Card", value: card.name)
                 LabeledContent("Grade", value: variant.displayName)
+                LabeledContent("Printed finish", value: variant.printing ?? "Not confirmed")
                 if let price = variant.marketPriceUSD {
                     LabeledContent("Market price") {
                         Text(price, format: .currency(code: "USD")).monospacedDigit()

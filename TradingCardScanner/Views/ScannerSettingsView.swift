@@ -334,7 +334,7 @@ private struct SettingsContentView: View {
     private var developerSection: some View {
         Section {
             DisclosureGroup("Developer") {
-                Button("Export Unpriced Cards", systemImage: "dollarsign.circle") {
+                Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
                     prepareCSVExport(.unpriced, filename: "CardScanner Unpriced Cards")
                 }
                 .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)

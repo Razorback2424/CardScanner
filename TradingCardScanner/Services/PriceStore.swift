@@ -60,6 +60,10 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case invalidProviderQuote = "invalid_provider_quote"
     case noSupportedProvider = "no_supported_provider"
     case missingMarketMapping = "missing_market_mapping"
+    case otherCurrency = "excluded_non_usd_quote"
+    case physicalIdentityReview = "physical_identity_review_needed"
+    case gradedSearchIncomplete = "graded_search_incomplete"
+    case gradedIdentityUnresolved = "graded_local_identity_unresolved"
 
     var title: String {
         switch self {
@@ -73,11 +77,15 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedMarketPriceNull: return "Graded market price unavailable"
         case .gradedCardNotTracked: return "No graded data for this card"
         case .gradedCardHasNoPrices: return "No graded prices yet"
-        case .gradedGradeNotTracked: return "This grade is not listed yet"
+        case .gradedGradeNotTracked: return "Exact graded object not listed"
         case .justTCGVariantUnresolved: return "Market variant not resolved"
         case .invalidProviderQuote: return "Invalid provider quote rejected"
         case .noSupportedProvider: return "No supported price provider"
         case .missingMarketMapping: return "Price not mapped yet"
+        case .otherCurrency: return "Quote excluded from USD valuation"
+        case .physicalIdentityReview: return "Review physical card identity"
+        case .gradedSearchIncomplete: return "Graded search incomplete"
+        case .gradedIdentityUnresolved: return "Graded set identity unresolved"
         }
     }
 
@@ -92,7 +100,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .sealedProductUnmatched:
             return "The sealed marketplace catalog was searched, but no unambiguous product matched this imported row. It will not retry automatically until matching rules improve."
         case .noExactVariantPrice:
-            return "The provider does not publish a price for the exact variant you own."
+            return "No eligible USD quote was resolved for this exact physical variant."
         case .gradedVariantUnavailable:
             return "No exact marketplace variant matches this grader and grade."
         case .providerRequestFailed:
@@ -104,7 +112,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedCardHasNoPrices:
             return "JustTCG recognizes this card but has no graded listings for it yet. The app will check again next week."
         case .gradedGradeNotTracked:
-            return "JustTCG has graded listings for this card, but not this exact grader and grade. Other grades are shown as context only; they are never used as this slab’s value. The app will check again next week."
+            return "JustTCG has graded listings for this card, but no unambiguous match for this finish, grader, grade and label. Other listings are context only; they are never used as this slab’s value. The app will check again next week."
         case .justTCGVariantUnresolved:
             return "The marketplace card was identified, but its exact physical variant was not."
         case .invalidProviderQuote:
@@ -113,6 +121,14 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
             return "This item has no provider that can answer its exact identity. It will be retried occasionally rather than on every refresh."
         case .missingMarketMapping:
             return "The catalog has no approved marketplace mapping for this exact printing and finish. This does not mean a market price is unavailable."
+        case .otherCurrency:
+            return "A native-currency quote is retained for reference. USD totals exclude it; the latest check does not refresh that older quote."
+        case .physicalIdentityReview:
+            return "Compare the card’s printed set, number, stamp and foil pattern. Use History → Correct finish for a confirmed finish change. A different printed set or number needs a card identity review; no price from another printing is substituted."
+        case .gradedSearchIncomplete:
+            return "The bounded provider search did not finish. This is not evidence that the card or grade is absent. A later refresh can retry."
+        case .gradedIdentityUnresolved:
+            return "The app could not resolve the vendor set for this print run. No card request was made; provider coverage remains unverified."
         }
     }
 
@@ -131,6 +147,15 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if record?.lastFailureAt != nil {
+            if record?.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue { return .invalidProviderQuote }
+            return .providerRequestFailed
+        }
+        if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
+           reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved { return reason }
+        if let id = card.variantID,
+           PokemonVariantRules.requiresPhysicalReview(cardID: card.catalogProviderID ?? card.providerID,
+               variant: PhysicalVariant.resolving(id)) { return .physicalIdentityReview }
         if record?.lastFailureReasonRaw == PricingDiagnosticReason.missingMarketMapping.rawValue {
             return .missingMarketMapping
         }
@@ -155,6 +180,8 @@ enum PricingDiagnostics {
             return .gradedVariantUnavailable
         }
 
+        if let record, record.unitMarketPriceUSD != nil,
+           record.currencyCode.caseInsensitiveCompare("USD") != .orderedSame { return .otherCurrency }
         guard let record, record.lastCheckedAt != nil else { return .notChecked }
 
         if card.catalogProviderID != nil,
@@ -1127,6 +1154,27 @@ struct PriceStore {
             || record.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue {
             record.lastFailureReasonRaw = nil
         }
+        return true
+    }
+
+    /// Local resolution and bounded-search outcomes are attempts, never
+    /// authoritative negative coverage or successful quote observations.
+    @discardableResult
+    func recordLookupStatus(
+        _ reason: PricingDiagnosticReason, game: CardGame, printingID: String,
+        variantID: String?, at date: Date = .now, treatmentIDs: [String] = []
+    ) -> Bool {
+        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID, treatmentIDs: treatmentIDs)
+        if enqueue(keys: [key], {
+            guard $0.recordLookupStatus(reason, game: game, printingID: printingID, variantID: variantID,
+                at: date, treatmentIDs: treatmentIDs) else { throw CheckpointError.writeFailed }
+        }) { return true }
+        guard let record = recordForWrite(key: key, game: game, printingID: printingID,
+            variantID: variantID, treatmentIDs: treatmentIDs) else { return false }
+        if let checked = record.lastCheckedAt, checked > date { return true }
+        record.lastCheckedAt = date
+        record.lastFailureAt = nil
+        record.lastFailureReasonRaw = reason.rawValue
         return true
     }
 

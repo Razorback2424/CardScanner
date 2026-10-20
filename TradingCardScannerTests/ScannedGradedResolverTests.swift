@@ -2,6 +2,17 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScannedGradedResolverTests: XCTestCase {
+    func testOwnedNormalCGC10RejectsReverseHoloAndMissingFinish() {
+        let evidence = GradedSlabEvidence(company: .cgc,
+            grade: CardGrade(value: "10", label: "Gem Mint"), certificationNumber: "SYNTHETIC-001",
+            labelCardText: [], printedFinish: .normal)
+        for printing: String? in ["Reverse Holofoil", nil] {
+            let candidate = GradedVariant(id: "synthetic-reverse", company: .cgc,
+                grade: evidence.grade, printing: printing, marketPriceUSD: 40, updatedAt: nil)
+            XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [candidate], for: evidence))
+        }
+    }
+
     func testDisabledGradedCapabilityStopsBeforeVendorLookup() async {
         let recorder = GradedIdentityRecorder()
         let resolver = ScannedGradedResolver(
@@ -299,6 +310,7 @@ final class ScannedGradedResolverTests: XCTestCase {
             cardID: "vendor-card",
             company: company,
             grade: grade,
+            printing: "Normal",
             marketPriceUSD: priceUSD,
             updatedAt: nil
         )

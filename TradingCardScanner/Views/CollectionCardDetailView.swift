@@ -1055,10 +1055,11 @@ struct CollectionCardDetailView: View {
               let coverage = price.gradedMarketCoverage,
               !coverage.listedGrades.isEmpty else { return nil }
         let grades = coverage.listedGrades.prefix(6).map { listedGrade in
+            let name = [listedGrade.displayName, listedGrade.printing].compactMap { $0 }.joined(separator: " · ")
             guard let amount = listedGrade.marketPriceUSD else {
-                return listedGrade.displayName
+                return name
             }
-            return "\(listedGrade.displayName) \(amount.formatted(.currency(code: "USD")))"
+            return "\(name) \(amount.formatted(.currency(code: "USD")))"
         }
         return "JustTCG currently lists: \(grades.joined(separator: ", "))"
     }
