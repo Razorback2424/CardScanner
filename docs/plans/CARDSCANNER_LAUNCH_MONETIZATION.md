@@ -2,7 +2,7 @@
 
 Date: October 20, 2026  
 Canonical repository location: `docs/plans/CARDSCANNER_LAUNCH_MONETIZATION.md`  
-Status: **Proposed launch offer; rationale retained. Price and paid entitlement boundary require owner approval before implementation.**
+Status: **Owner-authorized Collector Tools implementation — October 20, 2026. Local implementation and verification status below; live product and release gates remain open.**
 
 ## 1. Purpose and launch goal
 
@@ -38,11 +38,11 @@ Competitor accuracy and speed figures are vendor claims unless independently val
 
 The longer-term collection-integrity direction remains relevant. Physical placement, reconciliation and audit systems are **not prerequisites for this launch**.
 
-## 4. Proposed initial offer
+## 4. Approved initial offer
 
-**One non-consumable “Batch Listing Photos” unlock, proposed US price $9.99.** No subscription, scan credits or generic all-future-features promise.
+**One non-consumable “CardScanner Collector Tools” unlock, $9.99 US base price, paid once.** Includes unlimited batch listing-photo preparation/export and unlimited use of the existing guided card-centering tool, including its annotated output. No subscription, scan credits, collection caps or generic all-future-features promise.
 
-### Proposed free/paid boundary, preserving the free-core principles
+### Free core
 
 - Scanning, ordinary collection access and management, and identity/finish corrections.
 - Basic import/export of user-owned collection information.
@@ -53,13 +53,15 @@ The longer-term collection-integrity direction remains relevant. Physical placem
 
 Batch preparation and export of multiple front/back pairs into organized per-card photo packs. The present workflow produces ten numbered JPEG views per completed card: full front/back views plus four overlapping detail crops from each side.
 
+Guided centering measurement/estimation and existing annotated output use the same entitlement. Centering is not professional grading or a predicted grade. Outer/inner-frame review and explicit confirmation remain required; automatic reporting remains disabled. A one-card selection in the batch UI stays free.
+
 Charge for batching and saved work, not access to existing collection records, correction of inaccurate identities, or retrieval of previously exported files.
 
 State the price before substantial batch preparation. Preserve work on cancellation, pending purchases and recoverable failure. Use localized StoreKit pricing and restore purchases. Do not imply the unlock includes every future paid feature or ongoing external data services.
 
 ## 5. Current implementation and truthful claims
 
-Source review baseline: `922dc9bb3d158a599e874d4a00e85297a138b6f8`. Reconcile against the current checkout before implementation; this document is not a claim about later code.
+Implementation started from clean `be183f2` on October 20, 2026, after reconciling the earlier `922dc9b` review. See §10 for the current purchase behavior and verification limits.
 
 - Listing Photos is separate from collection identity and stored scan captures. Batch inputs are existing Photos-library images selected in front/back order; pairing review, swaps and folder names are manual.
 - Batch output is a ZIP. It does not create or publish marketplace listings or synchronize inventory.
@@ -92,7 +94,7 @@ Use targeted, permission-based outreach and small seller demonstrations before p
 
 ## 7. Launch-critical work and evidence
 
-### Small code/UI pass, after offer approval
+### Bounded code/UI pass
 
 - Check current purchase code, then implement only missing non-consumable entitlement handling: verified purchases, pending/cancel/error states, restore, relaunch and revocation/refund behavior.
 - Make free single-card output and batch preparation discoverable; the reviewed Pro entry does not explain that distinction well.
@@ -122,13 +124,15 @@ No invasive analytics SDK is needed for initial learning. Use observed trials an
 
 Not in this launch: new card games, smart corner detection, grading, automatic marketplace publishing, inventory sync, new verification systems, subscription tiers, major redesign or monetization infrastructure beyond this offer.
 
-This document authorizes no implementation, purchases, provider agreements, App Store changes, outreach, publication, deployment, commit or push. The proposed price/entitlement boundary awaits owner approval. It records the recommended direction and preserves rationale.
+The October 20 user instruction authorizes this bounded implementation and local testing of the two-tool bundle. It authorizes no live purchases, provider agreements, App Store account/product changes, outreach, submission, publication, deployment, spending, commit or push.
 
 Link this document from the existing photo-tool plan and active launch checklist. Mark conflicting old scan-cap, collection-cap or paid-basic-export proposals as superseded recommendations, without erasing historical records or claiming owner approval that has not occurred.
 
 Keep one small status list: offer approval; payment/UI gaps; licensing/export permissions; focused acceptance; App Store submission; first genuine purchase. Update it when evidence changes. Do not repeatedly expand scope or relitigate the founder problem.
 
-## 9. Checkout gap assessment — October 20, 2026
+## 9. Historical checkout gap assessment — October 20, 2026
+
+**Historical:** this pre-implementation table describes `922dc9b`, not the current source. Its batch-only proposal and paid one-pair batch boundary are superseded by §4 and §10. Retained to distinguish earlier findings from verified implementation.
 
 Read-only review: clean `main` at `922dc9bb3d158a599e874d4a00e85297a138b6f8`,
 which happens to match the attachment baseline. Source presence below is not a
@@ -146,26 +150,36 @@ freshly verified research or evidence of an agreement.
 | Provider licensing and exported fields | **Requires owner/later verification:** local code cannot establish commercial permissions. [CollectionCSV](../../TradingCardScanner/Services/CollectionCSV.swift), `exportHeaders`, includes provider/catalog IDs, names, image/thumbnail URLs and JustTCG IDs; diagnostic export includes price/source/listing and retained quote fields, and portfolio history exports market contributions. Photo output operates on user photos independently of catalog identity. | Owner confirms commercial provider plans/permissions and allowed fields across basic, diagnostic and history exports. Review JustTCG stored-data/export restrictions, Scryfall free-access boundaries, and applicable catalog/artwork rights; public endpoints and API keys are not permission. Change only fields proven incompatible after that review, preserving lawful user-owned portability. |
 | App Store prerequisites | **Requires owner verification:** no local source proves account enrollment, paid-app agreements, banking/tax, commission eligibility, product configuration/approval or production availability. | Owner approves offer, supplies approved product identity, resolves account/agreements, configures one non-consumable and submits it with the appropriate app version; verify production separately from sandbox. Existing privacy/support publication and distribution gates remain open. No account actions are authorized here. |
 
-### One bounded next implementation scope — pending offer approval
+## 10. Collector Tools implementation — October 20, 2026
 
-After explicit owner approval of price and entitlement boundary, implement one
-non-consumable batch-photo entitlement plus the minimum discovery, localized
-price, restore and interruption-safe purchase UI in the existing photo workflow.
-Gate new batch processing/export, including Batch with one pair, while preserving
-free single output and the free core. Verify only the purchase lifecycle,
-retained preparation, free access and existing export handoff affected by that
-slice. Do not change cropping, add analytics, automatic listing or a new roadmap.
-Provider/account actions remain separate owner prerequisites. This is a proposed
-follow-up, not implementation authorization.
+- **Offer approval:** user authorized the $9.99 US one-time two-tool bundle. This narrowly replaces the earlier batch-only proposal. The founder rationale in §2 is unchanged.
+- **Product identity:** `com.seankeller.CardScanner.collectorTools`, defined by `CollectorToolsStore.productID`, matches the verified app bundle prefix `com.seankeller.CardScanner`. [Local configuration](../../CollectorTools.storekit) is a non-consumable at 9.99 in the US storefront; it creates no live product.
+- **Entitlement:** one shared StoreKit 2 store, compatible with iOS 17. Launch and foreground query verified on-device current entitlements; an app-lifetime update listener reconciles verified deliveries and finishes handled intended transactions. Duplicate deliveries repeat reconciliation without creating exports. Completed empty reconciliation removes obsolete ownership. Product lookup is independent and cannot revoke ownership. No UserDefaults ownership flag or backend exists.
+- **Purchase/restore:** shared compact offer uses `Product.displayPrice`; unavailable product information offers retry without an invented price. Cancellation, pending, failure and verification failure report status; purchase/restore requests cannot overlap. Restore alone calls `AppStore.sync()` explicitly. No automatic authentication prompts are requested by launch/foreground reconciliation.
+- **Boundaries:** multi-card Prepare and processing entry check entitlement; ZIP transfer rechecks ownership when the share system requests the file. Both single mode and one pair in Batch remain free. Every existing centering entry goes through the same guarded view. Pro itself and unrelated free utilities remain accessible. Pro's Collector Tools action keeps the offer/restore reachable. Centering includes an estimation disclaimer in the offer, measurement UI and annotated report; detection, ratios, reference logic and frame confirmation are unchanged.
+- **Work:** purchase presentation has its own sheet flag and never changes photo-selection generations, pairs, swaps, names or outputs. Ownership changes never trigger preparation or sharing. Existing input/navigation cancellation fences remain responsible for stale-work rejection. Entitlement recovers after relaunch; unfinished photo drafts are still view state, with no process-death draft-recovery claim. Refunds do not delete collections, source photographs or prior exports.
+- **Verification:** seven isolated entitlement/share-authorization tests passed on macOS using the unchanged repository service and transferable definitions in a temporary SwiftPM harness. Coverage: loading/free single, cancel/pending/failure/unverified/unrelated delivery, both-tool unlock, repeat taps, duplicate delivery after revocation, restore/recreation, fetch failure/localized price, out-of-order reconciliation and share-time access. This is state-logic evidence, not an iOS purchase or draft-retention check. The real local `SKTestSession` purchase/relaunch/restore/refund/two-card ZIP test is added but has not run.
 
-### Small status list
+### Focused acceptance blocker
 
-- **Offer approval:** pending owner approval of $9.99 US one-time price and batch boundary.
-- **Payment/UI gaps:** missing as classified above; no implementation in this pass.
-- **Licensing/export permissions:** owner confirmation pending.
-- **Focused acceptance:** runtime purchase/output/share/upload checks not run.
-- **App Store submission:** account/product/distribution and submission unverified; no changes made.
-- **First genuine purchase:** target remains November 2, 2026, Colorado time; not achieved or guaranteed by this review.
+The final `xcodebuild build-for-testing` succeeded with scheme `TradingCardScanner`, configuration `Debug`, generic iOS Simulator destination, and `CODE_SIGNING_ALLOWED=NO`, compiling the app and test host for arm64/x86_64 against iOS 17 deployment. Generated build/cache data is on the external SSD under `CodexBuilds/CollectorTools-20261020/`. Project plist, StoreKit JSON/identifier consistency, relative documentation links and `git diff --check` pass. This is an unsigned simulator build, not an archive or physical-device result.
+
+Xcode 27.1 (`27A9275`) requires CoreSimulator `1174.9.2`, while this machine's installed/running service is `1171.7.0`. `xcodebuild` disables simulator device support and cannot resolve even an already booted iOS simulator destination. The installed `simctl` wrapper invokes Xcode first-launch setup before listing devices and stalled; querying the existing service directly worked, but did not resolve Xcode's mismatch. No simulator data was erased; system repair remains outside this pass. The focused `CollectorToolsTests`, existing `EbayQuadrantCropperTests`, `CenteringExportTests` and `CardCenteringSurfaceTests` invocation therefore executed **zero tests**. Local StoreKit, representative purchased ZIP inspection, rendered guided-centering/frame-confirmation/annotated-output smoke, purchase-sheet work retention, background/navigation interruptions and rendered accessibility checks remain unverified until the toolchain is compatible. The added integration test is not a substitute for a passing run.
+
+HIG source review: **Verdict RISK** until rendered checks run. Platform controls, readable text styles and retained navigation pass source review. Top issues: unverified Dynamic Type/VoiceOver presentation and interruption behavior. Minimal follow-up: run the existing flow with the local configuration and the checks below; no redesign is required by this review.
+
+### Owner setup and review
+
+1. Once the local Xcode/CoreSimulator installation is compatible, run `CollectorToolsTests`, `EbayQuadrantCropperTests`, `CenteringExportTests` and `CardCenteringSurfaceTests` on an iOS simulator. The StoreKit test loads the configuration directly from the test bundle; it requires no account or live product.
+2. For interactive testing, select `CollectorTools.storekit` under Scheme → Run → Options → StoreKit Configuration. Check successful purchase, cancel, pending/Ask to Buy approval, failure, restore and refund through Xcode's transaction manager. Confirm selected pairs, swaps, folder names and prepared files survive offer dismissal, backgrounding and returning. Confirm a later approval only enables a fresh explicit action, and navigation/input changes reject stale exports.
+3. Inspect and unzip a purchased multi-card pack (ten ordered JPEGs per card), use free single output in both workflows, and smoke-test guided frame review/confirmation plus annotated output. Check localized price and unavailable/retry UI, Dynamic Type and VoiceOver. Never treat local success as proof of production availability.
+4. Separately, owner creates the exact non-consumable identifier in App Store Connect with the approved US base price, localization and review screenshot, and submits it with the appropriate app version. Verify paid-app agreements, banking/tax setup and applicable commission enrollment. No account/product actions were performed here.
+
+### Remaining launch dependencies
+
+- Provider commercial-use permissions and pricing-data export rights, including allowed basic/diagnostic/history fields and catalog/artwork terms, remain unresolved owner gates.
+- Privacy/support publication, truthful supported-game claims, metadata, physical-device and applicable CloudKit/ownership, archive/TestFlight and App Review/distribution gates remain separate. Simulator source/build evidence closes none of those gates.
+- Live product creation/approval, production availability and the first genuine production purchase remain unverified. Target: **November 2, 2026, Colorado time**, with no guaranteed outcome.
 
 ## Sources and code references
 

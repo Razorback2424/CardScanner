@@ -2,11 +2,12 @@
 
 **Commercial reconciliation — 2026-10-20:** the canonical
 [launch monetization decision](CARDSCANNER_LAUNCH_MONETIZATION.md) retains Sean's
-two-photo/batch rationale, proposed free single-card output and $9.99 one-time
-batch unlock, and the current source-gap assessment. Price and entitlement
-boundary await owner approval. The post-1.0 sequencing below is historical
-commercial guidance, superseded by that proposal; it is not approval to implement
-purchases. Existing runtime/device/release gates remain open.
+two-photo/batch rationale and the owner-authorized $9.99 US one-time Collector
+Tools bundle: unlimited batch preparation/export plus existing guided centering
+and annotated output. Single-card output remains free, including one pair in
+Batch. See its implementation section for StoreKit identity and verification.
+The post-1.0 sequencing below is historical commercial guidance, superseded by
+that decision. Existing runtime/device/release gates remain open.
 
 **Status:** Slices A–C are implemented in `main` (merged 2026-09-20 from the
 `pro-implementation` worktree based at `523f3e2`). The latest focused

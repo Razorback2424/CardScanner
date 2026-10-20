@@ -1,3 +1,17 @@
+- Collector Tools one-time unlock implementation (2026-10-20; clean starting
+  checkout `be183f2`): added one StoreKit 2 non-consumable, shared verified
+  entitlement, explicit restore, localized-price offer, multi-card action/share
+  guards and the existing guided-centering gate/output disclaimer. One-card
+  output remains free in both workflows; collection/scanning/crop logic is
+  unchanged. Final Debug simulator app/test-host build passes for arm64/x86_64;
+  seven isolated macOS entitlement/share-state tests pass. The local
+  StoreKit integration test is added; iOS StoreKit/photo/centering runtime checks
+  are blocked because Xcode 27.1 needs CoreSimulator 1174.9.2 but the service is
+  1171.7.0. No runtime or release acceptance is claimed. See the
+  [canonical decision](docs/plans/CARDSCANNER_LAUNCH_MONETIZATION.md) for exact
+  behavior, remaining checks and owner setup. No live product/account changes,
+  live purchases, provider clearance, commit or push occurred.
+
 - Launch rationale retained and commercial gaps assessed (2026-10-20): clean
   `main` at `922dc9bb3d158a599e874d4a00e85297a138b6f8`; retained the supplied
   [canonical decision](docs/plans/CARDSCANNER_LAUNCH_MONETIZATION.md), linked the
