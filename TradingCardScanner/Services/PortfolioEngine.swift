@@ -503,6 +503,7 @@ final class PortfolioEngine: ObservableObject {
             if var retained = lastUsableSummary {
                 retained.defects = computation.defects
                 retained.isAuthoritative = false
+                lastUsableSummary = retained
                 if var replay = replaySummary {
                     replay.defects = computation.defects
                     replay.isAuthoritative = false

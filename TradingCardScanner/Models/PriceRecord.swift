@@ -125,6 +125,8 @@ final class PriceRecord {
     var canonicalMarketID: String?
     /// The vendor's stable *variant* UUID — the exact object priced.
     var marketVariantID: String?
+    /// Finish/edition evidence returned with an exact graded market binding.
+    var gradedPrinting: String?
     var marketRegionRaw: String?
     /// The vendor's own "this game was repriced at" clock, distinct from both
     /// when the app checked and when this variant's price last moved. Used to
@@ -366,6 +368,31 @@ struct PriceDisplay: Equatable, Sendable {
     /// not publish their own timestamp.
     var effectiveAsOf: Date? {
         sourceUpdatedAt ?? fetchedAt
+    }
+
+    /// Quote provenance and check attempts are separate facts. A recent check
+    /// cannot make an old source quote current, including after a failed fetch.
+    var detailAttribution: [String] {
+        var lines: [String] = []
+        if let source {
+            if let sourceUpdatedAt {
+                lines.append(String(localized: "\(source.label) · price data as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))"))
+            } else {
+                lines.append(String(localized: "\(source.label) · source date unavailable"))
+                if let fetchedAt {
+                    lines.append(String(localized: "Quote received \(fetchedAt.formatted(date: .abbreviated, time: .shortened))"))
+                }
+            }
+        }
+        if let lastCheckedAt {
+            lines.append(String(localized: "Last check attempted \(lastCheckedAt.formatted(date: .abbreviated, time: .shortened))"))
+        }
+        if refreshFailed {
+            lines.append(amount == nil
+                ? String(localized: "The last price refresh failed.")
+                : String(localized: "The last price refresh failed. Showing the previous quote."))
+        }
+        return lines
     }
 
     func state(now: Date = .now) -> State {

@@ -3,6 +3,7 @@ import Foundation
 private struct MarketListingOwnerKey: Hashable {
     let variantID: String?
     let treatmentIDs: [String]
+    let pokemonPrintRun: PokemonPrintRun?
 }
 
 /// One thing whose market price needs refreshing.
@@ -16,6 +17,7 @@ struct MarketPriceTarget: Hashable, Sendable {
     let printingID: String
     let variantID: String?
     let itemKind: CollectionItemKind
+    var pokemonPrintRun: PokemonPrintRun? = nil
     /// The vendor's stable variant UUID, when identity has been resolved.
     let marketVariantID: String?
     /// Fallback identifiers, best-first by the vendor's precedence.
@@ -57,7 +59,8 @@ struct MarketPriceTarget: Hashable, Sendable {
         justTCGFetchedAt: Date? = nil,
         magicTreatmentIDsRaw: [String] = [],
         requiresFullResponse: Bool = false,
-        exactPhysicalProductID: String? = nil
+        exactPhysicalProductID: String? = nil,
+        pokemonPrintRun: PokemonPrintRun? = nil
     ) {
         self.priceKey = priceKey
         self.game = game
@@ -72,6 +75,7 @@ struct MarketPriceTarget: Hashable, Sendable {
         self.magicTreatmentIDsRaw = magicTreatmentIDsRaw
         self.requiresFullResponse = requiresFullResponse
         self.exactPhysicalProductID = exactPhysicalProductID
+        self.pokemonPrintRun = pokemonPrintRun
     }
 
     /// The single identifier this target should be sent as.
@@ -314,7 +318,8 @@ struct JustTCGRefreshCoordinator {
                                 variantID: $0.variantID,
                                 treatmentIDs: MagicTreatmentKeyCodec.canonicalIDs(
                                     from: $0.magicTreatmentIDsRaw
-                                )
+                                ),
+                                pokemonPrintRun: $0.pokemonPrintRun
                             )
                         }
                     ).values {
@@ -499,21 +504,26 @@ struct JustTCGRefreshCoordinator {
             return nil
         }
         let variants = card.variants ?? []
-        let wanted = owners.compactMap {
-            ProductFinish.printing(for: $0.variantID.map(PhysicalVariant.resolving))
-        }
-
-        if let match = variants.first(where: { variant in
-            variant.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
-                && wanted.contains { variant.printing?.caseInsensitiveCompare($0) == .orderedSame }
-        }) {
-            return (card, match)
-        }
-
         // A sealed product has no condition grade and exactly one listing.
         if owners.allSatisfy({ $0.itemKind == .sealedProduct }),
            let sealed = variants.first(where: \.isSealed) {
             return (card, sealed)
+        }
+
+        guard let owner = owners.first,
+              owners.allSatisfy({ $0.variantID == owner.variantID && $0.pokemonPrintRun == owner.pokemonPrintRun }) else { return nil }
+        let requirement = ProductFinish.requirement(for: owner.variantID.map(PhysicalVariant.resolving),
+            printRun: owner.game == .pokemon ? owner.pokemonPrintRun : nil)
+        let nearMint = variants.filter {
+            $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+        }
+        if case let .printings(wanted) = requirement {
+            for printing in wanted {
+                if let match = nearMint.first(where: { $0.printing?.caseInsensitiveCompare(printing) == .orderedSame }) {
+                    return (card, match)
+                }
+            }
+            return nil
         }
 
         // No finish was requested — an imported row whose finish was never
@@ -523,15 +533,14 @@ struct JustTCGRefreshCoordinator {
         // it is known physical evidence that this resolver cannot translate,
         // so it must remain unpriced rather than borrowing the sole Near Mint
         // listing by accident.
-        guard wanted.isEmpty, owners.allSatisfy({
+        guard owners.allSatisfy({
             $0.variantID == nil || ($0.game == .pokemon && $0.exactPhysicalProductID != nil
                 && $0.exactPhysicalProductID == card.tcgplayerId)
         }) else { return nil }
-        let nearMint = variants.filter {
-            $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
-        }
-        guard nearMint.count == 1 else { return nil }
-        return (card, nearMint[0])
+        let edition = ProductEdition.from(owner.game == .pokemon ? owner.pokemonPrintRun : nil)
+        let eligible = nearMint.filter { edition.admits(printing: $0.printing ?? "") }
+        guard eligible.count == 1 else { return nil }
+        return (card, eligible[0])
     }
 
     private nonisolated static func stopReason(

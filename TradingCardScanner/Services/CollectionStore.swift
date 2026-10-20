@@ -33,6 +33,12 @@ struct CollectionMutation: Equatable, Sendable {
     }
 }
 
+/// Pricing evidence read from the corrected durable identity in the same write.
+struct ScannerCorrectionReceipt: Sendable {
+    let mutation: CollectionMutation
+    let retainedGradedQuote: PriceLookup?
+}
+
 enum CollectionQuantityLimits {
     static let maximum = 1_000_000
 
@@ -765,13 +771,21 @@ actor ScannerCollectionWriter: BackgroundModelActor {
     /// model after any certificate refinement has completed.
     func bindScannedGraded(
         collectionKey: String,
-        variant: GradedVariant
+        variant: GradedVariant,
+        expectedIdentity: GradedBindingIdentity? = nil
     ) throws -> GradedVariantBindingReceipt? {
         return try performOwnershipWrite { context in
           do {
             let collectionStore = CollectionStore(context: context)
             guard let row = try collectionStore.card(forAnyKey: collectionKey),
                   row.itemKind == .gradedCard else { return nil }
+            // This comparison belongs inside the serialized write: correction
+            // may complete after the lookup and even after its UI preflight.
+            if let expectedIdentity,
+               row.variantID != expectedIdentity.finishID || row.pokemonPrintRun != expectedIdentity.printRun {
+                context.rollback()
+                return nil
+            }
             let priceStore = PriceStore(context: context)
             let receipt = try GradedVariantBinding.apply(
                 variant,
@@ -882,7 +896,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         quantity: Int,
         price: PriceLookup,
         isGraded: Bool = false
-    ) throws -> CollectionMutation? {
+    ) throws -> ScannerCorrectionReceipt? {
         let signpostID = PerformanceSignpost.makeID()
         let signpostState = PerformanceSignpost.beginInterval(
             "scannerPersistence",
@@ -914,15 +928,45 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                 activityID: activityID,
                 quantity: quantity
             )
-            guard mutation != nil else {
+            guard let mutation else {
                 // Price staging happens before correction so a successful correction
                 // saves both facts atomically. A missing/stale source must not leave
                 // an unsaved price mutation in this call's context for a later scan.
                 context.rollback()
                 return nil
             }
-            return mutation
+            let retainedGradedQuote: PriceLookup?
+            if isGraded {
+                retainedGradedQuote = try? compatibleGradedQuote(
+                    collectionKey: mutation.collectionKey, finish: corrected.variant, in: context)
+            } else {
+                retainedGradedQuote = nil
+            }
+            return ScannerCorrectionReceipt(mutation: mutation, retainedGradedQuote: retainedGradedQuote)
         }
+    }
+
+    private func compatibleGradedQuote(
+        collectionKey: String,
+        finish: PhysicalVariant?,
+        in context: ModelContext
+    ) throws -> PriceLookup? {
+        // Fetch directly: alias resolution can stage repairs, while this read
+        // must leave the already-saved correction transaction clean.
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { $0.collectionKey == collectionKey }))
+        guard rows.count == 1, let row = rows.first,
+              row.itemKind == .gradedCard, row.variantID == finish?.id,
+              let finish, let marketID = row.justTCGVariantID,
+              let record = PriceStore(context: context).record(forKey: row.priceKey),
+              record.source == .justTCG, record.marketVariantID == marketID,
+              GradedCardIdentity.matchesFinish(finish, printing: record.gradedPrinting,
+                  printRun: row.pokemonPrintRun),
+              let amount = record.effectiveUnitMarketPriceUSD,
+              let fetchedAt = record.fetchedAt else { return nil }
+        return .price(NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: record.currencyCode,
+            source: .justTCG, sourceVariantID: record.sourceVariantID ?? marketID,
+            sourceUpdatedAt: record.sourceUpdatedAt, fetchedAt: fetchedAt))
     }
 
     private func stagePrice(
@@ -1559,6 +1603,24 @@ struct CollectionStore {
         init(events: [InventoryEvent]) {
             self.eventsByOperationID = Dictionary(grouping: events, by: \.operationID)
             self.reversedEventIDs = Set(events.compactMap(\.reversesEventID))
+        }
+    }
+
+    /// Independent disposal reversals restore existing copies; they are not
+    /// acquisitions. Unproven or multiply-reversed lineage stays conservative.
+    static func positionWasReacquired(events: [InventoryEvent], since removalRecordedAt: Date) -> Bool {
+        events.contains { event in
+            guard event.recordedAt >= removalRecordedAt, event.deltaQuantity > 0 else { return false }
+            guard event.kind == .dispose, let originalID = event.reversesEventID,
+                  let original = events.first(where: { $0.eventID == originalID }),
+                  original.kind == .dispose, original.reversesEventID == nil,
+                  original.deltaQuantity < 0, original.deltaQuantity != .min,
+                  event.deltaQuantity == -original.deltaQuantity,
+                  original.collectionKey == event.collectionKey,
+                  original.priceStorageKey == event.priceStorageKey,
+                  original.recordedAt <= event.recordedAt,
+                  events.filter({ $0.reversesEventID == originalID }).count == 1 else { return true }
+            return false
         }
     }
 
@@ -3629,6 +3691,10 @@ struct CollectionStore {
                 existing.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
             }
             // Re-adding also heals rows saved before sealed artwork support.
+            if existing.justTCGCardID == product.id,
+               existing.justTCGVariantID == product.variantID {
+                existing.catalogProviderID = product.id
+            }
             if existing.imageURL == nil {
                 existing.imageURL = product.imageURL?.absoluteString
             }
@@ -3695,6 +3761,7 @@ struct CollectionStore {
             identityResolution: .catalogSelected
         )
         row.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
+        row.catalogProviderID = product.id
         row.justTCGCardID = product.id
         row.justTCGVariantID = product.variantID
         row.tcgplayerProductID = product.tcgplayerProductID
@@ -3749,7 +3816,12 @@ struct CollectionStore {
         resolution: VariantResolution
     ) throws {
         let oldPriceKey = row.priceKey
-        let changesKnownFinish = row.variantID != nil && row.variantID != variant?.id
+        let oldRecord = PriceStore(context: context).record(forKey: oldPriceKey)
+        let compatibleBinding = variant.map { finish in
+            GradedCardIdentity.matchesFinish(finish, printing: oldRecord?.gradedPrinting,
+                printRun: row.pokemonPrintRun)
+        } ?? false
+        let changesKnownFinish = row.variantID != variant?.id && !compatibleBinding
         let printingID = changesKnownFinish ? row.collectionKey : row.priceStorageID
         let treatmentIDs = row.priceTreatmentIDs
         let newPriceKey = PriceRecord.key(
@@ -4365,9 +4437,8 @@ struct CollectionStore {
                 }
                 let removalEvents = try ledger.events(forOperationID: operationID)
                 let removalRecordedAt = removalEvents.map(\.recordedAt).max() ?? .distantPast
-                let wasReacquired = try ledger.events(collectionKey: snapshot.collectionKey).contains {
-                    $0.recordedAt >= removalRecordedAt && $0.deltaQuantity > 0
-                }
+                let wasReacquired = Self.positionWasReacquired(
+                    events: try ledger.events(collectionKey: snapshot.collectionKey), since: removalRecordedAt)
                 guard !wasReacquired else {
                     throw CollectionStoreError.restoreConflict(
                         "\(snapshot.collectionKey) was acquired again"

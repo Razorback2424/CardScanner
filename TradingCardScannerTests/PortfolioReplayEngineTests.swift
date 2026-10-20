@@ -92,6 +92,32 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(result.contributionIndex.additionsByDay[day(1)], live.additions)
     }
 
+    func testUnusableObservationDoesNotConsumePendingFirstPrice() throws {
+        let result = PortfolioReplayEngine.replay(input(
+            events: [event(delta: 2, at: at(1, hour: 9))],
+            observations: [ObservationEntry(id: UUID(), instrumentKey: "instrument", kind: .marketUpdate,
+                amount: usd(4), currencyCode: "EUR", receivedAt: at(1, hour: 10)),
+                observation(5, at: at(1, hour: 11))],
+            epoch: day(1), through: at(1, hour: 12)))
+        let live = try XCTUnwrap(result.live)
+        XCTAssertEqual(live.attribution.newlyAddedValue, usd(10))
+        XCTAssertEqual(live.attribution.pricingAdjustment, .zero)
+        XCTAssertEqual(live.additions["position"], usd(10))
+    }
+
+    func testRemovalConsumesOnlyItsOwnPendingPosition() throws {
+        let result = PortfolioReplayEngine.replay(input(
+            events: [event(.initialBalance, delta: 1, at: at(1, hour: 8), position: "a"),
+                event(delta: 1, at: at(1, hour: 9), position: "b"),
+                event(.dispose, delta: -1, at: at(1, hour: 10), position: "a")],
+            observations: [observation(10, at: at(1, hour: 11))],
+            epoch: day(1), through: at(1, hour: 12)))
+        let live = try XCTUnwrap(result.live)
+        XCTAssertEqual(live.attribution.newlyAddedValue, usd(10))
+        XCTAssertEqual(live.attribution.pricingAdjustment, .zero)
+        XCTAssertEqual(live.additions["b"], usd(10))
+    }
+
     func testAdditionBreakdownIncludesFirstPriceLearnedOnALaterDay() throws {
         let result = PortfolioReplayEngine.replay(input(
             events: [event(delta: 3, at: at(1, hour: 9))],

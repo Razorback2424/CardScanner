@@ -2,9 +2,59 @@ import PhotosUI
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
+import CoreTransferable
+
+/// Owns only centering artifacts. Files handed to the system remain available
+/// for this process; a later process retires the previous session's files.
+enum CenteringExportFiles {
+    private static let lock = NSLock()
+    private static var sharedFiles: Set<URL> = []
+    static let sessionDirectory: URL = {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("CardScannerCenteringExports", isDirectory: true)
+        if let sessions = try? FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil) {
+            for session in sessions where UUID(uuidString: session.lastPathComponent) != nil {
+                try? FileManager.default.removeItem(at: session)
+            }
+        }
+        return root.appendingPathComponent(UUID().uuidString, isDirectory: true)
+    }()
+
+    static func retainForShare(_ url: URL) {
+        lock.lock(); defer { lock.unlock() }
+        sharedFiles.insert(url)
+    }
+
+    static func retire(_ url: URL?) {
+        guard let url, url.deletingLastPathComponent().deletingLastPathComponent() == sessionDirectory else { return }
+        lock.lock(); defer { lock.unlock() }
+        guard !sharedFiles.contains(url) else { return }
+        try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+    }
+}
+
+private struct CenteringShareArtifact: Transferable {
+    let url: URL
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .png) { artifact in
+            CenteringExportFiles.retainForShare(artifact.url)
+            return SentTransferredFile(artifact.url)
+        }
+    }
+}
 
 @MainActor
 final class CardCenteringViewModel: ObservableObject {
+    private var currentExportFile: URL?
+
+    func retireExportFile() {
+        CenteringExportFiles.retire(currentExportFile)
+        currentExportFile = nil
+    }
+
+    func acceptExportFile(_ url: URL) {
+        retireExportFile()
+        currentExportFile = url
+    }
     @Published var selectedPhoto: PhotosPickerItem?
     @Published var image: UIImage?
     @Published private(set) var imageRevision = 0
@@ -280,8 +330,8 @@ final class CardCenteringViewModel: ObservableObject {
             }
             // Keep the descriptive filename in a unique directory. A new edit
             // cannot overwrite a file already handed to a share sheet.
-            let directory = FileManager.default.temporaryDirectory
-                .appendingPathComponent("CenteringExport-" + UUID().uuidString, isDirectory: true)
+            let directory = CenteringExportFiles.sessionDirectory
+                .appendingPathComponent(UUID().uuidString, isDirectory: true)
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             let url = directory.appendingPathComponent(
                 CardCenteringExport.filename(for: measurement, rotationDegrees: rotationDegrees)
@@ -309,7 +359,11 @@ final class CardCenteringViewModel: ObservableObject {
 
     func makeExportFile() -> URL? {
         guard let snapshot = exportSnapshot() else { return nil }
-        do { return try snapshot.write() }
+        do {
+            let url = try snapshot.write()
+            acceptExportFile(url)
+            return url
+        }
         catch {
             errorMessage = error.localizedDescription
             return nil
@@ -539,7 +593,7 @@ private struct GuidedCardCenteringView: View {
             if model.image != nil {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let exportURL, model.measurement?.canReportRatios == true, !model.isAnalyzing {
-                        ShareLink(item: exportURL) {
+                        ShareLink(item: CenteringShareArtifact(url: exportURL), preview: SharePreview("Centering image")) {
                             Label("Export Image", systemImage: "square.and.arrow.up")
                         }
                         .labelStyle(.iconOnly)
@@ -623,6 +677,7 @@ private struct GuidedCardCenteringView: View {
             // that changes the pixels so a rotation or a new image cannot
             // leave the previous export attached to ShareLink.
             exportURL = nil
+            model.retireExportFile()
             guard let snapshot = model.exportSnapshot() else { return }
             try? await Task.sleep(for: .milliseconds(180))
             guard !Task.isCancelled else { return }
@@ -631,14 +686,19 @@ private struct GuidedCardCenteringView: View {
                     try snapshot.write()
                 }.value
                 guard !Task.isCancelled, model.matches(snapshot) else {
-                    try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+                    CenteringExportFiles.retire(url)
                     return
                 }
+                model.acceptExportFile(url)
                 exportURL = url
             } catch {
                 guard !Task.isCancelled, model.matches(snapshot) else { return }
                 model.errorMessage = error.localizedDescription
             }
+        }
+        .onDisappear {
+            model.retireExportFile()
+            exportURL = nil
         }
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()

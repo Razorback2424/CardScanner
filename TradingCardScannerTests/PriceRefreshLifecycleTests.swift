@@ -49,6 +49,95 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testManualIntentSurvivesAutomaticJoinAndPendingCoalescing() async throws {
+        let container = try makeContainer(withCard: true)
+        try insertRecentlyPricedRawCard(in: container)
+        let controller = PriceRefreshController()
+        let gate = PriceRefreshTestGate()
+        let attempts = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            let attempt = await attempts.next()
+            if attempt == 1 { await gate.pauseUntilReleased() }
+            return .pokemon(try Self.pricedCard(id: printing.printingID), setCode: "LIF")
+        }
+        let automatic = Task { await controller.refresh(Self.request, container: container, owner: .background) }
+        await gate.waitUntilStarted()
+        let manual = Task { await controller.refresh(Self.manualRequest, container: container) }
+        for _ in 0..<20 { await Task.yield() }
+        let anotherAutomatic = Task { await controller.refresh(Self.request, container: container) }
+        for _ in 0..<20 { await Task.yield() }
+        await gate.release()
+        let results = [await automatic.value, await manual.value, await anotherAutomatic.value]
+        XCTAssertTrue(results.allSatisfy { $0.didRun && !$0.targetBuildFailed })
+        let count = await attempts.value()
+        XCTAssertEqual(count, 3, "The automatic pass checks one row; the coalesced manual pass checks both recent rows")
+        try assertOldQuoteRemainsStale(in: container)
+    }
+
+    func testSuspendedManualIntentSurvivesCoalescingAndResume() async throws {
+        let container = try makeContainer(withCard: false)
+        try insertRecentlyPricedRawCard(in: container)
+        let controller = PriceRefreshController()
+        let attempts = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            _ = await attempts.next()
+            return .pokemon(try Self.pricedCard(id: printing.printingID), setCode: "LIF")
+        }
+        let automatic = await controller.refresh(Self.request, container: container)
+        XCTAssertFalse(automatic.didRun)
+        let suspension = await controller.suspendPasses()
+        let queued = await controller.refresh(Self.manualRequest, container: container)
+        XCTAssertTrue(queued.wasQueuedDuringSuspension)
+        _ = await controller.refresh(Self.request, container: container)
+        controller.resume(suspension)
+        let drained = await controller.waitForQueuedRefreshesToFinish()
+        XCTAssertEqual(drained?.didRun, true)
+        let count = await attempts.value()
+        XCTAssertEqual(count, 1)
+        try assertOldQuoteRemainsStale(in: container)
+    }
+
+    private func insertRecentlyPricedRawCard(in container: ModelContainer) throws {
+        let context = container.mainContext
+        let row = CollectedCard(collectionKey: "lifecycle-recent#normal", game: .pokemon,
+            providerID: "lifecycle-recent", name: "Lifecycle Card", setName: "Lifecycle Set",
+            setCode: "LIF", cardNumber: "1", rarity: "Common",
+            imageURL: "https://example.com/card.png", thumbnailURL: "https://example.com/thumb.png",
+            variant: .normal, variantResolution: .userConfirmed)
+        context.insert(row)
+        try context.save()
+        let store = PriceStore(context: context)
+        XCTAssertTrue(store.store(.price(NormalizedPrice(unitMarketPriceUSD: 5, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "normal", sourceUpdatedAt: Self.oldSourceDate,
+            fetchedAt: .now)), game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID))
+        XCTAssertTrue(store.save())
+    }
+
+    private func assertOldQuoteRemainsStale(in container: ModelContainer) throws {
+        let context = ModelContext(container)
+        let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first { $0.providerID == "lifecycle-recent" })
+        let record = try XCTUnwrap(PriceStore(context: context).record(forKey: row.priceKey))
+        XCTAssertEqual(record.sourceUpdatedAt, Self.oldSourceDate)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 5)
+        XCTAssertEqual(record.display.state(), .stale)
+        XCTAssertNotNil(record.display.lastCheckedAt)
+    }
+
+    private static let oldSourceDate = Date(timeIntervalSince1970: 946684800)
+    private static let manualRequest = PriceRefreshRequest(usesPriceFallback: false,
+        includeImported: true, forceUnsupportedRetry: false, sortOldestFirst: true,
+        maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false, intent: .manual)
+
+    nonisolated private static func pricedCard(id: String) throws -> TCGdexCard {
+        let json = """
+        {"id":"\(id)","localId":"1","name":"Lifecycle Card","image":"https://example.com/card",
+         "set":{"id":"LIF","name":"Lifecycle Set","cardCount":{"total":1,"official":1}},
+         "variants":{"normal":true,"holo":false,"reverse":false,"firstEdition":false},
+         "pricing":{"tcgplayer":{"updated":"2000-01-01T00:00:00Z","unit":"USD","normal":{"marketPrice":5}}}}
+        """
+        return try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+    }
+
     func testCatalogOutageCountsRequestsAndIsolatesProviders() {
         func outcomes(_ game: CardGame, count: Int, result: PriceFetchOutcome.Result) -> [PriceFetchOutcome] {
             (0..<count).map {

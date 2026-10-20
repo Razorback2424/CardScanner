@@ -101,7 +101,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
     init(
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
-        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared),
+        justTCG: any SealedBrowseProviding = JustTCGV1Client(transport: JustTCGTransport.shared),
+        sealedCredentialsAvailable: Bool? = nil,
         gameRegistry: CardGameRegistry = .standard,
         gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
         gameActivationSources: [any GameCatalogActivationSource] = [],
@@ -109,6 +110,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     ) {
         self.gameRegistry = gameRegistry
         self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, justTCG: justTCG,
+            sealedCredentialsAvailable: sealedCredentialsAvailable,
             gameImportAdapters: gameImportAdapters, gameActivationSources: gameActivationSources,
             pokemonRegistry: pokemonRegistry)
     }
@@ -221,6 +223,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
                         }
                         if let metadata = matches[request.identityKey] {
                             for row in rows {
+                                if row.itemKind == .sealedProduct {
+                                    guard row.justTCGCardID == nil || row.justTCGCardID == metadata.justTCGCardID,
+                                          row.justTCGVariantID == nil || row.justTCGVariantID == metadata.justTCGVariantID else { continue }
+                                }
                                 let exactIdentityMatches: Bool
                                 let preserveExistingMetadata: Bool
                                 if let exactCatalogID = row.catalogProviderID {
@@ -229,7 +235,13 @@ final class CollectionCatalogNormalizer: ObservableObject {
                                 } else {
                                     exactIdentityMatches = row.providerID == metadata.providerID
                                         || row.providerID.hasPrefix("csv:")
+                                        || (row.itemKind == .sealedProduct
+                                            && row.justTCGCardID == metadata.justTCGCardID
+                                            && row.justTCGCardID != nil
+                                            && row.justTCGVariantID == metadata.justTCGVariantID
+                                            && row.justTCGVariantID != nil)
                                     preserveExistingMetadata = row.providerID == metadata.providerID
+                                        || (row.itemKind == .sealedProduct && row.justTCGCardID == metadata.justTCGCardID)
                                 }
                                 guard exactIdentityMatches else { continue }
                                 let previousVariantID = row.justTCGVariantID
@@ -541,12 +553,14 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private let tcgdex: any TCGdexCatalogSource
     private let pokemonArtwork = PokemonTCGAPIService()
     private let scryfall = ScryfallService()
-    private let justTCG: JustTCGV1Client
+    private let justTCG: any SealedBrowseProviding
+    private let sealedCredentialsAvailable: Bool?
     private static let pokemonConcurrency = 4
 
     init(
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
-        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared),
+        justTCG: any SealedBrowseProviding = JustTCGV1Client(transport: JustTCGTransport.shared),
+        sealedCredentialsAvailable: Bool? = nil,
         gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
         gameActivationSources: [any GameCatalogActivationSource] = [],
         pokemonRegistry: @escaping @Sendable () async -> PokemonCatalogRegistry = { .bundledSeed }
@@ -554,6 +568,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         self.tcgdex = tcgdex
         self.pokemonRegistry = pokemonRegistry
         self.justTCG = justTCG
+        self.sealedCredentialsAvailable = sealedCredentialsAvailable
         self.gameImportAdapters = gameImportAdapters
         self.gameActivationSources = Dictionary(gameActivationSources.map { ($0.game, $0) },
                                                uniquingKeysWith: { first, _ in first })
@@ -674,7 +689,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private func resolveSealed(
         _ requests: [GameImportRequest]
     ) async -> ImportedCatalogResolution {
-        guard !requests.isEmpty, PriceVendorCredentials.hasKey else { return .init() }
+        guard !requests.isEmpty, sealedCredentialsAvailable ?? PriceVendorCredentials.hasKey else { return .init() }
         var resolution = ImportedCatalogResolution()
 
         for game in CardGameRegistry.standard.games(supporting: .sealed) {

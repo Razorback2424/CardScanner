@@ -7,6 +7,29 @@ import XCTest
 import PokemonCatalogCore
 @testable import TradingCardScanner
 
+private actor DetailImageLoadGate {
+    private var completions: [CheckedContinuation<UIImage, Error>] = []
+    private var countWaiters: [(Int, CheckedContinuation<Void, Never>)] = []
+    var count: Int { completions.count }
+
+    func fetch(_ url: URL, size: Int?) async throws -> UIImage {
+        try await withCheckedThrowingContinuation { continuation in
+            completions.append(continuation)
+            let ready = countWaiters.filter { $0.0 <= count }
+            countWaiters.removeAll { $0.0 <= count }
+            ready.forEach { $0.1.resume() }
+        }
+    }
+
+    func waitForCount(_ count: Int) async {
+        if self.count >= count { return }
+        await withCheckedContinuation { countWaiters.append((count, $0)) }
+    }
+
+    func finish(_ index: Int, image: UIImage) { completions[index].resume(returning: image) }
+    func fail(_ index: Int) { completions[index].resume(throwing: URLError(.cannotDecodeContentData)) }
+}
+
 final class BrowseLoadingRefinementTests: XCTestCase {
     func testMagicPriceRetryFetchesAgainAfterCachedGap() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -584,6 +607,134 @@ final class CatalogSetArtworkTests: XCTestCase {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    @MainActor
+    func testArtworkResizeRetainsSourceAndRejectsSupersededCompletions() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let a = URL(string: "https://example.com/a.png")!
+        let b = URL(string: "https://example.com/b.png")!
+        let first = UIImage()
+        let newer = UIImage()
+        loader.load(a, targetPixelSize: 128)
+        await gate.waitForCount(1)
+        XCTAssertNil(loader.image)
+        await gate.finish(0, image: first)
+        await waitForImageLoader(loader)
+        XCTAssertTrue(loader.image === first)
+
+        loader.load(a, targetPixelSize: 512)
+        await gate.waitForCount(2)
+        XCTAssertTrue(loader.image === first, "A size upgrade retains the displayed source")
+        XCTAssertFalse(loader.failed)
+        loader.load(a, targetPixelSize: 512)
+        let count = await gate.count
+        XCTAssertEqual(count, 2, "Identical requests do not restart")
+        await gate.fail(1)
+        await waitForImageLoader(loader)
+        XCTAssertTrue(loader.image === first)
+        XCTAssertFalse(loader.failed, "Resize failure must not advance the source fallback")
+        XCTAssertEqual(loader.phase, .loaded)
+
+        loader.load(a, targetPixelSize: 1024)
+        await gate.waitForCount(3)
+        loader.load(b, targetPixelSize: 128)
+        await gate.waitForCount(4)
+        XCTAssertNil(loader.image, "Source changes must not show the old source")
+        await gate.finish(3, image: newer)
+        await waitForImageLoader(loader)
+        await gate.finish(2, image: first)
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertTrue(loader.image === newer)
+
+        loader.load(b, targetPixelSize: 128, reloadToken: 1)
+        await gate.waitForCount(5)
+        XCTAssertNil(loader.image, "Explicit reload resets the source even at the same size")
+        await gate.fail(4)
+        await waitForImageLoader(loader)
+        XCTAssertTrue(loader.failed, "Initial/source reload failure remains eligible for fallback")
+        XCTAssertEqual(loader.phase, .failed)
+
+        loader.load(a, targetPixelSize: 128)
+        await gate.waitForCount(6)
+        loader.cancel()
+        await gate.finish(5, image: first)
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertNil(loader.image, "Cancelled work cannot publish its completion")
+    }
+
+    @MainActor
+    func testHostedColdAndWarmArtworkSizeTransitions() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/hosted.png")!
+        func view(size: Int) -> some View {
+            CatalogCachedImage(candidates: [.remote(url)], targetPixelSize: size, imageLoader: loader)
+                .frame(width: 180, height: 260)
+        }
+        let controller = UIHostingController(rootView: view(size: 128))
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.frame = window.bounds
+        controller.view.layoutIfNeeded()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await gate.waitForCount(1)
+        XCTAssertNil(loader.image)
+        let artwork = UIGraphicsImageRenderer(size: CGSize(width: 90, height: 130)).image { context in
+            UIColor.blue.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 90, height: 130))
+        }
+        await gate.finish(0, image: artwork)
+        await waitForImageLoader(loader)
+        controller.rootView = view(size: 512)
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
+        await gate.waitForCount(2)
+        XCTAssertTrue(loader.image === artwork)
+        XCTAssertEqual(loader.phase, .loaded)
+        await gate.fail(1)
+        await waitForImageLoader(loader)
+        XCTAssertTrue(loader.image === artwork)
+        XCTAssertFalse(loader.failed)
+    }
+
+    @MainActor
+    private func waitForImageLoader(_ loader: CatalogImageLoader) async {
+        for _ in 0..<1000 where loader.isLoading { await Task.yield() }
+        XCTAssertFalse(loader.isLoading)
+    }
+
+    @MainActor
+    func testHostedInitialArtworkFailureAdvancesToBundledFallback() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let asset = "PokemonSetArtwork_sv08_5_logo"
+        XCTAssertNotNil(UIImage(named: asset))
+        var loadedPhases = 0
+        let view = CatalogCachedImage(candidates: [
+            .remote(URL(string: "https://example.com/failed.png")!), .bundled(asset)
+        ], targetPixelSize: 128, onPhaseChange: { phase in
+            if phase == .loaded { loadedPhases += 1 }
+        }, imageLoader: loader).frame(width: 180, height: 100)
+        let controller = UIHostingController(rootView: view)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.frame = window.bounds
+        controller.view.layoutIfNeeded()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await gate.waitForCount(1)
+        let beforeFailure = loadedPhases
+        await gate.fail(0)
+        await waitForImageLoader(loader)
+        for _ in 0..<40 where loadedPhases <= beforeFailure {
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        XCTAssertTrue(loader.failed)
+        XCTAssertNil(loader.image)
+        XCTAssertGreaterThan(loadedPhases, beforeFailure, "The next candidate should load after genuine initial source failure")
+    }
+
     func testPokemonDetailUsesBulkExactFinishWithoutBorrowing() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }

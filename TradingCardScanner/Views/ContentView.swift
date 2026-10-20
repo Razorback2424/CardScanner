@@ -469,7 +469,8 @@ struct ContentView: View {
                     sortOldestFirst: false,
                     maximumTargetCount: nil,
                     markRecentlyCheckedIfEmpty: true,
-                    gradedOnly: false
+                    gradedOnly: false,
+                    intent: .manual
                 )
                 let result = await refresh.refresh(
                     request,

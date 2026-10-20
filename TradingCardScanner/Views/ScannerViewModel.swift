@@ -1531,6 +1531,7 @@ final class ScannerViewModel: ObservableObject {
     /// Tests can hold or fail the add operation without replacing the concrete
     /// writer used by undo and correction flows.
     private let collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)?
+    var collectionContainsOverrideForTesting: (@Sendable (CollectionCommitCandidate) async throws -> Bool)?
     private let certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
@@ -2637,9 +2638,17 @@ final class ScannerViewModel: ObservableObject {
                case .saveFailed = row.reason, row.pendingCommit != nil {
                 return
             }
+            // A consumed held permit still represents an extra-copy intent
+            // while lookup/choices are pending. Recovery must ask for that
+            // confirmation again rather than reinterpret it as an ordinary scan.
+            let heldCopyIntent = heldRepeatAuthorizationState.map { state in
+                state.wasConsumedByEncounter
+                    && request.heldRepeatAuthorizationID == state.authorization.id
+                    && request.subject.suppressionKey == state.offer.suppressionKey
+            } ?? false
             fileUnresolved(request: request, reason: .interrupted, candidates: candidates,
                            printingCandidates: printingCandidates,
-                           pendingCommit: pendingCommit, isAdditionalCopy: isAdditionalCopy)
+                           pendingCommit: pendingCommit, isAdditionalCopy: isAdditionalCopy || heldCopyIntent)
         }
         // Choices hold richer identity evidence than the original request.
         if let pending = pendingChoice {
@@ -3102,6 +3111,7 @@ final class ScannerViewModel: ObservableObject {
     /// state indefinitely.
     func dismissChoice() {
         if let pending = pendingChoice {
+            if pending.request.heldRepeatAuthorizationID != nil { clearHeldRepeatState() }
             let requestID = pending.request.id
             scannedGradedOutcomes.removeValue(forKey: requestID)
             endOneCardScan(encounterID: pending.request.encounterID, outcome: "choice-dismissed")
@@ -3135,6 +3145,7 @@ final class ScannerViewModel: ObservableObject {
 
     func dismissPrintRunChoice() {
         if let pending = pendingPrintRunChoice {
+            if pending.request.heldRepeatAuthorizationID != nil { clearHeldRepeatState() }
             let requestID = pending.request.id
             scannedGradedOutcomes.removeValue(forKey: requestID)
             endOneCardScan(encounterID: pending.request.encounterID, outcome: "print-run-dismissed")
@@ -3471,8 +3482,12 @@ final class ScannerViewModel: ObservableObject {
                 gradedOutcome: pending.gradedOutcome
             )
             let retryCandidate = CollectionCommitCandidate(resolvedScan: resolved)
+            let retrySessionID = scannerSessionID
             let accepted = beginPendingResolution(request: retryRequest, isAdditionalCopy: row.isAdditionalCopy) { [weak self] in
                 guard let self else { return }
+                guard !Task.isCancelled, self.isCurrent(retryRequest),
+                      retrySessionID == self.scannerSessionID,
+                      self.isStorageGenerationCurrent else { return }
                 if retryCandidate.identifier.game == .lorcana {
                     do {
                         try await self.catalog.validateAcquisition(retryCandidate.acquisitionIdentifier,
@@ -3497,7 +3512,18 @@ final class ScannerViewModel: ObservableObject {
                    let writer = self.collectionWriter {
                     do {
                         let writer = await writer.value
-                        if try await writer.containsCollectionEntry(for: retryCandidate) {
+                        guard !Task.isCancelled, self.isCurrent(retryRequest),
+                              retrySessionID == self.scannerSessionID,
+                              self.isStorageGenerationCurrent else { return }
+                        let exists = if let check = self.collectionContainsOverrideForTesting {
+                            try await check(retryCandidate)
+                        } else {
+                            try await writer.containsCollectionEntry(for: retryCandidate)
+                        }
+                        guard !Task.isCancelled, self.isCurrent(retryRequest),
+                              retrySessionID == self.scannerSessionID,
+                              self.isStorageGenerationCurrent else { return }
+                        if exists {
                             self.clearResolvedUnresolvedRows(
                                 for: retryCandidate.card,
                                 sourceRowID: row.id,
@@ -3512,6 +3538,9 @@ final class ScannerViewModel: ObservableObject {
                             return
                         }
                     } catch {
+                        guard !Task.isCancelled, self.isCurrent(retryRequest),
+                              retrySessionID == self.scannerSessionID,
+                              self.isStorageGenerationCurrent else { return }
                         if retryCandidate.identifier.game == .lorcana, error is CatalogLookupError {
                             guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
                             self.fileLorcanaAcquisitionForLookup(retryCandidate, isAdditionalCopy: row.isAdditionalCopy)
@@ -3532,6 +3561,9 @@ final class ScannerViewModel: ObservableObject {
                         return
                     }
                 }
+                guard !Task.isCancelled, self.isCurrent(retryRequest),
+                      retrySessionID == self.scannerSessionID,
+                      self.isStorageGenerationCurrent else { return }
                 await self.routeCollectionCandidate(retryCandidate)
             }
             if !accepted { reportPendingResolutionRejected() }
@@ -3684,7 +3716,7 @@ final class ScannerViewModel: ObservableObject {
         beginTrackedWrite(for: writeSessionID)
         defer { endTrackedWrite(for: writeSessionID) }
 
-        let mutation: CollectionMutation?
+        let correctionReceipt: ScannerCorrectionReceipt?
         do {
             let collectionWriter = await collectionWriter.value
             let correction = {
@@ -3711,11 +3743,11 @@ final class ScannerViewModel: ObservableObject {
                 requiresIdentityGate = false
             }
             if requiresIdentityGate {
-                mutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                correctionReceipt = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
                     try await correction()
                 }
             } else {
-                mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                correctionReceipt = try await CollectionExclusiveWrites.retryingIfRequired {
                     try await correction()
                 }
             }
@@ -3727,11 +3759,13 @@ final class ScannerViewModel: ObservableObject {
         }
         guard writeSessionID == scannerSessionID,
               isStorageGenerationCurrent else { return .failed }
-        guard let mutation else {
+        guard let correctionReceipt else {
             show(ScanNote(text: "This scan is no longer in your collection", tone: .problem))
             feedback.problem()
             return .sourceMissing
         }
+        let mutation = correctionReceipt.mutation
+        let needsGradedLookup = scan.subject.slab != nil && correctionReceipt.retainedGradedQuote == nil
 
         // Reuse the id so the rail thumbnail stays the same item rather than
         // animating out and back in for what the user experienced as an edit.
@@ -3744,7 +3778,8 @@ final class ScannerViewModel: ObservableObject {
             catalogRetrievedAt: scan.catalogRetrievedAt,
             options: scan.options,
             mutation: mutation,
-            price: scan.subject.slab == nil ? correctedLookup : scan.price
+            price: correctionReceipt.retainedGradedQuote ?? correctedLookup,
+            isGradedPricePending: needsGradedLookup
         )
 
         if let index = sessionScans.firstIndex(where: { $0.id == scan.id }) {
@@ -3760,6 +3795,8 @@ final class ScannerViewModel: ObservableObject {
                 pokemonPrintRun: scan.pokemonPrintRun,
                 catalogLookup: correctedLookup
             )
+        } else if needsGradedLookup {
+            queueGradedBinding(scanID: scanID)
         }
         if pendingGradedVariantCorrection?.scanID == scan.id {
             pendingGradedVariantCorrection = nil
@@ -4213,6 +4250,7 @@ final class ScannerViewModel: ObservableObject {
         card: IdentifiedCard
     ) -> Bool {
         guard request.purpose == .collection else { return false }
+        if hasHeldRepeatAuthorization(for: request, card: card) { return false }
         let decision = CollectionCandidateRoutingPolicy.decision(
             for: ConsecutiveScanIdentity(card: card, subject: request.subject),
             previous: committedSessionHistory.last,
@@ -4287,7 +4325,7 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
             var duplicateChoiceContext: PendingDuplicateChoiceContext?
-            if request.purpose == .collection {
+            if request.purpose == .collection, !hasHeldRepeatAuthorization(for: request, card: card) {
                 switch prepareFinishChoiceDuplicate(
                     for: ConsecutiveScanIdentity(card: card, subject: request.subject)
                 ) {
@@ -4550,7 +4588,13 @@ final class ScannerViewModel: ObservableObject {
             guard let self else { return }
             defer {
                 self.gradedBindingScanIDs.remove(scanID)
-                self.clearGradedPricePending(scanID: scanID)
+                if let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                   writeSessionID == self.scannerSessionID,
+                   (latest.resolved.variant != scan.resolved.variant || latest.pokemonPrintRun != scan.pokemonPrintRun) {
+                    if latest.isGradedPricePending { self.queueGradedBinding(scanID: scanID) }
+                } else {
+                    self.clearGradedPricePending(scanID: scanID)
+                }
             }
             let lookupID = PerformanceSignpost.makeID()
             let lookupState = PerformanceSignpost.beginInterval(
@@ -4591,6 +4635,8 @@ final class ScannerViewModel: ObservableObject {
                   self.isStorageGenerationCurrent,
                   !self.undoingScanIDs.contains(scanID),
                   let current = self.sessionScans.first(where: { $0.id == scanID }),
+                  current.resolved.variant == scan.resolved.variant,
+                  current.pokemonPrintRun == scan.pokemonPrintRun,
                   Self.isCompatibleGradedEvidence(current.subject.slab, with: slab) else { return }
             guard case let .bound(variant) = outcome else {
                 self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
@@ -4604,6 +4650,8 @@ final class ScannerViewModel: ObservableObject {
                     do {
                         let collectionWriter = await collectionWriter.value
                         guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                              latest.resolved.variant == scan.resolved.variant,
+                              latest.pokemonPrintRun == scan.pokemonPrintRun,
                               Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
                               !self.undoingScanIDs.contains(scanID) else { return }
                         let saved = try await collectionWriter.recordGradedMarketCoverage(
@@ -4660,7 +4708,9 @@ final class ScannerViewModel: ObservableObject {
                     }
                     return try await collectionWriter.bindScannedGraded(
                         collectionKey: collectionKey,
-                        variant: variant
+                        variant: variant,
+                        expectedIdentity: GradedBindingIdentity(finishID: scan.resolved.variant?.id,
+                            printRun: scan.pokemonPrintRun)
                     )
                 }
                 let resolvedBinding: GradedVariantBindingReceipt?
@@ -4684,6 +4734,8 @@ final class ScannerViewModel: ObservableObject {
                           self.isStorageGenerationCurrent,
                           !self.undoingScanIDs.contains(scanID),
                           let stillCurrent = self.sessionScans.first(where: { $0.id == scanID }),
+                          stillCurrent.resolved.variant == scan.resolved.variant,
+                          stillCurrent.pokemonPrintRun == scan.pokemonPrintRun,
                           Self.isCompatibleGradedEvidence(stillCurrent.subject.slab, with: slab) else {
                         return
                     }
@@ -4694,13 +4746,19 @@ final class ScannerViewModel: ObservableObject {
                       self.isStorageGenerationCurrent,
                       !self.undoingScanIDs.contains(scanID),
                       let stillCurrent = self.sessionScans.first(where: { $0.id == scanID }),
+                      stillCurrent.resolved.variant == scan.resolved.variant,
+                      stillCurrent.pokemonPrintRun == scan.pokemonPrintRun,
                       Self.isCompatibleGradedEvidence(stillCurrent.subject.slab, with: slab) else { return }
                 self.updateGradedScanPrice(binding.quote, scanID: scanID)
                 if case .unavailable = binding.quote {
                     self.noteGradedBindingOutcome(.bound(variant), slab: slab)
                 }
             } catch {
-                guard writeSessionID == self.scannerSessionID else { return }
+                guard writeSessionID == self.scannerSessionID,
+                      self.isStorageGenerationCurrent,
+                      let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                      latest.resolved.variant == scan.resolved.variant,
+                      latest.pokemonPrintRun == scan.pokemonPrintRun else { return }
                 self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                 self.show(ScanNote(text: "Graded price could not be saved", tone: .info))
             }
@@ -5013,37 +5071,22 @@ final class ScannerViewModel: ObservableObject {
         sourceRowID: UUID? = nil,
         suppressionKey: ScanSuppressionKey? = nil
     ) {
-        let providerID = card.providerID.lowercased()
-        let committedPokemon: (localID: String, denominator: Int, setID: String)? = {
-            guard case let .pokemon(pokemon, _) = card.legacyIdentity else { return nil }
-            return (
-                PokemonHistoricalIdentityResolver.canonicalLocalID(pokemon.localId),
-                pokemon.set.cardCount.official,
-                pokemon.set.id.lowercased()
-            )
-        }()
         let removed = unresolvedScans.filter { row in
             guard row.game == card.game else { return false }
             if row.id == sourceRowID { return true }
-            // A canonical number is shared by distinct physical encounters.
-            // Generic cards clear only the recovery row explicitly resolved.
-            guard card.legacyIdentity != nil else { return false }
+            // A printing is shared by physical acquisitions. Only an ordinary
+            // equivalent recovery in this encounter's session may be coalesced;
+            // a failed commit or explicit extra copy owns its own recovery.
+            guard card.legacyIdentity != nil,
+                  !row.isAdditionalCopy,
+                  row.pendingCommit == nil,
+                  row.mergeSessionID == scannerSessionID else { return false }
             if let suppressionKey,
                row.subject.suppressionKey == suppressionKey,
                (!row.needsSessionScopedMerge || row.mergeSessionID == scannerSessionID) {
                 return true
             }
-            if row.resolvedProviderID == providerID { return true }
-            guard let committedPokemon,
-                  let number = row.pokemonNumber,
-                  PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
-                    == committedPokemon.localID,
-                  number.denominator == committedPokemon.denominator else { return false }
-            if let rowSetID = row.pokemonSetProviderID?.lowercased() {
-                return rowSetID == committedPokemon.setID
-            }
-            return uniquePokemonSetOwner(for: committedPokemon.denominator)
-                == committedPokemon.setID
+            return false
         }
         guard !removed.isEmpty else { return }
         let removedIDs = Set(removed.map(\.id))
@@ -5098,7 +5141,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private enum CollectionCommitOutcome {
-        case committed, failed, requiresLookup
+        case committed, failed, requiresLookup, stale
     }
 
     /// Consecutive matching identities require spatial evidence before asking
@@ -5209,6 +5252,16 @@ final class ScannerViewModel: ObservableObject {
     /// the detached permit owns its original presentation, while foreign
     /// confirmations still terminate the permit before this guard can authorize
     /// anything.
+    private func hasHeldRepeatAuthorization(for request: ScanRequest, card: IdentifiedCard) -> Bool {
+        guard let state = heldRepeatAuthorizationState,
+              request.heldRepeatAuthorizationID == state.authorization.id,
+              state.wasConsumedByEncounter,
+              request.subject.suppressionKey == state.offer.suppressionKey,
+              ConsecutiveScanIdentity(card: card, subject: request.subject) == state.offer.identity,
+              let previous = committedSessionHistory.first(where: { $0.id == state.offer.previousScanID }) else { return false }
+        return previous.presentationToken == state.offer.previousPresentationToken
+    }
+
     private func routeHeldRepeatCandidate(
         _ candidate: CollectionCommitCandidate,
         authorizationID: UUID
@@ -5277,6 +5330,7 @@ final class ScannerViewModel: ObservableObject {
         _ candidate: CollectionCommitCandidate,
         authorization: CollectionCommitAuthorization
     ) async -> CollectionCommitOutcome {
+        guard !Task.isCancelled else { return .stale }
         let isAdditionalCopy: Bool
         switch authorization {
         case .automatic: isAdditionalCopy = false
@@ -5285,7 +5339,7 @@ final class ScannerViewModel: ObservableObject {
         guard isStorageGenerationCurrent else {
             clearAcknowledgement(for: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
-            return .failed
+            return .stale
         }
         guard gameRegistry.supports(candidate.card.game, .collectionWrite) else {
             fileUnresolved(request: scanRequest(for: candidate), reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
@@ -5365,12 +5419,12 @@ final class ScannerViewModel: ObservableObject {
             guard writeSessionID == scannerSessionID else {
                 clearAcknowledgement(for: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
-                return .failed
+                return .stale
             }
             guard isStorageGenerationCurrent else {
                 clearAcknowledgement(for: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
-                return .failed
+                return .stale
             }
 
             if mutation.wasDuplicate {
@@ -5417,10 +5471,10 @@ final class ScannerViewModel: ObservableObject {
             diagnostic(candidate.subject.slab == nil ? "collectionCommit" : "gradedCollectionCommit")
             return .committed
         } catch {
-            guard writeSessionID == scannerSessionID else {
+            guard writeSessionID == scannerSessionID, isStorageGenerationCurrent else {
                 clearAcknowledgement(for: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
-                return .failed
+                return .stale
             }
             if candidate.identifier.game == .lorcana, error is CatalogLookupError {
                 fileLorcanaAcquisitionForLookup(candidate, isAdditionalCopy: isAdditionalCopy)

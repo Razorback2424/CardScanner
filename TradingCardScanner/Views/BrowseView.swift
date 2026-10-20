@@ -2978,7 +2978,8 @@ struct CatalogCachedImage: View {
         placeholderText: String? = nil,
         showsPlaceholder: Bool = true,
         contentMode: ContentMode = .fit,
-        onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
+        onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil,
+        imageLoader: CatalogImageLoader? = nil
     ) {
         self.candidates = candidates
         self.targetPixelSize = targetPixelSize
@@ -2988,6 +2989,7 @@ struct CatalogCachedImage: View {
         self.showsPlaceholder = showsPlaceholder
         self.contentMode = contentMode
         self.onPhaseChange = onPhaseChange
+        self._loader = StateObject(wrappedValue: imageLoader ?? CatalogImageLoader())
     }
 
     /// Compatibility initializer for card artwork and older callers. Set
@@ -3045,11 +3047,11 @@ struct CatalogCachedImage: View {
 
     var body: some View {
         Group {
-            if let image = loader.image {
+            if loader.matchesSource(remoteURL, reloadToken: reloadToken), let image = loader.image {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: contentMode)
-            } else if loader.failed, hasRemainingCandidate {
+            } else if loader.matchesSource(remoteURL, reloadToken: reloadToken), loader.failed, hasRemainingCandidate {
                 CatalogCachedImage(
                     candidates: Array(resolvedCandidates.dropFirst()),
                     targetPixelSize: targetPixelSize,
@@ -3087,9 +3089,12 @@ struct CatalogCachedImage: View {
             targetPixelSize: resolvedTargetPixelSize,
             reloadToken: reloadToken
         )) {
-            guard let resolvedTargetPixelSize else { return }
-            guard let remoteURL else { return }
-            loader.load(remoteURL, targetPixelSize: resolvedTargetPixelSize)
+            guard !Task.isCancelled, let resolvedTargetPixelSize else { return }
+            guard let remoteURL else {
+                loader.cancel()
+                return
+            }
+            loader.load(remoteURL, targetPixelSize: resolvedTargetPixelSize, reloadToken: reloadToken)
         }
         .onAppear {
             guard localAssetImage != nil || bundledLoadingImage != nil, !didReportBundledLoaded else { return }
@@ -3097,6 +3102,7 @@ struct CatalogCachedImage: View {
             onPhaseChange?(.loaded)
         }
         .onChange(of: loader.phase) { _, phase in
+            guard loader.matchesSource(remoteURL, reloadToken: reloadToken) else { return }
             if phase == .loaded || phase == .failed {
                 CatalogArtworkLog.log(
                     phase: phase,
@@ -3112,6 +3118,7 @@ struct CatalogCachedImage: View {
             }
             onPhaseChange?(phase)
         }
+        .onDisappear { loader.cancel() }
     }
 
     private var resolvedCandidates: [PokemonArtworkFallbacks.Candidate] {
@@ -3246,18 +3253,50 @@ private enum CatalogArtworkLog {
 }
 
 @MainActor
-private final class CatalogImageLoader: ObservableObject {
+final class CatalogImageLoader: ObservableObject {
     @Published var image: UIImage?
     @Published var isLoading = false
     @Published var failed = false
     @Published var phase: CatalogImageLoadPhase = .idle
     private var task: Task<Void, Never>?
+    private struct Request: Equatable {
+        let url: URL?
+        let reloadToken: Int
+        let targetPixelSize: Int?
+    }
+    private var request: Request?
+    private var generation = 0
+    private let fetch: @Sendable (URL, Int?) async throws -> UIImage
+
+    init(fetch: @escaping @Sendable (URL, Int?) async throws -> UIImage = { url, size in
+        try await CatalogImageCache.shared.image(for: url, targetPixelSize: size)
+    }) {
+        self.fetch = fetch
+    }
 
     deinit { task?.cancel() }
 
-    func load(_ url: URL?, targetPixelSize: Int?) {
+    func matchesSource(_ url: URL?, reloadToken: Int) -> Bool {
+        request?.url == url && request?.reloadToken == reloadToken
+    }
+
+    func cancel() {
+        generation &+= 1
         task?.cancel()
-        image = nil
+        task = nil
+        request = nil
+        isLoading = false
+    }
+
+    func load(_ url: URL?, targetPixelSize: Int?, reloadToken: Int = 0) {
+        let next = Request(url: url, reloadToken: reloadToken, targetPixelSize: targetPixelSize)
+        guard next != request else { return }
+        let retainsArtwork = request?.url == url && request?.reloadToken == reloadToken
+        request = next
+        generation &+= 1
+        let expectedGeneration = generation
+        task?.cancel()
+        if !retainsArtwork { image = nil }
         failed = false
         phase = .idle
         guard let url else {
@@ -3265,23 +3304,24 @@ private final class CatalogImageLoader: ObservableObject {
             return
         }
         isLoading = true
-        phase = .loading
+        phase = image == nil ? .loading : .loaded
+        let fetch = fetch
         task = Task { [weak self] in
             do {
-                let image = try await CatalogImageCache.shared.image(
-                    for: url,
-                    targetPixelSize: targetPixelSize
-                )
-                guard !Task.isCancelled else { return }
+                let image = try await fetch(url, targetPixelSize)
+                guard !Task.isCancelled, self?.generation == expectedGeneration else { return }
                 self?.image = image
                 self?.phase = .loaded
             } catch {
-                if !Task.isCancelled {
-                    self?.failed = true
-                    self?.phase = .failed
+                if !Task.isCancelled, self?.generation == expectedGeneration {
+                    // A failed size derivative is not a failed source when
+                    // its previous derivative is still usable.
+                    let hasArtwork = self?.image != nil
+                    self?.failed = !hasArtwork
+                    self?.phase = hasArtwork ? .loaded : .failed
                 }
             }
-            if !Task.isCancelled { self?.isLoading = false }
+            if !Task.isCancelled, self?.generation == expectedGeneration { self?.isLoading = false }
         }
     }
 }

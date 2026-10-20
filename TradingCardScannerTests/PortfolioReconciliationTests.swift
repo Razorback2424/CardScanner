@@ -20,6 +20,11 @@ private final class CSVProgressRecorder: @unchecked Sendable {
     }
 }
 
+private actor PortfolioReadSequence {
+    private var call = 0
+    func shouldFail() -> Bool { call += 1; return call == 2 }
+}
+
 private actor PortfolioComputationGate {
     private var permits = 0
     private var waiting = 0
@@ -1325,6 +1330,37 @@ final class PortfolioReconciliationTests: XCTestCase {
     }
 
     // MARK: - Recompute presentation and coalescing
+
+    func testLiveDeltaCannotRestoreTrustAfterUnreadableReplay() async throws {
+        let context = try makeContext()
+        let sequence = PortfolioReadSequence()
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let engine = PortfolioEngine(computationProvider: { _, epoch, through, zone in
+            let failed = await sequence.shouldFail()
+            let replay = PortfolioReplayEngine.replay(PortfolioReplayInput(events: [], observations: [],
+                epoch: epoch, through: through, timeZoneIdentifier: zone))
+            return PortfolioReplaySnapshotBuilder.Computation(
+                valuation: PortfolioEngine.CurrentValuation(value: .zero),
+                defects: failed ? [LedgerIntegrityDefect(reason: .unreadableStore,
+                    collectionKey: "store:test", detail: "Injected read failure", canRepairQuantity: false)] : [],
+                isAuthoritative: !failed, replay: replay, coverage: PortfolioCoverageIndex(),
+                holdings: [PortfolioHoldingSnapshot(collectionKey: "position", name: "Test", detail: "Test",
+                    userArtworkFilename: nil, artworkURL: nil, artworkFallbackURL: nil, quantity: 1,
+                    unitPrice: nil, holdingValue: nil, priceStorageKey: "instrument")])
+        })
+        await engine.recomputeAndWait(context: context, now: now)
+        XCTAssertTrue(try XCTUnwrap(engine.summary).isAuthoritative)
+        await engine.recomputeAndWait(context: context, now: now)
+        XCTAssertFalse(try XCTUnwrap(engine.summary).isAuthoritative)
+        engine.applyPriceDeltas([PriceDelta(key: "instrument", display: PriceDisplay(amount: 10))])
+        XCTAssertEqual(engine.summary?.currentValue, money(10))
+        XCTAssertFalse(try XCTUnwrap(engine.summary).isAuthoritative)
+        XCTAssertEqual(engine.summary?.defects.first?.reason, .unreadableStore)
+        XCTAssertFalse(try XCTUnwrap(engine.replaySummary).isAuthoritative)
+        await engine.recomputeAndWait(context: context, now: now)
+        XCTAssertTrue(try XCTUnwrap(engine.summary).isAuthoritative)
+        XCTAssertTrue(try XCTUnwrap(engine.summary).defects.isEmpty)
+    }
 
     func testRecomputeRetainsTheLastUsableSummaryWhileUpdating() async throws {
         let context = try makeContext()

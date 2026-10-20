@@ -178,10 +178,17 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
     }
 }
 
+private actor ScannerGradedLookupCounter {
+    private var count = 0
+    func isFirstCall() -> Bool { count += 1; return count == 1 }
+}
+
 private struct ScannerStubGradedResolver: ScannedGradedResolving {
     let outcome: ScannedGradedOutcome
+    let subsequentOutcome: ScannedGradedOutcome?
     let recorder: ScannerPrintRunRecorder?
     let gate: ScannerGradedResolverGate?
+    private let calls = ScannerGradedLookupCounter()
 
     func resolve(
         card: IdentifiedCard,
@@ -190,16 +197,18 @@ private struct ScannerStubGradedResolver: ScannedGradedResolving {
     ) async -> ScannedGradedOutcome {
         await recorder?.record(pokemonPrintRun)
         await gate?.pause()
-        return outcome
+        return await calls.isFirstCall() ? outcome : (subsequentOutcome ?? outcome)
     }
 }
 
 private actor ScannerGradedResolverGate {
     private var hasStarted = false
+    private var allowsFutureCalls = false
     private var startWaiter: CheckedContinuation<Void, Never>?
     private var releaseWaiter: CheckedContinuation<Void, Never>?
 
     func pause() async {
+        if allowsFutureCalls { return }
         hasStarted = true
         startWaiter?.resume()
         startWaiter = nil
@@ -215,7 +224,8 @@ private actor ScannerGradedResolverGate {
         }
     }
 
-    func release() {
+    func release(andFutureCalls: Bool = false) {
+        allowsFutureCalls = andFutureCalls
         releaseWaiter?.resume()
         releaseWaiter = nil
     }
@@ -1201,17 +1211,52 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(row.pokemonPrintRun)
     }
 
-    func testCorrectedGradedScanKeepsItsResolvedPrice() async throws {
+    func testGradedFinishCorrectionRejectsIncompatibleLookupInEitherOrder() async throws {
+        for correctBeforeLookup in [false, true] {
+            let gate = correctBeforeLookup ? ScannerGradedResolverGate() : nil
+            let variant = GradedVariant(id: "holo-only", company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint"), printing: "Holofoil",
+                marketPriceUSD: 250, updatedAt: nil)
+            let model = try makeModel(variants: [.normal, .holo], gradedOutcome: .bound(variant),
+                gradedResolverGate: gate)
+            useSlabMode(model)
+            confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+            let committed = await waitUntil { model.recent.count == 1 }
+            XCTAssertTrue(committed)
+            if let gate { await gate.waitUntilStarted() }
+            else {
+                let bound = await waitUntil { model.recent.first?.isGradedPricePending == false }
+                XCTAssertTrue(bound)
+            }
+            let scanID = try XCTUnwrap(model.recent.first?.id)
+            let result = await model.correct(scanID: scanID, to: .normal)
+            XCTAssertEqual(result, .saved)
+            if let gate { await gate.release(andFutureCalls: true) }
+            let settled = await waitUntil { model.recent.first?.isGradedPricePending == false }
+            XCTAssertTrue(settled)
+            let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first { $0.collectionKey == model.recent.first?.mutation.collectionKey })
+            XCTAssertNil(row.justTCGVariantID)
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(row.variant, .normal)
+            if case .price = model.recent.first?.price { XCTFail("Holo quote survived Normal correction") }
+            let records = try context().fetch(FetchDescriptor<PriceRecord>())
+            XCTAssertFalse(records.contains { $0.marketVariantID == "holo-only" && $0.effectiveUnitMarketPriceUSD != nil })
+            XCTAssertEqual(InventoryLedger.quantities(from: try context().fetch(FetchDescriptor<InventoryEvent>()))[row.collectionKey], 1)
+        }
+    }
+
+    func testCorrectedGradedScanKeepsItsCompatibleResolvedPrice() async throws {
         let gradedVariant = GradedVariant(
             id: "graded-v2-correction",
             cardID: "graded-card-correction",
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 250,
             updatedAt: nil
         )
         let model = try makeModel(
-            variants: [.holo],
+            variants: [.normal, .holo],
             gradedOutcome: .bound(gradedVariant)
         )
         useSlabMode(model)
@@ -1239,11 +1284,70 @@ final class ScannerViewModelTests: XCTestCase {
 
         let correction = await model.correct(scanID: scanID, to: .normal)
         XCTAssertEqual(correction, .saved)
+        await assertEventually {
+            if case .price = model.recent.first?.price { return true }
+            return false
+        }
         guard case let .price(price) = model.recent.first?.price else {
             return XCTFail("graded correction should retain the previously resolved price")
         }
         XCTAssertEqual(price.unitMarketPriceUSD, 250)
         XCTAssertEqual(price.source, .justTCG)
+    }
+
+    func testCompatibleGradedCorrectionRetainsQuoteWhenAnotherLookupWouldBeUnavailable() async throws {
+        let variant = GradedVariant(id: "normal-compatible", company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"), printing: "Normal",
+            marketPriceUSD: 250, updatedAt: nil)
+        let model = try makeModel(variants: [.normal, .holo], gradedOutcome: .bound(variant),
+            gradedRecheckOutcome: .unavailable)
+        useSlabMode(model)
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        await assertEventually {
+            guard case .price = model.recent.first?.price else { return false }
+            return model.recent.first?.isGradedPricePending == false
+        }
+        let scanID = try XCTUnwrap(model.recent.first?.id)
+        let result = await model.correct(scanID: scanID, to: .normal)
+        XCTAssertEqual(result, .saved)
+        await assertEventually { model.recent.first?.isGradedPricePending == false }
+        guard case let .price(price) = model.recent.first?.price else {
+            return XCTFail("A proven compatible graded quote must survive correction without a successful recheck")
+        }
+        XCTAssertEqual(price.unitMarketPriceUSD, 250)
+        let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.justTCGVariantID, "normal-compatible")
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(row.variant, .normal)
+    }
+
+    func testIncompatibleGradedCorrectionResolvesTheCorrectedFinishPrice() async throws {
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let holo = GradedVariant(id: "holo-before-correction", company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: 250, updatedAt: nil)
+        let normal = GradedVariant(id: "normal-after-correction", company: .psa, grade: grade,
+            printing: "Normal", marketPriceUSD: 80, updatedAt: nil)
+        let model = try makeModel(variants: [.normal, .holo], gradedOutcome: .bound(holo),
+            gradedRecheckOutcome: .bound(normal))
+        useSlabMode(model)
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        await assertEventually {
+            guard case let .price(price) = model.recent.first?.price else { return false }
+            return price.unitMarketPriceUSD == 250 && model.recent.first?.isGradedPricePending == false
+        }
+        let scanID = try XCTUnwrap(model.recent.first?.id)
+        let result = await model.correct(scanID: scanID, to: .normal)
+        XCTAssertEqual(result, .saved)
+        await assertEventually {
+            guard case let .price(price) = model.recent.first?.price else { return false }
+            return price.unitMarketPriceUSD == 80 && model.recent.first?.isGradedPricePending == false
+        }
+        let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.justTCGVariantID, normal.id)
+        XCTAssertEqual(row.variant, .normal)
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(row.certificationNumber, "12345678")
+        XCTAssertEqual(InventoryLedger.quantities(from: try context().fetch(FetchDescriptor<InventoryEvent>()))[row.collectionKey], 1)
     }
 
     func testDifferentSlabsOfOnePrintingBothCommitWithoutSpatialProof() async throws {
@@ -1542,6 +1646,154 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(model.recent.isEmpty)
         let addCount = await addGate.count()
         XCTAssertEqual(addCount, 1)
+    }
+
+    func testAbandonedRetryExistenceCheckCannotPublishOrAuthorizeAWrite() async throws {
+        for scenario in 0..<9 {
+            let result = scenario % 3
+            let addGate = ScannerCollectionAddGate(outcome: .failure)
+            let model = try makeModel(variants: [.normal], collectionAddOverride: { try await addGate.add($0) })
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await addGate.waitUntilStarted()
+            await addGate.release()
+            await assertEventually { model.unresolvedScans.count == 1 }
+            let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+            let existence = ScannerFetchGate()
+            model.collectionContainsOverrideForTesting = { _ in
+                await existence.hold()
+                if result == 2 { throw ScannerCollectionAddGateError.failed }
+                return result == 1
+            }
+            model.resolveUnresolved(id: rowID, choice: .retrySave)
+            await existence.waitUntilStarted()
+            switch scenario / 3 {
+            case 0: model.setPurpose(.priceCheck)
+            case 1: model.scenePhaseChanged(isActive: false)
+            default:
+                model.viewDisappeared()
+                model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false)
+            }
+            await existence.release()
+            await settle()
+            XCTAssertEqual(model.unresolvedScans.map(\.id), [rowID])
+            let count = await addGate.count()
+            XCTAssertEqual(count, 1)
+            XCTAssertNil(model.pendingDuplicateConfirmation)
+            XCTAssertNil(model.scanAcknowledgement)
+            model.viewDisappeared()
+        }
+    }
+
+    func testHeldRepeatSurvivesRequiredFinishAndPrintRunChoices() async throws {
+        for (vintage, cancel, interrupt) in [
+            (false, false, false), (true, false, false),
+            (false, true, false), (true, true, false),
+            (false, false, true), (true, false, true)
+        ] {
+            let setID = vintage ? "base1" : "test-set"
+            let model = try makeModel(variants: [.normal, .holo], setProviderID: setID)
+            let subject = ScanSubject(identifier: scannerIdentifier(setProviderID: setID))
+            let start = CFAbsoluteTimeGetCurrent()
+            var firstEncounter: UUID?
+            let original = model.scanner.onConfirmedSubjectCandidate
+            model.scanner.onConfirmedSubjectCandidate = { context, id, subject, permit in
+                if permit == nil { firstEncounter = id }
+                original?(context, id, subject, permit)
+            }
+            model.scanner.drainProfileQueuesForTesting()
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.25)
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.5)
+            if vintage {
+                await assertEventually { model.pendingPrintRunChoice != nil }
+                model.choose(.unlimited)
+            }
+            await assertEventually { model.pendingChoice != nil }
+            model.choose(.normal)
+            await assertEventually { model.recent.count == 1 }
+            for offset in stride(from: 0.75, through: 2.5, by: 0.25) {
+                model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + offset)
+            }
+            model.scanner.onLatchHolding?(subject, try XCTUnwrap(firstEncounter))
+            await assertEventually { model.heldDuplicateOffer != nil }
+            model.addAnotherHeldCopy()
+            model.addAnotherHeldCopy()
+            await settle()
+            model.scanner.drainVisionQueueForTesting()
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3)
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.25)
+            if vintage {
+                await assertEventually { model.pendingPrintRunChoice != nil }
+                if interrupt {
+                    model.scenePhaseChanged(isActive: false)
+                    await settle()
+                    XCTAssertEqual(model.recent.count, 1)
+                    XCTAssertEqual(model.unresolvedScans.count, 1)
+                    XCTAssertTrue(model.unresolvedScans.first?.isAdditionalCopy == true)
+                    XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+                    model.viewDisappeared()
+                    continue
+                }
+                if cancel {
+                    model.dismissPrintRunChoice()
+                    await settle()
+                    XCTAssertEqual(model.recent.count, 1)
+                    XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+                    model.viewDisappeared()
+                    continue
+                }
+                model.choose(.unlimited)
+            }
+            await assertEventually { model.pendingChoice != nil }
+            if interrupt {
+                model.scenePhaseChanged(isActive: false)
+                await settle()
+                XCTAssertEqual(model.recent.count, 1)
+                XCTAssertEqual(model.unresolvedScans.count, 1)
+                XCTAssertTrue(model.unresolvedScans.first?.isAdditionalCopy == true)
+                XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+                model.viewDisappeared()
+                continue
+            }
+            if cancel {
+                model.dismissChoice()
+                await settle()
+                XCTAssertEqual(model.recent.count, 1)
+                XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+                model.viewDisappeared()
+                continue
+            }
+            model.choose(.normal)
+            await assertEventually { model.recent.count == 2 }
+            XCTAssertEqual(model.successCount, 2)
+            XCTAssertNil(model.pendingDuplicateConfirmation)
+            model.viewDisappeared()
+        }
+    }
+
+    func testLateAdditionalCopyCompletionCannotReviveOldSessionPrompt() async throws {
+        for outcome in [ScannerCollectionAddGate.Outcome.success, .failure] {
+            let gate = ScannerCollectionAddGate(outcome: outcome, successfulAddsBeforeBlocking: 1)
+            let model = try makeModel(variants: [.normal], collectionAddOverride: { try await gate.add($0) })
+            let first = UUID()
+            confirm(model, scannerIdentifier(), encounterID: first)
+            await assertEventually { model.recent.count == 1 }
+            model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: first))
+            await settle()
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { model.pendingDuplicateConfirmation != nil }
+            model.addAnother()
+            await gate.waitUntilStarted()
+            model.viewDisappeared()
+            model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false)
+            try await Task.sleep(for: .milliseconds(2200))
+            await gate.release()
+            await settle()
+            XCTAssertNil(model.pendingDuplicateConfirmation)
+            XCTAssertNil(model.heldDuplicateOffer)
+            XCTAssertTrue(model.recent.isEmpty)
+            XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+            model.viewDisappeared()
+        }
     }
 
     func testHeldRepeatSaveFailureRepublishesOfferAndKeepsFailureAcknowledgement() async throws {
@@ -3728,6 +3980,47 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.unresolvedScans.map(\.id), [rowID])
     }
 
+    func testRecoveryCleanupPreservesDistinctPhysicalAcquisitionsAcrossReload() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = UnresolvedScanStore(fileURL: directory.appendingPathComponent("recovery.json"))
+        let model = try makeModel(variants: [.normal], gradedOutcome: .unavailable, unresolvedScanStore: store)
+        let identifier = scannerIdentifier()
+        let card = IdentifiedCard.pokemon(catalogCard(variants: [.normal], localID: "001"), setCode: "TST")
+        for certificate in ["11111111", "22222222"] {
+            let subject = ScanSubject(identifier: identifier, slab: GradedSlabEvidence(
+                company: .psa, grade: CardGrade(value: "10", label: "Gem Mint"),
+                certificationNumber: certificate, labelCardText: []))
+            let candidate = CollectionCommitCandidate(resolvedScan: ResolvedScan(
+                request: ScanRequest(subject: subject, purpose: .collection, generation: 0),
+                card: card, resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+                pokemonPrintRun: nil, options: [.normal]))
+            model.fileUnresolvedForTesting(subject, reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
+                pendingCommit: candidate)
+        }
+        model.fileUnresolvedForTesting(ScanSubject(identifier: identifier), reason: .lookupFailed,
+            isAdditionalCopy: true)
+        let resolved = try XCTUnwrap(model.unresolvedScans.first { $0.subject.slab?.certificationNumber == "11111111" })
+        await model.waitForUnresolvedPersistenceForTesting()
+        model.resolveUnresolved(id: resolved.id, choice: .retrySave)
+        await assertEventually { model.sessionScans.count == 1 }
+        await model.waitForUnresolvedPersistenceForTesting()
+        let reloaded = await store.load()
+        XCTAssertEqual(reloaded.count, 2)
+        XCTAssertTrue(reloaded.contains { $0.subject.slab?.certificationNumber == "22222222" })
+        XCTAssertTrue(reloaded.contains { $0.isAdditionalCopy })
+        let owned = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(owned.count, 1)
+        XCTAssertEqual(owned.first?.certificationNumber, "11111111")
+        confirm(model, identifier, encounterID: UUID())
+        await assertEventually { model.sessionScans.count == 2 }
+        await model.waitForUnresolvedPersistenceForTesting()
+        let afterRawSuccess = await store.load()
+        XCTAssertEqual(afterRawSuccess.count, 2)
+        XCTAssertTrue(afterRawSuccess.contains { $0.subject.slab?.certificationNumber == "22222222" })
+        XCTAssertTrue(afterRawSuccess.contains { $0.isAdditionalCopy })
+    }
+
     func testUnresolvedHistoricalMergeKeepsSlabEvidence() {
         let number = PokemonPrintedNumberEvidence(
             localID: "004",
@@ -3775,6 +4068,7 @@ final class ScannerViewModelTests: XCTestCase {
         fetchHoldGates: [String: ScannerFetchGate] = [:],
         catalogMiss: Bool = false,
         gradedOutcome: ScannedGradedOutcome? = nil,
+        gradedRecheckOutcome: ScannedGradedOutcome? = nil,
         setProviderID: String = "test-set",
         gradedRunRecorder: ScannerPrintRunRecorder? = nil,
         gradedResolverGate: ScannerGradedResolverGate? = nil,
@@ -3842,6 +4136,7 @@ final class ScannerViewModelTests: XCTestCase {
             gradedResolver: gradedOutcome.map {
                 ScannerStubGradedResolver(
                     outcome: $0,
+                    subsequentOutcome: gradedRecheckOutcome,
                     recorder: gradedRunRecorder,
                     gate: gradedResolverGate
                 )

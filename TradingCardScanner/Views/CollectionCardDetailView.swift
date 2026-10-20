@@ -60,7 +60,7 @@ private struct MarketHistoryLoadID: Hashable {
     let retry: Int
 }
 
-private struct CardDetailMovementDisplay: Equatable {
+struct CardDetailMovementDisplay: Equatable {
     enum Direction: Equatable {
         case positive
         case negative
@@ -81,6 +81,66 @@ private struct CardDetailMovementDisplay: Equatable {
 }
 
 struct CollectionCardDetailView: View {
+    @Bindable var card: CollectedCard
+    let price: PriceDisplay
+    @ObservedObject var history: PortfolioHistoryStore
+    let unpricedReason: PricingDiagnosticReason?
+    let artworkReason: ArtworkDiagnosticReason?
+    var logicalQuantity: Int? = nil
+    var isLogicalConflict = false
+    var instrumentKey: String? = nil
+    let onRemoved: (RemovedCardSnapshot) -> Void
+
+    var body: some View {
+        CollectionDetailArtworkSource(collectionKey: card.collectionKey, legacyFilename: card.userArtworkFilename) { filename in
+            CollectionCardDetailContent(card: card, price: price, history: history,
+                unpricedReason: unpricedReason, artworkReason: artworkReason,
+                logicalQuantity: logicalQuantity, isLogicalConflict: isLogicalConflict,
+                instrumentKey: instrumentKey, localArtworkFilename: filename, onRemoved: onRemoved)
+        }
+    }
+
+    static func gradedAcquisitionDescriptor(for key: String) -> FetchDescriptor<CollectionActivity> {
+        CollectionCardDetailContent.gradedAcquisitionDescriptor(for: key)
+    }
+
+    static func gradedVariantEvidence(for card: CollectedCard) -> VariantEvidence {
+        CollectionCardDetailContent.gradedVariantEvidence(for: card)
+    }
+
+    static func gradedVariantOptions(for card: CollectedCard) -> [PhysicalVariant] {
+        CollectionCardDetailContent.gradedVariantOptions(for: card)
+    }
+}
+
+/// The query is recreated from the live key, including a rekey of an already
+/// presented card. Its one observed result feeds every detail artwork consumer.
+struct CollectionDetailArtworkSource<Content: View>: View {
+    @Query private var overrides: [LocalArtworkOverride]
+    let legacyFilename: String?
+    let content: (String?) -> Content
+
+    init(collectionKey: String, legacyFilename: String?, @ViewBuilder content: @escaping (String?) -> Content) {
+        var descriptor = FetchDescriptor<LocalArtworkOverride>(
+            predicate: #Predicate { $0.collectionKey == collectionKey },
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
+        descriptor.fetchLimit = 1
+        _overrides = Query(descriptor)
+        self.legacyFilename = legacyFilename
+        self.content = content
+    }
+
+    var body: some View {
+        content(Self.effectiveFilename(override: overrides.first?.filename, legacy: legacyFilename))
+    }
+
+    static func effectiveFilename(override: String?, legacy: String?) -> String? {
+        if let override { return override.isEmpty ? nil : override }
+        return legacy?.isEmpty == false ? legacy : nil
+    }
+}
+
+private struct CollectionCardDetailContent: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -103,6 +163,7 @@ struct CollectionCardDetailView: View {
     /// Duplicate synced rows cannot be edited safely through a single-row API.
     let isLogicalConflict: Bool
     private let priceHistoryInstrumentKey: String
+    let localArtworkFilename: String?
 
     @State private var isConfirmingRemoval = false
     @State private var isChoosingArtwork = false
@@ -135,6 +196,7 @@ struct CollectionCardDetailView: View {
         logicalQuantity: Int? = nil,
         isLogicalConflict: Bool = false,
         instrumentKey: String? = nil,
+        localArtworkFilename: String?,
         onRemoved: @escaping (RemovedCardSnapshot) -> Void
     ) {
         let resolvedInstrumentKey = instrumentKey ?? card.priceKey
@@ -185,6 +247,7 @@ struct CollectionCardDetailView: View {
         self.logicalQuantity = logicalQuantity
         self.isLogicalConflict = isLogicalConflict
         self.priceHistoryInstrumentKey = resolvedInstrumentKey
+        self.localArtworkFilename = localArtworkFilename
         self.onRemoved = onRemoved
     }
 
@@ -886,8 +949,8 @@ struct CollectionCardDetailView: View {
                 // History is a separate provider series, not the quote used by
                 // collection/portfolio valuation. Never let it replace that quote.
                 CardDetailHeroPrice(price: price)
-                if let source = price.source {
-                    Text(priceSourceDescription(source))
+                if !price.detailAttribution.isEmpty {
+                    Text(price.detailAttribution.joined(separator: "\n"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -1265,14 +1328,6 @@ struct CollectionCardDetailView: View {
         }
     }
 
-    private var localArtworkFilename: String? {
-        CollectionArtworkStore.filename(
-            for: card.collectionKey,
-            legacyFilename: card.userArtworkFilename,
-            in: modelContext
-        )
-    }
-
     private var artworkSourceKey: String {
         if let localArtworkFilename {
             return "local:\(localArtworkFilename)"
@@ -1417,16 +1472,6 @@ struct CollectionCardDetailView: View {
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
         )
-    }
-
-    /// The price belongs to this printing *and* this finish. When the provider
-    /// exposes nothing for the variant the user owns, the app says so instead of
-    /// borrowing a different finish's number.
-    private func priceSourceDescription(_ source: PriceSource) -> String {
-        if source.publishesSourceTimestamp {
-            return "\(source.label) · current as of \(price.effectiveAsOf?.formatted(date: .abbreviated, time: .shortened) ?? "unknown")"
-        }
-        return "\(source.label) · checked \(price.fetchedAt?.formatted(date: .abbreviated, time: .shortened) ?? "never")"
     }
 
     /// The shared builder requires an exact marketplace product or a trusted
@@ -2496,7 +2541,7 @@ enum CardMarketHistoryFixture {
 }
 #endif
 
-private struct PriceHistoryChartView: View {
+struct PriceHistoryChartView: View {
     let model: PriceHistoryChartModel
     let currencyCode: String
     let direction: CardDetailMovementDisplay.Direction
@@ -2534,13 +2579,15 @@ private struct PriceHistoryChartView: View {
                     currencyCode: currencyCode
                 )
             } else {
+                // Evaluate the full-series scale once, outside all mark loops.
+                let yDomain = model.yDomain
                 Chart {
                     ForEach(model.segments) { segment in
                         if segment.samples.count > 1 {
                             ForEach(segment.samples) { sample in
                                 AreaMark(
                                     x: .value("Date", sample.date),
-                                    yStart: .value("Floor", model.yDomain.lowerBound),
+                                    yStart: .value("Floor", yDomain.lowerBound),
                                     yEnd: .value("Unit price", sample.amount.doubleValue),
                                     series: .value("Known span area", segment.id)
                                 )
@@ -2596,7 +2643,7 @@ private struct PriceHistoryChartView: View {
                     }
                 }
                 .chartXScale(domain: model.plotRange)
-                .chartYScale(domain: model.yDomain)
+                .chartYScale(domain: yDomain)
                 .chartYAxis {
                     AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { value in
                         AxisGridLine()

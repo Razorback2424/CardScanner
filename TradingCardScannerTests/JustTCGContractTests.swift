@@ -11,6 +11,13 @@ private actor MarketRefreshProgressProbe {
     func snapshot() -> [(checked: Int, requests: Int)] { samples }
 }
 
+private actor EditionPriceProbe {
+    var prices: [String: Double] = [:]
+    func record(_ variant: JustTCGVariant, owners: [MarketPriceTarget]) {
+        for owner in owners { prices[owner.priceKey] = variant.price }
+    }
+}
+
 /// Slice 1: the wire contract, pinned against fixtures.
 ///
 /// These exist because the expensive mistakes in this layer are silent ones — a
@@ -599,6 +606,46 @@ final class JustTCGContractTests: XCTestCase {
         ) else {
             return XCTFail("the same ordinary Foil listing should remain usable")
         }
+    }
+
+    func testDirectPokemonListingRespectsExplicitEnglishEdition() throws {
+        let response = try JSONDecoder().decode(JustTCGBatchResponse.self, from: Data(#"{"data":[{"uuid":"jungle-holo","variants":[{"uuid":"first","condition":"Near Mint","printing":"1st Edition Holofoil","price":480},{"uuid":"unlimited","condition":"Near Mint","printing":"Unlimited Holofoil","price":96}]}]}"#.utf8))
+        for (run, expected) in [(PokemonPrintRun.unlimited, "unlimited"), (.firstEdition, "first")] {
+            let target = MarketPriceTarget(priceKey: run.rawValue, game: .pokemon, printingID: "jungle-holo",
+                variantID: PhysicalVariant.holo.id, itemKind: .rawCard, marketVariantID: nil,
+                lookupCandidates: [.cardID("jungle-holo")], currentAmount: nil, lastCheckedAt: nil,
+                pokemonPrintRun: run)
+            guard case let .matched(_, variant) = JustTCGRefreshCoordinator.exactListing(
+                lookup: .cardID("jungle-holo"), owners: [target], response: response) else {
+                XCTFail("edition-qualified listing was lost"); continue
+            }
+            XCTAssertEqual(variant.variantId, expected)
+        }
+    }
+
+    @MainActor
+    func testSharedCardBatchKeepsEditionOwnersSeparate() async throws {
+        let suite = "EditionOwners.\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset(body: #"{"data":[{"uuid":"jungle-holo","variants":[{"uuid":"first","condition":"Near Mint","printing":"1st Edition Holofoil","price":480},{"uuid":"unlimited","condition":"Near Mint","printing":"Unlimited Holofoil","price":96}]}]}"#)
+        let targets = [PokemonPrintRun.unlimited, .firstEdition].map { run in
+            MarketPriceTarget(priceKey: run.rawValue, game: .pokemon, printingID: "jungle-holo",
+                variantID: PhysicalVariant.holo.id, itemKind: .rawCard, marketVariantID: nil,
+                lookupCandidates: [.cardID("jungle-holo")], currentAmount: nil, lastCheckedAt: nil,
+                pokemonPrintRun: run)
+        }
+        let (coordinator, _) = makeCoordinator(defaults: defaults)
+        let probe = EditionPriceProbe()
+        let report = await coordinator.refresh(targets, game: .pokemon, apply: { _, variant, owners in
+            await probe.record(variant, owners: owners)
+            return true
+        }, checkpoint: { true })
+        let prices = await probe.prices
+        XCTAssertEqual(prices[PokemonPrintRun.unlimited.rawValue], 96)
+        XCTAssertEqual(prices[PokemonPrintRun.firstEdition.rawValue], 480)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        XCTAssertEqual(report.targetsChecked, 2)
     }
 
     func testNamedPokemonParallelCanUseOnlyItsExactPhysicalProductAndSingleNearMintListing() throws {

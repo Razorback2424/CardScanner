@@ -496,9 +496,9 @@ enum PortfolioReplayEngine {
             var positions = positionsByInstrument[instrument, default: [:]]
             var remaining = quantity
             var taken: [String: Int] = [:]
-            // A removal consumes its own position first. The stable fallback
-            // preserves replay's instrument-level semantics for shared prices.
-            let keys = [position].compactMap { $0 } + positions.keys.sorted().filter { $0 != position }
+            // Removal belongs to one physical position. A first-price
+            // observation (no position) can consume across its instrument.
+            let keys = position.map { [$0] } ?? positions.keys.sorted()
             for key in keys where remaining > 0 {
                 let count = min(remaining, positions[key, default: 0])
                 guard count > 0 else { continue }
@@ -571,7 +571,11 @@ enum PortfolioReplayEngine {
             }
         }
 
-        pendingNewlyAddedQuantities.positionsByInstrument.removeValue(forKey: instrument)
+        // Nil-to-nil evidence has not valued or removed any pending copies.
+        // A real loss of USD priceability still ends the earlier attribution.
+        if old != nil || new != nil {
+            pendingNewlyAddedQuantities.positionsByInstrument.removeValue(forKey: instrument)
+        }
         // The time-weighted link comes off the same state transition, in the
         // same pass, so performance can never disagree with attribution.
         if isMarketMovement, quantity != 0, old != new {

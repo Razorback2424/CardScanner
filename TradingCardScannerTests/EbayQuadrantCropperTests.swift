@@ -460,6 +460,25 @@ final class EbayListingPhotoExportTests: XCTestCase {
 
     /// The archive expands to a readable folder name. Before the packaging
     /// change it expanded to the run's raw UUID.
+    @MainActor
+    func testArchiveIncludesLeadingDotBatchFolders() async throws {
+        for names in [[".Card"], ["Card"], [".Card", "Card"]] {
+            let directory = try EbayListingPhotoExport.makeBatchDirectory()
+            defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory) }
+            for name in names {
+                let folder = directory.appendingPathComponent(name, isDirectory: true)
+                try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                try Data("photo".utf8).write(to: folder.appendingPathComponent("01.jpg"))
+            }
+            let archive = try await EbayListingPhotoExport.makeArchive(at: directory)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: archive.path))
+            let zipped = try Data(contentsOf: archive)
+            for name in names {
+                XCTAssertNotNil(zipped.range(of: Data("\(name)/01.jpg".utf8)))
+            }
+        }
+    }
+
     func testArchiveIsNamedForItsContentDirectoryNotTheRunUUID() async throws {
         let sourceData = try jpegData(for: try XCTUnwrap(sourceFixture().cgImage))
         let output = try await EbayListingPhotoExport.makeListingPhotos(

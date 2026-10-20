@@ -873,6 +873,26 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 3)
     }
 
+    func testIndependentRemovalsCanBothBeRestored() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try identifiedCard()
+        for _ in 0..<2 {
+            _ = try store.add(card, resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed), source: .scan)
+        }
+        let additions = try context.fetch(FetchDescriptor<CollectionActivity>()).filter { $0.kind == .added }
+        for addition in additions { _ = try store.remove(addition) }
+        let removals = try context.fetch(FetchDescriptor<CollectionActivity>()).filter { $0.kind == .removed }
+        XCTAssertEqual(removals.count, 2)
+        for removal in removals { try store.restore(removal) }
+        let key = card.collectionKey(variant: .normal)
+        XCTAssertEqual(store.card(forKey: key)?.quantity, 2)
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[key], 2)
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try context.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+    }
+
     func testRestoreMergesBackIntoSurvivingSiblingCopies() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)

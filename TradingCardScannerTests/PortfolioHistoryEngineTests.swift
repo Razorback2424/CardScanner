@@ -93,6 +93,19 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(recorded.ranges.count, 1)
     }
 
+    func testLongRangeDisclosesNewerAvailableAnchor() {
+        let result = PortfolioHistoryEngine.calculate(input: input(
+            closes: [close(28, value: 100), close(29, value: 110)],
+            currentValue: 120, now: date(30, hour: 12)), range: .oneYear)
+        XCTAssertEqual(result.trackingBeganDate, date(28))
+        let exact = PortfolioHistoryEngine.calculate(input: input(closes: [close(29, value: 100)],
+            currentValue: 120, now: date(30, hour: 12)), range: .oneDay)
+        XCTAssertNil(exact.trackingBeganDate)
+        let older = PortfolioHistoryEngine.calculate(input: input(closes: [close(28, value: 100)],
+            currentValue: 120, now: date(30, hour: 12)), range: .oneDay)
+        XCTAssertEqual(older.trackingBeganDate, date(28))
+    }
+
     func testAdditionDisplayUsesPerCopyValueRatherThanExtendedTotal() {
         let multiple = PortfolioAdditionDisplay(total: money(30), quantity: 3)
         let single = PortfolioAdditionDisplay(total: money(20), quantity: 1)

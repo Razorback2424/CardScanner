@@ -232,7 +232,8 @@ actor CardMarketHistoryService {
             priceKey: request.printingID, game: request.game, printingID: request.printingID,
             variantID: request.variantID, itemKind: request.itemKind, marketVariantID: variantID,
             lookupCandidates: lookups, currentAmount: nil, lastCheckedAt: nil,
-            magicTreatmentIDsRaw: request.treatments, exactPhysicalProductID: request.exactProductID
+            magicTreatmentIDsRaw: request.treatments, exactPhysicalProductID: request.exactProductID,
+            pokemonPrintRun: request.printRun
         )
         guard let lookup = target.lookup else { throw HistoryError.noListing }
         // GET explicitly supports the longest history duration. Routine batch

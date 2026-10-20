@@ -6,6 +6,29 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testDelayedGradedBindingRechecksDurableCorrectedFinish() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let mutation = try store.addScannedGraded(underlying: ProductionRowFixtures.pokemonCard(),
+            company: .psa, grade: CardGrade(value: "10"), certificationNumber: "DELAYED-CERT")
+        let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        let originalIdentity = GradedBindingIdentity(finishID: row.variantID, printRun: row.pokemonPrintRun)
+        _ = try store.recordVariantCorrection(for: row,
+            to: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            activityID: XCTUnwrap(mutation.activityID), quantity: 1)
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        let receipt = try await writer.bindScannedGraded(collectionKey: mutation.collectionKey,
+            variant: GradedVariant(id: "stale-holo", company: .psa, grade: CardGrade(value: "10"),
+                printing: "Holofoil", marketPriceUSD: 250, updatedAt: nil), expectedIdentity: originalIdentity)
+        XCTAssertNil(receipt)
+        let saved = try XCTUnwrap(CollectionStore(context: ModelContext(container)).card(forKey: mutation.collectionKey))
+        XCTAssertNil(saved.justTCGVariantID)
+        XCTAssertEqual(saved.certificationNumber, "DELAYED-CERT")
+        XCTAssertEqual(saved.quantity, 1)
+        XCTAssertEqual(saved.variant, .normal)
+    }
+
     func testQuantityIncreaseCannotDuplicateCertifiedSlab() throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -121,7 +144,8 @@ final class CollectionItemKindTests: XCTestCase {
             let receipt = try await writer.bindScannedGraded(
                 collectionKey: mutation.collectionKey,
                 variant: GradedVariant(id: variantID, cardID: "card", company: .psa,
-                                       grade: grade, marketPriceUSD: nil, updatedAt: nil)
+                                       grade: grade, printing: variantID == "first-market" ? "1st Edition Holofoil" : "Unlimited Holofoil",
+                                       marketPriceUSD: nil, updatedAt: nil)
             )
             XCTAssertNotNil(receipt)
         }

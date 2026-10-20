@@ -1387,6 +1387,7 @@ struct PriceStore {
         copy.itemKindRaw = source.itemKindRaw
         copy.canonicalMarketID = source.canonicalMarketID
         copy.marketVariantID = source.marketVariantID
+        copy.gradedPrinting = source.gradedPrinting
         copy.marketRegionRaw = source.marketRegionRaw
         copy.providerGameUpdatedAt = source.providerGameUpdatedAt
         copy.historyObservationCount = source.historyObservationCount

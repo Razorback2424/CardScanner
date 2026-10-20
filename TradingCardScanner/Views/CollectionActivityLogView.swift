@@ -499,10 +499,8 @@ struct CollectionActivityLogView: View {
             .map(\.recordedAt)
             .max()
         guard let removalRecordedAt else { return true }
-        return index.eventsByCollectionKey[activity.collectionKey]?.contains {
-            $0.recordedAt >= removalRecordedAt
-                && $0.deltaQuantity > 0
-        } == true
+        return CollectionStore.positionWasReacquired(
+            events: index.eventsByCollectionKey[activity.collectionKey] ?? [], since: removalRecordedAt)
     }
 
     private func remove(_ activity: CollectionActivity) {

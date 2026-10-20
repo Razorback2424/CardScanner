@@ -1337,6 +1337,9 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(record.unitMarketPriceUSD, 42.81)
         XCTAssertEqual(record.fetchedAt, yesterday)
         XCTAssertTrue(record.display.refreshFailed)
+        XCTAssertTrue(record.display.detailAttribution.contains("The last price refresh failed. Showing the previous quote."))
+        XCTAssertTrue(record.display.detailAttribution.contains { $0.contains("Last check attempted") })
+        XCTAssertEqual(record.display.sourceUpdatedAt, yesterday)
     }
 
     @MainActor
@@ -1520,6 +1523,41 @@ final class PricingTests: XCTestCase {
             PriceRefreshController.staleTargets(from: targets, now: now).map(\.printingID),
             ["b", "c"]
         )
+    }
+
+    func testManualPrimaryRefreshBypassesOnlyTheRecentCheckGate() {
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let raw = pricedTarget("synthetic-meditite-099", variantID: "normal", lastCheckedAt: now.addingTimeInterval(-60))
+        var sealed = raw
+        sealed.itemKind = .sealedProduct
+        var graded = raw
+        graded.itemKind = .gradedCard
+        let targets = [raw, sealed, graded]
+        XCTAssertTrue(PriceRefreshController.staleTargets(from: targets, now: now).isEmpty)
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: targets, now: now, intent: .manual).map(\.itemKind), [.rawCard])
+        XCTAssertTrue(PriceRefreshController.staleTargets(from: [raw], now: now, forceUnsupportedRetry: true).isEmpty,
+            "Retrying unsupported work is not manual primary intent")
+    }
+
+    func testDetailAttributionKeepsOldSourceDateSeparateFromTodayAndFailure() {
+        let today = Date(timeIntervalSince1970: 1_800_000_000)
+        let old = today.addingTimeInterval(-6 * 86400)
+        var quote = PriceDisplay(amount: 5, source: .tcgplayer, sourceUpdatedAt: old,
+            fetchedAt: today, lastCheckedAt: today)
+        XCTAssertEqual(quote.state(now: today), .stale)
+        XCTAssertTrue(quote.detailAttribution.contains { $0.contains("price data as of") && $0.contains(old.formatted(date: .abbreviated, time: .shortened)) })
+        XCTAssertTrue(quote.detailAttribution.contains { $0.contains("Last check attempted") && $0.contains(today.formatted(date: .abbreviated, time: .shortened)) })
+        quote.refreshFailed = true
+        XCTAssertEqual(quote.state(now: today), .stale)
+        XCTAssertTrue(quote.detailAttribution.contains("The last price refresh failed. Showing the previous quote."))
+        XCTAssertEqual(quote.amount, 5)
+        quote.sourceUpdatedAt = nil
+        XCTAssertTrue(quote.detailAttribution.contains { $0.contains("source date unavailable") })
+        XCTAssertTrue(quote.detailAttribution.contains { $0.contains("Quote received") })
+        quote.fetchedAt = nil
+        quote.lastCheckedAt = nil
+        XCTAssertFalse(quote.detailAttribution.joined().contains("unknown"))
+        XCTAssertFalse(quote.detailAttribution.joined().contains("Quote received"))
     }
 
     /// Every owned copy of a printing-and-variant shares one price record, so a
@@ -1912,6 +1950,24 @@ final class PricingTests: XCTestCase {
 }
 
 final class PriceHistoryChartModelTests: XCTestCase {
+    func testDenseProviderHistoryKeepsEveryExactSampleAndDomain() throws {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let points = (0..<5000).map { index in
+            JustTCGHistoryPoint(p: Double(index % 100 + 1) / 100, t: now.addingTimeInterval(Double(index - 5000) * 60).timeIntervalSince1970)
+        }
+        let model = PriceHistoryChartModel.market(points: points, range: .all, now: now)
+        XCTAssertEqual(model.samples.count, points.count)
+        XCTAssertEqual(model.segments.first?.samples.count, points.count)
+        for (sample, point) in zip(model.samples, points) {
+            XCTAssertEqual(sample.amount.doubleValue, point.p, accuracy: 0.000001)
+            XCTAssertEqual(sample.date.timeIntervalSince1970, point.t)
+        }
+        let domain = model.yDomain
+        XCTAssertGreaterThanOrEqual(domain.lowerBound, 0)
+        XCTAssertLessThanOrEqual(domain.lowerBound, 0.01)
+        XCTAssertGreaterThanOrEqual(domain.upperBound, 1)
+        XCTAssertEqual(model.sample(at: model.samples[2500].date), model.samples[2500])
+    }
     func testMarketHistoryIsContinuousWithoutLocalChecksAndScrubsToProviderDates() throws {
         let points = [JustTCGHistoryPoint(p: 10, t: date(day: 0).timeIntervalSince1970),
                       JustTCGHistoryPoint(p: 15, t: date(day: 20).timeIntervalSince1970)]

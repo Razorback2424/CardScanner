@@ -4,6 +4,21 @@ import UIKit
 @testable import TradingCardScanner
 
 final class CenteringExportTests: XCTestCase {
+    @MainActor
+    func testRepeatedSuccessfulExportsRetireSupersededArtifacts() throws {
+        let model = CardCenteringViewModel()
+        model.image = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 140)).image { _ in }
+        model.measurement = measurement()
+        let first = try XCTUnwrap(model.makeExportFile())
+        let second = try XCTUnwrap(model.makeExportFile())
+        defer { try? FileManager.default.removeItem(at: second.deletingLastPathComponent()) }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: first.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: second.path))
+        CenteringExportFiles.retainForShare(second)
+        model.retireExportFile()
+        XCTAssertTrue(FileManager.default.fileExists(atPath: second.path), "an active share must survive departure or replacement")
+    }
+
     func testFrameApprovalRequiresExplicitActionAndValidNestedGeometry() {
         var value = measurement()
         value.confidence = .manualConfirmationRequired(preserving: value.confidence, reason: "Review both frames")

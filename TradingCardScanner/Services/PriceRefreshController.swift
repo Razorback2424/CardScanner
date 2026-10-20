@@ -10,6 +10,11 @@ struct GradedVariantBindingReceipt: Sendable {
     let wasAccepted: Bool
 }
 
+struct GradedBindingIdentity: Sendable {
+    let finishID: String?
+    let printRun: PokemonPrintRun?
+}
+
 enum GradedVariantBinding {
     static func apply(
         _ variant: GradedVariant,
@@ -20,6 +25,15 @@ enum GradedVariantBinding {
         treatmentIDs: [String],
         at fetchedAt: Date
     ) throws -> GradedVariantBindingReceipt {
+        if let finish = row.variant, let printing = variant.printing,
+           !GradedCardIdentity.matchesFinish(finish, printing: printing, printRun: row.pokemonPrintRun) {
+            return GradedVariantBindingReceipt(quote: .unavailable(.justTCG), priceKey: row.priceKey, wasAccepted: false)
+        }
+        if let run = row.pokemonPrintRun,
+           let printing = variant.printing,
+           !ProductEdition.from(run).admits(printing: printing) {
+            return GradedVariantBindingReceipt(quote: .unavailable(.justTCG), priceKey: row.priceKey, wasAccepted: false)
+        }
         if let currentID = row.justTCGVariantID, currentID != variant.id {
             throw CollectionStoreError.ledgerConflict(
                 "graded row is already bound to a different market variant"
@@ -115,6 +129,7 @@ enum GradedVariantBinding {
                 record.justTCGFetchedAt = fetchedAt
             }
             record.marketVariantID = variant.id
+            record.gradedPrinting = variant.printing
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         }
         return GradedVariantBindingReceipt(
@@ -328,6 +343,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 from: allTargets,
                 usesPriceFallback: request.usesPriceFallback,
                 forceUnsupportedRetry: request.forceUnsupportedRetry,
+                intent: request.intent,
                 pricing: gamePricing
             )
             if request.gradedOnly {
@@ -1562,7 +1578,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
                     requiresFullResponse: !candidate.target.hasPrice
                         || candidate.target.needsArtwork,
-                    exactPhysicalProductID: candidate.exactPhysicalProductID
+                    exactPhysicalProductID: candidate.exactPhysicalProductID,
+                    pokemonPrintRun: candidate.target.pokemonPrintRun
                 )
             )
         }
@@ -2570,6 +2587,8 @@ extension PokemonFinishReconciliation {
 /// The actor builds its target snapshot after the migration gate is held, so a
 /// row rekeyed while a caller waited cannot be written under an obsolete key.
 struct PriceRefreshRequest: Sendable {
+    enum Intent: Sendable { case automatic, manual }
+    let intent: Intent
     let usesPriceFallback: Bool
     let includeImported: Bool
     let forceUnsupportedRetry: Bool
@@ -2585,8 +2604,10 @@ struct PriceRefreshRequest: Sendable {
         sortOldestFirst: Bool,
         maximumTargetCount: Int?,
         markRecentlyCheckedIfEmpty: Bool,
-        gradedOnly: Bool = false
+        gradedOnly: Bool = false,
+        intent: Intent = .automatic
     ) {
+        self.intent = intent
         self.usesPriceFallback = usesPriceFallback
         self.includeImported = includeImported
         self.forceUnsupportedRetry = forceUnsupportedRetry
@@ -3026,9 +3047,15 @@ final class PriceRefreshController: ObservableObject {
         now: Date = .now,
         usesPriceFallback: Bool = true,
         forceUnsupportedRetry: Bool = false,
+        intent: PriceRefreshRequest.Intent = .automatic,
         pricing: PriceQuoteService? = nil
     ) -> [PriceTarget] {
-        targets.filter { target in
+        let primaryPricing = pricing ?? PriceQuoteService()
+        return targets.filter { target in
+            // Only explicit primary/catalog work bypasses the recent-check
+            // gate. Vendor-only graded/sealed cadence remains independent.
+            let manualPrimary = intent == .manual && target.itemKind == .rawCard
+                && primaryPricing.supportsPricing(for: target.game)
             // A recent legacy miss must not delay trying the newly available
             // source. Its shared cache/backoff bounds downloads independently.
             if target.game == .pokemon, target.itemKind == .rawCard, !target.hasPrice,
@@ -3070,7 +3097,7 @@ final class PriceRefreshController: ObservableObject {
             // automatic passes respect the ordinary interval even if the
             // catalog has no quote or no artwork for this printing.
             if !target.hasPrice || target.needsArtwork {
-                if forceUnsupportedRetry { return true }
+                if forceUnsupportedRetry || manualPrimary { return true }
                 return target.lastCheckedAt.map {
                     now.timeIntervalSince($0) >= automaticRefreshInterval
                 } ?? true
@@ -3083,9 +3110,9 @@ final class PriceRefreshController: ObservableObject {
                 } == true
             if identityResolvedAfterFailure { return true }
 
-            let priceNeedsRefresh = target.lastCheckedAt.map {
+            let priceNeedsRefresh = manualPrimary || (target.lastCheckedAt.map {
                 now.timeIntervalSince($0) >= automaticRefreshInterval
-            } ?? true
+            } ?? true)
             guard target.importedIdentity != nil else { return priceNeedsRefresh }
             let metadataNeedsRefresh = target.catalogMetadataCheckedAt.map {
                 now.timeIntervalSince($0) >= automaticRefreshInterval
@@ -3690,7 +3717,8 @@ final class PriceRefreshController: ObservableObject {
                 ),
                 markRecentlyCheckedIfEmpty: existing.markRecentlyCheckedIfEmpty
                     || request.markRecentlyCheckedIfEmpty,
-                gradedOnly: existing.gradedOnly && request.gradedOnly
+                gradedOnly: existing.gradedOnly && request.gradedOnly,
+                intent: existing.intent == .manual || request.intent == .manual ? .manual : .automatic
             )
             if owner == .foreground {
                 pendingRefreshRequests[index].owner = .foreground

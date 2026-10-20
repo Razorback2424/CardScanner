@@ -2,6 +2,20 @@ import XCTest
 import SwiftData
 @testable import TradingCardScanner
 
+private actor SealedNormalizationFixture: SealedBrowseProviding {
+    var calls = 0
+    let product: SealedProductSummary
+    init(product: SealedProductSummary) { self.product = product }
+    func sealedSets(game: CardGame) -> [SealedSetSummary] {
+        calls += 1
+        return [SealedSetSummary(id: "base", name: "Base Set", sealedCount: 1, game: game, releaseDate: nil)]
+    }
+    func searchSealedProducts(game: CardGame, setID: String?, query: String?, offset: Int) -> MarketCatalogPage<SealedProductSummary> {
+        calls += 1
+        return MarketCatalogPage(items: [product], total: 1, offset: 0, limit: 20, hasMore: false)
+    }
+}
+
 private struct RecordedTCGdexSource: TCGdexCatalogSource {
     func fetchSetDirectory(locale: TCGdexLocale) async throws -> [CatalogSetReference] {
         []
@@ -105,6 +119,52 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
 /// have not got any, which is the case these tests protect.
 @MainActor
 final class CatalogNormalizationTests: XCTestCase {
+    func testBrowseSealedNormalizationConvergesWithoutChangingOwnershipIdentity() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        self.container = container
+        let product = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+            variantID: "sealed-variant", marketPriceUSD: 100, updatedAt: nil,
+            imageURL: URL(string: "https://example.test/box.png"))
+        let mutation = try CollectionStore(context: container.mainContext).addSealed(product, game: .pokemon)
+        // Cover a row from the previous build as well as the ordinary add path.
+        let row = try XCTUnwrap(CollectionStore(context: container.mainContext).card(forKey: mutation.collectionKey))
+        row.catalogProviderID = nil
+        try container.mainContext.save()
+        let fixture = SealedNormalizationFixture(product: product)
+        let normalizer = CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+            sealedCredentialsAvailable: true)
+        await normalizer.normalizeImportedCards(in: container.mainContext)
+        let first = try XCTUnwrap(CollectionStore(context: ModelContext(container)).card(forKey: mutation.collectionKey))
+        XCTAssertEqual(first.catalogProviderID, "product")
+        XCTAssertEqual(first.justTCGVariantID, "sealed-variant")
+        XCTAssertEqual(first.quantity, 1)
+        let calls = await fixture.calls
+        await normalizer.normalizeImportedCards(in: container.mainContext)
+        let after = await fixture.calls
+        XCTAssertEqual(after, calls)
+    }
+
+    func testSealedNormalizationRepairsMissingArtworkAndRejectsConflictingVendorIdentity() async throws {
+        for conflicting in [false, true] {
+            let container = try ProductionRowFixtures.makeContainer()
+            self.container = container
+            let saved = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+                variantID: "variant", marketPriceUSD: 100, updatedAt: nil, imageURL: nil)
+            let mutation = try CollectionStore(context: container.mainContext).addSealed(saved, game: .pokemon)
+            let found = SealedProductSummary(id: conflicting ? "other-product" : "product", name: saved.name,
+                setName: saved.setName, variantID: conflicting ? "other-variant" : "variant",
+                marketPriceUSD: 100, updatedAt: nil, imageURL: URL(string: "https://example.test/box.png"))
+            let fixture = SealedNormalizationFixture(product: found)
+            await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+                sealedCredentialsAvailable: true).normalizeImportedCards(in: container.mainContext)
+            let row = try XCTUnwrap(CollectionStore(context: ModelContext(container)).card(forKey: mutation.collectionKey))
+            XCTAssertEqual(row.justTCGCardID, "product")
+            XCTAssertEqual(row.justTCGVariantID, "variant")
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(row.imageURL, conflicting ? nil : found.imageURL?.absoluteString)
+        }
+    }
+
     /// Held for the lifetime of the test. A `ModelContext` does not keep its
     /// container alive, and letting the container deallocate takes the store out
     /// from under the context mid-test.

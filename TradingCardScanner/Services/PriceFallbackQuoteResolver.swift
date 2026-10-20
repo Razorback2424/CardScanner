@@ -303,7 +303,8 @@ final class PriceFallbackQuoteResolver {
             currentAmount: nil,
             lastCheckedAt: nil,
             magicTreatmentIDsRaw: treatmentIDs,
-            exactPhysicalProductID: exactPhysicalProductID
+            exactPhysicalProductID: exactPhysicalProductID,
+            pokemonPrintRun: pokemonPrintRun
         )
 
         if let lookup = target.lookup {

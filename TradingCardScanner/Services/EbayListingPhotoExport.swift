@@ -173,7 +173,7 @@ enum EbayListingPhotoExport {
             children = try FileManager.default.contentsOfDirectory(
                 at: contentDirectory,
                 includingPropertiesForKeys: [.isDirectoryKey],
-                options: [.skipsHiddenFiles]
+                options: []
             )
         } catch {
             throw Error.writeFailed(name: "the batch archive source (\(error.localizedDescription))")

@@ -122,6 +122,14 @@ final class ProductFallbackTests: XCTestCase {
         XCTAssertTrue(PriceRefreshController.needsFallback(.price(eur(0.53))))
     }
 
+    func testUsableOldUSDPrimaryQuoteDoesNotSpendSupplementaryRequests() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let quote = NormalizedPrice(unitMarketPriceUSD: 5, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "normal", sourceUpdatedAt: now.addingTimeInterval(-6 * 86400), fetchedAt: now)
+        XCTAssertFalse(PriceRefreshController.needsFallback(.price(quote), identifiedCatalogCard: true))
+        XCTAssertEqual(quote.sourceUpdatedAt, now.addingTimeInterval(-6 * 86400))
+    }
+
     func testPokemonEuroPriceIsUnfinishedWithFallbackOnOrOff() {
         XCTAssertFalse(
             PriceRefreshController.hasFinishedPokemonPrice(
