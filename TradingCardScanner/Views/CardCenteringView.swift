@@ -194,12 +194,15 @@ final class CardCenteringViewModel: ObservableObject {
             guard requestID == loadGeneration else { return }
             guard !Task.isCancelled else {
                 isAnalyzing = false
+                selectedPhoto = nil
                 return
             }
             acceptImageData(data)
         } catch {
             guard requestID == loadGeneration else { return }
             isAnalyzing = false
+            // Let the picker select the same asset again after a failed load.
+            selectedPhoto = nil
             if !Task.isCancelled { errorMessage = error.localizedDescription }
         }
     }

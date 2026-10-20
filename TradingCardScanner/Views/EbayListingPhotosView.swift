@@ -487,9 +487,20 @@ struct EbayListingPhotosView: View {
             }
             singleGeneration &+= 1
         } catch is CancellationError {
+            guard requestID == loadGeneration(for: side) else { return }
+            switch side {
+            case .front: frontPickerItem = nil
+            case .back: backPickerItem = nil
+            }
             return
         } catch {
             guard !Task.isCancelled, requestID == loadGeneration(for: side) else { return }
+            // Release the failed selection so choosing this same asset again
+            // produces a change and starts a fresh load.
+            switch side {
+            case .front: frontPickerItem = nil
+            case .back: backPickerItem = nil
+            }
             errorMessage = error.localizedDescription
         }
     }
