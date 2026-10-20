@@ -44,6 +44,7 @@ chronological notes.
 
 | Concern | Current authority |
 | --- | --- |
+| Launch commercial rationale and remaining batch-photo gaps | [`plans/CARDSCANNER_LAUNCH_MONETIZATION.md`](plans/CARDSCANNER_LAUNCH_MONETIZATION.md) — proposed free core/free single output and $9.99 one-time batch unlock; price and entitlement boundary pending owner approval. First genuine purchase target: November 2, 2026, Colorado time, without guarantee. |
 | Bulk intake differentiation study | [`plans/bulk-intake-differentiation-plan.md`](plans/bulk-intake-differentiation-plan.md) — owner-approved stages; metrics first, then a required device baseline before behavior changes. Formal study protocol remains pending. |
 | Product behavior and supported scope | [`README.md`](../README.md), `TradingCardScanner/`, and `TradingCardScannerTests/` |
 | Card coverage gaps and research priorities | [`audits/card-coverage-gaps-and-research.md`](audits/card-coverage-gaps-and-research.md) — dated source/data review separating explicit exclusions, unresolved printings and unverified completeness; game-specific plans retain implementation authority. |

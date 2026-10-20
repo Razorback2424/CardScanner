@@ -1,5 +1,12 @@
 # Collection Integrity Retention Contract
 
+**Commercial reconciliation — 2026-10-20:** the no-StoreKit/free-only launch
+wording below records the September experiment boundary. For the current
+proposed batch-photo offer, use the
+[canonical launch decision](../plans/CARDSCANNER_LAUNCH_MONETIZATION.md); price
+and entitlement boundary await owner approval. The retention experiment does
+not establish willingness to pay and is not a prerequisite for that offer.
+
 Version: `collection-integrity-retention-v1`<br>
 Status: Frozen for Phase 0<br>
 Effective date: 2026-09-13

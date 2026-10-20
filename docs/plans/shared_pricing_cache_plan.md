@@ -1,5 +1,11 @@
 # Shared Pricing Cache — Implementation Plan
 
+**Commercial reconciliation — 2026-10-20:** free-only/no-StoreKit launch wording
+below is superseded commercial guidance; the
+[canonical proposed batch-photo offer](CARDSCANNER_LAUNCH_MONETIZATION.md) awaits
+owner approval of price and entitlement boundary. This does not authorize a
+shared backend or close any provider/licensing gate in this plan.
+
 **CardScanner · Pricing Infrastructure**
 Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Repository reconciliation: 14 September 2026 · Verdict: Proceed after Gate A
 

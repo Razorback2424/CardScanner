@@ -1,5 +1,12 @@
 # CardScanner Collection Integrity Strategy
 
+**Commercial reconciliation — 2026-10-20:** the
+[canonical launch decision](../plans/CARDSCANNER_LAUNCH_MONETIZATION.md) supersedes
+free-only/no-StoreKit launch recommendations below with a proposed free core,
+free single-card photo output and $9.99 one-time batch unlock. Price and
+entitlement boundary await owner approval. This strategy retains long-term
+integrity direction; Place/Verify/Reconcile are not prerequisites for this offer.
+
 **Status:** current product strategy and retention hypothesis — reconciled
 2026-09-14. This document defines future product direction; it is not release
 certification or a statement that Place/Verify/Reconcile is implemented. Use

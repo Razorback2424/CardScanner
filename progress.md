@@ -1,3 +1,14 @@
+- Launch rationale retained and commercial gaps assessed (2026-10-20): clean
+  `main` at `922dc9bb3d158a599e874d4a00e85297a138b6f8`; retained the supplied
+  [canonical decision](docs/plans/CARDSCANNER_LAUNCH_MONETIZATION.md), linked the
+  photo plan and active planning authorities, and marked older conflicting
+  commercial guidance superseded. The proposed $9.99 one-time batch offer and
+  entitlement boundary await owner approval. Single/batch output is present in
+  source; StoreKit and paid messaging/gating are missing. Source review only;
+  no build, simulator, purchase, provider or upload acceptance ran. Runtime and
+  owner gates remain open; documentation links and diff checks are recorded at
+  handoff. No application code or commercial actions changed.
+
 - Collection quote fix personal-device installation (2026-10-18; `23fd978`):
   committed and pushed the quote-consistency, history-labeling and exact
   marketplace-link fix with its documentation. After fetching all remotes,

@@ -8,6 +8,27 @@ history.
 
 ## Current authority boundary — updated 2026-10-20
 
+**Launch commercial reconciliation — 2026-10-20:**
+[CARDSCANNER_LAUNCH_MONETIZATION.md](CARDSCANNER_LAUNCH_MONETIZATION.md) is the
+single authority for retained founder rationale and the proposed launch offer:
+free core, free single-card photo output, $9.99 one-time batch unlock. Price and
+entitlement boundary remain pending owner approval. Its read-only gap table
+records clean `main` at `922dc9bb3d158a599e874d4a00e85297a138b6f8`; source
+presence is not runtime acceptance. No purchases or account actions occurred.
+
+This supersedes the blanket free-only/no-StoreKit recommendations in the launch
+plan, release framework, retention contract, strategy and shared-cache plan,
+and the photo plan's post-1.0 commercial sequencing. Their top-level notices
+preserve the prior decisions without making them competing offer authorities.
+The C-15/C-18 entries below describe September reconciliation history, not a
+veto on this pending proposal. Any older scan-cap, collection-cap or paid-basic-
+export recommendations are **superseded recommendations**, not launch tasks;
+the bounded documentation search found no active numeric cap or paid-basic-
+export proposal to amend individually. Free portability remains explicit.
+The Lorcana acceptance ledger's no-StoreKit description is historical source
+evidence, not commercial policy or rights clearance. No release gate is closed
+by retaining this proposed offer.
+
 **Unused-code cleanup — 2026-10-20:** on `main`, base `c695da8` plus
 existing local pricing/history changes, removed 11 owner-approved declarations
 after confirming no app or test callers. In

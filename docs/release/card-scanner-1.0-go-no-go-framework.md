@@ -1,5 +1,12 @@
 # Card Scanner 1.0 Go/No-Go Framework
 
+**Commercial reconciliation — 2026-10-20:** the
+[canonical proposed offer](../plans/CARDSCANNER_LAUNCH_MONETIZATION.md) supersedes
+the free-only/no-StoreKit commercial recommendations below. Free core and single
+photo output remain proposed alongside a $9.99 one-time batch unlock; price and
+entitlement boundary require owner approval. Historical absence-of-purchase
+checklists do not certify a future paid flow. Other readiness gates remain open.
+
 **Current storage boundary — 2026-10-13:** production wiring and Settings keep
 collections on-device with sync unavailable. Local storage continuity remains a
 1.0 release responsibility; entitled CloudKit enrollment, restoration and

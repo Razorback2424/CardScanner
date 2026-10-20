@@ -1,5 +1,16 @@
 # CardScanner Phase 0 and App Store-Critical Phase 1 Implementation Plan
 
+**Commercial authority update — 2026-10-20:** use the canonical
+[launch monetization decision](../../plans/CARDSCANNER_LAUNCH_MONETIZATION.md)
+for the retained founder rationale, proposed free core/free single-card output
+and $9.99 one-time batch-photo unlock, compact implementation gaps and owner
+prerequisites. Price and entitlement boundary remain pending owner approval.
+This supersedes this plan's blanket no-StoreKit/free-only release and post-1.0
+photo-tool recommendations as commercial guidance; those passages below retain
+the September decision history, not an approved paid implementation. The target
+remains November 2, 2026, Colorado time for a first genuine production purchase,
+without a guarantee or restarted deadline. Unrelated release gates remain open.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Freeze the corrected Collection Integrity retention experiment, eliminate launch-critical silent-integrity risks, and certify one free iPhone/iPad 1.0 binary whose local collection remains continuous and whose structured records demonstrably converge through production CloudKit.
