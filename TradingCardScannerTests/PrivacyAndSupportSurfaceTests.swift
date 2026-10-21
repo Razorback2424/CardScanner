@@ -86,7 +86,7 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
             encoding: .utf8
         )
         XCTAssertTrue(source.contains("LabeledContent(\"Collection storage\", value: \"On this device\")"))
-        XCTAssertTrue(source.contains("iCloud sync is not available in CardScanner 1.0."))
+        XCTAssertTrue(source.contains("iCloud sync is not available in ScanStash 1.0."))
     }
 
     private func sourceURL(_ relativePath: String, relativeTo testFilePath: String) -> URL {

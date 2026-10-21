@@ -51,7 +51,7 @@ struct CollectionStorageBootstrapView: View {
         case .failed:
             actionView(
                 title: "iCloud restoration needs attention",
-                message: "CardScanner could not prove that the iCloud collection is ready yet. You can retry, or continue with a local copy on this device.",
+                message: "ScanStash could not prove that the iCloud collection is ready yet. You can retry, or continue with a local copy on this device.",
                 primaryTitle: "Retry",
                 primaryAction: { await bootstrap.retry() },
                 secondaryTitle: "Keep on This Device",
@@ -60,7 +60,7 @@ struct CollectionStorageBootstrapView: View {
         case .notApplicable:
             actionView(
                 title: "iCloud restoration needs attention",
-                message: "CardScanner did not receive a safe restoration proof, so it did not show an empty collection.",
+                message: "ScanStash did not receive a safe restoration proof, so it did not show an empty collection.",
                 primaryTitle: "Retry",
                 primaryAction: { await bootstrap.retry() },
                 secondaryTitle: nil,
@@ -75,7 +75,7 @@ struct CollectionStorageBootstrapView: View {
         VStack(alignment: .leading, spacing: 16) {
             Label("Attach this collection to iCloud?", systemImage: "person.crop.circle.badge.questionmark")
                 .font(.title3.weight(.semibold))
-            Text("CardScanner found an existing on-device collection. It will remain unchanged unless you confirm attaching it to the current iCloud account.")
+            Text("ScanStash found an existing on-device collection. It will remain unchanged unless you confirm attaching it to the current iCloud account.")
                 .foregroundStyle(.secondary)
             Button("Attach to iCloud") {
                 Task { await bootstrap.confirmAttachment() }
@@ -95,7 +95,7 @@ struct CollectionStorageBootstrapView: View {
         VStack(alignment: .leading, spacing: 16) {
             Label("Different iCloud collection found", systemImage: "exclamationmark.icloud")
                 .font(.title3.weight(.semibold))
-            Text("This iCloud account already contains a different CardScanner collection. CardScanner will not merge or overwrite either collection.")
+            Text("This iCloud account already contains a different ScanStash collection. ScanStash will not merge or overwrite either collection.")
                 .foregroundStyle(.secondary)
             Button("Retry") {
                 Task { await bootstrap.retry() }
@@ -105,7 +105,7 @@ struct CollectionStorageBootstrapView: View {
                 .buttonStyle(.bordered)
             if let support = CardScannerExternalLinks.support {
                 Link("Contact Support", destination: support)
-                    .accessibilityHint("Opens CardScanner support in your browser")
+                    .accessibilityHint("Opens ScanStash support in your browser")
             }
         }
         .frame(maxWidth: 480, alignment: .leading)

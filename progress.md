@@ -1,3 +1,5 @@
+- ScanStash opening-screen rebrand (2026-10-20; merged `origin/claude/scanstash-opening-rebrand` at `ece69bc`): adopted the ScanStash display name, adaptive app and launch artwork, and matching opening view while preserving main's full-bleed status-bar handling and handoff zoom. Generic iOS Debug app and test-bundle builds succeeded on the final merged worktree. Yu-Gi-Oh! builder self-test: 14 passed. CoreSimulator was unavailable, so tests were not executed and no visual acceptance is claimed.
+
 - Yu-Gi-Oh! merged-review repairs (2026-10-20; base `4c3e53c`, local changes):
   production runtime is unavailable while the bundled catalog has no eligible
   printings. Direct acquisition resolution now enforces incomplete-code and

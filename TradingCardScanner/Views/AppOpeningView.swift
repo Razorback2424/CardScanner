@@ -1,5 +1,17 @@
 import SwiftUI
 
+/// ScanStash brand tokens shared by the app icon, LaunchMark, and opening.
+enum AppPalette {
+    /// Foil stops, top-leading to bottom-trailing: mint, sky, iris, rose.
+    static let foil: [Color] = [
+        Color(red: 124 / 255, green: 247 / 255, blue: 218 / 255),
+        Color(red: 92 / 255, green: 200 / 255, blue: 255 / 255),
+        Color(red: 154 / 255, green: 140 / 255, blue: 255 / 255),
+        Color(red: 255 / 255, green: 150 / 255, blue: 214 / 255)
+    ]
+    static let ink = Color(red: 43 / 255, green: 37 / 255, blue: 133 / 255)
+}
+
 /// Presentation time starts only after the local result exists. Keep the
 /// lock readable, then release it without imposing a minimum loading screen.
 private enum OpeningMotion {
@@ -9,35 +21,6 @@ private enum OpeningMotion {
     static let quickReadyHold: Duration = .milliseconds(420)
     static let revealDuration = 0.48
     static let settleDuration: Duration = .milliseconds(620)
-    /// The opening zooms past the viewer as the collection fades in.
-    static let handoffScale: CGFloat = 1.06
-    static let beamPeriod = 2.4
-}
-
-/// Brand colors drawn from the app icon. The static launch screen
-/// (`LaunchBackground` + `LaunchMark`) is this view's first frame, so keep
-/// both in step when changing the card, guides, or backdrop; regenerate the
-/// mark with `scripts/render_launch_mark.py`.
-private enum OpeningPalette {
-    static let backdrop = Color("LaunchBackground")
-    static let halo = Color(red: 0.04, green: 0.20, blue: 0.66)
-    static let cardTop = Color(red: 0.33, green: 0.58, blue: 1.00)
-    static let cardBottom = Color(red: 0.02, green: 0.30, blue: 0.94)
-    static let beam = Color(red: 0.31, green: 0.78, blue: 1.00)
-    static let spark = Color(red: 0.62, green: 0.86, blue: 1.00)
-    static let seeking = Color.white.opacity(0.7)
-    static let locked = Color("OpeningReadyGreen")
-}
-
-private enum OpeningGeometry {
-    static let card = CGSize(width: 132, height: 185)
-    static let cardRadius: CGFloat = 12
-    static let guideInset: CGFloat = 12
-    /// Back cards fan out from behind the front card, echoing the app icon.
-    static let fan: [(angle: Double, x: CGFloat, y: CGFloat, opacity: Double)] = [
-        (-16, -30, 12, 0.5),
-        (-8, -15, 6, 0.75)
-    ]
 }
 
 enum AppOpeningPhase: Equatable {
@@ -174,11 +157,11 @@ struct AppOpeningContainer<Content: View>: View {
                 AppOpeningView(phase: phase)
                     .opacity(opening.handoff ? 0 : 1)
                     .animation(.easeInOut(duration: reduceMotion ? 0.24 : OpeningMotion.revealDuration), value: opening.handoff)
-                    .scaleEffect(opening.handoff && !reduceMotion && !opening.fastHandoff ? OpeningMotion.handoffScale : 1)
+                    .scaleEffect(opening.handoff && !reduceMotion && !opening.fastHandoff ? 1.06 : 1)
                     .animation(reduceMotion || opening.fastHandoff ? nil : .smooth(duration: 0.60), value: opening.handoff)
                     .allowsHitTesting(false)
                     .accessibilityHidden(opening.handoff)
-                    // The dark stage stays full-bleed; status text returns with the collection.
+                    // Keep system status chrome out of the full-bleed opening stage.
                     .statusBarHidden(!opening.handoff)
                     .transition(.opacity)
                     .onAppear { opening.markAppeared() }
@@ -233,77 +216,161 @@ struct CornerGuides: Shape {
     }
 }
 
+/// The ScanStash mark: a foil card on top of a fanned stash. Its unfanned,
+/// unlocked, unswept state is drawn into LaunchMark, so keep the two in step.
+struct ScanStashMark: View {
+    static let cardSize = CGSize(width: 112, height: 156)
+    static let openGuideInset: CGFloat = 14
+    static let lockedGuideInset: CGFloat = 5
+
+    var fanned: Bool
+    var locked: Bool
+    var sheenSwept: Bool
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var isDark: Bool { colorScheme == .dark }
+    private var card: RoundedRectangle { RoundedRectangle(cornerRadius: 14, style: .continuous) }
+
+    var body: some View {
+        ZStack {
+            stashCard(depth: 2)
+            stashCard(depth: 1)
+            faceCard
+        }
+        .frame(width: Self.cardSize.width, height: Self.cardSize.height)
+        .overlay {
+            CornerGuides()
+                .stroke(locked ? Color("OpeningReadyGreen") : Color(uiColor: .secondaryLabel),
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .animation(.easeOut(duration: 0.28), value: locked)
+                .padding(-(locked && !reduceMotion ? Self.lockedGuideInset : Self.openGuideInset))
+                .animation(reduceMotion ? nil : .spring(response: OpeningMotion.lockResponse, dampingFraction: 0.86), value: locked)
+        }
+    }
+
+    /// Stash cards pivot below the deck like a hand of cards.
+    private func stashCard(depth: Int) -> some View {
+        card
+            .fill(isDark ? Color.white.opacity(depth == 1 ? 0.20 : 0.11)
+                         : AppPalette.ink.opacity(depth == 1 ? 0.16 : 0.09))
+            .overlay { card.strokeBorder(isDark ? Color.white.opacity(0.22) : AppPalette.ink.opacity(0.16), lineWidth: 1) }
+            .rotationEffect(.degrees(fanned || reduceMotion ? Double(depth) * -8 : 0),
+                            anchor: UnitPoint(x: 0.5, y: 1.4))
+            .opacity(fanned ? 1 : 0)
+    }
+
+    private var faceCard: some View {
+        card
+            .fill(LinearGradient(colors: AppPalette.foil, startPoint: .topLeading, endPoint: .bottomTrailing))
+            .overlay(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(.white.opacity(0.26))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                .strokeBorder(.white.opacity(0.7), lineWidth: 1)
+                        }
+                        .frame(height: 84)
+                    Capsule().fill(.white.opacity(0.75)).frame(width: 52, height: 7).padding(.top, 6)
+                    Capsule().fill(.white.opacity(0.45)).frame(width: 34, height: 7)
+                }
+                .padding(9)
+            }
+            .overlay {
+                LinearGradient(stops: [
+                    .init(color: .white.opacity(0), location: 0.30),
+                    .init(color: .white.opacity(0.45), location: 0.42),
+                    .init(color: .white.opacity(0), location: 0.50)
+                ], startPoint: .topLeading, endPoint: .bottomTrailing)
+                .offset(x: sheenSwept ? Self.cardSize.width * 1.3 : 0)
+                .clipShape(card)
+            }
+            .overlay { card.strokeBorder(isDark ? Color.white.opacity(0.35) : Color.black.opacity(0.06), lineWidth: 1) }
+            .shadow(color: isDark ? Color.black.opacity(0.55) : AppPalette.ink.opacity(0.22), radius: 14, y: 8)
+    }
+}
+
 struct AppOpeningView: View {
     let phase: AppOpeningPhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var introduced = false
-    @State private var fanned = false
+    @Environment(\.colorScheme) private var colorScheme
     @State private var textAppeared = false
+    @State private var stashFanned = false
     @State private var guidesLocked = false
+    @State private var sheenSwept = false
     @State private var captionReady = false
-    @State private var glint = false
-    @State private var locks = 0
 
     private var captionPhase: AppOpeningPhase { captionReady ? phase : phase.isReady ? .opening : phase }
+    private var markHalfHeight: CGFloat { ScanStashMark.cardSize.height / 2 + ScanStashMark.openGuideInset }
 
     var body: some View {
         GeometryReader { geometry in
+            let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
             ZStack {
-                OpeningBackdrop(animated: !reduceMotion)
-                    .opacity(introduced ? 1 : 0)
+                Color("LaunchBackground")
+                aurora
+                    .position(center)
+                    .opacity(stashFanned ? 1 : 0)
+                    .animation(.easeOut(duration: 0.7), value: stashFanned)
 
-                OpeningCardStack(introduced: introduced, fanned: fanned || reduceMotion,
-                                 locked: guidesLocked, glint: glint, locks: locks)
-                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                ScanStashMark(fanned: stashFanned, locked: guidesLocked, sheenSwept: sheenSwept)
+                    .position(center)
 
-                VStack(spacing: 14) {
-                    Text("CardScanner")
-                        .font(.title2.weight(.bold))
+                VStack(spacing: 10) {
+                    Text("ScanStash")
+                        .font(.system(.title, design: .default, weight: .bold))
                         .fontWidth(.expanded)
-                        .tracking(0.4)
-                        .foregroundStyle(LinearGradient(colors: [.white, Color(red: 0.74, green: 0.87, blue: 1)],
-                                                        startPoint: .top, endPoint: .bottom))
-                        .shadow(color: OpeningPalette.beam.opacity(0.45), radius: 14)
-                    OpeningProgressTrack(ready: captionReady, animated: !reduceMotion)
-                    Text(captionPhase.caption)
-                        .font(.subheadline.weight(.medium))
-                        .monospacedDigit()
-                        .foregroundStyle(captionReady ? OpeningPalette.locked : .white.opacity(0.62))
-                        .frame(height: 96, alignment: .top)
-                        .contentTransition(.opacity)
-                        .animation(.easeInOut(duration: 0.25), value: captionPhase)
+                        .tracking(-0.4)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    HStack(alignment: .firstTextBaseline, spacing: 7) {
+                        ZStack {
+                            Image(systemName: "circle.fill")
+                                .font(.system(size: 7, weight: .bold))
+                                .foregroundStyle(AppPalette.foil[2])
+                                .symbolEffect(.pulse, options: .repeating, isActive: !captionReady && !reduceMotion)
+                                .opacity(captionReady ? 0 : 1)
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(Color("OpeningReadyGreen"))
+                                .symbolEffect(.bounce, value: reduceMotion ? false : captionReady)
+                                .opacity(captionReady ? 1 : 0)
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        Text(captionPhase.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(captionReady ? Color("OpeningReadyGreen") : .secondary)
+                            .contentTransition(.opacity)
+                    }
+                    .font(.subheadline.weight(.medium))
+                    .animation(.easeInOut(duration: 0.25), value: captionPhase)
+                    .frame(height: 96, alignment: .top)
                 }
                 .multilineTextAlignment(.center)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .padding(.horizontal, 24)
                 .fixedSize(horizontal: false, vertical: true)
                 .opacity(textAppeared ? 1 : 0)
-                .offset(y: textAppeared || reduceMotion ? 0 : 8)
-                .padding(.top, geometry.size.height / 2 + OpeningGeometry.card.height / 2 + 56)
+                .offset(y: textAppeared || reduceMotion ? 0 : 6)
+                .padding(.top, geometry.size.height / 2 + markHalfHeight + 36)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
         }
-        .background(OpeningPalette.backdrop)
         .ignoresSafeArea()
-        .environment(\.colorScheme, .dark)
-        .sensoryFeedback(.impact(flexibility: .rigid, intensity: 0.7), trigger: locks)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(phase.caption.replacingOccurrences(of: "…", with: ""))
         .onAppear {
-            // The first frame matches the static launch image; everything else builds from it.
-            withAnimation(.easeOut(duration: 0.7)) { introduced = true }
-            withAnimation(reduceMotion ? nil : .spring(response: 0.62, dampingFraction: 0.74).delay(0.05)) { fanned = true }
-            withAnimation(.easeOut(duration: 0.5).delay(0.12)) { textAppeared = true }
+            withAnimation(.easeOut(duration: 0.32)) { textAppeared = true }
+            withAnimation(reduceMotion ? .easeOut(duration: 0.24) : .spring(response: 0.55, dampingFraction: 0.78)) {
+                stashFanned = true
+            }
         }
         .task(id: phase) {
-            if phase.isReady && !guidesLocked { locks += 1 }
             guidesLocked = phase.isReady
             captionReady = false
-            guard phase.isReady else {
-                glint = false
-                return
-            }
-            if !reduceMotion { withAnimation(.easeInOut(duration: 0.7).delay(0.12)) { glint = true } }
+            sheenSwept = false
+            guard phase.isReady else { return }
+            if !reduceMotion { withAnimation(.easeInOut(duration: 0.8)) { sheenSwept = true } }
             do {
                 if !reduceMotion { try await Task.sleep(for: OpeningMotion.captionDelay) }
                 try Task.checkCancellation()
@@ -311,271 +378,19 @@ struct AppOpeningView: View {
             } catch { /* Superseded readiness never publishes a delayed caption. */ }
         }
     }
-}
 
-/// Fanned card stack with the scanner guides that hunt, then lock on.
-private struct OpeningCardStack: View {
-    let introduced: Bool
-    let fanned: Bool
-    let locked: Bool
-    let glint: Bool
-    let locks: Int
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private var card: CGSize { OpeningGeometry.card }
-    private var cardShape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: OpeningGeometry.cardRadius, style: .continuous)
-    }
-    private var glowColor: Color { locked ? OpeningPalette.locked : OpeningPalette.beam }
-
-    var body: some View {
-        ZStack {
-            ForEach(OpeningGeometry.fan.indices, id: \.self) { index in
-                let layer = OpeningGeometry.fan[index]
-                backCard
-                    .opacity(introduced || !reduceMotion ? layer.opacity : 0)
-                    .rotationEffect(.degrees(fanned ? layer.angle : 0))
-                    .offset(x: fanned ? layer.x : 0, y: fanned ? layer.y : 0)
-            }
-
-            frontCard
-
-            if !reduceMotion {
-                cardShape
-                    .stroke(OpeningPalette.locked, lineWidth: 2)
-                    .frame(width: card.width, height: card.height)
-                    .keyframeAnimator(initialValue: LockPulse(), trigger: locks) { ring, pulse in
-                        ring.scaleEffect(pulse.scale).opacity(pulse.opacity)
-                    } keyframes: { _ in
-                        KeyframeTrack(\.scale) {
-                            LinearKeyframe(1, duration: 0.16)
-                            CubicKeyframe(1.3, duration: 0.6)
-                        }
-                        KeyframeTrack(\.opacity) {
-                            LinearKeyframe(0, duration: 0.15)
-                            LinearKeyframe(0.85, duration: 0.03)
-                            CubicKeyframe(0, duration: 0.58)
-                        }
-                    }
-            }
-
-            TimelineView(.animation(paused: reduceMotion || locked)) { timeline in
-                OpeningScanBeam()
-                    .frame(width: card.width + 72)
-                    .offset(y: reduceMotion ? 0 : beamOffset(at: timeline.date))
-            }
-            .opacity(introduced && !locked ? 1 : 0)
-            .animation(.easeOut(duration: 0.25), value: locked)
-
-            CornerGuides()
-                .stroke(locked ? OpeningPalette.locked : OpeningPalette.seeking,
-                        style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                .shadow(color: glowColor.opacity(introduced ? 0.9 : 0), radius: locked ? 8 : 5)
-                .animation(.easeOut(duration: 0.28), value: locked)
-                .padding(locked && !reduceMotion ? 0 : -OpeningGeometry.guideInset)
-                .frame(width: card.width, height: card.height)
-                .phaseAnimator([false, true]) { guides, widened in
-                    // Seeking guides breathe until the collection is ready.
-                    guides.scaleEffect(widened && !locked && !reduceMotion ? 1.035 : 1)
-                } animation: { _ in .easeInOut(duration: 1.1) }
-                .animation(reduceMotion ? nil : .spring(response: OpeningMotion.lockResponse, dampingFraction: 0.92), value: locked)
+    /// Two soft foil blooms behind the mark; launch shows none, so it fades in.
+    private var aurora: some View {
+        let strength = colorScheme == .dark ? 0.20 : 0.26
+        return ZStack {
+            RadialGradient(colors: [AppPalette.foil[0].opacity(strength), .clear],
+                           center: .center, startRadius: 0, endRadius: 170)
+                .offset(x: -48, y: -40)
+            RadialGradient(colors: [AppPalette.foil[2].opacity(strength), .clear],
+                           center: .center, startRadius: 0, endRadius: 190)
+                .offset(x: 44, y: 46)
         }
-    }
-
-    private var backCard: some View {
-        cardShape
-            .fill(LinearGradient(colors: [OpeningPalette.cardTop, OpeningPalette.cardBottom],
-                                 startPoint: .topLeading, endPoint: .bottomTrailing))
-            .overlay { cardShape.strokeBorder(.white.opacity(0.4), lineWidth: 1) }
-            .frame(width: card.width, height: card.height)
-            .compositingGroup()
-    }
-
-    private var frontCard: some View {
-        cardShape
-            .fill(LinearGradient(colors: [OpeningPalette.cardTop, OpeningPalette.cardBottom],
-                                 startPoint: .topLeading, endPoint: .bottomTrailing))
-            .frame(width: card.width, height: card.height)
-            .overlay {
-                cardShape.fill(LinearGradient(stops: [.init(color: .white.opacity(0.22), location: 0),
-                                                      .init(color: .white.opacity(0), location: 0.5)],
-                                              startPoint: .topLeading, endPoint: .bottomTrailing))
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .strokeBorder(.white.opacity(0.45), lineWidth: 1)
-                    .padding(9)
-            }
-            .overlay {
-                // A foil glint crosses the card as the guides lock.
-                LinearGradient(colors: [.clear, .white.opacity(0.6), .clear], startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 54, height: 280)
-                    .rotationEffect(.degrees(18))
-                    .offset(x: glint ? 190 : -190)
-                    .blendMode(.plusLighter)
-            }
-            .clipShape(cardShape)
-            .overlay { cardShape.strokeBorder(.white.opacity(0.9), lineWidth: 2) }
-            // Scoped so the glow's color change never retimes the glint above.
-            .animation(.easeOut(duration: 0.4)) { card in
-                card.shadow(color: glowColor.opacity(introduced ? 0.55 : 0), radius: 28)
-            }
-    }
-
-    private func beamOffset(at date: Date) -> CGFloat {
-        let period = OpeningMotion.beamPeriod
-        let progress = date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: period) / period
-        return CGFloat(sin(progress * 2 * .pi)) * card.height * 0.42
-    }
-}
-
-private struct LockPulse {
-    var scale: CGFloat = 1
-    var opacity: Double = 0
-}
-
-/// The icon's scan line: a hot core inside a soft glow that fades at both ends.
-private struct OpeningScanBeam: View {
-    var body: some View {
-        ZStack {
-            Capsule()
-                .fill(OpeningPalette.beam)
-                .frame(height: 10)
-                .blur(radius: 8)
-                .opacity(0.75)
-            Capsule()
-                .fill(OpeningPalette.beam)
-                .frame(height: 3)
-                .blur(radius: 1.5)
-            Capsule()
-                .fill(.white)
-                .frame(height: 1.5)
-        }
-        .frame(height: 28)
-        .mask {
-            LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.3),
-                                   .init(color: .black, location: 0.7), .init(color: .clear, location: 1)],
-                           startPoint: .leading, endPoint: .trailing)
-        }
-        .blendMode(.plusLighter)
-    }
-}
-
-/// Slim indeterminate track that fills once the collection is ready. It never
-/// fakes a percentage: loading has no honest one.
-private struct OpeningProgressTrack: View {
-    let ready: Bool
-    let animated: Bool
-
-    var body: some View {
-        Capsule()
-            .fill(.white.opacity(0.12))
-            .overlay(alignment: .leading) {
-                TimelineView(.animation(paused: !animated || ready)) { timeline in
-                    GeometryReader { proxy in
-                        let width = proxy.size.width * 0.34
-                        let sweep: CGFloat = 0.5 + 0.5 * sin(timeline.date.timeIntervalSinceReferenceDate
-                            .truncatingRemainder(dividingBy: 3_600) * 2.4)
-                        Capsule()
-                            .fill(LinearGradient(colors: [OpeningPalette.beam.opacity(0), OpeningPalette.beam,
-                                                          OpeningPalette.beam.opacity(0)],
-                                                 startPoint: .leading, endPoint: .trailing))
-                            .frame(width: width)
-                            .offset(x: sweep * (proxy.size.width - width))
-                    }
-                }
-                .opacity(ready || !animated ? 0 : 1)
-            }
-            .overlay {
-                Capsule()
-                    .fill(OpeningPalette.locked)
-                    .scaleEffect(x: ready ? 1 : 0.001, anchor: .leading)
-                    .shadow(color: OpeningPalette.locked.opacity(0.8), radius: 4)
-            }
-            .frame(width: OpeningGeometry.card.width, height: 3)
-            .animation(.easeOut(duration: 0.35), value: ready)
-            .accessibilityHidden(true)
-    }
-}
-
-/// Deep-navy stage: a breathing halo, a fading dot grid, and drifting sparks.
-private struct OpeningBackdrop: View {
-    let animated: Bool
-
-    var body: some View {
-        ZStack {
-            RadialGradient(colors: [OpeningPalette.halo.opacity(0.7), OpeningPalette.halo.opacity(0)],
-                           center: .center, startRadius: 0, endRadius: 360)
-            OpeningDotGrid()
-            TimelineView(.animation(paused: !animated)) { timeline in
-                Canvas { context, size in
-                    Self.draw(in: &context, size: size,
-                              time: timeline.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 3_600))
-                }
-            }
-            RadialGradient(colors: [.clear, .black.opacity(0.5)], center: .center, startRadius: 180, endRadius: 620)
-        }
-        .allowsHitTesting(false)
-    }
-
-    private static func draw(in context: inout GraphicsContext, size: CGSize, time: Double) {
-        let width = Double(size.width)
-        let height = Double(size.height)
-        guard width > 0, height > 0 else { return }
-        // Two slow aurora lobes keep the halo alive behind the card.
-        for (index, color) in [OpeningPalette.halo, OpeningPalette.beam].enumerated() {
-            let angle = time * 0.3 + Double(index) * Double.pi
-            let lobe = CGPoint(x: width / 2 + cos(angle) * 48, y: height / 2 + sin(angle * 0.8) * 64)
-            let radius: Double = index == 0 ? 230 : 150
-            context.fill(Path(ellipseIn: CGRect(x: lobe.x - radius, y: lobe.y - radius,
-                                                width: radius * 2, height: radius * 2)),
-                         with: .radialGradient(Gradient(colors: [color.opacity(index == 0 ? 0.5 : 0.16), color.opacity(0)]),
-                                               center: lobe, startRadius: 0, endRadius: radius))
-        }
-        for index in 0..<28 {
-            let seed = Double(index)
-            let speed = 10 + unit(seed, 2) * 22
-            let travel = (unit(seed, 3) * height + time * speed).truncatingRemainder(dividingBy: height)
-            let x = unit(seed, 1) * width
-            let y = height - travel
-            let twinkle = 0.5 + 0.5 * sin(time * (1.2 + unit(seed, 4) * 2.4) + seed)
-            let alpha = sin(Double.pi * travel / height) * (0.2 + 0.6 * twinkle)
-            let radius = 0.8 + unit(seed, 5) * 1.6
-            for (scale, strength) in [(3.2, 0.18), (1.0, 1.0)] {
-                let r = radius * scale
-                context.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)),
-                             with: .color(OpeningPalette.spark.opacity(alpha * strength)))
-            }
-        }
-    }
-
-    /// Stable pseudo-random value in 0..<1 so sparks keep their lanes between frames.
-    private static func unit(_ seed: Double, _ salt: Double) -> Double {
-        let value = sin(seed * 12.9898 + salt * 78.233) * 43_758.5453
-        return value - value.rounded(.down)
-    }
-}
-
-private struct OpeningDotGrid: View {
-    var body: some View {
-        Canvas { context, size in
-            let spacing: CGFloat = 22
-            let center = CGPoint(x: size.width / 2, y: size.height / 2)
-            let reach = max(size.width, size.height) * 0.55
-            var y = center.y.truncatingRemainder(dividingBy: spacing)
-            while y < size.height {
-                var x = center.x.truncatingRemainder(dividingBy: spacing)
-                while x < size.width {
-                    let falloff = max(0, 1 - hypot(x - center.x, y - center.y) / reach)
-                    if falloff > 0 {
-                        context.fill(Path(ellipseIn: CGRect(x: x - 0.75, y: y - 0.75, width: 1.5, height: 1.5)),
-                                     with: .color(.white.opacity(0.09 * falloff * falloff)))
-                    }
-                    x += spacing
-                }
-                y += spacing
-            }
-        }
+        .frame(width: 460, height: 460)
     }
 }
 

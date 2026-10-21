@@ -28,7 +28,7 @@ private struct SettingsContentView: View {
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
     @State private var diagnosticsDocument: JSONExportDocument?
-    @State private var csvExportFilename = "CardScanner Collection"
+    @State private var csvExportFilename = "ScanStash Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
     @State private var csvImportPreparationID = UUID()
     @State private var pendingCSVAlreadyImportedEntryCount = 0
@@ -155,7 +155,7 @@ private struct SettingsContentView: View {
                         isPresented: $isShowingDiagnosticsExporter,
                         document: diagnosticsDocument,
                         contentType: .json,
-                        defaultFilename: "CardScanner Sync Diagnostics"
+                        defaultFilename: "ScanStash Sync Diagnostics"
                     ) { result in
                         diagnosticsDocument = nil
                         if case let .failure(error) = result {
@@ -187,14 +187,14 @@ private struct SettingsContentView: View {
                 if let failedCSVText = message.failedCSVText {
                     return Alert(title: Text(message.title), message: Text(message.message), primaryButton: .default(Text("Export Failed Rows")) {
                         csvExportDocument = CollectionCSVDocument(text: failedCSVText)
-                        csvExportFilename = "CardScanner Failed Import Rows"
+                        csvExportFilename = "ScanStash Failed Import Rows"
                         isShowingCSVExporter = true
                     }, secondaryButton: .cancel(Text("Done")))
                 }
                 if let skippedCSVText = message.skippedCSVText {
                     return Alert(title: Text(message.title), message: Text(message.message), primaryButton: .default(Text("Export Skipped Rows")) {
                         csvExportDocument = CollectionCSVDocument(text: skippedCSVText)
-                        csvExportFilename = "CardScanner Skipped Rows"
+                        csvExportFilename = "ScanStash Skipped Rows"
                         isShowingCSVExporter = true
                     }, secondaryButton: .cancel(Text("Done")))
                     }
@@ -238,7 +238,7 @@ private struct SettingsContentView: View {
             .disabled(writeCoordinator.activeExclusiveOperation != nil)
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
-                prepareCSVExport(.collection, filename: "CardScanner Collection")
+                prepareCSVExport(.collection, filename: "ScanStash Collection")
             }
             .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
@@ -274,7 +274,7 @@ private struct SettingsContentView: View {
             }
 
             Button("Export Value History", systemImage: "square.and.arrow.up") {
-                prepareCSVExport(.portfolioHistory, filename: "CardScanner Value History")
+                prepareCSVExport(.portfolioHistory, filename: "ScanStash Value History")
             }
             .disabled(portfolioCloseCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
         } header: {
@@ -336,12 +336,12 @@ private struct SettingsContentView: View {
         Section {
             DisclosureGroup("Developer") {
                 Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
-                    prepareCSVExport(.unpriced, filename: "CardScanner Unpriced Cards")
+                    prepareCSVExport(.unpriced, filename: "ScanStash Unpriced Cards")
                 }
                 .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
                 Button("Export Missing Artwork", systemImage: "photo") {
-                    prepareCSVExport(.missingArtwork, filename: "CardScanner Missing Artwork")
+                    prepareCSVExport(.missingArtwork, filename: "ScanStash Missing Artwork")
                 }
                 .disabled(missingArtworkCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
@@ -511,7 +511,7 @@ private struct SettingsContentView: View {
                 guard storageGeneration.isCurrent(token) else { return }
                 writeCoordinator.csvMessage = CSVMessage(
                     title: "Export Failed",
-                    message: "CardScanner could not create a redacted diagnostics export.",
+                    message: "ScanStash could not create a redacted diagnostics export.",
                     skippedCSVText: nil
                 )
             }
@@ -721,7 +721,7 @@ private struct ScannerStudyMetricsSection: View {
         Section {
             Toggle("Record session metrics", isOn: $isEnabled)
             ShareLink(item: scannerModel.sessionMetricsExport,
-                      preview: SharePreview("CardScanner Session Log")) {
+                      preview: SharePreview("ScanStash Session Log")) {
                 Label("Export session log", systemImage: "square.and.arrow.up")
             }
         } header: {
@@ -917,7 +917,7 @@ struct CollectionStorageStatusSection: View {
     var body: some View {
         Section {
             LabeledContent("Collection storage", value: "On this device")
-            Text("iCloud sync is not available in CardScanner 1.0.")
+            Text("iCloud sync is not available in ScanStash 1.0.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         } header: {

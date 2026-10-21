@@ -38,11 +38,11 @@ enum CollectionStorageBootstrapError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .storageLocationUnavailable:
-            return "CardScanner could not resolve its persistent Application Support location."
+            return "ScanStash could not resolve its persistent Application Support location."
         case .cloudKitUnavailableInLocalOnlyBuild:
             return "This build does not contain the CloudKit entitlement required for iCloud storage."
         case .storageSessionUnavailable:
-            return "CardScanner has no process-authoritative storage session to borrow."
+            return "ScanStash has no process-authoritative storage session to borrow."
         }
     }
 }
@@ -1126,7 +1126,7 @@ final class CollectionStorageBootstrap: ObservableObject {
 
         case .blockUnprovenTransition:
             state = .recoveryRequired(
-                "CardScanner found existing collection storage without trustworthy identity metadata. The original bytes were left untouched, and the app cannot safely open this collection on this device. Retry after confirming the storage configuration."
+                "ScanStash found existing collection storage without trustworthy identity metadata. The original bytes were left untouched, and the app cannot safely open this collection on this device. Retry after confirming the storage configuration."
             )
         }
     }
