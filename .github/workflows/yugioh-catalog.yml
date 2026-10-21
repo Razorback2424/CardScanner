@@ -1,0 +1,29 @@
+name: YuGiOh catalog candidate
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 7 * * *"
+permissions:
+  contents: read
+jobs:
+  ingest-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test evidence admission
+        run: python3 -I scripts/build_yugioh_catalog.py --self-test
+      - name: Ingest once on the server and stage a candidate
+        run: >-
+          python3 -I scripts/build_yugioh_catalog.py
+          --cache-dir "${RUNNER_TEMP}/yugioh-source"
+          --previous-seed TradingCardScanner/YuGiOhCatalogSeed/catalog.json
+          --out "${RUNNER_TEMP}/yugioh/catalog.json"
+          --report "${RUNNER_TEMP}/yugioh/build-report.md"
+          --hosting-root "${RUNNER_TEMP}/yugioh/site"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yugioh-catalog-candidate
+          path: ${{ runner.temp }}/yugioh
+          retention-days: 7
+      # Deliberately no deployment. Production activation requires the existing
+      # signed-release/restore path to adopt this namespace and owner approval.
