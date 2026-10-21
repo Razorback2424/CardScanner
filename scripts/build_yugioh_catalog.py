@@ -149,6 +149,11 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                     if m["e"] not in {x["e"] for x in membership} | blocked and m.get("h") and m.get("s"):
                         membership.append({**m, "q": None})
             membership = [m for m in membership if m['e'] not in blocked]
+            if complete:
+                contradicted = [m for m in membership if m['e'] not in editions]
+                membership = [m for m in membership if m['e'] in editions]
+            else:
+                contradicted = []
             editions = sorted((set(editions) | {m["e"] for m in membership}) - blocked)
             if blocked: complete = False
             if membership: evidence = POLICY
@@ -178,7 +183,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 "ec": complete, "ee": evidence, "pe": observed, "img": product.get("imageUrl"),
                 "m": sorted(membership, key=lambda x: x["e"]), "ir": identity_reason,
                 "limitations": membership_reasons, "correspondence": "exactOrScopedTaxonomy" if exact else "unresolvedSecondaryLink",
-                "canonicalLink": "linked" if cid is not None else "unresolved"})
+                "canonicalLink": "linked" if cid is not None else "unresolved",
+                **({"historicalContradictions": (prior or {}).get('historicalContradictions', []) + contradicted}
+                   if contradicted or (prior or {}).get('historicalContradictions') else {})})
     families = collections.defaultdict(list)
     for row in rows: families[row["c"]].append(row)
     auto = []
@@ -193,7 +200,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         counts = collections.Counter(labels)
         for row in family:
             if counts[(row["g"], row["r"], row["art"], row["pn"])] > 1: row["ir"] = "indistinguishableProduct"
-        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and not family[0]["art"] and family[0]["ec"]:
+        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and not family[0]["art"] and family[0]["ec"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
             cid = entries[code][0][0]
             if len(by_id[cid].get("card_images", [])) == 1: auto.append(code)
     ordered_cards = sorted(canonical.values(), key=lambda x: x["id"])
@@ -207,6 +214,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     seed = {"schemaVersion": 1, "policyVersion": POLICY, "generation": "", "capturedAt": captured_at, "sets": sets, "cards": ordered_cards,
         "printings": rows, "incompleteCodes": sorted(k for k, v in incomplete.items() if v), "autoEligibleCodes": sorted(auto)}
     seed["generation"] = "yugioh-en-" + hashlib.sha256(packed(seed)).hexdigest()[:12]
+    validate_output(seed)
     stats = {"groups": len(groups), "products": sum(map(len, products.values())), "printings": len(rows), "codes": len(families),
         "incompleteCodes": len(seed["incompleteCodes"]), "automaticCodes": len(auto),
         "verifiedPhysicalProducts": sum(x["ec"] for x in rows), "unknownCoverageProducts": sum(not x["ec"] for x in rows),
@@ -314,6 +322,7 @@ def main():
     report += "\n## Incomplete reasons\n\n" + json.dumps(dict(collections.Counter(r for v in incomplete.values() for r in v)), sort_keys=True) + "\n"
     report += "\n## Source provenance\n\nEach input records URL, cache timestamp, provider timestamp when supplied, and SHA-256.\n\n```json\n" + json.dumps(provenance, indent=2) + "\n```\n"
     # No output changes until every input and invariant passed.
+    validate_output(seed, strict=True)
     for path, data in [(args.out, packed(seed)), (args.report, report.encode()),
                        (args.report.with_suffix('.exclusions.json'), packed(excluded))]:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -324,15 +333,46 @@ def main():
         stage_hosting(seed, args.hosting_root)
     print(json.dumps(stats, indent=2))
 
+def validate_output(seed, strict=False):
+    """Check admission invariants before writing any candidate artifacts."""
+    families = collections.defaultdict(list)
+    assert seed['schemaVersion'] == 1 and seed['policyVersion'] == POLICY
+    captured = datetime.datetime.fromisoformat(seed['capturedAt'].replace('Z', '+00:00'))
+    ids, products = set(), set()
+    for row in seed['printings']:
+        assert row['id'] not in ids and row['p'] not in products and row['p'] > 0, 'duplicate identity'
+        ids.add(row['id']); products.add(row['p'])
+        assert str(uuid.UUID(row['id'])) == row['id'] and 0 <= row['k'] < len(seed['cards'])
+        assert CODE.fullmatch(row['c']) or (row['ir'] == 'unsupportedCode' and row['c'] and not row['e'])
+        families[row['c']].append(row)
+        assert len(row['e']) == len(set(row['e'])) and set(row['e']) <= set(LANES.values())
+        assert len(row['m']) == len({m['e'] for m in row['m']})
+        assert set(m['e'] for m in row['m']) <= set(row['e']), 'membership outside admitted editions'
+        assert row['ec'] or set(row['e']) == set(m['e'] for m in row['m']), 'unsupported edition'
+        for m in row['m']:
+            assert m['t'] in ('providerMarket', 'providerListing', 'independentlyReviewed')
+            assert m['q'] is None or (type(m['q']) in (int, float) and math.isfinite(m['q']) and m['q'] >= 0)
+            if strict:
+                assert re.fullmatch('[a-f0-9]{64}', m.get('h', '')), 'missing source hash'
+                assert datetime.datetime.fromisoformat(m.get('s', '').replace('Z', '+00:00')) <= captured, 'future membership evidence'
+    assert set(seed['autoEligibleCodes']).isdisjoint(seed['incompleteCodes'])
+    for code in seed['autoEligibleCodes']:
+        family = families[code]
+        assert len(family) == 1, 'automatic family is not a singleton'
+        row = family[0]
+        assert not row['ir'] and row['ec'] and row['e'] and row['ee'], 'automatic row lacks admission evidence'
+
 def stage_hosting(seed, root):
     """An isolated namespace on the existing host. No deploy/signing authority."""
+    validate_output(seed, strict=True)
     data = packed(seed)
     relative = pathlib.Path('yugioh/v1/releases') / seed['generation'] / 'catalog.json'
     target = root / relative
     target.parent.mkdir(parents=True, exist_ok=True)
     if target.exists() and target.read_bytes() != data: raise ValueError('immutable candidate collision')
     target.write_bytes(data)
-    manifest = {'schemaVersion':1, 'generation':seed['generation'], 'policyVersion':POLICY,
+    revision = int(datetime.datetime.fromisoformat(seed['capturedAt'].replace('Z', '+00:00')).timestamp())
+    manifest = {'schemaVersion':1, 'revision':revision, 'generation':seed['generation'], 'policyVersion':POLICY,
                 'path':str(relative), 'sha256':hashlib.sha256(data).hexdigest(), 'bytes':len(data),
                 'status':'candidate_not_deployed', 'capturedAt':seed['capturedAt']}
     pointer = root / 'yugioh/v1/current.json'

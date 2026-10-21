@@ -14,7 +14,8 @@ class BuilderTests(unittest.TestCase):
     def build(self, reviews=None):
         f = self.fixture
         return builder.build(f["groups"], {1: f["products"]}, {1: f["prices"]}, f["cards"],
-            {"12206212": ["Harpie's Brother"]}, reviews or {}, "2026-10-20T00:00:00Z", floor=1)
+            {"12206212": ["Harpie's Brother"]}, reviews or {}, "2026-10-20T00:00:00Z", floor=1,
+            price_provenance={1:{'h':'a'*64, 's':'2026-10-20T00:00:00Z', 'st':'capturedAt'}})
 
     def test_alias_matches_and_canonical_id_does_not_depend_on_printed_name(self):
         seed, _, exceptions, _ = self.build()
@@ -151,10 +152,21 @@ class BuilderTests(unittest.TestCase):
             builder.stage_hosting(seed, root)
             pointer = json.loads((root/'yugioh/v1/current.json').read_text())
             self.assertEqual(pointer['status'], 'candidate_not_deployed')
+            self.assertEqual(pointer['schemaVersion'], 1)
+            self.assertEqual(pointer['revision'], 1792454400)
+            self.assertEqual(pointer['sha256'], builder.hashlib.sha256(builder.packed(seed)).hexdigest())
             self.assertEqual((root/pointer['path']).read_bytes(), builder.packed(seed))
             builder.stage_hosting(seed, root)
             changed = copy.deepcopy(seed); changed['capturedAt'] = '2027-01-01T00:00:00Z'
             with self.assertRaises(ValueError): builder.stage_hosting(changed, root)
+
+    def test_staging_rejects_missing_provenance_before_creating_artifacts(self):
+        seed = self.build()[0]
+        seed['printings'][0]['m'][0].pop('h')
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory) / 'site'
+            with self.assertRaises(AssertionError): builder.stage_hosting(seed, root)
+            self.assertFalse(root.exists())
 
     def test_membership_survives_withdrawal_but_conflicting_revision_retracts_lane(self):
         f = self.fixture
@@ -214,6 +226,31 @@ class BuilderTests(unittest.TestCase):
     def test_review_cannot_contradict_observed_product_lane(self):
         with self.assertRaises(AssertionError):
             self.build({"1": {"editions": ["yugiohUnlimited"], "complete": True, "evidence": "synthetic:bad-review"}})
+
+    def test_complete_review_retracts_historical_lane_but_keeps_provenance(self):
+        f = self.fixture
+        prior = self.build({'1': {'editions':['yugiohUnlimited'], 'evidence':'synthetic:prior'}})[0]
+        # Give the historical review a durable provenance stamp (builder supplies it).
+        previous = {x['p']:x for x in prior['printings']}
+        f['prices'] = []
+        seed = builder.build(f['groups'], {1:f['products']}, {1:[]}, f['cards'], {},
+            {'1': {'editions':['yugioh1stEdition'], 'complete':True, 'evidence':'synthetic:new-complete'}},
+            '2026-10-21T00:00:00Z', floor=1, previous=previous)[0]
+        row = next(x for x in seed['printings'] if x['p'] == 1)
+        self.assertEqual(row['e'], ['yugioh1stEdition'])
+        self.assertEqual([m['e'] for m in row['historicalContradictions']], ['yugiohUnlimited'])
+        self.assertTrue(row['ec'])
+
+    def test_invalid_association_reviewed_singleton_stays_quarantined(self):
+        self.fixture['products'][0]['categoryId'] = 99
+        seed = self.build({'1': {'editions':['yugioh1stEdition'], 'complete':True, 'evidence':'synthetic:review'}})[0]
+        row = next(x for x in seed['printings'] if x['p'] == 1)
+        self.assertEqual(row['ir'], 'invalidProductAssociation')
+        self.assertNotIn(row['c'], seed['autoEligibleCodes'])
+        self.assertTrue(any(x['p'] == 2 and x['e'] and not x['ir'] for x in seed['printings']))
+        builder.validate_output(seed)
+        seed['autoEligibleCodes'] = [row['c']]
+        with self.assertRaises(AssertionError): builder.validate_output(seed)
 
     def test_no_automatic_eligibility_for_alternate_art_or_unknown_coverage(self):
         self.fixture["cards"][0]["card_images"].append({"id": 1})
