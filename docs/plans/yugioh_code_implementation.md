@@ -1,7 +1,9 @@
 # Yu-Gi-Oh! implementation plan
 
-**Status — 2026-10-20:** plan only. Nothing is implemented, built or tested yet.
-Written against `main` at `06459ea`. The research handoff it validates was
+**Status — 2026-10-21:** plan only, **revised after review** (§1.5). Nothing is
+implemented, built or tested yet. Written against `main` at `06459ea` and
+re-checked against `81a6f2c`, the commit that added this plan; no app source
+changed between them. The research handoff it validates was
 written against `c8f89ce`, which is 23 commits older (41 app files changed since
 then, including `CardScanner.swift` and `CollectionStore.swift`). Every line
 reference here is to `06459ea`; re-locate by symbol if lines drift.
@@ -102,6 +104,34 @@ run on this Mac. Verdicts:
 - RA05 extended-art code position.
 - Commercial terms for TCGCSV, YGOPRODeck and Konami.
 - The existence of `L26D` in Konami's own database (TCGplayer confirms it).
+- Whether TCGCSV price rows list every physical edition of a product. §3.3 no
+  longer assumes they do.
+- YGOPRODeck `misc_info[].beta_name` coverage for renamed cards (§3.4). The
+  builder must report it; it was not confirmed from a live JSON join.
+
+### 1.5 Review corrections (2026-10-21)
+
+A review of the first draft against the source at `81a6f2c` found that several
+automatic-resolution rules were less safe than claimed. The risk is not failing
+to recognize a card. It is reading enough to save the wrong printing or edition
+with confidence. Each defect below was confirmed in the source or follows from
+the algorithm as written. The sections it changed are listed.
+
+| # | Defect in the first draft | Source evidence | Fix (section) |
+|---|---|---|---|
+| R1 | A short line reading only `EDITION` counted as 1st Edition. If OCR drops `LIMITED`, a Limited card is saved as 1st. | §4.5 as drafted | Bare `EDITION` is an unread marker. It excludes Unlimited but proves no edition (§4.5). |
+| R2 | First vs Limited conflicts collapsed to `nil`. WP2.8 treated `nil` as "no evidence", so the edition lock applied again and a conflict could resolve to Unlimited. | §4.5, WP2.7–2.8 as drafted | Use a three-way evidence type: absent, observed, or conflicting/unread. Conflict and unread both disable the lock (§4.5, WP2.7, WP2.8). |
+| R3 | `VariantResolver` returns `.uniqueInCatalog` for a single catalog edition before it looks at `printedFinish`. A 1st-only catalog entry wins even when the card was read as Limited. | `Services/VariantResolver.swift:136-143` | A pre-resolver gate that runs only when edition evidence is present. Only YGO produces that evidence, so other games keep their behavior (WP2.8). |
+| R4 | Edition evidence was lost on retry, on unresolved-scan merges and on persisted Needs attention recovery. Those paths rebuild `ScanSubject` from its old fields. | `Views/ScannerViewModel.swift:1162-1189, 3671-3672`; `Services/UnresolvedScanStore.swift:200-262, 440-444` | Thread the field through every copy, merge, retry and persistence path, with backward-compatible decoding (WP2.11). |
+| R5 | The completeness check compared rarity counts and names only. A missing printing with the same rarity, or a skipped product, left the check passing. That could leave one TCGplayer product, which would then be added automatically. | §3.4 as drafted | Check rarity agreement, printing coverage and edition coverage separately. Any skipped product makes its code incomplete (§3.3, §3.4). |
+| R6 | Price rows defined the edition universe. A missing price row would make a printing look single-edition and resolve automatically. | §3.3 as drafted | Physical editions come from the set-level union of lanes. Priced lanes are a separate field (§3.3, §3.5, WP3.5). |
+| R7 | `artworkID` was set to the printing UUID. The shared logic then reads any distinct `artworkID` plus a thumbnail as visual proof. Products with identical labels would pass as distinguishable when their scans may look the same. | `Games/Core/GameCatalogAdapter.swift:170-201` | `artworkID = nil` in v1. Identical-label families stay `.insufficient`, so they become `catalogIncomplete` (§5.1). |
+| R8 | Renamed cards failed the name join. For example, PSV-EN049 is listed as *Harpie's Brother* on TCGplayer and *Sky Scout* on YGOPRODeck. The code became incomplete, and a name-derived card ID split the card's identity. | Public TCGplayer and YGOPRODeck pages; no live JSON join was run | Alias join through YGOPRODeck `beta_name` plus a reviewed alias file. The card ID comes from the YGOPRODeck card ID (§3.3, §3.4). |
+| R9 | The tests left out the dangerous interactions and the end-to-end chain. | WP5 as drafted | New regression cases and a scan → save → relaunch chain (WP5, §9). |
+
+Kept from the first draft: the bundled catalog first, separate printing and
+edition identity, exact product/edition price joins with no low/mid
+substitution, no visual rarity guessing, and adapter-owned OCR.
 
 ---
 
@@ -132,7 +162,11 @@ them now):
 
 ### 3.1 Files
 
-- New `scripts/build_yugioh_catalog.py` (Python 3, stdlib only).
+- New `scripts/build_yugioh_catalog.py` (Python 3, stdlib only), with a
+  `--self-test` mode that builds from `scripts/fixtures/yugioh/` offline and
+  asserts the §3.3–3.4 rules (WP5.1 lists the cases).
+- New `scripts/fixtures/yugioh/` (small hand-written TCGCSV/YGOPRODeck JSON) and
+  `scripts/yugioh_name_aliases.json` (reviewed renamed-card aliases).
 - New `TradingCardScanner/YuGiOhCatalogSeed/catalog.json`, generated and
   committed. Lorcana's seed is about 9 MB, so a similar size is acceptable.
 - New `docs/research/yugioh-catalog/build-report.md`, generated: counts plus up
@@ -172,10 +206,22 @@ For each TCGCSV product:
 - Code grammar: `^[A-Z0-9]{2,4}-(?:EN|E)?[A-Z0-9]{3}$`, and **regionless codes
   must end in 3 digits**. Anything else → exception `nonEnglishOrUnparsed`.
 - `rarity` = `extendedData["Rarity"]` verbatim; required (exception `noRarity`).
-- Editions: map the product's price rows by `subTypeName`:
+- Priced lanes (`pe`): map the product's price rows by `subTypeName`:
   `{"1st Edition": "yugioh1stEdition", "Unlimited": "yugiohUnlimited", "Limited": "yugiohLimited"}`.
   Any other subtype on the product, or zero recognized subtypes → skip the
   product (exception `unknownSubtype` / `noEditionLane`).
+- Physical editions (`e`): the union of priced lanes across every kept product
+  in the same group. A price row proves a lane is priced. It does not prove that
+  the product's other editions do not exist. Set-level union over-asks rather
+  than under-asks: a printing priced only in 1st Edition, in a set that also has
+  Unlimited products, offers both and asks unless the card's printed evidence
+  decides it. `pe ⊆ e` always. An edition in `e` but not in `pe` can be owned,
+  but its price is `.unavailable`.
+- **Skipped products poison their code.** Any product skipped for `noRarity`,
+  `unknownSubtype` or `noEditionLane` whose `number` still matches the code
+  grammar adds that code to `incompleteCodes` with reason `skippedProduct`.
+  Otherwise the code could keep one remaining product and be added
+  automatically.
 - Name and art label: repeatedly strip a trailing `\s*\(([^()]*)\)\s*$`. A
   suffix is a **rarity suffix** (dropped) if, compared case-insensitively, it
   equals the product's `Rarity`, or it is in
@@ -187,30 +233,66 @@ For each TCGCSV product:
   `md5((namespace+material).utf8)` as bytes, set
   `b[6] = (b[6] & 0x0F) | 0x30` and `b[8] = (b[8] & 0x3F) | 0x80`, then format
   it as a standard UUID.
-- `cardID` = v3 UUID of `"yugioh-card:" + normalizedName`, where
-  `normalizedName` = NFKD, lowercase, alphanumerics only, single spaces.
+- `cardID` = v3 UUID of `"yugioh-card:" + "ygoprodeck:" + str(card.id)` when
+  §3.4 matches the product to a YGOPRODeck card by name or alias. Otherwise use
+  `"yugioh-card:" + "name:" + normalizedName`, where
+  `normalizedName` = NFKD, lowercase, alphanumerics only, single spaces. The
+  YGOPRODeck ID keeps a renamed card (printed under its old name) and its
+  current-name reprints on one canonical identity.
 - Image URL = the product `imageUrl` (the `_200w.jpg` thumbnail). The display
   image is the same URL with `_200w` replaced by `_in_1000x1000`.
 
 ### 3.4 Cross-check with YGOPRODeck (decides auto-resolve eligibility)
 
-Build `ygoRarities[code] = set(card_sets[].set_rarity)` and
-`ygoNames[code] = set(card.name)` across all YGOPRODeck cards, plus
-`passcodes[normalizedName] = {card.id} ∪ {img.id for img in card_images}`.
+Build, across all YGOPRODeck cards:
 
-A code is **complete** only when all of these hold:
+- `ygoEntries[code]` = the list of `(set_name, set_rarity)` tuples from
+  `card_sets[]`, keeping duplicates that differ by set name;
+- `ygoRarities[code]` = the distinct `set_rarity` values;
+- `ygoCards[code]` = the YGOPRODeck card IDs that list the code;
+- `namesByCard[id]` = `{normalize(card.name)} ∪ {normalize(m.beta_name) for m in misc_info if beta_name}`
+  ∪ the entries for `id` in a committed, reviewed
+  `scripts/yugioh_name_aliases.json` (`{"<ygoprodeck id>": ["<printed name>", …]}`);
+- `passcodes[id] = {card.id} ∪ {img.id for img in card_images}`.
 
-- the code exists in `ygoRarities`;
-- `len(distinct TCGplayer Rarity values for the code) >= len(ygoRarities[code])`;
-- every TCGplayer `cardName` for the code normalizes to a member of
-  `ygoNames[code]`.
+A TCGplayer product **matches** card `id` when `id ∈ ygoCards[code]` and the
+product's normalized `cardName` is in `namesByCard[id]`. A product matching more
+than one card, or none, fails the name check.
 
-Codes that fail go into `incompleteCodes`, with the reason recorded in the
-report. They stay in the seed so Browse and import still work, but scanning
-returns `.catalogIncomplete`, never an automatic add.
+Completeness has three separate parts. Each records its own reason:
 
-Passcodes are attached per card from the YGOPRODeck name match; there are none
-when the name does not match.
+1. **Rarity agreement** (`rarityShortfall`): the code is in `ygoRarities`, and
+   `len(distinct TCGplayer Rarity values) >= len(ygoRarities[code])`. Rarity
+   *names* are never joined (§1.2).
+2. **Printing coverage** (`printingShortfall`): the number of distinct TCGplayer
+   `(groupId, Rarity, artLabel)` printings for the code is at least
+   `len(ygoEntries[code])`. This catches a missing same-rarity reprint, which
+   rarity counts cannot see. There is no source for per-code artwork coverage,
+   so artwork is not counted. Instead, any code whose family has an `artLabel`,
+   or whose matched card has more than one `card_images` entry, is never
+   eligible for an automatic add (rule 4 below).
+3. **Name agreement** (`nameMismatch`): every product matches exactly one card,
+   through names or aliases.
+
+Plus:
+
+4. **Automatic-add eligibility** (`autoEligible`, stored per code, not
+   inferred): the code passes 1–3, has exactly one TCGplayer printing, has
+   exactly one `ygoEntries` tuple, has no art label, and its matched card has
+   exactly one `card_images` entry. A complete code that is not `autoEligible`
+   can still be chosen manually and offers its printing choice. It is never
+   added without a tap, even when the family has one printing.
+5. Every `skippedProduct` code from §3.3 is incomplete.
+
+Codes that fail 1, 2, 3 or 5 go into `incompleteCodes`, with every failing
+reason recorded in the report. They stay in the seed so Browse and import still
+work, but scanning returns `.catalogIncomplete`, never an automatic add.
+
+Passcodes are attached per card from the match; there are none when nothing
+matches. The report lists how many products matched only through
+`beta_name` or the alias file. It must include PSV-EN049 (*Harpie's Brother* /
+*Sky Scout*) as a fixture. If the live data does not join that pair, add it to
+the alias file and record that.
 
 ### 3.5 Seed schema (`schemaVersion: 1`, compact JSON, short keys)
 
@@ -226,20 +308,32 @@ when the name does not match.
     "r": "Prismatic Collector's Rare", "art": null,
     "p": 551107, "pn": "Number 60: Dugares the Timeless (PCR)",
     "e": ["yugioh1stEdition"],
+    "pe": ["yugioh1stEdition"],
     "img": "https://tcgplayer-cdn.tcgplayer.com/product/551107_200w.jpg"
   }],
-  "incompleteCodes": ["…"]
+  "incompleteCodes": ["…"],
+  "autoEligibleCodes": ["…"]
 }
 ```
 
 `k` is the index into `cards`, and `pn` is the exact TCGplayer product name the
-transport validates against. Sort `printings` by `(c, d, r, art, p)`, where `d`
+transport validates against. `e` is the physical edition set and `pe` the
+priced lanes (§3.3). Sort `printings` by `(c, d, r, art, p)`, where `d`
 is the set release date (`publishedOn[:10]`, or `""`). The builder must fail
-when: a printing ID is duplicated; a printing has an empty `e`; one `(g, p)`
-appears twice; or the output code count is below 10,000 (sanity floor).
+when: a printing ID is duplicated; a printing has an empty `e` or `pe`; `pe ⊄ e`;
+one `(g, p)` appears twice; a code is in both `incompleteCodes` and
+`autoEligibleCodes`; or the output code count is below 10,000 (sanity floor).
 
 The report lists totals for groups, products, printings, codes, multi-printing
-codes, incomplete codes, editions per lane and each exception class.
+codes, incomplete codes by reason, `autoEligible` codes, printings where
+`e ≠ pe`, alias-only matches, editions per lane and each exception class.
+
+**Tradeoff, stated explicitly:** rule 4 in §3.4 means many single-printing
+codes (any card with alternate artwork anywhere, which includes most staples)
+ask for one confirming tap instead of saving silently. That slows bulk entry a
+little. It is the cost of not adding a printing automatically when the catalog
+cannot prove it is the only one. Revisit with device evidence (§10.4), not by
+relaxing the rule in code.
 
 ---
 
@@ -299,20 +393,45 @@ fall inside 0.20–0.31.
   `.rejected(.init(reason: "Passcode conflicts with printed code", blocksFallbackRecognition: true))`.
   A missing passcode is never a reason to reject.
 
-### 4.5 Edition evidence (positive only)
+### 4.5 Edition evidence (three-way, never inferred from absence)
 
-Over footer lines with `minX < 0.5` and supplemental lines with `maxX <= 0.5`
-(the historical left marker):
+New shared type in `Services/ScanParser.swift` (no game names):
 
-- `LIMITED\s*EDITION` (case-insensitive) → `.limited`.
-- Otherwise `\bEDITION\b` (case-insensitive) on a line ≤ 40 UTF-16 units →
-  `.first`. This tolerates `T Edition`, `1" Edition`, `1t Edition` and
-  `s Edition`.
-- Both kinds seen → `nil` (conflict). Nothing seen → `nil`. Absence never means
-  Unlimited.
+```swift
+/// What a frame's printed edition marker proved. `.absent` is not "Unlimited":
+/// it means no marker was read. `.unreadable` means a marker was seen but its
+/// edition was not legible, or two frames disagreed.
+enum PrintedEditionEvidence: Hashable, Sendable, Codable {
+    case absent
+    case observed(PhysicalVariant)
+    case unreadable
+}
+```
 
-The result travels in a new `ScanSubject.printedEdition: PhysicalVariant?`. It
-is **not** part of `ScanIdentifier` or the suppression key.
+Classify each candidate line, over footer lines with `minX < 0.5` and
+supplemental lines with `maxX <= 0.5` (the historical left marker), on lines of
+≤ 40 UTF-16 units that contain `\bEDITION\b` (case-insensitive):
+
+- `LIMITED\s*EDITION`, or a token before `EDITION` that is a ≥ 4-character
+  fragment of `LIMITED` (`LIMI`, `IMITED`, `MITED`, …) → `.limited`.
+- The token immediately before `EDITION` is 1–3 characters, contains a `1`,
+  `I`, `l`, `T`, `S` or `s`, and is **not** a suffix of `LIMITED` (`D`, `ED`,
+  `TED`) → `.first`. This keeps the measured misreads (`T Edition`,
+  `1" Edition`, `1t Edition`, `s Edition`) as 1st Edition.
+- Anything else, including a bare `EDITION`, a short `LIMITED` suffix, or an
+  unrecognized prefix → `.unreadable`. **A bare `EDITION` never establishes
+  1st Edition.** It does show that a marker exists, so it rules out an
+  automatic Unlimited.
+
+Frame result: no candidate lines → `.absent`. Exactly one distinct classified
+edition and no `.unreadable` line → `.observed(edition)`. Otherwise
+`.unreadable`. This covers a frame with both a 1st and a Limited reading.
+
+The result travels in a new `ScanSubject.printedEdition: PrintedEditionEvidence`
+(default `.absent`). It is **not** part of `ScanIdentifier` or the suppression
+key. Being `.unreadable` should make the scanner try harder, not give up: the
+confirmation window (WP2.7) merges later frames, so one clean read in the
+window upgrades the result unless another frame contradicts it.
 
 ### 4.6 Trigger (`needsSupplementalText`)
 
@@ -331,7 +450,8 @@ Camera frames are far higher resolution; confirm on device (§10).
 | Catalog state for the code | Outcome |
 |---|---|
 | Code in `incompleteCodes` | `.catalogIncomplete(familySummary)` → existing Needs attention row |
-| Exactly 1 printing | `.resolved(…)`; the edition then goes through `VariantResolver` |
+| Exactly 1 printing and the code is in `autoEligibleCodes` | `.resolved(…)`; the edition then goes through WP2.8 and `VariantResolver` |
+| Exactly 1 printing, not `autoEligible` | `.needsPrintingChoice` with that one candidate: one confirming tap. This follows Lorcana's lone-oversized-record precedent (`Games/Lorcana/LorcanaGameRuntime.swift:58-68`) |
 | More than 1 printing, all distinguishable | `.needsPrintingChoice(canonical:, candidates:)` |
 | More than 1 printing, any with `.insufficient` selection evidence | `.catalogIncomplete(familySummary)` |
 
@@ -341,11 +461,19 @@ Candidate presentation (`PhysicalPrintingCandidate`):
 - `treatmentLabel` = rarity
 - `distributionLabel` = art label
 - `thumbnailURL` = image
-- `artworkID` = printing UUID (each TCGplayer product image is its own scan)
+- `artworkID` = **`nil`**. A distinct product ID does not prove distinct
+  artwork. `selectionEvidenceByID` (`Games/Core/GameCatalogAdapter.swift:170-189`)
+  counts distinct `artworkID`s plus thumbnails as visual proof, so setting this
+  from the product would defeat the `.insufficient` safeguard. A later version
+  may set it only from a reviewed artwork key, such as a verified passcode image
+  ID, that is known to differ visibly.
 - `distinctionLabels` = `nil`
 
 `compactChoiceLabels` then shows just the rarity names for RA02-EN037, and
-"Version 1/2/4" or set names for LDK2-ENK01.
+"Version 1/2/4" or set names for LDK2-ENK01. Two products whose labels match
+exactly (same set, rarity, art label and release date) are `.insufficient`, so
+their code becomes `catalogIncomplete`. That is the intended outcome. The
+report lists these codes so their art labels can be reviewed.
 
 ### 5.2 Edition (variant) resolution
 
@@ -361,12 +489,23 @@ They are added to `PhysicalVariant.known` so persisted IDs map back to their
 labels. The `choicePriority` values must not disturb existing cases; give them
 explicit `case`s.
 
-- One edition → `.uniqueInCatalog`, zero taps.
-- Several editions plus `subject.printedEdition` in the set →
-  `.resolved(.printedLabel)`, zero taps.
-- Several editions, no evidence → the existing one-tap variant choice.
-- A Finish Lock (the edition lock, from `YuGiOhVariantPolicy`) applies only when
-  there is no printed evidence. Printed evidence beats a lock (WP2.7).
+`e` (the physical editions from §3.3) feeds `catalogVariants`. Decision table:
+WP2.8's gate runs first, then `VariantResolver`.
+
+| Catalog editions | `printedEdition` | Lock | Outcome |
+|---|---|---|---|
+| 1 | `.absent` | any | `.uniqueInCatalog`, zero taps |
+| 1 | `.observed(v)`, v in catalog | any | `.uniqueInCatalog`, zero taps |
+| 1 | `.observed(v)`, v **not** in catalog | any | `.needsChoice([only])`: one confirming tap, never silent. The card and catalog disagree |
+| 1 | `.unreadable` | any | `.uniqueInCatalog` only if that edition is not Unlimited. Otherwise one confirming tap |
+| ≥ 2 | `.observed(v)`, v in catalog | any | `.resolved(.printedLabel)`, zero taps. Printed evidence beats the lock |
+| ≥ 2 | `.observed(v)`, v not in catalog | any | `.needsChoice`, lock ignored |
+| ≥ 2 | `.unreadable` | any | `.needsChoice`, lock ignored, all catalog options shown |
+| ≥ 2 | `.absent` | set | The existing lock behavior (`.finishLock`) |
+| ≥ 2 | `.absent` | none | The existing one-tap variant choice |
+
+An Unlimited lock with `.absent` evidence is the one remaining way to save
+Unlimited without a tap. That is the user's explicit choice, not an inference.
 
 The worst case (multi-rarity **and** multi-edition, no stamp read) is two
 sequential taps, rarity then edition. That is the smallest honest question set,
@@ -520,29 +659,65 @@ the boundary audit forbids `.yuGiOh` here):
 **WP2.7 `TradingCardScanner/Services/ScanParser.swift` (`ScanSubject`,
 `CandidateConfirmationWindow`):**
 
-- Add `let printedEdition: PhysicalVariant?` and an init parameter
-  `printedEdition: PhysicalVariant? = nil`. Leave `suppressionKey`,
+- Add `PrintedEditionEvidence` (§4.5) with a static
+  `merged(_ values: [PrintedEditionEvidence]) -> PrintedEditionEvidence`.
+  Drop `.absent`. If nothing remains → `.absent`. If every remaining value is
+  the same `.observed(v)` → `.observed(v)`. If at least one `.observed(v)`
+  remains and the rest are `.unreadable` → `.observed(v)`, because a clean
+  read beats an illegible one. Two different `.observed` values → `.unreadable`.
+  Only `.unreadable` → `.unreadable`. **A conflict never becomes `.absent`.**
+- Add `let printedEdition: PrintedEditionEvidence` and an init parameter
+  `printedEdition: PrintedEditionEvidence = .absent`. Leave `suppressionKey`,
   `displayIdentifier` and `matchesKnownSlabIdentity` unchanged.
+- Adding the field changes the synthesized `==`/`hash`. Grep every
+  `ScanSubject` equality use (`lhs == rhs` in `CandidateConfirmationWindow.matches`
+  for slabs, latch refinement, `isCurrent`, duplicate-choice identity). Confirm
+  that none of them now splits two frames of one card that differ only in edition
+  evidence. Where one would, compare `identifier`/`slab` explicitly instead.
 - In `mergedSubject`, compute
-  `let editions = Set(observations.compactMap(\.printedEdition))` and
-  `let edition = editions.count == 1 ? editions.first : nil`. In the `default:`
-  branch return `candidate` unchanged when `candidate.printedEdition == edition`.
-  Otherwise return
-  `ScanSubject(identifier: candidate.identifier, slab: candidate.slab, inferredNameReadings: candidate.inferredNameReadings, printedEdition: edition)`.
-  The Pokémon branches are untouched; they never carry an edition.
+  `let edition = PrintedEditionEvidence.merged(observations.map(\.printedEdition))`.
+  Apply it on **every** return path, including the Pokémon branches, which
+  always carry `.absent`. Return `candidate` unchanged only when
+  `candidate.printedEdition == edition`.
+- In `CardScanner.swift`, the slab re-wrap at ~2271 and the latched-slab
+  refinement at ~2500 build new subjects. Pass `printedEdition` through, even
+  though YGO is raw-only today. Every `ScanSubject(` call that copies an
+  existing subject must copy the field. Plain constructions from a fresh
+  identifier keep the `.absent` default.
 
 **WP2.8 `TradingCardScanner/Views/ScannerViewModel.swift`:**
 
-1. ~line 4288, the `VariantResolver.resolve` call:
+1. ~line 4288, the `VariantResolver.resolve` call. Add a game-neutral gate in
+   `Services/VariantResolver.swift`. Do not change `resolve` itself, so the
+   Pokémon, Magic, Lorcana and One Piece paths stay byte-for-byte the same:
 
    ```swift
-   let printedEdition = request.subject.slab == nil ? request.subject.printedEdition : nil
-   switch VariantResolver.resolve(
-       evidence,
-       finishLock: request.subject.slab == nil && printedEdition == nil ? finishLocks[card.game] : nil,
-       printedFinish: request.subject.slab?.printedFinish ?? printedEdition
-   ) {
+   extension VariantResolver {
+       /// Applies printed edition-marker evidence before the catalog's unique
+       /// tier. Returns nil when the evidence is absent, leaving the existing
+       /// resolver untouched for every game that never produces it.
+       static func gate(_ evidence: VariantEvidence, printedEdition: PrintedEditionEvidence) -> VariantOutcome?
+   }
    ```
+
+   Implement §5.2's table using `evidence.catalogVariants`. The single-edition
+   contradiction rows return `.needsChoice(options: [only], lockDidNotApply: nil)`.
+   Before relying on that, check that the existing variant-choice presentation
+   renders with one option. If it does not, route those rows to the existing
+   Needs attention path with reason `.noConfirmedMatch`. Do not auto-save.
+
+   ```swift
+   let printedEdition = request.subject.slab == nil ? request.subject.printedEdition : .absent
+   let outcome = VariantResolver.gate(evidence, printedEdition: printedEdition)
+       ?? VariantResolver.resolve(
+           evidence,
+           finishLock: request.subject.slab == nil ? finishLocks[card.game] : nil,
+           printedFinish: request.subject.slab?.printedFinish)
+   switch outcome {
+   ```
+
+   The gate returns nil only for `.absent`. Once any marker was seen, the lock
+   is never consulted.
 
 2. Add `private static func revalidatesBundledAcquisition(_ game: CardGame) -> Bool { game == .lorcana || game == .yuGiOh }`
    and use it in place of `== .lorcana` at ~3491, ~3544, ~5389 and ~5483.
@@ -554,6 +729,27 @@ the boundary audit forbids `.yuGiOh` here):
 
 **WP2.10 `scripts/audit_game_boundaries.sh`:** extend the game regex to
 `\.(pokemon|magic|onePiece|lorcana|yuGiOh)`.
+
+**WP2.11 Edition evidence survives retry, merge and recovery** (review R4):
+
+1. `Views/ScannerViewModel.swift` `retryUnresolvedLookup` (~3671): pass
+   `printedEdition: request.subject.printedEdition`.
+2. `Views/ScannerViewModel.swift` `mergedSubject(_:_:)` (~1162), which merges
+   unresolved records: use `PrintedEditionEvidence.merged([lhs.printedEdition, rhs.printedEdition])`
+   on both return paths.
+3. The other subject rebuilds at ~3624 (Pokémon historical choice), ~4535 (slab
+   conversion) and ~6350 copy or replace a subject. Copy the field wherever an
+   existing subject is the source.
+4. `Services/UnresolvedScanStore.swift` `UnresolvedScanRecord`: add
+   `let printedEdition: PrintedEditionEvidence?`. It is optional so records
+   written by existing clients still decode, and `nil` decodes as `.absent`.
+   Write it in `init(scan:)` and pass it to `ScanSubject` in `rehydrate`
+   (~440). Encode `PrintedEditionEvidence` as a tagged object
+   (`{"kind": "observed", "variant": "<id>"}`) whose variant ID round-trips
+   through `PhysicalVariant.known`. An unknown variant ID decodes as
+   `.unreadable`, never `.absent`.
+5. Any other place that copies an `UnresolvedScan` subject (grep
+   `subject:` in `UnresolvedScan` updating helpers) copies the field.
 
 ### WP3 — `TradingCardScanner/Games/YuGiOh/` module (new files)
 
@@ -573,7 +769,9 @@ struct YuGiOhCatalog: Sendable {
         let id: UUID; let code: String; let set: SetInfo; let card: Card
         let rarity: String; let artLabel: String?
         let productID: Int; let productName: String
-        let editions: [YuGiOhEdition]; let thumbnailURL: URL?; let imageURL: URL?
+        let editions: [YuGiOhEdition]        // physical (seed `e`)
+        let pricedEditions: [YuGiOhEdition]  // priced lanes (seed `pe`), ⊆ editions
+        let thumbnailURL: URL?; let imageURL: URL?
         var idString: String { id.uuidString.lowercased() }
     }
     enum LoadError: Error { case missingResource, invalidSchema, invalidRow(String) }
@@ -583,6 +781,7 @@ struct YuGiOhCatalog: Sendable {
     let printingsByCode: [String: [Printing]]   // seed order
     let printingByID: [UUID: Printing]
     let incompleteCodes: Set<String>
+    let autoEligibleCodes: Set<String>
     let setsByGroupID: [Int: SetInfo]
 
     init(data: Data) throws   // decode the private short-key Codable structs; validate
@@ -601,7 +800,8 @@ Validation in `init(data:)`, throwing on any failure:
 - printing IDs unique and lowercase;
 - every `k` within `cards`;
 - every `g` within `sets`;
-- `e` non-empty and all known editions;
+- `e` and `pe` non-empty, all known editions, and `pe ⊆ e`;
+- `incompleteCodes ∩ autoEligibleCodes` empty;
 - code matches §3.3's grammar.
 
 Do **not** recompute MD5 UUIDs at launch; a test does that.
@@ -651,11 +851,12 @@ method by method:
   candidate for a family member, and its selection evidence must not be
   `.insufficient`.
 - `validateAcquisition(_:printingID:automatic:)`: the printing must be in the
-  code's family. `automatic` requires family count == 1 and the code not in
-  `incompleteCodes`. Manual requires selection evidence that is not
-  `.insufficient`.
+  code's family. `automatic` requires family count == 1, the code in
+  `autoEligibleCodes` and not in `incompleteCodes`. Manual requires selection
+  evidence that is not `.insufficient`.
+- `candidate(_:)` sets `artworkID: nil` (§5.1).
 - `validateVariantCorrection(printingID:variantID:)`: the variant must be in the
-  printing's editions.
+  printing's physical `editions` (not only `pricedEditions`).
 - `validateCollectionMutation(...)`: `itemKindRaw == CollectionItemKind.rawCard.rawValue`;
   lowercase UUID; `catalogProviderID` is nil or equal; the edition belongs to
   the printing; and `collectionKey == card.collectionKey(variant: edition.variant)`.
@@ -694,11 +895,12 @@ coordinator (no activation source).
 - `mappingIdentity(p, edition)` = `"tcgcsv:2:\(groupID):\(productID):\(subtype)"`
   as a plain string; no hashing.
 - `priceAuthority(catalog)` → `GameCatalogPriceAuthority(game: .yuGiOh, managedSources: [.tcgCSV], identityByPriceKey:)`
-  over every printing × edition.
+  over every printing × priced edition.
 - `refresh`:
   - the identity must match the current resolution and `request.variant` must
     be one of the printing's editions, else `identityMismatch`;
-  - an edition with no lane → `.unavailable(nil)`;
+  - an edition in `editions` but not in `pricedEditions` → `.unavailable(.tcgCSV)`,
+    with no network call;
   - validate the USD, finite, non-negative and freshness rules exactly as
     Lorcana does;
   - stamp `price.catalogIdentity`;
@@ -781,9 +983,22 @@ for fixture style and URLProtocol stubbing:
    - `L26D-ENM26` is present.
    - `LDK2-ENK01` has more than one printing, and the candidates' compact labels
      are pairwise distinct.
-   - No printing has empty editions.
-   - Malformed seeds are rejected: duplicate ID, empty `e`, unknown edition,
-     wrong schema version.
+   - No printing has empty editions, and `pricedEditions ⊆ editions` for all.
+   - Malformed seeds are rejected: duplicate ID, empty `e`, `pe ⊄ e`, unknown
+     edition, a code both incomplete and auto-eligible, wrong schema version.
+   - Builder fixtures (run the Python builder against small committed fixture
+     JSON under `scripts/fixtures/yugioh/`, offline):
+     - a code where YGOPRODeck lists two same-rarity `(set, rarity)` entries but
+       TCGplayer has one product → `printingShortfall`, incomplete;
+     - a code with one kept product and one product skipped for
+       `unknownSubtype` → `skippedProduct`, incomplete;
+     - a renamed card (PSV-EN049 *Harpie's Brother* / *Sky Scout* shape) joins
+       through `beta_name` or the alias file, is complete, and shares one
+       `cardID` with its current-name reprint;
+     - a single-printing code whose card has two `card_images` → complete but not
+       `autoEligible`;
+     - a product priced only in `1st Edition` in a group that also prices
+       `Unlimited` → `e = [1st, Unlimited]`, `pe = [1st]`.
 2. **`YuGiOhRecognitionTests.swift`** (synthetic `RecognizedLine`s with boxes).
    *Positive cases:*
    - an under-art right-side code is identified;
@@ -798,11 +1013,13 @@ for fixture style and URLProtocol stubbing:
    - a matching or absent passcode is identified.
 
    *Edition evidence:*
-   - `"1t Edition"` in the footer → `.yugiohFirstEdition`;
-   - `"T Edition"` in the band's left side → `.yugiohFirstEdition`;
-   - `"LIMITED EDITION"` → `.yugiohLimited`;
-   - both → `nil`;
-   - none → `nil`.
+   - `"1t Edition"` in the footer → `.observed(.yugiohFirstEdition)`;
+   - `"T Edition"` in the band's left side → `.observed(.yugiohFirstEdition)`;
+   - `"LIMITED EDITION"` and `"IMITED EDITION"` → `.observed(.yugiohLimited)`;
+   - a bare `"EDITION"`, `"D EDITION"` and `"TED EDITION"` → `.unreadable`
+     (**never** `.first`);
+   - 1st and Limited in one frame → `.unreadable`;
+   - none → `.absent`.
 
    *Trigger:*
    - `needsSupplementalText` is true for `©2020 Studio Dice/SHUEISHA, TV TOKYO, KONAMI`
@@ -828,12 +1045,28 @@ for fixture style and URLProtocol stubbing:
      passes for single-printing ones.
    - `validateCollectionMutation` passes for a valid printing/edition/key and
      fails for a wrong edition, a wrong key or an uppercase UUID.
-   - `VariantResolver.resolve` with `[.first, .unlimited]`: no evidence →
-     `.needsChoice`; `printedFinish: .yugiohFirstEdition` → `.resolved(.printedLabel)`;
-     `printedFinish: .yugiohLimited` → `.needsChoice`.
-   - `CandidateConfirmationWindow` merges an edition seen in one of two matching
-     observations, drops conflicting editions, and leaves the suppression key
-     unchanged.
+   - `validateAcquisition(automatic: true)` throws for a complete single-printing
+     code that is not `autoEligible`, and `lookup` returns a one-candidate
+     `.needsPrintingChoice` for it.
+   - Two products with identical labels → `.catalogIncomplete`, even though
+     their product IDs and thumbnails differ (`artworkID` is nil).
+   - Every row of §5.2's table, through `VariantResolver.gate` then `resolve`,
+     including:
+     - `[.first, .unlimited]` + `.unreadable` + an **Unlimited lock** →
+       `.needsChoice`, never `.finishLock`;
+     - `[.first, .unlimited]` + `.observed(.limited)` + an Unlimited lock →
+       `.needsChoice`;
+     - singleton `[.first]` + `.observed(.limited)` → `.needsChoice([.first])`,
+       never `.uniqueInCatalog`;
+     - singleton `[.unlimited]` + `.unreadable` → not resolved silently;
+     - `.absent` → the gate returns nil, and the existing lock behavior is
+       unchanged.
+   - The gate returns nil for every existing game's evidence fixture, so the
+     Pokémon/Magic/Lorcana/One Piece resolver tests run unchanged.
+   - `CandidateConfirmationWindow`: `[.absent, .observed(.first)]` →
+     `.observed(.first)`; `[.observed(.first), .observed(.limited)]` →
+     `.unreadable` (not `.absent`); `[.unreadable, .observed(.first)]` →
+     `.observed(.first)`. The suppression key is unchanged in every case.
 5. **`YuGiOhPricingTests.swift`**
    - A stubbed source receives category 2, the right group/product, and lane
      `1st Edition` / `Unlimited`.
@@ -847,7 +1080,18 @@ for fixture style and URLProtocol stubbing:
    - Wrong edition → `.unsupportedFinish`.
    - Wrong key → `.invalidOwnershipKey`.
    - A non-UUID provider → `.invalidPrinting`.
-7. **Update existing tests**
+7. **`YuGiOhRecoveryTests.swift`** (review R4)
+   - `retryUnresolvedLookup` re-enqueues a subject that keeps
+     `.observed(.yugiohFirstEdition)`.
+   - Merging two unresolved records, one `.absent` and one `.observed(.first)`,
+     keeps `.observed(.first)`. Merging `.observed(.first)` with
+     `.observed(.limited)` gives `.unreadable`.
+   - `UnresolvedScanRecord` round-trip: encode then rehydrate keeps all three
+     evidence cases. A record JSON written without the key decodes as `.absent`.
+     An unknown variant ID decodes as `.unreadable`.
+   - After rehydration with `.observed(.first)` and an active Unlimited lock, the
+     resolved variant is 1st Edition.
+8. **Update existing tests**
    - `CardGameForwardCompatibilityTests.swift:381`: add `("Yu-Gi-Oh!", .yuGiOh)`
      if that list enumerates the standard registry.
    - Add one test that `CardGameRuntimeContainer.appDefaults().registry`
@@ -873,6 +1117,14 @@ for fixture style and URLProtocol stubbing:
 | LDK2-ENK01 (3 arts × 2 releases) | Choice shows set name and Version label. Insufficient labels → catalogIncomplete |
 | Pendulum Monster | Code read from the footer band (left side) |
 | Missing stamp on a 1st/Unlimited printing | Ask. Never infer Unlimited |
+| OCR reads only `EDITION` (e.g. `LIMITED` dropped) | `.unreadable`: never 1st Edition, lock ignored, ask |
+| 1st and Limited both read, in one frame or across the window | `.unreadable`: lock ignored, ask. Never collapses to "no evidence" |
+| Printed edition absent from a single-edition catalog entry | One confirming tap (or Needs attention). Never `.uniqueInCatalog` |
+| Edition evidence then a retry, unresolved merge or app relaunch | Evidence preserved. A contrary lock cannot override it after recovery |
+| A same-rarity reprint or a product the builder skipped | Code incomplete. No automatic add |
+| A price row missing for an edition that exists in the set | Edition still offered. Price `.unavailable`, never borrowed from another lane |
+| Two products with identical labels | `catalogIncomplete`. Product IDs are not visual evidence |
+| Renamed card (PSV-EN049) | Joined through an alias; one canonical card ID |
 | Passcode contradicts the code | Reject the frame (blocks fallback) |
 | Another game's card in frame | YGO band never runs when the footer identified a card. YGO never sees other games' bands |
 | YGO code text in effect text or on the left of the band | Ignored by position and membership |
@@ -887,7 +1139,11 @@ for fixture style and URLProtocol stubbing:
 - [ ] WP1–WP6 complete, and the seed plus report committed.
 - [ ] `rg -n "\.yuGiOh" TradingCardScanner/Services/{BrowseCatalog,CardScanner,CardCatalog,PriceQuoteService,CollectionCatalogNormalizer}.swift`
       returns nothing.
-- [ ] No files changed outside §6's list (check `git status`).
+- [ ] No files changed outside §6's list (check `git status`). §6 now includes
+      `Services/VariantResolver.swift` (gate only), `Services/UnresolvedScanStore.swift`,
+      the `ScanSubject` copy sites in `CardScanner.swift`/`ScannerViewModel.swift`
+      (WP2.7, WP2.11), and the builder fixtures and alias file.
+- [ ] `git diff` of `VariantResolver.resolve` itself is empty.
 - [ ] Then run §9 once.
 
 ---
@@ -918,18 +1174,29 @@ Pick an available simulator UDID with
      -only-testing:TradingCardScannerTests/GameRecognitionRegistrySupplementalTests \
      -only-testing:TradingCardScannerTests/YuGiOhResolutionTests \
      -only-testing:TradingCardScannerTests/YuGiOhPricingTests \
-     -only-testing:TradingCardScannerTests/YuGiOhImportTests
+     -only-testing:TradingCardScannerTests/YuGiOhImportTests \
+     -only-testing:TradingCardScannerTests/YuGiOhRecoveryTests
    ```
+
+   Also run the builder fixtures offline:
+   `python3 -I scripts/build_yugioh_catalog.py --self-test`.
 
 3. Fix any failures, then run the regression neighbors once:
    `CardGameForwardCompatibilityTests`, `ScanParserTests`, `ScannerViewModelTests`,
    `CardLatchTests`, `LorcanaIntegrationTests`, `LorcanaPricingTests`,
    `OnePieceIntegrationTests`, `PricingTests`, `CSVImportResumeTests`,
    `CollectionKeyTests`.
-4. Run the full suite only if step 3 touched shared behavior unexpectedly.
+4. Run one end-to-end chain with stubbed providers (a `ScannerViewModelTests`
+   style test, or a UI test if one exists for Lorcana): a scan of a
+   multi-rarity, multi-edition code → rarity choice → edition (from
+   `.observed` evidence, then again by tap) → save → price refresh → CSV
+   export → import into a fresh store → relaunch (rebuild the container from
+   disk). The collection key, edition and price key must be identical at
+   every step. Isolated adapter tests do not establish this chain.
+5. Run the full suite only if step 3 touched shared behavior unexpectedly.
    Report pass, fail and skip counts against the documented pre-existing
    failures (`docs/AGENTS.md`).
-5. Record the results in `progress.md` and this plan's status line. Make no
+6. Record the results in `progress.md` and this plan's status line. Make no
    device or release claims.
 
 ---
@@ -939,13 +1206,22 @@ Pick an available simulator UDID with
 1. **Rights.** Approve TCGCSV/TCGplayer data and CDN image display, YGOPRODeck
    data use, and the Konami names/marks for App Store distribution.
 2. **Device camera calibration.** On an iPhone, measure the band on at least 20
-   cards: modern, LOB-era, Pendulum, Link, RA05 extended art, sleeved, and glare.
-   Adjust `YuGiOhRecognitionAdapter.underArtRegion` only. Compare the
+   cards: modern, LOB-era, Pendulum, Link, RA05 extended art, sleeved, glare,
+   and at least 3 **Limited Edition** cards (no Limited misreads were measured
+   for §4.5). Adjust `YuGiOhRecognitionAdapter.underArtRegion` only. Compare the
    `supplementalOCR` signpost cost to `footerOCR`. The target is under 15 ms
-   median added on YGO frames and none on other games.
+   median added on YGO frames and none on other games. Keep reproducible
+   evidence: the redacted input crops plus the raw Vision lines and boxes as JSON,
+   off-repo on the external SSD, with a redacted summary in the research
+   folder. Narrative measurements alone do not close this gate. The five
+   desk-measured TCGplayer scans in §1.2 make the band plausible; they do not
+   validate it.
 3. **Throughput regression.** Scan a 20-card stack each of Pokémon, Magic,
    Lorcana and One Piece, and confirm the YGO band never fires (signpost count 0).
 4. **Wrong-printing safety.** In a 100-card YGO sample there must be zero wrong
-   automatic adds. Rarity choices must appear for multi-rarity codes.
+   automatic adds and zero wrong automatic editions. Rarity choices must appear
+   for multi-rarity codes. Record how often the `autoEligible` rule (§3.4) and
+   `.unreadable` evidence (§4.5) forced a tap. That number is the input for any
+   later relaxation.
 5. **Catalog refresh cadence.** Re-run the builder for new sets. Each refresh is
    an app update until signed remote updates are scheduled.
