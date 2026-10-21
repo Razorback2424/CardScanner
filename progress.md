@@ -1,3 +1,17 @@
+- Yu-Gi-Oh! merged-review repairs (2026-10-20; base `4c3e53c`, local changes):
+  production runtime is unavailable while the bundled catalog has no eligible
+  printings. Direct acquisition resolution now enforces incomplete-code and
+  family coverage gates. Edition conflicts finish the acknowledgement/scan
+  interval while preserving recovery evidence. Scan, Browse Add and CSV import
+  use epoch-day release order; verified local import metadata repairs the case
+  where existing artwork/catalog identity prevented later normalization.
+  Builder correspondence now requires source-row coverage and evidence-backed
+  mappings for differing provider labels. Final focused simulator run: 170
+  passed, zero failures/skips; Python: 14 passed. Boundary audit still fails
+  with 48 existing branches. No production products were approved, no seed
+  was regenerated, and no real-camera or release acceptance is claimed. See
+  the [review follow-up](docs/research/yugioh-catalog/review-fixes.md).
+
 - Repository consolidation and combined build (2026-10-20; merged app tree at
   `433ebd2`): Yu-Gi-Oh app integration, reproducible catalog data, and source
   evidence were committed separately. Merged the outstanding opening-screen
@@ -186,7 +200,7 @@
   The first unsigned run exposed aggregation/expectation changes and Keychain
   entitlement failures; code/tests were corrected and simulator signing restored
   the credential tests without production credential changes. Evidence:
-  `/Volumes/Keller Family Photos/CardScannerBuild/PricingCorrectness-20261018-Verified.xcresult`.
+  the external SSD under `CardScannerBuild/PricingCorrectness-20261018-Verified.xcresult`.
   No new mapping data, UUIDs, ownership/schema migration, provider deployment,
   physical-device install, commit or push. Provider-path unification, reviewed
   coverage batches, prerelease/serialized reconciliation and the complete

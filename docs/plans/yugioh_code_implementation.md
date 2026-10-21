@@ -1,6 +1,9 @@
 # Yu-Gi-Oh! implementation and verification
 
-**Status — 2026-10-20:** source implemented; focused simulator verification passed.
+**Status — 2026-10-20:** merged-review fixes are implemented; production runtime
+is unavailable while no printing is acquisition eligible. See the
+[review follow-up](../research/yugioh-catalog/review-fixes.md). Earlier focused
+simulator verification passed at the revision recorded below.
 Bundled catalog construction succeeded, but physical edition coverage remains
 unverified for all 46,504 products. Production acquisitions are quarantined.
 Synthetic fixtures exercise enabled acquisition and pricing contracts; they do

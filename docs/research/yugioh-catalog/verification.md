@@ -46,11 +46,11 @@ git diff HEAD origin/claude/yugioh-plan-review-revisions --stat
 xcrun simctl create 'YuGiOh Integration QA' com.apple.CoreSimulator.SimDeviceType.iPhone-17 com.apple.CoreSimulator.SimRuntime.iOS-27-0
 
 python3 -I scripts/build_yugioh_catalog.py \
-  --cache-dir '/Volumes/Keller Family Photos/YuGiOhSourceCache/2026-10-21' \
+  --cache-dir '/Volumes/<external-SSD>/YuGiOhSourceCache/2026-10-21' \
   --out TradingCardScanner/YuGiOhCatalogSeed/catalog.json \
   --report docs/research/yugioh-catalog/build-report.md
 python3 -I scripts/build_yugioh_catalog.py --offline \
-  --cache-dir '/Volumes/Keller Family Photos/YuGiOhSourceCache/2026-10-21' \
+  --cache-dir '/Volumes/<external-SSD>/YuGiOhSourceCache/2026-10-21' \
   --out TradingCardScanner/YuGiOhCatalogSeed/catalog.json \
   --report docs/research/yugioh-catalog/build-report.md
 python3 -I scripts/build_yugioh_catalog.py --self-test
@@ -62,10 +62,10 @@ The following zsh arrays expand to the test invocations used in this pass;
 each result bundle uses the unique name in the results table.
 
 ```bash
-SIM=AA89C572-9D2C-4A93-B98D-73A54A9AE504
-OUT='/Volumes/Keller Family Photos/CardScannerBuilds/yugioh'
+SIM_NAME='YuGiOh Integration QA'
+OUT='/Volumes/<external-SSD>/CardScannerBuilds/yugioh'
 common=(-project TradingCardScanner.xcodeproj -scheme TradingCardScanner
-  -configuration Debug -destination "platform=iOS Simulator,id=$SIM"
+  -configuration Debug -destination "platform=iOS Simulator,name=$SIM_NAME"
   -derivedDataPath "$OUT/DerivedData"
   -clonedSourcePackagesDirPath "$OUT/SourcePackages")
 focused=(YuGiOhCatalogTests YuGiOhRecognitionTests YuGiOhResolutionTests
@@ -108,11 +108,11 @@ mkdir -p /tmp/yugioh-baseline-source
 git archive HEAD | tar -x -C /tmp/yugioh-baseline-source
 cd /tmp/yugioh-baseline-source
 xcodebuild build-for-testing -project TradingCardScanner.xcodeproj -scheme TradingCardScanner \
-  -configuration Debug -destination "platform=iOS Simulator,id=$SIM" \
+  -configuration Debug -destination "platform=iOS Simulator,name=$SIM_NAME" \
   -derivedDataPath "$OUT/BaselineDerivedData" -clonedSourcePackagesDirPath "$OUT/SourcePackages" \
   -resultBundlePath "$OUT/baseline-compile.xcresult" CODE_SIGNING_ALLOWED=NO
 xcodebuild test-without-building -project TradingCardScanner.xcodeproj -scheme TradingCardScanner \
-  -configuration Debug -destination "platform=iOS Simulator,id=$SIM" \
+  -configuration Debug -destination "platform=iOS Simulator,name=$SIM_NAME" \
   -derivedDataPath "$OUT/BaselineDerivedData" -clonedSourcePackagesDirPath "$OUT/SourcePackages" \
   -resultBundlePath "$OUT/baseline-collection-key.xcresult" -parallel-testing-enabled NO \
   -only-testing:TradingCardScannerTests/CollectionKeyTests/testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind \
@@ -151,7 +151,7 @@ text as the starting revision's audit (line numbers differ). No `.yuGiOh`
 branch occurs in designated central files. The audit is not reported as passed.
 Local Markdown links and whitespace pass. Xcode project lint passes and its
 PBX object declarations contain no duplicate IDs. Logs and result bundles are
-retained under `/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/`.
+retained on the external SSD under `CardScannerBuilds/yugioh/`.
 
 Synthetic chains cover rarity choice → edition by tap and printed evidence →
 save → exact refresh → CSV export → isolated fresh-store import → persistence
