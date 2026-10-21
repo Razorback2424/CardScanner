@@ -1,7 +1,26 @@
 # Yu-Gi-Oh! implementation and verification
 
-**Status — 2026-10-21 corrective pass:** F1–F7 repaired in the working tree based
-on reviewed `1a3242d2c28f013ce6ed8a2946f0435e1d596147`. The
+**Interactive follow-up — 2026-10-21:** the owner-selected generic iPhone 17
+now has rendered evidence for printing/edition selection, disabled discovery
+choices in live/recovery pickers, cancellation/recovery, Browse Add, duplicate
+handling, edits/delete/Undo, dated price display and reopen. See the
+[interactive evidence](../research/yugioh-catalog/audited-verification.md#generic-iphone-17-interactive-acceptance--2026-10-21).
+The older QA-device input blocker below no longer applies to those flows.
+Interactive CSV export/import remains pending at the system Files save sheet;
+physical camera and production delivery remain open. The app still uses
+historical bundled pricing. Follow-up native selections passed 54 and 37 tests
+separately; they are not additive with prior results.
+
+**Earlier status — 2026-10-21 residual corrective pass:** the three remaining F3/F4
+paths identified at reviewed `09c4a40` now have focused source fixes and
+real-store/recovery regressions: durable duplicate maintenance, mixed-game bulk
+deletion, and Needs attention availability/dismissal. The
+[residual verification](../research/yugioh-catalog/audited-verification.md#residual-f3f4-corrective-pass-after-09c4a40)
+separates their executed native results from interactive acceptance. This
+supersedes the earlier blanket F3/F4 closure claim; F1/F2/F5/F6 and diagnostic-only
+F7 behavior remain intact. F4's residual paths are native-verified. F3's residual
+bug is fixed/native-verified; interactive acceptance remains pending because a
+reported successful Simulator tap did not dismiss a system camera alert. The earlier
 [verification record](../research/yugioh-catalog/audited-verification.md#corrective-pass-after-four-commit-review)
 separates bug fixes, executed tests, local delivery preparation and pending UI work.
 Broad explicit acquisition is enabled. Automatic acquisition remains disabled;

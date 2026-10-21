@@ -1,3 +1,44 @@
+# 2026-10-21 — Generic iPhone 17 interactive follow-up
+
+Used the owner-selected generic iPhone 17 with isolated fixture OCR and stores.
+Fixed acceptance preview geometry, added deterministic initial samples/readiness,
+and replaced unsupported Yu-Gi-Oh history controls with truthful snapshot copy.
+Preserved concurrent residual F3/F4 source and test changes. Verified real saved
+outcomes for older, alternate-art, reissue, E-code and IOC-SE records; disabled
+DCR discovery choices in both pickers; explicit editions; cancellation/recovery;
+duplicate protection; Browse Add; quantity edits; delete/Undo; and seven holdings
+after reopen. Unknown visibly identified/added nothing. Native follow-ups passed
+54 affected and 37 neighbor tests with zero failures; these overlap older gates.
+Final app build succeeded. External-SSD screenshots and exact scope are in the
+[interactive evidence](docs/research/yugioh-catalog/audited-verification.md#generic-iphone-17-interactive-acceptance--2026-10-21).
+CSV export reached system Files, but Save could not be activated by the available
+input tools; interactive export/import remains pending. Pricing is historical
+bundled data. Physical camera, production delivery and release remain open.
+Deployment, owner-data reset and Journey interaction were outside this
+acceptance run.
+
+# 2026-10-21 — Residual F3/F4 corrective pass at `09c4a40`
+
+Corrected the three remaining reviewed paths: durable duplicate-row maintenance
+now uses exact contributing identities and bounded logical quantity/ledger deltas;
+bulk deletion uses maintenance eligibility with final validation; Needs attention
+disables/explains unavailable printings, guards direct actions and checks current
+catalog authority before dismissal. Isolated real-store regressions cover
+duplicate remove/reduce/correct/restore, rollback/retry, mixed-game bulk deletion,
+safe-sibling acquisition rejection, and persisted/legacy/stale DCR recovery.
+
+Executed native selections: 318 passed and 196 passed, both with zero
+failures/skips; these overlap and must not be summed. The unchanged builder
+guard passed all 29 tests. The final five-test run also passed after the
+forged-restore refinement and rebuilt the final app/test targets. F4's residual
+paths are native-verified; F3 is fixed/native-verified with interactive acceptance
+pending: a reported successful Don't Allow tap left the Simulator camera alert
+visible in both accessibility snapshot and screenshot. No app hang is inferred.
+Exact evidence is in the [residual verification record](docs/research/yugioh-catalog/audited-verification.md#residual-f3f4-corrective-pass-after-09c4a40).
+Build artifacts use the external SSD and native stores use the dedicated QA
+simulator. Concurrent acceptance-route changes were preserved. The verification
+did not use owner data, Journey or physical devices and did not deploy.
+
 # 2026-10-21 — Yu-Gi-Oh review corrections and local delivery seam
 
 Candidate based on reviewed `1a3242d`; fixed F1–F7: acceptance recovery scope,

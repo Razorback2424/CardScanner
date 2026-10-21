@@ -8,6 +8,20 @@ history.
 
 ## Current authority boundary — updated 2026-10-21
 
+**Generic iPhone 17 follow-up:** the [interactive record](../research/yugioh-catalog/audited-verification.md#generic-iphone-17-interactive-acceptance--2026-10-21)
+supersedes the older QA-device tap blocker for normal selection, recovery,
+Browse Add, maintenance and reopen. Disabled recovery choices are now rendered
+and verified. CSV export/import remains pending at the system Files sheet;
+physical camera and live production delivery remain separate open gates.
+The 54-test and 37-test follow-ups are separate selections, not cumulative totals.
+
+**Residual F3/F4 after reviewed `09c4a40`:** the earlier blanket closure wording
+did not cover retired editions with durable duplicate rows, browse-only bulk
+deletion, or compact recovery choices. The [residual evidence](../research/yugioh-catalog/audited-verification.md#residual-f3f4-corrective-pass-after-09c4a40)
+now records focused fixes and real-store/recovery regressions for those paths;
+historical test counts below do not establish their acceptance. Interactive and
+physical-camera evidence remain separate gates.
+
 **Yu-Gi-Oh corrective pass after `1a3242d`:** the
 [canonical plan](yugioh_code_implementation.md) now separates persisted holding
 maintenance from new admission and historical missing quotes from successful
