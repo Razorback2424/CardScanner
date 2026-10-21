@@ -1,3 +1,13 @@
+- Yu-Gi-Oh! implementation plan (2026-10-20; HEAD `06459ea`): added
+  [`docs/plans/yugioh_code_implementation.md`](docs/plans/yugioh_code_implementation.md).
+  It validates the external research handoff against source, live TCGCSV
+  category 2 / YGOPRODeck v7 responses and local Vision OCR of five TCGplayer
+  card scans. Corrections: the set code sits at card-relative y ≈ 0.24–0.28,
+  not the proposed 0.28–0.45 band; RA02-EN037's rarities include Prismatic
+  Ultimate/Collector's and are 1st Edition only; the shared TCGCSV lane
+  whitelist rejects YGO edition subtypes. Documentation only: no code, build,
+  test, device or rights evidence.
+
 - Workflow repairs and requested device install (2026-10-20): the four source
   repair groups and their review record were committed in auditable commits and
   pushed to `origin/main`; all local branches were merged into `main`. After the
