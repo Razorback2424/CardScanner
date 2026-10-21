@@ -42,6 +42,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     exceptions = collections.defaultdict(list)
     incomplete = collections.defaultdict(set)
     canonical, rows, sets = {}, [], []
+    correspondence = {}
     for group in sorted(groups, key=lambda x: x["groupId"]):
         gid = group["groupId"]
         sets.append({"g": gid, "n": group["name"], "a": group.get("abbreviation") or "", "d": (group.get("publishedOn") or "")[:10]})
@@ -83,6 +84,21 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 complete, evidence = review.get("complete") is True, review["evidence"]
                 assert set(observed) <= set(editions), f"review/price contradiction {pid}"
             if not complete: exceptions["physicalCoverageUnknown"].append(pid)
+            # Exact source labels can corroborate a printing. Different provider
+            # taxonomies require explicit, product-specific reviewed mappings;
+            # equal rarity counts are never evidence of correspondence.
+            source_rows = {(card_id, set_name, source_rarity) for card_id, set_name, source_rarity in entries[code]}
+            exact = {row for row in source_rows if row[0] == cid
+                     and norm(row[1]) == norm(group["name"]) and norm(row[2]) == norm(rarity)}
+            mapped = review.get("sourcePrintings") if review else None
+            if mapped is not None:
+                assert review.get("correspondenceEvidence") and mapped, f"missing correspondence evidence {pid}"
+                exact = {(row["cardID"], row["setName"], row["rarity"]) for row in mapped}
+                if not exact <= source_rows or any(row[0] != cid for row in exact):
+                    incomplete[code].add("invalidCorrespondence")
+                    exact = set()
+            if not exact: incomplete[code].add("unreviewedCorrespondence")
+            correspondence[pid] = exact
             rows.append({"id": stable("yugioh-printing:", "tcgplayer:2:" + str(pid)), "c": code, "g": gid, "k": card_id,
                 "r": rarity, "art": " · ".join(art) or None, "p": pid, "pn": product["name"], "e": editions,
                 "ec": complete, "ee": evidence, "pe": observed, "img": product.get("imageUrl")})
@@ -90,6 +106,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     for row in rows: families[row["c"]].append(row)
     auto = []
     for code, family in families.items():
+        source_rows = set(entries[code])
+        matched = set().union(*(correspondence[x["p"]] for x in family))
+        if matched != source_rows: incomplete[code].add("printingCorrespondenceGap")
         if not entries[code] or len({x["r"] for x in family}) < len({r for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
         if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]): incomplete[code].add("printingShortfall")
         labels = [(x["g"], x["r"], x["art"]) for x in family]
@@ -111,7 +130,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     stats = {"groups": len(groups), "products": sum(map(len, products.values())), "printings": len(rows), "codes": len(families),
         "incompleteCodes": len(seed["incompleteCodes"]), "automaticCodes": len(auto),
         "verifiedPhysicalProducts": sum(x["ec"] for x in rows), "quarantinedPhysicalProducts": sum(not x["ec"] for x in rows),
-        "manualEligibleProducts": sum(x["ec"] and x["c"] not in seed["incompleteCodes"] for x in rows),
+        "manualEligibleProducts": sum(all(p["ec"] for p in families[x["c"]]) and not incomplete[x["c"]] for x in rows),
         "observedLanes": dict(collections.Counter(e for x in rows for e in x["pe"]))}
     return seed, stats, exceptions, incomplete
 

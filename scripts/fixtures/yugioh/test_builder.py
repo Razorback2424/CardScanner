@@ -64,6 +64,37 @@ class BuilderTests(unittest.TestCase):
         self.fixture["products"].reverse(); self.fixture["cards"].reverse(); self.fixture["prices"].reverse()
         self.assertEqual(first, self.build()[0])
 
+    def test_equal_rarity_counts_do_not_prove_correspondence(self):
+        self.fixture["cards"][0]["card_sets"].append({"set_code": "PSV-EN049", "set_name": "Synthetic set", "set_rarity": "Secret Rare"})
+        product = copy.deepcopy(self.fixture["products"][0])
+        product["productId"] = 3
+        product["extendedData"][1]["value"] = "Common"
+        self.fixture["products"].append(product)
+        reviews = {str(pid): {"editions": ["yugioh1stEdition"], "complete": True, "evidence": "synthetic:edition"} for pid in [1, 3]}
+        seed, stats, _, reasons = self.build(reviews)
+        self.assertIn("printingCorrespondenceGap", reasons["PSV-EN049"])
+        self.assertIn("unreviewedCorrespondence", reasons["PSV-EN049"])
+        self.assertIn("PSV-EN049", seed["incompleteCodes"])
+        self.assertEqual(stats["manualEligibleProducts"], 0)
+
+    def test_singleton_mismatch_requires_reviewed_correspondence(self):
+        self.fixture["products"][0]["extendedData"][1]["value"] = "Provider-specific rarity"
+        review = {"editions": ["yugioh1stEdition"], "complete": True, "evidence": "synthetic:edition"}
+        self.assertNotIn("PSV-EN049", self.build({"1": review})[0]["autoEligibleCodes"])
+        review["sourcePrintings"] = [{"cardID": 12206212, "setName": "Synthetic set", "rarity": "Ultra Rare"}]
+        with self.assertRaises(AssertionError): self.build({"1": review})
+        review["correspondenceEvidence"] = "synthetic:independent-product-correspondence"
+        self.assertIn("PSV-EN049", self.build({"1": review})[0]["autoEligibleCodes"])
+        review["sourcePrintings"][0]["rarity"] = "Secret Rare"
+        seed, _, _, reasons = self.build({"1": review})
+        self.assertIn("invalidCorrespondence", reasons["PSV-EN049"])
+        self.assertNotIn("PSV-EN049", seed["autoEligibleCodes"])
+
+    def test_matching_rarity_in_wrong_set_cannot_authorize_acquisition(self):
+        self.fixture["groups"][0]["name"] = "Different set"
+        reviews = {"1": {"editions": ["yugioh1stEdition"], "complete": True, "evidence": "synthetic:edition"}}
+        self.assertIn("PSV-EN049", self.build(reviews)[0]["incompleteCodes"])
+
     def test_unknown_subtype_and_duplicate_identity_fail_closed(self):
         self.fixture["prices"][0]["subTypeName"] = "Normal"
         self.assertIn("PSV-EN049", self.build()[0]["incompleteCodes"])
