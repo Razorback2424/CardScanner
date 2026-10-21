@@ -1,0 +1,6 @@
+{
+  "groups": [{"groupId": 1, "name": "Synthetic set", "abbreviation": "PSV", "publishedOn": "2002-01-01"}],
+  "products": [{"productId": 1, "name": "Harpie's Brother (UR)", "extendedData": [{"name": "Number", "value": "PSV-EN049"}, {"name": "Rarity", "value": "Ultra Rare"}]}, {"productId": 2, "name": "Fixture Card", "extendedData": [{"name": "Number", "value": "PSV-EN050"}, {"name": "Rarity", "value": "Rare"}]}],
+  "prices": [{"productId": 1, "subTypeName": "1st Edition", "marketPrice": 1}, {"productId": 2, "subTypeName": "Limited", "marketPrice": 2}],
+  "cards": [{"id": 12206212, "name": "Sky Scout", "card_images": [{"id": 12206212}], "card_sets": [{"set_code": "PSV-EN049", "set_name": "Synthetic set", "set_rarity": "Ultra Rare"}]}, {"id": 99999999, "name": "Fixture Card", "card_images": [{"id": 99999999}], "card_sets": [{"set_code": "PSV-EN050", "set_name": "Synthetic set", "set_rarity": "Rare"}]}]
+}
