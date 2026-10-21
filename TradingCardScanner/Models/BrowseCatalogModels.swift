@@ -724,13 +724,15 @@ struct CatalogCardDetails: Sendable {
     let retrievedAt: Date
     /// Per-printing authority can be narrower than a game's write capability.
     let collectionWriteUnavailableReason: String?
+    let catalogNotice: String?
 
     init(card: IdentifiedCard, set: CatalogSet, retrievedAt: Date = .now,
-         collectionWriteUnavailableReason: String? = nil) {
+         collectionWriteUnavailableReason: String? = nil, catalogNotice: String? = nil) {
         self.card = card
         self.set = set
         self.retrievedAt = retrievedAt
         self.collectionWriteUnavailableReason = collectionWriteUnavailableReason
+        self.catalogNotice = catalogNotice
     }
 }
 

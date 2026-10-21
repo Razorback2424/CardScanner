@@ -49,6 +49,9 @@ struct VariantEvidence: Equatable, Sendable {
     /// leaves this empty so the resolver remains game-neutral.
     let magicTreatments: [MagicTreatment]
     let physicalCoverageVerified: Bool
+    /// Exact supported membership permits an explicit choice without claiming
+    /// that the provider enumerates every physical edition.
+    let explicitMembershipSupported: Bool
 
     init(
         game: CardGame,
@@ -56,7 +59,8 @@ struct VariantEvidence: Equatable, Sendable {
         cardNumber: String,
         catalogVariants: [PhysicalVariant],
         magicTreatments: [MagicTreatment] = [],
-        physicalCoverageVerified: Bool = true
+        physicalCoverageVerified: Bool = true,
+        explicitMembershipSupported: Bool = false
     ) {
         self.game = game
         self.setID = setID
@@ -64,6 +68,7 @@ struct VariantEvidence: Equatable, Sendable {
         self.catalogVariants = catalogVariants
         self.magicTreatments = magicTreatments
         self.physicalCoverageVerified = physicalCoverageVerified
+        self.explicitMembershipSupported = explicitMembershipSupported
     }
 
     /// The same evidence with 1st Edition removed from the finish list.
@@ -84,7 +89,8 @@ struct VariantEvidence: Equatable, Sendable {
             setID: setID,
             cardNumber: cardNumber,
             catalogVariants: catalogVariants.filter { $0.id != PhysicalVariant.firstEdition.id },
-            magicTreatments: magicTreatments, physicalCoverageVerified: physicalCoverageVerified
+            magicTreatments: magicTreatments, physicalCoverageVerified: physicalCoverageVerified,
+            explicitMembershipSupported: explicitMembershipSupported
         )
     }
 }
@@ -110,7 +116,10 @@ enum VariantResolver {
     /// Empty options mean the existing Needs attention path, never an unknown
     /// persisted identity. Contradictory positives cannot be erased by a lock.
     static func gate(_ evidence: VariantEvidence, printedEdition: PrintedEditionEvidence) -> VariantOutcome? {
-        guard evidence.physicalCoverageVerified else { return .needsChoice(options: [], lockDidNotApply: nil) }
+        guard evidence.physicalCoverageVerified || evidence.explicitMembershipSupported else { return .needsChoice(options: [], lockDidNotApply: nil) }
+        if !evidence.physicalCoverageVerified && printedEdition == .absent {
+            return .needsChoice(options: ordered(evidence.catalogVariants), lockDidNotApply: nil)
+        }
         guard printedEdition != .absent else { return nil }
         let possible = ordered(evidence.catalogVariants)
         guard !printedEdition.isConflict else { return .needsChoice(options: [], lockDidNotApply: nil) }
@@ -126,7 +135,9 @@ enum VariantResolver {
         finishLock: VariantLock? = nil,
         printedFinish: PhysicalVariant? = nil
     ) -> VariantOutcome {
-        guard evidence.physicalCoverageVerified else { return .needsChoice(options: [], lockDidNotApply: nil) }
+        guard evidence.physicalCoverageVerified else {
+            return .needsChoice(options: evidence.explicitMembershipSupported ? ordered(evidence.catalogVariants) : [], lockDidNotApply: nil)
+        }
         let resolutionID = PerformanceSignpost.makeID()
         let resolutionState = PerformanceSignpost.beginInterval(
             "variantResolution",

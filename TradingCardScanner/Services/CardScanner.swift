@@ -1212,7 +1212,7 @@ final class CardScanner: NSObject, ObservableObject {
 
     func start() {
 #if DEBUG && LOCAL_ONLY_SIGNING
-        if OnePieceCatalogBootstrap.isAcceptanceLaunch() { return }
+        if OnePieceCatalogBootstrap.isAcceptanceLaunch() || YuGiOhAcceptanceLaunch.enabled { return }
 #endif
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments

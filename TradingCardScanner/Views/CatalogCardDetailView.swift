@@ -131,6 +131,9 @@ struct CatalogCardDetailView: View {
             }
 
             treatmentSection(details.card)
+            if let notice = details.catalogNotice {
+                Text(notice).font(.footnote).foregroundStyle(.secondary)
+            }
             ownedSection(details.card)
             if catalog.gameRegistry.supports(summary.game, .pricing),
                details.collectionWriteUnavailableReason == nil {
@@ -252,7 +255,11 @@ struct CatalogCardDetailView: View {
                 ForEach(card.variantEvidence.catalogVariants) { variant in
                     LabeledContent(variant.label) {
                         if case let .price(price) = mappedPrices[variant.id] {
-                            Text(price.unitMarketPriceUSD.formatted(.currency(code: "USD")))
+                            VStack(alignment: .trailing) {
+                                Text(price.unitMarketPriceUSD.formatted(.currency(code: "USD")))
+                                Text(price.fetchedAt.formatted(date: .abbreviated, time: .omitted))
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
                         } else if !mappedPriceCheckFinished { ProgressView() }
                         else if failedPriceVariantIDs.contains(variant.id) {
                             Text("Couldn't check price").foregroundStyle(.secondary)

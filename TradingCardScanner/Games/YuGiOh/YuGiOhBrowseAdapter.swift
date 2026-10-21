@@ -12,28 +12,26 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
 
     init(catalog: YuGiOhCatalog) {
         self.catalog = catalog
-        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
-        var grouped: [CatalogSetID: [(YuGiOhCatalog.Printing, ResolvedCatalogCard)]] = [:]
+        var grouped: [CatalogSetID: [YuGiOhCatalog.Printing]] = [:]
         for p in catalog.printingByID.values {
-            guard let card = try? adapter.resolution(forPrintingID: p.id).card else { continue }
-            grouped[CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:\(p.set.groupID)"), default: []].append((p, card))
+            grouped[CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:\(p.set.groupID)"), default: []].append(p)
         }
         var sets: [CatalogSetID: CatalogSet] = [:], cards: [CatalogSetID: [CatalogCardSummary]] = [:], texts: [String: String] = [:]
         for (id, members) in grouped {
             let ordered = members.sorted {
-                if $0.0.code != $1.0.code { return $0.0.code < $1.0.code }
-                if $0.0.rarity != $1.0.rarity { return $0.0.rarity < $1.0.rarity }
-                return $0.0.idString < $1.0.idString
+                if $0.code != $1.code { return $0.code < $1.code }
+                if $0.rarity != $1.rarity { return $0.rarity < $1.rarity }
+                return $0.idString < $1.idString
             }
-            let setInfo = ordered[0].0.set
+            let setInfo = ordered[0].set
             var set = CatalogSet(catalogID: id, name: setInfo.name, code: setInfo.abbreviation,
                 logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: setInfo.releaseDate, sortRank: 0,
-                physicalPrintingIDs: Set(ordered.map { $0.0.idString }))
-            let summaries = ordered.map { p, card in
+                physicalPrintingIDs: Set(ordered.map { $0.idString }))
+            let summaries = ordered.map { p in
                 let summary = CatalogCardSummary(game: .yuGiOh, providerID: p.idString, setID: id,
-                    setName: p.set.name, setCode: p.set.abbreviation, name: card.name, collectorNumber: p.code,
+                    setName: p.set.name, setCode: p.set.abbreviation, name: p.productName, collectorNumber: p.code,
                     thumbnailURL: p.thumbnailURL, imageURL: p.imageURL, catalogGeneration: catalog.generation)
-                texts[summary.id] = CardNameSearch.normalize([card.name, p.code, p.rarity, p.artLabel ?? "", p.set.name].joined(separator: " "))
+                texts[summary.id] = CardNameSearch.normalize([p.card.name, p.productName, p.code, p.rarity, p.artLabel ?? "", p.set.name].joined(separator: " "))
                 return summary
             }
             var seen: Set<URL> = []
@@ -68,8 +66,16 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
         guard summary.game == game, summary.catalogGeneration == generation,
               cardsBySetID[summary.setID]?.contains(summary) == true, let set = setsByID[summary.setID],
               let id = UUID(uuidString: summary.providerID) else { throw CatalogLookupError.staleCatalog }
-        let resolved = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: id)
-        return .init(card: resolved.card, set: set, retrievedAt: resolved.retrievedAt)
+        let resolved = try YuGiOhCatalogAdapter(catalog: catalog).discoveryResolution(id)
+        let p = catalog.printingByID[id]!
+        let reason = p.identityReason.map { "This printing needs identity review (\($0))." }
+            ?? (p.editions.isEmpty ? "No supported edition is recorded for this product." : nil)
+            ?? ((try? YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: id)) == nil
+                ? "The available labels do not distinguish this printing." : nil)
+        return .init(card: resolved.card, set: set, retrievedAt: resolved.retrievedAt,
+            collectionWriteUnavailableReason: reason,
+            catalogNotice: (p.canonicalLinkStatus == "unresolved" ? "Canonical card linkage is unresolved. " : "")
+                + "Confirm the release, rarity, artwork and edition on your copy. Images are representative marketplace images. Edition support is provider evidence; other editions may exist. Prices are bundled historical snapshots; live refresh is unavailable.")
     }
     private struct Cursor: Codable { let generation: String; let scope: String; let offset: Int }
     private func page(_ rows: [CatalogCardSummary], cursor: String?, scope: String) throws -> CatalogPage<CatalogCardSummary> {

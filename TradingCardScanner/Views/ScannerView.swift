@@ -26,6 +26,13 @@ struct ScannerView: View {
     @State private var injectedAcceptanceSample = false
     @State private var lorcanaSample = LorcanaReviewLaunch.initialSample
     @State private var injectedLorcanaSample = false
+    @State private var yuGiOhSample = YuGiOhAcceptanceLaunch.Sample.older
+
+    private func injectYuGiOhSample() {
+        guard let recognizer = runtimes?.runtime(for: .yuGiOh)?.recognizer,
+              case let .identified(subject) = recognizer.identify(yuGiOhSample.lines) else { return }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+    }
 
     private func injectLorcanaSample() {
         guard let recognizer = runtimes?.runtime(for: .lorcana)?.recognizer,
@@ -152,6 +159,20 @@ struct ScannerView: View {
                 }
                 .padding(8).frame(maxWidth: .infinity, alignment: .leading).background(.regularMaterial)
             }
+            if YuGiOhAcceptanceLaunch.enabled {
+                VStack(spacing: 4) {
+                    Text("Yu-Gi-Oh! fixture OCR · Separate test collection").font(.caption).foregroundStyle(.secondary)
+                    HStack {
+                        Menu(yuGiOhSample.rawValue) {
+                            ForEach(YuGiOhAcceptanceLaunch.Sample.allCases) { sample in
+                                Button(sample.rawValue) { yuGiOhSample = sample }
+                            }
+                        }
+                        Button("Inject code", action: injectYuGiOhSample)
+                            .disabled(model.pendingIdentityChoice != nil || model.pendingChoice != nil || model.isIdentificationProcessingForTesting)
+                    }
+                }.padding(8).frame(maxWidth: .infinity).background(.regularMaterial)
+            }
             if OnePieceCatalogBootstrap.isAcceptanceLaunch() {
                 VStack(spacing: 4) {
                     Text("One Piece acceptance · Separate test collection")
@@ -190,7 +211,7 @@ struct ScannerView: View {
             guard scannerScreenshotRoute == nil else { return }
 #endif
 #if DEBUG && LOCAL_ONLY_SIGNING
-            let usesCamera = !OnePieceCatalogBootstrap.isAcceptanceLaunch() && !LorcanaReviewLaunch.isEnabled()
+            let usesCamera = !OnePieceCatalogBootstrap.isAcceptanceLaunch() && !LorcanaReviewLaunch.isEnabled() && !YuGiOhAcceptanceLaunch.enabled
 #else
             let usesCamera = true
 #endif
