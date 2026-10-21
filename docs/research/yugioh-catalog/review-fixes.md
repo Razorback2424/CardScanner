@@ -1,5 +1,7 @@
 # Yu-Gi-Oh! merged review follow-up — 2026-10-20
 
+> **Historical snapshot.** The [audited contract](../../plans/yugioh_code_implementation.md) supersedes this document's complete-family prerequisite and starter-catalog gate. Its earlier repair/test evidence remains historical; see [current verification](audited-verification.md).
+
 Base: clean `main` at `4c3e53c`. This follow-up records corrections made after
 the initial implementation verification.
 The [earlier verification](verification.md) remains historical evidence for its

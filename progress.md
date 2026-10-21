@@ -1,3 +1,38 @@
+# 2026-10-21 — Audited Yu-Gi-Oh! exact membership integration
+
+Candidate implementation based on `402c7655be3ad94b08986d9d1b41d9b8774db2f0`.
+Implemented independent product membership/coverage/quote facts and broad explicit
+selection, retaining all 46,504 original printing/canonical UUIDs and distinctions.
+Offline rebuild from 1,321 hash-verified original cached inputs retains 46,542
+app products: 46,303 explicit-choice eligible, 239 discovery-only, zero automatic
+and zero quarantined. Across all 47,910 raw products, 932 are excluded by bounded
+source metadata and 436 missing-identity records remain in the diagnostic ledger.
+There are 59,965 supported edition pairs, 58,264 exact market quotes and 1,701
+listing-only pairs. Unknown physical-world coverage remains unknown for all rows.
+
+Corrected scoped RA02 taxonomy, IOC-SE1–SE4 grammar, group creation-date semantics,
+image/passcode separation and canonical-ID retention when YGO rarity labels are
+invalid. Existing-holding correction and final save now agree on exact supported
+membership independently of family completeness. No existing-row/import bypass
+was added. Browse retains discovery records with limits. YuGiOh pricing reads
+dated bundled snapshots, with no direct device TCGCSV requests. Daily server
+candidate ingestion/staging uses the existing Firebase namespace; no deployment
+or remote activation was performed.
+
+Verification captured on the candidate: 646 package manifest entries validated;
+four offline audit commands reproduced counters; seed replay is byte-identical.
+The selected native suite passed **232/232**, followed by **14/14** strengthened
+changed-catalog workflow, ledger correction/delete/restore and supplemental-registry
+checks. Python policy tests passed **26/26**. App/test targets built on the external
+SSD. A fresh generic iOS build-for-testing also succeeded; that build-only run did
+not execute tests. The boundary audit still reports 48 pre-existing lexical findings.
+Interactive UI acceptance is blocked by the locked Mac: the isolated app
+launches/renders but taps cannot be validated. Physical camera, provider rights,
+signed hosted activation, CloudKit and release gates remain open. No owner-data
+reset, physical-device installation or deployment was part of this verification.
+See the [canonical plan](docs/plans/yugioh_code_implementation.md) and
+[audited verification](docs/research/yugioh-catalog/audited-verification.md).
+
 - ScanStash opening-screen rebrand (2026-10-20; merged `origin/claude/scanstash-opening-rebrand` at `ece69bc`): adopted the ScanStash display name, adaptive app and launch artwork, and matching opening view while preserving main's full-bleed status-bar handling and handoff zoom. Generic iOS Debug app and test-bundle builds succeeded on the final merged worktree. Yu-Gi-Oh! builder self-test: 14 passed. CoreSimulator was unavailable, so tests were not executed and no visual acceptance is claimed.
 
 - Yu-Gi-Oh! merged-review repairs (2026-10-20; base `4c3e53c`, local changes):

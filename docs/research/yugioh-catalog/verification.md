@@ -1,5 +1,7 @@
 # Yu-Gi-Oh implementation verification — 2026-10-20
 
+> **Historical snapshot.** Its exhaustive-coverage acquisition gate and unavailable-runtime status are superseded by the [2026-10-21 audited verification](audited-verification.md). Counts below describe the earlier revision only.
+
 Starting and ending revision: `main` at
 `81a6f2c56db0008091887f219d9370202b0e2ce1`. Starting worktree was clean;
 ending changes are uncommitted. Reviewed plan `fd917fd` was fetched and compared
