@@ -52,7 +52,7 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
     }
     func validateVariantCorrection(printingID: String, variantID: String?) throws {
         guard let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,
-              let variantID, let card = try? resolution(forPrintingID: id).card,
+              let variantID, let card = try? resolutionForExistingHolding(id).card,
               card.variantEvidence.catalogVariants.contains(where: { $0.id == variantID }) else { throw CatalogLookupError.invalidPrintingChoice }
     }
     func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?, itemKindRaw: String, collectionKey: String) throws {
@@ -69,15 +69,26 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
             thumbnailURL: p.thumbnailURL, artworkID: nil)
     }
     func resolution(forPrintingID id: UUID) throws -> CardCatalog.CatalogResolution {
+        guard let p = catalog.printingByID[id], !catalog.incompleteCodes.contains(p.code),
+              let family = catalog.printingsByCode[p.code], family.allSatisfy(\.coverageVerified) else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        let candidates = family.map(candidate)
+        guard candidates.allSatisfy({ $0.selectionEvidence(among: candidates) != .insufficient }) else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        return try resolutionForExistingHolding(id)
+    }
+
+    // Existing-holding identity/edition checks are independent of acquisition.
+    // Collection mutation validation still applies; this cannot authorize adds.
+    func resolutionForExistingHolding(_ id: UUID) throws -> CardCatalog.CatalogResolution {
         guard let p = catalog.printingByID[id], p.coverageVerified, !p.editions.isEmpty else { throw CatalogLookupError.invalidPrintingChoice }
         let family = catalog.printingsByCode[p.code] ?? []
         let candidates = family.map(candidate)
         guard candidate(p).selectionEvidence(among: candidates) != .insufficient else { throw CatalogLookupError.invalidPrintingChoice }
         let name = p.card.name + (family.count > 1 ? " · " + candidate(p).compactChoiceLabel(among: candidates) : "")
-        let order = p.set.releaseDate.map { date in
-            let components = Calendar(identifier: .gregorian).dateComponents(in: TimeZone(secondsFromGMT: 0)!, from: date)
-            return (components.year ?? 0) * 10000 + (components.month ?? 0) * 100 + (components.day ?? 0)
-        }
+        let order = p.set.releaseDate.map { Int($0.timeIntervalSince1970 / 86_400) }
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: p.idString, canonicalCardID: p.card.id.uuidString.lowercased(),
             language: "en", name: name, setName: p.set.name, setCode: p.set.abbreviation, cardNumber: p.code,
             printedIdentifier: p.code, rarity: p.rarity, displayImageURL: p.imageURL, thumbnailImageURL: p.thumbnailURL,

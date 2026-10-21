@@ -31,6 +31,18 @@ struct YuGiOhImportAdapter: GameImportAdapter {
         guard entry.collectionKey == card.collectionKey(variant: finish) else { throw GameImportValidationError.invalidOwnershipKey }
     }
 
+    func localMetadata(for entry: CollectionCSVEntry) throws -> ImportedCatalogMetadata? {
+        try validate(entry)
+        guard let id = exactUUID(entry.providerID) else { throw GameImportValidationError.invalidPrinting }
+        return metadata(for: try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: id).card)
+    }
+
+    private func metadata(for card: ResolvedCatalogCard) -> ImportedCatalogMetadata {
+        .init(providerID: card.physicalPrintingID, setCode: card.setCode,
+            rarity: card.rarity, imageURL: card.storedImageURL, thumbnailURL: card.thumbnailImageURL?.absoluteString,
+            tcgplayerURL: nil, setReleaseOrder: card.setReleaseOrder, updatesProviderPurchaseURL: false)
+    }
+
     func metadata(for requests: [GameImportRequest]) async -> [String: ImportedCatalogMetadata] {
         var matches: [String: ImportedCatalogMetadata] = [:]
         for request in requests where request.game == game && request.itemKind == .rawCard {
@@ -38,9 +50,7 @@ struct YuGiOhImportAdapter: GameImportAdapter {
                   let card = try? YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: id).card,
                   matchesNumber(request.cardNumber, card: card) else { continue }
             guard request.sourceProviderID == card.physicalPrintingID else { continue }
-            matches[request.identityKey] = .init(providerID: card.physicalPrintingID, setCode: card.setCode,
-                rarity: card.rarity, imageURL: card.storedImageURL, thumbnailURL: card.thumbnailImageURL?.absoluteString,
-                tcgplayerURL: nil, setReleaseOrder: card.setReleaseOrder, updatesProviderPurchaseURL: false)
+            matches[request.identityKey] = metadata(for: card)
         }
         return matches
     }

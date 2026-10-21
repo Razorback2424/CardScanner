@@ -847,6 +847,7 @@ enum CollectionCSV {
                             throw CardGameSupportError.unsupportedGame(entry.game)
                         }
                         try gameImportAdapters.validate(entry)
+                        let localMetadata = try gameImportAdapters.adapter(for: entry.game)?.localMetadata(for: entry)
                         let operationID = plan.operationID(for: entry)
                         let existingOperationEvents = try ledger.events(forOperationID: operationID)
                         if !existingOperationEvents.isEmpty {
@@ -1024,6 +1025,10 @@ enum CollectionCSV {
                                 storedCard = card
                                 deltaQuantity = entry.quantity
                                 rowInserted += 1
+                            }
+
+                            if let localMetadata {
+                                storedCard.applyCatalogMetadata(localMetadata, fillMissingOnly: true)
                             }
 
                             if let amount = entry.importedMarketPriceUSD {

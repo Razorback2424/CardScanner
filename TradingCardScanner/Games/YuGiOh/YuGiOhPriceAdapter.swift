@@ -22,7 +22,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
     static func priceAuthority(_ catalog: YuGiOhCatalog) -> GameCatalogPriceAuthority {
         var identities: [String: String] = [:]
         let adapter = YuGiOhCatalogAdapter(catalog: catalog)
-        for p in catalog.printingByID.values where (try? adapter.resolution(forPrintingID: p.id)) != nil {
+        for p in catalog.printingByID.values where (try? adapter.resolutionForExistingHolding(p.id)) != nil {
             for edition in p.editions {
                 identities[PriceRecord.key(game: .yuGiOh, printingID: p.idString, variantID: edition.rawValue)] = mappingIdentity(p, edition)
             }
@@ -39,7 +39,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
     }
     private func exactCard(_ id: String) throws -> ResolvedCatalogCard {
         guard let uuid = UUID(uuidString: id), uuid.uuidString.lowercased() == id,
-              let card = try? YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: uuid).card else { throw PriceQuoteError.identityMismatch }
+              let card = try? YuGiOhCatalogAdapter(catalog: catalog).resolutionForExistingHolding(uuid).card else { throw PriceQuoteError.identityMismatch }
         return card
     }
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {

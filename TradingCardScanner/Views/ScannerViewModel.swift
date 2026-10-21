@@ -3993,6 +3993,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     var isScannerSessionActiveForTesting: Bool { isScannerSessionActive }
+    var activeScanIntervalCountForTesting: Int { oneCardScanIntervals.count }
 
     /// Test hook for the suspected interleaving in F03. Production callers
     /// never set identification state directly; the normal queue owns it.
@@ -4314,6 +4315,13 @@ final class ScannerViewModel: ObservableObject {
                     handleLookupFailure(request, CatalogLookupError.catalogIncomplete(nil))
                 } else {
                     fileUnresolved(request: request, reason: .noConfirmedMatch)
+                    failAcknowledgement(
+                        for: request.encounterID,
+                        message: request.subject.printedEdition.isConflict
+                            ? "Conflicting edition evidence. Saved to Needs attention. Scan the card again."
+                            : "Printing could not be verified. Saved to Needs attention. Scan the card again.",
+                        canRetryScan: true
+                    )
                 }
                 return
             }

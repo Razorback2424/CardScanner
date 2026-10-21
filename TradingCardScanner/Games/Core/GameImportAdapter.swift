@@ -38,11 +38,15 @@ protocol GameImportAdapter: Sendable {
     var game: CardGame { get }
     var generation: String? { get }
     func validate(_ entry: CollectionCSVEntry) throws
+    /// Verified bundled metadata available during the local import transaction.
+    /// This avoids depending on a later artwork/identity repair pass for sorting.
+    func localMetadata(for entry: CollectionCSVEntry) throws -> ImportedCatalogMetadata?
     func metadata(for requests: [GameImportRequest]) async -> [String: ImportedCatalogMetadata]
 }
 
 extension GameImportAdapter {
     var generation: String? { nil }
+    func localMetadata(for entry: CollectionCSVEntry) throws -> ImportedCatalogMetadata? { nil }
 }
 
 struct GameImportAdapterRegistry: Sendable {

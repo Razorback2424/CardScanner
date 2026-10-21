@@ -182,6 +182,23 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved)
         let row = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        let scanOrder = row.setReleaseOrder
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let sets = try await browse.sets()
+        let set = try XCTUnwrap(sets.first)
+        let page = try await browse.cards(in: set, cursor: nil)
+        let summary = try XCTUnwrap(page.items.first { $0.providerID == choice.id })
+        let details = try await browse.details(for: summary)
+        XCTAssertEqual(scanOrder, set.releaseOrder, "Scan and Browse Add must share epoch-day order")
+        XCTAssertEqual(details.card.setReleaseOrder, set.releaseOrder)
+        XCTAssertEqual(scanOrder, 19_867, "2024-05-24 in epoch days")
+        let browseStore = try container(root.appendingPathComponent("browse.store"))
+        _ = try await runtimes.bound(to: browseStore)
+        _ = try CollectionStore(context: browseStore.mainContext).add(details.card,
+            resolved: .init(variant: edition, resolution: .userConfirmed),
+            identityResolution: .catalogSelected, setReleaseOrder: set.releaseOrder, matchCatalogAliases: true)
+        let browseRow = try XCTUnwrap(browseStore.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(browseRow.setReleaseOrder, scanOrder)
         let key = "yu-gi-oh:\(choice.id)#\(edition.id)"
         XCTAssertEqual(row.collectionKey, key); XCTAssertEqual(row.catalogProviderID, choice.id)
         await source.enable()
@@ -202,9 +219,15 @@ final class YuGiOhWorkflowTests: XCTestCase {
             CollectionWriteSerializer.endExclusive(token)
         } catch { CollectionWriteSerializer.endExclusive(token); throw error }
         XCTAssertEqual(result.importedQuantity, 1); XCTAssertTrue(result.failedRows.isEmpty)
+        let imported = try XCTUnwrap(target.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(imported.setReleaseOrder, scanOrder, "Local import must restore sorting even when artwork is already present")
+        // Settings runs this after local CSV insertion to restore catalog metadata.
+        let normalizer = targetBound.makeCollectionNormalizer()
+        await normalizer.normalizeImportedCards(in: target)
         let reopened = try container(targetURL), reloaded = try XCTUnwrap(reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertEqual(reloaded.collectionKey, key); XCTAssertEqual(reloaded.catalogProviderID, choice.id)
         XCTAssertEqual(reloaded.variantID, edition.id)
+        XCTAssertEqual(reloaded.setReleaseOrder, scanOrder, "CSV import must preserve the same set order")
         let reopenedSource = try container(root.appendingPathComponent("source.store"))
         XCTAssertEqual(PriceStore(context: reopenedSource.mainContext).record(forKey: priceKey)?.effectiveUnitMarketPriceUSD, 12.34)
     }
@@ -220,11 +243,17 @@ final class YuGiOhWorkflowTests: XCTestCase {
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), try YuGiOhFixture.subject(catalog, conflict), nil)
         let filed = await waitUntil { !model.unresolvedScans.isEmpty && !model.isIdentificationProcessingForTesting }
         XCTAssertTrue(filed); XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(model.scanAcknowledgement?.phase, .failed)
+        XCTAssertTrue(model.scanAcknowledgement?.message?.contains("Conflicting edition evidence") == true)
+        XCTAssertTrue(model.scanAcknowledgement?.canRetryScan == true)
+        XCTAssertEqual(model.activeScanIntervalCountForTesting, 0)
         XCTAssertTrue(try store.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         XCTAssertTrue(model.unresolvedScans.first?.subject.printedEdition.isConflict == true)
         if let row = model.unresolvedScans.first { model.resolveUnresolved(id: row.id, choice: .retryLookup) }
         let retried = await waitUntil { !model.isIdentificationProcessingForTesting }
         XCTAssertTrue(retried)
+        XCTAssertNotEqual(model.scanAcknowledgement?.phase, .recognized)
+        XCTAssertEqual(model.activeScanIntervalCountForTesting, 0)
         XCTAssertTrue(try store.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         XCTAssertTrue(model.unresolvedScans.first?.subject.printedEdition.isConflict == true)
     }
@@ -305,11 +334,13 @@ final class YuGiOhCatalogTests: XCTestCase {
         for code in ["LOB-001", "LOB-E001", "LOB-EN001", "L26D-ENM26"] { XCTAssertTrue(YuGiOhCatalog.validCode(code)) }
         for code in ["LOB-JP001", "LOB-ABC", "x-1", "LOB-EN001X"] { XCTAssertFalse(YuGiOhCatalog.validCode(code)) }
     }
-    func testAppDefaultsRegistersAllCapabilities() {
-        let registry = CardGameRuntimeContainer.appDefaults().registry
+    func testAppDefaultsKeepsUnreviewedCatalogUnavailable() {
+        let defaults = CardGameRuntimeContainer.appDefaults()
+        let registry = defaults.registry
         for capability: CardGameCapabilities in [.scan, .browse, .pricing, .collectionWrite] {
-            XCTAssertTrue(registry.supports(.yuGiOh, capability))
+            XCTAssertFalse(registry.supports(.yuGiOh, capability))
         }
+        XCTAssertTrue(defaults.unavailableGames.contains { $0.game == .yuGiOh })
     }
 }
 
@@ -411,6 +442,7 @@ final class YuGiOhRecognitionTests: XCTestCase {
     }
 }
 
+@MainActor
 final class YuGiOhResolutionTests: XCTestCase {
     func testIncompleteIdentityAndForgedPrintingCannotAuthorizeAcquisition() async throws {
         var object = YuGiOhFixture.object(auto: false)
@@ -423,10 +455,34 @@ final class YuGiOhResolutionTests: XCTestCase {
             do { try await adapter.validateAcquisition(identifier, printingID: p.idString, automatic: automatic); XCTFail() }
             catch CatalogLookupError.invalidPrintingChoice {}
         }
+        XCTAssertThrowsError(try adapter.resolution(forPrintingID: p.id))
+        XCTAssertThrowsError(try adapter.identifierForCatalogSelection(printingID: p.idString, original: identifier))
+        do { _ = try await adapter.resolve(adapter.candidate(p), for: identifier); XCTFail() }
+        catch CatalogLookupError.invalidPrintingChoice {}
+        let browseSets = try await YuGiOhBrowseAdapter(catalog: catalog).sets()
+        XCTAssertTrue(browseSets.isEmpty)
+        let csv = "game,provider_id,card_name,card_number,finish,quantity\nyu-gi-oh,\(p.idString),Fixture Card,RA02-EN037,yugioh1stEdition,1\n"
+        let entry = try XCTUnwrap(CollectionCSV.parse(Data(csv.utf8)).entries.first)
+        XCTAssertThrowsError(try YuGiOhImportAdapter(catalog: catalog).validate(entry))
+        XCTAssertThrowsError(try YuGiOhImportAdapter(catalog: catalog).localMetadata(for: entry))
+        XCTAssertThrowsError(try adapter.validateCollectionMutation(printingID: p.idString, catalogProviderID: p.idString,
+            variantID: "yugioh1stEdition", itemKindRaw: CollectionItemKind.rawCard.rawValue,
+            collectionKey: "yu-gi-oh:\(p.idString)#yugioh1stEdition"))
+        XCTAssertNoThrow(try adapter.validateVariantCorrection(printingID: p.idString, variantID: "yugiohUnlimited"))
+        XCTAssertNoThrow(try adapter.resolutionForExistingHolding(p.id))
         let forged = PhysicalPrintingCandidate(id: p.idString, game: .yuGiOh, canonicalCardID: p.card.id.uuidString.lowercased(),
             language: "en", catalogGeneration: catalog.generation, name: "forged", printedIdentifier: p.code)
         do { _ = try await adapter.resolve(forged, for: identifier); XCTFail() }
         catch CatalogLookupError.invalidPrintingChoice {}
+    }
+    func testQuarantinedCatalogDoesNotAdvertiseUsableRuntime() throws {
+        for catalog in [try YuGiOhFixture.catalog(complete: false), try YuGiOhCatalog.bundled.get()] {
+            let runtime = catalog.runtime
+            XCTAssertTrue(runtime.descriptor.capabilities.isEmpty)
+            XCTAssertNil(runtime.recognizer); XCTAssertNil(runtime.catalog); XCTAssertNil(runtime.browse)
+            XCTAssertNil(runtime.importer); XCTAssertNil(runtime.pricing); XCTAssertNil(runtime.priceAuthority)
+        }
+        XCTAssertTrue(try YuGiOhFixture.catalog().runtime.descriptor.capabilities.contains(.collectionWrite))
     }
     func testLookupAutomaticManualIncompleteAndIndistinguishable() async throws {
         for (count, auto, complete, identical) in [(1, true, true, false), (1, false, true, false), (7, false, true, false), (1, false, false, false), (2, false, true, true)] {
