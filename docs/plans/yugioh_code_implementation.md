@@ -1,8 +1,9 @@
 # Yu-Gi-Oh! implementation and verification
 
-**Status — 2026-10-21:** audited provider-membership contract implemented in a
-candidate based on `402c7655be3ad94b08986d9d1b41d9b8774db2f0`; its dated
-verification evidence is recorded separately.
+**Status — 2026-10-21 corrective pass:** F1–F7 repaired in the working tree based
+on reviewed `1a3242d2c28f013ce6ed8a2946f0435e1d596147`. The
+[verification record](../research/yugioh-catalog/audited-verification.md#corrective-pass-after-four-commit-review)
+separates bug fixes, executed tests, local delivery preparation and pending UI work.
 Broad explicit acquisition is enabled. Automatic acquisition remains disabled;
 physical exhaustiveness, physical-camera acceptance and production delivery
 remain unverified. See the [current evidence](../research/yugioh-catalog/audited-verification.md)
@@ -92,11 +93,14 @@ declared invalid cards or manufactured into scan identities.
 
 The JSON schema remains backward compatible; older reviewed fixtures still
 load. Existing ownership IDs/edition keys are unchanged and no owner-data
-migration/reset is required. The final mutation validator now uses supported
-exact-product membership independent of family completeness, matching correction
-preflight. This uses the same safe predicate for explicit acquisition and
-maintenance; there is no forged-existing-row or import bypass. Unsupported
-target editions remain rejected, and ledger transactions retain rollback.
+migration/reset is required. Maintenance now has operation-specific authority:
+the final validator reads the persisted starting holding in a separate context,
+checks unchanged ownership identity and non-increasing quantity against staged
+ledger deltas, and permits exact ledger-backed disposal reversal against a durable
+removal snapshot. Discovery-only runtime availability no longer blocks these
+operations. New identities, editions, increases and imports still require current
+admission; correction destinations remain strict. Unproven legacy restoration
+does not gain acquisition permission. Ledger transactions retain rollback.
 
 ## Normal workflows and delivery
 
@@ -109,17 +113,35 @@ printing UUID, edition, quantity and catalog metadata across reopen.
 The YuGiOh adapter makes no direct device requests to TCGCSV. Bundled quotes
 retain actual original snapshot dates and exact product/edition mappings;
 manual freshness watermarks cannot turn an old bundle into a live refresh.
-Missing market quotes remain unavailable; no alternate edition or listing
-fallback is used and no history provider was added.
+Missing historical market quotes report provider unavailable, including ordinary
+nil-watermark refreshes, so they cannot create a current successful check or
+coverage stamp. Prior prices remain intact. No alternate edition or listing
+fallback is used and no history provider was added. Scanner, Browse, detail and
+portfolio disclose the bundled capture date and lack of live refresh.
+
+Unsupported scanner siblings remain visible with disabled actions and reasons.
+Stale selection retains the family and shows a recovery explanation. The acceptance
+route isolates both collection and recovery storage. Its Unknown sample explicitly
+reports a recognition diagnostic; it does not fabricate a card or a recovery row.
 
 The daily [candidate workflow](../../.github/workflows/yugioh-catalog.yml) runs
 ingestion on a server, tests policy and stages immutable hashed artifacts in
 the existing Firebase site's isolated namespace. It contains no deployment.
-The app currently consumes the bundled snapshot only. Adopting durable daily
-membership continuity, signed production publication/restoration and remote
-activation through the existing hosted catalog architecture remains a release
-gate. A device-side cache is not a compliant substitute. No credentials,
-service, deployment, purchase or commercial permission was created.
+The app currently consumes the bundled snapshot only. A separate, unactivated
+local consumer seam verifies Ed25519-signed manifests, hashes, policy, actual app
+loader admission/provenance, monotonic revisions/snapshot dates and retained
+identities. It reuses the existing signed two-slot store, returns catalog and price
+authority together, and falls back to the verified previous slot or bundle.
+The builder validates output before writing/staging; complete review contradictions
+retract historical permission while retaining provenance. Ordinary price absence
+still retains historical membership. Quarantined rows cannot become automatic.
+
+Production still needs the existing publisher/signing owner to establish YGO
+trust pins and signed publish/restore conventions, supply a durable verified
+previous-approved catalog to `--previous-seed`, and separately authorize endpoint
+activation/deployment. The scheduled candidate job still starts from the checked-in
+bundle, so daily approved continuity is not claimed. No new backend, production
+credentials, service, deployment, purchase or commercial permission was created.
 
 ## Remaining acceptance
 

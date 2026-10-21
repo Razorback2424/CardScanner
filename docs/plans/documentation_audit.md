@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-10-21
 
+**Yu-Gi-Oh corrective pass after `1a3242d`:** the
+[canonical plan](yugioh_code_implementation.md) now separates persisted holding
+maintenance from new admission and historical missing quotes from successful
+current checks. The earlier claim below that correction/final save shared one
+membership predicate did not cover retired editions or discovery-only runtime
+maintenance; the [new evidence](../research/yugioh-catalog/audited-verification.md#corrective-pass-after-four-commit-review)
+supersedes it. Local signed-candidate consumption is implemented and tested;
+production signed delivery and interactive acceptance remain open. Earlier native
+counts are retained as dated evidence and are not added to the new 425-test gate.
+
 **Yu-Gi-Oh audited contract — 2026-10-21:** the
 [current authority](yugioh_code_implementation.md) separates supported exact
 membership from exhaustive coverage and quote availability. It supersedes the

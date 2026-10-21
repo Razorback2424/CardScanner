@@ -1,3 +1,28 @@
+# 2026-10-21 — Yu-Gi-Oh review corrections and local delivery seam
+
+Candidate based on reviewed `1a3242d`; fixed F1–F7: acceptance recovery scope,
+missing historical quote freshness, disabled discovery siblings/stale-family
+recovery, persisted/ledger-backed maintenance, complete-review precedence,
+quarantine/automatic invariants, and observable Unknown recognition diagnostic.
+New Phase A gate: 425 native tests passed; Python builder: 29 passed. Earlier
+47-test focused run overlaps. Local signed delivery/loader: 11 passed, followed
+by 17 full-bundle delivery/maintenance checks and 133 final stale-family/scanner
+checks; these selections also overlap.
+App/test builds use the existing external SSD. Fixed offline rebuild is identical
+to the committed seed, retaining all catalog counts/identities.
+
+Phase B adds a local Ed25519/hash/provenance-verified consumer using the existing
+two-slot store and bundled fallback, plus consistent snapshot/live-unavailable
+copy. No remote YGO activation, endpoint, production trust or deployment was
+added. Daily approved-parent continuity and signed publishing/restoration need
+the existing publisher owner. After owner unlock, native/browser automated input
+still produced no UI changes, including after restarting only the dedicated
+simulator without erasing data. A manual Collection-tab check is pending;
+native fixture OCR is not camera acceptance. This verification did not modify
+owner data, Journey work, credentials or personal-device state. See the
+[corrective evidence](docs/research/yugioh-catalog/audited-verification.md#corrective-pass-after-four-commit-review)
+and [canonical plan](docs/plans/yugioh_code_implementation.md).
+
 # 2026-10-21 — Audited Yu-Gi-Oh! exact membership integration
 
 Candidate implementation based on `402c7655be3ad94b08986d9d1b41d9b8774db2f0`.

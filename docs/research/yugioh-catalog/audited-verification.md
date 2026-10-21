@@ -7,6 +7,114 @@ owner-data reset was part of this verification.
 The [canonical plan](../../plans/yugioh_code_implementation.md) is the current
 contract. Earlier verification/review-fix totals remain historical.
 
+## Corrective pass after four-commit review
+
+**2026-10-21; candidate based on reviewed `1a3242d`.** The source checkout was
+clean before these changes. No seed replacement, source census, owner-data reset,
+publication or device installation was part of this verification. Phase A fixes are in runtime,
+scanner/recovery, pricing, collection authority and builder admission. Phase B
+adds `YuGiOhCandidateRelease.swift`, its project registration, delivery tests,
+manifest revision/strict staging validation and snapshot limitation copy.
+
+| Finding | Implemented correction and executable regression |
+|---|---|
+| F1 | Acceptance collection/recovery share the `YuGiOhAcceptance` scope. `testAcceptanceRecoveryPreservesPreexistingNormalBytesAcrossDismissAndClear` prepopulates a normal recovery file in an isolated root, loads acceptance, injects supported LOB-001, dismisses/removes/clears and checks normal bytes unchanged. No actual owner file is touched. |
+| F2 | Missing historical quotes throw provider unavailable with and without a watermark. `testRealListingOnlyPairAndBundledSnapshotNeverPretendLiveRefresh` uses real 21792 First, PriceStore/PriceRecord/PriceCheckDay, a prior amount, and a dated positive quote control. Current negative answers from other providers retain existing semantics; exact zero quotes remain permitted. |
+| F3 | Candidate availability/reason persists into compact/detail pickers, including VoiceOver hints. Unsupported DCR product 476802 stays visible/disabled; supported 487277 passes resolution and the save/export/import/reopen chain. Stale errors retain the full family with an explanation and cancellation/retry. Trial of Hell/Nightmare labels remain untouched. |
+| F4 | Maintenance gate and final-save authority are independent of acquisition. Real-store tests cover discovery-only delete/restore, retired First → supported Unlimited with a safe sibling, save/reopen, ledger totals, rollback/retry, duplicate restore rejection, unsupported destinations and quantity-increase rejection. Authority comes from durable identity/ledger evidence, not a caller Boolean. |
+| F5 | Complete independent review constrains the final historical merge. `test_complete_review_retracts_historical_lane_but_keeps_provenance` excludes prior Unlimited from First-only admission; the existing absence-without-contradiction control still retains membership. |
+| F6 | Automatic eligibility requires identity/manual prerequisites. `test_invalid_association_reviewed_singleton_stays_quarantined` preserves safe rows; strict output validation runs before writes/staging. `testQuarantinedReviewedSingletonDoesNotPoisonSafeSiblingInActualLoader` checks actual Swift acceptance and contradictory auto-list rejection. These were latent builder defects, not bad automatic rows in the current seed. |
+| F7 | The actual recognizer's `.nothing` outcome produces visible, explicitly labeled recognition diagnostic text with an accessibility ID. Native isolation test asserts the exact displayed string and no ownership write; rendered tapping remains pending. Production recognition is unchanged. |
+
+New executable evidence, kept separate from earlier counts below:
+
+- Phase A final gate: **425 native tests passed, zero failures/skips**. Includes
+  all seven YGO classes, scanner, CSV resume, normalization, variant resolver,
+  supplemental registry, recovery store, collection history/continuity,
+  Lorcana ownership and One Piece integration. Both app and test targets built.
+- Earlier corrective focused run: **47 passed**; overlaps the 425, not additive.
+- Builder: **29 passed**, including two new adverse cases and strict staging
+  rejection before artifact creation; rerun after strict
+  staging/provenance validation. Earlier 26-test evidence below is historical.
+- Local delivery/loader selection: **11 passed** (two new delivery cases plus
+  nine overlapping loader cases). Later full-bundle delivery and maintenance
+  selection: **17 passed** (three delivery cases plus overlapping workflows).
+- Final stale-family/scanner selection: **133 passed**, including real DCR
+  catalog drift → retained family/explanation → cancellation → Needs attention
+  retry → supported Unlimited save. This overlaps earlier workflow/scanner runs.
+  Build-only attempts are never counted as executed tests. Initial compile mistakes in the
+  picker/test assertions were corrected before the successful runs.
+
+External SSD result bundles under `CardScannerBuilds/yugioh/DerivedData/Logs/Test/`:
+`Test-TradingCardScanner-2026.10.21_07-36-07--0600.xcresult` (425),
+`Test-TradingCardScanner-2026.10.21_07-41-02--0600.xcresult` (11), and
+`Test-TradingCardScanner-2026.10.21_07-46-21--0600.xcresult` (17).
+Final stale-family/scanner bundle:
+`Test-TradingCardScanner-2026.10.21_07-49-31--0600.xcresult` (133).
+Final pricing selection (three overlapping tests, including the added real
+positive-quote PriceStore timestamp assertion): **3 passed**,
+`Test-TradingCardScanner-2026.10.21_07-52-05--0600.xcresult`.
+Final adverse maintenance selection: **2 passed**, including actual isolated CSV
+import rejection under discovery-only runtime and a forged existing-looking
+inserted row rejected while a safe sibling keeps acquisition available;
+`Test-TradingCardScanner-2026.10.21_07-54-08--0600.xcresult`. Both tests passed
+again after the final durable-ID guard refinement (preserving maintenance of
+persisted duplicate rows while rejecting inserted lookalikes):
+`Test-TradingCardScanner-2026.10.21_07-55-35--0600.xcresult`; not additive.
+`plutil` project validation, existing Firebase hosting configuration, local links
+in all four changed Markdown documents and `git diff --check` passed.
+
+Offline source replay with the fixed builder, census receipt and strict staging
+produced byte-identical committed seed bytes (`cmp` passed). Generation, hash,
+46,542 total / 46,303 explicit / 239 discovery / zero automatic counts and
+59,965 membership / 58,264 quote / 1,701 listing-only pairs remain unchanged.
+The local versioned manifest carries revision, generation, policy, captured time,
+immutable path, exact SHA-256 and byte count. No live provider request was needed.
+
+Phase B local fixtures verify signature/hash rejection, unknown keys, future and
+stale snapshots, identity drift, revision rollback, corruption recovery to the
+previous slot and bundled fallback. The real full bundled catalog also passes
+signed consumer admission/provenance checks. The returned catalog/price-authority
+pair is atomic local state; it is **not wired into live runtime activation**.
+The seam has no endpoint or production keys and does not write collection/recovery
+data. Durable previous-approved input and production signed publication/restore
+still require the existing signing/hosting owner; the scheduled job continues to
+use the repository bundle as parent. Nothing was deployed.
+
+Interactive B1 remains incomplete. In the initial attempt, the dedicated simulator rendered the normal
+fixture-OCR route, but Inject code and the sample menu produce no change from
+automated taps. Computer-use inventory confirmed the Mac was locked and automatic
+unlock failed. A process sample showed the app's main thread idle in its run loop,
+not a demonstrated app hang. An unlock request was sent; no successful saved UI
+outcome or new acceptance screenshot is claimed. Native fixture workflow tests
+are not physical camera or interactive acceptance. Journey remains untouched.
+
+**Follow-up after owner unlock — 2026-10-21, approximately 08:06 MDT:** computer-use
+app inventory became accessible, confirming the earlier lock blocker cleared.
+The dedicated simulator was relaunched with the normal `YuGiOhAcceptance` route.
+Native taps still left Inject code, the sample menu and Collection unchanged.
+The simulator-browser skill produced a live frame pinned to the same UDID; its
+event log recorded touch delivery, but those controls still did not respond.
+Restarting only that simulator, without erasing its stores, did not restore
+automated input; even a simulated Home press left the rendered app unchanged.
+This suggests an input/session problem but does not establish its cause. A
+manual Collection-tab check was requested to distinguish automation failure
+from app interaction failure; its result is pending. The temporary mirror was
+closed and its scoped helper cleaned up. No saved UI outcome, new test execution,
+code fix, personal-device action or Journey interruption is claimed in this follow-up.
+
+HIG source verdict: **PASS**, with semantic wrapping text, native disabled buttons,
+visible explanations, VoiceOver hints and no new prompt/navigation. Rendered
+accessibility/interaction, physical-camera, commercial/image rights, CloudKit,
+device performance, archive/TestFlight and App Store gates remain pending.
+
+Smallest owner steps: report the manual Collection-tab input check so interactive
+acceptance can resume through a working input path;
+perform authorized physical-camera checks; have the existing publisher owner
+define YGO production trust/signing plus durable approved-parent storage and
+signed restore, then separately approve remote activation/deployment. The app
+still uses **historical bundled data, without live YGO updates**.
+
 ## Evidence integrity and reproducibility
 
 - Verified all 646 entries in the supplied package manifest against SHA-256
@@ -186,7 +294,9 @@ cmp /tmp/yugioh-replay.json TradingCardScanner/YuGiOhCatalogSeed/catalog.json
 classes=(YuGiOhCatalogTests YuGiOhResolutionTests YuGiOhWorkflowTests
   YuGiOhImportTests YuGiOhPricingTests YuGiOhRecognitionTests YuGiOhRecoveryTests
   ScannerViewModelTests CSVImportResumeTests CatalogNormalizationTests
-  VariantResolverTests GameRecognitionRegistrySupplementalTests)
+  VariantResolverTests GameRecognitionRegistrySupplementalTests
+  UnresolvedScanStoreTests CollectionActivityHistoryTests CollectionStoreContinuityTests
+  LorcanaOwnershipTests OnePieceIntegrationTests YuGiOhCandidateDeliveryTests)
 only=(); for cls in "${classes[@]}"; do only+=(-only-testing:TradingCardScannerTests/"$cls"); done
 xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner \
   -configuration Debug -destination 'platform=iOS Simulator,name=YuGiOh Integration QA' \
