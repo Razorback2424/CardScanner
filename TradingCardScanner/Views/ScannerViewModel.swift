@@ -3434,7 +3434,52 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    @Published private(set) var unresolvedResolutionErrors: [UUID: String] = [:]
+
+    /// Shared by presentation and direct actions. Optional saved availability
+    /// is only a negative hint; absent metadata still needs catalog validation.
+    func canResolveUnresolved(id: UUID, choice: UnresolvedResolutionChoice) -> Bool {
+        guard let row = unresolvedScans.first(where: { $0.id == id }), !row.isReadOnly else { return false }
+        switch choice {
+        case let .printing(candidate), let .englishPrinting(candidate):
+            guard candidate.game == row.game, row.printingCandidates.contains(candidate) else { return false }
+            if let reason = candidate.acquisitionUnavailableReason {
+                unresolvedResolutionErrors[id] = reason
+                return false
+            }
+            if case .printing = choice, row.identifier.needsMagicEnglishConfirmation { return false }
+        default: break
+        }
+        return true
+    }
+
+    /// Validate against today's authority while the recovery sheet is still
+    /// open. The actual action revalidates again across this async boundary.
+    func prepareUnresolvedResolution(id: UUID, choice: UnresolvedResolutionChoice) async -> Bool {
+        guard canResolveUnresolved(id: id, choice: choice),
+              let row = unresolvedScans.first(where: { $0.id == id }) else { return false }
+        switch choice {
+        case let .printing(candidate), let .englishPrinting(candidate):
+            do {
+                let identifier: ScanIdentifier
+                if case .englishPrinting = choice {
+                    identifier = try ScanRequest(subject: row.subject, purpose: .collection,
+                        generation: scanGeneration, unresolvedScanID: id).confirmingMagicEnglish().identifier
+                } else { identifier = row.identifier }
+                _ = try await catalog.resolvePrintingChoice(candidate, for: identifier)
+            } catch {
+                unresolvedResolutionErrors[id] = "This printing is no longer available from the current catalog. Choose another printing or retry lookup."
+                return false
+            }
+        default: break
+        }
+        guard !Task.isCancelled, canResolveUnresolved(id: id, choice: choice) else { return false }
+        unresolvedResolutionErrors[id] = nil
+        return true
+    }
+
     func resolveUnresolved(id: UUID, choice: UnresolvedResolutionChoice) {
+        guard canResolveUnresolved(id: id, choice: choice) else { return }
         guard let row = unresolvedScans.first(where: { $0.id == id }),
               !row.isReadOnly else { return }
         var pendingRetryRequest = ScanRequest(
@@ -3467,6 +3512,7 @@ final class ScannerViewModel: ObservableObject {
                                                identityResolution: .userSelectedPrinting)
                 } catch {
                     guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                    self.unresolvedResolutionErrors[id] = "This printing could not be resolved with the current catalog. Choose another printing or retry lookup."
                     self.handleLookupFailure(retryRequest, error)
                 }
             }

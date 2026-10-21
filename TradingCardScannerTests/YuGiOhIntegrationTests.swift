@@ -264,6 +264,146 @@ final class YuGiOhImportTests: XCTestCase {
 
 @MainActor
 final class YuGiOhWorkflowTests: XCTestCase {
+    /// Model the supported CloudKit shape: two durable physical rows, one
+    /// logical acquisition/history claim. No ledger event is invented by merge.
+    private func splitDurablePosition(in context: ModelContext) throws {
+        let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first { $0.cardGame == .yuGiOh })
+        XCTAssertEqual(row.quantity, 2)
+        row.quantity = 1
+        let duplicate = CollectedCard(collectionKey: row.collectionKey, game: row.cardGame,
+            providerID: row.providerID, name: row.name, setName: row.setName, setCode: row.setCode,
+            cardNumber: row.cardNumber, rarity: row.rarity, imageURL: row.imageURL,
+            thumbnailURL: row.thumbnailURL, variant: .yugiohFirstEdition,
+            variantResolution: .userConfirmed, quantity: 1)
+        duplicate.catalogProviderID = row.catalogProviderID
+        context.insert(duplicate)
+        try context.save()
+        XCTAssertEqual(try ModelContext(context.container).fetch(FetchDescriptor<CollectedCard>()).filter { $0.cardGame == .yuGiOh }.count, 2)
+    }
+
+    func testDurableDuplicateRemovalRollbackRetryReopenAndExactRestore() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-duplicates-\(UUID())/collection.store")
+        let original = try container(url), catalog = try YuGiOhFixture.catalog()
+        _ = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        let p = try XCTUnwrap(catalog.printingByID.values.first)
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+        let store = CollectionStore(context: original.mainContext)
+        _ = try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed), quantity: 2)
+        try splitDurablePosition(in: original.mainContext)
+        let rows = try original.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        let ids = Set(rows.map(\.persistentModelID))
+        let retired = try YuGiOhFixture.catalog(complete: false, auto: false, editions: [], priced: [])
+        _ = try await CardGameRuntimeContainer(runtimes: [retired.runtime]).bound(to: original)
+        let failing = CollectionStore(context: original.mainContext, beforeSaveForTesting: { _ in throw CocoaError(.fileWriteUnknown) })
+        XCTAssertThrowsError(try failing.remove(rows[0]))
+        let rolledBack = try original.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(rolledBack.map(\.persistentModelID)), ids)
+        XCTAssertEqual(rolledBack.map(\.quantity).sorted(), [1, 1])
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+        let snapshot = try store.remove(rolledBack[0])
+        XCTAssertEqual(snapshot.quantity, 2)
+        let reopened = try container(url)
+        XCTAssertTrue(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let events = try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 0)
+        let history = try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>())
+        let removal = try XCTUnwrap(history.first { $0.kind == .removed })
+        XCTAssertEqual(history.count, 2)
+        XCTAssertEqual(removal.signedQuantity, -2)
+        let savedSnapshot = try JSONDecoder().decode(RemovedCardSnapshot.self, from: XCTUnwrap(removal.removalSnapshotData))
+        XCTAssertEqual(savedSnapshot.quantity, 2)
+        XCTAssertEqual(savedSnapshot.operationID, snapshot.operationID)
+        let forgedRestore = CollectionStore(context: original.mainContext, beforeSaveForTesting: { context in
+            let restored = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+            let lookalike = CollectedCard(collectionKey: restored.collectionKey, game: .yuGiOh,
+                providerID: restored.providerID, name: restored.name, setName: restored.setName,
+                setCode: restored.setCode, cardNumber: restored.cardNumber, rarity: restored.rarity,
+                imageURL: nil, thumbnailURL: nil, variant: .yugiohFirstEdition,
+                variantResolution: .userConfirmed, quantity: 2)
+            lookalike.catalogProviderID = restored.catalogProviderID
+            context.insert(lookalike)
+            XCTAssertThrowsError(try CollectionStore(context: context).validatePendingGameWrites(),
+                "A disposal inverse cannot authorize two inserted restoration rows")
+            throw CocoaError(.fileWriteUnknown)
+        })
+        XCTAssertThrowsError(try forgedRestore.restore(snapshot))
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+        try store.restore(snapshot)
+        let restoredEvents = try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count
+        let restoredActivities = try original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count
+        XCTAssertThrowsError(try store.restore(snapshot))
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, restoredEvents)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count, restoredActivities)
+        let restored = try container(url)
+        XCTAssertEqual(try restored.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [2])
+        XCTAssertEqual(try restored.mainContext.fetch(FetchDescriptor<InventoryEvent>()).reduce(0) { $0 + $1.deltaQuantity }, 2)
+    }
+
+    func testRetiredDuplicateReductionConservesLedgerAndRejectsIncrease() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-reduction-\(UUID())/collection.store")
+        let original = try container(url), catalog = try YuGiOhFixture.catalog()
+        _ = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        let p = try XCTUnwrap(catalog.printingByID.values.first)
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+        let store = CollectionStore(context: original.mainContext)
+        _ = try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed), quantity: 2)
+        try splitDurablePosition(in: original.mainContext)
+        _ = try await CardGameRuntimeContainer(runtimes: [YuGiOhFixture.catalog(complete: false, auto: false, editions: [], priced: []).runtime]).bound(to: original)
+        let key = card.collectionKey(variant: .yugiohFirstEdition)
+        XCTAssertEqual(try store.setQuantity(1, forCollectionKey: key, expectedCurrent: 2), 1)
+        XCTAssertThrowsError(try store.setQuantity(2, forCollectionKey: key, expectedCurrent: 1))
+        let reopened = try container(url)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        let events = try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 1)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count, 2)
+    }
+
+    func testMixedBrowseOnlyDuplicateDeleteAllCancellationFailureAndReopen() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-bulk-\(UUID())/collection.store")
+        let original = try container(url), catalog = try YuGiOhFixture.catalog()
+        _ = try await CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime, catalog.runtime]).bound(to: original)
+        let store = CollectionStore(context: original.mainContext)
+        let p = try XCTUnwrap(catalog.printingByID.values.first)
+        _ = try store.add(YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card,
+            resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed), quantity: 2)
+        let pokemon = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"sv08.5-001","localId":"001","name":"Eevee","set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":180,"official":131}}}"#.utf8)), setCode: "PRE")
+        _ = try store.add(pokemon, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        try splitDurablePosition(in: original.mainContext)
+        _ = try await CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime, YuGiOhFixture.catalog(complete: false, auto: false, editions: [], priced: []).runtime]).bound(to: original)
+        let ids = Set(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.persistentModelID))
+        XCTAssertFalse(try store.deleteAll(shouldContinue: { false }))
+        var checks = 0
+        XCTAssertFalse(try store.deleteAll(shouldContinue: { checks += 1; return checks < 3 }))
+        XCTAssertEqual(Set(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.persistentModelID)), ids)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+        var saveAttempts = 0
+        let failing = CollectionStore(context: original.mainContext, beforeSaveForTesting: { _ in saveAttempts += 1; throw CocoaError(.fileWriteUnknown) })
+        XCTAssertThrowsError(try failing.deleteAll())
+        XCTAssertEqual(saveAttempts, 1)
+        XCTAssertEqual(Set(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.persistentModelID)), ids)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+        let checked = CollectionStore(context: original.mainContext, beforeSaveForTesting: { _ in saveAttempts += 1 })
+        XCTAssertTrue(try checked.deleteAll())
+        XCTAssertEqual(saveAttempts, 2, "One save for the entire mixed collection")
+        let reopened = try container(url)
+        XCTAssertTrue(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let events = try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 4)
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 0)
+        let removals = try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>()).filter { $0.kind == .removed }
+        XCTAssertEqual(removals.count, 2)
+        XCTAssertEqual(removals.map(\.signedQuantity).sorted(), [-2, -1])
+        for removal in removals {
+            let snapshot = try JSONDecoder().decode(RemovedCardSnapshot.self, from: XCTUnwrap(removal.removalSnapshotData))
+            XCTAssertEqual(snapshot.quantity, -removal.signedQuantity)
+        }
+    }
+
     func testRealDCRStaleChoiceRetainsFamilyAndCancellationCanRetry() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-stale-\(UUID())")
         let catalog = try YuGiOhCatalog.bundled.get(), original = try container(root.appendingPathComponent("collection.store"))
@@ -297,6 +437,104 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved)
         XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.providerID, supported.idString)
+    }
+
+    func testDCRRecoveryAvailabilityReloadLegacyAuthorityAndDirectActions() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-recovery-\(UUID())")
+        let catalog = try YuGiOhCatalog.bundled.get(), original = try container(root.appendingPathComponent("collection.store"))
+        let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        let service = bound.makeCardCatalog()
+        let recovery = UnresolvedScanStore(fileURL: root.appendingPathComponent("recovery.json"))
+        let model = ScannerViewModel(gameRegistry: bound.registry, priceQuoteService: bound.makePriceQuoteService(),
+            catalog: service, unresolvedScanStore: recovery)
+        model.start(context: original.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: "DCR-EN000", generation: catalog.generation)
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), .init(identifier: identifier), nil)
+        let appeared = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }
+        XCTAssertTrue(appeared)
+        let family = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates)
+        let discoveryID = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 476802 }).idString
+        let supportedID = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 487277 }).idString
+        let discovery = try XCTUnwrap(family.first { $0.id == discoveryID })
+        let supported = try XCTUnwrap(family.first { $0.id == supportedID })
+        let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: family)
+        XCTAssertNotNil(discovery.acquisitionUnavailableReason)
+        XCTAssertTrue(UnresolvedScanDetailView.compactChoiceDisabled(discovery, evidence: evidence[discovery.id], requiresEnglish: false, englishConfirmed: false))
+        XCTAssertFalse(UnresolvedScanDetailView.compactChoiceDisabled(supported, evidence: evidence[supported.id], requiresEnglish: false, englishConfirmed: false))
+        XCTAssertTrue(UnresolvedScanDetailView.compactChoiceDisabled(supported, evidence: evidence[supported.id], requiresEnglish: true, englishConfirmed: false))
+        model.dismissIdentityChoice()
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        let blocked = await model.prepareUnresolvedResolution(id: row.id, choice: .printing(discovery))
+        XCTAssertFalse(blocked, "False keeps the recovery sheet open")
+        XCTAssertEqual(model.unresolvedResolutionErrors[row.id], discovery.acquisitionUnavailableReason)
+        model.resolveUnresolved(id: row.id, choice: .printing(discovery))
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(model.unresolvedScans.first?.printingCandidates, family)
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+
+        // Persist/reload through the same recovery actor. Remove the optional
+        // field to model a legacy saved choice, not a trusted new candidate.
+        var legacyObject = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(discovery)) as? [String: Any])
+        legacyObject.removeValue(forKey: "acquisitionUnavailableReason")
+        let legacy = try JSONDecoder().decode(PhysicalPrintingCandidate.self, from: JSONSerialization.data(withJSONObject: legacyObject))
+        var legacyRow = row
+        legacyRow.printingCandidates = family.map { $0.id == discoveryID ? legacy : $0 }
+        // Drain the view model's queued save before writing the legacy fixture.
+        try? await Task.sleep(for: .milliseconds(300))
+        let persisted = await recovery.save([legacyRow])
+        XCTAssertTrue(persisted)
+        model.viewDisappeared()
+        let reloaded = ScannerViewModel(gameRegistry: bound.registry, priceQuoteService: bound.makePriceQuoteService(),
+            catalog: service, unresolvedScanStore: recovery)
+        reloaded.start(context: original.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { reloaded.viewDisappeared() }
+        let loaded = await waitUntil { reloaded.unresolvedScans.count == 1 }
+        XCTAssertTrue(loaded)
+        XCTAssertEqual(reloaded.unresolvedScans.first?.printingCandidates, legacyRow.printingCandidates)
+        XCTAssertNil(legacy.acquisitionUnavailableReason)
+        let legacyBlocked = await reloaded.prepareUnresolvedResolution(id: row.id, choice: .printing(legacy))
+        XCTAssertFalse(legacyBlocked)
+        XCTAssertTrue(reloaded.unresolvedResolutionErrors[row.id]?.contains("retry lookup") == true)
+        reloaded.resolveUnresolved(id: row.id, choice: .printing(legacy))
+        let failedDirect = await waitUntil {
+            reloaded.unresolvedResolutionErrors[row.id]?.contains("could not be resolved") == true
+                && !reloaded.isIdentificationProcessingForTesting
+        }
+        XCTAssertTrue(failedDirect)
+        XCTAssertEqual(reloaded.unresolvedScans.first?.printingCandidates, legacyRow.printingCandidates)
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+
+        await service.install(YuGiOhCatalogAdapter(catalog: try YuGiOhFixture.catalog()))
+        let staleBlocked = await reloaded.prepareUnresolvedResolution(id: row.id, choice: .printing(supported))
+        XCTAssertFalse(staleBlocked)
+        XCTAssertEqual(reloaded.unresolvedScans.count, 1)
+        reloaded.resolveUnresolved(id: row.id, choice: .printing(supported))
+        let staleDirect = await waitUntil {
+            reloaded.unresolvedResolutionErrors[row.id]?.contains("could not be resolved") == true
+                && !reloaded.isIdentificationProcessingForTesting
+        }
+        XCTAssertTrue(staleDirect)
+        XCTAssertEqual(reloaded.unresolvedScans.first?.printingCandidates, legacyRow.printingCandidates)
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        await service.install(YuGiOhCatalogAdapter(catalog: catalog))
+        let cancelled = Task { await reloaded.prepareUnresolvedResolution(id: row.id, choice: .printing(supported)) }
+        cancelled.cancel()
+        let cancelledResult = await cancelled.value
+        XCTAssertFalse(cancelledResult)
+        XCTAssertEqual(reloaded.unresolvedScans.count, 1)
+        let ready = await reloaded.prepareUnresolvedResolution(id: row.id, choice: .printing(supported))
+        XCTAssertTrue(ready)
+        XCTAssertNil(reloaded.unresolvedResolutionErrors[row.id])
+        reloaded.resolveUnresolved(id: row.id, choice: .printing(supported))
+        let edition = await waitUntil { reloaded.pendingChoice != nil && !reloaded.isIdentificationProcessingForTesting }
+        XCTAssertTrue(edition)
+        reloaded.choose(.yugiohUnlimited)
+        let saved = await waitUntil { reloaded.successCount == 1 }
+        XCTAssertTrue(saved)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+        XCTAssertTrue(reloaded.unresolvedScans.isEmpty)
     }
 
     func testAcceptanceRecoveryPreservesPreexistingNormalBytesAcrossDismissAndClear() async throws {
@@ -406,6 +644,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let store = CollectionStore(context: original.mainContext)
         _ = try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed), quantity: 2)
         let activity = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).first { $0.signedQuantity > 0 })
+        try splitDurablePosition(in: original.mainContext)
         var updated = YuGiOhFixture.providerSupportedObject()
         updated["generation"] = "yugioh-en-maintenance"
         var retiredRows = updated["printings"] as! [[String: Any]]
@@ -415,7 +654,8 @@ final class YuGiOhWorkflowTests: XCTestCase {
         updated["printings"] = retiredRows
         let newer = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: updated))
         XCTAssertTrue(newer.autoEligibleCodes.isEmpty)
-        _ = try await CardGameRuntimeContainer(runtimes: [newer.runtime]).bound(to: original)
+        let supportedBound = try await CardGameRuntimeContainer(runtimes: [newer.runtime]).bound(to: original)
+        XCTAssertTrue(supportedBound.registry.supports(.yuGiOh, .collectionWrite))
         let row = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
         let forged = CollectedCard(collectionKey: row.collectionKey, game: .yuGiOh,
             providerID: p.idString, name: row.name, setName: row.setName, setCode: row.setCode,
@@ -424,6 +664,22 @@ final class YuGiOhWorkflowTests: XCTestCase {
         original.mainContext.insert(forged)
         XCTAssertThrowsError(try store.validatePendingGameWrites(), "An existing-looking inserted row has no durable maintenance authority")
         original.mainContext.rollback()
+        XCTAssertThrowsError(try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed)))
+        XCTAssertThrowsError(try store.setQuantity(3, forCollectionKey: row.collectionKey, expectedCurrent: 2))
+        let plan = try CollectionCSV.parse(Data("game,provider_id,card_name,card_number,finish,quantity\nyu-gi-oh,\(p.idString),Fixture Card,RA02-EN037,yugioh1stEdition,1\n".utf8))
+        let importers = await supportedBound.currentImportAdapters()
+        let token = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+        do {
+            let result = try await CollectionCSV.applyIsolated(plan, to: original, exclusiveToken: token,
+                gameRegistry: supportedBound.registry, gameImportAdapters: importers)
+            CollectionWriteSerializer.endExclusive(token)
+            XCTAssertEqual(result.importedQuantity, 0)
+            XCTAssertFalse(result.failedRows.isEmpty)
+        } catch {
+            CollectionWriteSerializer.endExclusive(token)
+            throw error
+        }
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity).sorted(), [1, 1])
         XCTAssertThrowsError(try store.recordVariantCorrection(for: row, to: .init(variant: .yugiohLimited, resolution: .userConfirmed),
             activityID: activity.id, quantity: 2))
         let corrected = try store.recordVariantCorrection(forCollectionKey: row.collectionKey,
@@ -434,9 +690,13 @@ final class YuGiOhWorkflowTests: XCTestCase {
         XCTAssertEqual(rows.count, 1); XCTAssertEqual(rows.first?.quantity, 2)
         XCTAssertEqual(rows.first?.variantID, "yugiohUnlimited")
         let events = try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 3, "One acquisition and exactly two correction legs")
         XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 2)
         XCTAssertEqual(events.filter { $0.collectionKey == card.collectionKey(variant: .yugiohFirstEdition) }.reduce(0) { $0 + $1.deltaQuantity }, 0)
         XCTAssertEqual(events.filter { $0.collectionKey == card.collectionKey(variant: .yugiohUnlimited) }.reduce(0) { $0 + $1.deltaQuantity }, 2)
+        let history = try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(history.count, 2, "Retarget the acquisition and append one correction")
+        XCTAssertEqual(history.filter { $0.kind == .corrected }.count, 1)
         let maintained = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
         let removed = try store.remove(maintained)
         XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)

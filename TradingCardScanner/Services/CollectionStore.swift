@@ -1508,16 +1508,43 @@ struct CollectionStore {
         let originals = try durable.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key }))
         let original = originals.first { $0.persistentModelID == row.persistentModelID }
         guard original != nil || originals.isEmpty else { return false }
+        var originalQuantity = 0
+        var finalQuantity = row.quantity
+        let deletedIDs = Set(context.deletedModelsArray.map(\.persistentModelID))
+        let survivors = try context.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key }))
+            .filter { !deletedIDs.contains($0.persistentModelID) }
+        // A restore into an empty durable position admits one exact row, not
+        // multiple inserted lookalikes sharing the same disposal inverse.
+        if original == nil {
+            guard survivors.count == 1, survivors.first?.persistentModelID == row.persistentModelID else { return false }
+        }
         if let original {
             guard original.providerID == row.providerID, original.catalogProviderID == row.catalogProviderID,
                   original.cardGame == row.cardGame, original.variantID == row.variantID,
                   original.itemKindRaw == row.itemKindRaw, original.quantity > 0 else { return false }
-            let finalQuantity = context.deletedModelsArray.contains { $0.persistentModelID == row.persistentModelID } ? 0 : row.quantity
-            guard finalQuantity >= 0 else { return false }
-            if finalQuantity <= original.quantity {
+            // Consolidation deletes physical contributors before changing the
+            // representative. Ledger deltas describe their logical position.
+            // Every surviving contributor must still have its durable identity;
+            // an inserted lookalike cannot borrow that position's authority.
+            let touched = survivors + context.deletedModelsArray.compactMap { $0 as? CollectedCard }.filter { $0.collectionKey == key }
+            guard Set(touched.map(\.persistentModelID)) == Set(originals.map(\.persistentModelID)),
+                  touched.allSatisfy({ candidate in
+                originals.contains { persisted in
+                    persisted.persistentModelID == candidate.persistentModelID
+                        && persisted.providerID == candidate.providerID
+                        && persisted.catalogProviderID == candidate.catalogProviderID
+                        && persisted.cardGame == candidate.cardGame
+                        && persisted.variantID == candidate.variantID
+                        && persisted.itemKindRaw == candidate.itemKindRaw
+                        && persisted.quantity > 0
+                }
+            }), survivors.allSatisfy({ $0.quantity >= 0 }) else { return false }
+            originalQuantity = try originals.reduce(0) { try CollectionQuantityLimits.checkedAdd($0, $1.quantity) }
+            finalQuantity = try survivors.reduce(0) { try CollectionQuantityLimits.checkedAdd($0, $1.quantity) }
+            if finalQuantity <= originalQuantity {
                 let changes = context.insertedModelsArray.compactMap { $0 as? InventoryEvent }.filter { $0.collectionKey == key }
                 return changes.allSatisfy { $0.deltaQuantity <= 0 }
-                    && changes.reduce(0, { $0 + $1.deltaQuantity }) == finalQuantity - original.quantity
+                    && changes.reduce(0, { $0 + $1.deltaQuantity }) == finalQuantity - originalQuantity
             }
         }
         // Restoring a retired edition requires a persisted removal snapshot and
@@ -1526,8 +1553,9 @@ struct CollectionStore {
         let activities = try durable.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate { $0.collectionKey == key }))
         let durableEvents = try durable.fetch(FetchDescriptor<InventoryEvent>(predicate: #Predicate { $0.collectionKey == key }))
         let pending = context.insertedModelsArray.compactMap { $0 as? InventoryEvent }.filter { $0.collectionKey == key }
-        let restoredQuantity = row.quantity - (original?.quantity ?? 0)
-        guard pending.count == 1, let inverse = pending.first, inverse.deltaQuantity == restoredQuantity,
+        let restoredQuantity = finalQuantity - originalQuantity
+        guard restoredQuantity > 0, restoredQuantity <= CollectionQuantityLimits.maximum,
+              pending.count == 1, let inverse = pending.first, inverse.deltaQuantity == restoredQuantity,
               let reversedID = inverse.reversesEventID,
               let disposal = durableEvents.first(where: { $0.eventID == reversedID && $0.kind == .dispose }),
               disposal.deltaQuantity == -restoredQuantity,
@@ -4645,7 +4673,7 @@ struct CollectionStore {
         do {
             guard shouldContinue?() ?? true else { return false }
             let physicalCards = try context.fetch(FetchDescriptor<CollectedCard>())
-            for row in physicalCards { try requireWritableGame(row.cardGame) }
+            for row in physicalCards { try requireMaintainableGame(row.cardGame) }
             let projection = LogicalCollection.project(cards: physicalCards, ledger: ledger)
             let collectionKeyAliases = LogicalCollection.readThroughAliases(
                 projection: projection,

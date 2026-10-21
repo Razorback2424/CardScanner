@@ -27,6 +27,7 @@ struct ScannerView: View {
     @State private var lorcanaSample = LorcanaReviewLaunch.initialSample
     @State private var injectedLorcanaSample = false
     @State private var yuGiOhSample = YuGiOhAcceptanceLaunch.Sample.older
+    @State private var injectedYuGiOhSample = false
     @State private var yuGiOhDiagnostic: String?
 
     private func injectYuGiOhSample() {
@@ -46,7 +47,13 @@ struct ScannerView: View {
     }
 
     private var acceptanceReady: Bool {
-        ((OnePieceCatalogBootstrap.isAcceptanceLaunch() && injectedAcceptanceSample)
+        if YuGiOhAcceptanceLaunch.enabled {
+            return injectedYuGiOhSample && (yuGiOhDiagnostic != nil
+                || (model.recognitionCount > 0 && !model.isIdentificationProcessingForTesting
+                    && (model.pendingIdentityChoice != nil || model.pendingChoice != nil
+                        || model.successCount > 0 || model.unresolvedCount > 0)))
+        }
+        return ((OnePieceCatalogBootstrap.isAcceptanceLaunch() && injectedAcceptanceSample)
             || (LorcanaReviewLaunch.isEnabled() && injectedLorcanaSample))
             && model.recognitionCount > 0 && !model.isIdentificationProcessingForTesting
             && (model.pendingIdentityChoice != nil || model.pendingChoice != nil
@@ -58,8 +65,8 @@ struct ScannerView: View {
         guard acceptanceReady,
               let index = arguments.firstIndex(of: "-ui_debug_ready_path"),
               arguments.indices.contains(index + 1) else { return }
-        let marker = LorcanaReviewLaunch.isEnabled()
-            ? #"{"lorcanaReviewReady":true}"# : #"{"onePieceAcceptanceReady":true}"#
+        let marker = YuGiOhAcceptanceLaunch.enabled ? #"{"yuGiOhAcceptanceReady":true}"#
+            : LorcanaReviewLaunch.isEnabled() ? #"{"lorcanaReviewReady":true}"# : #"{"onePieceAcceptanceReady":true}"#
         try? Data(marker.utf8)
             .write(to: URL(fileURLWithPath: arguments[index + 1]), options: .atomic)
     }
@@ -238,6 +245,11 @@ struct ScannerView: View {
                 model.clearFinishLocks()
                 injectLorcanaSample()
             }
+            if let sample = YuGiOhAcceptanceLaunch.initialSample, !injectedYuGiOhSample {
+                injectedYuGiOhSample = true
+                yuGiOhSample = sample
+                injectYuGiOhSample()
+            }
             if OnePieceCatalogBootstrap.isAcceptanceLaunch(), !injectedAcceptanceSample {
                 injectedAcceptanceSample = true
                 model.setPurpose(.collection)
@@ -288,6 +300,7 @@ struct ScannerView: View {
                 onClear: model.clearUnresolvedScans,
                 onDismiss: model.dismissUnresolved,
                 onResolve: { id, choice in
+                    guard model.canResolveUnresolved(id: id, choice: choice) else { return }
                     pendingUnresolvedResolution = PendingUnresolvedResolution(
                         id: id,
                         choice: choice

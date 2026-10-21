@@ -14,6 +14,8 @@ struct UnresolvedScanDetailView: View {
     @State private var isShowingPrintingDetails = false
     @State private var pendingCatalogChoice: UnresolvedResolutionChoice?
     @State private var englishConfirmed = false
+    @State private var isPreparingResolution = false
+    @State private var resolutionTask: Task<Void, Never>?
     private var requiresEnglish: Bool { scan.identifier.needsMagicEnglishConfirmation }
 
     private var canChooseCard: Bool {
@@ -55,10 +57,15 @@ struct UnresolvedScanDetailView: View {
                         }
                         ForEach(scan.printingCandidates) { candidate in
                             Button(labels[candidate.id] ?? candidate.choiceLabel) {
-                                onResolve(requiresEnglish ? .englishPrinting(candidate) : .printing(candidate))
+                                resolve(requiresEnglish ? .englishPrinting(candidate) : .printing(candidate))
                             }
-                            .disabled(evidence[candidate.id] != .labels
-                                || (requiresEnglish && !englishConfirmed))
+                            .disabled(Self.compactChoiceDisabled(candidate, evidence: evidence[candidate.id],
+                                requiresEnglish: requiresEnglish, englishConfirmed: englishConfirmed))
+                            .accessibilityIdentifier("recovery-printing-\(candidate.id)")
+                            .accessibilityHint(candidate.acquisitionUnavailableReason ?? "Use this printing for the saved scan")
+                            if let reason = candidate.acquisitionUnavailableReason {
+                                Text(reason).font(.caption).foregroundStyle(.secondary)
+                            }
                         }
                         Button("Compare printing details") { isShowingPrintingDetails = true }
                     }
@@ -85,6 +92,11 @@ struct UnresolvedScanDetailView: View {
                 }
 
                 Section("Actions") {
+                    if isPreparingResolution { ProgressView("Checking printing…") }
+                    if let message = model.unresolvedResolutionErrors[scan.id] {
+                        Text(message).foregroundStyle(.secondary)
+                            .accessibilityIdentifier("recovery-resolution-error")
+                    }
                     switch scan.reason {
                     case .interrupted:
                         if scan.isAdditionalCopy, scan.pendingCommit != nil {
@@ -134,14 +146,16 @@ struct UnresolvedScanDetailView: View {
         }
         .navigationTitle("Needs attention")
         .navigationBarTitleDisplayMode(.inline)
+        .disabled(isPreparingResolution)
+        .onDisappear { resolutionTask?.cancel() }
         .sheet(isPresented: $isShowingPrintingDetails) {
             PrintingChoiceDetails(candidates: scan.printingCandidates, onChoose: { selected in
                 isShowingPrintingDetails = false
-                onResolve(.printing(selected))
+                resolve(.printing(selected))
             }, requiresEnglishConfirmation: requiresEnglish,
             onChooseEnglish: { selected in
                 isShowingPrintingDetails = false
-                onResolve(.englishPrinting(selected))
+                resolve(.englishPrinting(selected))
             }, englishConfirmation: $englishConfirmed)
         }
         .task(id: scan.id) {
@@ -171,6 +185,23 @@ struct UnresolvedScanDetailView: View {
                     }
             }
         }
+    }
+
+    private func resolve(_ choice: UnresolvedResolutionChoice) {
+        guard !isPreparingResolution else { return }
+        isPreparingResolution = true
+        resolutionTask = Task {
+            let prepared = await model.prepareUnresolvedResolution(id: scan.id, choice: choice)
+            isPreparingResolution = false
+            if prepared { onResolve(choice) }
+        }
+    }
+
+    static func compactChoiceDisabled(_ candidate: PhysicalPrintingCandidate,
+                                      evidence: PhysicalPrintingCandidate.SelectionEvidence?,
+                                      requiresEnglish: Bool, englishConfirmed: Bool) -> Bool {
+        candidate.acquisitionUnavailableReason != nil || evidence != .labels
+            || (requiresEnglish && !englishConfirmed)
     }
 
     @ViewBuilder
