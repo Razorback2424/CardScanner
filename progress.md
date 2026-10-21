@@ -3234,3 +3234,38 @@ historical.
   Magic publisher pointer rollback. Source/diff and local-link checks only;
   no builds, tests or simulator runs, per request. No runtime acceptance claim,
   commit or push. [Coverage and repairs](docs/release/workflow-source-review-2026-10-20.md).
+- **2026-10-20 — Yu-Gi-Oh source integration and corrected safety model:**
+  started from clean `main` at `81a6f2c`, fetched and compared reviewed plan
+  `fd917fd`, and implemented the bundled catalog builder, recognition module,
+  generic supplemental OCR, printing/edition resolution, exact TCGCSV pricing,
+  Browse/import/collection adapters and Xcode registration. Edition evidence
+  retains contradictory positives independently of illegibility through
+  confirmation, retry, record re-filing, recovery merges and tagged persistence;
+  physical exit/new encounters clear the partial accumulator. Bare EDITION and
+  ambiguous Limited fragments never become First. Product-specific physical
+  edition support/completeness is separate from observed price lanes; unknown
+  coverage cannot be bypassed by locks or singleton resolution. Valid reviewed
+  mappings can discover later prices without a new seed; no edition or low/mid
+  substitution. The broad catalog contains 46,504 printings / 37,846 codes from
+  659 groups, but **all 46,504 remain quarantined** pending independent physical
+  edition metadata (zero automatic/manual acquisition eligible products).
+  Offline rebuild is byte-identical; 11 builder fixtures pass. Dedicated iOS
+  Simulator verification: 319 focused/scanner cases passed; final affected
+  Price Check/pricing/workflow batch 9 passed; final explicit catalog boundary
+  batch 2 passed. Neighbor batch: 543 passed,
+  1 failure, 3 opt-in skips (547 executed); its sealed-product collection-key
+  failure reproduces identically in an isolated archive of unchanged HEAD.
+  Counts overlap and are not summed. Both stubbed edition-by-tap and
+  printed-edition scan → printing choice → save → exact refresh → CSV export →
+  fresh-store import → persistence reload chains pass. Earlier test-build
+  errors and corrections are recorded separately. Strict boundary audit stays
+  red on the same 48 pre-existing branches; no YGO branch was added to its
+  central files. Project integrity, local documentation links and whitespace
+  checks pass. HIG source gate retains catalog/usability risks; rendered camera,
+  accessibility, provider rights, physical-device, CloudKit, archive/App Store
+  and release gates remain open. External SSD evidence:
+  `CardScannerBuilds/yugioh/`; raw cache: `YuGiOhSourceCache/2026-10-21/`.
+  Journey's devices, processes and saves were untouched. No commit, push,
+  deployment or physical-device installation. See the
+  [canonical plan](docs/plans/yugioh_code_implementation.md) and
+  [commands, counts and remaining owner action](docs/research/yugioh-catalog/verification.md).

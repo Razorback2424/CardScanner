@@ -8,6 +8,18 @@ history.
 
 ## Current authority boundary — updated 2026-10-20
 
+**Yu-Gi-Oh implementation — 2026-10-20:** the
+[current authority](yugioh_code_implementation.md) supersedes the reviewed
+`fd917fd` plan's three-state conflict handling, short-token First heuristic,
+group price-lane edition union, permanent seed price whitelist and absolute
+deferred-only test rule. The reviewed text is preserved as a marked
+[legacy snapshot](../legacy/plans/yugioh_code_implementation_reviewed.md).
+Source and synthetic simulator tests are distinct from physical edition
+coverage: all broad-catalog products currently remain quarantined from writes.
+The provider feeds alone do not establish independently complete editions.
+The strict boundary audit remains a debt gate with pre-existing branches;
+no YGO branches were added to its central scanner/catalog/pricing files.
+
 **Workflow source review — 2026-10-20:** the
 [source review record](../release/workflow-source-review-2026-10-20.md) lists
 major workflow traces and five additional repairs from `0c04c63` plus preserved
