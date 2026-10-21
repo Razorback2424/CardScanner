@@ -1,3 +1,14 @@
+- Repository consolidation and combined build (2026-10-20; merged app tree at
+  `433ebd2`): Yu-Gi-Oh app integration, reproducible catalog data, and source
+  evidence were committed separately. Merged the outstanding opening-screen
+  redesign and Yu-Gi-Oh plan-review branches into `main`; retained the current
+  implementation authority and its reviewed predecessor under `docs/legacy/`.
+  Xcode Debug app build for generic iOS succeeded with signing disabled, using
+  the external build volume. CoreSimulator was unavailable in this follow-up,
+  so the merged opening-screen change has no new simulator or rendered UI
+  acceptance. The focused Yu-Gi-Oh simulator results remain in the dated
+  [verification record](docs/research/yugioh-catalog/verification.md).
+
 - Yu-Gi-Oh! implementation plan (2026-10-20; HEAD `06459ea`): added
   [`docs/plans/yugioh_code_implementation.md`](docs/plans/yugioh_code_implementation.md).
   It validates the external research handoff against source, live TCGCSV
