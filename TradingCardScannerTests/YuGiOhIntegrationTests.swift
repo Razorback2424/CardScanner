@@ -1,7 +1,89 @@
 import Foundation
+import CryptoKit
 import SwiftData
 import XCTest
 @testable import TradingCardScanner
+
+final class YuGiOhCandidateDeliveryTests: XCTestCase {
+    func testRealBundledCandidatePassesSignedHashAdmissionAndProvenanceChecks() throws {
+        let url = try XCTUnwrap(Bundle.main.url(forResource: "catalog", withExtension: "json", subdirectory: "YuGiOhCatalogSeed"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String:Any])
+        let key = Curve25519.Signing.PrivateKey()
+        let candidate = try envelope(object, revision: 1, key: key)
+        let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(candidate, keys: ["yugioh-fixture":key.publicKey], now: .now)
+        XCTAssertEqual(snapshot.catalog.printingByID.count, 46_542)
+        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 46_303)
+        XCTAssertEqual(manifest.generation, snapshot.catalog.generation)
+    }
+
+    private func envelope(_ object: [String: Any], revision: Int, key: Curve25519.Signing.PrivateKey) throws -> YuGiOhCandidateEnvelope {
+        var object = object
+        object["policyVersion"] = YuGiOhCandidateVerifier.policy
+        let bytes = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys, .withoutEscapingSlashes])
+        let generation = object["generation"] as! String
+        let manifest = YuGiOhCandidateManifest(schemaVersion: 1, revision: revision, generation: generation,
+            policyVersion: YuGiOhCandidateVerifier.policy, path: "yugioh/v1/releases/\(generation)/catalog.json",
+            sha256: SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), bytes: bytes.count,
+            status: "candidate_not_deployed", capturedAt: object["capturedAt"] as! String)
+        let payload = try JSONEncoder().encode(manifest)
+        return .init(keyID: "yugioh-fixture", payload: YuGiOhCandidateVerifier.encodeURL(payload),
+            signature: YuGiOhCandidateVerifier.encodeURL(try key.signature(for: payload)), catalog: bytes)
+    }
+
+    func testSignedLocalStagingRejectsTamperingAndRollbacksAndRecoversPrevious() async throws {
+        // Ephemeral fixture key; no publisher credential or production trust pin.
+        let key = Curve25519.Signing.PrivateKey(), keys = ["yugioh-fixture": key.publicKey]
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-delivery-\(UUID())")
+        let bundle = try YuGiOhFixture.catalog()
+        let store = try YuGiOhCandidateReleaseStore(root: root, keys: keys, bundled: bundle)
+        var object = YuGiOhFixture.object()
+        object["generation"] = "yugioh-en-delivery1"
+        object["capturedAt"] = "2026-10-21T00:00:00Z"
+        let first = try envelope(object, revision: 1, key: key)
+        let staged = try await store.stage(first)
+        XCTAssertEqual(staged, .activated(revision: 1, previousRevision: nil))
+        let before = await store.snapshot()
+        XCTAssertEqual(before.catalog.generation, "yugioh-en-delivery1")
+        let tampered = YuGiOhCandidateEnvelope(keyID: first.keyID, payload: first.payload, signature: first.signature, catalog: Data("{}".utf8))
+        do { _ = try await store.stage(tampered); XCTFail() } catch {}
+        object["generation"] = "yugioh-en-delivery2"
+        object["capturedAt"] = "2026-10-21T01:00:00Z"
+        let second = try envelope(object, revision: 2, key: key)
+        _ = try await store.stage(second)
+        do { _ = try await store.stage(first); XCTFail() } catch SignedCatalogStoreError.revisionRollback {}
+        let after = await store.snapshot()
+        XCTAssertEqual(after.catalog.generation, "yugioh-en-delivery2")
+        // The catalog and pricing authority are adopted as a single value.
+        XCTAssertEqual(after.priceAuthority.identityByPriceKey.count, YuGiOhPriceAdapter.priceAuthority(after.catalog).identityByPriceKey.count)
+        try Data("corrupt".utf8).write(to: root.appendingPathComponent("yugioh-candidate-current.json"))
+        let reopened = try YuGiOhCandidateReleaseStore(root: root, keys: keys, bundled: bundle)
+        let recovered = await reopened.snapshot()
+        XCTAssertEqual(recovered.catalog.generation, "yugioh-en-delivery1")
+        try Data("corrupt".utf8).write(to: root.appendingPathComponent("yugioh-candidate-previous.json"))
+        let empty = try YuGiOhCandidateReleaseStore(root: root, keys: keys, bundled: bundle)
+        let fallback = await empty.snapshot()
+        XCTAssertEqual(fallback.catalog.generation, bundle.generation)
+    }
+
+    func testSignedStaleIdentityDriftUnknownKeysAndFutureCandidatesFailClosed() throws {
+        let key = Curve25519.Signing.PrivateKey()
+        let original = try YuGiOhFixture.catalog()
+        var object = YuGiOhFixture.object()
+        object["capturedAt"] = "2026-10-19T00:00:00Z"
+        let stale = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        XCTAssertThrowsError(try YuGiOhCandidateVerifier.validateTransition(from: original, to: stale))
+        object["capturedAt"] = "2026-10-22T00:00:00Z"
+        let future = try envelope(object, revision: 2, key: key)
+        XCTAssertThrowsError(try YuGiOhCandidateVerifier.verify(future, keys: ["yugioh-fixture":key.publicKey], now: original.capturedAt))
+        XCTAssertThrowsError(try YuGiOhCandidateVerifier.verify(future, keys: [:], now: .now))
+        var rows = object["printings"] as! [[String:Any]]
+        rows[0]["pn"] = "Changed identity"
+        object["printings"] = rows
+        object["generation"] = "yugioh-en-drift"
+        let changed = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        XCTAssertThrowsError(try YuGiOhCandidateVerifier.validateTransition(from: original, to: changed))
+    }
+}
 
 /// All fixture review references are synthetic; they prove contracts only.
 enum YuGiOhFixture {

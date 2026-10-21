@@ -321,6 +321,7 @@
 		F40A00000000000000000002 /* YuGiOhRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000002; };
 		F40A00000000000000000003 /* YuGiOhCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000003; };
 		F40A00000000000000000004 /* YuGiOhGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000004; };
+		F40A0000000000000000000A /* YuGiOhCandidateRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B0000000000000000000A; };
 		F40A00000000000000000005 /* YuGiOhPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000005; };
 		F40A00000000000000000006 /* YuGiOhImportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000006; };
 		F40A00000000000000000007 /* YuGiOhBrowseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000007; };
@@ -683,6 +684,7 @@
 		F40B00000000000000000002 /* YuGiOhRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000003 /* YuGiOhCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalogAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000004 /* YuGiOhGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhGameRuntime.swift; sourceTree = "<group>"; };
+		F40B0000000000000000000A /* YuGiOhCandidateRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCandidateRelease.swift; sourceTree = "<group>"; };
 		F40B00000000000000000005 /* YuGiOhPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhPriceAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000006 /* YuGiOhImportAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhImportAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000007 /* YuGiOhBrowseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhBrowseAdapter.swift; sourceTree = "<group>"; };
@@ -792,6 +794,7 @@
 				F40B00000000000000000002,
 				F40B00000000000000000003,
 				F40B00000000000000000004,
+				F40B0000000000000000000A,
 				F40B00000000000000000005,
 				F40B00000000000000000006,
 				F40B00000000000000000007,
@@ -1409,6 +1412,7 @@
 				F40A00000000000000000002,
 				F40A00000000000000000003,
 				F40A00000000000000000004,
+				F40A0000000000000000000A,
 				F40A00000000000000000005,
 				F40A00000000000000000006,
 				F40A00000000000000000007,
