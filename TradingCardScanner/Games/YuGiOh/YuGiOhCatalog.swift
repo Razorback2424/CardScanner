@@ -45,6 +45,7 @@ struct YuGiOhCatalog: Sendable {
     static var bundledPricingNotice: String {
         (try? bundled.get().historicalPricingNotice) ?? "Yu-Gi-Oh! live pricing is unavailable."
     }
+    static let marketHistoryUnavailableNotice = "Market price history is unavailable for Yu-Gi-Oh! Bundled quotes are dated snapshots."
     private struct Seed: Decodable {
         let schemaVersion: Int; let generation: String; let capturedAt: String
         let sets: [SetRow]; let cards: [CardRow]; let printings: [PrintingRow]

@@ -270,7 +270,13 @@ private struct CollectionCardDetailContent: View {
                         }
                         valuationSection(model: chartModel)
                             .id("card-price-valuation")
-                        priceHistorySection(model: chartModel, movement: movement)
+                        if card.cardGame == .yuGiOh {
+                            Text(YuGiOhCatalog.marketHistoryUnavailableNotice)
+                                .font(.footnote).foregroundStyle(.secondary).padding()
+                                .accessibilityIdentifier("yugioh-history-unavailable")
+                        } else {
+                            priceHistorySection(model: chartModel, movement: movement)
+                        }
                         marketplaceSection
                         ownershipSection
 
@@ -974,6 +980,7 @@ private struct CollectionCardDetailContent: View {
 
     @MainActor
     private func loadMarketHistory() async {
+        guard card.cardGame != .yuGiOh else { return }
         let request = marketHistoryRequest
         let cached = await CardMarketHistoryService.shared.cached(request)
         guard !Task.isCancelled, request == marketHistoryRequest else { return }

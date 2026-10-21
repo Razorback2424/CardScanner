@@ -247,7 +247,7 @@ final class PreviewView: UIView {
         // geometry for these isolated layout fixtures only, without OCR input.
         if previewLayer.connection == nil,
            ProcessInfo.processInfo.arguments.contains(where: {
-               ["WholeCardScanner", "TrustScanReceipt"].contains($0)
+               ["WholeCardScanner", "TrustScanReceipt", "YuGiOhAcceptance"].contains($0)
            }) {
             let source = CGSize(width: 9, height: 16)
             let scale = max(bounds.width / source.width, bounds.height / source.height)

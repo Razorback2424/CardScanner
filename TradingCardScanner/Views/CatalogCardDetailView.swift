@@ -138,7 +138,13 @@ struct CatalogCardDetailView: View {
             if catalog.gameRegistry.supports(summary.game, .pricing),
                details.collectionWriteUnavailableReason == nil {
                 priceSection(details.card)
-                browsePriceHistorySection()
+                if summary.game == .yuGiOh {
+                    Text(YuGiOhCatalog.marketHistoryUnavailableNotice)
+                        .font(.footnote).foregroundStyle(.secondary)
+                        .accessibilityIdentifier("yugioh-history-unavailable")
+                } else {
+                    browsePriceHistorySection()
+                }
             } else {
                 Text(details.collectionWriteUnavailableReason == nil
                      ? "Pricing unavailable" : "Pricing unavailable for this printing")

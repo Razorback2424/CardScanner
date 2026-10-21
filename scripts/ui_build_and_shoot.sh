@@ -54,6 +54,11 @@ elif [[ "$ROUTE" == "OnePieceAcceptance" ]]; then
   MARKER_PATH="$CONTAINER_PATH/Documents/one-piece-ui-ready.json"
   MARKER_PATTERN='onePieceAcceptanceReady'
   MARKER_ARTIFACT='one-piece-ready.json'
+elif [[ "$ROUTE" == "YuGiOhAcceptance" && -n "$STATE" ]]; then
+  CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
+  MARKER_PATH="$CONTAINER_PATH/Documents/yugioh-ui-ready.json"
+  MARKER_PATTERN='yuGiOhAcceptanceReady'
+  MARKER_ARTIFACT='yugioh-ready.json'
 elif [[ "$ROUTE" == "LorcanaReview" || "$ROUTE" == "LorcanaPricingReview" ]]; then
   CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
   MARKER_PATH="$CONTAINER_PATH/Documents/lorcana-ui-ready.json"
@@ -77,7 +82,7 @@ if [[ -n "${MARKER_PATH:-}" ]]; then
   done
   [[ "$settled" == "1" ]] || { echo "$ROUTE did not settle" >&2; exit 1; }
   cp "$MARKER_PATH" "$ARTIFACTS_DIR/$MARKER_ARTIFACT"
-  sleep 1
+  sleep "${UI_CAPTURE_DELAY_SECONDS:-1}"
 else
   sleep "${UI_CAPTURE_DELAY_SECONDS:-2.5}"
 fi

@@ -46,10 +46,18 @@ enum YuGiOhAcceptanceLaunch {
     }
     enum Sample: String, CaseIterable, Identifiable {
         case older = "LOB-001", modern = "RA02-EN001", limited = "IOC-SE1", unknown = "LOB-999"
+        case reissue = "LOB-EN001", mixedDiscovery = "DCR-EN000", european = "MRL-E104"
         var id: String { rawValue }
         var lines: [RecognizedLine] {
             [.init(text: rawValue)] + (self == .limited ? [.init(text: "Limited Edition")] : [])
         }
+    }
+    /// Optional deterministic fixture OCR for the existing screenshot script.
+    /// No printing, edition or saved outcome is manufactured by this argument.
+    static var initialSample: Sample? {
+        let args = ProcessInfo.processInfo.arguments
+        guard enabled, let index = args.firstIndex(of: "-ui_debug_state"), args.indices.contains(index + 1) else { return nil }
+        return Sample(rawValue: args[index + 1])
     }
 }
 #endif
