@@ -208,6 +208,6 @@ struct ScanSessionMetricsExport: Transferable, Sendable {
             await item.pendingWrites?.value
             return try await item.log.exportData()
         }
-        .suggestedFileName("CardScanner Session Log.json")
+        .suggestedFileName("ScanStash Session Log.json")
     }
 }

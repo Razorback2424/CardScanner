@@ -1,7 +1,15 @@
 import SwiftUI
 
+/// ScanStash brand tokens shared by the app icon, LaunchMark, and opening.
 enum AppPalette {
-    static let mark = Color(red: 23 / 255, green: 151 / 255, blue: 159 / 255)
+    /// Foil stops, top-leading to bottom-trailing: mint, sky, iris, rose.
+    static let foil: [Color] = [
+        Color(red: 124 / 255, green: 247 / 255, blue: 218 / 255),
+        Color(red: 92 / 255, green: 200 / 255, blue: 255 / 255),
+        Color(red: 154 / 255, green: 140 / 255, blue: 255 / 255),
+        Color(red: 255 / 255, green: 150 / 255, blue: 214 / 255)
+    ]
+    static let ink = Color(red: 43 / 255, green: 37 / 255, blue: 133 / 255)
 }
 
 /// Presentation time starts only after the local result exists. Keep the
@@ -206,71 +214,161 @@ struct CornerGuides: Shape {
     }
 }
 
+/// The ScanStash mark: a foil card on top of a fanned stash. Its unfanned,
+/// unlocked, unswept state is drawn into LaunchMark, so keep the two in step.
+struct ScanStashMark: View {
+    static let cardSize = CGSize(width: 112, height: 156)
+    static let openGuideInset: CGFloat = 14
+    static let lockedGuideInset: CGFloat = 5
+
+    var fanned: Bool
+    var locked: Bool
+    var sheenSwept: Bool
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var isDark: Bool { colorScheme == .dark }
+    private var card: RoundedRectangle { RoundedRectangle(cornerRadius: 14, style: .continuous) }
+
+    var body: some View {
+        ZStack {
+            stashCard(depth: 2)
+            stashCard(depth: 1)
+            faceCard
+        }
+        .frame(width: Self.cardSize.width, height: Self.cardSize.height)
+        .overlay {
+            CornerGuides()
+                .stroke(locked ? Color("OpeningReadyGreen") : Color(uiColor: .secondaryLabel),
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .animation(.easeOut(duration: 0.28), value: locked)
+                .padding(-(locked && !reduceMotion ? Self.lockedGuideInset : Self.openGuideInset))
+                .animation(reduceMotion ? nil : .spring(response: OpeningMotion.lockResponse, dampingFraction: 0.86), value: locked)
+        }
+    }
+
+    /// Stash cards pivot below the deck like a hand of cards.
+    private func stashCard(depth: Int) -> some View {
+        card
+            .fill(isDark ? Color.white.opacity(depth == 1 ? 0.20 : 0.11)
+                         : AppPalette.ink.opacity(depth == 1 ? 0.16 : 0.09))
+            .overlay { card.strokeBorder(isDark ? Color.white.opacity(0.22) : AppPalette.ink.opacity(0.16), lineWidth: 1) }
+            .rotationEffect(.degrees(fanned || reduceMotion ? Double(depth) * -8 : 0),
+                            anchor: UnitPoint(x: 0.5, y: 1.4))
+            .opacity(fanned ? 1 : 0)
+    }
+
+    private var faceCard: some View {
+        card
+            .fill(LinearGradient(colors: AppPalette.foil, startPoint: .topLeading, endPoint: .bottomTrailing))
+            .overlay(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(.white.opacity(0.26))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                .strokeBorder(.white.opacity(0.7), lineWidth: 1)
+                        }
+                        .frame(height: 84)
+                    Capsule().fill(.white.opacity(0.75)).frame(width: 52, height: 7).padding(.top, 6)
+                    Capsule().fill(.white.opacity(0.45)).frame(width: 34, height: 7)
+                }
+                .padding(9)
+            }
+            .overlay {
+                LinearGradient(stops: [
+                    .init(color: .white.opacity(0), location: 0.30),
+                    .init(color: .white.opacity(0.45), location: 0.42),
+                    .init(color: .white.opacity(0), location: 0.50)
+                ], startPoint: .topLeading, endPoint: .bottomTrailing)
+                .offset(x: sheenSwept ? Self.cardSize.width * 1.3 : 0)
+                .clipShape(card)
+            }
+            .overlay { card.strokeBorder(isDark ? Color.white.opacity(0.35) : Color.black.opacity(0.06), lineWidth: 1) }
+            .shadow(color: isDark ? Color.black.opacity(0.55) : AppPalette.ink.opacity(0.22), radius: 14, y: 8)
+    }
+}
+
 struct AppOpeningView: View {
     let phase: AppOpeningPhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
     @State private var textAppeared = false
+    @State private var stashFanned = false
     @State private var guidesLocked = false
+    @State private var sheenSwept = false
     @State private var captionReady = false
 
     private var captionPhase: AppOpeningPhase { captionReady ? phase : phase.isReady ? .opening : phase }
+    private var markHalfHeight: CGFloat { ScanStashMark.cardSize.height / 2 + ScanStashMark.openGuideInset }
 
     var body: some View {
         GeometryReader { geometry in
+            let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
             ZStack {
-                Color(uiColor: .systemBackground)
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(Color(uiColor: .tertiarySystemFill))
-                    .overlay {
-                        Image(systemName: "rectangle.stack.fill")
-                            .font(.system(size: 52, weight: .semibold))
-                            .foregroundStyle(AppPalette.mark)
-                    }
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .strokeBorder(Color("OpeningReadyGreen").opacity(guidesLocked ? 0.20 : 0), lineWidth: 1)
-                            .animation(.easeOut(duration: 0.30), value: guidesLocked)
-                    }
-                    .overlay {
-                        CornerGuides()
-                            .stroke(guidesLocked ? Color(uiColor: .systemGreen) : Color(uiColor: .secondaryLabel),
-                                    style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                            .animation(.easeOut(duration: 0.28), value: guidesLocked)
-                            .padding(guidesLocked && !reduceMotion ? 0 : -12)
-                            .animation(reduceMotion ? nil : .spring(response: OpeningMotion.lockResponse, dampingFraction: 0.92), value: guidesLocked)
-                    }
-                    .frame(width: 132, height: 185)
-                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                Color("LaunchBackground")
+                aurora
+                    .position(center)
+                    .opacity(stashFanned ? 1 : 0)
+                    .animation(.easeOut(duration: 0.7), value: stashFanned)
 
-                VStack(spacing: 6) {
-                    Text("CardScanner")
-                        .font(.title2.weight(.semibold))
-                    Text(captionPhase.caption)
-                        .font(.subheadline)
-                        .monospacedDigit()
-                        .foregroundStyle(captionReady ? Color("OpeningReadyGreen") : .secondary)
-                        .frame(height: 96, alignment: .top)
-                        .contentTransition(.opacity)
-                        .animation(.easeInOut(duration: 0.25), value: captionPhase)
+                ScanStashMark(fanned: stashFanned, locked: guidesLocked, sheenSwept: sheenSwept)
+                    .position(center)
+
+                VStack(spacing: 10) {
+                    Text("ScanStash")
+                        .font(.system(.title, design: .default, weight: .bold))
+                        .fontWidth(.expanded)
+                        .tracking(-0.4)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    HStack(alignment: .firstTextBaseline, spacing: 7) {
+                        ZStack {
+                            Image(systemName: "circle.fill")
+                                .font(.system(size: 7, weight: .bold))
+                                .foregroundStyle(AppPalette.foil[2])
+                                .symbolEffect(.pulse, options: .repeating, isActive: !captionReady && !reduceMotion)
+                                .opacity(captionReady ? 0 : 1)
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(Color("OpeningReadyGreen"))
+                                .symbolEffect(.bounce, value: reduceMotion ? false : captionReady)
+                                .opacity(captionReady ? 1 : 0)
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        Text(captionPhase.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(captionReady ? Color("OpeningReadyGreen") : .secondary)
+                            .contentTransition(.opacity)
+                    }
+                    .font(.subheadline.weight(.medium))
+                    .animation(.easeInOut(duration: 0.25), value: captionPhase)
+                    .frame(height: 96, alignment: .top)
                 }
                 .multilineTextAlignment(.center)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .padding(.horizontal, 24)
                 .fixedSize(horizontal: false, vertical: true)
                 .opacity(textAppeared ? 1 : 0)
-                .offset(y: textAppeared || reduceMotion ? 0 : 5)
-                .padding(.top, geometry.size.height / 2 + 92.5 + 40)
+                .offset(y: textAppeared || reduceMotion ? 0 : 6)
+                .padding(.top, geometry.size.height / 2 + markHalfHeight + 36)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
         }
         .ignoresSafeArea()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(phase.caption.replacingOccurrences(of: "…", with: ""))
-        .onAppear { withAnimation(.easeOut(duration: 0.32)) { textAppeared = true } }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.32)) { textAppeared = true }
+            withAnimation(reduceMotion ? .easeOut(duration: 0.24) : .spring(response: 0.55, dampingFraction: 0.78)) {
+                stashFanned = true
+            }
+        }
         .task(id: phase) {
             guidesLocked = phase.isReady
             captionReady = false
+            sheenSwept = false
             guard phase.isReady else { return }
+            if !reduceMotion { withAnimation(.easeInOut(duration: 0.8)) { sheenSwept = true } }
             do {
                 if !reduceMotion { try await Task.sleep(for: OpeningMotion.captionDelay) }
                 try Task.checkCancellation()
@@ -279,6 +377,19 @@ struct AppOpeningView: View {
         }
     }
 
+    /// Two soft foil blooms behind the mark; launch shows none, so it fades in.
+    private var aurora: some View {
+        let strength = colorScheme == .dark ? 0.20 : 0.26
+        return ZStack {
+            RadialGradient(colors: [AppPalette.foil[0].opacity(strength), .clear],
+                           center: .center, startRadius: 0, endRadius: 170)
+                .offset(x: -48, y: -40)
+            RadialGradient(colors: [AppPalette.foil[2].opacity(strength), .clear],
+                           center: .center, startRadius: 0, endRadius: 190)
+                .offset(x: 44, y: 46)
+        }
+        .frame(width: 460, height: 460)
+    }
 }
 
 /// Only this small observer subscribes to portfolio changes at the root.
