@@ -1,0 +1,4890 @@
+{
+  "snapshot_start": "2026-10-20T20:05:18+0000",
+  "observed_at": "2026-10-21T11:36:45.637597+00:00",
+  "maximum_in_flight": 4,
+  "minimum_request_start_spacing_seconds": 0.25,
+  "groups": [
+    {
+      "group": 126,
+      "url": "https://tcgcsv.com/tcgplayer/2/126/prices",
+      "sha256": "14120f2de66c122612270b064996740cf146d63784a7bc979abb880863ffaf1d",
+      "matches_original_capture": true,
+      "rows": 10,
+      "bytes": 1578
+    },
+    {
+      "group": 127,
+      "url": "https://tcgcsv.com/tcgplayer/2/127/prices",
+      "sha256": "0aaea89ceda2c6d07212041980e6ed3d4bf3da1f3f3916dfe0b4d0972bab9617",
+      "matches_original_capture": true,
+      "rows": 11,
+      "bytes": 1703
+    },
+    {
+      "group": 128,
+      "url": "https://tcgcsv.com/tcgplayer/2/128/prices",
+      "sha256": "7d74288c50cbb3ae9eaf94d34b1ae59975f2c45774ae2b3c0c2bf030c4b9b5b4",
+      "matches_original_capture": true,
+      "rows": 9,
+      "bytes": 1405
+    },
+    {
+      "group": 129,
+      "url": "https://tcgcsv.com/tcgplayer/2/129/prices",
+      "sha256": "eb7c6fb7432722b0d2273a613a78717b880172b3abb3dd932891c0bf2ad06653",
+      "matches_original_capture": true,
+      "rows": 12,
+      "bytes": 1864
+    },
+    {
+      "group": 130,
+      "url": "https://tcgcsv.com/tcgplayer/2/130/prices",
+      "sha256": "35d019a0b473859e9a69584993e0fbc46c9988e2569f52f9765c1ee1e17d9a98",
+      "matches_original_capture": true,
+      "rows": 9,
+      "bytes": 1401
+    },
+    {
+      "group": 131,
+      "url": "https://tcgcsv.com/tcgplayer/2/131/prices",
+      "sha256": "9885b1c6701c8e7715dc216ea0b684d53612d83e1e4aec05adacb404278966d4",
+      "matches_original_capture": true,
+      "rows": 13,
+      "bytes": 2016
+    },
+    {
+      "group": 132,
+      "url": "https://tcgcsv.com/tcgplayer/2/132/prices",
+      "sha256": "7ca4a63a459efe76e41652397bc7bda7eeaa6601f91eb510426c87ff6d248ba9",
+      "matches_original_capture": true,
+      "rows": 16,
+      "bytes": 2465
+    },
+    {
+      "group": 133,
+      "url": "https://tcgcsv.com/tcgplayer/2/133/prices",
+      "sha256": "13c7429855221a235734b6f6528dcdc9602db765365d7c41ed50e749f7b18303",
+      "matches_original_capture": true,
+      "rows": 28,
+      "bytes": 4221
+    },
+    {
+      "group": 134,
+      "url": "https://tcgcsv.com/tcgplayer/2/134/prices",
+      "sha256": "3ca3cc577fd3085b34d6eb99bcb87f7e908c3f9efc9e68aff778d07230fcfc66",
+      "matches_original_capture": true,
+      "rows": 11,
+      "bytes": 1683
+    },
+    {
+      "group": 135,
+      "url": "https://tcgcsv.com/tcgplayer/2/135/prices",
+      "sha256": "8289fa4bff54332dffab0b0c9962e00ed9f017fd7f0dff8d07f83f874cea7c1d",
+      "matches_original_capture": true,
+      "rows": 22,
+      "bytes": 3324
+    },
+    {
+      "group": 136,
+      "url": "https://tcgcsv.com/tcgplayer/2/136/prices",
+      "sha256": "805b66498fa9e6ca240960b8d6c225bb9c2fe1a456dd3e9e4be50ce615917c9f",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 785
+    },
+    {
+      "group": 137,
+      "url": "https://tcgcsv.com/tcgplayer/2/137/prices",
+      "sha256": "25890104ea5a4bc6af06a8f7e6dc0baeffa1d3a8aedc047fdc4df6ef614b4b3c",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3996
+    },
+    {
+      "group": 139,
+      "url": "https://tcgcsv.com/tcgplayer/2/139/prices",
+      "sha256": "127127aa26550848ec7de0eaa9039b7122d4c88f114fe1d64e68ad33cb4601d5",
+      "matches_original_capture": true,
+      "rows": 91,
+      "bytes": 13834
+    },
+    {
+      "group": 140,
+      "url": "https://tcgcsv.com/tcgplayer/2/140/prices",
+      "sha256": "1b1396b044b4835e68dcc889e8fa1498f2684ab0979c772ecf53db66102a1bff",
+      "matches_original_capture": true,
+      "rows": 84,
+      "bytes": 12779
+    },
+    {
+      "group": 141,
+      "url": "https://tcgcsv.com/tcgplayer/2/141/prices",
+      "sha256": "f4f5b1e8b8bd85957db0d7525c5c59164789e15d967f2fe9e21153a50ce76af3",
+      "matches_original_capture": true,
+      "rows": 230,
+      "bytes": 35057
+    },
+    {
+      "group": 143,
+      "url": "https://tcgcsv.com/tcgplayer/2/143/prices",
+      "sha256": "06dc76380dd56920e99e4a76114a5309ba11c2c179040c81a6bdfed3811f9a6e",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 977
+    },
+    {
+      "group": 144,
+      "url": "https://tcgcsv.com/tcgplayer/2/144/prices",
+      "sha256": "e2f980a96e6505f66705687936398a0638f86fd4250435f643de3acf48a744aa",
+      "matches_original_capture": true,
+      "rows": 228,
+      "bytes": 34796
+    },
+    {
+      "group": 145,
+      "url": "https://tcgcsv.com/tcgplayer/2/145/prices",
+      "sha256": "1b33fd60d5696dc6cd123d43079777f063679a58ad0abf28cff8c4195d7bd0c8",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 345
+    },
+    {
+      "group": 146,
+      "url": "https://tcgcsv.com/tcgplayer/2/146/prices",
+      "sha256": "dcfb07dbb10506a78d705723f4bae135d2f257cb552d549984e910b879f8bcd6",
+      "matches_original_capture": true,
+      "rows": 228,
+      "bytes": 34628
+    },
+    {
+      "group": 147,
+      "url": "https://tcgcsv.com/tcgplayer/2/147/prices",
+      "sha256": "a0f2e024c18c7da6f9ea58458c9f4af61a4759f3c6e7504b6dcdeaa7c0ceaacb",
+      "matches_original_capture": true,
+      "rows": 13,
+      "bytes": 1983
+    },
+    {
+      "group": 149,
+      "url": "https://tcgcsv.com/tcgplayer/2/149/prices",
+      "sha256": "56a61d51fec9adb1c765455016a43840ec77c557e930bea00ce97e64a45953f3",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3093
+    },
+    {
+      "group": 150,
+      "url": "https://tcgcsv.com/tcgplayer/2/150/prices",
+      "sha256": "b24aba76392e6b07eac85b7bb7d3d3694d14118b1d94765517a7b98c1d29f9de",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3094
+    },
+    {
+      "group": 151,
+      "url": "https://tcgcsv.com/tcgplayer/2/151/prices",
+      "sha256": "7c3f2ecbf08cdf4a8d7c1bd2a649c413a23a53d363b0ada8b680c944e42aca85",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3078
+    },
+    {
+      "group": 152,
+      "url": "https://tcgcsv.com/tcgplayer/2/152/prices",
+      "sha256": "5a2be72f7a92a04fcb8f4787fb2015488c681f2eb4364c398d65e623bac9dcbd",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3080
+    },
+    {
+      "group": 153,
+      "url": "https://tcgcsv.com/tcgplayer/2/153/prices",
+      "sha256": "cde67d3100949f02903614f4232668a82c51c10856d44db2d7152363529f2d15",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3085
+    },
+    {
+      "group": 154,
+      "url": "https://tcgcsv.com/tcgplayer/2/154/prices",
+      "sha256": "838d1f0b6f9429cb3f2cd18dcb37cc84f735e168968a2f470d69732f2626a848",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3079
+    },
+    {
+      "group": 155,
+      "url": "https://tcgcsv.com/tcgplayer/2/155/prices",
+      "sha256": "35930418df55ce8aef9482939c781cb504ae3705fe7dde210268b1a243c8fb1b",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 2930
+    },
+    {
+      "group": 156,
+      "url": "https://tcgcsv.com/tcgplayer/2/156/prices",
+      "sha256": "89f87ad1e375ab41d4b6735f9d63d379eeff6393bd02eafc51fd44b2fdcc3dcb",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3086
+    },
+    {
+      "group": 157,
+      "url": "https://tcgcsv.com/tcgplayer/2/157/prices",
+      "sha256": "66e7ac386edd2fd937cee3b7c7ff3082fafd0a235e69fb92b5d2e41cca0183cd",
+      "matches_original_capture": true,
+      "rows": 226,
+      "bytes": 34395
+    },
+    {
+      "group": 158,
+      "url": "https://tcgcsv.com/tcgplayer/2/158/prices",
+      "sha256": "1a4c97c2301030702907f46ff7674183de2db9bb1c801cfddf4901e3518fd802",
+      "matches_original_capture": true,
+      "rows": 229,
+      "bytes": 34919
+    },
+    {
+      "group": 159,
+      "url": "https://tcgcsv.com/tcgplayer/2/159/prices",
+      "sha256": "de5524632926e22a34c9ddf991deb24c046349136fb4b5a6826fdc4549444b2e",
+      "matches_original_capture": true,
+      "rows": 161,
+      "bytes": 24529
+    },
+    {
+      "group": 160,
+      "url": "https://tcgcsv.com/tcgplayer/2/160/prices",
+      "sha256": "2b568c168fbd981c6edac96cb990387ec9519ff7afff5950f41e1274c5071c0d",
+      "matches_original_capture": true,
+      "rows": 171,
+      "bytes": 26137
+    },
+    {
+      "group": 163,
+      "url": "https://tcgcsv.com/tcgplayer/2/163/prices",
+      "sha256": "4636cec239ed860f9cf38a70cafba81dc955654ade6d576fbf7904ae53cb4384",
+      "matches_original_capture": true,
+      "rows": 252,
+      "bytes": 38034
+    },
+    {
+      "group": 164,
+      "url": "https://tcgcsv.com/tcgplayer/2/164/prices",
+      "sha256": "2e6c7e8975e33966cd78add746e2ab39dc94b490bf88913593ee1d5c23a6f5d9",
+      "matches_original_capture": true,
+      "rows": 252,
+      "bytes": 37990
+    },
+    {
+      "group": 165,
+      "url": "https://tcgcsv.com/tcgplayer/2/165/prices",
+      "sha256": "8a6b9022716ac98d5390f30e2942111f72980ec716bd084609cbd31c250a973a",
+      "matches_original_capture": true,
+      "rows": 217,
+      "bytes": 32936
+    },
+    {
+      "group": 167,
+      "url": "https://tcgcsv.com/tcgplayer/2/167/prices",
+      "sha256": "2194b38935a68f3435b3e42eaef783ecedf299b5f9f3b9d5c704b660e75b4f49",
+      "matches_original_capture": true,
+      "rows": 113,
+      "bytes": 17106
+    },
+    {
+      "group": 172,
+      "url": "https://tcgcsv.com/tcgplayer/2/172/prices",
+      "sha256": "8e8e6685e9375e553551b91d131f3b7ce9becd3656dbe44dba6895c5310bad21",
+      "matches_original_capture": true,
+      "rows": 269,
+      "bytes": 40551
+    },
+    {
+      "group": 173,
+      "url": "https://tcgcsv.com/tcgplayer/2/173/prices",
+      "sha256": "ebd38225a69731b25d92d79ec8b86d1d1bb84e72b2211281d01f70e74ba9769b",
+      "matches_original_capture": true,
+      "rows": 226,
+      "bytes": 34140
+    },
+    {
+      "group": 174,
+      "url": "https://tcgcsv.com/tcgplayer/2/174/prices",
+      "sha256": "5855946b623378eb1b2db7dc29fc9082fbd4b446ff4bad0e2ed94320c4be7e31",
+      "matches_original_capture": true,
+      "rows": 241,
+      "bytes": 36443
+    },
+    {
+      "group": 175,
+      "url": "https://tcgcsv.com/tcgplayer/2/175/prices",
+      "sha256": "74b75728fc3a64887ea1f276fd1edfaa0fd64445dfbba4338360d28ea283542d",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 807
+    },
+    {
+      "group": 176,
+      "url": "https://tcgcsv.com/tcgplayer/2/176/prices",
+      "sha256": "66a2b1fe834e7089d6d7a9bd1bd15c87a7d51596be45fa446b1ebeae844da2ac",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 493
+    },
+    {
+      "group": 178,
+      "url": "https://tcgcsv.com/tcgplayer/2/178/prices",
+      "sha256": "d221d20809dc1edafc3784148ef19276a9a5c3ab54d8ea583cd30150fcba48cc",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 197
+    },
+    {
+      "group": 179,
+      "url": "https://tcgcsv.com/tcgplayer/2/179/prices",
+      "sha256": "9e88f71994e59b575875d3130f825eecf9afad52d4b20512e7f30fa2277bda09",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3267
+    },
+    {
+      "group": 182,
+      "url": "https://tcgcsv.com/tcgplayer/2/182/prices",
+      "sha256": "1f6f8950ebc5214bc36f2a95c33494815fb4a04b2e7ee42f01569851898b21e4",
+      "matches_original_capture": true,
+      "rows": 719,
+      "bytes": 108743
+    },
+    {
+      "group": 183,
+      "url": "https://tcgcsv.com/tcgplayer/2/183/prices",
+      "sha256": "da01f8c5144dbfe60eb2064965c092e31dd5321a002b1bb913e1084e09af47e7",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 494
+    },
+    {
+      "group": 184,
+      "url": "https://tcgcsv.com/tcgplayer/2/184/prices",
+      "sha256": "b0d7affb2af48108e6ad0fb8362f9a01ac68341778f0c3ff2e23b2af5983ee02",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9455
+    },
+    {
+      "group": 185,
+      "url": "https://tcgcsv.com/tcgplayer/2/185/prices",
+      "sha256": "1816dd943d34f06922cb137b297e0f271896d36aa02422d3bbe53293dd3618c9",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9437
+    },
+    {
+      "group": 186,
+      "url": "https://tcgcsv.com/tcgplayer/2/186/prices",
+      "sha256": "09f2c404e275643ddef4d0f9aa49be9a8991f7252371a75dc8e4e39d1fed257b",
+      "matches_original_capture": true,
+      "rows": 32,
+      "bytes": 4919
+    },
+    {
+      "group": 188,
+      "url": "https://tcgcsv.com/tcgplayer/2/188/prices",
+      "sha256": "50f275c8f769172256257110058d1625eaafffd181ef9871b2a843080b941fb4",
+      "matches_original_capture": true,
+      "rows": 61,
+      "bytes": 9306
+    },
+    {
+      "group": 189,
+      "url": "https://tcgcsv.com/tcgplayer/2/189/prices",
+      "sha256": "2ed8232d7fdf5111f53bcb00c23d3131d9286d7236a496705407930ade17d9ba",
+      "matches_original_capture": true,
+      "rows": 61,
+      "bytes": 9287
+    },
+    {
+      "group": 190,
+      "url": "https://tcgcsv.com/tcgplayer/2/190/prices",
+      "sha256": "b6475e8e14a0adcc80649338bd25da46fe473792c2b2367ab77cc15a7d938c0f",
+      "matches_original_capture": true,
+      "rows": 63,
+      "bytes": 9597
+    },
+    {
+      "group": 191,
+      "url": "https://tcgcsv.com/tcgplayer/2/191/prices",
+      "sha256": "2463a8506d04f0eb15e274d81b1e55f973c1dee843417b6f68a7205a5388a6f5",
+      "matches_original_capture": true,
+      "rows": 64,
+      "bytes": 9737
+    },
+    {
+      "group": 192,
+      "url": "https://tcgcsv.com/tcgplayer/2/192/prices",
+      "sha256": "71460e9f6c9ab6559772957f08c484cc86de37624317149869cc194c4453497c",
+      "matches_original_capture": true,
+      "rows": 10,
+      "bytes": 1537
+    },
+    {
+      "group": 193,
+      "url": "https://tcgcsv.com/tcgplayer/2/193/prices",
+      "sha256": "aaad7dfc92b213441a4702051122ea287f0d2d3fbd33a4c54e6eef93c74f559d",
+      "matches_original_capture": true,
+      "rows": 63,
+      "bytes": 9582
+    },
+    {
+      "group": 194,
+      "url": "https://tcgcsv.com/tcgplayer/2/194/prices",
+      "sha256": "ea29114c087c2ff8eeba60f65cb64cd67b541e6a7ab633c0a1a98a2842586c2d",
+      "matches_original_capture": true,
+      "rows": 63,
+      "bytes": 9600
+    },
+    {
+      "group": 195,
+      "url": "https://tcgcsv.com/tcgplayer/2/195/prices",
+      "sha256": "d02e835c48311a5ac666dec1bfe1c62111fc4b2c2a1325c618ab548144cb0f3f",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 489
+    },
+    {
+      "group": 196,
+      "url": "https://tcgcsv.com/tcgplayer/2/196/prices",
+      "sha256": "dfe407535598230607e8ffb9f066b95737d77c1b73c7b0e50affc276a5771406",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9453
+    },
+    {
+      "group": 197,
+      "url": "https://tcgcsv.com/tcgplayer/2/197/prices",
+      "sha256": "ffdcef5bbff0c36c2eb6970136c26de708e89dc8a426fb050f26b596cbb4c43b",
+      "matches_original_capture": true,
+      "rows": 82,
+      "bytes": 12524
+    },
+    {
+      "group": 198,
+      "url": "https://tcgcsv.com/tcgplayer/2/198/prices",
+      "sha256": "13f581887bc451a7714158a6b82edeb4ca8abe20f9088127d999081f30bb1bd1",
+      "matches_original_capture": true,
+      "rows": 227,
+      "bytes": 34508
+    },
+    {
+      "group": 200,
+      "url": "https://tcgcsv.com/tcgplayer/2/200/prices",
+      "sha256": "238c19d5a6c14dc21beb9fb7e65c05c32d0f69ac06bf8571684348151d52ad31",
+      "matches_original_capture": true,
+      "rows": 179,
+      "bytes": 27336
+    },
+    {
+      "group": 201,
+      "url": "https://tcgcsv.com/tcgplayer/2/201/prices",
+      "sha256": "8018743da622eca7d7daa1675467d4ffd46feeb380034f647ca7dcc7f58fae0d",
+      "matches_original_capture": true,
+      "rows": 161,
+      "bytes": 24573
+    },
+    {
+      "group": 202,
+      "url": "https://tcgcsv.com/tcgplayer/2/202/prices",
+      "sha256": "4b100e6161055a8976c57a3b78af6cb2ab1a455565be23cbe9517b9182787b81",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 487
+    },
+    {
+      "group": 203,
+      "url": "https://tcgcsv.com/tcgplayer/2/203/prices",
+      "sha256": "dad7b5c5ce8793dcb520508edf6025b1d02d3edb5c3e506701cc710f9f9298e6",
+      "matches_original_capture": true,
+      "rows": 225,
+      "bytes": 34196
+    },
+    {
+      "group": 204,
+      "url": "https://tcgcsv.com/tcgplayer/2/204/prices",
+      "sha256": "9f2d11b6b68a13c7a7590144a0d54929af2a39d20e62ba4269f4b120df77a17d",
+      "matches_original_capture": true,
+      "rows": 173,
+      "bytes": 26450
+    },
+    {
+      "group": 205,
+      "url": "https://tcgcsv.com/tcgplayer/2/205/prices",
+      "sha256": "e4fa060033dc9d443cb793a4bb1b753a7912cf04c5c5852890ba4e811d03cdca",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 648
+    },
+    {
+      "group": 208,
+      "url": "https://tcgcsv.com/tcgplayer/2/208/prices",
+      "sha256": "953f4a18a6265f6c192ca4fd203ae5f14f4e545fc32e9b0a06bb9933beb32dac",
+      "matches_original_capture": true,
+      "rows": 194,
+      "bytes": 29656
+    },
+    {
+      "group": 209,
+      "url": "https://tcgcsv.com/tcgplayer/2/209/prices",
+      "sha256": "ef9ee6f896f9c99c351572d7b92fdef93e2079c13a6ec68f5dca2c5ba5352338",
+      "matches_original_capture": true,
+      "rows": 230,
+      "bytes": 34956
+    },
+    {
+      "group": 210,
+      "url": "https://tcgcsv.com/tcgplayer/2/210/prices",
+      "sha256": "48305488e8b3de78af67f3ff09e905c88fa6fae8e9461f595d9456b042389a80",
+      "matches_original_capture": true,
+      "rows": 224,
+      "bytes": 34192
+    },
+    {
+      "group": 211,
+      "url": "https://tcgcsv.com/tcgplayer/2/211/prices",
+      "sha256": "4c991ad9d0a6425461d836b68f6b2fe8a90a804a51b2fa8579123179fb977f87",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 342
+    },
+    {
+      "group": 214,
+      "url": "https://tcgcsv.com/tcgplayer/2/214/prices",
+      "sha256": "f7a7634c07f942f314cc6cf4d69d499af56590758a4c3421ab9a3d1a0000b806",
+      "matches_original_capture": true,
+      "rows": 45,
+      "bytes": 6745
+    },
+    {
+      "group": 215,
+      "url": "https://tcgcsv.com/tcgplayer/2/215/prices",
+      "sha256": "fa33cb265aa5ba7ddc41a21f18eb2e99ae6576e2de64b29534bbd2b8a4cce686",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 7789
+    },
+    {
+      "group": 216,
+      "url": "https://tcgcsv.com/tcgplayer/2/216/prices",
+      "sha256": "30614228eb9137d354b641ae39fd9500f16790a4aa517ba8ee0506ec5de7f2c8",
+      "matches_original_capture": true,
+      "rows": 53,
+      "bytes": 7910
+    },
+    {
+      "group": 217,
+      "url": "https://tcgcsv.com/tcgplayer/2/217/prices",
+      "sha256": "d37105b37cdcdaaa93323ad74c637643543aa5bbe242f462906cbadda398303c",
+      "matches_original_capture": true,
+      "rows": 51,
+      "bytes": 7624
+    },
+    {
+      "group": 218,
+      "url": "https://tcgcsv.com/tcgplayer/2/218/prices",
+      "sha256": "ea4db0baf04ec2886c8fc03c48db291486768c396a4e07f344f4080b33834599",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 489
+    },
+    {
+      "group": 220,
+      "url": "https://tcgcsv.com/tcgplayer/2/220/prices",
+      "sha256": "dd51c8c2888b699f37a75d5093b008602e9c145bb7ff528a0ad1ae8ad170013d",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 489
+    },
+    {
+      "group": 222,
+      "url": "https://tcgcsv.com/tcgplayer/2/222/prices",
+      "sha256": "929f1c4a6a61995fc11b35156fc82ff3b961d35f5302f7d8cbd678dc246f6a50",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 488
+    },
+    {
+      "group": 223,
+      "url": "https://tcgcsv.com/tcgplayer/2/223/prices",
+      "sha256": "7f0c8b84437619db0be341be45f952a1d0d17cf2337c4a4fb929db3b0e3979f3",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 821
+    },
+    {
+      "group": 224,
+      "url": "https://tcgcsv.com/tcgplayer/2/224/prices",
+      "sha256": "c3b33fbd462e2c6b1b06ae5c5d4503960373a65ddc4660be307aeb1b6909d1ca",
+      "matches_original_capture": true,
+      "rows": 61,
+      "bytes": 9184
+    },
+    {
+      "group": 225,
+      "url": "https://tcgcsv.com/tcgplayer/2/225/prices",
+      "sha256": "25df988bf7e7f0d7130727c0bf562e7149c919fb43b89f21cd8327db462f038a",
+      "matches_original_capture": true,
+      "rows": 123,
+      "bytes": 18664
+    },
+    {
+      "group": 226,
+      "url": "https://tcgcsv.com/tcgplayer/2/226/prices",
+      "sha256": "fb1744ea7f946f3411452c3d136cd33c8e42dc4f0dd5b29ddbb7ef90a782e51a",
+      "matches_original_capture": true,
+      "rows": 122,
+      "bytes": 18509
+    },
+    {
+      "group": 227,
+      "url": "https://tcgcsv.com/tcgplayer/2/227/prices",
+      "sha256": "c60143095202c9983cbe9e64e18c233b432d87d6f1128716404192fc46ef58bd",
+      "matches_original_capture": true,
+      "rows": 126,
+      "bytes": 19113
+    },
+    {
+      "group": 228,
+      "url": "https://tcgcsv.com/tcgplayer/2/228/prices",
+      "sha256": "6e7b0fab6e80ff3da1b298dc5267558e2a76e13e9b7bdda94134b8011b3031cf",
+      "matches_original_capture": true,
+      "rows": 125,
+      "bytes": 18957
+    },
+    {
+      "group": 232,
+      "url": "https://tcgcsv.com/tcgplayer/2/232/prices",
+      "sha256": "e3e31c9f94d9b906d5512d8c6957c11f610224c34530ddf80bbcce5fd786331f",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 959
+    },
+    {
+      "group": 233,
+      "url": "https://tcgcsv.com/tcgplayer/2/233/prices",
+      "sha256": "3bce2334b6cffce581f30724d7388108530925651a478513ff4e9053652d8ffc",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 961
+    },
+    {
+      "group": 234,
+      "url": "https://tcgcsv.com/tcgplayer/2/234/prices",
+      "sha256": "b656423eb6d17211adfbdf6763c17d1c5de7c061c058dda1c5aee6c813d6c70a",
+      "matches_original_capture": true,
+      "rows": 7,
+      "bytes": 1112
+    },
+    {
+      "group": 235,
+      "url": "https://tcgcsv.com/tcgplayer/2/235/prices",
+      "sha256": "bc2c0e7824690e1be98a6f47199c2c6776f19a28d1cd76fdec0f082c35ca609f",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 961
+    },
+    {
+      "group": 236,
+      "url": "https://tcgcsv.com/tcgplayer/2/236/prices",
+      "sha256": "b99f1049a1bdb8c23d58fe8cfe66d60f9aae6dcb13f5336ae5304cdcf88a6cc0",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 954
+    },
+    {
+      "group": 237,
+      "url": "https://tcgcsv.com/tcgplayer/2/237/prices",
+      "sha256": "f343c6fde492fa558f44f93a537df28b409a34a7c710d0504ae84a23ecae4900",
+      "matches_original_capture": true,
+      "rows": 233,
+      "bytes": 35415
+    },
+    {
+      "group": 238,
+      "url": "https://tcgcsv.com/tcgplayer/2/238/prices",
+      "sha256": "fb92b7a3710cb8f8acf2fadb6ad5ae69eb3bb46570469db545115de26f7d08e2",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 7926
+    },
+    {
+      "group": 239,
+      "url": "https://tcgcsv.com/tcgplayer/2/239/prices",
+      "sha256": "0485ce18f3684aa6de8145cf965299496fd64462485e4aa80869f731be4e8766",
+      "matches_original_capture": true,
+      "rows": 53,
+      "bytes": 8080
+    },
+    {
+      "group": 241,
+      "url": "https://tcgcsv.com/tcgplayer/2/241/prices",
+      "sha256": "417ac7ce0759419e2bae99e04e714928a58fb533520d657bc2800c4a6c28eb45",
+      "matches_original_capture": true,
+      "rows": 214,
+      "bytes": 32555
+    },
+    {
+      "group": 243,
+      "url": "https://tcgcsv.com/tcgplayer/2/243/prices",
+      "sha256": "d4b7a50a89cf8ec3c9a97c38b88b9805bbdb20b42804baca83f461d77209c944",
+      "matches_original_capture": true,
+      "rows": 206,
+      "bytes": 31308
+    },
+    {
+      "group": 245,
+      "url": "https://tcgcsv.com/tcgplayer/2/245/prices",
+      "sha256": "7d66604b29c1d6ae10ea2ad68086c172c714985505e55a52f76b5dd9dbc03483",
+      "matches_original_capture": true,
+      "rows": 547,
+      "bytes": 82930
+    },
+    {
+      "group": 246,
+      "url": "https://tcgcsv.com/tcgplayer/2/246/prices",
+      "sha256": "f867e5b2efacccba6194a7d033a3a0b3317c79fd571a0dff3befd692a4fbecae",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 192
+    },
+    {
+      "group": 247,
+      "url": "https://tcgcsv.com/tcgplayer/2/247/prices",
+      "sha256": "c08a1115fef6bd82f63801df97e477053e085146f4b3b3cac8ce4b945fd949ea",
+      "matches_original_capture": true,
+      "rows": 228,
+      "bytes": 34739
+    },
+    {
+      "group": 248,
+      "url": "https://tcgcsv.com/tcgplayer/2/248/prices",
+      "sha256": "5c26ebb44aa8da00270dbdc4dcfe5b76dad22d26038cd43f447190d70614b350",
+      "matches_original_capture": true,
+      "rows": 176,
+      "bytes": 26857
+    },
+    {
+      "group": 249,
+      "url": "https://tcgcsv.com/tcgplayer/2/249/prices",
+      "sha256": "53517b13f9d1559b3adf3d6a780e0f3d4d2d27919a44dcf8e4d859c0f860bda6",
+      "matches_original_capture": true,
+      "rows": 254,
+      "bytes": 38715
+    },
+    {
+      "group": 250,
+      "url": "https://tcgcsv.com/tcgplayer/2/250/prices",
+      "sha256": "68628f47680365dfbef7618b7e29eec8c9e60de504259419aa60778d7ef70b27",
+      "matches_original_capture": true,
+      "rows": 219,
+      "bytes": 33281
+    },
+    {
+      "group": 251,
+      "url": "https://tcgcsv.com/tcgplayer/2/251/prices",
+      "sha256": "afcfdd71c98dc94c75439659268b77a5a398b1e76d91c28690278c43c04f91c9",
+      "matches_original_capture": true,
+      "rows": 7,
+      "bytes": 1093
+    },
+    {
+      "group": 252,
+      "url": "https://tcgcsv.com/tcgplayer/2/252/prices",
+      "sha256": "a9e7c9cafc0e243e7b43dee1808219c8eaecfe0e6a5ddaa990b42e86f9355d9d",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 948
+    },
+    {
+      "group": 253,
+      "url": "https://tcgcsv.com/tcgplayer/2/253/prices",
+      "sha256": "345b8851954c2da30c43c38c3f5e85f60d7de3b3c7c72db8a910467e2065c1aa",
+      "matches_original_capture": true,
+      "rows": 16,
+      "bytes": 2438
+    },
+    {
+      "group": 254,
+      "url": "https://tcgcsv.com/tcgplayer/2/254/prices",
+      "sha256": "bf79e48917767ef50f7d1945accc2ce1917580fa0266cf8937559fd06e56ae88",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3171
+    },
+    {
+      "group": 255,
+      "url": "https://tcgcsv.com/tcgplayer/2/255/prices",
+      "sha256": "3f1ee8fccf49f5e220c0e39297a7ac1e50fc906ee8bc87aec23ad1c353c3bdb1",
+      "matches_original_capture": true,
+      "rows": 292,
+      "bytes": 44451
+    },
+    {
+      "group": 256,
+      "url": "https://tcgcsv.com/tcgplayer/2/256/prices",
+      "sha256": "c39bb6aa75e820aa397ada9c23c4b8308ec293f0bc7410bdbbe56ba7b03c9880",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 487
+    },
+    {
+      "group": 257,
+      "url": "https://tcgcsv.com/tcgplayer/2/257/prices",
+      "sha256": "15660ebaab30af0862ec7af7de700779245b203444a219622a2e56ea27d55494",
+      "matches_original_capture": true,
+      "rows": 231,
+      "bytes": 35104
+    },
+    {
+      "group": 258,
+      "url": "https://tcgcsv.com/tcgplayer/2/258/prices",
+      "sha256": "ad7c3d57eb7e059258456d301fcfc77d0a6b6974df3dc07fa121bcdaac494807",
+      "matches_original_capture": true,
+      "rows": 227,
+      "bytes": 34609
+    },
+    {
+      "group": 259,
+      "url": "https://tcgcsv.com/tcgplayer/2/259/prices",
+      "sha256": "11f85f23b7fb956a2e7c0f5ab6de2ec4d402dac16a00688af4b22278a7d35528",
+      "matches_original_capture": true,
+      "rows": 213,
+      "bytes": 32387
+    },
+    {
+      "group": 260,
+      "url": "https://tcgcsv.com/tcgplayer/2/260/prices",
+      "sha256": "69bc48b4e4cb230ca93f25fce1147430813d05b47fb386d8ee2e98c7abc48a16",
+      "matches_original_capture": true,
+      "rows": 219,
+      "bytes": 33259
+    },
+    {
+      "group": 261,
+      "url": "https://tcgcsv.com/tcgplayer/2/261/prices",
+      "sha256": "1718fc9d3979d72aee8ecdfaae8bbd0546801f8f993176f34722fc02e7129f11",
+      "matches_original_capture": true,
+      "rows": 225,
+      "bytes": 34190
+    },
+    {
+      "group": 262,
+      "url": "https://tcgcsv.com/tcgplayer/2/262/prices",
+      "sha256": "015b1270a2edb9786303d780053bb74734c684b702fbf2625e9f2be4c199f8b6",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 497
+    },
+    {
+      "group": 264,
+      "url": "https://tcgcsv.com/tcgplayer/2/264/prices",
+      "sha256": "a0d5e3fc65be837e4fc6722651ddd8c9a960299260bd66fc86aa079654c3df75",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 800
+    },
+    {
+      "group": 265,
+      "url": "https://tcgcsv.com/tcgplayer/2/265/prices",
+      "sha256": "69a01210085252f00b783a214b95b5ff84bc190292e136318fd651ef27a89212",
+      "matches_original_capture": true,
+      "rows": 171,
+      "bytes": 26119
+    },
+    {
+      "group": 266,
+      "url": "https://tcgcsv.com/tcgplayer/2/266/prices",
+      "sha256": "1a5e02c3e268ba4f46104487e222773d068876eb158a33576e5b6c520a65ea56",
+      "matches_original_capture": true,
+      "rows": 23,
+      "bytes": 3526
+    },
+    {
+      "group": 267,
+      "url": "https://tcgcsv.com/tcgplayer/2/267/prices",
+      "sha256": "90070f175c12eabef02a246b282e0ab1f720c424ebec48e01be55a258cc85052",
+      "matches_original_capture": true,
+      "rows": 32,
+      "bytes": 4918
+    },
+    {
+      "group": 268,
+      "url": "https://tcgcsv.com/tcgplayer/2/268/prices",
+      "sha256": "ce92833c98a7adcb973211a3089de67e7ad9ea5227ffa7c6547d7297ba838732",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 194
+    },
+    {
+      "group": 269,
+      "url": "https://tcgcsv.com/tcgplayer/2/269/prices",
+      "sha256": "b490a729f9272dde37557444a198bd6fc7c3fd209092ebd5b896aca5475ba587",
+      "matches_original_capture": true,
+      "rows": 231,
+      "bytes": 35030
+    },
+    {
+      "group": 270,
+      "url": "https://tcgcsv.com/tcgplayer/2/270/prices",
+      "sha256": "422c9e9b09800892245f6c38b37b5acccc2b3a31f97a1557586debdec7144942",
+      "matches_original_capture": true,
+      "rows": 226,
+      "bytes": 34464
+    },
+    {
+      "group": 271,
+      "url": "https://tcgcsv.com/tcgplayer/2/271/prices",
+      "sha256": "acb3c0b72dff55b3bdcd88f67d302cd6332a99f37ec5eaa55430cbbdf08e7d15",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 340
+    },
+    {
+      "group": 272,
+      "url": "https://tcgcsv.com/tcgplayer/2/272/prices",
+      "sha256": "a8b75a0cd00df5bf84dea5a3ed8c5fbcb04c1e2e25166ebba064791fdb994d21",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 197
+    },
+    {
+      "group": 274,
+      "url": "https://tcgcsv.com/tcgplayer/2/274/prices",
+      "sha256": "0312e70aadfe31fd584fa56b747c3010cbb5444f2effc2d28b4812d9183cc570",
+      "matches_original_capture": true,
+      "rows": 164,
+      "bytes": 25025
+    },
+    {
+      "group": 275,
+      "url": "https://tcgcsv.com/tcgplayer/2/275/prices",
+      "sha256": "2349e040b5531f2e5b8010a79dae3be74bbf682697806c50929f02b290d6038e",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 944
+    },
+    {
+      "group": 276,
+      "url": "https://tcgcsv.com/tcgplayer/2/276/prices",
+      "sha256": "5ebdc57dc1db5a54202739fa4001125db0c9329f998d4d3f5d5f0a60432e9b03",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 342
+    },
+    {
+      "group": 277,
+      "url": "https://tcgcsv.com/tcgplayer/2/277/prices",
+      "sha256": "596bab378a8a04765bb211a70632b580f019e359504b7616b8028bf364676cd3",
+      "matches_original_capture": true,
+      "rows": 177,
+      "bytes": 27007
+    },
+    {
+      "group": 279,
+      "url": "https://tcgcsv.com/tcgplayer/2/279/prices",
+      "sha256": "358d666e27b62a22b30bd0b958b8802a650f42a0defdd3e568f3c8e26a7637ad",
+      "matches_original_capture": true,
+      "rows": 0,
+      "bytes": 46
+    },
+    {
+      "group": 280,
+      "url": "https://tcgcsv.com/tcgplayer/2/280/prices",
+      "sha256": "7f5c1eef3883bb89a449f4eb02653c53264c83a24edace9a4ec410ed1521bd8c",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 524
+    },
+    {
+      "group": 281,
+      "url": "https://tcgcsv.com/tcgplayer/2/281/prices",
+      "sha256": "863f459bdc6ba76bd1a40d8c111e7f03f4cef11f99659e6efd88b7288dbc7934",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 15117
+    },
+    {
+      "group": 282,
+      "url": "https://tcgcsv.com/tcgplayer/2/282/prices",
+      "sha256": "baca8bf1dd3c2b836cb62ac396e4dcbce21f5b4861c27ab76fb88fd546101940",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 641
+    },
+    {
+      "group": 283,
+      "url": "https://tcgcsv.com/tcgplayer/2/283/prices",
+      "sha256": "7f29dc075fce43d869da643b6f3d3e2f83e80f6ba4ab6251ae3e60ee8bc4c7d9",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 643
+    },
+    {
+      "group": 284,
+      "url": "https://tcgcsv.com/tcgplayer/2/284/prices",
+      "sha256": "4ed521f0640369223be8efa2d5a62dff326329522711b97139144f5f650bd304",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 642
+    },
+    {
+      "group": 285,
+      "url": "https://tcgcsv.com/tcgplayer/2/285/prices",
+      "sha256": "2bbb43753878aa304e02290d2a667b2a755429f0c4133c19e814f354cc679d11",
+      "matches_original_capture": true,
+      "rows": 173,
+      "bytes": 26443
+    },
+    {
+      "group": 286,
+      "url": "https://tcgcsv.com/tcgplayer/2/286/prices",
+      "sha256": "cde4307f414c34052ebbb93d18efab22ac87c5e8d79023d1e4e38aeec8411836",
+      "matches_original_capture": true,
+      "rows": 79,
+      "bytes": 12003
+    },
+    {
+      "group": 287,
+      "url": "https://tcgcsv.com/tcgplayer/2/287/prices",
+      "sha256": "c829c908296e354547fb8ffc0279e5078d537d76658213cfd9c47e770599da9f",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 963
+    },
+    {
+      "group": 288,
+      "url": "https://tcgcsv.com/tcgplayer/2/288/prices",
+      "sha256": "850b650dcdf4b908d056cafc88019f316b91984a8f7c5be24d60d4299b1284b2",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 489
+    },
+    {
+      "group": 289,
+      "url": "https://tcgcsv.com/tcgplayer/2/289/prices",
+      "sha256": "dd04210995f2ebec852d34f8f2407d79b63aec3a48a24d0eb47b815324b02db4",
+      "matches_original_capture": true,
+      "rows": 228,
+      "bytes": 34759
+    },
+    {
+      "group": 290,
+      "url": "https://tcgcsv.com/tcgplayer/2/290/prices",
+      "sha256": "2426074b95fb3eaae846b76ae430f2a1bbfca47c74f337a53a6f1e8e870c77aa",
+      "matches_original_capture": true,
+      "rows": 158,
+      "bytes": 24142
+    },
+    {
+      "group": 291,
+      "url": "https://tcgcsv.com/tcgplayer/2/291/prices",
+      "sha256": "58bd03239f4bb9654cb13263b38191c7f7ddcbb0eab74f2672c0bdabe799b812",
+      "matches_original_capture": true,
+      "rows": 84,
+      "bytes": 12768
+    },
+    {
+      "group": 292,
+      "url": "https://tcgcsv.com/tcgplayer/2/292/prices",
+      "sha256": "1b64a68565e89caad4868f3558ee03901cb0fdfba4b52e287ef54cb72b9d3908",
+      "matches_original_capture": true,
+      "rows": 82,
+      "bytes": 12467
+    },
+    {
+      "group": 293,
+      "url": "https://tcgcsv.com/tcgplayer/2/293/prices",
+      "sha256": "2fb1505951411b10dd3d684589e44bb9661eb6d7e963f83ff2c60080a0dbc8b1",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15507
+    },
+    {
+      "group": 294,
+      "url": "https://tcgcsv.com/tcgplayer/2/294/prices",
+      "sha256": "9fb4ce1affd5e560663ace93114fa0cb2aa0b3d0029f590b825df0c9b175eeb1",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 15217
+    },
+    {
+      "group": 295,
+      "url": "https://tcgcsv.com/tcgplayer/2/295/prices",
+      "sha256": "cb073d009ee2baf66c6d969e21619f8de25e8bfaffb9159e81395d93cf4ef0f1",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15501
+    },
+    {
+      "group": 296,
+      "url": "https://tcgcsv.com/tcgplayer/2/296/prices",
+      "sha256": "9e44e57489d1f75ec1408c4714d135eac4513d2fe7543ad74e8b77fb923b255a",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15493
+    },
+    {
+      "group": 297,
+      "url": "https://tcgcsv.com/tcgplayer/2/297/prices",
+      "sha256": "845d9f8a1fa1456f2906da71d91baf964c8a5a297fd619b9b5b34c956afe3cd1",
+      "matches_original_capture": true,
+      "rows": 78,
+      "bytes": 11862
+    },
+    {
+      "group": 298,
+      "url": "https://tcgcsv.com/tcgplayer/2/298/prices",
+      "sha256": "015bdace1c8a139153c8dacc55cb608fec91a004163e46200d2f7f0a8dc3b4c3",
+      "matches_original_capture": true,
+      "rows": 101,
+      "bytes": 15385
+    },
+    {
+      "group": 299,
+      "url": "https://tcgcsv.com/tcgplayer/2/299/prices",
+      "sha256": "d0f571142523bc3e44babbc381e12e3cd4e316ce362aef4782ee86f84879f30e",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15506
+    },
+    {
+      "group": 300,
+      "url": "https://tcgcsv.com/tcgplayer/2/300/prices",
+      "sha256": "5b1b33716df2d6a657417f824f3df4e7ea53f1a139ac4e1fd1e4bda9724c8759",
+      "matches_original_capture": true,
+      "rows": 45,
+      "bytes": 6920
+    },
+    {
+      "group": 301,
+      "url": "https://tcgcsv.com/tcgplayer/2/301/prices",
+      "sha256": "375a7cc13d3107948939a94856d81d7ac99afe2dc142d0b676c8156dc092adf4",
+      "matches_original_capture": true,
+      "rows": 43,
+      "bytes": 6594
+    },
+    {
+      "group": 302,
+      "url": "https://tcgcsv.com/tcgplayer/2/302/prices",
+      "sha256": "ee62f276d59093df5c51df8b8f008e35e0c922ad4947945793722fcd73e4f7c8",
+      "matches_original_capture": true,
+      "rows": 228,
+      "bytes": 34637
+    },
+    {
+      "group": 304,
+      "url": "https://tcgcsv.com/tcgplayer/2/304/prices",
+      "sha256": "68c0eede1d36f11a5c26998233a8cee2bfacf616cd759c5a47bd94b151ddf5ff",
+      "matches_original_capture": true,
+      "rows": 191,
+      "bytes": 29238
+    },
+    {
+      "group": 305,
+      "url": "https://tcgcsv.com/tcgplayer/2/305/prices",
+      "sha256": "e93f1f533511137e946f94dbc8469481351b587e25a00d5b69c7fae71b9f9ada",
+      "matches_original_capture": true,
+      "rows": 33,
+      "bytes": 5076
+    },
+    {
+      "group": 306,
+      "url": "https://tcgcsv.com/tcgplayer/2/306/prices",
+      "sha256": "e8bd41f6b55c8c08ee2d26aec88966b585a559d665661b84074e9c3769614baa",
+      "matches_original_capture": true,
+      "rows": 41,
+      "bytes": 6300
+    },
+    {
+      "group": 307,
+      "url": "https://tcgcsv.com/tcgplayer/2/307/prices",
+      "sha256": "73048f67012699030bc9bd144c03a957858e8a3c6d2095674a10c384cb27eb05",
+      "matches_original_capture": true,
+      "rows": 57,
+      "bytes": 8673
+    },
+    {
+      "group": 308,
+      "url": "https://tcgcsv.com/tcgplayer/2/308/prices",
+      "sha256": "f49597d6e7adea30e0149e91296e44d9633ba5bea4b08e8733b371b61012f731",
+      "matches_original_capture": true,
+      "rows": 33,
+      "bytes": 5084
+    },
+    {
+      "group": 309,
+      "url": "https://tcgcsv.com/tcgplayer/2/309/prices",
+      "sha256": "0af2b10924f6f75185c530dd5b0373c0e2a4c7198c79dd9d7685bf6b5fbef25b",
+      "matches_original_capture": true,
+      "rows": 65,
+      "bytes": 9890
+    },
+    {
+      "group": 310,
+      "url": "https://tcgcsv.com/tcgplayer/2/310/prices",
+      "sha256": "662bbfdffd219095d94e9c8504f01e4b5ea57177cf51f37fb8a8026db9828422",
+      "matches_original_capture": true,
+      "rows": 73,
+      "bytes": 11075
+    },
+    {
+      "group": 311,
+      "url": "https://tcgcsv.com/tcgplayer/2/311/prices",
+      "sha256": "9ffa1756025c8839a8bd4e74df3c06df7ada411dc27cafdc0abf21caf982e6bf",
+      "matches_original_capture": true,
+      "rows": 76,
+      "bytes": 11562
+    },
+    {
+      "group": 312,
+      "url": "https://tcgcsv.com/tcgplayer/2/312/prices",
+      "sha256": "e4ae295aed66012be44c79d982524c5070482a28b157151514727512dd870c9f",
+      "matches_original_capture": true,
+      "rows": 37,
+      "bytes": 5684
+    },
+    {
+      "group": 313,
+      "url": "https://tcgcsv.com/tcgplayer/2/313/prices",
+      "sha256": "8bcc2f163f7bbe24a54c1aae281e06c0e6171e14feb1a2b61f057d1ec75804fb",
+      "matches_original_capture": true,
+      "rows": 73,
+      "bytes": 11108
+    },
+    {
+      "group": 314,
+      "url": "https://tcgcsv.com/tcgplayer/2/314/prices",
+      "sha256": "2b1d49a20ab35c0e1c2cc3a6a80e282a5b16a053a8af37b6c805cef618873e73",
+      "matches_original_capture": true,
+      "rows": 37,
+      "bytes": 5685
+    },
+    {
+      "group": 315,
+      "url": "https://tcgcsv.com/tcgplayer/2/315/prices",
+      "sha256": "5a3552a10719054cb306726c7d1e246d8524616686f01abc7423b63f4f8a65b6",
+      "matches_original_capture": true,
+      "rows": 57,
+      "bytes": 8666
+    },
+    {
+      "group": 316,
+      "url": "https://tcgcsv.com/tcgplayer/2/316/prices",
+      "sha256": "0ed9fe8b6527b394d73bf26bf1e764d93a999cfe7b0d7a620561b9e48baa0bb6",
+      "matches_original_capture": true,
+      "rows": 82,
+      "bytes": 12456
+    },
+    {
+      "group": 317,
+      "url": "https://tcgcsv.com/tcgplayer/2/317/prices",
+      "sha256": "d13f639a4d2856678cc504af4e02f0c29ba951fff603cdeb2081069bfd585652",
+      "matches_original_capture": true,
+      "rows": 79,
+      "bytes": 12016
+    },
+    {
+      "group": 318,
+      "url": "https://tcgcsv.com/tcgplayer/2/318/prices",
+      "sha256": "77bc28cefac14586b237941e19f0a1054f666c692653c0c49d0498ef60d2ebef",
+      "matches_original_capture": true,
+      "rows": 79,
+      "bytes": 12010
+    },
+    {
+      "group": 319,
+      "url": "https://tcgcsv.com/tcgplayer/2/319/prices",
+      "sha256": "4f2ecbd93da8a2e8989b5c47759cd4d12d9f9d15224e5db223fb88377c7ad412",
+      "matches_original_capture": true,
+      "rows": 39,
+      "bytes": 5987
+    },
+    {
+      "group": 320,
+      "url": "https://tcgcsv.com/tcgplayer/2/320/prices",
+      "sha256": "7c908a9ad3a0f292f85e1b4627f9b390b687ca68485bcdb89e8bd1a9c02a4f7e",
+      "matches_original_capture": true,
+      "rows": 76,
+      "bytes": 11577
+    },
+    {
+      "group": 321,
+      "url": "https://tcgcsv.com/tcgplayer/2/321/prices",
+      "sha256": "43d1b93da55833e09ec7d22bf41f9d5881f850a4f2785e3076d92b7c75e0dcf0",
+      "matches_original_capture": true,
+      "rows": 72,
+      "bytes": 10957
+    },
+    {
+      "group": 322,
+      "url": "https://tcgcsv.com/tcgplayer/2/322/prices",
+      "sha256": "3b79043679984954593b070cab00becc572cfa1b4708ca4205b98ae4faa71a3d",
+      "matches_original_capture": true,
+      "rows": 72,
+      "bytes": 10964
+    },
+    {
+      "group": 323,
+      "url": "https://tcgcsv.com/tcgplayer/2/323/prices",
+      "sha256": "c5e00c21fd5950cd975444798f9d4a39154e62eed8a8aa7fa18729ca8056f001",
+      "matches_original_capture": true,
+      "rows": 39,
+      "bytes": 5986
+    },
+    {
+      "group": 324,
+      "url": "https://tcgcsv.com/tcgplayer/2/324/prices",
+      "sha256": "88a7023b20b989031b859f932932fa76d257996633665cc60a4e46190a62aa39",
+      "matches_original_capture": true,
+      "rows": 38,
+      "bytes": 5843
+    },
+    {
+      "group": 325,
+      "url": "https://tcgcsv.com/tcgplayer/2/325/prices",
+      "sha256": "3c0234a9b7b6c69441b3cef55b60dec3c3251d2220e9d2f0c8a2b59d2d967682",
+      "matches_original_capture": true,
+      "rows": 214,
+      "bytes": 32654
+    },
+    {
+      "group": 326,
+      "url": "https://tcgcsv.com/tcgplayer/2/326/prices",
+      "sha256": "2398dea97c2ed05a87e98f12eb00d4dae2fee3a5b20154eec3f5e244fab57ece",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 802
+    },
+    {
+      "group": 328,
+      "url": "https://tcgcsv.com/tcgplayer/2/328/prices",
+      "sha256": "47002c824fd5d7d8515ea1535f69ac0488f1a30cbcc4bd4a710a88450e3ecbb3",
+      "matches_original_capture": true,
+      "rows": 228,
+      "bytes": 34777
+    },
+    {
+      "group": 329,
+      "url": "https://tcgcsv.com/tcgplayer/2/329/prices",
+      "sha256": "7fce40bb02af4e6f62983d5be843f44f560e789447d806b55f0bed1970ef7d0d",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1278
+    },
+    {
+      "group": 330,
+      "url": "https://tcgcsv.com/tcgplayer/2/330/prices",
+      "sha256": "9b3534786f28467d0c753e7d2c3784c29ea88c00fac302f929e6b704b56974a5",
+      "matches_original_capture": true,
+      "rows": 255,
+      "bytes": 38978
+    },
+    {
+      "group": 332,
+      "url": "https://tcgcsv.com/tcgplayer/2/332/prices",
+      "sha256": "fc35994d79dafdb766f81e0a11d8097d3ff3137f3655313692f39ac4da85c266",
+      "matches_original_capture": true,
+      "rows": 224,
+      "bytes": 34065
+    },
+    {
+      "group": 333,
+      "url": "https://tcgcsv.com/tcgplayer/2/333/prices",
+      "sha256": "ce45a08e6b3c74471f1e8ea168e80f03d3f288ce36618e5231f6f92edb9026a9",
+      "matches_original_capture": true,
+      "rows": 29,
+      "bytes": 4508
+    },
+    {
+      "group": 334,
+      "url": "https://tcgcsv.com/tcgplayer/2/334/prices",
+      "sha256": "da02b316002bcb9702ebca2aa91946d1a3faa10bfc44f48f637ab5bac8215e6c",
+      "matches_original_capture": true,
+      "rows": 31,
+      "bytes": 4807
+    },
+    {
+      "group": 335,
+      "url": "https://tcgcsv.com/tcgplayer/2/335/prices",
+      "sha256": "a45c9a12b0c1acc1c6c833ffa1491de096f1c4bb9474ae83154ee24a2a1a2ac9",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3230
+    },
+    {
+      "group": 336,
+      "url": "https://tcgcsv.com/tcgplayer/2/336/prices",
+      "sha256": "434465d0beee5b85337feb539423babe77d55385d47ee04875f2127d5225c20a",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3225
+    },
+    {
+      "group": 337,
+      "url": "https://tcgcsv.com/tcgplayer/2/337/prices",
+      "sha256": "c95a7e1af44809c8d636ec117ef4bfc8db90a9ff6271459a5225008401dbb104",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3227
+    },
+    {
+      "group": 338,
+      "url": "https://tcgcsv.com/tcgplayer/2/338/prices",
+      "sha256": "d430efe2710b9eede307d0d63ee3f3fc2409aa48e8218801273d85321371f68f",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3225
+    },
+    {
+      "group": 339,
+      "url": "https://tcgcsv.com/tcgplayer/2/339/prices",
+      "sha256": "aa404a4b1cadb5f49d0899e0f38ae13b11657686b4e68d3267ea0b218602db43",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3083
+    },
+    {
+      "group": 340,
+      "url": "https://tcgcsv.com/tcgplayer/2/340/prices",
+      "sha256": "8ec6f2b5a4b110ad7efa7d6490dfab7eec6acf47d728161d84532f841154ea4d",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3094
+    },
+    {
+      "group": 341,
+      "url": "https://tcgcsv.com/tcgplayer/2/341/prices",
+      "sha256": "00c5e6deca082a6a51e6a0e988ce42b26395377772b973d60df87e2ba21705ec",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3235
+    },
+    {
+      "group": 342,
+      "url": "https://tcgcsv.com/tcgplayer/2/342/prices",
+      "sha256": "690c7210e059e05897360ff96c75f8448d9245ab55a1255ece1e7d8a1e1b212f",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3240
+    },
+    {
+      "group": 343,
+      "url": "https://tcgcsv.com/tcgplayer/2/343/prices",
+      "sha256": "9955b4760fe8cb1fed3c1691116a58c21992e9eca46d2ed15e44b573c91b4ae6",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 192
+    },
+    {
+      "group": 345,
+      "url": "https://tcgcsv.com/tcgplayer/2/345/prices",
+      "sha256": "ae2bca9af41dc953e796395afb27b3257cd977dbc88a7cb01516363c6dd9ac6a",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 962
+    },
+    {
+      "group": 346,
+      "url": "https://tcgcsv.com/tcgplayer/2/346/prices",
+      "sha256": "de4b321785167d46459467c6dd2c4ed63b35c80666d8c712881a27213bcc5729",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 497
+    },
+    {
+      "group": 347,
+      "url": "https://tcgcsv.com/tcgplayer/2/347/prices",
+      "sha256": "703eb5e027b0c6a86b5d873e80cbcb43729f67f709942386a89791e999ef0f24",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 488
+    },
+    {
+      "group": 348,
+      "url": "https://tcgcsv.com/tcgplayer/2/348/prices",
+      "sha256": "87e8a89a3e1872969b97ce550a75b82245c0a6918349e80ebeb669a20c2410e9",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 490
+    },
+    {
+      "group": 349,
+      "url": "https://tcgcsv.com/tcgplayer/2/349/prices",
+      "sha256": "a622ce792558758a98000d6d792762ebe63f2c4de2b0c5249978fa6d78d27791",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 497
+    },
+    {
+      "group": 351,
+      "url": "https://tcgcsv.com/tcgplayer/2/351/prices",
+      "sha256": "f658adbe08d75e3c9138deca40e2d9e55efe4fd4f6f0c3c5679777e570efcf58",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 656
+    },
+    {
+      "group": 352,
+      "url": "https://tcgcsv.com/tcgplayer/2/352/prices",
+      "sha256": "a4cbc5151765609aabf66bd6c0ac493f210b26f8536360253c5f6a764db3f408",
+      "matches_original_capture": true,
+      "rows": 9,
+      "bytes": 1386
+    },
+    {
+      "group": 353,
+      "url": "https://tcgcsv.com/tcgplayer/2/353/prices",
+      "sha256": "ace8547884371f013ef7151f9cc6e9767c47331c6fcb7aa23509f5f0018f7c48",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 490
+    },
+    {
+      "group": 356,
+      "url": "https://tcgcsv.com/tcgplayer/2/356/prices",
+      "sha256": "a91ad1a75a26d38c94549f7cc9248be5d5346afd1b7ca0fc27c5ddf6155734d8",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 501
+    },
+    {
+      "group": 357,
+      "url": "https://tcgcsv.com/tcgplayer/2/357/prices",
+      "sha256": "a663cb14c3bf28f299521d55d13b1a03c7c3a32593f239ba18e50a3de60cc00b",
+      "matches_original_capture": true,
+      "rows": 10,
+      "bytes": 1539
+    },
+    {
+      "group": 358,
+      "url": "https://tcgcsv.com/tcgplayer/2/358/prices",
+      "sha256": "c8bcdf4541a27d12fbdd84936a5f104240a90dc572eb18993191a4bbba5efa65",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 656
+    },
+    {
+      "group": 359,
+      "url": "https://tcgcsv.com/tcgplayer/2/359/prices",
+      "sha256": "8aafca820f4e23f9bc2adc2cc882cd01e3a54aaaf39939a34246942dee61ed4c",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 786
+    },
+    {
+      "group": 571,
+      "url": "https://tcgcsv.com/tcgplayer/2/571/prices",
+      "sha256": "a58a40d9af09cf6ed7cee94c19c70393a4afe482274b426c70c9b3d2ac9bb688",
+      "matches_original_capture": true,
+      "rows": 28,
+      "bytes": 4203
+    },
+    {
+      "group": 572,
+      "url": "https://tcgcsv.com/tcgplayer/2/572/prices",
+      "sha256": "07be44fe2bee4bca1a651893f4f84f1c11d650c049366586efa6c2734ad99c75",
+      "matches_original_capture": true,
+      "rows": 25,
+      "bytes": 3838
+    },
+    {
+      "group": 573,
+      "url": "https://tcgcsv.com/tcgplayer/2/573/prices",
+      "sha256": "e3b6f2d41b0e63eb76d925d26fba573dac45eb8f79537e58658029b04a058464",
+      "matches_original_capture": true,
+      "rows": 227,
+      "bytes": 34501
+    },
+    {
+      "group": 575,
+      "url": "https://tcgcsv.com/tcgplayer/2/575/prices",
+      "sha256": "cb2507b20830fe60d5f648692a8c45c806532cad609b6b02a0d75fa064fdf555",
+      "matches_original_capture": true,
+      "rows": 881,
+      "bytes": 133459
+    },
+    {
+      "group": 576,
+      "url": "https://tcgcsv.com/tcgplayer/2/576/prices",
+      "sha256": "a06deb43fa17f002cbb36ef6fed6c32da6b1c2993c29c35f43b694a5ecb3644b",
+      "matches_original_capture": true,
+      "rows": 226,
+      "bytes": 34341
+    },
+    {
+      "group": 577,
+      "url": "https://tcgcsv.com/tcgplayer/2/577/prices",
+      "sha256": "747acafe886e6ffe8ad2b702d9f11b9a9204376742b9d8be4296cd28ae8847e4",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 340
+    },
+    {
+      "group": 578,
+      "url": "https://tcgcsv.com/tcgplayer/2/578/prices",
+      "sha256": "f032354afcb2bdb463131c7b914a2e96ec239dd3c4a292f364cf92d22587790d",
+      "matches_original_capture": true,
+      "rows": 224,
+      "bytes": 34035
+    },
+    {
+      "group": 580,
+      "url": "https://tcgcsv.com/tcgplayer/2/580/prices",
+      "sha256": "3647e75155f1946cfaa00c3e3d1ac36d80e2c31a3c5eac369c81a5691cb854c4",
+      "matches_original_capture": true,
+      "rows": 55,
+      "bytes": 8227
+    },
+    {
+      "group": 581,
+      "url": "https://tcgcsv.com/tcgplayer/2/581/prices",
+      "sha256": "fb7317a328fd8e2568dba1d0260c192b8f81214b319a4bc8783396241cfab82c",
+      "matches_original_capture": true,
+      "rows": 116,
+      "bytes": 17618
+    },
+    {
+      "group": 582,
+      "url": "https://tcgcsv.com/tcgplayer/2/582/prices",
+      "sha256": "a4e23207e2002bf0cdcbb47e957783e5aa6ef3854bd8db2728ad64972f62e513",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 966
+    },
+    {
+      "group": 583,
+      "url": "https://tcgcsv.com/tcgplayer/2/583/prices",
+      "sha256": "ab974736e5cbb308ad8d7dc379f2fa6971f8e681dfd40af6c37ee31534b023d9",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 952
+    },
+    {
+      "group": 584,
+      "url": "https://tcgcsv.com/tcgplayer/2/584/prices",
+      "sha256": "f87bbb8c3d3ccfb755a692fc3cc08b5fbe864533eb99ebe17e2fe4fdcb3b3f4a",
+      "matches_original_capture": true,
+      "rows": 621,
+      "bytes": 94338
+    },
+    {
+      "group": 587,
+      "url": "https://tcgcsv.com/tcgplayer/2/587/prices",
+      "sha256": "0d835bd006057b69bdf2313defe6d99e649b95884164384a7b0d08da2ea5747c",
+      "matches_original_capture": true,
+      "rows": 226,
+      "bytes": 34406
+    },
+    {
+      "group": 588,
+      "url": "https://tcgcsv.com/tcgplayer/2/588/prices",
+      "sha256": "6fda435ddf9452b23789a5a83e235153b407b4aaeb70be06cb2696343096b2c2",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 340
+    },
+    {
+      "group": 589,
+      "url": "https://tcgcsv.com/tcgplayer/2/589/prices",
+      "sha256": "efd236df703c01e5d7ebd1832fe6e2760c619bd82968d7747709d883498c7adc",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6747
+    },
+    {
+      "group": 590,
+      "url": "https://tcgcsv.com/tcgplayer/2/590/prices",
+      "sha256": "7eb8884c1d6606b94b369b4bceef5ea324b94b12f5a54403e1447be0d1edc8e5",
+      "matches_original_capture": true,
+      "rows": 40,
+      "bytes": 6146
+    },
+    {
+      "group": 591,
+      "url": "https://tcgcsv.com/tcgplayer/2/591/prices",
+      "sha256": "1e012fc90ef9f21a2105b3d3e773430e47cc58448dd918935de09f45b00c31db",
+      "matches_original_capture": true,
+      "rows": 40,
+      "bytes": 6139
+    },
+    {
+      "group": 592,
+      "url": "https://tcgcsv.com/tcgplayer/2/592/prices",
+      "sha256": "c4a86923e81ee50b6af6e73bee3e59f757cb6ebcee6d8c5622303bf71314178c",
+      "matches_original_capture": true,
+      "rows": 41,
+      "bytes": 6284
+    },
+    {
+      "group": 593,
+      "url": "https://tcgcsv.com/tcgplayer/2/593/prices",
+      "sha256": "f8fd18679b8ac1fea854b6e37d516d36e80a75c093a4a01d82205b4b308d9d5a",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3227
+    },
+    {
+      "group": 594,
+      "url": "https://tcgcsv.com/tcgplayer/2/594/prices",
+      "sha256": "12e75174707bd88c3a388ad25700ec7cad42a75f1fdf25f21f66d08c402b9b6e",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3223
+    },
+    {
+      "group": 595,
+      "url": "https://tcgcsv.com/tcgplayer/2/595/prices",
+      "sha256": "609d022ab48423c705c435a25ce46d0c4b7352b4a7b268be143803579b89393a",
+      "matches_original_capture": true,
+      "rows": 22,
+      "bytes": 3370
+    },
+    {
+      "group": 596,
+      "url": "https://tcgcsv.com/tcgplayer/2/596/prices",
+      "sha256": "2cc4ee6860ba4252fc8598005a78c98b581ff2b80ea64ae2fcd60ebadc12bd03",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3234
+    },
+    {
+      "group": 597,
+      "url": "https://tcgcsv.com/tcgplayer/2/597/prices",
+      "sha256": "af01a076276fc315dec8d994cbb9b43893511d67bdf1aaa558a36229095fd4f3",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3232
+    },
+    {
+      "group": 598,
+      "url": "https://tcgcsv.com/tcgplayer/2/598/prices",
+      "sha256": "93b87c4f6a1947f35f1676e92b58fad4b5d244a9dbcb21d9d6b0d589f5feabb3",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3233
+    },
+    {
+      "group": 599,
+      "url": "https://tcgcsv.com/tcgplayer/2/599/prices",
+      "sha256": "ebe1b15e4b786466abc1ac0c6988367caecb4924b763b63f32bebd859df2c5cf",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1247
+    },
+    {
+      "group": 600,
+      "url": "https://tcgcsv.com/tcgplayer/2/600/prices",
+      "sha256": "fa47a3e0c379eadaefb7ba45e2c75e219812589372c38d452b2074797ec2a253",
+      "matches_original_capture": true,
+      "rows": 9,
+      "bytes": 1390
+    },
+    {
+      "group": 1110,
+      "url": "https://tcgcsv.com/tcgplayer/2/1110/prices",
+      "sha256": "4c4fe48d93a385986aab3c81f88792364f5a5560a0b18695fda143b676ec3a75",
+      "matches_original_capture": true,
+      "rows": 141,
+      "bytes": 21415
+    },
+    {
+      "group": 1112,
+      "url": "https://tcgcsv.com/tcgplayer/2/1112/prices",
+      "sha256": "430747d87889b7803f3abb8323c2fc7e8e2c071aa68052113e1ada989b67bece",
+      "matches_original_capture": true,
+      "rows": 225,
+      "bytes": 34187
+    },
+    {
+      "group": 1128,
+      "url": "https://tcgcsv.com/tcgplayer/2/1128/prices",
+      "sha256": "e64206522bc9494a0f0404ba85245add1373865ab22f200ed0e640facdbbe941",
+      "matches_original_capture": true,
+      "rows": 43,
+      "bytes": 6605
+    },
+    {
+      "group": 1129,
+      "url": "https://tcgcsv.com/tcgplayer/2/1129/prices",
+      "sha256": "cd1a026e620c31440c19caf13ae6d416e8bde55670472556f4320e0ec6e7efc7",
+      "matches_original_capture": true,
+      "rows": 32,
+      "bytes": 4883
+    },
+    {
+      "group": 1130,
+      "url": "https://tcgcsv.com/tcgplayer/2/1130/prices",
+      "sha256": "34c0fe78e135068649c4c521cd67a00dfdc882ba5653ff6400bd6c684d1fc766",
+      "matches_original_capture": true,
+      "rows": 855,
+      "bytes": 129598
+    },
+    {
+      "group": 1131,
+      "url": "https://tcgcsv.com/tcgplayer/2/1131/prices",
+      "sha256": "cb21546e08111f42c18b8f7aa4b8e00c5c345b7fe74d972270b2c314db680274",
+      "matches_original_capture": true,
+      "rows": 122,
+      "bytes": 18514
+    },
+    {
+      "group": 1142,
+      "url": "https://tcgcsv.com/tcgplayer/2/1142/prices",
+      "sha256": "9b869b2e0f19146f28e6a52bcefb23dbc6e1e2a10722554c4e432c404f2db8b9",
+      "matches_original_capture": true,
+      "rows": 221,
+      "bytes": 33559
+    },
+    {
+      "group": 1149,
+      "url": "https://tcgcsv.com/tcgplayer/2/1149/prices",
+      "sha256": "f018834d9cd689462dd01f33aba84bdb5c40adf2c538cb66741fb11db69e0b8d",
+      "matches_original_capture": true,
+      "rows": 24,
+      "bytes": 3628
+    },
+    {
+      "group": 1153,
+      "url": "https://tcgcsv.com/tcgplayer/2/1153/prices",
+      "sha256": "583ad6a32c640eca916a35ecc06117a608d9c5df01a79d37a52fb6727411a668",
+      "matches_original_capture": true,
+      "rows": 82,
+      "bytes": 12456
+    },
+    {
+      "group": 1156,
+      "url": "https://tcgcsv.com/tcgplayer/2/1156/prices",
+      "sha256": "706311a8ed4186115598dabf2d84d88a2e727c5002976562b2b9f68802be329e",
+      "matches_original_capture": true,
+      "rows": 220,
+      "bytes": 33425
+    },
+    {
+      "group": 1157,
+      "url": "https://tcgcsv.com/tcgplayer/2/1157/prices",
+      "sha256": "241aeb776ab261ab6324c82cd70937950105121c844fed114fc7861a6cd82d93",
+      "matches_original_capture": true,
+      "rows": 310,
+      "bytes": 47258
+    },
+    {
+      "group": 1159,
+      "url": "https://tcgcsv.com/tcgplayer/2/1159/prices",
+      "sha256": "46821ac4c8b57592063323a266b802b40443ed74dcfa0cbc8de8d25decfdc44f",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 506
+    },
+    {
+      "group": 1279,
+      "url": "https://tcgcsv.com/tcgplayer/2/1279/prices",
+      "sha256": "9a2af1452e38db17bb99001ac58a781e6192ff808bd86a91edb7961f1866f600",
+      "matches_original_capture": true,
+      "rows": 244,
+      "bytes": 36991
+    },
+    {
+      "group": 1280,
+      "url": "https://tcgcsv.com/tcgplayer/2/1280/prices",
+      "sha256": "cf953bcd2a04a7bcd6d8dd1c68122bab3daa2d963c93a673c72ec902b0c373b1",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 347
+    },
+    {
+      "group": 1281,
+      "url": "https://tcgcsv.com/tcgplayer/2/1281/prices",
+      "sha256": "fba7ae3d32ffc03c03e95bebf663483ee4e3644bf8a271a7a980f5faaae8134b",
+      "matches_original_capture": true,
+      "rows": 202,
+      "bytes": 30643
+    },
+    {
+      "group": 1282,
+      "url": "https://tcgcsv.com/tcgplayer/2/1282/prices",
+      "sha256": "056b15f4a1e519742a9a65be3e719a97746469aa32715f87edc14aaf1b7ba013",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 15199
+    },
+    {
+      "group": 1283,
+      "url": "https://tcgcsv.com/tcgplayer/2/1283/prices",
+      "sha256": "a6667fee5771981645162e3ed34c0bb8ba50ed0658777c35bc9243e924da7b14",
+      "matches_original_capture": true,
+      "rows": 95,
+      "bytes": 14440
+    },
+    {
+      "group": 1285,
+      "url": "https://tcgcsv.com/tcgplayer/2/1285/prices",
+      "sha256": "764490d4f78943dddc698f706670c79398afb7880a0c708db0e1157f0eb737cd",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 193
+    },
+    {
+      "group": 1286,
+      "url": "https://tcgcsv.com/tcgplayer/2/1286/prices",
+      "sha256": "4aad9df13f515038cec7724ea3ac4b28afc50b92935a873ebaba910e78bf1f74",
+      "matches_original_capture": true,
+      "rows": 223,
+      "bytes": 33839
+    },
+    {
+      "group": 1287,
+      "url": "https://tcgcsv.com/tcgplayer/2/1287/prices",
+      "sha256": "5f005ced5ed2e084eccf8b71184b0c89c3d9fa502e920246dd9eed9a87f1e6c3",
+      "matches_original_capture": true,
+      "rows": 25,
+      "bytes": 3823
+    },
+    {
+      "group": 1288,
+      "url": "https://tcgcsv.com/tcgplayer/2/1288/prices",
+      "sha256": "bc71c420fc03531a427b99b595cdf08425a600b862d9d253b0e76f8f35ba4bdc",
+      "matches_original_capture": true,
+      "rows": 25,
+      "bytes": 3833
+    },
+    {
+      "group": 1289,
+      "url": "https://tcgcsv.com/tcgplayer/2/1289/prices",
+      "sha256": "79e449b2d44ad9d6e6ec1e2d3ebf6c44adc48a061f3bb486aea88c3d8d4728e6",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3968
+    },
+    {
+      "group": 1290,
+      "url": "https://tcgcsv.com/tcgplayer/2/1290/prices",
+      "sha256": "8e41d2864f5e45b240f91c54f4403e4621468d09db4fc8bf4ef33ff7a392fbb4",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1236
+    },
+    {
+      "group": 1291,
+      "url": "https://tcgcsv.com/tcgplayer/2/1291/prices",
+      "sha256": "74b6f8165ed44107863496e37b65a1d91bf9a63bc9ac20eff93a3f50cee4de4c",
+      "matches_original_capture": true,
+      "rows": 99,
+      "bytes": 15056
+    },
+    {
+      "group": 1292,
+      "url": "https://tcgcsv.com/tcgplayer/2/1292/prices",
+      "sha256": "98b7d427bf3a8fc8d67d9aaf914372605d3ebea849543baf859144120030fe8e",
+      "matches_original_capture": true,
+      "rows": 103,
+      "bytes": 15604
+    },
+    {
+      "group": 1300,
+      "url": "https://tcgcsv.com/tcgplayer/2/1300/prices",
+      "sha256": "edeafa99ff7e5c9ee8600b2543f6b824188ab93142eda5a6726501bae50a5a95",
+      "matches_original_capture": true,
+      "rows": 105,
+      "bytes": 16037
+    },
+    {
+      "group": 1302,
+      "url": "https://tcgcsv.com/tcgplayer/2/1302/prices",
+      "sha256": "6a4937baa733648530da15acf64d011008d7c23cad464dbccfeb8478270ef89e",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 654
+    },
+    {
+      "group": 1303,
+      "url": "https://tcgcsv.com/tcgplayer/2/1303/prices",
+      "sha256": "e05b9d967c32e709816721fa9644d984767a3ab4beeddfd8c195bece3b71b5d3",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 812
+    },
+    {
+      "group": 1304,
+      "url": "https://tcgcsv.com/tcgplayer/2/1304/prices",
+      "sha256": "549d913a307094b7daba2bc43abe11803c33c5c1c7c4fd90816fb3d7adb5c88d",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1268
+    },
+    {
+      "group": 1307,
+      "url": "https://tcgcsv.com/tcgplayer/2/1307/prices",
+      "sha256": "5c30311b6b7afdd53b50f1d90ac99bf2ebc2947a4248667bf8e2e396060ff8f4",
+      "matches_original_capture": true,
+      "rows": 80,
+      "bytes": 12167
+    },
+    {
+      "group": 1309,
+      "url": "https://tcgcsv.com/tcgplayer/2/1309/prices",
+      "sha256": "bc3b43aad03e8a8ea31328e0de0d24d1ce57fbcbe1c578727b1315d6d7bbea4e",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 4001
+    },
+    {
+      "group": 1310,
+      "url": "https://tcgcsv.com/tcgplayer/2/1310/prices",
+      "sha256": "b43333ba0194e7b1714c90b42e60647ea6ae6d0d793e570ce3f439678e8b5625",
+      "matches_original_capture": true,
+      "rows": 183,
+      "bytes": 27764
+    },
+    {
+      "group": 1313,
+      "url": "https://tcgcsv.com/tcgplayer/2/1313/prices",
+      "sha256": "cdbd87df67f7d925f79c5b90b7455b4afb80506ba3fc65ff0663f53f2aa85d86",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 198
+    },
+    {
+      "group": 1315,
+      "url": "https://tcgcsv.com/tcgplayer/2/1315/prices",
+      "sha256": "005951a497bf179da90828bf934a0149d0e7a36d8ab848630eaba9808eb791a5",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 193
+    },
+    {
+      "group": 1317,
+      "url": "https://tcgcsv.com/tcgplayer/2/1317/prices",
+      "sha256": "02c7534a3a4f494b690ac44721c7b7c8af9060c785f7c8780a2eaa7a5ddfdd27",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 647
+    },
+    {
+      "group": 1319,
+      "url": "https://tcgcsv.com/tcgplayer/2/1319/prices",
+      "sha256": "deeb39eb7c4c337c4fb5f2f81bf1fd5762758a97cb75db97160ac21aedcfd40f",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15585
+    },
+    {
+      "group": 1320,
+      "url": "https://tcgcsv.com/tcgplayer/2/1320/prices",
+      "sha256": "2447eecd4f38755de74d48d9fef889f0fe96833727d766a18ee6f1045b3b48a2",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 193
+    },
+    {
+      "group": 1322,
+      "url": "https://tcgcsv.com/tcgplayer/2/1322/prices",
+      "sha256": "c79c6fe4160eb1a42ffef414803ae591635ad3a968d75b346483dedbf12da273",
+      "matches_original_capture": true,
+      "rows": 131,
+      "bytes": 19903
+    },
+    {
+      "group": 1323,
+      "url": "https://tcgcsv.com/tcgplayer/2/1323/prices",
+      "sha256": "432ba117eaef2c1e72b6364abb2e3876b20143434416d8f91207c6c8957d10fc",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 193
+    },
+    {
+      "group": 1327,
+      "url": "https://tcgcsv.com/tcgplayer/2/1327/prices",
+      "sha256": "abc46830bc6a4f46d66b471b47a079111706b12651244fba4dbe619ebd0a4c5b",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 14960
+    },
+    {
+      "group": 1328,
+      "url": "https://tcgcsv.com/tcgplayer/2/1328/prices",
+      "sha256": "182bfcc54e105907cac109e97941f6b013ccf16e4a9ff0dee966cbc4855c61cc",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 14919
+    },
+    {
+      "group": 1329,
+      "url": "https://tcgcsv.com/tcgplayer/2/1329/prices",
+      "sha256": "bf7aee13f54ba8b3cd5875d2286b5e5c4486ef2e1eb31f33060dd18183f0f9bd",
+      "matches_original_capture": true,
+      "rows": 101,
+      "bytes": 15105
+    },
+    {
+      "group": 1330,
+      "url": "https://tcgcsv.com/tcgplayer/2/1330/prices",
+      "sha256": "accf8b6a0b22da2a0fc42ea09f6241d9857a9d7e86e250754c4bb14b1fd3a615",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 14938
+    },
+    {
+      "group": 1331,
+      "url": "https://tcgcsv.com/tcgplayer/2/1331/prices",
+      "sha256": "9c3640797107f6422f21abe89af8e0ae7c86f13a8fa79b960a6cd5cfda00ab91",
+      "matches_original_capture": true,
+      "rows": 101,
+      "bytes": 15062
+    },
+    {
+      "group": 1332,
+      "url": "https://tcgcsv.com/tcgplayer/2/1332/prices",
+      "sha256": "443206c4673654d6d9ece03f368f6fd08b3813c6b56bc8ec4029d26f1d077420",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 14898
+    },
+    {
+      "group": 1333,
+      "url": "https://tcgcsv.com/tcgplayer/2/1333/prices",
+      "sha256": "1563a6caffd1e5e0632e4cde6dadd6375d145c13a665ba7938923d0f24a10104",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 14947
+    },
+    {
+      "group": 1337,
+      "url": "https://tcgcsv.com/tcgplayer/2/1337/prices",
+      "sha256": "b856c4ecc94b959b0c097f7e4bda2c57f352f54b104d42026af07a5cc41ffc94",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 505
+    },
+    {
+      "group": 1338,
+      "url": "https://tcgcsv.com/tcgplayer/2/1338/prices",
+      "sha256": "bbff16e007d7002d1de7a25273d2f90d3f43671bad62e72309609892fd31af77",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 342
+    },
+    {
+      "group": 1339,
+      "url": "https://tcgcsv.com/tcgplayer/2/1339/prices",
+      "sha256": "bdadbf7950c38dd8fbfc467325889bb5df4c60b022dd68a97d1b48ff5cc14e8b",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 340
+    },
+    {
+      "group": 1340,
+      "url": "https://tcgcsv.com/tcgplayer/2/1340/prices",
+      "sha256": "a338b282475ea9539f5adcb48396b2277cd3b21e3e1c0a6c8ec37d682c1766a2",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3057
+    },
+    {
+      "group": 1341,
+      "url": "https://tcgcsv.com/tcgplayer/2/1341/prices",
+      "sha256": "a1e25ce96e88a9a030608cd13cc1f8dbed24bfd8862e8f14ce0c15eea6d7a2e0",
+      "matches_original_capture": true,
+      "rows": 11,
+      "bytes": 1730
+    },
+    {
+      "group": 1344,
+      "url": "https://tcgcsv.com/tcgplayer/2/1344/prices",
+      "sha256": "75618c3c2ea8a8b5975c58b491a81b02251824fef4b7b0effc51dc68b0e94b9c",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 193
+    },
+    {
+      "group": 1347,
+      "url": "https://tcgcsv.com/tcgplayer/2/1347/prices",
+      "sha256": "ae0c6a1ab88fef0cef81a3ec108c59597a453ff3fba83be2ba17322480efba60",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 3013
+    },
+    {
+      "group": 1353,
+      "url": "https://tcgcsv.com/tcgplayer/2/1353/prices",
+      "sha256": "90fd384acffcd10039e8d1cfc925bd30b38d8b7db452c118562e3f12e08b28d3",
+      "matches_original_capture": true,
+      "rows": 222,
+      "bytes": 33707
+    },
+    {
+      "group": 1354,
+      "url": "https://tcgcsv.com/tcgplayer/2/1354/prices",
+      "sha256": "17a863298fff006086ba09ae2954627231d2a700be0086df0c07751536679585",
+      "matches_original_capture": true,
+      "rows": 104,
+      "bytes": 15792
+    },
+    {
+      "group": 1363,
+      "url": "https://tcgcsv.com/tcgplayer/2/1363/prices",
+      "sha256": "888d0c86c34d6e9bda49b46bcc27496b4ece60d627a6eab5ec399e6a89eedeb1",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 491
+    },
+    {
+      "group": 1462,
+      "url": "https://tcgcsv.com/tcgplayer/2/1462/prices",
+      "sha256": "e0b875c17f1563fcccfaa9596abb5b6555e09ea6fecf84c8aa679d72cd41cd3e",
+      "matches_original_capture": true,
+      "rows": 37,
+      "bytes": 5680
+    },
+    {
+      "group": 1466,
+      "url": "https://tcgcsv.com/tcgplayer/2/1466/prices",
+      "sha256": "60ac5da8d1fe7c96c6ed1e7e99140b10e65c5693b9c694c5b9eb1ee944337b24",
+      "matches_original_capture": true,
+      "rows": 41,
+      "bytes": 6288
+    },
+    {
+      "group": 1467,
+      "url": "https://tcgcsv.com/tcgplayer/2/1467/prices",
+      "sha256": "ef71cff8ff6f1f19faa8e2a6ce2812b08f2fcb1995f8e8ea650677dda8ddf74e",
+      "matches_original_capture": true,
+      "rows": 15,
+      "bytes": 2328
+    },
+    {
+      "group": 1470,
+      "url": "https://tcgcsv.com/tcgplayer/2/1470/prices",
+      "sha256": "0a7be3283f8b7bf4b5bff5eb6df839c45bc05e7dfd6c0457a161f7f0bc51c3e6",
+      "matches_original_capture": true,
+      "rows": 461,
+      "bytes": 70313
+    },
+    {
+      "group": 1474,
+      "url": "https://tcgcsv.com/tcgplayer/2/1474/prices",
+      "sha256": "75b1f7ab631186bfeeb7045d11d906acd1a1ad2c51b9e6502938a3abbabd7e9b",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3055
+    },
+    {
+      "group": 1479,
+      "url": "https://tcgcsv.com/tcgplayer/2/1479/prices",
+      "sha256": "b5e3cdcb09a015874692f7381084d5fbd977b2f592fc06666a5e3ffb015f3528",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3963
+    },
+    {
+      "group": 1480,
+      "url": "https://tcgcsv.com/tcgplayer/2/1480/prices",
+      "sha256": "885b50ad6655b254324e8dad919419f6f59880608afcf659558559b68ec012e0",
+      "matches_original_capture": true,
+      "rows": 216,
+      "bytes": 32795
+    },
+    {
+      "group": 1484,
+      "url": "https://tcgcsv.com/tcgplayer/2/1484/prices",
+      "sha256": "f48fc256a685a1ac4004a0500db82592332987bc5578ee7dbd60eedc78c88d10",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1231
+    },
+    {
+      "group": 1485,
+      "url": "https://tcgcsv.com/tcgplayer/2/1485/prices",
+      "sha256": "c995f8fe68339cee066d3fa2fc5365dfc6bc0adfc1128ffca735ca62805f7a15",
+      "matches_original_capture": true,
+      "rows": 427,
+      "bytes": 64848
+    },
+    {
+      "group": 1488,
+      "url": "https://tcgcsv.com/tcgplayer/2/1488/prices",
+      "sha256": "463518ffd38a1f34f18445c16a64037696b63969fe156418c79f6507ea0a0b79",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1235
+    },
+    {
+      "group": 1489,
+      "url": "https://tcgcsv.com/tcgplayer/2/1489/prices",
+      "sha256": "70497718eb3986e91c8d590665b05d08b457c61f54d80c2726f4bfacf169bb32",
+      "matches_original_capture": true,
+      "rows": 36,
+      "bytes": 5529
+    },
+    {
+      "group": 1491,
+      "url": "https://tcgcsv.com/tcgplayer/2/1491/prices",
+      "sha256": "2f8da4d472a0678b824b5766b6ea0dd05ace7ab1448b4107586aaf30fc49d181",
+      "matches_original_capture": true,
+      "rows": 266,
+      "bytes": 40615
+    },
+    {
+      "group": 1492,
+      "url": "https://tcgcsv.com/tcgplayer/2/1492/prices",
+      "sha256": "b1308d3cb3375944d1fe86b1ff21940f47b9f553ec9b3bc92fc0c2e2ad42f3a5",
+      "matches_original_capture": true,
+      "rows": 45,
+      "bytes": 6729
+    },
+    {
+      "group": 1493,
+      "url": "https://tcgcsv.com/tcgplayer/2/1493/prices",
+      "sha256": "213454390a5b405f0f52a557fbe5eee862db8f6a29432f58cc964562dc35a3ac",
+      "matches_original_capture": true,
+      "rows": 232,
+      "bytes": 35177
+    },
+    {
+      "group": 1495,
+      "url": "https://tcgcsv.com/tcgplayer/2/1495/prices",
+      "sha256": "49c1f8f1d1c5847cf9db75c146a5f0bb43bc72d4eb4073380be58ba83448ec1b",
+      "matches_original_capture": true,
+      "rows": 92,
+      "bytes": 13974
+    },
+    {
+      "group": 1505,
+      "url": "https://tcgcsv.com/tcgplayer/2/1505/prices",
+      "sha256": "d7c20f0329dd2cb4ca54de3904a65c65cb0241fda60e9884f34310af0b67aeb6",
+      "matches_original_capture": true,
+      "rows": 231,
+      "bytes": 35011
+    },
+    {
+      "group": 1506,
+      "url": "https://tcgcsv.com/tcgplayer/2/1506/prices",
+      "sha256": "0a74586278fbc81b5625dd9adee4e3aa507a13a737ed341b2ecc95e99847896d",
+      "matches_original_capture": true,
+      "rows": 28,
+      "bytes": 4291
+    },
+    {
+      "group": 1513,
+      "url": "https://tcgcsv.com/tcgplayer/2/1513/prices",
+      "sha256": "28c2e9e191305f14f9ea6eb41379697fea6e1594b055b1098e2053ec21e3ef53",
+      "matches_original_capture": true,
+      "rows": 122,
+      "bytes": 18511
+    },
+    {
+      "group": 1523,
+      "url": "https://tcgcsv.com/tcgplayer/2/1523/prices",
+      "sha256": "93e1bd627a4b07d94f15069fe9412666377fbdd725cf079275b4139ff9f2613f",
+      "matches_original_capture": true,
+      "rows": 185,
+      "bytes": 28058
+    },
+    {
+      "group": 1529,
+      "url": "https://tcgcsv.com/tcgplayer/2/1529/prices",
+      "sha256": "64aaf91727748ecdf72b58b59e5c7b6fb1dad4e45bccfad6c6bab8e1a7a4220e",
+      "matches_original_capture": true,
+      "rows": 54,
+      "bytes": 8263
+    },
+    {
+      "group": 1537,
+      "url": "https://tcgcsv.com/tcgplayer/2/1537/prices",
+      "sha256": "796691576f771ad7cfc0cd31a7f8bb262ff9c8fb1401ab19afbc591d18525575",
+      "matches_original_capture": true,
+      "rows": 215,
+      "bytes": 32675
+    },
+    {
+      "group": 1544,
+      "url": "https://tcgcsv.com/tcgplayer/2/1544/prices",
+      "sha256": "ee96d38a2beb35265e99fb24b066cda274e6ebb3726612dd04ada96360880467",
+      "matches_original_capture": true,
+      "rows": 30,
+      "bytes": 4616
+    },
+    {
+      "group": 1545,
+      "url": "https://tcgcsv.com/tcgplayer/2/1545/prices",
+      "sha256": "2e898c40d2406da3a9f58f7ce0903f1c87999d62584ac41df54ab49007d1336a",
+      "matches_original_capture": true,
+      "rows": 29,
+      "bytes": 4463
+    },
+    {
+      "group": 1547,
+      "url": "https://tcgcsv.com/tcgplayer/2/1547/prices",
+      "sha256": "f8cf926e0b288347e8191bb4998fe1fc934380aee39947370c9714564da72630",
+      "matches_original_capture": true,
+      "rows": 100,
+      "bytes": 15286
+    },
+    {
+      "group": 1550,
+      "url": "https://tcgcsv.com/tcgplayer/2/1550/prices",
+      "sha256": "58a0b414bc3b579030b821f7754e3d2436287245d93bfe819b7560d852ba7ca6",
+      "matches_original_capture": true,
+      "rows": 49,
+      "bytes": 7529
+    },
+    {
+      "group": 1572,
+      "url": "https://tcgcsv.com/tcgplayer/2/1572/prices",
+      "sha256": "5516bd77b3b82c7d4ed67f4665ea5dad3959cc6cddd53b1e5acf7ea1891c31cf",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4121
+    },
+    {
+      "group": 1574,
+      "url": "https://tcgcsv.com/tcgplayer/2/1574/prices",
+      "sha256": "d116452a906435fc1ac61092f876eec9211b58f8fb2aa7735709721a6a57424e",
+      "matches_original_capture": true,
+      "rows": 47,
+      "bytes": 7267
+    },
+    {
+      "group": 1592,
+      "url": "https://tcgcsv.com/tcgplayer/2/1592/prices",
+      "sha256": "8ae9c0f65cae6282a7fa1394a91d5ad27d375bd9944d0c3eeed8f1a6cac177c9",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 943
+    },
+    {
+      "group": 1600,
+      "url": "https://tcgcsv.com/tcgplayer/2/1600/prices",
+      "sha256": "598b4cab32c3314682e4986407fc2dbc948e6eabf1fff039433ea8c31f762886",
+      "matches_original_capture": true,
+      "rows": 221,
+      "bytes": 33790
+    },
+    {
+      "group": 1648,
+      "url": "https://tcgcsv.com/tcgplayer/2/1648/prices",
+      "sha256": "80a71a01bf70476274c70e682512f8e1078d18e289cf34e6428baab43451a627",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6792
+    },
+    {
+      "group": 1652,
+      "url": "https://tcgcsv.com/tcgplayer/2/1652/prices",
+      "sha256": "2acbfb663c8b5f614c9fb8891cf0eca8e5e0ca37fcd73a8fe946b1fa5ce77943",
+      "matches_original_capture": true,
+      "rows": 8,
+      "bytes": 1244
+    },
+    {
+      "group": 1653,
+      "url": "https://tcgcsv.com/tcgplayer/2/1653/prices",
+      "sha256": "00359d8918fb3fb27c262e1085ec707d17c707141934e0140936692b56f8ecbe",
+      "matches_original_capture": true,
+      "rows": 248,
+      "bytes": 38111
+    },
+    {
+      "group": 1655,
+      "url": "https://tcgcsv.com/tcgplayer/2/1655/prices",
+      "sha256": "6948883004e195a8fb37cbe21e9cfd9bceca0e3c0865333f5aa8a3e0a9adcd72",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 346
+    },
+    {
+      "group": 1659,
+      "url": "https://tcgcsv.com/tcgplayer/2/1659/prices",
+      "sha256": "26b6beea06ddbb61b97f00bf61951ea4485c50a6093f7129ef0b7c2976ada589",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9547
+    },
+    {
+      "group": 1660,
+      "url": "https://tcgcsv.com/tcgplayer/2/1660/prices",
+      "sha256": "5e150798f51c4d6e7ceaa4c212d877e47584e33ee1bc4da8c42d25f43e1b0708",
+      "matches_original_capture": true,
+      "rows": 218,
+      "bytes": 33348
+    },
+    {
+      "group": 1671,
+      "url": "https://tcgcsv.com/tcgplayer/2/1671/prices",
+      "sha256": "916dc43fea1861c8eaaf3bba0e1eeefeb91db3cee5711e5e609b5c9163041b78",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4163
+    },
+    {
+      "group": 1672,
+      "url": "https://tcgcsv.com/tcgplayer/2/1672/prices",
+      "sha256": "5a291bbe9b4ee42161ce7bb0271b7abf24b41275cf18041a0e52f580e000ca7f",
+      "matches_original_capture": true,
+      "rows": 261,
+      "bytes": 39819
+    },
+    {
+      "group": 1674,
+      "url": "https://tcgcsv.com/tcgplayer/2/1674/prices",
+      "sha256": "d867773ed686c3d39c71513439341c60d8a12983b50d5d841192a3440c0be1b0",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6805
+    },
+    {
+      "group": 1684,
+      "url": "https://tcgcsv.com/tcgplayer/2/1684/prices",
+      "sha256": "3acf683c2c0f92d665ddb27a33eff58f3d9bf3091b94164340a254d62876cf5f",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 800
+    },
+    {
+      "group": 1686,
+      "url": "https://tcgcsv.com/tcgplayer/2/1686/prices",
+      "sha256": "cdd779bf4c648fa04ecf413f86a45919ce9779dab5724f155d1d72a852a0334e",
+      "matches_original_capture": true,
+      "rows": 1,
+      "bytes": 200
+    },
+    {
+      "group": 1698,
+      "url": "https://tcgcsv.com/tcgplayer/2/1698/prices",
+      "sha256": "5b9dde693a4b71391837ab1f03a0524b833ee95cb3ff412dfa93ad40775171a7",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31914
+    },
+    {
+      "group": 1704,
+      "url": "https://tcgcsv.com/tcgplayer/2/1704/prices",
+      "sha256": "c49d7b87cb6ead575a77f9ca0ecb86c64254144de41f9bd6282a28d542226145",
+      "matches_original_capture": true,
+      "rows": 84,
+      "bytes": 12865
+    },
+    {
+      "group": 1707,
+      "url": "https://tcgcsv.com/tcgplayer/2/1707/prices",
+      "sha256": "8410af22ea38c04f2047d8f5d9ce017bdb0dbbc6ef56a6f7e44e14dc5a2ce10a",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9544
+    },
+    {
+      "group": 1743,
+      "url": "https://tcgcsv.com/tcgplayer/2/1743/prices",
+      "sha256": "6add7ea086769c4d6b11e6f307cfd2b9e18d44b4b534f7ea4627d397726e6835",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 507
+    },
+    {
+      "group": 1745,
+      "url": "https://tcgcsv.com/tcgplayer/2/1745/prices",
+      "sha256": "fb8241cf92eb510465540eecd31cdd6ee4f22380f7ebcbb362b23b1edae7ce40",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15672
+    },
+    {
+      "group": 1759,
+      "url": "https://tcgcsv.com/tcgplayer/2/1759/prices",
+      "sha256": "416b03c09cc4e58476d3729fb7fc3758d6276367b2255b6c2f21c67bcfabe285",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4159
+    },
+    {
+      "group": 1760,
+      "url": "https://tcgcsv.com/tcgplayer/2/1760/prices",
+      "sha256": "47236c682b744347ef6b7c3109b9494600502d5cfc3616fa7f6e7dc26a3f6c52",
+      "matches_original_capture": true,
+      "rows": 50,
+      "bytes": 7700
+    },
+    {
+      "group": 1761,
+      "url": "https://tcgcsv.com/tcgplayer/2/1761/prices",
+      "sha256": "dfcf78207d5868e7373466d6bd704942577a6de61a943cc611f0bfb9105b4e9c",
+      "matches_original_capture": true,
+      "rows": 210,
+      "bytes": 32067
+    },
+    {
+      "group": 1795,
+      "url": "https://tcgcsv.com/tcgplayer/2/1795/prices",
+      "sha256": "d5ca54ccf390c9b5c4240cd57c7f77dad139c0f626527547c5622f6eaac6e757",
+      "matches_original_capture": true,
+      "rows": 45,
+      "bytes": 6954
+    },
+    {
+      "group": 1802,
+      "url": "https://tcgcsv.com/tcgplayer/2/1802/prices",
+      "sha256": "fcbddf5ebd64ca98017b8fa0e1cc4cad66f817ec19af16c27c1d3e8b3ff1696f",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6798
+    },
+    {
+      "group": 1807,
+      "url": "https://tcgcsv.com/tcgplayer/2/1807/prices",
+      "sha256": "b979e3fc1743b25c7e4bfc40ec58d9884fc78d63c07751b90fdb8f24879e1b66",
+      "matches_original_capture": true,
+      "rows": 200,
+      "bytes": 30567
+    },
+    {
+      "group": 1819,
+      "url": "https://tcgcsv.com/tcgplayer/2/1819/prices",
+      "sha256": "48159afb1808ec6af4715790344e125915462b74eed7429f42255aaaefb37db6",
+      "matches_original_capture": true,
+      "rows": 104,
+      "bytes": 15833
+    },
+    {
+      "group": 1820,
+      "url": "https://tcgcsv.com/tcgplayer/2/1820/prices",
+      "sha256": "4968db99c65eeca98bd1f9f1e22d32cc10e6e0968cc855a01ebed5c0a83e2afb",
+      "matches_original_capture": true,
+      "rows": 115,
+      "bytes": 17555
+    },
+    {
+      "group": 1822,
+      "url": "https://tcgcsv.com/tcgplayer/2/1822/prices",
+      "sha256": "ebe98c2824ef546dd703f8926603b699939b88b4c4d9d425a7c6ae10612deffe",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4147
+    },
+    {
+      "group": 1828,
+      "url": "https://tcgcsv.com/tcgplayer/2/1828/prices",
+      "sha256": "f55e81087e3ad8804348a9e08a2bd1d17f400bd888413e5d72e9a554829fb2c7",
+      "matches_original_capture": true,
+      "rows": 75,
+      "bytes": 11541
+    },
+    {
+      "group": 1833,
+      "url": "https://tcgcsv.com/tcgplayer/2/1833/prices",
+      "sha256": "746bc0645354e9f693204bedbed7ac4ac6202fa245968d47ab3444a9fbdd2556",
+      "matches_original_capture": true,
+      "rows": 14,
+      "bytes": 2152
+    },
+    {
+      "group": 1834,
+      "url": "https://tcgcsv.com/tcgplayer/2/1834/prices",
+      "sha256": "cd2581b0477ff93c6e7e22af6890fd1a6765cee0f367a4932a2c955813ab9f87",
+      "matches_original_capture": true,
+      "rows": 478,
+      "bytes": 72891
+    },
+    {
+      "group": 1838,
+      "url": "https://tcgcsv.com/tcgplayer/2/1838/prices",
+      "sha256": "617dacafe42019b6f4d77d8af8e9e2a1c73928cc409484406bd0cca31d952c87",
+      "matches_original_capture": true,
+      "rows": 48,
+      "bytes": 7408
+    },
+    {
+      "group": 1841,
+      "url": "https://tcgcsv.com/tcgplayer/2/1841/prices",
+      "sha256": "fa7143fded0ef22c2cbf961bb1eac3df969d63e825b4b95825c170001aba662b",
+      "matches_original_capture": true,
+      "rows": 263,
+      "bytes": 40127
+    },
+    {
+      "group": 1845,
+      "url": "https://tcgcsv.com/tcgplayer/2/1845/prices",
+      "sha256": "73f33e61d158c6e753c1eb5de535a6c20598c3f1a385899ac482cb770c3c5753",
+      "matches_original_capture": true,
+      "rows": 90,
+      "bytes": 13755
+    },
+    {
+      "group": 1846,
+      "url": "https://tcgcsv.com/tcgplayer/2/1846/prices",
+      "sha256": "1bfd592d104f42534f5d08724b3467fc028f711476e9d2844c3a66f3ee0cd91d",
+      "matches_original_capture": true,
+      "rows": 45,
+      "bytes": 6940
+    },
+    {
+      "group": 1849,
+      "url": "https://tcgcsv.com/tcgplayer/2/1849/prices",
+      "sha256": "1c3734f1ab67deaee035724482956df533882c3d11a43ba79b201e7ba783621e",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31907
+    },
+    {
+      "group": 1854,
+      "url": "https://tcgcsv.com/tcgplayer/2/1854/prices",
+      "sha256": "ef03dc596e1d5761281987b17ec215c541bb25941fbb53325aec2bad37d6f834",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9556
+    },
+    {
+      "group": 1855,
+      "url": "https://tcgcsv.com/tcgplayer/2/1855/prices",
+      "sha256": "414fa05ef2df742e638e4d7eea67cde0a84469c8b0c19ae6aba9096ce7a76ddf",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4153
+    },
+    {
+      "group": 1877,
+      "url": "https://tcgcsv.com/tcgplayer/2/1877/prices",
+      "sha256": "95485563641b1b50a7cc09ac10b6040f3bf16f98d882f741bd65650b97a78880",
+      "matches_original_capture": true,
+      "rows": 121,
+      "bytes": 18453
+    },
+    {
+      "group": 1878,
+      "url": "https://tcgcsv.com/tcgplayer/2/1878/prices",
+      "sha256": "d535d9c383ca22c189733cda662c94414810f55001466b4927705ba29a6831af",
+      "matches_original_capture": true,
+      "rows": 45,
+      "bytes": 6944
+    },
+    {
+      "group": 1880,
+      "url": "https://tcgcsv.com/tcgplayer/2/1880/prices",
+      "sha256": "f7cdfea7742e2c6dd2fc3f5b7f8fde816fae64a3c0bf703513efbb2acc2fdbdb",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31903
+    },
+    {
+      "group": 1890,
+      "url": "https://tcgcsv.com/tcgplayer/2/1890/prices",
+      "sha256": "7f26a12ac167b9d6957af67be6fc6801624fa19db8806a9325bb86379e32b73d",
+      "matches_original_capture": true,
+      "rows": 123,
+      "bytes": 18796
+    },
+    {
+      "group": 1903,
+      "url": "https://tcgcsv.com/tcgplayer/2/1903/prices",
+      "sha256": "7124b31101baa8cc7743b967045ea9b9aee4f300abd83afed19ebecf455503fc",
+      "matches_original_capture": true,
+      "rows": 101,
+      "bytes": 15522
+    },
+    {
+      "group": 1911,
+      "url": "https://tcgcsv.com/tcgplayer/2/1911/prices",
+      "sha256": "7f7edba5771005a287ff14756c613e2ac512627abb5d51cebe1d24cc86c0be0e",
+      "matches_original_capture": true,
+      "rows": 82,
+      "bytes": 12549
+    },
+    {
+      "group": 1912,
+      "url": "https://tcgcsv.com/tcgplayer/2/1912/prices",
+      "sha256": "d5f16bfc62d3c80f3c093bf62070438e80be2ff6ae8b27e347bc359a0174bc0e",
+      "matches_original_capture": true,
+      "rows": 80,
+      "bytes": 12246
+    },
+    {
+      "group": 1917,
+      "url": "https://tcgcsv.com/tcgplayer/2/1917/prices",
+      "sha256": "35b47e204c0bd49205741150b38ba407e48f5e9f410e8717d5e684aa9fa39f88",
+      "matches_original_capture": true,
+      "rows": 102,
+      "bytes": 15704
+    },
+    {
+      "group": 1918,
+      "url": "https://tcgcsv.com/tcgplayer/2/1918/prices",
+      "sha256": "48af8c8af3c46b92abba98cf609909f05d8a7a87a61bbdc37e07503b240152ea",
+      "matches_original_capture": true,
+      "rows": 7,
+      "bytes": 1093
+    },
+    {
+      "group": 1920,
+      "url": "https://tcgcsv.com/tcgplayer/2/1920/prices",
+      "sha256": "60d788661d7568608192a859e5a3933057902b423b24502c3e3b3b8ad69d1524",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4151
+    },
+    {
+      "group": 1921,
+      "url": "https://tcgcsv.com/tcgplayer/2/1921/prices",
+      "sha256": "e600c059bbceddb990f2f71aad07c19f83f7c48fcf13efe361a43b53a3a104cd",
+      "matches_original_capture": true,
+      "rows": 39,
+      "bytes": 5956
+    },
+    {
+      "group": 1922,
+      "url": "https://tcgcsv.com/tcgplayer/2/1922/prices",
+      "sha256": "4e06ced51fc818f9219b0a7fd6c9abe4340e04d9b893a1906271e403ab9ff54b",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31914
+    },
+    {
+      "group": 1929,
+      "url": "https://tcgcsv.com/tcgplayer/2/1929/prices",
+      "sha256": "16c4b42d14f124e8594970646b5a1315dc52ad215d382f54ffb8db1654479639",
+      "matches_original_capture": true,
+      "rows": 17,
+      "bytes": 2678
+    },
+    {
+      "group": 1931,
+      "url": "https://tcgcsv.com/tcgplayer/2/1931/prices",
+      "sha256": "a754211846b05e42faf932c7e61fd399c745eb931291b09e24293965536499f3",
+      "matches_original_capture": true,
+      "rows": 47,
+      "bytes": 7255
+    },
+    {
+      "group": 1936,
+      "url": "https://tcgcsv.com/tcgplayer/2/1936/prices",
+      "sha256": "ae264236df08d6757a63dfc8f42a3cc32a13bb2e89429de39df0f51825246521",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9543
+    },
+    {
+      "group": 1948,
+      "url": "https://tcgcsv.com/tcgplayer/2/1948/prices",
+      "sha256": "0812f3fd799c6908bb3052464f27fdd34dceddaafb151c6db0f91a0877aa4731",
+      "matches_original_capture": true,
+      "rows": 82,
+      "bytes": 12601
+    },
+    {
+      "group": 1954,
+      "url": "https://tcgcsv.com/tcgplayer/2/1954/prices",
+      "sha256": "f7ba09e8c4f06a0c24246f013524925998d9e3824cb403c87941293d114ca2bf",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6793
+    },
+    {
+      "group": 1989,
+      "url": "https://tcgcsv.com/tcgplayer/2/1989/prices",
+      "sha256": "139d4d74ad2884664f435e02d366b96a5f5dd0a65ed72736bb132a63a0d1779e",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31887
+    },
+    {
+      "group": 1990,
+      "url": "https://tcgcsv.com/tcgplayer/2/1990/prices",
+      "sha256": "fc10639a9ca493f8e939e06795fc125bdb04fe898bf3d07148396e3e95a4e570",
+      "matches_original_capture": true,
+      "rows": 12,
+      "bytes": 1840
+    },
+    {
+      "group": 1991,
+      "url": "https://tcgcsv.com/tcgplayer/2/1991/prices",
+      "sha256": "d6b3af3f446795a6937707c0d4074dffe3fa5ed0b72f300d0763703be590a21b",
+      "matches_original_capture": true,
+      "rows": 240,
+      "bytes": 36909
+    },
+    {
+      "group": 2019,
+      "url": "https://tcgcsv.com/tcgplayer/2/2019/prices",
+      "sha256": "8b870b376c5c23cbae1d2537a30278aabf8652c9d9ead7d47d3d5efad6a3a59b",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4151
+    },
+    {
+      "group": 2049,
+      "url": "https://tcgcsv.com/tcgplayer/2/2049/prices",
+      "sha256": "6ef351445bfd9d5915f84dc4e5763446bd5ee692949506a40c922891c1654c1b",
+      "matches_original_capture": true,
+      "rows": 54,
+      "bytes": 8340
+    },
+    {
+      "group": 2051,
+      "url": "https://tcgcsv.com/tcgplayer/2/2051/prices",
+      "sha256": "63d9a96bb8b0eba693ef5549700662d14e7e80a4e7a79c867e2a4473489151c9",
+      "matches_original_capture": true,
+      "rows": 20,
+      "bytes": 3071
+    },
+    {
+      "group": 2052,
+      "url": "https://tcgcsv.com/tcgplayer/2/2052/prices",
+      "sha256": "6e980c68e8daaed7fc47cf97648b79094b26b05cd3ccf3fa4962ab76a233104c",
+      "matches_original_capture": true,
+      "rows": 6,
+      "bytes": 946
+    },
+    {
+      "group": 2055,
+      "url": "https://tcgcsv.com/tcgplayer/2/2055/prices",
+      "sha256": "a1b9cb08ff7b9f21864bd314e1133df62fd562845ef2b7d86d0fff4ce54cbe6c",
+      "matches_original_capture": true,
+      "rows": 116,
+      "bytes": 17833
+    },
+    {
+      "group": 2056,
+      "url": "https://tcgcsv.com/tcgplayer/2/2056/prices",
+      "sha256": "105ce1093a18c64d3b5e069a778853448b8dae9f408d7b96ec5059c2f94bfdb9",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31881
+    },
+    {
+      "group": 2072,
+      "url": "https://tcgcsv.com/tcgplayer/2/2072/prices",
+      "sha256": "ac5882b85f08f09ad24eeea4746f5095a3c5bfbc954a11a190c4d1e0adf7b2ab",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6790
+    },
+    {
+      "group": 2073,
+      "url": "https://tcgcsv.com/tcgplayer/2/2073/prices",
+      "sha256": "c7f43f3c60654b0119019dc7cfb7d6e1eb73c29a15877253fb6bc764f79aa9ae",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9554
+    },
+    {
+      "group": 2146,
+      "url": "https://tcgcsv.com/tcgplayer/2/2146/prices",
+      "sha256": "116054cf98aa8215d2fb104568a950b1571ed9474b21785df819c457af324f80",
+      "matches_original_capture": true,
+      "rows": 43,
+      "bytes": 6643
+    },
+    {
+      "group": 2149,
+      "url": "https://tcgcsv.com/tcgplayer/2/2149/prices",
+      "sha256": "8426c0f154338b71dfd826dc69b7f7521994104a9b733d095523f79d706d69c4",
+      "matches_original_capture": true,
+      "rows": 25,
+      "bytes": 3900
+    },
+    {
+      "group": 2151,
+      "url": "https://tcgcsv.com/tcgplayer/2/2151/prices",
+      "sha256": "a602c90d4db8a64bd6c6cd6af1d157b8da11eb849c3ae85bfc45cf26d5ad5472",
+      "matches_original_capture": true,
+      "rows": 208,
+      "bytes": 31732
+    },
+    {
+      "group": 2157,
+      "url": "https://tcgcsv.com/tcgplayer/2/2157/prices",
+      "sha256": "ac9eafd85896f443eaa8b506456793da9aa335451a3e127f5c54b61f29df4ba9",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3985
+    },
+    {
+      "group": 2179,
+      "url": "https://tcgcsv.com/tcgplayer/2/2179/prices",
+      "sha256": "4ea8c85483521821a32b6884f59a514f8119b994d7a70b874f3b12b0b1c61ab1",
+      "matches_original_capture": true,
+      "rows": 54,
+      "bytes": 8340
+    },
+    {
+      "group": 2194,
+      "url": "https://tcgcsv.com/tcgplayer/2/2194/prices",
+      "sha256": "3e33463b7a94f73acc4e272b63948e193acef80f5700872802ad965c5d06a20b",
+      "matches_original_capture": true,
+      "rows": 101,
+      "bytes": 15526
+    },
+    {
+      "group": 2195,
+      "url": "https://tcgcsv.com/tcgplayer/2/2195/prices",
+      "sha256": "8349d8fb7f3d0689c7388d6f37c0f0313d679c063d4ca837f0aa399a6607bb80",
+      "matches_original_capture": true,
+      "rows": 235,
+      "bytes": 35820
+    },
+    {
+      "group": 2196,
+      "url": "https://tcgcsv.com/tcgplayer/2/2196/prices",
+      "sha256": "b0b9b057cc354e630b836ab215b0071cc26392d54ba949954d754c250303c4c9",
+      "matches_original_capture": true,
+      "rows": 80,
+      "bytes": 12061
+    },
+    {
+      "group": 2197,
+      "url": "https://tcgcsv.com/tcgplayer/2/2197/prices",
+      "sha256": "415832fa4cd6dc9d0f8956407e6c74fd018410d7ebaca9a3480fcd6752480444",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 819
+    },
+    {
+      "group": 2211,
+      "url": "https://tcgcsv.com/tcgplayer/2/2211/prices",
+      "sha256": "0eed1ed4f35c522ffc3996c995bd47fcdcfb8c534d975be6bb08f39a1ad06de3",
+      "matches_original_capture": true,
+      "rows": 43,
+      "bytes": 6643
+    },
+    {
+      "group": 2212,
+      "url": "https://tcgcsv.com/tcgplayer/2/2212/prices",
+      "sha256": "452361eb23f0c14efb06825d4cd4e6cb1ba54e6bb0cc47b9baaa83d6c2c8bb0f",
+      "matches_original_capture": true,
+      "rows": 208,
+      "bytes": 31741
+    },
+    {
+      "group": 2215,
+      "url": "https://tcgcsv.com/tcgplayer/2/2215/prices",
+      "sha256": "6b426308177bb5c218642ba8dfe3da7058b271a546cfc451099e69e6a6e4fefc",
+      "matches_original_capture": true,
+      "rows": 3,
+      "bytes": 503
+    },
+    {
+      "group": 2227,
+      "url": "https://tcgcsv.com/tcgplayer/2/2227/prices",
+      "sha256": "91737de4d7a0b1a53eb0c2276e36a7c593c2368ab45d61c814494cc5e112a5b8",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 2946
+    },
+    {
+      "group": 2228,
+      "url": "https://tcgcsv.com/tcgplayer/2/2228/prices",
+      "sha256": "4ed3cc5833167e50281b3d4e34e491af323777b7f29bcd4613ff28276fb5f40d",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 4007
+    },
+    {
+      "group": 2231,
+      "url": "https://tcgcsv.com/tcgplayer/2/2231/prices",
+      "sha256": "2265148717962dfb1d9d83ab4c91fa5e8836709fa46f2f492287d759ae518755",
+      "matches_original_capture": true,
+      "rows": 123,
+      "bytes": 18785
+    },
+    {
+      "group": 2253,
+      "url": "https://tcgcsv.com/tcgplayer/2/2253/prices",
+      "sha256": "9b060eb25d5e2f0487e230b308acc08d718b7d7b02a95a734437980b60a3677b",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16582
+    },
+    {
+      "group": 2266,
+      "url": "https://tcgcsv.com/tcgplayer/2/2266/prices",
+      "sha256": "6a778f624e1c4529fe3a3cf833e542609a2b1d8f0764251f76fd28fbec1e9f29",
+      "matches_original_capture": true,
+      "rows": 46,
+      "bytes": 7094
+    },
+    {
+      "group": 2267,
+      "url": "https://tcgcsv.com/tcgplayer/2/2267/prices",
+      "sha256": "091c1146ef8868d660b4188befbb8ccd37d1c587052f724fcbf07aabc6ade21d",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31902
+    },
+    {
+      "group": 2284,
+      "url": "https://tcgcsv.com/tcgplayer/2/2284/prices",
+      "sha256": "348327873209cc92d917785fdc63f21a4d15708beb2011086db447f2bcb45d3e",
+      "matches_original_capture": true,
+      "rows": 13,
+      "bytes": 1989
+    },
+    {
+      "group": 2291,
+      "url": "https://tcgcsv.com/tcgplayer/2/2291/prices",
+      "sha256": "a50161fce4827c785ced16d62a9943aeaddf21bba55f7c8f32646d97dd2b5243",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6789
+    },
+    {
+      "group": 2292,
+      "url": "https://tcgcsv.com/tcgplayer/2/2292/prices",
+      "sha256": "178665448eb107e03f61000864c45c4ea4cd9a26800c2f07663eb014c41946e8",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9564
+    },
+    {
+      "group": 2300,
+      "url": "https://tcgcsv.com/tcgplayer/2/2300/prices",
+      "sha256": "da885761f4d694e68790ade6a5127ecf75aa2ee26c0d3b9f1e383c6367cc3c30",
+      "matches_original_capture": true,
+      "rows": 58,
+      "bytes": 8925
+    },
+    {
+      "group": 2312,
+      "url": "https://tcgcsv.com/tcgplayer/2/2312/prices",
+      "sha256": "1832ecbfb4986575da7aab149239b3f56a9fa900065cc6b9134a2c9b6fc5559d",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3992
+    },
+    {
+      "group": 2317,
+      "url": "https://tcgcsv.com/tcgplayer/2/2317/prices",
+      "sha256": "c2e89dc584484da578c18ab074e0a900eac36e964f08ab84eb72a99bbe5c9999",
+      "matches_original_capture": true,
+      "rows": 234,
+      "bytes": 35933
+    },
+    {
+      "group": 2322,
+      "url": "https://tcgcsv.com/tcgplayer/2/2322/prices",
+      "sha256": "b5f2e6d333cb98e95dd6cf411950b31ccd69c503bb1eaead7303ede728f7d1d5",
+      "matches_original_capture": true,
+      "rows": 5,
+      "bytes": 792
+    },
+    {
+      "group": 2327,
+      "url": "https://tcgcsv.com/tcgplayer/2/2327/prices",
+      "sha256": "b82af59b1824db3fd5b0cf5b84364e73685e46f6a261595fcb24187b7ad02289",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31893
+    },
+    {
+      "group": 2336,
+      "url": "https://tcgcsv.com/tcgplayer/2/2336/prices",
+      "sha256": "45ad49e8fa20bf9051678fd29ff75311262ab968a75c4ee98d8af47fde42dde3",
+      "matches_original_capture": true,
+      "rows": 121,
+      "bytes": 18580
+    },
+    {
+      "group": 2337,
+      "url": "https://tcgcsv.com/tcgplayer/2/2337/prices",
+      "sha256": "7c5daf8cba75ce12ffbf2003fd42856fcf9b970b959f966d24fe14b2890cb630",
+      "matches_original_capture": true,
+      "rows": 25,
+      "bytes": 3873
+    },
+    {
+      "group": 2339,
+      "url": "https://tcgcsv.com/tcgplayer/2/2339/prices",
+      "sha256": "d32ca113933b223bdc34d64c09214e0a9b5f45049dd3ec6ea90d79e0ead5b1fb",
+      "matches_original_capture": true,
+      "rows": 44,
+      "bytes": 6795
+    },
+    {
+      "group": 2343,
+      "url": "https://tcgcsv.com/tcgplayer/2/2343/prices",
+      "sha256": "2d3d32a1bc951c0455795ba94ba2b710a9ab8b1f16ed07663bf44b054118a881",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9543
+    },
+    {
+      "group": 2365,
+      "url": "https://tcgcsv.com/tcgplayer/2/2365/prices",
+      "sha256": "ec92cd7657d48659e3cbfe10f97d2d8f63fec7cf1df09e5a9e30efd61940e6dc",
+      "matches_original_capture": true,
+      "rows": 58,
+      "bytes": 8932
+    },
+    {
+      "group": 2371,
+      "url": "https://tcgcsv.com/tcgplayer/2/2371/prices",
+      "sha256": "053a1a2523790c11d13e607d02771c3740d0081a8574fa8aca35edf916efe9bb",
+      "matches_original_capture": true,
+      "rows": 70,
+      "bytes": 10782
+    },
+    {
+      "group": 2372,
+      "url": "https://tcgcsv.com/tcgplayer/2/2372/prices",
+      "sha256": "1456fad527f367ec1f7eb112f68a467657a9ca4f943c5fe680aedf727dd19df1",
+      "matches_original_capture": true,
+      "rows": 65,
+      "bytes": 10005
+    },
+    {
+      "group": 2373,
+      "url": "https://tcgcsv.com/tcgplayer/2/2373/prices",
+      "sha256": "c2e28e01c19ddca229799fa1a80a64c1f9be741337fb7d9e35c45934e318b56d",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 650
+    },
+    {
+      "group": 2378,
+      "url": "https://tcgcsv.com/tcgplayer/2/2378/prices",
+      "sha256": "c4ec359e1a51a07b21056180907aab715e160f6ed7f89e3775a3b84b0869dcc7",
+      "matches_original_capture": true,
+      "rows": 28,
+      "bytes": 4297
+    },
+    {
+      "group": 2380,
+      "url": "https://tcgcsv.com/tcgplayer/2/2380/prices",
+      "sha256": "dda1ee5cab223a0e38973e5221804f9c45dd1718acc9abc821cfe31747904d64",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31889
+    },
+    {
+      "group": 2389,
+      "url": "https://tcgcsv.com/tcgplayer/2/2389/prices",
+      "sha256": "01711652430d80b808026b20140893cf3dfa9be4a42bceedf3fa62df845bffcb",
+      "matches_original_capture": true,
+      "rows": 47,
+      "bytes": 7255
+    },
+    {
+      "group": 2398,
+      "url": "https://tcgcsv.com/tcgplayer/2/2398/prices",
+      "sha256": "9e8522c1d9e4b6ac4ee6ba194284a71d8ebfe69298003d580a5f84ab019c780f",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9544
+    },
+    {
+      "group": 2399,
+      "url": "https://tcgcsv.com/tcgplayer/2/2399/prices",
+      "sha256": "5932b9627247073cbf0b4bc170e6ff2a4caf6a7c617cef9f2763f72a24e918f3",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 8027
+    },
+    {
+      "group": 2400,
+      "url": "https://tcgcsv.com/tcgplayer/2/2400/prices",
+      "sha256": "4674d2cba0ede45f876b102844706b6942e6091b880cd83f74a23d0aa153a5a8",
+      "matches_original_capture": true,
+      "rows": 209,
+      "bytes": 31868
+    },
+    {
+      "group": 2401,
+      "url": "https://tcgcsv.com/tcgplayer/2/2401/prices",
+      "sha256": "7c0069cfab5e4cae92156a42ff082866aea193fdf014ffdfae1f5df55ea450d9",
+      "matches_original_capture": true,
+      "rows": 42,
+      "bytes": 6488
+    },
+    {
+      "group": 2421,
+      "url": "https://tcgcsv.com/tcgplayer/2/2421/prices",
+      "sha256": "cf579f9e1944a808abfb003067990ac8d48ee7c1ad0fa63fbc68e91f923053ab",
+      "matches_original_capture": true,
+      "rows": 210,
+      "bytes": 32002
+    },
+    {
+      "group": 2425,
+      "url": "https://tcgcsv.com/tcgplayer/2/2425/prices",
+      "sha256": "43422a4dcdbcacfac334d7fae434b3fb5c8ebfdaedd103dc14f3b60c3d3b3b05",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 8028
+    },
+    {
+      "group": 2443,
+      "url": "https://tcgcsv.com/tcgplayer/2/2443/prices",
+      "sha256": "331ef25006e29b4d2dcfd93516491cdab49dfb9a7e34e012afec6652f1d4d729",
+      "matches_original_capture": true,
+      "rows": 4,
+      "bytes": 650
+    },
+    {
+      "group": 2445,
+      "url": "https://tcgcsv.com/tcgplayer/2/2445/prices",
+      "sha256": "d5bc51cb99b890955f57f6685294ac6bddd8c9a91e37fbd81d56bb0e1642303e",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3994
+    },
+    {
+      "group": 2446,
+      "url": "https://tcgcsv.com/tcgplayer/2/2446/prices",
+      "sha256": "215cbb9726a3e8a242e2e801e01f65528fd1f7f95cbb931425f9a0d95a9c476b",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 2924
+    },
+    {
+      "group": 2459,
+      "url": "https://tcgcsv.com/tcgplayer/2/2459/prices",
+      "sha256": "0d5e932bd9bbab3c196f880c0363c542ef85c0e0ac418b4abf1f2c0bf5aa0e0e",
+      "matches_original_capture": true,
+      "rows": 96,
+      "bytes": 14757
+    },
+    {
+      "group": 2462,
+      "url": "https://tcgcsv.com/tcgplayer/2/2462/prices",
+      "sha256": "35d7085fd56e9ffec978929106cd99c42a0bcd24c4a6835fff7cd998f3f44d77",
+      "matches_original_capture": true,
+      "rows": 214,
+      "bytes": 32701
+    },
+    {
+      "group": 2468,
+      "url": "https://tcgcsv.com/tcgplayer/2/2468/prices",
+      "sha256": "e3e64fe08f881a924f5b40817056ddecbe2ad228eafe652a3fff37be169ab902",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 8032
+    },
+    {
+      "group": 2469,
+      "url": "https://tcgcsv.com/tcgplayer/2/2469/prices",
+      "sha256": "8d568c6f1baba70d89140113c02b15cd8fa3a19009e2688a04b044d1c28f3e43",
+      "matches_original_capture": true,
+      "rows": 64,
+      "bytes": 9880
+    },
+    {
+      "group": 2470,
+      "url": "https://tcgcsv.com/tcgplayer/2/2470/prices",
+      "sha256": "3a5b6bf1c332f9f5e6e368864d8929ba530338a0d8754dc67f53a0f9b5d3b194",
+      "matches_original_capture": true,
+      "rows": 47,
+      "bytes": 7248
+    },
+    {
+      "group": 2471,
+      "url": "https://tcgcsv.com/tcgplayer/2/2471/prices",
+      "sha256": "26319d0601c4580926cab0c72985503738fe6776e8b9fe39d58a811b55889fca",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9535
+    },
+    {
+      "group": 2488,
+      "url": "https://tcgcsv.com/tcgplayer/2/2488/prices",
+      "sha256": "aaba1c097eb6ff81e8efd52739f9fdaf744e9670a7061cfb88079ff1998353c0",
+      "matches_original_capture": true,
+      "rows": 15,
+      "bytes": 2282
+    },
+    {
+      "group": 2489,
+      "url": "https://tcgcsv.com/tcgplayer/2/2489/prices",
+      "sha256": "45fb1f3ea4731b2374ab506df2d09b1d0c532b956595e2a23dee8c91f4f91b87",
+      "matches_original_capture": true,
+      "rows": 540,
+      "bytes": 82374
+    },
+    {
+      "group": 2505,
+      "url": "https://tcgcsv.com/tcgplayer/2/2505/prices",
+      "sha256": "61af67fc145a59ad8abe602badcb34401c30bf175c7cdfd2d8b3b1795abddf95",
+      "matches_original_capture": true,
+      "rows": 57,
+      "bytes": 8776
+    },
+    {
+      "group": 2512,
+      "url": "https://tcgcsv.com/tcgplayer/2/2512/prices",
+      "sha256": "80b5a61943e139ef0db0a882adc362d617e92d99ef713be767ef622ee28a153f",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3996
+    },
+    {
+      "group": 2514,
+      "url": "https://tcgcsv.com/tcgplayer/2/2514/prices",
+      "sha256": "c9d464769913728e760f832ae19e9040a63fc1d2046a041bd7bc76eb51dc1314",
+      "matches_original_capture": true,
+      "rows": 63,
+      "bytes": 9673
+    },
+    {
+      "group": 2518,
+      "url": "https://tcgcsv.com/tcgplayer/2/2518/prices",
+      "sha256": "a7930b441b5b313d1e187bf13749aa2b6064d1d35b7dcb65fc214f0e8097c245",
+      "matches_original_capture": true,
+      "rows": 25,
+      "bytes": 3880
+    },
+    {
+      "group": 2519,
+      "url": "https://tcgcsv.com/tcgplayer/2/2519/prices",
+      "sha256": "645331819d3bdbcb3a3ecbcab5822d3ab81dc520682ebbcbb9ff3240b56c786e",
+      "matches_original_capture": true,
+      "rows": 60,
+      "bytes": 9246
+    },
+    {
+      "group": 2527,
+      "url": "https://tcgcsv.com/tcgplayer/2/2527/prices",
+      "sha256": "df227ad8e8e64f4ad42369ff06db773a638e4a08374b09b89c64c816abcaed98",
+      "matches_original_capture": true,
+      "rows": 213,
+      "bytes": 32526
+    },
+    {
+      "group": 2528,
+      "url": "https://tcgcsv.com/tcgplayer/2/2528/prices",
+      "sha256": "507aa411552320cec8c34e1e22d23df30dd76c40b5fceaf6ce28579fecb0eab0",
+      "matches_original_capture": true,
+      "rows": 62,
+      "bytes": 9535
+    },
+    {
+      "group": 2558,
+      "url": "https://tcgcsv.com/tcgplayer/2/2558/prices",
+      "sha256": "32258eadd9c542bd7199de32dd2a654667745cf5b1c1d1116a0cc1f46240e649",
+      "matches_original_capture": true,
+      "rows": 10,
+      "bytes": 1559
+    },
+    {
+      "group": 2559,
+      "url": "https://tcgcsv.com/tcgplayer/2/2559/prices",
+      "sha256": "cae0963c40c7463f2ff77ec8fea2b8659234dba86f32d3cfccd682989146cef1",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 2947
+    },
+    {
+      "group": 2561,
+      "url": "https://tcgcsv.com/tcgplayer/2/2561/prices",
+      "sha256": "d941b65d88b2feb2df5d99e5dbccc9bf61d880b97cdefed47e6d13f6ae44991c",
+      "matches_original_capture": true,
+      "rows": 7,
+      "bytes": 1105
+    },
+    {
+      "group": 2567,
+      "url": "https://tcgcsv.com/tcgplayer/2/2567/prices",
+      "sha256": "5292cae2041d854cc900722782c731fc1fe612041ed309d0c7116f7dba454a96",
+      "matches_original_capture": true,
+      "rows": 117,
+      "bytes": 17906
+    },
+    {
+      "group": 2577,
+      "url": "https://tcgcsv.com/tcgplayer/2/2577/prices",
+      "sha256": "17f7bcfc7aa4829b4118ee72460db9bff24f326d4de437bff377ecdeab700992",
+      "matches_original_capture": true,
+      "rows": 65,
+      "bytes": 9992
+    },
+    {
+      "group": 2578,
+      "url": "https://tcgcsv.com/tcgplayer/2/2578/prices",
+      "sha256": "ceb398328433d4992f669e50de26d9ab6f8ef43e4513151ea36cf77f9df9f6fb",
+      "matches_original_capture": true,
+      "rows": 213,
+      "bytes": 32509
+    },
+    {
+      "group": 2582,
+      "url": "https://tcgcsv.com/tcgplayer/2/2582/prices",
+      "sha256": "05bc19329a3a4a8276f2c6376fffda68461a419b0c454c94cf6dd07246fc59dc",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3991
+    },
+    {
+      "group": 2591,
+      "url": "https://tcgcsv.com/tcgplayer/2/2591/prices",
+      "sha256": "82de8827b8df1ca0e87065cb8d5b7dfea26f2cd8a0299ac6fc6af0fff89e4804",
+      "matches_original_capture": true,
+      "rows": 99,
+      "bytes": 15144
+    },
+    {
+      "group": 2610,
+      "url": "https://tcgcsv.com/tcgplayer/2/2610/prices",
+      "sha256": "29d912751c84560fa801c77db277aa3850b662552a789aa9d3aced64b1adf6a8",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16577
+    },
+    {
+      "group": 2613,
+      "url": "https://tcgcsv.com/tcgplayer/2/2613/prices",
+      "sha256": "253d8a2f3e8853aa63389b962773b292f24fff053bdbd299deaf9ccf59f1a1dd",
+      "matches_original_capture": true,
+      "rows": 63,
+      "bytes": 9711
+    },
+    {
+      "group": 2617,
+      "url": "https://tcgcsv.com/tcgplayer/2/2617/prices",
+      "sha256": "d25e07034470d28b476ba5e4083eec291a8bd9d97601793aa6fa93c8a4023fe8",
+      "matches_original_capture": true,
+      "rows": 43,
+      "bytes": 6639
+    },
+    {
+      "group": 2625,
+      "url": "https://tcgcsv.com/tcgplayer/2/2625/prices",
+      "sha256": "8e4ce7b34e752a02287ea28a4197a955c6afb15c7db2b157decfccc4052133e6",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16617
+    },
+    {
+      "group": 2637,
+      "url": "https://tcgcsv.com/tcgplayer/2/2637/prices",
+      "sha256": "0f01dade5f703fd0d91a659975b5fbc6208b017d60a253549d34374e47a61ed0",
+      "matches_original_capture": true,
+      "rows": 68,
+      "bytes": 10488
+    },
+    {
+      "group": 2638,
+      "url": "https://tcgcsv.com/tcgplayer/2/2638/prices",
+      "sha256": "ba74fe73bc6cd89307498df12cbf8755b422b30df8410e657a40516e6ff8cc66",
+      "matches_original_capture": true,
+      "rows": 67,
+      "bytes": 10329
+    },
+    {
+      "group": 2652,
+      "url": "https://tcgcsv.com/tcgplayer/2/2652/prices",
+      "sha256": "690a7f903c05f03d27480e21bf95034c9ae45729d343ed9cf859513739e02dfe",
+      "matches_original_capture": true,
+      "rows": 154,
+      "bytes": 23646
+    },
+    {
+      "group": 2658,
+      "url": "https://tcgcsv.com/tcgplayer/2/2658/prices",
+      "sha256": "534c050e4d3c29e00c02bb8c8402f72892ca5b4fa9a50f589f1dc8b653c6fdfd",
+      "matches_original_capture": true,
+      "rows": 166,
+      "bytes": 25430
+    },
+    {
+      "group": 2659,
+      "url": "https://tcgcsv.com/tcgplayer/2/2659/prices",
+      "sha256": "d38975a984f96a714c32936024d76081a4e695700ef8c8d9a4be5c08dffaa0d3",
+      "matches_original_capture": true,
+      "rows": 50,
+      "bytes": 7705
+    },
+    {
+      "group": 2660,
+      "url": "https://tcgcsv.com/tcgplayer/2/2660/prices",
+      "sha256": "f61b9784c6e63c9109f27e7673c74538067b8b12633d009b29aa0d3a250e4651",
+      "matches_original_capture": true,
+      "rows": 98,
+      "bytes": 15052
+    },
+    {
+      "group": 2672,
+      "url": "https://tcgcsv.com/tcgplayer/2/2672/prices",
+      "sha256": "acdf5c6247ac4818f2feda595cbc37f3bbecfe71c33355da940a2031f927fcdd",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3994
+    },
+    {
+      "group": 2674,
+      "url": "https://tcgcsv.com/tcgplayer/2/2674/prices",
+      "sha256": "875abe979d4f570587a9e167a1297472841f22210f274d43489d076a1c84d998",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16636
+    },
+    {
+      "group": 2679,
+      "url": "https://tcgcsv.com/tcgplayer/2/2679/prices",
+      "sha256": "4405b0b6d266ec02ccf4f255dabd165ec8d9675cc507f0d94dc26bbbd016aeb2",
+      "matches_original_capture": true,
+      "rows": 77,
+      "bytes": 11875
+    },
+    {
+      "group": 2680,
+      "url": "https://tcgcsv.com/tcgplayer/2/2680/prices",
+      "sha256": "18e706b88dcbb967f331f71c69334b37efce8210d9aeaf4c12e0716cd09a9c20",
+      "matches_original_capture": true,
+      "rows": 252,
+      "bytes": 38653
+    },
+    {
+      "group": 2681,
+      "url": "https://tcgcsv.com/tcgplayer/2/2681/prices",
+      "sha256": "5aeecab2e598f380a527e78ddcad89291c871463c90b905f9c2341c264cb9e8c",
+      "matches_original_capture": true,
+      "rows": 11,
+      "bytes": 1711
+    },
+    {
+      "group": 2682,
+      "url": "https://tcgcsv.com/tcgplayer/2/2682/prices",
+      "sha256": "a0a99ae483cb3bc27dafd0896d51e1332ebab789d394389e542209443f5e71e7",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 2917
+    },
+    {
+      "group": 2689,
+      "url": "https://tcgcsv.com/tcgplayer/2/2689/prices",
+      "sha256": "b8e5f57769d3e79b17ef1782bed82a6f28ae3ae6b3fb26726d5038424c0522ba",
+      "matches_original_capture": true,
+      "rows": 243,
+      "bytes": 37275
+    },
+    {
+      "group": 2690,
+      "url": "https://tcgcsv.com/tcgplayer/2/2690/prices",
+      "sha256": "56d447e3acc78f4f759765627c48bf56a65e99d008b58ff36e847d22d79b55f2",
+      "matches_original_capture": true,
+      "rows": 120,
+      "bytes": 18367
+    },
+    {
+      "group": 2693,
+      "url": "https://tcgcsv.com/tcgplayer/2/2693/prices",
+      "sha256": "071e24d8f8d794f44d2e799a3290360b369cd386a1ad18a51f65fdc61850c061",
+      "matches_original_capture": true,
+      "rows": 174,
+      "bytes": 26711
+    },
+    {
+      "group": 2694,
+      "url": "https://tcgcsv.com/tcgplayer/2/2694/prices",
+      "sha256": "b43c5f59886446e94d6a30ec068c5d69291de96bd807fcf53d0c81b958c4254b",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16771
+    },
+    {
+      "group": 2695,
+      "url": "https://tcgcsv.com/tcgplayer/2/2695/prices",
+      "sha256": "6ab62735b53b57ffd052a93bf9eab26bf2232c1a1b3e1208eff47946f8bbc12e",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 8030
+    },
+    {
+      "group": 2700,
+      "url": "https://tcgcsv.com/tcgplayer/2/2700/prices",
+      "sha256": "38986d209843fdb47a682d876260f2bd59e6cd17b95fa431992eb59469e046a1",
+      "matches_original_capture": true,
+      "rows": 245,
+      "bytes": 37671
+    },
+    {
+      "group": 2718,
+      "url": "https://tcgcsv.com/tcgplayer/2/2718/prices",
+      "sha256": "14945215e920dcf2631362a0bd312fdce0d13b8f9ef0a3b09d9144d8a68e3c0e",
+      "matches_original_capture": true,
+      "rows": 24,
+      "bytes": 3758
+    },
+    {
+      "group": 2723,
+      "url": "https://tcgcsv.com/tcgplayer/2/2723/prices",
+      "sha256": "f4db91c9eed51a9d122799ac8d21c6fa83f846f7583848b76b4fba550ae360d2",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3999
+    },
+    {
+      "group": 2743,
+      "url": "https://tcgcsv.com/tcgplayer/2/2743/prices",
+      "sha256": "2ac288eb2e19e00ecc1b6b7eca22e80bd855d939f71d18b0e021a612c2bccb0c",
+      "matches_original_capture": true,
+      "rows": 224,
+      "bytes": 34395
+    },
+    {
+      "group": 2749,
+      "url": "https://tcgcsv.com/tcgplayer/2/2749/prices",
+      "sha256": "de2017ea790dbdd2df5cc858c596e19366dc3dd377bd62ce42f234de59ea7bdc",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16602
+    },
+    {
+      "group": 2751,
+      "url": "https://tcgcsv.com/tcgplayer/2/2751/prices",
+      "sha256": "0324c3556588f653f1b9dadf158304857924baed19c0ecfa8e316022a99f6607",
+      "matches_original_capture": true,
+      "rows": 48,
+      "bytes": 7410
+    },
+    {
+      "group": 2752,
+      "url": "https://tcgcsv.com/tcgplayer/2/2752/prices",
+      "sha256": "48486b071b71baf01f684be84145e850abf0bbc16f3c17a6998a40da84f6a420",
+      "matches_original_capture": true,
+      "rows": 135,
+      "bytes": 20766
+    },
+    {
+      "group": 2767,
+      "url": "https://tcgcsv.com/tcgplayer/2/2767/prices",
+      "sha256": "e4d33538c8d7c7580949a423ac3b9c079ab849bb20f4fea2228b221e5d55a5a5",
+      "matches_original_capture": true,
+      "rows": 77,
+      "bytes": 11873
+    },
+    {
+      "group": 2779,
+      "url": "https://tcgcsv.com/tcgplayer/2/2779/prices",
+      "sha256": "1b85f583bd7660cfd0428a20d5c91dafe31b786b63a4673c458148a5880f8c97",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16763
+    },
+    {
+      "group": 2790,
+      "url": "https://tcgcsv.com/tcgplayer/2/2790/prices",
+      "sha256": "e2bdb1d967a1fdb50d137987c9701233248b262d862fa02c4e3f41470571ac28",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3995
+    },
+    {
+      "group": 2808,
+      "url": "https://tcgcsv.com/tcgplayer/2/2808/prices",
+      "sha256": "fcbcff6fff1fb7533079fb8e4e87ab03656ebb162f838a87e63ee19cb5b8ee0e",
+      "matches_original_capture": true,
+      "rows": 85,
+      "bytes": 13160
+    },
+    {
+      "group": 2810,
+      "url": "https://tcgcsv.com/tcgplayer/2/2810/prices",
+      "sha256": "15f2f3f6dc0ec295bace2caa4c49ae8c8e21360abe2951b2730a2ef880a059a6",
+      "matches_original_capture": true,
+      "rows": 73,
+      "bytes": 11155
+    },
+    {
+      "group": 2811,
+      "url": "https://tcgcsv.com/tcgplayer/2/2811/prices",
+      "sha256": "1d65846f967eb87f257ab27bec14f31e5073297c929aec636d98189a9b64889b",
+      "matches_original_capture": true,
+      "rows": 80,
+      "bytes": 12239
+    },
+    {
+      "group": 2829,
+      "url": "https://tcgcsv.com/tcgplayer/2/2829/prices",
+      "sha256": "82ef958bc4c6dac5d88a9f3ceb50b392a4be63c3ec08bf5b8c8da0a72609a848",
+      "matches_original_capture": true,
+      "rows": 59,
+      "bytes": 9090
+    },
+    {
+      "group": 2830,
+      "url": "https://tcgcsv.com/tcgplayer/2/2830/prices",
+      "sha256": "5249574ee897248ca4d0b0108812ae2030197d7103c21b96c17a6f2385a89e57",
+      "matches_original_capture": true,
+      "rows": 99,
+      "bytes": 15143
+    },
+    {
+      "group": 2843,
+      "url": "https://tcgcsv.com/tcgplayer/2/2843/prices",
+      "sha256": "bf8d351799d13133998b53bfaac70e8d84b0898dde3f93a045f53764cd191e36",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16775
+    },
+    {
+      "group": 2847,
+      "url": "https://tcgcsv.com/tcgplayer/2/2847/prices",
+      "sha256": "3c04e2a65fd6bb483174d1fe84c2943830658ee8c58aa29f646db80d062cf9c8",
+      "matches_original_capture": true,
+      "rows": 261,
+      "bytes": 40050
+    },
+    {
+      "group": 2850,
+      "url": "https://tcgcsv.com/tcgplayer/2/2850/prices",
+      "sha256": "7dafea0f30ad165691dd9d66d78f455c17e85133d1759287b4c4eabe39d061e9",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3991
+    },
+    {
+      "group": 2877,
+      "url": "https://tcgcsv.com/tcgplayer/2/2877/prices",
+      "sha256": "db35c6b69806d43d78efcd4c32427466a0633ddc9676cf0529cd916e738dfbcb",
+      "matches_original_capture": true,
+      "rows": 98,
+      "bytes": 15086
+    },
+    {
+      "group": 2879,
+      "url": "https://tcgcsv.com/tcgplayer/2/2879/prices",
+      "sha256": "b73081ff0b5d1fedca3e54b7aa377b8fc6468bc98dfa8964b46857b00d8c4f06",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16762
+    },
+    {
+      "group": 2896,
+      "url": "https://tcgcsv.com/tcgplayer/2/2896/prices",
+      "sha256": "845cb94e3f7bda660cd276574be36d6b1d5ecbc887803d09b8562e422b75817c",
+      "matches_original_capture": true,
+      "rows": 164,
+      "bytes": 25175
+    },
+    {
+      "group": 2934,
+      "url": "https://tcgcsv.com/tcgplayer/2/2934/prices",
+      "sha256": "01e8b829865a5599a9bce6ce83ca926c26e7c38e7793bce5de90ff0f59f75f5b",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3987
+    },
+    {
+      "group": 2941,
+      "url": "https://tcgcsv.com/tcgplayer/2/2941/prices",
+      "sha256": "e25c1abcf997ec9077619dd4a1477b7be0820224edbb2026209e70dd99f75116",
+      "matches_original_capture": true,
+      "rows": 320,
+      "bytes": 49048
+    },
+    {
+      "group": 2961,
+      "url": "https://tcgcsv.com/tcgplayer/2/2961/prices",
+      "sha256": "7172eefe48eeebb917aef3d0d55eeaefe574b597d7130812d1c03900deced18d",
+      "matches_original_capture": true,
+      "rows": 53,
+      "bytes": 8179
+    },
+    {
+      "group": 2964,
+      "url": "https://tcgcsv.com/tcgplayer/2/2964/prices",
+      "sha256": "c15a6f7786a61684b3e6011ea29fa2d3bbdd85e8db25a000bb5b1d21ecdcf114",
+      "matches_original_capture": true,
+      "rows": 77,
+      "bytes": 11868
+    },
+    {
+      "group": 2969,
+      "url": "https://tcgcsv.com/tcgplayer/2/2969/prices",
+      "sha256": "4fa0d01386ebb0da9fb7ab3e11d17e8322b06c9e8b4b1fe25867252e500f498d",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16780
+    },
+    {
+      "group": 2970,
+      "url": "https://tcgcsv.com/tcgplayer/2/2970/prices",
+      "sha256": "a37e689e866a01afbd7067825776f955db1afa07ee05af98ea34a21396020a56",
+      "matches_original_capture": true,
+      "rows": 243,
+      "bytes": 37374
+    },
+    {
+      "group": 3000,
+      "url": "https://tcgcsv.com/tcgplayer/2/3000/prices",
+      "sha256": "7fa5e8115cecf54492c4ae18c87286533d867496024516b276b4f4b18aceab19",
+      "matches_original_capture": true,
+      "rows": 26,
+      "bytes": 3994
+    },
+    {
+      "group": 3011,
+      "url": "https://tcgcsv.com/tcgplayer/2/3011/prices",
+      "sha256": "2f98f35b3a420660c38719c3b40312f424721eea70a95b7f59d23a5001e5684a",
+      "matches_original_capture": true,
+      "rows": 186,
+      "bytes": 28646
+    },
+    {
+      "group": 3013,
+      "url": "https://tcgcsv.com/tcgplayer/2/3013/prices",
+      "sha256": "387a61a8c7d13d5a40a35c3a9f73f0c517d080e899adae33216debb463724e03",
+      "matches_original_capture": true,
+      "rows": 59,
+      "bytes": 9090
+    },
+    {
+      "group": 3029,
+      "url": "https://tcgcsv.com/tcgplayer/2/3029/prices",
+      "sha256": "06fab049ae088dd89b80152f7e113f0dd604518c894a4a91c10a5686cb3e5e8e",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16621
+    },
+    {
+      "group": 3050,
+      "url": "https://tcgcsv.com/tcgplayer/2/3050/prices",
+      "sha256": "3cd93200beb4be95d802fcff46c3613c9258c21c152ffd250131f6edc73826cf",
+      "matches_original_capture": true,
+      "rows": 35,
+      "bytes": 5361
+    },
+    {
+      "group": 3066,
+      "url": "https://tcgcsv.com/tcgplayer/2/3066/prices",
+      "sha256": "5e7cf44996ad788afb605838d27a89717725ec29ac288d354c4fe9e4a20b0e83",
+      "matches_original_capture": true,
+      "rows": 78,
+      "bytes": 12020
+    },
+    {
+      "group": 3073,
+      "url": "https://tcgcsv.com/tcgplayer/2/3073/prices",
+      "sha256": "2bb53024bf52c7a27a202d77d86f58bf14f937ad8c9881c517df108f4b56ab90",
+      "matches_original_capture": true,
+      "rows": 29,
+      "bytes": 4440
+    },
+    {
+      "group": 3076,
+      "url": "https://tcgcsv.com/tcgplayer/2/3076/prices",
+      "sha256": "0602bd8d3ad755e8647ee77faee72d70ec55461276a67d841f527716083169aa",
+      "matches_original_capture": true,
+      "rows": 201,
+      "bytes": 30806
+    },
+    {
+      "group": 3096,
+      "url": "https://tcgcsv.com/tcgplayer/2/3096/prices",
+      "sha256": "cf52ca2bf6d39ea23898394390cd77649f397b24c193c2cce93e4a2d4ff0b8ba",
+      "matches_original_capture": true,
+      "rows": 51,
+      "bytes": 7859
+    },
+    {
+      "group": 3098,
+      "url": "https://tcgcsv.com/tcgplayer/2/3098/prices",
+      "sha256": "aeb4f383d958fa1ca320c66fb2e2a3758864ca0fb5bf0546827b9196a13ed91a",
+      "matches_original_capture": true,
+      "rows": 124,
+      "bytes": 19080
+    },
+    {
+      "group": 3101,
+      "url": "https://tcgcsv.com/tcgplayer/2/3101/prices",
+      "sha256": "9d9ae89b5289bd17990ee6fc9e8840bb88e760ce692b70f9127e10404fa68b76",
+      "matches_original_capture": true,
+      "rows": 278,
+      "bytes": 42727
+    },
+    {
+      "group": 3104,
+      "url": "https://tcgcsv.com/tcgplayer/2/3104/prices",
+      "sha256": "84d4cda7c849b52139e79c1aa2bdf246a6c6fffdfd9e545d33cff2cc0c487df2",
+      "matches_original_capture": true,
+      "rows": 215,
+      "bytes": 32858
+    },
+    {
+      "group": 3111,
+      "url": "https://tcgcsv.com/tcgplayer/2/3111/prices",
+      "sha256": "3681cb26199390a08a30246fa7495b73e839e8706a2edc2186e3702485e2fd05",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16772
+    },
+    {
+      "group": 3154,
+      "url": "https://tcgcsv.com/tcgplayer/2/3154/prices",
+      "sha256": "afd36e0d345e569f362d562dbd36378dd9871e27b504a84dcecf682513ef4067",
+      "matches_original_capture": true,
+      "rows": 140,
+      "bytes": 21704
+    },
+    {
+      "group": 3155,
+      "url": "https://tcgcsv.com/tcgplayer/2/3155/prices",
+      "sha256": "6e8c8b920d0587a9c9fbec88c249cddadacff15e220d258d8e66e16ea76e7edc",
+      "matches_original_capture": true,
+      "rows": 109,
+      "bytes": 16813
+    },
+    {
+      "group": 3156,
+      "url": "https://tcgcsv.com/tcgplayer/2/3156/prices",
+      "sha256": "30f7a0854b015ce3dd172434f4695cad40f0f9a2c615324641ea8220474d2a33",
+      "matches_original_capture": true,
+      "rows": 47,
+      "bytes": 7256
+    },
+    {
+      "group": 3180,
+      "url": "https://tcgcsv.com/tcgplayer/2/3180/prices",
+      "sha256": "4b98107330cec5dd9a9529253fef6750c8855950c766e77f7fdbff51fd871b6a",
+      "matches_original_capture": true,
+      "rows": 34,
+      "bytes": 5227
+    },
+    {
+      "group": 17657,
+      "url": "https://tcgcsv.com/tcgplayer/2/17657/prices",
+      "sha256": "33b39f52f71421627225902aa13c149c9c7b840fb7081de512b4a61221b00dde",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4139
+    },
+    {
+      "group": 17663,
+      "url": "https://tcgcsv.com/tcgplayer/2/17663/prices",
+      "sha256": "0f84155d509bea94133efc72491282fd43a48a726c506dd814d32633003736b3",
+      "matches_original_capture": true,
+      "rows": 77,
+      "bytes": 11902
+    },
+    {
+      "group": 17680,
+      "url": "https://tcgcsv.com/tcgplayer/2/17680/prices",
+      "sha256": "7613c0a2d3d7382aa260e2506a88707e5b9000d9e4d5612d2334d0a70b31389e",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16629
+    },
+    {
+      "group": 17682,
+      "url": "https://tcgcsv.com/tcgplayer/2/17682/prices",
+      "sha256": "1fdbe0c5b9841f894e519a91a05b31ccf250df17c011f7390681c5368d09e1e8",
+      "matches_original_capture": true,
+      "rows": 48,
+      "bytes": 7413
+    },
+    {
+      "group": 17700,
+      "url": "https://tcgcsv.com/tcgplayer/2/17700/prices",
+      "sha256": "83ddc2d87259c06f684aa1c301d2aed4dc9ddfec6467b3e7776a61864f5c1801",
+      "matches_original_capture": true,
+      "rows": 244,
+      "bytes": 37468
+    },
+    {
+      "group": 17701,
+      "url": "https://tcgcsv.com/tcgplayer/2/17701/prices",
+      "sha256": "dddb8520adbccd3eb0eae3673e8110ce692607e6eef2f28ba291ee4d1d869027",
+      "matches_original_capture": true,
+      "rows": 84,
+      "bytes": 12956
+    },
+    {
+      "group": 22881,
+      "url": "https://tcgcsv.com/tcgplayer/2/22881/prices",
+      "sha256": "ba5b1adc186407afe01d46f8a5b78128b228b97b4d00ed35cf75c1fcd6426af8",
+      "matches_original_capture": true,
+      "rows": 127,
+      "bytes": 19308
+    },
+    {
+      "group": 22882,
+      "url": "https://tcgcsv.com/tcgplayer/2/22882/prices",
+      "sha256": "6a74b1a7cdb871a5de5b52eb59bdcce0715fc9725fb9379e4b9e33fbd8b50a18",
+      "matches_original_capture": true,
+      "rows": 145,
+      "bytes": 22058
+    },
+    {
+      "group": 22883,
+      "url": "https://tcgcsv.com/tcgplayer/2/22883/prices",
+      "sha256": "4e4d9f0bda5e5b0d86e14b730a75095624524ff1c335686ccfa2fe0514de55d8",
+      "matches_original_capture": true,
+      "rows": 101,
+      "bytes": 15379
+    },
+    {
+      "group": 22884,
+      "url": "https://tcgcsv.com/tcgplayer/2/22884/prices",
+      "sha256": "20b1b68a7da2ac1b9a9b20777489f8b95ad83fbc19173516b45248614fa88c20",
+      "matches_original_capture": true,
+      "rows": 103,
+      "bytes": 15697
+    },
+    {
+      "group": 22885,
+      "url": "https://tcgcsv.com/tcgplayer/2/22885/prices",
+      "sha256": "c8664c0cf3b513d78f1846676dca0c87bc6f3b5e621af118e2018b59e8aa1e52",
+      "matches_original_capture": true,
+      "rows": 94,
+      "bytes": 14333
+    },
+    {
+      "group": 22886,
+      "url": "https://tcgcsv.com/tcgplayer/2/22886/prices",
+      "sha256": "9e36a3dcebc195f563d44e95c744d68bbf586cf85fdc15087520e24d8dbc30c1",
+      "matches_original_capture": true,
+      "rows": 87,
+      "bytes": 13260
+    },
+    {
+      "group": 22887,
+      "url": "https://tcgcsv.com/tcgplayer/2/22887/prices",
+      "sha256": "0e4ef549430c5b958b9403f9c12564d12511aa3c60286a6a6426cd424bc1240a",
+      "matches_original_capture": true,
+      "rows": 112,
+      "bytes": 17010
+    },
+    {
+      "group": 22895,
+      "url": "https://tcgcsv.com/tcgplayer/2/22895/prices",
+      "sha256": "b97112d009e977740b454235e6b7120e606cbd9666c4709ac662a9a7e1560aca",
+      "matches_original_capture": true,
+      "rows": 14,
+      "bytes": 2146
+    },
+    {
+      "group": 22896,
+      "url": "https://tcgcsv.com/tcgplayer/2/22896/prices",
+      "sha256": "19df78821df3c8ed198496dbdb575ee1be064e324bb86895f4c32719c5ab1824",
+      "matches_original_capture": true,
+      "rows": 108,
+      "bytes": 16611
+    },
+    {
+      "group": 22905,
+      "url": "https://tcgcsv.com/tcgplayer/2/22905/prices",
+      "sha256": "638e690797d855622e4be51b66d3e57c3c733431391e840dd000e68d8c786720",
+      "matches_original_capture": true,
+      "rows": 105,
+      "bytes": 15974
+    },
+    {
+      "group": 22936,
+      "url": "https://tcgcsv.com/tcgplayer/2/22936/prices",
+      "sha256": "8c451d0ddc06106fe78a512f8bfe48d1b5a9aadca418c7ccac9cf8d1e3f8bd29",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4140
+    },
+    {
+      "group": 22955,
+      "url": "https://tcgcsv.com/tcgplayer/2/22955/prices",
+      "sha256": "ca84c526b0af1ea6d24531f35b82d618423d59ce20a7cf85aa11699e857a9465",
+      "matches_original_capture": true,
+      "rows": 77,
+      "bytes": 11897
+    },
+    {
+      "group": 23031,
+      "url": "https://tcgcsv.com/tcgplayer/2/23031/prices",
+      "sha256": "810c6ca6278b6c681b5d09e0ce33bad217118f337db76be0a8bb7050ae0d80c5",
+      "matches_original_capture": true,
+      "rows": 129,
+      "bytes": 19924
+    },
+    {
+      "group": 23050,
+      "url": "https://tcgcsv.com/tcgplayer/2/23050/prices",
+      "sha256": "db1df55666d9e374d1c66ac9508635bd14ae1a0a4c1d61aa9a964e0069f02943",
+      "matches_original_capture": true,
+      "rows": 128,
+      "bytes": 19488
+    },
+    {
+      "group": 23052,
+      "url": "https://tcgcsv.com/tcgplayer/2/23052/prices",
+      "sha256": "cc550a6d3e23932cc5ecc35adea362ec5aa602dc38506c72b76089842201894c",
+      "matches_original_capture": true,
+      "rows": 146,
+      "bytes": 22199
+    },
+    {
+      "group": 23053,
+      "url": "https://tcgcsv.com/tcgplayer/2/23053/prices",
+      "sha256": "3ead1c636aab281033a8a08d286cb7d80117c35e914621c870f4853cb8b0cf54",
+      "matches_original_capture": true,
+      "rows": 106,
+      "bytes": 16132
+    },
+    {
+      "group": 23054,
+      "url": "https://tcgcsv.com/tcgplayer/2/23054/prices",
+      "sha256": "9eae7f4007726b03a440c6cd2ed6809fc5ae0e2055422b97db64901d62d8fc56",
+      "matches_original_capture": true,
+      "rows": 107,
+      "bytes": 16295
+    },
+    {
+      "group": 23055,
+      "url": "https://tcgcsv.com/tcgplayer/2/23055/prices",
+      "sha256": "4d31431912b446258a0c064e9aa4b249354cdd51b495075658bac2638a4e4f59",
+      "matches_original_capture": true,
+      "rows": 107,
+      "bytes": 16296
+    },
+    {
+      "group": 23056,
+      "url": "https://tcgcsv.com/tcgplayer/2/23056/prices",
+      "sha256": "86cc932ecb7762a9c52a42159064d06a3e0533dadaa72b8c3061cdc1199af733",
+      "matches_original_capture": true,
+      "rows": 114,
+      "bytes": 17339
+    },
+    {
+      "group": 23058,
+      "url": "https://tcgcsv.com/tcgplayer/2/23058/prices",
+      "sha256": "8170dda9410987567c1b4780b2a288096b7289d25f058c56b1adb6ddd5ebc88f",
+      "matches_original_capture": true,
+      "rows": 35,
+      "bytes": 5364
+    },
+    {
+      "group": 23068,
+      "url": "https://tcgcsv.com/tcgplayer/2/23068/prices",
+      "sha256": "7fca1fe6d8b43ef1610c263ce0db41365f8a90cf4b5b40142bf405675c75f12b",
+      "matches_original_capture": true,
+      "rows": 16,
+      "bytes": 2474
+    },
+    {
+      "group": 23073,
+      "url": "https://tcgcsv.com/tcgplayer/2/23073/prices",
+      "sha256": "58db483eee4a4791e19dc1abfd95619bec8878f247f2b916092ff3b30fc3da24",
+      "matches_original_capture": true,
+      "rows": 238,
+      "bytes": 36552
+    },
+    {
+      "group": 23086,
+      "url": "https://tcgcsv.com/tcgplayer/2/23086/prices",
+      "sha256": "3c5037c3a6a545663fbd7c3ec36594c972b3ed462536f86a97d090ac4449a9b1",
+      "matches_original_capture": true,
+      "rows": 127,
+      "bytes": 19634
+    },
+    {
+      "group": 23110,
+      "url": "https://tcgcsv.com/tcgplayer/2/23110/prices",
+      "sha256": "673ecd8f2914a695f3486a3858af68800c0a50fc3501146953ed3eb36b744344",
+      "matches_original_capture": true,
+      "rows": 19,
+      "bytes": 2885
+    },
+    {
+      "group": 23111,
+      "url": "https://tcgcsv.com/tcgplayer/2/23111/prices",
+      "sha256": "9c40c285a26d093f0fb30a1c067ca57c14ace58182d3f472a95553f77758beb9",
+      "matches_original_capture": true,
+      "rows": 64,
+      "bytes": 9852
+    },
+    {
+      "group": 23207,
+      "url": "https://tcgcsv.com/tcgplayer/2/23207/prices",
+      "sha256": "f117acf6510c0c64827ccfb9cd4453d0eb84e1bcd764b463fcd1c8b4555d3733",
+      "matches_original_capture": true,
+      "rows": 52,
+      "bytes": 8017
+    },
+    {
+      "group": 23225,
+      "url": "https://tcgcsv.com/tcgplayer/2/23225/prices",
+      "sha256": "ed66c966cc4e93cef453db60dbcf4ba3ae4f71aadac69af2a816f2216ffe5d5d",
+      "matches_original_capture": true,
+      "rows": 21,
+      "bytes": 3221
+    },
+    {
+      "group": 23231,
+      "url": "https://tcgcsv.com/tcgplayer/2/23231/prices",
+      "sha256": "6287a2768787e72f2768c91a74c6c4d7714780d83efa25da6ffad232a04fcc01",
+      "matches_original_capture": true,
+      "rows": 129,
+      "bytes": 19921
+    },
+    {
+      "group": 23233,
+      "url": "https://tcgcsv.com/tcgplayer/2/23233/prices",
+      "sha256": "6aae1d3912f36a0e5736c1eb9dc997d50f2a129b074535e4d75cf229948bc695",
+      "matches_original_capture": true,
+      "rows": 571,
+      "bytes": 87703
+    },
+    {
+      "group": 23260,
+      "url": "https://tcgcsv.com/tcgplayer/2/23260/prices",
+      "sha256": "d3ec24db892c27a30f74bd78f60dad278db727ba41fb432f603048e53f7baa00",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4146
+    },
+    {
+      "group": 23269,
+      "url": "https://tcgcsv.com/tcgplayer/2/23269/prices",
+      "sha256": "a2d3f3351b7848f43bcbac897982c6a85662c6bf8df1ae3d60e38c9b6bbf9b80",
+      "matches_original_capture": true,
+      "rows": 90,
+      "bytes": 13888
+    },
+    {
+      "group": 23284,
+      "url": "https://tcgcsv.com/tcgplayer/2/23284/prices",
+      "sha256": "a85292985dd93a2b27f40545fd51d177727432332914b9cdbd15d9bb7290fe1f",
+      "matches_original_capture": true,
+      "rows": 80,
+      "bytes": 12470
+    },
+    {
+      "group": 23291,
+      "url": "https://tcgcsv.com/tcgplayer/2/23291/prices",
+      "sha256": "5da236525215c50601f721d1653532f73393dcb2e219143a5b8f26dd918bb8ba",
+      "matches_original_capture": true,
+      "rows": 283,
+      "bytes": 43477
+    },
+    {
+      "group": 23292,
+      "url": "https://tcgcsv.com/tcgplayer/2/23292/prices",
+      "sha256": "56f3a6156bdc5c833265c7c00afb33536f5b3d32dfb04943e892238a82c40356",
+      "matches_original_capture": true,
+      "rows": 36,
+      "bytes": 5501
+    },
+    {
+      "group": 23310,
+      "url": "https://tcgcsv.com/tcgplayer/2/23310/prices",
+      "sha256": "9cf89afc84cba3cedc0cacfbad514249c1a5e287c439a2fdc5ed2754c2b72836",
+      "matches_original_capture": true,
+      "rows": 98,
+      "bytes": 14979
+    },
+    {
+      "group": 23314,
+      "url": "https://tcgcsv.com/tcgplayer/2/23314/prices",
+      "sha256": "ef31a25c1debc19bc8c60e41c6b745bfd54c496130c25ec09dda79b3912aaabe",
+      "matches_original_capture": true,
+      "rows": 202,
+      "bytes": 30968
+    },
+    {
+      "group": 23315,
+      "url": "https://tcgcsv.com/tcgplayer/2/23315/prices",
+      "sha256": "721a4d92f96711dd44b056bcdf3ef3ad7803be3c2615b91fd9f3eafd0365161a",
+      "matches_original_capture": true,
+      "rows": 104,
+      "bytes": 16041
+    },
+    {
+      "group": 23321,
+      "url": "https://tcgcsv.com/tcgplayer/2/23321/prices",
+      "sha256": "c2260eaaa8f02f1634e9d85be230c4bc463cfbfeba277ba2b1a86d7c4e613f06",
+      "matches_original_capture": true,
+      "rows": 129,
+      "bytes": 19905
+    },
+    {
+      "group": 23334,
+      "url": "https://tcgcsv.com/tcgplayer/2/23334/prices",
+      "sha256": "44cb130326bee86aba4333d3a95f90d72487901fb10ef2510203125f3fcd8317",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4145
+    },
+    {
+      "group": 23355,
+      "url": "https://tcgcsv.com/tcgplayer/2/23355/prices",
+      "sha256": "eca84116dc44a8962cf25c7c66cfd097e232f4fd51ed030e4a0434b79432dd35",
+      "matches_original_capture": true,
+      "rows": 133,
+      "bytes": 20457
+    },
+    {
+      "group": 23366,
+      "url": "https://tcgcsv.com/tcgplayer/2/23366/prices",
+      "sha256": "be56c95846359f5babf2495b0099044e0f34f62084fc1b22f08da187b7cdf7fa",
+      "matches_original_capture": true,
+      "rows": 64,
+      "bytes": 9886
+    },
+    {
+      "group": 23383,
+      "url": "https://tcgcsv.com/tcgplayer/2/23383/prices",
+      "sha256": "35d0aed151fd5ac656dbcbc5b6687ab9bd6a4564f3c718bcb8e56e622177a9cf",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20673
+    },
+    {
+      "group": 23416,
+      "url": "https://tcgcsv.com/tcgplayer/2/23416/prices",
+      "sha256": "d03868945ddf48f142f697806d57ff477e2c9769010d576f662c90d2b128e1e7",
+      "matches_original_capture": true,
+      "rows": 570,
+      "bytes": 87563
+    },
+    {
+      "group": 23427,
+      "url": "https://tcgcsv.com/tcgplayer/2/23427/prices",
+      "sha256": "dd451451a4b72cd924642a8a7503494587bb22eb462d6add6034cc3eb602d020",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4141
+    },
+    {
+      "group": 23441,
+      "url": "https://tcgcsv.com/tcgplayer/2/23441/prices",
+      "sha256": "578e57f06f7dfe52acb83f5caf719d70b4c303f2fb168c6cc60279eee1fed89a",
+      "matches_original_capture": true,
+      "rows": 142,
+      "bytes": 21931
+    },
+    {
+      "group": 23458,
+      "url": "https://tcgcsv.com/tcgplayer/2/23458/prices",
+      "sha256": "71cb45a0b71a7ed3f9d54136fbfc05b3b432f37197c4c9da9c4f4362171555e5",
+      "matches_original_capture": true,
+      "rows": 132,
+      "bytes": 20390
+    },
+    {
+      "group": 23469,
+      "url": "https://tcgcsv.com/tcgplayer/2/23469/prices",
+      "sha256": "313674ddf84c7988707957547b14d02594e97fb1a6723075c6ccb00995bfdbc6",
+      "matches_original_capture": true,
+      "rows": 136,
+      "bytes": 20623
+    },
+    {
+      "group": 23481,
+      "url": "https://tcgcsv.com/tcgplayer/2/23481/prices",
+      "sha256": "ee875ec0b149d879140680d8cae89a6a960fcee3c80c901c208921e719b8fd72",
+      "matches_original_capture": true,
+      "rows": 402,
+      "bytes": 61777
+    },
+    {
+      "group": 23484,
+      "url": "https://tcgcsv.com/tcgplayer/2/23484/prices",
+      "sha256": "69936fd18c7e3a6c266c3eb99d8b4996788bbe6eae0f6e93e81140e29c2d83f9",
+      "matches_original_capture": true,
+      "rows": 35,
+      "bytes": 5363
+    },
+    {
+      "group": 23535,
+      "url": "https://tcgcsv.com/tcgplayer/2/23535/prices",
+      "sha256": "0b34cd6b52918b2a77a022ba4548feab04ea86d9d805a80940a15c04f555999b",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4144
+    },
+    {
+      "group": 23539,
+      "url": "https://tcgcsv.com/tcgplayer/2/23539/prices",
+      "sha256": "4e03631e015c8661b4c422b7ae8653c8ec1ad42934a065118e3f3e66cd2cef06",
+      "matches_original_capture": true,
+      "rows": 135,
+      "bytes": 20846
+    },
+    {
+      "group": 23579,
+      "url": "https://tcgcsv.com/tcgplayer/2/23579/prices",
+      "sha256": "63df7a8993d9f692801dc41650745456fdaf2b19cb6f54645677172b94aae2c7",
+      "matches_original_capture": true,
+      "rows": 115,
+      "bytes": 17483
+    },
+    {
+      "group": 23592,
+      "url": "https://tcgcsv.com/tcgplayer/2/23592/prices",
+      "sha256": "05f8705c040d06324ce4e67ba2117af91a06bc9f743238cd65ff41bf295c963c",
+      "matches_original_capture": true,
+      "rows": 104,
+      "bytes": 15822
+    },
+    {
+      "group": 23648,
+      "url": "https://tcgcsv.com/tcgplayer/2/23648/prices",
+      "sha256": "15e702cf585ea27911791b5c732fa3f9a36aefc4b6872fee9db1a20fd155957a",
+      "matches_original_capture": true,
+      "rows": 41,
+      "bytes": 6257
+    },
+    {
+      "group": 23652,
+      "url": "https://tcgcsv.com/tcgplayer/2/23652/prices",
+      "sha256": "24b105dc517d5a4d6462654551952c11d656296a00c4bd2a6132878cbe83eb2e",
+      "matches_original_capture": true,
+      "rows": 251,
+      "bytes": 38556
+    },
+    {
+      "group": 23653,
+      "url": "https://tcgcsv.com/tcgplayer/2/23653/prices",
+      "sha256": "7b76958d3e77d5f15d6c9e4780fbad90f7cfe96764c9b93692c7c5ce33f654c2",
+      "matches_original_capture": true,
+      "rows": 107,
+      "bytes": 16526
+    },
+    {
+      "group": 23656,
+      "url": "https://tcgcsv.com/tcgplayer/2/23656/prices",
+      "sha256": "3d905e959f4dc37a03533f3aff8ed561dfe80bf08f7bdc252a4217141e6fbd5b",
+      "matches_original_capture": true,
+      "rows": 970,
+      "bytes": 149500
+    },
+    {
+      "group": 23657,
+      "url": "https://tcgcsv.com/tcgplayer/2/23657/prices",
+      "sha256": "3c4c36d648649a5cfd387c94dc6f66c26fcd6256070f48193d87891c0fb5b5a8",
+      "matches_original_capture": true,
+      "rows": 30,
+      "bytes": 4592
+    },
+    {
+      "group": 23758,
+      "url": "https://tcgcsv.com/tcgplayer/2/23758/prices",
+      "sha256": "ff67f7e931fc5542b039451d96f241cab8f4e172086abd6244055b0dab27836d",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20704
+    },
+    {
+      "group": 23768,
+      "url": "https://tcgcsv.com/tcgplayer/2/23768/prices",
+      "sha256": "6b43c1ca87ba5ff3a36ca187c060c745eb67a641368cfe3c3c1af44324313d70",
+      "matches_original_capture": true,
+      "rows": 135,
+      "bytes": 20600
+    },
+    {
+      "group": 23786,
+      "url": "https://tcgcsv.com/tcgplayer/2/23786/prices",
+      "sha256": "ebba67fc87f763c702260f40f0a8902da40723ab221e2f2f424bb77bdea2c805",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4131
+    },
+    {
+      "group": 23849,
+      "url": "https://tcgcsv.com/tcgplayer/2/23849/prices",
+      "sha256": "262c06340c2bfdb43715a098b751d6f53cda58b288e8ce6016f9bc2d5265b3cb",
+      "matches_original_capture": true,
+      "rows": 130,
+      "bytes": 20047
+    },
+    {
+      "group": 23891,
+      "url": "https://tcgcsv.com/tcgplayer/2/23891/prices",
+      "sha256": "40b259eb6af22cef351f7d96733e90a2a1a4027764f990c72d1ea6eb4f18311d",
+      "matches_original_capture": true,
+      "rows": 989,
+      "bytes": 152168
+    },
+    {
+      "group": 23984,
+      "url": "https://tcgcsv.com/tcgplayer/2/23984/prices",
+      "sha256": "4a178a3d824c94f20927e11b2ab791ddb519f4703eefacd3b5aef584d2fb916a",
+      "matches_original_capture": true,
+      "rows": 116,
+      "bytes": 17597
+    },
+    {
+      "group": 23995,
+      "url": "https://tcgcsv.com/tcgplayer/2/23995/prices",
+      "sha256": "cc52e0b49b15de92b616dd12e93e7e308fb4a96d7bc22dad0fa832c86b60c532",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20714
+    },
+    {
+      "group": 24012,
+      "url": "https://tcgcsv.com/tcgplayer/2/24012/prices",
+      "sha256": "3e5cd4e6b0d504221a4107f718b5ebf320738db33bb975561ca8284d725e709d",
+      "matches_original_capture": true,
+      "rows": 37,
+      "bytes": 5639
+    },
+    {
+      "group": 24189,
+      "url": "https://tcgcsv.com/tcgplayer/2/24189/prices",
+      "sha256": "218fa28a497d3e90caa65c041ec6621bf4e39f355268b056846bfefad115344a",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20365
+    },
+    {
+      "group": 24250,
+      "url": "https://tcgcsv.com/tcgplayer/2/24250/prices",
+      "sha256": "6312224df8c95082924b0d827ce673a34991b6384dc5db66500e6fa3dfd49394",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 354
+    },
+    {
+      "group": 24263,
+      "url": "https://tcgcsv.com/tcgplayer/2/24263/prices",
+      "sha256": "482c61deaf93ba22ff91a83f25672c72004c8cdcaa3df5739df5edac95ca1c30",
+      "matches_original_capture": true,
+      "rows": 205,
+      "bytes": 31577
+    },
+    {
+      "group": 24264,
+      "url": "https://tcgcsv.com/tcgplayer/2/24264/prices",
+      "sha256": "87ff547c4100db3e2c4d11977394073d9ef3bd5bc6fa6cef7938750045e0cd31",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4140
+    },
+    {
+      "group": 24265,
+      "url": "https://tcgcsv.com/tcgplayer/2/24265/prices",
+      "sha256": "7015f9207f765841b885773fb5318d632735e0e4960ccccf51611316a3c91276",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20710
+    },
+    {
+      "group": 24308,
+      "url": "https://tcgcsv.com/tcgplayer/2/24308/prices",
+      "sha256": "898e688369c7a3d0285302383bc5960835a33044b20d6cd8f398faa3f2fd5dfc",
+      "matches_original_capture": true,
+      "rows": 455,
+      "bytes": 69858
+    },
+    {
+      "group": 24320,
+      "url": "https://tcgcsv.com/tcgplayer/2/24320/prices",
+      "sha256": "ee651566891bfe92be9a1146e4b0b4a6fd233534c1ff9312f9de6f425ca1c9f9",
+      "matches_original_capture": true,
+      "rows": 106,
+      "bytes": 16374
+    },
+    {
+      "group": 24351,
+      "url": "https://tcgcsv.com/tcgplayer/2/24351/prices",
+      "sha256": "aefd9da1cb359020682177aa9db3fa9daded6412b64097e85f2d1caf14588820",
+      "matches_original_capture": true,
+      "rows": 12,
+      "bytes": 1893
+    },
+    {
+      "group": 24352,
+      "url": "https://tcgcsv.com/tcgplayer/2/24352/prices",
+      "sha256": "d9cf52f54094b39809799346056bba8c80b8c1ca503c3920ccf16a0f38e47a38",
+      "matches_original_capture": true,
+      "rows": 104,
+      "bytes": 15825
+    },
+    {
+      "group": 24353,
+      "url": "https://tcgcsv.com/tcgplayer/2/24353/prices",
+      "sha256": "2e9918dc76fcc6a8acce0664041b12ef0b67a4eec84785940b290a79e16d2f5c",
+      "matches_original_capture": true,
+      "rows": 84,
+      "bytes": 12622
+    },
+    {
+      "group": 24357,
+      "url": "https://tcgcsv.com/tcgplayer/2/24357/prices",
+      "sha256": "7214e0ccf16003551417979ccdcdee136a76f35a92c9a2567279d6e8b11902be",
+      "matches_original_capture": true,
+      "rows": 135,
+      "bytes": 20884
+    },
+    {
+      "group": 24358,
+      "url": "https://tcgcsv.com/tcgplayer/2/24358/prices",
+      "sha256": "1e73abba0c5535b7dd6aa7285fc4d00f428c3e1b1d34a2d052dbaabe569b07d8",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4136
+    },
+    {
+      "group": 24392,
+      "url": "https://tcgcsv.com/tcgplayer/2/24392/prices",
+      "sha256": "6ee0aa1179a214c68306523639426b0b5a12e4e26aeaa36b192f536db6445bda",
+      "matches_original_capture": true,
+      "rows": 64,
+      "bytes": 9887
+    },
+    {
+      "group": 24396,
+      "url": "https://tcgcsv.com/tcgplayer/2/24396/prices",
+      "sha256": "9bded6713fffd4d24876888d30d3ff4a645e377815fa6f4a7d89ead990bc0b34",
+      "matches_original_capture": true,
+      "rows": 119,
+      "bytes": 18280
+    },
+    {
+      "group": 24460,
+      "url": "https://tcgcsv.com/tcgplayer/2/24460/prices",
+      "sha256": "a27547c3044601e57054f75e36bff62b5098df9c850ef6fed71018a85624cadc",
+      "matches_original_capture": true,
+      "rows": 2,
+      "bytes": 345
+    },
+    {
+      "group": 24475,
+      "url": "https://tcgcsv.com/tcgplayer/2/24475/prices",
+      "sha256": "6019e7c79654363dc02c521d4b67a3f5babd2ede691cc8093f57d8ca13d62d17",
+      "matches_original_capture": true,
+      "rows": 107,
+      "bytes": 16525
+    },
+    {
+      "group": 24486,
+      "url": "https://tcgcsv.com/tcgplayer/2/24486/prices",
+      "sha256": "9f459aa4e7ca1afb676c4ce5023f7aa27d447f2c9d2a18d1d63c4eda0ac6f2e0",
+      "matches_original_capture": true,
+      "rows": 64,
+      "bytes": 9894
+    },
+    {
+      "group": 24506,
+      "url": "https://tcgcsv.com/tcgplayer/2/24506/prices",
+      "sha256": "5d6a6667bff1eea2faaed82e1b7a0fd27ebd3f7d98fb5df27b1ea24458185ef3",
+      "matches_original_capture": true,
+      "rows": 121,
+      "bytes": 18363
+    },
+    {
+      "group": 24542,
+      "url": "https://tcgcsv.com/tcgplayer/2/24542/prices",
+      "sha256": "4de8c3422858430a8c826ec6bf7df843dfb1682bf2a2f8c2684045d0ddb45aab",
+      "matches_original_capture": true,
+      "rows": 27,
+      "bytes": 4137
+    },
+    {
+      "group": 24549,
+      "url": "https://tcgcsv.com/tcgplayer/2/24549/prices",
+      "sha256": "ba152188490ff30d55b5791e66a53c42fda5aee50ac13cd5c1c143c5ecfc30e2",
+      "matches_original_capture": true,
+      "rows": 155,
+      "bytes": 23881
+    },
+    {
+      "group": 24555,
+      "url": "https://tcgcsv.com/tcgplayer/2/24555/prices",
+      "sha256": "02b41a9719bdcb6e8fa7f8b7066ffa043a1c2ff63f90ccd4158c417d877720ed",
+      "matches_original_capture": true,
+      "rows": 700,
+      "bytes": 107433
+    },
+    {
+      "group": 24558,
+      "url": "https://tcgcsv.com/tcgplayer/2/24558/prices",
+      "sha256": "b245e6b3f93354a83e26d2b9a471e8fad23a8c7ab37b3afd948a9e6956c98263",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20712
+    },
+    {
+      "group": 24559,
+      "url": "https://tcgcsv.com/tcgplayer/2/24559/prices",
+      "sha256": "e93d530539eb16fd155bc64a2fe6f9c1e4df7afe76f80577d23896e80cc2bd9b",
+      "matches_original_capture": true,
+      "rows": 144,
+      "bytes": 22267
+    },
+    {
+      "group": 24581,
+      "url": "https://tcgcsv.com/tcgplayer/2/24581/prices",
+      "sha256": "ca218590c61cbdd8ac5d81ddb8794cca076458ada7470c6448de5abec0e7623c",
+      "matches_original_capture": true,
+      "rows": 134,
+      "bytes": 20674
+    },
+    {
+      "group": 24621,
+      "url": "https://tcgcsv.com/tcgplayer/2/24621/prices",
+      "sha256": "7c837a64d1aac50e50cd5226d66ffab439326ac1b52145555216a5c3b283def9",
+      "matches_original_capture": true,
+      "rows": 183,
+      "bytes": 28264
+    },
+    {
+      "group": 24675,
+      "url": "https://tcgcsv.com/tcgplayer/2/24675/prices",
+      "sha256": "4e1402f1e75d3e101e2095b59317853dfc0d35834cfb2d36f623f806e82bc719",
+      "matches_original_capture": true,
+      "rows": 139,
+      "bytes": 21483
+    },
+    {
+      "group": 24679,
+      "url": "https://tcgcsv.com/tcgplayer/2/24679/prices",
+      "sha256": "af4204903dddb095360e58c0ca0ef971dcdb94147e981b05093e7daa50735705",
+      "matches_original_capture": true,
+      "rows": 159,
+      "bytes": 24484
+    },
+    {
+      "group": 24703,
+      "url": "https://tcgcsv.com/tcgplayer/2/24703/prices",
+      "sha256": "72dd3d8d4e1a1a86f710da716a7ff5d07dd687a987e68c9a4c2abdd4c2d51323",
+      "matches_original_capture": true,
+      "rows": 89,
+      "bytes": 13690
+    },
+    {
+      "group": 24704,
+      "url": "https://tcgcsv.com/tcgplayer/2/24704/prices",
+      "sha256": "c1112c3c61cb018073f2d1f3c2d1f3a9d6434c04cf56d69967e088b54ad0d26b",
+      "matches_original_capture": true,
+      "rows": 50,
+      "bytes": 7526
+    },
+    {
+      "group": 24707,
+      "url": "https://tcgcsv.com/tcgplayer/2/24707/prices",
+      "sha256": "f01195d9372b2ef1883601f3f66c5a2eaa4b015418252487a82edd07317e728a",
+      "matches_original_capture": true,
+      "rows": 223,
+      "bytes": 34530
+    },
+    {
+      "group": 24789,
+      "url": "https://tcgcsv.com/tcgplayer/2/24789/prices",
+      "sha256": "1b1448089cf0d18dfc0022a6eb3db0fc073f06f044a97ddab995e4d3ed16a548",
+      "matches_original_capture": true,
+      "rows": 95,
+      "bytes": 14680
+    },
+    {
+      "group": 24815,
+      "url": "https://tcgcsv.com/tcgplayer/2/24815/prices",
+      "sha256": "81fe3a4953c1db2cfa8fd7962483d8adb0f88cce25f81bbdb03e0ade2899b06e",
+      "matches_original_capture": true,
+      "rows": 138,
+      "bytes": 21337
+    },
+    {
+      "group": 24918,
+      "url": "https://tcgcsv.com/tcgplayer/2/24918/prices",
+      "sha256": "358d666e27b62a22b30bd0b958b8802a650f42a0defdd3e568f3c8e26a7637ad",
+      "matches_original_capture": true,
+      "rows": 0,
+      "bytes": 46
+    }
+  ],
+  "snapshot_end": "2026-10-20T20:05:18+0000",
+  "snapshot_stable": true
+}

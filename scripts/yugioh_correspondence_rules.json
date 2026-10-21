@@ -1,0 +1,19 @@
+{
+  "version": "yugioh-correspondence-v1-2026-10-21",
+  "rules": [
+    {
+      "id": "ra02-prismatic-taxonomy-v1",
+      "categoryID": 2,
+      "groupID": 23416,
+      "language": "en",
+      "codePrefix": "RA02-EN",
+      "expectedProductsSHA256": "185caf26c723eae793a51675509d45c943ac7ac924541e6d632d542dca1b6f56",
+      "source": "https://www.yugioh-card.com/en/products/ra02/",
+      "meaning": "Taxonomy correspondence only; no edition or artwork authority",
+      "rarities": {
+        "Prismatic Collector's Rare": "Collector's Rare",
+        "Prismatic Ultimate Rare": "Ultimate Rare"
+      }
+    }
+  ]
+}
