@@ -27,10 +27,13 @@ struct ScannerView: View {
     @State private var lorcanaSample = LorcanaReviewLaunch.initialSample
     @State private var injectedLorcanaSample = false
     @State private var yuGiOhSample = YuGiOhAcceptanceLaunch.Sample.older
+    @State private var yuGiOhDiagnostic: String?
 
     private func injectYuGiOhSample() {
-        guard let recognizer = runtimes?.runtime(for: .yuGiOh)?.recognizer,
-              case let .identified(subject) = recognizer.identify(yuGiOhSample.lines) else { return }
+        guard let recognizer = runtimes?.runtime(for: .yuGiOh)?.recognizer else { return }
+        let outcome = recognizer.identify(yuGiOhSample.lines)
+        yuGiOhDiagnostic = YuGiOhAcceptanceLaunch.diagnostic(for: outcome)
+        guard case let .identified(subject) = outcome else { return }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
     }
 
@@ -162,6 +165,10 @@ struct ScannerView: View {
             if YuGiOhAcceptanceLaunch.enabled {
                 VStack(spacing: 4) {
                     Text("Yu-Gi-Oh! fixture OCR · Separate test collection").font(.caption).foregroundStyle(.secondary)
+                    if let yuGiOhDiagnostic {
+                        Text(yuGiOhDiagnostic).font(.caption)
+                            .accessibilityIdentifier("yugioh-recognition-diagnostic")
+                    }
                     HStack {
                         Menu(yuGiOhSample.rawValue) {
                             ForEach(YuGiOhAcceptanceLaunch.Sample.allCases) { sample in
@@ -452,6 +459,14 @@ private struct ScannerChrome: View {
                 .transition(.move(edge: .top).combined(with: .opacity))
                 .appGlassEffectID("scanner-top-actions", in: glassNamespace)
             } else if let choice = model.pendingIdentityChoice {
+                if choice.request.identifier.game == .yuGiOh,
+                   model.scanAcknowledgement?.encounterID == choice.request.encounterID,
+                   model.scanAcknowledgement?.phase == .failed,
+                   let message = model.scanAcknowledgement?.message {
+                    Text(message).font(.footnote).foregroundStyle(.white)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("printing-choice-recovery-explanation")
+                }
                 PrintingChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
@@ -488,6 +503,12 @@ private struct ScannerChrome: View {
 
     @ViewBuilder
     private var scanFeedback: some View {
+        if model.scanAcknowledgement?.subject.identifier.game == .yuGiOh
+            || model.pendingIdentityChoice?.displayCandidates.first?.game == .yuGiOh {
+            Text(YuGiOhCatalog.bundledPricingNotice)
+                .font(.footnote).foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+        }
         // Only the current scan's feedback belongs below the reading band.
         // Explicit choices suppress it until the scan can be confirmed.
         if model.pendingDuplicateConfirmation == nil,

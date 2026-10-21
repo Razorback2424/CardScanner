@@ -799,7 +799,12 @@ struct PrintingChoiceBar: View {
         Button {
             if requiresEnglish { onChooseEnglish?(candidate) } else { onChoose(candidate) }
         } label: {
-            Text(label)
+            VStack(spacing: 4) {
+                Text(label)
+                if let reason = candidate.acquisitionUnavailableReason {
+                    Text(reason).font(.caption)
+                }
+            }
                 .font(.subheadline.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
@@ -815,8 +820,9 @@ struct PrintingChoiceBar: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)
-        .disabled(evidence != .labels || (requiresEnglish && !englishConfirmed))
+        .disabled(candidate.acquisitionUnavailableReason != nil || evidence != .labels || (requiresEnglish && !englishConfirmed))
         .accessibilityLabel("Select \(label) for \(candidate.name)")
+        .accessibilityHint(candidate.acquisitionUnavailableReason ?? "Compare this printing with your card.")
         .accessibilityIdentifier("printing-choice-\(candidate.id)")
     }
 }
@@ -907,10 +913,11 @@ struct PrintingCandidateButton: View {
     }
 
     private var isSelectable: Bool {
-        evidence == .labels || (evidence == .artwork && imagePhase == .loaded)
+        candidate.acquisitionUnavailableReason == nil && (evidence == .labels || (evidence == .artwork && imagePhase == .loaded))
     }
 
     private var unavailableExplanation: String? {
+        if let reason = candidate.acquisitionUnavailableReason { return reason }
         switch evidence {
         case .labels: return nil
         case .insufficient: return "More catalog detail is needed to distinguish this printing."

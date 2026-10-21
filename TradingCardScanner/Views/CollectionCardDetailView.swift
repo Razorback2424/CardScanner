@@ -264,6 +264,10 @@ private struct CollectionCardDetailContent: View {
                     VStack(spacing: 0) {
                         heroSection
                         cardIdentitySection
+                        if card.cardGame == .yuGiOh {
+                            Text(YuGiOhCatalog.bundledPricingNotice)
+                                .font(.footnote).foregroundStyle(.secondary).padding()
+                        }
                         valuationSection(model: chartModel)
                             .id("card-price-valuation")
                         priceHistorySection(model: chartModel, movement: movement)

@@ -1491,6 +1491,59 @@ struct CollectionStore {
         }
     }
 
+    /// Discovery availability permits maintenance, never admission. New rows
+    /// still pass the catalog's acquisition checks at the final save boundary.
+    private func requireMaintainableGame(_ game: CardGame) throws {
+        if game == .yuGiOh,
+           CollectionStoreSessionRegistry.shared.mutationAuthority(for: game, container: context.container).adapter != nil { return }
+        try requireWritableGame(game)
+    }
+
+    private func isPersistedYuGiOhMaintenance(_ row: CollectedCard) throws -> Bool {
+        guard row.cardGame == .yuGiOh else { return false }
+        // A separate context reads the durable starting point, not a caller's
+        // staged, existing-looking object. Identity changes are new admissions.
+        let durable = ModelContext(context.container)
+        let key = row.collectionKey
+        let originals = try durable.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key }))
+        let original = originals.first { $0.persistentModelID == row.persistentModelID }
+        guard original != nil || originals.isEmpty else { return false }
+        if let original {
+            guard original.providerID == row.providerID, original.catalogProviderID == row.catalogProviderID,
+                  original.cardGame == row.cardGame, original.variantID == row.variantID,
+                  original.itemKindRaw == row.itemKindRaw, original.quantity > 0 else { return false }
+            let finalQuantity = context.deletedModelsArray.contains { $0.persistentModelID == row.persistentModelID } ? 0 : row.quantity
+            guard finalQuantity >= 0 else { return false }
+            if finalQuantity <= original.quantity {
+                let changes = context.insertedModelsArray.compactMap { $0 as? InventoryEvent }.filter { $0.collectionKey == key }
+                return changes.allSatisfy { $0.deltaQuantity <= 0 }
+                    && changes.reduce(0, { $0 + $1.deltaQuantity }) == finalQuantity - original.quantity
+            }
+        }
+        // Restoring a retired edition requires a persisted removal snapshot and
+        // the exact inverse of its durable disposal. Legacy/unproven snapshots
+        // continue to require current admission.
+        let activities = try durable.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate { $0.collectionKey == key }))
+        let durableEvents = try durable.fetch(FetchDescriptor<InventoryEvent>(predicate: #Predicate { $0.collectionKey == key }))
+        let pending = context.insertedModelsArray.compactMap { $0 as? InventoryEvent }.filter { $0.collectionKey == key }
+        let restoredQuantity = row.quantity - (original?.quantity ?? 0)
+        guard pending.count == 1, let inverse = pending.first, inverse.deltaQuantity == restoredQuantity,
+              let reversedID = inverse.reversesEventID,
+              let disposal = durableEvents.first(where: { $0.eventID == reversedID && $0.kind == .dispose }),
+              disposal.deltaQuantity == -restoredQuantity,
+              !durableEvents.contains(where: { $0.reversesEventID == reversedID }),
+              !Self.positionWasReacquired(events: durableEvents, since: disposal.recordedAt),
+              Date.now.timeIntervalSince(disposal.recordedAt) <= CollectionActivity.restoreWindow else { return false }
+        return activities.contains { activity in
+            guard let data = activity.removalSnapshotData,
+                  let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data) else { return false }
+            return snapshot.operationID == disposal.operationID && snapshot.game == row.cardGame
+                && snapshot.providerID == row.providerID && snapshot.catalogProviderID == row.catalogProviderID
+                && snapshot.variant?.id == row.variantID && snapshot.itemKindRaw == row.itemKindRaw
+                && snapshot.quantity == restoredQuantity && activity.remainingQuantity == activity.claimedQuantity
+        }
+    }
+
     private func requireSupportedVariantCorrection(for card: CollectedCard, to variant: PhysicalVariant?) throws {
         let authority = CollectionStoreSessionRegistry.shared.variantCorrectionAuthority(
             for: card.cardGame, container: context.container
@@ -1514,7 +1567,7 @@ struct CollectionStore {
             games = Set(try context.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key })).map(\.cardGame))
         }
         if let game = games.first {
-            for candidate in games { try requireWritableGame(candidate) }
+            for candidate in games { try requireMaintainableGame(candidate) }
             return game
         }
         if let recordedGame { return recordedGame }
@@ -1527,9 +1580,9 @@ struct CollectionStore {
     }
 
     private func requireWritableActivity(_ activity: CollectionActivity, gamesByKey: [String: Set<CardGame>]? = nil) throws {
-        if !activity.gameRaw.isEmpty { try requireWritableGame(activity.game) }
-        if let anchor = activity.backfillAnchorCard { try requireWritableGame(anchor.cardGame) }
-        try requireWritableGame(historyGame(for: activity.collectionKey, gamesByKey: gamesByKey,
+        if !activity.gameRaw.isEmpty { try requireMaintainableGame(activity.game) }
+        if let anchor = activity.backfillAnchorCard { try requireMaintainableGame(anchor.cardGame) }
+        try requireMaintainableGame(historyGame(for: activity.collectionKey, gamesByKey: gamesByKey,
                                            recordedGame: activity.gameRaw.isEmpty ? nil : activity.game))
     }
 
@@ -1564,6 +1617,10 @@ struct CollectionStore {
         }
         for model in models {
             if let row = model as? CollectedCard {
+                if try isPersistedYuGiOhMaintenance(row) {
+                    try requireMaintainableGame(row.cardGame)
+                    continue
+                }
                 try requireWritableGame(row.cardGame)
                 let authority = CollectionStoreSessionRegistry.shared.mutationAuthority(for: row.cardGame, container: context.container)
                 guard authority.adapter != nil || !authority.requiresCatalog else { throw CatalogLookupError.invalidPrintingChoice }
@@ -1572,7 +1629,7 @@ struct CollectionStore {
             }
             if let activity = model as? CollectionActivity { try requireWritableActivity(activity, gamesByKey: gamesByKey) }
             if let event = model as? InventoryEvent {
-                try requireWritableGame(historyGame(for: event.collectionKey, gamesByKey: gamesByKey))
+                try requireMaintainableGame(historyGame(for: event.collectionKey, gamesByKey: gamesByKey))
             }
         }
     }
@@ -1664,7 +1721,7 @@ struct CollectionStore {
         removalSnapshot: RemovedCardSnapshot? = nil,
         resolvedQuantity: Int = 0
     ) throws -> CollectionActivity {
-        try requireWritableGame(card.cardGame)
+        try requireMaintainableGame(card.cardGame)
         let snapshotData = try removalSnapshot.map { try JSONEncoder().encode($0) }
         let activity = CollectionActivity(
             card: card,
@@ -2897,7 +2954,8 @@ struct CollectionStore {
             guard target.quantity == expectedCurrent else {
                 throw CollectionStoreError.staleQuantity
             }
-            try requireWritableGame(target.cardGame)
+            if newQuantity <= target.quantity { try requireMaintainableGame(target.cardGame) }
+            else { try requireWritableGame(target.cardGame) }
             guard target.allowsQuantityAggregation || newQuantity <= target.quantity else {
                 throw CollectionStoreError.quantityOutOfRange(
                     "a certified slab represents one physical item"
@@ -4166,7 +4224,7 @@ struct CollectionStore {
             guard let row = try card(forAnyKey: mutation.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
             }
-            try requireWritableGame(row.cardGame)
+            try requireMaintainableGame(row.cardGame)
             // `card(forAnyKey:)` may have repaired a legacy row to the
             // treatment-qualified key inferred from synced ledger events. All
             // lineage checks and the appended inverse must use that repaired
@@ -4258,7 +4316,7 @@ struct CollectionStore {
             guard let row = try card(forAnyKey: selectedActivity.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(selectedActivity.collectionKey)
             }
-            try requireWritableGame(row.cardGame)
+            try requireMaintainableGame(row.cardGame)
             guard row.quantity >= quantity else {
                 throw CollectionStoreError.insufficientQuantity(selectedActivity.collectionKey)
             }
@@ -4326,7 +4384,7 @@ struct CollectionStore {
             }
             let quantity = row.quantity
             var snapshot = RemovedCardSnapshot(card: row)
-            try requireWritableGame(row.cardGame)
+            try requireMaintainableGame(row.cardGame)
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
@@ -4419,7 +4477,7 @@ struct CollectionStore {
         removalActivity: CollectionActivity?
     ) throws {
         do {
-            try requireWritableGame(snapshot.game)
+            try requireMaintainableGame(snapshot.game)
             var snapshot = snapshot
             if let canonicalKey = try canonicalKeyForLegacyRow(snapshot.collectionKey) {
                 snapshot.collectionKey = canonicalKey
@@ -4712,7 +4770,7 @@ struct CollectionStore {
 
         do {
         let previousBaseKey = card.collectionKey(variant: current)
-        try requireWritableGame(card.game)
+        try requireMaintainableGame(card.game)
         let requestedPreviousKey = previousCollectionKey
             ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
             ?? previousBaseKey
@@ -4727,7 +4785,7 @@ struct CollectionStore {
             forAnyKey: requestedPreviousKey,
             magicTreatmentIDsRaw: previousTreatmentIDs.map(\.id)
         ) else { return nil }
-        try requireWritableGame(previous.cardGame)
+        try requireMaintainableGame(previous.cardGame)
         try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
         let previousKey = previous.collectionKey
 
@@ -4929,14 +4987,14 @@ struct CollectionStore {
         guard quantity > 0, corrected.variant != card.variant else { return nil }
 
         do {
-            try requireWritableGame(card.cardGame)
+            try requireMaintainableGame(card.cardGame)
             guard let previous = try self.card(
                 forAnyKey: card.collectionKey,
                 magicTreatmentIDsRaw: card.magicTreatmentIDs(for: card.variant)
             ) else {
                 throw CollectionStoreError.missingDestinationRow(card.collectionKey)
             }
-            try requireWritableGame(previous.cardGame)
+            try requireMaintainableGame(previous.cardGame)
             try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
             let previousKey = previous.collectionKey
             let activityToRetarget = try activity(id: activityID)
@@ -5193,7 +5251,7 @@ struct CollectionStore {
         mode: CollectionVariantCorrectionMode
     ) throws -> CollectionMutation? {
         guard !claims.isEmpty, corrected.variant != card.variant else { return nil }
-        try requireWritableGame(card.cardGame)
+        try requireMaintainableGame(card.cardGame)
         guard claims.allSatisfy({
             $0.quantity > 0 && $0.quantity <= CollectionQuantityLimits.maximum
         }), Set(claims.map(\.activityID)).count == claims.count else {
@@ -5209,7 +5267,7 @@ struct CollectionStore {
             }
             let previousKey = previous.collectionKey
             guard corrected.variant != previous.variant else { return nil }
-            try requireWritableGame(previous.cardGame)
+            try requireMaintainableGame(previous.cardGame)
             try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
             guard mode != .quietBackfill
                     || (source == .catalogBackfill

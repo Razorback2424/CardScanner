@@ -26,13 +26,16 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
     let artworkID: String?
     let distinctionLabels: [String]?
     let recognitionGeneration: String?
+    /// Optional for compatibility with previously persisted recovery choices.
+    let acquisitionUnavailableReason: String?
 
     init(id: String, game: CardGame, canonicalCardID: String, language: String,
          catalogGeneration: String, name: String, printedIdentifier: String,
          releaseLabel: String? = nil, treatmentLabel: String? = nil,
          distributionLabel: String? = nil, releaseDate: Date? = nil,
          thumbnailURL: URL? = nil, artworkID: String? = nil,
-         distinctionLabels: [String]? = nil, recognitionGeneration: String? = nil) {
+         distinctionLabels: [String]? = nil, recognitionGeneration: String? = nil,
+         acquisitionUnavailableReason: String? = nil) {
         self.id = id; self.game = game; self.canonicalCardID = canonicalCardID
         self.language = language; self.catalogGeneration = catalogGeneration
         self.name = name; self.printedIdentifier = printedIdentifier
@@ -41,6 +44,7 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
         self.thumbnailURL = thumbnailURL; self.artworkID = artworkID
         self.distinctionLabels = distinctionLabels
         self.recognitionGeneration = recognitionGeneration
+        self.acquisitionUnavailableReason = acquisitionUnavailableReason
     }
 
     var choiceTitle: String {

@@ -64,7 +64,9 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
         .init(id: p.idString, game: game, canonicalCardID: p.card.id.uuidString.lowercased(), language: "en",
             catalogGeneration: generation, name: p.card.name, printedIdentifier: p.code, releaseLabel: p.set.name,
             treatmentLabel: p.rarity, distributionLabel: p.artLabel, releaseDate: p.set.releaseDate,
-            thumbnailURL: p.thumbnailURL, artworkID: nil, distinctionLabels: [p.productName])
+            thumbnailURL: p.thumbnailURL, artworkID: nil, distinctionLabels: [p.productName],
+            acquisitionUnavailableReason: p.explicitSelectionSupported ? nil
+                : "Discovery only. This product has no supported edition or needs identity review.")
     }
     func resolution(forPrintingID id: UUID) throws -> CardCatalog.CatalogResolution {
         return try resolutionForExistingHolding(id)

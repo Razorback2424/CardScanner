@@ -11,7 +11,11 @@ struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         guard let m = p.membership.first(where: { $0.e == edition }), let amount = m.q,
-              let date = m.s.flatMap({ ISO8601DateFormatter().date(from: $0) ?? formatter.date(from: $0) }) else { return .unavailable(.tcgCSV) }
+              let date = m.s.flatMap({ ISO8601DateFormatter().date(from: $0) ?? formatter.date(from: $0) }) else {
+            // Historical membership without a quote is not a current negative
+            // provider answer, including refreshes without a freshness watermark.
+            throw PriceQuoteError.providerUnavailable
+        }
         guard minimumFetchedAt.map({ date > $0 }) ?? true else { throw PriceQuoteError.providerUnavailable }
         return .price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(p.productID):\(edition.tcgplayerSubtype)",

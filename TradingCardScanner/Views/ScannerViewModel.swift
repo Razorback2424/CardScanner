@@ -3176,7 +3176,7 @@ final class ScannerViewModel: ObservableObject {
 
     private func choose(_ candidate: PhysicalPrintingCandidate, confirmEnglish: Bool) {
         guard let pending = pendingIdentityChoice,
-              pending.displayCandidates.contains(candidate) else { return }
+              pending.displayCandidates.contains(candidate), candidate.acquisitionUnavailableReason == nil else { return }
         let request: ScanRequest
         do { request = confirmEnglish ? try pending.request.confirmingMagicEnglish() : pending.request }
         catch { return }
@@ -3218,11 +3218,17 @@ final class ScannerViewModel: ObservableObject {
                     )
                     return
                 }
-                self.handleLookupFailure(
-                    request,
-                    error,
-                    candidates: pending.candidates.filter { $0.providerID == candidate.id }
-                )
+                // Keep the full family available after catalog drift. Retry
+                // revalidates against current authority; dismissal retains it
+                // in Needs attention rather than losing the competing choices.
+                if candidate.game == .yuGiOh {
+                    self.pendingIdentityChoice = pending
+                    self.failAcknowledgement(for: request.encounterID,
+                        message: "This printing is no longer available. Retry with the current catalog or choose another supported printing.", canRetryScan: true)
+                } else {
+                    self.handleLookupFailure(request, error,
+                        candidates: pending.candidates.filter { $0.providerID == candidate.id })
+                }
             }
         }
         guard accepted else {

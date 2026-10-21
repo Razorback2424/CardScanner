@@ -350,7 +350,7 @@ struct CardGameRuntimeContainer: Sendable {
         scanner.useAdditionalRecognitionAdapters(recognitionAdapters)
         var reviewRecovery: UnresolvedScanStore?
 #if DEBUG && LOCAL_ONLY_SIGNING
-        if let directory = LorcanaReviewLaunch.isEnabled() ? LorcanaReviewLaunch.storageDirectory
+        if let directory = YuGiOhAcceptanceLaunch.enabled ? YuGiOhAcceptanceLaunch.storageDirectory : LorcanaReviewLaunch.isEnabled() ? LorcanaReviewLaunch.storageDirectory
             : OnePieceCatalogBootstrap.developerStorageDirectory(),
            let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             reviewRecovery = UnresolvedScanStore(fileURL: support

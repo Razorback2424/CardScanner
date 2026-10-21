@@ -231,6 +231,10 @@ struct PortfolioView: View {
                     LazyVStack(alignment: .leading, spacing: 24) {
                         portfolioHero
                             .padding(.horizontal, 16)
+                        if portfolio.holdings.contains(where: { $0.collectionKey.hasPrefix("yu-gi-oh:") }) {
+                            Text(YuGiOhCatalog.bundledPricingNotice)
+                                .font(.footnote).foregroundStyle(.secondary).padding(.horizontal, 16)
+                        }
 
                         if let summary = portfolio.summary {
                             if !summary.defects.isEmpty {

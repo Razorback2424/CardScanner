@@ -29,6 +29,16 @@ struct YuGiOhGameRuntime: Sendable {
 #if DEBUG && LOCAL_ONLY_SIGNING
 /// Fixture OCR routed through normal scanner choices, with a separate store.
 enum YuGiOhAcceptanceLaunch {
+    static let storageDirectory = "YuGiOhAcceptance"
+    static func recoveryFileURL(applicationSupport: URL) -> URL {
+        applicationSupport.appendingPathComponent(storageDirectory).appendingPathComponent("Scanner/unresolved-scans.json")
+    }
+    static func diagnostic(for outcome: GameRecognitionOutcome) -> String? {
+        if case .nothing = outcome {
+            return "Recognition diagnostic: no catalog match. No card was identified or added."
+        }
+        return nil
+    }
     static var enabled: Bool {
         let args = ProcessInfo.processInfo.arguments
         guard let index = args.firstIndex(of: "-ui_debug_route"), args.indices.contains(index + 1) else { return false }

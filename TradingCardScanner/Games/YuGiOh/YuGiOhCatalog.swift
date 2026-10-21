@@ -39,6 +39,12 @@ struct YuGiOhCatalog: Sendable {
     let incompleteCodes: Set<String>
     let autoEligibleCodes: Set<String>
     let setsByGroupID: [Int: SetInfo]
+    var historicalPricingNotice: String {
+        "Yu-Gi-Oh! uses a bundled snapshot captured \(capturedAt.formatted(date: .abbreviated, time: .omitted)). Prices keep their source dates. Live refresh is unavailable."
+    }
+    static var bundledPricingNotice: String {
+        (try? bundled.get().historicalPricingNotice) ?? "Yu-Gi-Oh! live pricing is unavailable."
+    }
     private struct Seed: Decodable {
         let schemaVersion: Int; let generation: String; let capturedAt: String
         let sets: [SetRow]; let cards: [CardRow]; let printings: [PrintingRow]
