@@ -96,7 +96,7 @@ struct ScanRequest: Identifiable, Equatable {
 
     func confirmingMagicEnglish() throws -> Self {
         .init(id: id, subject: .init(identifier: try identifier.confirmingMagicEnglish(), slab: subject.slab,
-              inferredNameReadings: subject.inferredNameReadings), purpose: purpose, generation: generation,
+              inferredNameReadings: subject.inferredNameReadings, printedEdition: subject.printedEdition), purpose: purpose, generation: generation,
               encounterID: encounterID, heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID,
               catalogSelectionIdentifier: catalogSelectionIdentifier)
     }
@@ -1171,7 +1171,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
                         )).sorted()
                     )
                 ),
-                slab: lhs.slab ?? rhs.slab
+                slab: lhs.slab ?? rhs.slab, printedEdition: .merged([lhs.printedEdition, rhs.printedEdition])
             )
         }
         let readings = Array(Set(readings(in: lhs) + readings(in: rhs))).sorted()
@@ -1183,7 +1183,8 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         return ScanSubject(
             identifier: rhs.identifier,
             slab: lhs.slab ?? rhs.slab,
-            inferredNameReadings: hasDirectPokemonCodeRead || readings.isEmpty ? nil : readings
+            inferredNameReadings: hasDirectPokemonCodeRead || readings.isEmpty ? nil : readings,
+            printedEdition: .merged([lhs.printedEdition, rhs.printedEdition])
         )
     }
 
@@ -2354,7 +2355,9 @@ final class ScannerViewModel: ObservableObject {
                 }
                 combined[index] = UnresolvedScan(
                     id: restored.id,
-                    subject: runtime.subject,
+                    subject: ScanSubject(identifier: runtime.identifier, slab: runtime.subject.slab,
+                        inferredNameReadings: runtime.subject.inferredNameReadings,
+                        printedEdition: .merged([restored.subject.printedEdition, runtime.subject.printedEdition])),
                     reason: runtime.reason,
                     createdAt: min(restored.createdAt, runtime.createdAt),
                     candidates: Array(candidatesByID.values),
@@ -3488,7 +3491,7 @@ final class ScannerViewModel: ObservableObject {
                 guard !Task.isCancelled, self.isCurrent(retryRequest),
                       retrySessionID == self.scannerSessionID,
                       self.isStorageGenerationCurrent else { return }
-                if retryCandidate.identifier.game == .lorcana {
+                if Self.revalidatesBundledAcquisition(retryCandidate.identifier.game) {
                     do {
                         try await self.catalog.validateAcquisition(retryCandidate.acquisitionIdentifier,
                             printingID: retryCandidate.card.physicalPrintingID,
@@ -3541,7 +3544,7 @@ final class ScannerViewModel: ObservableObject {
                         guard !Task.isCancelled, self.isCurrent(retryRequest),
                               retrySessionID == self.scannerSessionID,
                               self.isStorageGenerationCurrent else { return }
-                        if retryCandidate.identifier.game == .lorcana, error is CatalogLookupError {
+                        if Self.revalidatesBundledAcquisition(retryCandidate.identifier.game), error is CatalogLookupError {
                             guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
                             self.fileLorcanaAcquisitionForLookup(retryCandidate, isAdditionalCopy: row.isAdditionalCopy)
                             return
@@ -3623,7 +3626,7 @@ final class ScannerViewModel: ObservableObject {
             )
             let subject = ScanSubject(
                 identifier: .pokemonHistorical(evidence),
-                slab: row.subject.slab
+                slab: row.subject.slab, printedEdition: row.subject.printedEdition
             )
             let request = ScanRequest(
                 subject: subject,
@@ -3669,7 +3672,7 @@ final class ScannerViewModel: ObservableObject {
                 guard !Task.isCancelled, self.isCurrent(request),
                       self.unresolvedScans.contains(where: { $0.id == request.unresolvedScanID && !$0.isReadOnly }) else { return }
                 let subject = ScanSubject(identifier: identifier, slab: request.subject.slab,
-                                          inferredNameReadings: request.subject.inferredNameReadings)
+                                          inferredNameReadings: request.subject.inferredNameReadings, printedEdition: request.subject.printedEdition)
                 self.enqueueIdentification(subject, encounterID: request.encounterID,
                     purpose: .collection, generation: self.scanGeneration, unresolvedScanID: request.unresolvedScanID)
             } catch {
@@ -4285,11 +4288,13 @@ final class ScannerViewModel: ObservableObject {
             evidence = evidence.excludingFirstEditionPseudoFinish()
         }
 
-        switch VariantResolver.resolve(
+        let outcome = VariantResolver.gate(evidence, printedEdition: request.subject.slab == nil ? request.subject.printedEdition : .absent)
+            ?? VariantResolver.resolve(
             evidence,
             finishLock: request.subject.slab == nil ? finishLocks[card.game] : nil,
             printedFinish: request.subject.slab?.printedFinish
-        ) {
+        )
+        switch outcome {
         case let .resolved(resolved):
             await route(
                 ResolvedScan(
@@ -4304,6 +4309,14 @@ final class ScannerViewModel: ObservableObject {
             )
 
         case let .needsChoice(options, lockDidNotApply):
+            guard !options.isEmpty else {
+                if request.purpose == .priceCheck {
+                    handleLookupFailure(request, CatalogLookupError.catalogIncomplete(nil))
+                } else {
+                    fileUnresolved(request: request, reason: .noConfirmedMatch)
+                }
+                return
+            }
             if request.subject.slab != nil {
                 // The catalog and label could not agree on a unique finish. A
                 // graded slab must still commit immediately; the banner offers
@@ -4532,7 +4545,8 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
 
-            let subject = ScanSubject(identifier: scan.subject.identifier, slab: offer.evidence)
+            let subject = ScanSubject(identifier: scan.subject.identifier, slab: offer.evidence,
+                inferredNameReadings: scan.subject.inferredNameReadings, printedEdition: scan.subject.printedEdition)
             let pendingPrice = PriceLookup.unavailable(.justTCG)
             let converted = scan.updating(
                 subject: subject,
@@ -5386,7 +5400,7 @@ final class ScannerViewModel: ObservableObject {
             let addOverride = collectionAddOverride
             let writer = await collectionWriter?.value
             let writeCandidate = {
-                if candidate.identifier.game == .lorcana
+                if Self.revalidatesBundledAcquisition(candidate.identifier.game)
                     || (candidate.identifier.game == .magic && candidate.identifier.namespace.hasPrefix("historical")) {
                     try await self.catalog.validateAcquisition(candidate.acquisitionIdentifier,
                         printingID: candidate.card.physicalPrintingID,
@@ -5480,7 +5494,7 @@ final class ScannerViewModel: ObservableObject {
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
                 return .stale
             }
-            if candidate.identifier.game == .lorcana, error is CatalogLookupError {
+            if Self.revalidatesBundledAcquisition(candidate.identifier.game), error is CatalogLookupError {
                 fileLorcanaAcquisitionForLookup(candidate, isAdditionalCopy: isAdditionalCopy)
                 return .requiresLookup
             }
@@ -6047,6 +6061,10 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    private static func revalidatesBundledAcquisition(_ game: CardGame) -> Bool {
+        game == .lorcana || game == .yuGiOh
+    }
+
     private func fileUnresolved(
         request: ScanRequest,
         reason: UnresolvedReason,
@@ -6064,8 +6082,11 @@ final class ScannerViewModel: ObservableObject {
         if case .opaque = request.identifier.legacyIdentity {
             let rowID = request.unresolvedScanID ?? request.encounterID
             let previous = unresolvedScans.first { $0.id == rowID }
+            let subject = ScanSubject(identifier: request.identifier, slab: request.subject.slab,
+                inferredNameReadings: request.subject.inferredNameReadings,
+                printedEdition: .merged([previous?.subject.printedEdition ?? .absent, request.subject.printedEdition]))
             let row = UnresolvedScan(
-                id: rowID, subject: request.subject, reason: reason,
+                id: rowID, subject: subject, reason: reason,
                 createdAt: previous?.createdAt ?? .now,
                 printingCandidates: printingCandidates.isEmpty ? previous?.printingCandidates ?? [] : printingCandidates,
                 pendingCommit: pendingCommit ?? previous?.pendingCommit,

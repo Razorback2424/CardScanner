@@ -244,7 +244,12 @@ extension PhysicalVariant {
 
     /// Every variant this app can name, for the Finish Lock menu and for turning a
     /// persisted id back into a label.
+    static let yugiohFirstEdition = PhysicalVariant(id: "yugioh1stEdition", label: "1st Edition")
+    static let yugiohUnlimited = PhysicalVariant(id: "yugiohUnlimited", label: "Unlimited")
+    static let yugiohLimited = PhysicalVariant(id: "yugiohLimited", label: "Limited Edition")
+
     static let known: [PhysicalVariant] = [
+        .yugiohFirstEdition, .yugiohUnlimited, .yugiohLimited,
         .normal, .holo, .reverse, .firstEdition,
         .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
         .nonfoil, .foil, .etched
@@ -296,6 +301,9 @@ extension PhysicalVariant {
     /// never the answer.
     var choicePriority: Int {
         switch id {
+        case PhysicalVariant.yugiohFirstEdition.id: return 0
+        case PhysicalVariant.yugiohUnlimited.id: return 1
+        case PhysicalVariant.yugiohLimited.id: return 2
         case PhysicalVariant.reverse.id: return 0
         case PhysicalVariant.normal.id: return 1
         case PhysicalVariant.nonfoil.id: return 1

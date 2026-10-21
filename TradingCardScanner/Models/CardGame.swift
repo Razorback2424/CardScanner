@@ -9,6 +9,7 @@ struct CardGame: RawRepresentable, Hashable, Sendable, Identifiable, Codable {
     static let magic = CardGame(rawValue: "magic")
     static let onePiece = CardGame(rawValue: "one-piece")
     static let lorcana = CardGame(rawValue: "lorcana")
+    static let yuGiOh = CardGame(rawValue: "yu-gi-oh")
 
     var id: String { rawValue }
     var label: String { CardGameRegistry.standard.descriptor(for: self)?.displayName ?? rawValue }

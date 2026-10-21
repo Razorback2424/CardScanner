@@ -224,6 +224,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
     let titleReadings: [String]
     let catalogIdentifier: String
     let inferredNameReadings: [String]?
+    let printedEdition: PrintedEditionEvidence?
     let candidateProviderIDsAndNames: [UnresolvedCandidateHint]
     let slabEvidence: GradedSlabEvidence?
     let mergeSessionID: UUID?
@@ -255,6 +256,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
         catalogIdentifier = scan.requestEvidence.catalogIdentifier
         titleReadings = scan.requestEvidence.titleReadings
         inferredNameReadings = scan.subject.inferredNameReadings
+        printedEdition = scan.subject.printedEdition
         slabEvidence = scan.subject.slab
         mergeSessionID = scan.mergeSessionID
         resolvedProviderID = scan.resolvedProviderID
@@ -440,7 +442,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
         let subject = ScanSubject(
             identifier: identifier,
             slab: slabEvidence,
-            inferredNameReadings: inferredNameReadings
+            inferredNameReadings: inferredNameReadings, printedEdition: printedEdition ?? .absent
         )
         let reasonValue: UnresolvedReason
         switch reason {

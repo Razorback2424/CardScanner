@@ -48,19 +48,22 @@ struct VariantEvidence: Equatable, Sendable {
     /// Exact Magic treatment evidence from the identified printing. Pokémon
     /// leaves this empty so the resolver remains game-neutral.
     let magicTreatments: [MagicTreatment]
+    let physicalCoverageVerified: Bool
 
     init(
         game: CardGame,
         setID: String,
         cardNumber: String,
         catalogVariants: [PhysicalVariant],
-        magicTreatments: [MagicTreatment] = []
+        magicTreatments: [MagicTreatment] = [],
+        physicalCoverageVerified: Bool = true
     ) {
         self.game = game
         self.setID = setID
         self.cardNumber = cardNumber
         self.catalogVariants = catalogVariants
         self.magicTreatments = magicTreatments
+        self.physicalCoverageVerified = physicalCoverageVerified
     }
 
     /// The same evidence with 1st Edition removed from the finish list.
@@ -81,7 +84,7 @@ struct VariantEvidence: Equatable, Sendable {
             setID: setID,
             cardNumber: cardNumber,
             catalogVariants: catalogVariants.filter { $0.id != PhysicalVariant.firstEdition.id },
-            magicTreatments: magicTreatments
+            magicTreatments: magicTreatments, physicalCoverageVerified: physicalCoverageVerified
         )
     }
 }
@@ -104,11 +107,26 @@ enum VariantOutcome: Equatable {
 /// list and must never be added to it: an optical model may one day *rank* the
 /// options under the user's thumb, but it may not answer for them.
 enum VariantResolver {
+    /// Empty options mean the existing Needs attention path, never an unknown
+    /// persisted identity. Contradictory positives cannot be erased by a lock.
+    static func gate(_ evidence: VariantEvidence, printedEdition: PrintedEditionEvidence) -> VariantOutcome? {
+        guard evidence.physicalCoverageVerified else { return .needsChoice(options: [], lockDidNotApply: nil) }
+        guard printedEdition != .absent else { return nil }
+        let possible = ordered(evidence.catalogVariants)
+        guard !printedEdition.isConflict else { return .needsChoice(options: [], lockDidNotApply: nil) }
+        if let observed = printedEdition.observed.first {
+            guard possible.contains(observed) else { return .needsChoice(options: [], lockDidNotApply: nil) }
+            return .resolved(.init(variant: observed, resolution: .printedLabel))
+        }
+        return .needsChoice(options: possible, lockDidNotApply: nil)
+    }
+
     static func resolve(
         _ evidence: VariantEvidence,
         finishLock: VariantLock? = nil,
         printedFinish: PhysicalVariant? = nil
     ) -> VariantOutcome {
+        guard evidence.physicalCoverageVerified else { return .needsChoice(options: [], lockDidNotApply: nil) }
         let resolutionID = PerformanceSignpost.makeID()
         let resolutionState = PerformanceSignpost.beginInterval(
             "variantResolution",

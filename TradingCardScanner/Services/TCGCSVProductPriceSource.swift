@@ -46,7 +46,7 @@ actor TCGCSVProductPriceSource {
     func quote(category: Int, group: Int, productID: Int, name: String, number: String?,
                lane: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup {
         guard category > 0, group > 0, productID > 0, !name.isEmpty, number != "",
-              ["Normal", "Foil", "Cold Foil", "Holofoil"].contains(lane) else { throw PriceQuoteError.identityMismatch }
+              ["Normal", "Foil", "Cold Foil", "Holofoil", "1st Edition", "Unlimited", "Limited"].contains(lane) else { throw PriceQuoteError.identityMismatch }
         let groupKey = GroupKey(category: category, group: group)
         let snapshot = try await snapshot(group: groupKey, generation: generation, minimumFetchedAt: minimumFetchedAt)
         try Task.checkCancellation()

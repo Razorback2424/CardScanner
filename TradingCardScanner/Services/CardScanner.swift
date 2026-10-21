@@ -36,7 +36,7 @@ enum CardFramingRegion {
 
     static let fullFrameRect = CGRect(x: 0, y: 0, width: 1, height: 1)
 
-    private static func cardRelativeRect(
+    static func cardRelativeRect(
         x: CGFloat,
         y: CGFloat,
         width: CGFloat,
@@ -867,6 +867,7 @@ final class CardScanner: NSObject, ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     private var footerRequest = VNRecognizeTextRequest()
     private var fullCardTextRequest = VNRecognizeTextRequest()
+    private var supplementalTextRequest = VNRecognizeTextRequest()
     private var titleRequest = VNRecognizeTextRequest()
     private var labelRequest = VNRecognizeTextRequest()
     private var consecutiveVisionFailures = 0
@@ -899,6 +900,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// the UI.
     private var currentLens: CameraLens = .standard
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
+    private var unconfirmedEmptySince: CFAbsoluteTime?
     /// A catalog miss verification suppresses speculative work for its exact
     /// physical identity. It is mirrored from the main actor before the frame
     /// reaches `announcePlausible`.
@@ -1689,6 +1691,10 @@ final class CardScanner: NSObject, ObservableObject {
         footerRequest.customWords = profile.customWords
 
         fullCardTextRequest.recognitionLevel = .accurate
+        supplementalTextRequest.recognitionLevel = .accurate
+        supplementalTextRequest.recognitionLanguages = ["en-US"]
+        supplementalTextRequest.usesLanguageCorrection = false
+        supplementalTextRequest.customWords = []
         fullCardTextRequest.recognitionLanguages = ["en-US"]
         fullCardTextRequest.usesLanguageCorrection = true
 
@@ -1706,15 +1712,17 @@ final class CardScanner: NSObject, ObservableObject {
     private func rebuildTextRequests() {
         footerRequest = VNRecognizeTextRequest()
         fullCardTextRequest = VNRecognizeTextRequest()
+        supplementalTextRequest = VNRecognizeTextRequest()
         titleRequest = VNRecognizeTextRequest()
         labelRequest = VNRecognizeTextRequest()
         configureTextRequest()
     }
 
     private func recordVisionFrameFailure(_ error: Error) {
+        unconfirmedEmptySince = nil
         // Failure says nothing about whether the card left. Discard partial
-        // evidence, but never feed a synthetic empty band into the latch.
-        resetConfirmationWindow()
+        // confirmation counts, retaining positive edition evidence for this encounter.
+        resetConfirmationWindow(preservingPrintedEdition: true)
         slabFooterIdentityConfirmationWindow.reset()
         slabFooterRecognitionWindow.reset()
         slabEvidenceWindow.reset()
@@ -2268,13 +2276,25 @@ final class CardScanner: NSObject, ObservableObject {
         case let .identified(subject):
             historicalAttempt = nil
             parsed = activeSlabEvidence(matching: subject.identifier).map {
-                ScanSubject(identifier: subject.identifier, slab: $0)
+                ScanSubject(identifier: subject.identifier, slab: $0, inferredNameReadings: subject.inferredNameReadings, printedEdition: subject.printedEdition)
             } ?? subject
         case .nothing:
             parsed = historicalSubject
         case .ambiguous, .fallbackBlocked:
             historicalAttempt = nil
             parsed = nil
+        }
+
+        // A sustained successfully read empty band is the physical exit boundary
+        // for an unconfirmed card. OCR failures never advance this timer.
+        if parsed == nil, footerLines.isEmpty {
+            if let since = unconfirmedEmptySince, now - since >= latch.minimumAbsenceBeforeRelatch {
+                confirmationWindow.reset()
+            } else if unconfirmedEmptySince == nil {
+                unconfirmedEmptySince = now
+            }
+        } else {
+            unconfirmedEmptySince = nil
         }
 
         // Whether the band is occupied, which is not the same question as
@@ -2326,7 +2346,8 @@ final class CardScanner: NSObject, ObservableObject {
             if subjectMode == .slab, observation?.slab == nil {
                 if let observation {
                     announcePlausible(
-                        ScanSubject(identifier: observation.identifier),
+                        ScanSubject(identifier: observation.identifier, inferredNameReadings: observation.inferredNameReadings,
+                            printedEdition: observation.printedEdition),
                         at: now
                     )
                 }
@@ -2497,7 +2518,8 @@ final class CardScanner: NSObject, ObservableObject {
 
         if let encounterID = latchEncounterID,
            let latched = latch.latched {
-            let updated = ScanSubject(identifier: latched.identifier, slab: evidence)
+            let updated = ScanSubject(identifier: latched.identifier, slab: evidence,
+                inferredNameReadings: latched.inferredNameReadings, printedEdition: latched.printedEdition)
             guard latch.refineLatchedSlab(to: updated) else { return }
             DispatchQueue.main.async { [weak self] in
                 self?.onGradedSlabCertificationRefined?(encounterID, latched, updated)
@@ -3504,13 +3526,14 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Callers must be on `visionQueue`.
-    private func resetConfirmationWindow() {
-        confirmationWindow.reset()
+    private func resetConfirmationWindow(preservingPrintedEdition: Bool = false) {
+        confirmationWindow.reset(preservingPrintedEdition: preservingPrintedEdition)
         lastAnnouncedPlausible = nil
     }
 
     /// Callers must be on `visionQueue`.
     private func resetObservationState() {
+        unconfirmedEmptySince = nil
         markTrackerContinuityLost()
         consecutiveVisionFailures = 0
         rebuildTextRequests()
@@ -3656,6 +3679,14 @@ struct RecognitionProfile: Sendable {
 
     func identify(footerLines: [RecognizedLine], fullCardLines: [RecognizedLine]) -> RecognitionOutcome {
         recognizers.identify(footerLines: footerLines, fullCardLines: fullCardLines)
+    }
+
+    func supplementalRegions(afterFooterLines lines: [RecognizedLine], outcome: RecognitionOutcome) -> [SupplementalTextRegion] {
+        guard outcome == .nothing else { return [] }
+        return recognizers.supplementalRegions(afterFooterLines: lines)
+    }
+    func identify(footerLines: [RecognizedLine], supplementalLines: [String: [RecognizedLine]]) -> RecognitionOutcome {
+        recognizers.identify(footerLines: footerLines, supplementalLines: supplementalLines)
     }
 }
 
@@ -3806,6 +3837,27 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 )
                 updateAssistance(from: lines)
                 outcome = profile.identify(lines)
+                if subjectMode == .raw {
+                    let regions = profile.supplementalRegions(afterFooterLines: lines, outcome: outcome)
+                    if !regions.isEmpty {
+                        let state = PerformanceSignpost.beginInterval("supplementalOCR", id: PerformanceSignpost.makeID(),
+                            "encounter=\(latchEncounterID?.uuidString ?? "none")")
+                        defer {
+                            PerformanceSignpost.endInterval("supplementalOCR", state,
+                                "encounter=\(latchEncounterID?.uuidString ?? "none")")
+                        }
+                        var supplemental: [String: [RecognizedLine]] = [:]
+                        for region in regions {
+                            let r = region.cardRelativeRect
+                            supplementalTextRequest.regionOfInterest = CardFramingRegion.cardRelativeRect(
+                                x: r.minX, y: r.minY, width: r.width, height: r.height)
+                            try handler.perform([supplementalTextRequest])
+                            supplemental[region.id] = recognizedLines(from: supplementalTextRequest,
+                                roi: supplementalTextRequest.regionOfInterest, sourceSize: sourceSize)
+                        }
+                        outcome = profile.identify(footerLines: lines, supplementalLines: supplemental)
+                    }
+                }
                 if subjectMode == .raw, profile.needsFullCardText(afterFooterLines: lines, outcome: outcome) {
                     fullCardTextRequest.regionOfInterest = CardFramingRegion.cardVisionRect
                     fullCardTextRequest.customWords = profile.customWords

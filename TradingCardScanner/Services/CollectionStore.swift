@@ -871,7 +871,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         // The catalog may activate after scanner preflight but before this
         // background transaction. Exact UUID validity alone cannot preserve an
         // automatic decision made under an older physical-printing universe.
-        if let identifier, identifier.game == .lorcana {
+        if let identifier, [CardGame.lorcana, .yuGiOh].contains(identifier.game) {
             guard let adapter = CollectionStoreSessionRegistry.shared
                 .mutationAuthority(for: identifier.game, container: context.container).adapter else {
                 throw CatalogLookupError.staleCatalog

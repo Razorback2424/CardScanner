@@ -13,7 +13,7 @@ central_files=(
 )
 # This lexical gate catches explicit game branches; arbitrary default blocks
 # still require review because Swift's inferred switch type is not available here.
-game='\.(pokemon|magic|onePiece|lorcana)'
+game='\.(pokemon|magic|onePiece|lorcana|yuGiOh)'
 pattern="^[[:space:]]*case([[:space:]]+let)?[[:space:]]+$game(:|[^A-Za-z0-9_:].*:)|[!=]=[[:space:]]*$game([^A-Za-z0-9_]|$)|$game[[:space:]]*[!=]=|^[[:space:]]*default:.*unsupportedGame"
 if matches="$(rg --no-heading --line-number --color never "$pattern" "${central_files[@]}")"; then
   printf '%s\n' 'Game boundary audit failed: move game-specific cases behind game adapters.' >&2

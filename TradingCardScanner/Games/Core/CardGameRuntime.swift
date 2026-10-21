@@ -292,6 +292,13 @@ struct CardGameRuntimeContainer: Sendable {
                 .error("Lorcana discovery seed rejected; existing games remain available")
             unavailable.append(LorcanaDiscoveryCatalog.descriptor)
         }
+        do {
+            modules.append(try YuGiOhCatalog.bundled.get().runtime)
+        } catch {
+            Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                .error("Yu-Gi-Oh! seed rejected; existing games remain available")
+            unavailable.append(YuGiOhGameRuntime.descriptor)
+        }
 #if DEBUG && LOCAL_ONLY_SIGNING
         let arguments = ProcessInfo.processInfo.arguments
         if let route = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(route + 1),

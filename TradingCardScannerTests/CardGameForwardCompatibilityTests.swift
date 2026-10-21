@@ -378,7 +378,7 @@ final class CardGameForwardCompatibilityTests: XCTestCase {
 
     func testCSVDisplayNamesMapToStableIDsWithoutCoercingUnknownGames() throws {
         for (name, expected) in [("Pokémon", CardGame.pokemon), ("POKÉMON", .pokemon),
-            ("Magic: The Gathering", .magic), ("One Piece", .onePiece), ("Disney Lorcana", .lorcana),
+            ("Magic: The Gathering", .magic), ("One Piece", .onePiece), ("Disney Lorcana", .lorcana), ("Yu-Gi-Oh!", .yuGiOh),
             ("Future Pokémon Game", CardGame(rawValue: "future pokémon game"))] {
             let plan = try CollectionCSV.parse(Data("game,provider_id,card_name,quantity\n\(name),id,Card,1\n".utf8))
             XCTAssertEqual(plan.entries.first?.game, expected, name)

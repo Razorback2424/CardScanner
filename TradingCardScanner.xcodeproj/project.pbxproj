@@ -317,6 +317,15 @@
 		F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000015; };
 		F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000016; };
 		F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000017; };
+		F40A00000000000000000001 /* YuGiOhCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000001; };
+		F40A00000000000000000002 /* YuGiOhRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000002; };
+		F40A00000000000000000003 /* YuGiOhCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000003; };
+		F40A00000000000000000004 /* YuGiOhGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000004; };
+		F40A00000000000000000005 /* YuGiOhPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000005; };
+		F40A00000000000000000006 /* YuGiOhImportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000006; };
+		F40A00000000000000000007 /* YuGiOhBrowseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000007; };
+		F40A00000000000000000008 /* YuGiOhCatalogSeed in Resources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000008; };
+		F40A00000000000000000009 /* YuGiOhIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000009; };
 /* End PBXBuildFile section */
         F22A00000000000000000001 = {isa = PBXBuildFile; fileRef = F22B00000000000000000001; };
         F21A00000000000000000001 = {isa = PBXBuildFile; fileRef = F21B00000000000000000001; };
@@ -670,6 +679,15 @@
 		F30B00000000000000000015 /* LorcanaPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaPriceAdapter.swift; sourceTree = "<group>"; };
 		F30B00000000000000000016 /* LorcanaPricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaPricingTests.swift; sourceTree = "<group>"; };
 		F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGCSVProductPriceSource.swift; sourceTree = "<group>"; };
+		F40B00000000000000000001 /* YuGiOhCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalog.swift; sourceTree = "<group>"; };
+		F40B00000000000000000002 /* YuGiOhRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhRecognitionAdapter.swift; sourceTree = "<group>"; };
+		F40B00000000000000000003 /* YuGiOhCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalogAdapter.swift; sourceTree = "<group>"; };
+		F40B00000000000000000004 /* YuGiOhGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhGameRuntime.swift; sourceTree = "<group>"; };
+		F40B00000000000000000005 /* YuGiOhPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhPriceAdapter.swift; sourceTree = "<group>"; };
+		F40B00000000000000000006 /* YuGiOhImportAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhImportAdapter.swift; sourceTree = "<group>"; };
+		F40B00000000000000000007 /* YuGiOhBrowseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhBrowseAdapter.swift; sourceTree = "<group>"; };
+		F40B00000000000000000008 /* YuGiOhCatalogSeed */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ../YuGiOhCatalogSeed; sourceTree = "<group>"; };
+		F40B00000000000000000009 /* YuGiOhIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOhIntegrationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
         F22B00000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogBootstrap.swift; sourceTree = "<group>"; };
         F22B00000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/OnePieceCatalogProduction.xcconfig; sourceTree = "<group>"; };
@@ -770,6 +788,13 @@
 		F11D00000000000000000001 /* Games */ = {
 			isa = PBXGroup;
 			children = (
+				F40B00000000000000000001,
+				F40B00000000000000000002,
+				F40B00000000000000000003,
+				F40B00000000000000000004,
+				F40B00000000000000000005,
+				F40B00000000000000000006,
+				F40B00000000000000000007,
 				F30B00000000000000000001,
 				F30B00000000000000000002,
 				F30B00000000000000000003,
@@ -783,6 +808,7 @@
 				F30B00000000000000000010,
 				F30B00000000000000000012,
 				F30B00000000000000000015 /* LorcanaPriceAdapter.swift */,
+				F40B00000000000000000008,
 				F30B00000000000000000014,
 				F11B00000000000000000001, F11B00000000000000000002, F11B00000000000000000003,
 				F12B00000000000000000001, F12B00000000000000000002, F12B00000000000000000003,
@@ -1047,6 +1073,7 @@
 				F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */,
 				F18B00000000000000000004,
 				F17B00000000000000000006,
+				F40B00000000000000000009,
 				F30B00000000000000000004,
 				F30B00000000000000000006,
 				F30B00000000000000000009,
@@ -1254,6 +1281,7 @@
 				A00100C1 /* PokemonChecklistSnapshot in Resources */,
 				A00100E4 /* MagicTreatmentCatalog in Resources */,
 				A0010128 /* MagicCatalogSeed in Resources */,
+				F40A00000000000000000008 /* YuGiOhCatalogSeed in Resources */,
 				F30A00000000000000000014 /* LorcanaCatalogSeed in Resources */,
 				A001019B /* MagicHistoricalPilot in Resources */,
 				F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */,
@@ -1377,6 +1405,13 @@
 				F10A00000000000000000001 /* CardGame.swift in Sources */,
 				F10A00000000000000000002 /* CardGameRegistry.swift in Sources */,
 				F11A00000000000000000001 /* GameRecognitionAdapter.swift in Sources */,
+				F40A00000000000000000001,
+				F40A00000000000000000002,
+				F40A00000000000000000003,
+				F40A00000000000000000004,
+				F40A00000000000000000005,
+				F40A00000000000000000006,
+				F40A00000000000000000007,
 				F30A00000000000000000001,
 				F30A00000000000000000002,
 				F30A00000000000000000003,
@@ -1538,6 +1573,7 @@
 				F10A00000000000000000003 /* CardGameForwardCompatibilityTests.swift in Sources */,
 				F18A00000000000000000004,
 				F17A00000000000000000006,
+				F40A00000000000000000009,
 				F30A00000000000000000004,
 				F30A00000000000000000006,
 				F30A00000000000000000009,

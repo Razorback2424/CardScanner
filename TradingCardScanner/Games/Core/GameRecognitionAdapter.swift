@@ -1,8 +1,16 @@
 import Foundation
 
+struct SupplementalTextRegion: Equatable, Sendable {
+    let id: String
+    let cardRelativeRect: CGRect
+}
+
 protocol GameRecognitionAdapter: Sendable {
     var game: CardGame { get }
     var customWords: [String] { get }
+    var supplementalRegion: SupplementalTextRegion? { get }
+    func needsSupplementalText(afterFooterLines lines: [RecognizedLine]) -> Bool
+    func identify(footerLines: [RecognizedLine], supplementalLines: [RecognizedLine]) -> GameRecognitionOutcome
     func identify(_ lines: [RecognizedLine]) -> GameRecognitionOutcome
     /// An unnumbered footer can require a title outside the normal OCR band.
     /// Request it only for supported evidence, from the same camera frame.
@@ -10,6 +18,11 @@ protocol GameRecognitionAdapter: Sendable {
 }
 
 extension GameRecognitionAdapter {
+    var supplementalRegion: SupplementalTextRegion? { nil }
+    func needsSupplementalText(afterFooterLines lines: [RecognizedLine]) -> Bool { false }
+    func identify(footerLines: [RecognizedLine], supplementalLines: [RecognizedLine]) -> GameRecognitionOutcome {
+        identify(footerLines)
+    }
     func needsFullCardText(afterFooterLines lines: [RecognizedLine]) -> Bool { false }
 }
 
@@ -52,6 +65,24 @@ struct GameRecognitionRegistry: Sendable {
 
     var customWords: [String] {
         Array(Set(recognizers.flatMap(\.customWords))).sorted()
+    }
+
+    func supplementalRegions(afterFooterLines lines: [RecognizedLine]) -> [SupplementalTextRegion] {
+        var seen: Set<String> = []
+        return recognizers.compactMap { adapter in
+            guard let region = adapter.supplementalRegion,
+                  adapter.needsSupplementalText(afterFooterLines: lines), seen.insert(region.id).inserted else { return nil }
+            return region
+        }
+    }
+
+    func identify(footerLines: [RecognizedLine], supplementalLines: [String: [RecognizedLine]]) -> RecognitionOutcome {
+        aggregate(recognizers.map { adapter in
+            guard let region = adapter.supplementalRegion, let lines = supplementalLines[region.id] else {
+                return (adapter.game, adapter.identify(footerLines))
+            }
+            return (adapter.game, adapter.identify(footerLines: footerLines, supplementalLines: lines))
+        })
     }
 
     func identify(_ lines: [RecognizedLine]) -> RecognitionOutcome {

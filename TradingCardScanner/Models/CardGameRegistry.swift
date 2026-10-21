@@ -73,6 +73,7 @@ struct CardGameRegistry: Sendable {
         // Identity/presentation only. No One Piece feature or provider is
         // enabled by adding this descriptor.
         .init(game: .onePiece, displayName: "One Piece", sortOrder: 2, capabilities: []),
-        .init(game: .lorcana, displayName: "Disney Lorcana", sortOrder: 3, capabilities: [])
+        .init(game: .lorcana, displayName: "Disney Lorcana", sortOrder: 3, capabilities: []),
+        .init(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 4, capabilities: [])
     ], variantPolicies: [.pokemon: PokemonVariantPolicy(), .magic: MagicVariantPolicy()])
 }

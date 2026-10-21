@@ -337,6 +337,39 @@ extension ScanIdentifier {
 /// The catalog still resolves only `identifier`. The slab belongs to the
 /// physical-object path that follows resolution, where it affects duplicate
 /// suppression, pricing, and collection identity.
+/// Positive observations are retained independently from illegibility. Merging
+/// is associative, commutative and idempotent, including after persistence.
+/// A new encounter starts with absent evidence; retry never clears a conflict.
+struct PrintedEditionEvidence: Equatable, Hashable, Sendable, Codable {
+    let observed: Set<PhysicalVariant>
+    let illegible: Bool
+    static let absent = Self(observed: [], illegible: false)
+    static let unreadable = Self(observed: [], illegible: true)
+    static func observed(_ variant: PhysicalVariant) -> Self { .init(observed: [variant], illegible: false) }
+    var isConflict: Bool { observed.count > 1 }
+    static func merged(_ values: [Self]) -> Self {
+        .init(observed: values.reduce(into: []) { $0.formUnion($1.observed) },
+              illegible: values.contains(where: \.illegible))
+    }
+    private enum CodingKeys: String, CodingKey { case kind, variants, illegible }
+    init(observed: Set<PhysicalVariant>, illegible: Bool) { self.observed = observed; self.illegible = illegible }
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let kind = try container.decode(String.self, forKey: .kind)
+        let ids = try container.decodeIfPresent([String].self, forKey: .variants) ?? []
+        let known = ids.compactMap(PhysicalVariant.named)
+        observed = Set(known)
+        illegible = (try container.decodeIfPresent(Bool.self, forKey: .illegible) ?? false)
+            || ids.count != known.count || !["absent", "evidence"].contains(kind)
+    }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self == .absent ? "absent" : "evidence", forKey: .kind)
+        try container.encode(observed.map(\.id).sorted(), forKey: .variants)
+        try container.encode(illegible, forKey: .illegible)
+    }
+}
+
 struct ScanSubject: Equatable, Hashable, Sendable {
     let identifier: ScanIdentifier
     let slab: GradedSlabEvidence?
@@ -344,15 +377,18 @@ struct ScanSubject: Equatable, Hashable, Sendable {
     /// denominator. A printed-code read has already supplied stronger set
     /// evidence and leaves this nil.
     let inferredNameReadings: [String]?
+    let printedEdition: PrintedEditionEvidence
 
     init(
         identifier: ScanIdentifier,
         slab: GradedSlabEvidence? = nil,
-        inferredNameReadings: [String]? = nil
+        inferredNameReadings: [String]? = nil,
+        printedEdition: PrintedEditionEvidence = .absent
     ) {
         self.identifier = identifier
         self.slab = slab
         self.inferredNameReadings = inferredNameReadings
+        self.printedEdition = printedEdition
     }
 
     var suppressionKey: ScanSuppressionKey {
@@ -382,6 +418,7 @@ struct CandidateConfirmationWindow {
     let windowSize: Int
 
     private var observations: [ScanSubject?] = []
+    private var editionByKey: [ScanSuppressionKey: PrintedEditionEvidence] = [:]
 
     init(matchesRequired: Int = 2, windowSize: Int = 4) {
         self.matchesRequired = matchesRequired
@@ -389,6 +426,9 @@ struct CandidateConfirmationWindow {
     }
 
     mutating func observeSubject(_ candidate: ScanSubject?) -> ScanSubject? {
+        if let candidate, candidate.printedEdition != .absent {
+            editionByKey[candidate.suppressionKey] = .merged([editionByKey[candidate.suppressionKey] ?? .absent, candidate.printedEdition])
+        }
         observations.append(candidate)
         if observations.count > windowSize {
             observations.removeFirst(observations.count - windowSize)
@@ -401,13 +441,19 @@ struct CandidateConfirmationWindow {
         }
         guard matching.count >= matchesRequired else { return nil }
 
+        let merged = Self.mergedSubject(candidate, observations: matching)
+        let edition = PrintedEditionEvidence.merged([merged.printedEdition, editionByKey[candidate.suppressionKey] ?? .absent])
         reset()
-        return Self.mergedSubject(candidate, observations: matching)
+        return ScanSubject(identifier: merged.identifier, slab: merged.slab,
+            inferredNameReadings: merged.inferredNameReadings, printedEdition: edition)
     }
 
     private static func matches(_ lhs: ScanSubject, _ rhs: ScanSubject) -> Bool {
         guard lhs.identifier.catalogGeneration == rhs.identifier.catalogGeneration else { return false }
-        if lhs.slab != nil || rhs.slab != nil { return lhs == rhs }
+        if lhs.slab != nil || rhs.slab != nil {
+            return lhs.identifier == rhs.identifier && lhs.slab == rhs.slab
+                && lhs.inferredNameReadings == rhs.inferredNameReadings
+        }
         return lhs.suppressionKey == rhs.suppressionKey
     }
 
@@ -415,12 +461,14 @@ struct CandidateConfirmationWindow {
         _ candidate: ScanSubject,
         observations: [ScanSubject]
     ) -> ScanSubject {
+        let edition = PrintedEditionEvidence.merged(observations.map(\.printedEdition))
         if let codeRead = observations.first(where: { subject in
             guard subject.inferredNameReadings == nil else { return false }
             if case .pokemon = subject.identifier.legacyIdentity { return true }
             return false
         }) {
-            return codeRead
+            return ScanSubject(identifier: codeRead.identifier, slab: codeRead.slab,
+                inferredNameReadings: codeRead.inferredNameReadings, printedEdition: edition)
         }
 
         var readings: [String] = []
@@ -443,21 +491,23 @@ struct CandidateConfirmationWindow {
                         titleCandidates: readings
                     )
                 ),
-                slab: candidate.slab
+                slab: candidate.slab, printedEdition: edition
             )
         case .pokemon where candidate.inferredNameReadings != nil:
             return ScanSubject(
                 identifier: candidate.identifier,
                 slab: candidate.slab,
-                inferredNameReadings: readings
+                inferredNameReadings: readings, printedEdition: edition
             )
         default:
-            return candidate
+            return ScanSubject(identifier: candidate.identifier, slab: candidate.slab,
+                inferredNameReadings: candidate.inferredNameReadings, printedEdition: edition)
         }
     }
 
-    mutating func reset() {
+    mutating func reset(preservingPrintedEdition: Bool = false) {
         observations.removeAll(keepingCapacity: true)
+        if !preservingPrintedEdition { editionByKey.removeAll(keepingCapacity: true) }
     }
 
     /// Removes only progress for a presentation being deliberately retried.
