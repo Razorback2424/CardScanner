@@ -650,6 +650,8 @@ final class YuGiOhWorkflowTests: XCTestCase {
     }
 
     func testAcceptanceRecoveryPreservesPreexistingNormalBytesAcrossDismissAndClear() async throws {
+        XCTAssertEqual(YuGiOhAcceptanceLaunch.storageDirectory(arguments: ["-ui_debug_route", "YuGiOhAcceptance", "-ui_debug_state", "csv-import"]), "YuGiOhCSVImportAcceptance")
+        XCTAssertEqual(YuGiOhAcceptanceLaunch.storageDirectory(arguments: ["-ui_debug_route", "WholeCardScanner", "-ui_debug_state", "csv-import"]), "YuGiOhAcceptance")
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-isolation-\(UUID())")
         let catalog = try YuGiOhCatalog.bundled.get()
         let normalURL = root.appendingPathComponent("Scanner/unresolved-scans.json")

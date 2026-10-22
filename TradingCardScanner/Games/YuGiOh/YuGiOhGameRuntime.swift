@@ -29,7 +29,14 @@ struct YuGiOhGameRuntime: Sendable {
 #if DEBUG && LOCAL_ONLY_SIGNING
 /// Fixture OCR routed through normal scanner choices, with a separate store.
 enum YuGiOhAcceptanceLaunch {
-    static let storageDirectory = "YuGiOhAcceptance"
+    static var storageDirectory: String { storageDirectory(arguments: ProcessInfo.processInfo.arguments) }
+    static func storageDirectory(arguments: [String]) -> String {
+        guard let route = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(route + 1),
+              arguments[route + 1] == "YuGiOhAcceptance",
+              let state = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(state + 1),
+              arguments[state + 1] == "csv-import" else { return "YuGiOhAcceptance" }
+        return "YuGiOhCSVImportAcceptance"
+    }
     static func recoveryFileURL(applicationSupport: URL) -> URL {
         applicationSupport.appendingPathComponent(storageDirectory).appendingPathComponent("Scanner/unresolved-scans.json")
     }

@@ -115,6 +115,10 @@ private struct SettingsContentView: View {
                 refreshPriceCoverageGaps()
                 await refreshBrowseHistoryDiagnostics()
             }
+        }
+            // Present from the persistent navigation container. The root Form
+            // is offscreen while a settings category is pushed; attaching CSV
+            // confirmation there hides it until the user navigates back.
             .confirmationDialog(
                 "Delete entire collection?",
                 isPresented: $isConfirmingCollectionDeletion,
@@ -201,7 +205,6 @@ private struct SettingsContentView: View {
                 return Alert(title: Text(message.title), message: Text(message.message), dismissButton: .default(Text("OK")))
             }
             .interactiveDismissDisabled(writeCoordinator.activeExclusiveOperation != nil)
-        }
     }
 
     private var collectionSection: some View {
