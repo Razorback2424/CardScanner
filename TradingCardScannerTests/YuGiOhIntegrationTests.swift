@@ -508,6 +508,26 @@ final class YuGiOhImportTests: XCTestCase {
 
 @MainActor
 final class YuGiOhWorkflowTests: XCTestCase {
+    func testMalformedDurableLineageOverflowRejectsWithoutTrapping() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-overflow-\(UUID())/collection.store")
+        let original = try container(url), catalog = try YuGiOhFixture.catalog()
+        _ = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        let printing = try XCTUnwrap(catalog.printingByID.values.first)
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card
+        let store = CollectionStore(context: original.mainContext)
+        let acquisition = try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed))
+        let correction = try XCTUnwrap(store.recordVariantCorrection(for: card, from: .yugiohFirstEdition,
+            to: .init(variant: .yugiohUnlimited, resolution: .userConfirmed), previousCollectionKey: acquisition.collectionKey,
+            previousLedgerOperationIDs: acquisition.ledgerOperationIDs, activityID: acquisition.activityID))
+        let from = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).first { $0.leg == .from })
+        from.deltaQuantity = Int.max
+        // Simulate malformed data on disk, bypassing the normal mutation gate.
+        try original.mainContext.save()
+        let reopened = try container(url)
+        let recoveredStore = CollectionStore(context: reopened.mainContext)
+        XCTAssertFalse(recoveredStore.hasValidLineage(correction.ledgerOperationIDs, for: correction.collectionKey, quantity: 1))
+        XCTAssertThrowsError(try recoveredStore.undo(correction))
+    }
     func testCyclicCorrectionUndoAfterRetirementReopensWithExactInverseLineage() async throws {
         try await cyclicCorrectionUndo(browseOnly: false, sibling: false)
     }

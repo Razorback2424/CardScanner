@@ -2893,9 +2893,13 @@ struct CollectionStore {
             guard expectedQuantity > 0 else {
                 throw CollectionStoreError.invalidLedgerOperation(UUID())
             }
-            let net = lineage.reduce(into: [String: Int]()) { result, item in
+            let net = try lineage.reduce(into: [String: Int]()) { result, item in
                 for event in item.1 {
-                    result[event.collectionKey, default: 0] += event.deltaQuantity
+                    let sum = result[event.collectionKey, default: 0].addingReportingOverflow(event.deltaQuantity)
+                    guard !sum.overflow else {
+                        throw CollectionStoreError.invalidLedgerOperation(item.0)
+                    }
+                    result[event.collectionKey] = sum.partialValue
                 }
             }
             guard net[expectedCollectionKey, default: 0] == expectedQuantity,
