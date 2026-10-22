@@ -1,5 +1,18 @@
 # Yu-Gi-Oh! implementation and verification
 
+**Latest local completion checkpoint — 2026-10-21, base `eb12b5c`:** the
+cyclic correction Undo defect was reproduced and repaired at final-save
+authority, with durable inverse-lineage and tamper regressions. Approved signed
+delivery now has a shared wire format, local publisher, verified parent chain,
+opt-in runtime coordinator and hosting preservation. Production configuration
+is absent, so the normal app still uses the bundle. CSV export through Files
+and seven-card import into a separate isolated store succeeded; a real hidden
+confirmation-dialog bug was verified twice and fixed. The latest
+[completion evidence](../research/yugioh-catalog/audited-verification.md#completion-checkpoint-on-eb12b5c--2026-10-21)
+supersedes older CSV/system-sheet and candidate-only implementation limitations.
+It also lists unfinished acceptance and external gates; this is not launch
+certification. Earlier entries below are dated historical checkpoints.
+
 **Interactive follow-up — 2026-10-21:** the owner-selected generic iPhone 17
 now has rendered evidence for printing/edition selection, disabled discovery
 choices in live/recovery pickers, cancellation/recovery, Browse Add, duplicate

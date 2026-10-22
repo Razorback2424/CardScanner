@@ -8,6 +8,15 @@ history.
 
 ## Current authority boundary — updated 2026-10-21
 
+**Completion checkpoint on `eb12b5c`:** the
+[latest evidence](../research/yugioh-catalog/audited-verification.md#completion-checkpoint-on-eb12b5c--2026-10-21)
+supersedes the historical Files Save blocker and candidate-only delivery seam
+below. Actual isolated CSV export/import succeeded. Cyclic correction Undo is
+repaired, and approved delivery code is implemented locally but disabled without
+owner-supplied production configuration. Earlier native totals are overlapping
+snapshots, not a cumulative final-suite result. Physical, provider and release
+gates remain open.
+
 **Generic iPhone 17 follow-up:** the [interactive record](../research/yugioh-catalog/audited-verification.md#generic-iphone-17-interactive-acceptance--2026-10-21)
 supersedes the older QA-device tap blocker for normal selection, recovery,
 Browse Add, maintenance and reopen. Disabled recovery choices are now rendered

@@ -1,5 +1,106 @@
 # Audited Yu-Gi-Oh! implementation evidence — 2026-10-21
 
+## Completion checkpoint on eb12b5c — 2026-10-21
+
+Local changes start from reviewed `eb12b5ca66e98f1bb4e70ed9bde4e2437b5dd58b`;
+the checkout was clean before this work. The changes were uncommitted at
+evidence-capture time. No deployment, production-key provisioning,
+personal-device installation or owner-data reset was performed. This section
+supersedes older implementation limits below while preserving their history.
+
+### A. Cyclic correction Undo
+
+The normal acquisition A → correction B → correction A → withdraw A trigger
+failed with `invalidPrintingChoice` under the original sign restriction, while B
+remained writable (`cycle-writable-baseline.xcresult`). The final-save exemption
+now proves the complete, unreversed durable acquisition/correction chain and
+every exact inverse, immutable contributor identity and net removal of one copy.
+It does not authorize fresh acquisition by netting it against disposal.
+
+Real-store tests cover writable-sibling and entirely browse-only catalogs,
+duplicates and surviving copies, save failure/rollback/retry, reopen, repeat Undo,
+and nine tampered or forged transactions. The earlier focused workflow run passed
+21 tests; `repair-delivery-final.xcresult` passed 27 workflow/delivery tests.
+These overlap the later selections and are not additive.
+
+### B. Local implementation and acceptance
+
+The shared app/publisher wire distinguishes signed candidates from approved
+releases, verifies exact bytes, bounds sizes and revisions, and requires reviewed
+parent continuity. The local CLI verifies, approves, exports a verified parent,
+and atomically promotes immutable releases before the current pointer. Workflow
+ingestion can use a verified approved parent; hosting restore preserves signed
+Yu-Gi-Oh releases alongside the existing namespaces and fails closed on invalid
+data. No deploy was performed. RFC test keys exist only in synthetic fixtures
+and temporary test files; production bootstrap rejects them.
+
+The approved coordinator performs catalog parsing off the main actor, coalesces
+refreshes, rejects candidates, supports offline recovery and supplies a complete
+runtime snapshot. Container adoption serializes price withdrawal, collection
+admission and capability changes. Failed save leaves the accepted authority
+unchanged. The normal app remains bundled: rollout mode, production pins and
+approved endpoint configuration have not been provisioned.
+
+Actual Collection → Settings → Collection & Portfolio → Export CSV → Files Save
+created a seven-row file, inspected outside the repository. Normal UI import into
+the separate `YuGiOhCSVImportAcceptance` scope displayed “Import Complete: Added
+7 cards across 7 entries.” Read-only durable inspection found seven rows and seven
+copies, matching printing UUID, edition, catalog provider ID, card number and set
+code. The file covers First, Unlimited, Limited, alternate art and reissue
+identities. Re-selecting the same file offered “Import remaining 0 entries” and a
+separate explicit additional-copies action. Cancellation preserved the empty
+destination and retry worked. No personal export is committed.
+After relaunch into the same isolated destination, Collection rendered the
+imported holdings with the same historical $202.04 total. Read-only comparison
+confirmed seven rows/seven copies remained after the zero-entry resume.
+
+This exposed a second reproducible defect: import confirmation modifiers were
+attached to the hidden root Form while the category page was pushed. Selecting
+a file twice showed nothing until Back revealed the pending dialog. Moving
+presentations to the persistent NavigationStack made confirmation appear over
+the category page. UI acceptance used the built app before the final capability
+state addition; the source fix is included in the final native compilation.
+
+### Verification and remaining gates
+
+Build/test artifacts are under external SSD `CardScannerBuilds/yugioh/`.
+`completion-broad-1.xcresult` passed 482 selected native tests before the last
+capability-state, bounded-lineage and delivery-test additions. The subsequent
+`completion-final-source.xcresult` was interrupted at the owner's request and
+provides no completed-suite result. Current-source results are recorded below.
+
+The final-source selection passed **121 native tests, zero failures**: 21
+YuGiOhWorkflowTests, 9 YuGiOhCandidateDeliveryTests, 1 YuGiOhImportTests and 90
+OnePieceIntegrationTests. This includes the final capability-state adoption,
+bounded durable-lineage checks, shared builder/publisher fixture decoded by the
+real app loader, coalescing/cancellation and failed-save atomic adoption tests.
+Result bundle: `resume-final.xcresult`; log: `/tmp/ygo-resume-final.log`.
+The command was `xcodebuild test -project TradingCardScanner.xcodeproj -scheme
+TradingCardScanner -configuration Debug -destination 'platform=iOS
+Simulator,id=D886FA25-9DBB-473B-8B37-6081C11C9D23' -derivedDataPath <external-SSD
+DerivedData> -clonedSourcePackagesDirPath <external-SSD SourcePackages>
+-parallel-testing-enabled NO` with `-only-testing:TradingCardScannerTests/`
+for each of those four classes, `-resultBundlePath <external-SSD
+resume-final.xcresult>` and `CODE_SIGNING_ALLOWED=NO`. This compiled the final app
+and test targets. It is a focused suite, not a new full-repository baseline.
+
+The Python command was `PYTHONPATH=scripts YUGIOH_CATALOG_PUBLISHER=<external-SSD
+publisher executable> python3 -m unittest scripts.tests.test_yugioh_publisher
+scripts.tests.test_catalog_hosting_restore scripts.fixtures.yugioh.test_builder`:
+39 passed (29 builder, 6 hosting, 4 publisher). An initial invocation omitted
+PYTHONPATH and failed module import; the corrected command above passed.
+
+Remaining local acceptance includes CSV quantity greater than one and mixed-game
+UI variations, the suspended recovery-preflight cancellation/authority-change
+case (network-download cancellation is covered separately), and active-source
+pricing copy in views still using the static bundled notice. These must be
+finished before enabling approved production delivery. Production keys/signing
+ownership and approved hosting configuration require separate owner action.
+Provider/image rights, physical camera, CloudKit, archive/TestFlight and App
+Store acceptance remain distinct open gates. Physical testing should cover
+footer layout, First/Limited/no-stamp ambiguity, glare, alternate art, same-code
+reissues, stack duplicates, interruption and reopen on an authorized test device.
+
 **Candidate evidence captured 2026-10-21:** implementation based on
 `402c7655be3ad94b08986d9d1b41d9b8774db2f0`; the source checkout was clean before
 the candidate changes. No deployment, physical-device installation or

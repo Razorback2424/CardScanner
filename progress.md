@@ -1,3 +1,24 @@
+# 2026-10-21 — Cyclic Undo repair and local delivery checkpoint
+
+On reviewed base `eb12b5c`, reproduced and fixed retired-edition A → B → A Undo
+using exact durable inverse lineage; retained acquisition restrictions and added
+tamper, duplicate, rollback/retry and reopen coverage. Implemented shared signed
+approved delivery, local publisher, parent-based ingestion, hosting preservation
+and atomic runtime/price/capability adoption. Production delivery remains disabled
+without owner configuration. Actual Files CSV export and seven-card import into
+a separate isolated store succeeded, duplicate resume offered zero remaining
+entries, and reopen preserved the collection. Fixed the twice-reproduced hidden
+import confirmation by attaching presentation to the persistent NavigationStack.
+
+Final source compiled and passed 121 focused native tests; 39 Python builder,
+publisher and hosting tests passed. The earlier 482-test result predates final
+changes and is not added to this count. The interrupted run is not a completed
+result. [Exact evidence and remaining acceptance](docs/research/yugioh-catalog/audited-verification.md#completion-checkpoint-on-eb12b5c--2026-10-21)
+includes unfinished CSV variations, recovery-preflight cancellation, active-source
+pricing copy, production/provider/device/CloudKit/release gates. At evidence-
+capture time, these changes were local and uncommitted; no deployment or owner-
+data reset occurred.
+
 # 2026-10-21 — Generic iPhone 17 interactive follow-up
 
 Used the owner-selected generic iPhone 17 with isolated fixture OCR and stores.
