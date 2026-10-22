@@ -14,6 +14,8 @@ on:
       - "Config/**"
       - "magic-publisher/**"
       - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/verify_magic_publication_environment.sh"
+      - "scripts/tests/test_magic_publication_environment.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "firebase.json"
       - ".github/workflows/magic-catalog.yml"
@@ -46,6 +48,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate Firebase Hosting production configuration
         run: bash scripts/verify_pokemon_catalog_hosting_config.sh
+      - name: Test publication environment preflight
+        run: python3 -m unittest discover -s scripts/tests -p test_magic_publication_environment.py -v
       - name: Test the macOS core
         run: swift test --package-path MagicCatalogCore
       - name: Build the publisher in release mode
@@ -213,6 +217,8 @@ jobs:
       FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
+      - name: Check required Magic publication configuration
+        run: bash scripts/verify_magic_publication_environment.sh
       - name: Download the validated production candidate
         uses: actions/download-artifact@v4
         with:

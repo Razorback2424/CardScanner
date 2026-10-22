@@ -8,6 +8,14 @@ history.
 
 ## Current authority boundary — updated 2026-10-22
 
+**Latest review follow-up on `38fd8e6`:** the
+[command-boundary evidence](../research/yugioh-catalog/audited-verification.md#latest-review-follow-up-on-38fd8e6--2026-10-22)
+corrects the supplied review's Magic failure attribution: hosting restoration
+succeeded, then publication failed with an empty signing-key binding. An early
+required-variable preflight improves diagnostics; it does not provision secrets
+or resolve production configuration. The same evidence retains explicit CSV,
+mixed-game, suspended-preflight, active-source wording and bounded-rollout gates.
+
 **Latest review corrections on `9a1d8b0`:** the
 [new evidence](../research/yugioh-catalog/audited-verification.md#latest-review-corrections-on-9a1d8b0--2026-10-22)
 supersedes the completion checkpoint's delivery-admission assumptions: signed

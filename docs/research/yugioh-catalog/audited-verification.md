@@ -1,5 +1,64 @@
 # Audited Yu-Gi-Oh! implementation evidence — 2026-10-22
 
+## Latest review follow-up on 38fd8e6 — 2026-10-22
+
+Reviewed the supplied `CardScanner_Latest_Review_2026-10-22(1).txt` against
+`38fd8e6fbb7d07afece21e32f19802871f56bbea`, which is still `main` at inspection.
+The earlier lineage, authenticated ancestry and shared-loader repairs remain
+closed by the preceding source/test evidence. This follow-up does not rerun or
+add to the historical native test totals below.
+
+### Magic publication blocker: corrected command boundary
+
+The [actual job log](https://github.com/Razorback2424/CardScanner/actions/runs/39778159427/job/119823085575)
+corrects the attachment's statement that hosting restoration failed. Restoration
+completed: 15 Pokémon revisions were restored; Magic and One Piece had no active
+pointer. The **next step**, `Publish the immutable Magic revision and current
+pointer`, failed in `MagicCatalogSigningKeyLoader.load` with
+`Missing required environment variable MAGIC_CATALOG_SIGNING_KEY`. The workflow
+binds that variable at job scope, so it is inherited by this command. The logged
+job environment contains empty signing key, key ID and all three Firebase
+bindings. This establishes unavailable values in that job, without identifying
+whether the underlying secrets are absent, mis-scoped or inaccessible.
+
+The Magic publication job now checks all five required variables immediately
+after checkout, before candidate download, restoration or signing. Diagnostics
+name missing variables and the selected publication environment without printing
+their values. The check verifies presence only; publisher authorization, key
+validation, candidate validation and Firebase access remain the existing gates.
+The workflow's validation job executes the new subprocess tests without secrets.
+
+Local verification: four Python preflight tests passed, including ten
+unset/empty-variable subcases. `bash -n` passed for the new script. Workflow
+YAML parsing, placement of preflight before download/restoration/publication,
+new documentation links/anchors and `git diff --check` were also checked.
+
+Before any separately authorized retry, the repository/environment owner must
+check secret availability and bindings for the selected
+`magic-catalog-production` or `magic-catalog-production-auto` environment. Reuse
+the existing signing identity and pinned public trust; this evidence does not
+justify key rotation. No secret was inspected or changed, no failed job was
+rerun, and no deployment was attempted. The preflight improves failure timing
+and diagnosis; **the production configuration blocker remains open**.
+
+### Acceptance and rollout remain open
+
+| Case | Required evidence before closure |
+|---|---|
+| CSV quantities greater than one | Export/import into an isolated store, then reopen and compare exact edition/printing quantities and duplicate-resume behavior. |
+| Mixed-game UI | Exercise the normal mixed collection and CSV flow; verify game identity, totals and unavailable-price presentation. |
+| Suspended collection recovery preflight | Suspend the collection preflight itself; cancel or change authority before resumption and prove that stale authority cannot save. Download cancellation does not close this case. |
+| Active-source pricing wording | Render bundled and approved-source states; verify source dates and unavailable live-refresh wording against the adopted source. |
+| Bounded ancestor policy | Approve a checkpoint/new-bundle policy before remote rollout. The 32-envelope/128-MiB limits permit four catalogs of the current 33,220,209-byte size, but reject five before staging; oversized chains cannot advance incrementally. Retain signed immutable ancestors. |
+| Approved delivery | Configure production trust/signing/hosting separately and demonstrate the real signed-release-to-app path in an authorized isolated setup. |
+
+No Swift compiler, Xcode or simulator is available in this runner. This PR adds
+publication-preflight tests, not native or rendered acceptance evidence. Provider
+and image permissions, physical camera, CloudKit, archive/TestFlight and App Store
+readiness remain separate gates. Supported manual exact selection remains
+available independently of exhaustive physical coverage and market quotes.
+Yu-Gi-Oh production delivery remains disabled.
+
 ## Latest review corrections on 9a1d8b0 — 2026-10-22
 
 Validated the supplied `CardScanner_Latest_Review_2026-10-22.txt` against clean
