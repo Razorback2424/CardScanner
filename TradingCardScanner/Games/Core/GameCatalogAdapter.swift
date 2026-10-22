@@ -288,6 +288,7 @@ struct GameCatalogSnapshot: Sendable {
     var browse: (any GameBrowseAdapter)? = nil
     var importer: (any GameImportAdapter)? = nil
     var priceAuthority: GameCatalogPriceAuthority? = nil
+    var capabilities: CardGameCapabilities? = nil
 }
 
 protocol GameCatalogActivationSource: Sendable {

@@ -84,7 +84,8 @@ struct CardGameRuntimeContainer: Sendable {
     private let catalogAdapters: GameCatalogAdapterRegistry
     private let recognitionAdapters: GameRecognitionRegistry
 
-    init(runtimes: [CardGameRuntime], unavailableGames: [CardGameDescriptor] = []) throws {
+    init(runtimes: [CardGameRuntime], unavailableGames: [CardGameDescriptor] = [],
+         capabilityState: GameCatalogCapabilityState? = nil) throws {
         var values: [CardGame: CardGameRuntime] = [:]
         for runtime in runtimes {
             let game = runtime.descriptor.game
@@ -124,7 +125,8 @@ struct CardGameRuntimeContainer: Sendable {
         self.legacyBindings = .init(pokemon: pokemonBindings.first, magic: magicBindings.first)
         self.registry = CardGameRegistry(
             descriptors: runtimes.map(\.descriptor),
-            variantPolicies: Dictionary(uniqueKeysWithValues: runtimes.map { ($0.descriptor.game, $0.variantPolicy) })
+            variantPolicies: Dictionary(uniqueKeysWithValues: runtimes.map { ($0.descriptor.game, $0.variantPolicy) }),
+            capabilityState: capabilityState
         )
     }
 
@@ -139,6 +141,7 @@ struct CardGameRuntimeContainer: Sendable {
         if previous == nil { configureCollectionAuthority(for: container, configurePricing: false) }
         var modules: [CardGameRuntime] = []
         var unavailable = unavailableGames
+        let capabilities = previous?.registry.capabilityState ?? GameCatalogCapabilityState()
         for runtime in runtimes.values {
             // Existing consumers retain their authorities on a retry. Only an
             // omitted module needs activation and storage binding again.
@@ -146,7 +149,7 @@ struct CardGameRuntimeContainer: Sendable {
                 modules.append(existing)
                 continue
             }
-            let source = runtime.activationSource.map { CollectionAuthorizedActivationSource(source: $0, container: container, isCurrent: isCurrent) }
+            let source = runtime.activationSource.map { CollectionAuthorizedActivationSource(source: $0, container: container, isCurrent: isCurrent, capabilities: capabilities) }
             do {
                 if let source {
                     guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
@@ -169,7 +172,7 @@ struct CardGameRuntimeContainer: Sendable {
                 legacyCatalogBindings: runtime.legacyCatalogBindings))
         }
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
-        let bound = try Self(runtimes: modules, unavailableGames: unavailable)
+        let bound = try Self(runtimes: modules, unavailableGames: unavailable, capabilityState: capabilities)
         if let previous, previous.registry.games(supporting: []) == bound.registry.games(supporting: []) {
             return previous
         }
@@ -293,7 +296,14 @@ struct CardGameRuntimeContainer: Sendable {
             unavailable.append(LorcanaDiscoveryCatalog.descriptor)
         }
         do {
-            let runtime = try YuGiOhCatalog.bundled.get().runtime
+            let catalog = try YuGiOhCatalog.bundled.get()
+            let runtime: CardGameRuntime
+            do { runtime = try YuGiOhCatalogBootstrap.configuredRuntime(bundled: catalog) ?? catalog.runtime }
+            catch {
+                Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                    .error("Yu-Gi-Oh approved delivery configuration rejected; retaining bundled catalog")
+                runtime = catalog.runtime
+            }
             if runtime.descriptor.capabilities.isEmpty {
                 unavailable.append(YuGiOhGameRuntime.descriptor)
             } else {

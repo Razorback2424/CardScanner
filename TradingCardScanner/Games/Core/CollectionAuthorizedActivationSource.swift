@@ -23,6 +23,15 @@ struct GameCatalogPriceAuthority: Sendable {
                          beforeSave: ((ModelContext) throws -> Void)?) throws {
         try CollectionWriteSerializer.perform(container: container,
             timeout: Thread.isMainThread ? .mainThread : .wait) { context in
+            try install(in: context, at: date, beforeSave: beforeSave)
+        }
+    }
+
+    /// The caller owns the serializer through price withdrawal and catalog
+    /// publication. Never release it between these two authority changes.
+    fileprivate func install(in context: ModelContext, at date: Date = .now,
+                             beforeSave: ((ModelContext) throws -> Void)? = nil) throws {
+            precondition(CollectionWriteSerializer.isHeldByCurrentThread)
             let gameID = game.rawValue
             let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.game == gameID }))
             let quotes = try context.fetch(FetchDescriptor<ReferenceQuote>(predicate: #Predicate { $0.game == gameID }))
@@ -44,7 +53,6 @@ struct GameCatalogPriceAuthority: Sendable {
                 try beforeSave?(context)
                 try context.save()
             }
-        }
     }
 }
 
@@ -56,6 +64,7 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
     private let source: any GameCatalogActivationSource
     private let container: ModelContainer
     private let isCurrent: @MainActor @Sendable () -> Bool
+    private let capabilities: GameCatalogCapabilityState?
     private var accepted: GameCatalogSnapshot?
     #if DEBUG
     private var beforeSaveForTesting: ((ModelContext) throws -> Void)?
@@ -66,9 +75,11 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
     #endif
 
     init(source: any GameCatalogActivationSource, container: ModelContainer,
-         isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) {
+         isCurrent: @escaping @MainActor @Sendable () -> Bool = { true },
+         capabilities: GameCatalogCapabilityState? = nil) {
         self.source = source; self.container = container; game = source.game
         self.isCurrent = isCurrent
+        self.capabilities = capabilities
     }
 
     private func accept(_ snapshot: GameCatalogSnapshot) -> GameCatalogSnapshot? {
@@ -80,16 +91,21 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
                 return snapshot.catalog.generation == accepted.catalog.generation ? accepted : nil
             }
         }
-        guard CollectionStore.canInstallCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return nil }
         do {
-            #if DEBUG
-            try snapshot.priceAuthority?.install(in: container, beforeSaveForTesting: beforeSaveForTesting)
-            #else
-            try snapshot.priceAuthority?.install(in: container)
-            #endif
+            let installed = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { context in
+                guard CollectionStore.canInstallCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return false }
+                #if DEBUG
+                try snapshot.priceAuthority?.install(in: context, beforeSave: beforeSaveForTesting)
+                #else
+                try snapshot.priceAuthority?.install(in: context)
+                #endif
+                guard CollectionStore.installCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return false }
+                if let next = snapshot.capabilities { capabilities?.install(next, for: game) }
+                return true
+            }
+            guard installed else { return nil }
         }
         catch { return nil } // No new authority or UI generation on a failed save.
-        guard CollectionStore.installCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return nil }
         accepted = snapshot
         return snapshot
     }

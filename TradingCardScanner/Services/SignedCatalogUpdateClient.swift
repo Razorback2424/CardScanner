@@ -23,7 +23,7 @@ actor SignedCatalogUpdateClient<Envelope: Decodable & Sendable> {
         guard endpoint.scheme?.lowercased() == "https", endpoint.host != nil,
               endpoint.port == nil, endpoint.user == nil, endpoint.password == nil,
               endpoint.query == nil, endpoint.fragment == nil else { throw SignedCatalogUpdateError.invalidURL }
-        precondition(maximumBytes > 0 && maximumBytes <= 48 * 1_024 * 1_024)
+        precondition(maximumBytes > 0 && maximumBytes <= 65 * 1_024 * 1_024)
         self.endpoint = endpoint
         self.configuration = configuration.copy() as! URLSessionConfiguration
         self.maximumBytes = maximumBytes

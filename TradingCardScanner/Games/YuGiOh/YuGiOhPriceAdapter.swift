@@ -25,6 +25,7 @@ struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
 struct YuGiOhPriceAdapter: GamePriceAdapter {
     let catalog: YuGiOhCatalog
     var source: any YuGiOhMarketPriceSource = YuGiOhBundledPriceSource()
+    var coordinator: YuGiOhCatalogCoordinator? = nil
     var game: CardGame { .yuGiOh }
     var allowsProviderFallback: Bool { false }
     var supportsStoredPrintingRefresh: Bool { true }
@@ -48,6 +49,11 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
         try await refreshStoredPrinting(printingID, variant: variant, minimumFetchedAt: nil)
     }
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?, minimumFetchedAt: Date?) async throws -> PriceLookup {
+        if let coordinator {
+            let current = await coordinator.catalog()
+            return try await YuGiOhPriceAdapter(catalog: current, source: source)
+                .refreshStoredPrinting(printingID, variant: variant, minimumFetchedAt: minimumFetchedAt)
+        }
         let card = try exactCard(printingID)
         return try await refresh(.init(identity: .legacy(card), variant: variant, pokemonPrintRun: nil,
             catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
@@ -58,6 +64,10 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
         return card
     }
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
+        if let coordinator {
+            let current = await coordinator.catalog()
+            return try await YuGiOhPriceAdapter(catalog: current, source: source).refresh(request)
+        }
         guard request.identity.game == game, request.pokemonPrintRun == nil else { throw PriceQuoteError.identityMismatch }
         let card = try exactCard(request.identity.printingID)
         guard request.identity.matches(.legacy(card)), let variant = request.variant,

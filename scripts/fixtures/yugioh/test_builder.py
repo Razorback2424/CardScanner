@@ -150,10 +150,11 @@ class BuilderTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)
             builder.stage_hosting(seed, root)
-            pointer = json.loads((root/'yugioh/v1/current.json').read_text())
+            pointer = json.loads((root/'yugioh/v1/candidate.json').read_text())
+            self.assertFalse((root/'yugioh/v1/current.json').exists())
             self.assertEqual(pointer['status'], 'candidate_not_deployed')
             self.assertEqual(pointer['schemaVersion'], 1)
-            self.assertEqual(pointer['revision'], 1792454400)
+            self.assertEqual(pointer['revision'], 1)
             self.assertEqual(pointer['sha256'], builder.hashlib.sha256(builder.packed(seed)).hexdigest())
             self.assertEqual((root/pointer['path']).read_bytes(), builder.packed(seed))
             builder.stage_hosting(seed, root)

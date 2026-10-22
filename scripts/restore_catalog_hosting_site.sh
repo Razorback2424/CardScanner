@@ -18,6 +18,9 @@ magic_keys="${8:-Config/MagicCatalogProduction.xcconfig}"
 one_piece_active_path="${9:-}"
 one_piece_package="${10:-OnePieceCatalogCore}"
 one_piece_keys="${11:-Config/OnePieceCatalogProduction.xcconfig}"
+yugioh_active_path="${12:-}"
+yugioh_publisher="${13:-${YUGIOH_CATALOG_PUBLISHER:-}}"
+yugioh_keys="${14:-Config/YuGiOhCatalogProduction.keys.json}"
 expected_site_root="publisher/site"
 max_restore_revision=100000
 
@@ -37,6 +40,12 @@ verify_release() {
   local release_path="$3"
   local trusted_keys_file="$4"
   local expected_revision="${5:-}"
+  if [ "$publisher_command" = "yugioh-catalog-publisher" ]; then
+    local arguments=(verify --input "$release_path" --keys "$trusted_keys_file")
+    if [ -n "$expected_revision" ]; then arguments+=(--expected-revision "$expected_revision"); fi
+    "$yugioh_publisher" "${arguments[@]}"
+    return
+  fi
   if [ "$publisher_command" = "one-piece-catalog-publisher" ]; then
     local exported_keys
     exported_keys="$(mktemp "${RUNNER_TEMP:-/tmp}/one-piece-pinned-keys.XXXXXX")"
@@ -138,6 +147,15 @@ restore_namespace() {
       fi
     done
 
+    if [ "$namespace" = "yugioh/v1" ]; then
+      "$yugioh_publisher" export-parent --input "$temporary_release/catalog-release.json" \
+        --keys "$trusted_keys_file" --output "$temporary_release/verified-catalog.json" >/dev/null
+      cmp "$temporary_release/verified-catalog.json" "$temporary_release/catalog.json" >/dev/null || {
+        echo "Yu-Gi-Oh catalog bytes disagree with signed envelope" >&2
+        exit 1
+      }
+    fi
+
     local destination="$site_root/$namespace/releases/$revision"
     mkdir -p "$destination"
     for file in catalog-release.json ${release_files[@]+"${release_files[@]}"}; do
@@ -153,9 +171,9 @@ restore_namespace() {
     restored=$((restored + 1))
   done
 
-  if [ "$namespace" = "one-piece/v1" ]; then
+  if [ "$namespace" = "one-piece/v1" ] || [ "$namespace" = "yugioh/v1" ]; then
     cmp "$active_path" "$site_root/$namespace/releases/$current_revision/catalog-release.json" >/dev/null || {
-      echo "One Piece pointer must match its verified immutable revision" >&2
+      echo "$namespace pointer must match its verified immutable revision" >&2
       exit 1
     }
   fi
@@ -197,3 +215,25 @@ if [ -z "$one_piece_active_path" ]; then
 fi
 restore_namespace "$one_piece_active_path" "one-piece/v1" "$one_piece_package" "$one_piece_keys" \
   "one-piece-catalog-publisher"
+
+# Every complete-site publisher preserves YGO too. No pointer is expected
+# before first approval. An existing namespace without trust/verification is a
+# deployment-preparation failure, never permission to silently drop it.
+if [ -z "$yugioh_active_path" ]; then
+  yugioh_active_path="$(mktemp "${RUNNER_TEMP:-/tmp}/yugioh-current.XXXXXX")"
+  status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+    --output "$yugioh_active_path" --write-out '%{http_code}' "$origin/yugioh/v1/current.json")"
+  if [ "$status" = "404" ]; then
+    rm -f "$yugioh_active_path"
+  elif [ "$status" != "200" ]; then
+    echo "Unexpected HTTP $status while reading the Yu-Gi-Oh production pointer" >&2
+    exit 1
+  fi
+fi
+if [ -f "$yugioh_active_path" ]; then
+  if [ -z "$yugioh_publisher" ]; then
+    yugioh_publisher="${RUNNER_TEMP:-/tmp}/yugioh-catalog-publisher"
+    swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift scripts/yugioh_catalog_publisher.swift -o "$yugioh_publisher"
+  fi
+  restore_namespace "$yugioh_active_path" "yugioh/v1" "" "$yugioh_keys" "yugioh-catalog-publisher" catalog.json
+fi

@@ -1,28 +1,6 @@
 import CryptoKit
 import Foundation
 
-/// Local delivery seam only. No endpoint, trust pins or launch activation are
-/// installed. The existing publisher must sign the exact staged manifest bytes.
-struct YuGiOhCandidateManifest: Codable, Equatable, Sendable {
-    let schemaVersion: Int
-    let revision: Int
-    let generation: String
-    let policyVersion: String
-    let path: String
-    let sha256: String
-    let bytes: Int
-    let status: String
-    let capturedAt: String
-}
-
-struct YuGiOhCandidateEnvelope: Codable, Equatable, Sendable {
-    let keyID: String
-    /// Same unpadded base64url signature contract as the existing publishers.
-    let payload: String
-    let signature: String
-    let catalog: Data
-}
-
 struct YuGiOhCatalogSnapshot: Sendable {
     let catalog: YuGiOhCatalog
     let priceAuthority: GameCatalogPriceAuthority
@@ -32,42 +10,26 @@ struct YuGiOhCatalogSnapshot: Sendable {
     }
 }
 
-enum YuGiOhCandidateError: Error { case invalidManifest, invalidSignature, invalidTransition, oversized }
-
 enum YuGiOhCandidateVerifier {
-    static let maximumCatalogBytes = 48 * 1_024 * 1_024
-    static let maximumEnvelopeBytes = 65 * 1_024 * 1_024
-    static let policy = "yugioh-provider-membership-v1-2026-10-21"
+    static let maximumCatalogBytes = YuGiOhReleaseWire.maximumCatalogBytes
+    static let maximumEnvelopeBytes = YuGiOhReleaseWire.maximumEnvelopeBytes
+    static let policy = YuGiOhReleaseWire.policy
 
     static func decodeURL(_ value: String) -> Data? {
-        guard !value.isEmpty, value.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil else { return nil }
-        let padded = value.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
-            + String(repeating: "=", count: (4 - value.count % 4) % 4)
-        guard let data = Data(base64Encoded: padded), encodeURL(data) == value else { return nil }
-        return data
+        YuGiOhReleaseWire.decodeURL(value)
     }
     static func encodeURL(_ data: Data) -> String {
-        data.base64EncodedString().replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_").replacingOccurrences(of: "=", with: "")
+        YuGiOhReleaseWire.encodeURL(data)
     }
 
     static func verify(_ envelope: YuGiOhCandidateEnvelope,
-                       keys: [String: Curve25519.Signing.PublicKey], now: Date) throws -> (YuGiOhCandidateManifest, YuGiOhCatalogSnapshot) {
-        guard envelope.catalog.count <= maximumCatalogBytes, envelope.payload.utf8.count <= 8192 else { throw YuGiOhCandidateError.oversized }
-        guard envelope.keyID.range(of: "^yugioh-[a-z0-9][a-z0-9-]{0,63}$", options: .regularExpression) != nil,
-              let key = keys[envelope.keyID], let payload = decodeURL(envelope.payload),
-              envelope.signature.count == 86, let signature = decodeURL(envelope.signature), signature.count == 64,
-              key.isValidSignature(signature, for: payload) else { throw YuGiOhCandidateError.invalidSignature }
-        let manifest = try JSONDecoder().decode(YuGiOhCandidateManifest.self, from: payload)
-        let catalog = try YuGiOhCatalog(data: envelope.catalog)
-        let hash = SHA256.hash(data: envelope.catalog).map { String(format: "%02x", $0) }.joined()
+                       keys: [String: Curve25519.Signing.PublicKey], now: Date,
+                       state: YuGiOhPublicationState = .candidate) throws -> (YuGiOhCandidateManifest, YuGiOhCatalogSnapshot) {
+        let manifest = try YuGiOhReleaseWire.verify(envelope, keys: keys, state: state, now: now)
+        var catalog = try YuGiOhCatalog(data: envelope.catalog)
         let iso = ISO8601DateFormatter()
         let fractional = ISO8601DateFormatter(); fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        guard manifest.schemaVersion == 1, manifest.revision > 0, manifest.policyVersion == policy,
-              manifest.status == "candidate_not_deployed", manifest.bytes == envelope.catalog.count,
-              manifest.sha256 == hash, manifest.generation == catalog.generation,
-              catalog.generation.range(of: "^yugioh-en-[a-z0-9-]{1,80}$", options: .regularExpression) != nil,
-              manifest.path == "yugioh/v1/releases/\(catalog.generation)/catalog.json",
+        guard manifest.generation == catalog.generation,
               (iso.date(from: manifest.capturedAt) ?? fractional.date(from: manifest.capturedAt)) == catalog.capturedAt,
               now.timeIntervalSince1970.isFinite, catalog.capturedAt <= now.addingTimeInterval(300) else { throw YuGiOhCandidateError.invalidManifest }
         // The hash also binds policy and membership provenance, which the real
@@ -80,12 +42,14 @@ enum YuGiOhCandidateVerifier {
                       date <= catalog.capturedAt else { throw YuGiOhCandidateError.invalidManifest }
             }
         }
+        if state == .approved { catalog.publicationRevision = manifest.revision }
         return (manifest, .init(catalog: catalog))
     }
 
-    static func validateTransition(from old: YuGiOhCatalog, to new: YuGiOhCatalog) throws {
+    static func validateTransition(from old: YuGiOhCatalog, to new: YuGiOhCatalog,
+                                   reviewedSameSnapshot: Bool = false) throws {
         guard new.capturedAt >= old.capturedAt,
-              new.generation == old.generation || new.capturedAt > old.capturedAt else { throw YuGiOhCandidateError.invalidTransition }
+              new.generation == old.generation || new.capturedAt > old.capturedAt || reviewedSameSnapshot else { throw YuGiOhCandidateError.invalidTransition }
         if new.generation == old.generation {
             guard new.capturedAt == old.capturedAt, new.printingByID == old.printingByID,
                   new.autoEligibleCodes == old.autoEligibleCodes, new.incompleteCodes == old.incompleteCodes else { throw YuGiOhCandidateError.invalidTransition }
@@ -107,18 +71,33 @@ actor YuGiOhCandidateReleaseStore {
     private let core: Core
     private let keys: [String: Curve25519.Signing.PublicKey]
     private let bundled: YuGiOhCatalogSnapshot
+    private let state: YuGiOhPublicationState
 
-    init(root: URL, keys: [String: Curve25519.Signing.PublicKey], bundled: YuGiOhCatalog) throws {
+    init(root: URL, keys: [String: Curve25519.Signing.PublicKey], bundled: YuGiOhCatalog,
+         state: YuGiOhPublicationState = .candidate, bundledSHA256: String? = nil) throws {
         guard !keys.isEmpty, Set(keys.values.map(\.rawRepresentation)).count == keys.count else { throw YuGiOhCandidateError.invalidSignature }
         self.keys = keys
+        self.state = state
         self.bundled = .init(catalog: bundled)
         let transition: @Sendable (Core.StoredRelease?, Core.StoredRelease) throws -> Void = { previous, next in
-            try YuGiOhCandidateVerifier.validateTransition(from: previous?.registry.catalog ?? bundled, to: next.registry.catalog)
+            if state == .approved {
+                guard next.release.parentSHA256 == (previous?.release.sha256 ?? bundledSHA256) else { throw YuGiOhCandidateError.invalidTransition }
+            }
+            try YuGiOhCandidateVerifier.validateTransition(from: previous?.registry.catalog ?? bundled, to: next.registry.catalog,
+                reviewedSameSnapshot: state == .approved)
         }
-        core = Core(root: root, currentName: "yugioh-candidate-current.json", previousName: "yugioh-candidate-previous.json",
+        if state == .approved, bundledSHA256?.range(of: "^[a-f0-9]{64}$", options: .regularExpression) == nil { throw YuGiOhCandidateError.invalidManifest }
+        let prefix = state == .approved ? "yugioh-approved" : "yugioh-candidate"
+        core = Core(root: root, currentName: "\(prefix)-current.json", previousName: "\(prefix)-previous.json",
             revisionPolicy: .activeRelease, strictRevisionContent: true, rejectLowerRevision: true, validateRecovery: true,
             revision: { $0.revision }, encode: { try JSONEncoder().encode($0) },
-            validateTransition: transition, validateRecoveryTransition: transition,
+            validateTransition: transition,
+            validateRecoveryTransition: { previous, next in
+                // A two-slot cache cannot retain the full approval ancestry.
+                // Each slot is independently signed; available adjacent slots
+                // must agree on their parent hash and immutable identities.
+                if previous != nil { try transition(previous, next) }
+            },
             readData: { url in
                 let file = try FileHandle(forReadingFrom: url); defer { try? file.close() }
                 let data = try file.read(upToCount: YuGiOhCandidateVerifier.maximumEnvelopeBytes + 1) ?? Data()
@@ -130,10 +109,11 @@ actor YuGiOhCandidateReleaseStore {
     func load(now: Date = .now) async {
         let keys = keys
         let bundled = bundled.catalog
+        let state = state
         await core.load { data in
             let envelope = try JSONDecoder().decode(YuGiOhCandidateEnvelope.self, from: data)
-            let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(envelope, keys: keys, now: now)
-            try YuGiOhCandidateVerifier.validateTransition(from: bundled, to: snapshot.catalog)
+            let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(envelope, keys: keys, now: now, state: state)
+            try YuGiOhCandidateVerifier.validateTransition(from: bundled, to: snapshot.catalog, reviewedSameSnapshot: state == .approved)
             return .init(envelope: envelope, release: manifest, registry: snapshot)
         }
     }
@@ -143,7 +123,10 @@ actor YuGiOhCandidateReleaseStore {
     }
     func stage(_ envelope: YuGiOhCandidateEnvelope, now: Date = .now) async throws -> SignedCatalogActivationResult {
         await load(now: now)
-        let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(envelope, keys: keys, now: now)
+        let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(envelope, keys: keys, now: now, state: state)
+        try Task.checkCancellation()
         return try await core.activate(.init(envelope: envelope, release: manifest, registry: snapshot))
     }
+
+    func activeRelease() async -> Core.StoredRelease? { await core.activeRelease }
 }

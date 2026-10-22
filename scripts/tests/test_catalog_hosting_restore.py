@@ -31,6 +31,7 @@ class CatalogHostingRestoreTests(unittest.TestCase):
 import os, pathlib, sys
 a=sys.argv[1:]; url=a[-1]; output=pathlib.Path(a[a.index('--output')+1])
 status=os.environ.get('POINTER_STATUS','200') if url.endswith('current.json') else '200'
+if '/yugioh/' in url: status=os.environ.get('YUGIOH_POINTER_STATUS','404') if url.endswith('current.json') else '200'
 output.write_text('2' if url.endswith('current.json') or '/2/' in url else '1')
 print(status,end='')
 """)
@@ -44,6 +45,16 @@ revision=pathlib.Path(a[a.index('--input')+1]).read_text()
 if '--expected-revision' in a: assert a[a.index('--expected-revision')+1] == revision
 print(revision)
 """)
+        self.tool("yugioh-catalog-publisher", """#!/usr/bin/env python3
+import os, pathlib, sys
+a=sys.argv[1:]
+if os.environ.get('YUGIOH_VERIFY_FAIL'): sys.exit(1)
+revision=pathlib.Path(a[a.index('--input')+1]).read_text()
+if '--expected-revision' in a: assert a[a.index('--expected-revision')+1] == revision
+if a[0]=='export-parent': pathlib.Path(a[a.index('--output')+1]).write_text(revision)
+print(revision)
+""")
+        self.environment["YUGIOH_CATALOG_PUBLISHER"] = str(self.root / "bin/yugioh-catalog-publisher")
 
     def tearDown(self):
         self.temp.cleanup()
@@ -89,6 +100,27 @@ print(revision)
         artifact.write_text("retain this artifact")
         self.assertNotEqual(self.restore().returncode, 0)
         self.assertEqual(artifact.read_text(), "retain this artifact")
+
+    def test_existing_callers_preserve_yugioh_and_all_unrelated_namespaces(self):
+        self.environment["YUGIOH_POINTER_STATUS"] = "200"
+        unrelated = self.root / "publisher/site/v1/current.json"
+        unrelated.parent.mkdir(parents=True)
+        unrelated.write_text("existing pokemon")
+        result = self.restore()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(unrelated.read_text(), "existing pokemon")
+        self.assertEqual((self.root / "publisher/site/one-piece/v1/current.json").read_text(), "2")
+        for revision in (1, 2):
+            for file in ("catalog.json", "catalog-release.json"):
+                self.assertEqual((self.root / f"publisher/site/yugioh/v1/releases/{revision}/{file}").read_text(), str(revision))
+        self.assertEqual((self.root / "publisher/site/yugioh/v1/current.json").read_text(), "2")
+        self.assertEqual(self.restore().returncode, 0)
+
+    def test_yugioh_verification_failure_stops_pointer_restoration(self):
+        self.environment["YUGIOH_POINTER_STATUS"] = "200"
+        self.environment["YUGIOH_VERIFY_FAIL"] = "1"
+        self.assertNotEqual(self.restore().returncode, 0)
+        self.assertFalse((self.root / "publisher/site/yugioh/v1/current.json").exists())
 
 
 if __name__ == "__main__":

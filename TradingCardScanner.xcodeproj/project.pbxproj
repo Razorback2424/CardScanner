@@ -246,6 +246,7 @@
 		A0020101 /* ProductionRowFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020101 /* ProductionRowFixtures.swift */; };
 		A0020102 /* OpusImplementationPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020102 /* OpusImplementationPlanTests.swift */; };
 		A6F06E16B0A2C00200000001 /* TradingCards fixtures in Resources */ = {isa = PBXBuildFile; fileRef = B6F06E16B0A2C00200000002 /* TradingCardScannerFixtures */; };
+		F40A0000000000000000000D /* YuGiOh delivery fixture in Resources */ = {isa = PBXBuildFile; fileRef = F40B0000000000000000000D; };
 		A00200F6 /* ScannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F6 /* ScannerViewModelTests.swift */; };
 		A00200F7 /* UncoveredSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F7 /* UncoveredSurfaceTests.swift */; };
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
@@ -322,6 +323,8 @@
 		F40A00000000000000000003 /* YuGiOhCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000003; };
 		F40A00000000000000000004 /* YuGiOhGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000004; };
 		F40A0000000000000000000A /* YuGiOhCandidateRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B0000000000000000000A; };
+		F40A0000000000000000000B /* YuGiOhReleaseWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B0000000000000000000B; };
+		F40A0000000000000000000C /* YuGiOhCatalogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B0000000000000000000C; };
 		F40A00000000000000000005 /* YuGiOhPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000005; };
 		F40A00000000000000000006 /* YuGiOhImportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000006; };
 		F40A00000000000000000007 /* YuGiOhBrowseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000007; };
@@ -606,6 +609,7 @@
 		B0020101 /* ProductionRowFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductionRowFixtures.swift; sourceTree = "<group>"; };
 		B0020102 /* OpusImplementationPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpusImplementationPlanTests.swift; sourceTree = "<group>"; };
 		B6F06E16B0A2C00200000002 /* TradingCardScannerFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ../TestFixtures/TradingCards; sourceTree = "<group>"; };
+		F40B0000000000000000000D /* YuGiOhDelivery */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ../TestFixtures/YuGiOhDelivery; sourceTree = "<group>"; };
 		B00200F6 /* ScannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModelTests.swift; sourceTree = "<group>"; };
 		B00200F7 /* UncoveredSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncoveredSurfaceTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -685,6 +689,8 @@
 		F40B00000000000000000003 /* YuGiOhCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalogAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000004 /* YuGiOhGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhGameRuntime.swift; sourceTree = "<group>"; };
 		F40B0000000000000000000A /* YuGiOhCandidateRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCandidateRelease.swift; sourceTree = "<group>"; };
+		F40B0000000000000000000B /* YuGiOhReleaseWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhReleaseWire.swift; sourceTree = "<group>"; };
+		F40B0000000000000000000C /* YuGiOhCatalogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalogCoordinator.swift; sourceTree = "<group>"; };
 		F40B00000000000000000005 /* YuGiOhPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhPriceAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000006 /* YuGiOhImportAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhImportAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000007 /* YuGiOhBrowseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhBrowseAdapter.swift; sourceTree = "<group>"; };
@@ -795,6 +801,8 @@
 				F40B00000000000000000003,
 				F40B00000000000000000004,
 				F40B0000000000000000000A,
+				F40B0000000000000000000B,
+				F40B0000000000000000000C,
 				F40B00000000000000000005,
 				F40B00000000000000000006,
 				F40B00000000000000000007,
@@ -1152,6 +1160,7 @@
 				B0020199 /* MagicRecognitionProfileTests.swift */,
 				B002019A /* MagicHistoricalIndexTests.swift */,
 				B6F06E16B0A2C00200000002 /* TradingCardScannerFixtures */,
+				F40B0000000000000000000D,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -1304,6 +1313,7 @@
 				F30A00000000000000000007 /* Lorcana source fixtures in Resources */,
 				A00200E3 /* MagicTreatmentCatalog in Resources */,
 				A6F06E16B0A2C00200000001 /* TradingCards fixtures in Resources */,
+				F40A0000000000000000000D,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1413,6 +1423,8 @@
 				F40A00000000000000000003,
 				F40A00000000000000000004,
 				F40A0000000000000000000A,
+				F40A0000000000000000000B,
+				F40A0000000000000000000C,
 				F40A00000000000000000005,
 				F40A00000000000000000006,
 				F40A00000000000000000007,

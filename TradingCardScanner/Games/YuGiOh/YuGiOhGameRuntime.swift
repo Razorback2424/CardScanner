@@ -6,23 +6,27 @@ struct YuGiOhVariantPolicy: GameVariantPolicy {
 struct YuGiOhGameRuntime: Sendable {
     static let descriptor = CardGameDescriptor(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 4, capabilities: [])
     let catalog: YuGiOhCatalog
+    var coordinator: YuGiOhCatalogCoordinator? = nil
+    static func capabilities(for catalog: YuGiOhCatalog) -> CardGameCapabilities {
+        guard !catalog.printingByID.isEmpty else { return [] }
+        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let supported = catalog.printingsByCode.values.contains { family in
+            let candidates = family.map(adapter.candidate)
+            return family.contains { $0.explicitSelectionSupported && adapter.candidate($0).selectionEvidence(among: candidates) != .insufficient }
+        }
+        return supported ? [.scan, .browse, .pricing, .collectionWrite] : [.browse]
+    }
     var runtime: CardGameRuntime {
         guard !catalog.printingByID.isEmpty else {
             return .init(descriptor: Self.descriptor, variantPolicy: YuGiOhVariantPolicy(), requiresLaunchActivation: false)
         }
-        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
-        let hasSupportedChoice = catalog.printingsByCode.values.contains { family in
-            let candidates = family.map(adapter.candidate)
-            return family.contains { $0.explicitSelectionSupported && adapter.candidate($0).selectionEvidence(among: candidates) != .insufficient }
-        }
-        let capabilities: CardGameCapabilities = hasSupportedChoice
-            ? [.scan, .browse, .pricing, .collectionWrite] : [.browse]
+        let capabilities = Self.capabilities(for: catalog)
         return .init(descriptor: .init(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 4,
                 capabilities: capabilities),
-            variantPolicy: YuGiOhVariantPolicy(), pricing: YuGiOhPriceAdapter(catalog: catalog),
+            variantPolicy: YuGiOhVariantPolicy(), pricing: YuGiOhPriceAdapter(catalog: catalog, coordinator: coordinator),
             recognizer: YuGiOhRecognitionAdapter(catalog: catalog), catalog: YuGiOhCatalogAdapter(catalog: catalog),
             browse: YuGiOhBrowseAdapter(catalog: catalog), importer: YuGiOhImportAdapter(catalog: catalog),
-            priceAuthority: YuGiOhPriceAdapter.priceAuthority(catalog), requiresLaunchActivation: false)
+            priceAuthority: YuGiOhPriceAdapter.priceAuthority(catalog), activationSource: coordinator, requiresLaunchActivation: false)
     }
 }
 

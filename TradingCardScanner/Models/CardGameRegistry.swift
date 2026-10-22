@@ -20,29 +20,53 @@ struct CardGameDescriptor: Sendable, Identifiable {
     var id: CardGame { game }
 }
 
+/// Container-scoped capability facts travel with copied registry values.
+/// Activation changes them under the same ownership serializer as admission
+/// and pricing; a catalog retirement cannot leave a writable registry behind.
+final class GameCatalogCapabilityState: @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [CardGame: CardGameCapabilities] = [:]
+    func value(for game: CardGame) -> CardGameCapabilities? {
+        lock.lock(); defer { lock.unlock() }
+        return values[game]
+    }
+    func install(_ capabilities: CardGameCapabilities, for game: CardGame) {
+        precondition(CollectionWriteSerializer.isHeldByCurrentThread)
+        lock.lock(); defer { lock.unlock() }
+        values[game] = capabilities
+    }
+}
+
 /// Descriptors are the enumeration authority; unknown stored IDs never become
 /// another game just because a module is unavailable. Runtime injection is a
 /// separate boundary from identity decoding.
 struct CardGameRegistry: Sendable {
     private let descriptors: [CardGame: CardGameDescriptor]
     private let variantPolicies: [CardGame: any GameVariantPolicy]
+    let capabilityState: GameCatalogCapabilityState?
 
-    init(descriptors: [CardGameDescriptor], variantPolicies: [CardGame: any GameVariantPolicy] = [:]) {
+    init(descriptors: [CardGameDescriptor], variantPolicies: [CardGame: any GameVariantPolicy] = [:],
+         capabilityState: GameCatalogCapabilityState? = nil) {
         precondition(Set(descriptors.map(\.game)).count == descriptors.count,
                      "Game registration must be unique")
         self.descriptors = Dictionary(uniqueKeysWithValues: descriptors.map { ($0.game, $0) })
         precondition(Set(variantPolicies.keys).isSubset(of: Set(descriptors.map(\.game))),
                      "Variant policies require a registered game")
         self.variantPolicies = variantPolicies
+        self.capabilityState = capabilityState
     }
 
-    func descriptor(for game: CardGame) -> CardGameDescriptor? { descriptors[game] }
+    func descriptor(for game: CardGame) -> CardGameDescriptor? {
+        guard let descriptor = descriptors[game] else { return nil }
+        guard let capabilities = capabilityState?.value(for: game) else { return descriptor }
+        return .init(game: game, displayName: descriptor.displayName, sortOrder: descriptor.sortOrder, capabilities: capabilities)
+    }
     func variantPolicy(for game: CardGame) -> (any GameVariantPolicy)? { variantPolicies[game] }
     func replacingVariantPolicy(_ policy: any GameVariantPolicy, for game: CardGame) -> Self {
         var policies = variantPolicies
         guard descriptors[game] != nil else { return self }
         policies[game] = policy
-        return Self(descriptors: Array(descriptors.values), variantPolicies: policies)
+        return Self(descriptors: Array(descriptors.values), variantPolicies: policies, capabilityState: capabilityState)
     }
     var variantLockMenu: [GameVariantLockOptions] {
         games(supporting: .scan).compactMap { game in
@@ -54,7 +78,7 @@ struct CardGameRegistry: Sendable {
     }
 
     func games(supporting capability: CardGameCapabilities) -> [CardGame] {
-        descriptors.values.filter { $0.capabilities.contains(capability) }
+        descriptors.keys.compactMap { descriptor(for: $0) }.filter { $0.capabilities.contains(capability) }
             .sorted {
                 $0.sortOrder == $1.sortOrder
                     ? $0.game.rawValue < $1.game.rawValue : $0.sortOrder < $1.sortOrder
@@ -62,7 +86,7 @@ struct CardGameRegistry: Sendable {
     }
 
     func supports(_ game: CardGame, _ capability: CardGameCapabilities) -> Bool {
-        descriptors[game]?.capabilities.contains(capability) == true
+        descriptor(for: game)?.capabilities.contains(capability) == true
     }
 
     var enabledGames: [CardGame] { games(supporting: .scan) }

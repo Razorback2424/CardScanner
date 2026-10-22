@@ -7,19 +7,39 @@ permissions:
   contents: read
 jobs:
   ingest-candidate:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - name: Test evidence admission
         run: python3 -I scripts/build_yugioh_catalog.py --self-test
+      - name: Resolve the latest verified approved parent
+        env:
+          APPROVED_PARENT_URL: ${{ vars.YUGIOH_APPROVED_PARENT_URL }}
+        run: |
+          if [ -z "$APPROVED_PARENT_URL" ]; then
+            echo "No production YGO approval endpoint is configured; bootstrap candidate only"
+            echo "YUGIOH_PREVIOUS_SEED=TradingCardScanner/YuGiOhCatalogSeed/catalog.json" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          case "$APPROVED_PARENT_URL" in
+            https://scanstash-catalog-prod.web.app/yugioh/v1/current.json|https://catalog.scan-stash.com/yugioh/v1/current.json) ;;
+            *) echo "Unapproved parent origin/path" >&2; exit 1 ;;
+          esac
+          swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift scripts/yugioh_catalog_publisher.swift -o "$RUNNER_TEMP/yugioh-publisher"
+          curl --fail --proto '=https' --tlsv1.2 --max-filesize 68157440 --max-time 60 \
+            "$APPROVED_PARENT_URL" -o "$RUNNER_TEMP/yugioh-approved-parent.json"
+          "$RUNNER_TEMP/yugioh-publisher" export-parent --input "$RUNNER_TEMP/yugioh-approved-parent.json" \
+            --keys Config/YuGiOhCatalogProduction.keys.json --output "$RUNNER_TEMP/yugioh-approved-parent-catalog.json"
+          echo "YUGIOH_PREVIOUS_SEED=$RUNNER_TEMP/yugioh-approved-parent-catalog.json" >> "$GITHUB_ENV"
       - name: Ingest once on the server and stage a candidate
         run: >-
           python3 -I scripts/build_yugioh_catalog.py
           --cache-dir "${RUNNER_TEMP}/yugioh-source"
-          --previous-seed TradingCardScanner/YuGiOhCatalogSeed/catalog.json
+          --previous-seed "${YUGIOH_PREVIOUS_SEED}"
           --out "${RUNNER_TEMP}/yugioh/catalog.json"
           --report "${RUNNER_TEMP}/yugioh/build-report.md"
           --hosting-root "${RUNNER_TEMP}/yugioh/site"
+          --publication-revision "${{ github.run_number }}"
       - uses: actions/upload-artifact@v4
         with:
           name: yugioh-catalog-candidate

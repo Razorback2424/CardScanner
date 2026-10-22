@@ -238,6 +238,7 @@ def main():
     parser.add_argument("--previous-seed", type=pathlib.Path)
     parser.add_argument("--price-receipt", type=pathlib.Path, help="Offline census receipt; binds provider snapshot time to exact raw hashes")
     parser.add_argument("--hosting-root", type=pathlib.Path, help="Stage an immutable candidate under the existing Firebase site; never deploy")
+    parser.add_argument("--publication-revision", type=int, default=1, help="Candidate publication sequence, independent of provider capture time")
     args = parser.parse_args()
     if args.self_test:
         import unittest
@@ -330,7 +331,7 @@ def main():
         temporary.write_bytes(data)
         temporary.replace(path)
     if args.hosting_root:
-        stage_hosting(seed, args.hosting_root)
+        stage_hosting(seed, args.hosting_root, args.publication_revision)
     print(json.dumps(stats, indent=2))
 
 def validate_output(seed, strict=False):
@@ -362,20 +363,21 @@ def validate_output(seed, strict=False):
         row = family[0]
         assert not row['ir'] and row['ec'] and row['e'] and row['ee'], 'automatic row lacks admission evidence'
 
-def stage_hosting(seed, root):
+def stage_hosting(seed, root, revision=1):
     """An isolated namespace on the existing host. No deploy/signing authority."""
     validate_output(seed, strict=True)
+    if type(revision) is not int or not 1 <= revision <= 100000: raise ValueError('publication revision must be in 1...100000')
     data = packed(seed)
     relative = pathlib.Path('yugioh/v1/releases') / seed['generation'] / 'catalog.json'
     target = root / relative
     target.parent.mkdir(parents=True, exist_ok=True)
     if target.exists() and target.read_bytes() != data: raise ValueError('immutable candidate collision')
     target.write_bytes(data)
-    revision = int(datetime.datetime.fromisoformat(seed['capturedAt'].replace('Z', '+00:00')).timestamp())
     manifest = {'schemaVersion':1, 'revision':revision, 'generation':seed['generation'], 'policyVersion':POLICY,
                 'path':str(relative), 'sha256':hashlib.sha256(data).hexdigest(), 'bytes':len(data),
                 'status':'candidate_not_deployed', 'capturedAt':seed['capturedAt']}
-    pointer = root / 'yugioh/v1/current.json'
+    # Unsigned staging is never the production approval pointer.
+    pointer = root / 'yugioh/v1/candidate.json'
     pointer.write_bytes(packed(manifest))
 
 if __name__ == "__main__": main()
