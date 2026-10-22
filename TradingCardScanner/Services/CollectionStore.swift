@@ -1543,8 +1543,17 @@ struct CollectionStore {
             finalQuantity = try survivors.reduce(0) { try CollectionQuantityLimits.checkedAdd($0, $1.quantity) }
             if finalQuantity <= originalQuantity {
                 let changes = context.insertedModelsArray.compactMap { $0 as? InventoryEvent }.filter { $0.collectionKey == key }
-                return changes.allSatisfy { $0.deltaQuantity <= 0 }
-                    && changes.reduce(0, { $0 + $1.deltaQuantity }) == finalQuantity - originalQuantity
+                var pendingQuantity = 0
+                for change in changes {
+                    guard (-CollectionQuantityLimits.maximum...CollectionQuantityLimits.maximum).contains(change.deltaQuantity) else { return false }
+                    let sum = pendingQuantity.addingReportingOverflow(change.deltaQuantity)
+                    guard !sum.overflow else { return false }
+                    pendingQuantity = sum.partialValue
+                }
+                guard pendingQuantity == finalQuantity - originalQuantity else { return false }
+                if changes.allSatisfy({ $0.deltaQuantity <= 0 }) { return true }
+                guard finalQuantity == originalQuantity - 1 else { return false }
+                return try isDurableAcquisitionUndo(for: row, durable: durable)
             }
         }
         // Restoring a retired edition requires a persisted removal snapshot and
@@ -1570,6 +1579,102 @@ struct CollectionStore {
                 && snapshot.variant?.id == row.variantID && snapshot.itemKindRaw == row.itemKindRaw
                 && snapshot.quantity == restoredQuantity && activity.remainingQuantity == activity.claimedQuantity
         }
+    }
+
+    /// A cyclic correction can contain a positive inverse at a retired key.
+    /// Establish authority from the durable acquisition, never from net deltas
+    /// or a caller's receipt. This deliberately admits only one complete scan
+    /// Undo; ordinary disposal and restoration retain their separate proofs.
+    private func isDurableAcquisitionUndo(for row: CollectedCard, durable: ModelContext) throws -> Bool {
+        let pending = context.insertedModelsArray.compactMap { $0 as? InventoryEvent }
+        guard !pending.isEmpty, pending.allSatisfy({ $0.reversesEventID != nil }),
+              context.deletedModelsArray.allSatisfy({ !($0 is InventoryEvent) }) else { return false }
+        // Duplicate consolidation assigns the canonical key even when it is
+        // unchanged. SwiftData marks that setter dirty; require exact durable
+        // contents rather than rejecting the legitimate no-op assignment.
+        for event in context.changedModelsArray.compactMap({ $0 as? InventoryEvent }) {
+            let id = event.eventID
+            let matches = try durable.fetch(FetchDescriptor<InventoryEvent>(predicate: #Predicate { $0.eventID == id }))
+            guard matches.count == 1, let saved = matches.first,
+                  saved.persistentModelID == event.persistentModelID, saved.payload == event.payload,
+                  saved.operationID == event.operationID, saved.idempotencyKey == event.idempotencyKey,
+                  saved.legRaw == event.legRaw, saved.recordedAt == event.recordedAt,
+                  saved.acquiredAt == event.acquiredAt, saved.pricePaidUSDTenThousandths == event.pricePaidUSDTenThousandths,
+                  saved.priceSourceAtEvent == event.priceSourceAtEvent, saved.priceEffectiveAtEvent == event.priceEffectiveAtEvent,
+                  saved.priceReceivedAtEvent == event.priceReceivedAtEvent, saved.localObservationID == event.localObservationID else { return false }
+        }
+        let undone = context.insertedModelsArray.compactMap { $0 as? CollectionActivity }.filter { $0.kind == .undone }
+        guard undone.count == 1, let undo = undone.first,
+              undo.collectionKey == row.collectionKey, undo.game == .yuGiOh,
+              undo.itemKindRaw == row.itemKindRaw, undo.variantID == row.variantID,
+              undo.signedQuantity == -1, undo.quantity == 1, undo.resolvedQuantity == 0 else { return false }
+        let key = row.collectionKey
+        let acquisitions = try durable.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate { $0.collectionKey == key }))
+        let durableStore = CollectionStore(context: durable)
+        for acquisition in acquisitions where acquisition.kind == .added && acquisition.remainingQuantity == 1
+            && acquisition.claimedQuantity == 1 && acquisition.game == .yuGiOh
+            && acquisition.itemKindRaw == row.itemKindRaw && acquisition.variantID == row.variantID {
+            let operations = acquisition.ledgerOperationIDs
+            guard let lineage = try? durableStore.preflightLineage(operations, expectedCollectionKey: key, expectedQuantity: 1),
+                  let first = lineage.first, first.1.count == 1,
+                  first.1[0].kind.isInflow, first.1[0].deltaQuantity == 1 else { continue }
+            let originals = lineage.flatMap { $0.1 }
+            guard originals.count == pending.count,
+                  Set(originals.map(\.eventID)).count == originals.count,
+                  Set(pending.compactMap(\.reversesEventID)) == Set(originals.map(\.eventID)),
+                  originals.allSatisfy({ $0.reversesEventID == nil && abs($0.deltaQuantity) == 1 }) else { continue }
+            // Check the ordered physical move, in addition to the shared net
+            // and complete-leg validation. No unrelated correction can borrow
+            // this acquisition merely by balancing to zero.
+            var position = first.1[0].collectionKey
+            var valid = true
+            for (_, events) in lineage.dropFirst() {
+                guard events.count == 2,
+                      let from = events.first(where: { $0.leg == .from }),
+                      let to = events.first(where: { $0.leg == .to }),
+                      from.kind == .correction, to.kind == .correction,
+                      from.collectionKey == position, from.deltaQuantity == -1, to.deltaQuantity == 1 else {
+                    valid = false; break
+                }
+                position = to.collectionKey
+            }
+            guard valid, position == key else { continue }
+            var inverseOperations: [UUID] = []
+            for (_, events) in lineage.reversed() {
+                let inverses = pending.filter { inverse in events.contains { $0.eventID == inverse.reversesEventID } }
+                guard inverses.count == events.count, let operation = inverses.first?.operationID,
+                      !operations.contains(operation), !inverseOperations.contains(operation),
+                      try durableStore.ledger.events(forOperationID: operation).isEmpty,
+                      inverses.allSatisfy({ inverse in
+                    inverse.operationID == operation && events.contains { original in
+                        inverse.reversesEventID == original.eventID
+                            && inverse.collectionKey == original.collectionKey
+                            && inverse.priceStorageKey == original.priceStorageKey
+                            && inverse.deltaQuantity == -original.deltaQuantity
+                            && inverse.kindRaw == original.kindRaw && inverse.sourceRaw == original.sourceRaw
+                            && inverse.legRaw == original.legRaw
+                            && inverse.idempotencyKey == InventoryEvent.idempotencyKey(operationID: operation, leg: original.leg)
+                    }
+                }) else { valid = false; break }
+                inverseOperations.append(operation)
+            }
+            guard valid, undo.ledgerOperationIDs == inverseOperations,
+                  undo.sourceRaw == acquisition.sourceRaw else { continue }
+            let staged = context.changedModelsArray.compactMap { $0 as? CollectionActivity }.filter {
+                $0.persistentModelID == acquisition.persistentModelID
+            }
+            guard staged.count == 1, let resolved = staged.first,
+                  resolved.id == acquisition.id, resolved.collectionKey == acquisition.collectionKey,
+                  resolved.gameRaw == acquisition.gameRaw, resolved.itemKindRaw == acquisition.itemKindRaw,
+                  resolved.variantID == acquisition.variantID, resolved.sourceRaw == acquisition.sourceRaw,
+                  resolved.kindRaw == acquisition.kindRaw, resolved.signedQuantity == acquisition.signedQuantity,
+                  resolved.quantity == acquisition.quantity, resolved.deltaQuantity == acquisition.deltaQuantity,
+                  resolved.occurredAt == acquisition.occurredAt, resolved.correctedAt == acquisition.correctedAt,
+                  resolved.ledgerOperationIDs == operations,
+                  resolved.resolvedQuantity == acquisition.resolvedQuantity + 1 else { continue }
+            return true
+        }
+        return false
     }
 
     private func requireSupportedVariantCorrection(for card: CollectedCard, to variant: PhysicalVariant?) throws {

@@ -264,6 +264,118 @@ final class YuGiOhImportTests: XCTestCase {
 
 @MainActor
 final class YuGiOhWorkflowTests: XCTestCase {
+    func testCyclicCorrectionUndoAfterRetirementReopensWithExactInverseLineage() async throws {
+        try await cyclicCorrectionUndo(browseOnly: false, sibling: false)
+    }
+
+    func testBrowseOnlyCyclicCorrectionUndoPreservesDurableSiblingAndRetriesFailure() async throws {
+        try await cyclicCorrectionUndo(browseOnly: true, sibling: true)
+    }
+
+    private func cyclicCorrectionUndo(browseOnly: Bool, sibling: Bool) async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-cycle-\(UUID())/collection.store")
+        let original = try container(url), catalog = try YuGiOhFixture.catalog()
+        _ = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: XCTUnwrap(catalog.printingByID.values.first).id).card
+        let store = CollectionStore(context: original.mainContext)
+        var mutation = try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed))
+        for (from, to) in [(PhysicalVariant.yugiohFirstEdition, PhysicalVariant.yugiohUnlimited), (.yugiohUnlimited, .yugiohFirstEdition)] {
+            mutation = try XCTUnwrap(store.recordVariantCorrection(for: card, from: from,
+                to: .init(variant: to, resolution: .userConfirmed), previousCollectionKey: mutation.collectionKey,
+                previousLedgerOperationIDs: mutation.ledgerOperationIDs, activityID: mutation.activityID))
+        }
+        if sibling {
+            _ = try store.add(card, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed))
+            try splitDurablePosition(in: original.mainContext)
+        }
+        let before = try original.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+        let beforeIDs = Set(before.map(\.eventID))
+        let contributors = Set(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.persistentModelID))
+        let historyIDs = Set(try original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).map(\.id))
+        var retiredObject = YuGiOhFixture.providerSupportedObject()
+        var retiredRows = retiredObject["printings"] as! [[String: Any]]
+        retiredRows[0]["e"] = browseOnly ? [] : ["yugiohUnlimited"]
+        retiredRows[0]["m"] = (retiredRows[0]["m"] as! [[String: Any]]).filter { !browseOnly && $0["e"] as? String == "yugiohUnlimited" }
+        retiredObject["printings"] = retiredRows
+        let retired = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: retiredObject))
+        let bound = try await CardGameRuntimeContainer(runtimes: [retired.runtime]).bound(to: original)
+        XCTAssertEqual(bound.registry.supports(.yuGiOh, .collectionWrite), !browseOnly)
+        for attack in 0..<9 {
+            try store.undo(mutation, savesChanges: false)
+            let pending = original.mainContext.insertedModelsArray.compactMap { $0 as? InventoryEvent }
+            let positive = try XCTUnwrap(pending.first { $0.collectionKey == mutation.collectionKey && $0.deltaQuantity > 0 })
+            switch attack {
+            case 0: positive.reversesEventID = nil
+            case 1: positive.reversesEventID = UUID()
+            case 2: positive.reversesEventID = pending.first { $0.deltaQuantity < 0 }?.reversesEventID
+            case 3:
+                let otherLeg = try XCTUnwrap(pending.first { $0.collectionKey != mutation.collectionKey })
+                original.mainContext.delete(otherLeg)
+            case 4: positive.deltaQuantity = 2
+            case 5: positive.priceStorageKey = "forged-identity"
+            case 6:
+                // Same -1 net at A, but a fresh acquisition paired with a
+                // disposal must never acquire retired-edition permission.
+                positive.kindRaw = InventoryEventKind.acquire.rawValue
+                positive.reversesEventID = nil
+                let negative = try XCTUnwrap(pending.first { $0.collectionKey == mutation.collectionKey && $0.deltaQuantity < 0 })
+                negative.kindRaw = InventoryEventKind.dispose.rawValue
+                negative.deltaQuantity = -2
+                negative.reversesEventID = nil
+                let redundant = try XCTUnwrap(pending.first { $0.collectionKey == mutation.collectionKey && $0.eventID != positive.eventID && $0.eventID != negative.eventID })
+                original.mainContext.delete(redundant)
+            case 7:
+                let row = try XCTUnwrap(original.mainContext.deletedModelsArray.compactMap { $0 as? CollectedCard }.first
+                    ?? original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+                let lookalike = CollectedCard(collectionKey: row.collectionKey, game: .yuGiOh,
+                    providerID: row.providerID, name: row.name, setName: row.setName, setCode: row.setCode,
+                    cardNumber: row.cardNumber, rarity: row.rarity, imageURL: nil, thumbnailURL: nil,
+                    variant: .yugiohFirstEdition, variantResolution: .userConfirmed, quantity: 1)
+                lookalike.catalogProviderID = row.catalogProviderID
+                original.mainContext.insert(lookalike)
+            default:
+                let acquisition = try XCTUnwrap(original.mainContext.changedModelsArray.compactMap { $0 as? CollectionActivity }.first { $0.id == mutation.activityID })
+                acquisition.ledgerOperationIDs.removeLast()
+            }
+            XCTAssertThrowsError(try store.validatePendingGameWrites(), "Rejected forged/partial inverse attack \(attack)")
+            original.mainContext.rollback()
+        }
+        var reachedSave = false
+        let failing = CollectionStore(context: original.mainContext, beforeSaveForTesting: { _ in
+            reachedSave = true
+            throw CocoaError(.fileWriteUnknown)
+        })
+        XCTAssertThrowsError(try failing.undo(mutation))
+        XCTAssertTrue(reachedSave, "Valid inverses must pass final authority before injected save failure")
+        XCTAssertEqual(Set(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.persistentModelID)), contributors)
+        XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).reduce(0) { $0 + $1.quantity }, sibling ? 2 : 1)
+        XCTAssertEqual(Set(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).map(\.eventID)), beforeIDs)
+        XCTAssertEqual(Set(try original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).map(\.id)), historyIDs)
+        try store.undo(mutation)
+        XCTAssertThrowsError(try store.undo(mutation))
+        let reopened = try container(url)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).reduce(0) { $0 + $1.quantity }, sibling ? 1 : 0)
+        let events = try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+        let inverse = events.filter { $0.reversesEventID != nil }
+        XCTAssertEqual(inverse.count, 5)
+        let targets = before.filter { mutation.ledgerOperationIDs.contains($0.operationID) }
+        XCTAssertEqual(Set(inverse.compactMap(\.reversesEventID)), Set(targets.map(\.eventID)))
+        for event in inverse {
+            let target = try XCTUnwrap(targets.first { $0.eventID == event.reversesEventID })
+            XCTAssertEqual(event.collectionKey, target.collectionKey)
+            XCTAssertEqual(event.priceStorageKey, target.priceStorageKey)
+            XCTAssertEqual(event.deltaQuantity, -target.deltaQuantity)
+            XCTAssertEqual(event.kind, target.kind)
+            XCTAssertEqual(event.leg, target.leg)
+        }
+        XCTAssertEqual(events.filter { $0.collectionKey == card.collectionKey(variant: .yugiohFirstEdition) }.reduce(0) { $0 + $1.deltaQuantity }, sibling ? 1 : 0)
+        XCTAssertEqual(events.filter { $0.collectionKey == card.collectionKey(variant: .yugiohUnlimited) }.reduce(0) { $0 + $1.deltaQuantity }, 0)
+        let activities = try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.filter { $0.kind == .undone }.count, 1)
+        XCTAssertEqual(activities.first { $0.id == mutation.activityID }?.remainingQuantity, 0)
+        XCTAssertEqual(Set(try XCTUnwrap(activities.first { $0.kind == .undone }).ledgerOperationIDs), Set(inverse.map(\.operationID)))
+    }
+
     /// Model the supported CloudKit shape: two durable physical rows, one
     /// logical acquisition/history claim. No ledger event is invented by merge.
     private func splitDurablePosition(in context: ModelContext) throws {
