@@ -1,3 +1,17 @@
+# 2026-10-22 — Magic publication preflight and latest review follow-up
+
+Reviewed the latest attachment against `main` at `38fd8e6`. The actual failed
+Magic job completed hosting restoration, then failed at signing; the attachment
+misattributes that failure to restoration. All five signing/hosting bindings
+were empty in the job. Added an early presence check and isolated subprocess
+tests, wired into Magic PR validation. The owner must still diagnose secret
+availability/scope before a separately authorized publication retry.
+
+The [current evidence](docs/research/yugioh-catalog/audited-verification.md#latest-review-follow-up-on-38fd8e6--2026-10-22)
+records the corrected command boundary and explicit remaining acceptance and
+bounded-rollout gates. No native/UI acceptance, secret provisioning, deployment
+or production delivery enablement is claimed.
+
 # 2026-10-22 — Latest review delivery and lineage corrections
 
 Validated the supplied 22 October review against clean `9a1d8b0`. Added signed
