@@ -8,6 +8,10 @@ actor YuGiOhCatalogCoordinator: GameCatalogActivationSource {
     enum RefreshResult: Sendable { case disabled, notModified, activated(Int), rejected }
     private let store: YuGiOhCandidateReleaseStore
     private let client: SignedCatalogUpdateClient<YuGiOhCandidateEnvelope>?
+    private let endpoint: URL?
+    private let configuration: URLSessionConfiguration
+    private let keys: [String: Curve25519.Signing.PublicKey]
+    private let bundledSHA256: String
     private var task: Task<RefreshResult, Never>?
     private var taskID: UUID?
     private var launched = false
@@ -24,6 +28,10 @@ actor YuGiOhCatalogCoordinator: GameCatalogActivationSource {
          endpoint: URL? = nil, configuration: URLSessionConfiguration = .ephemeral,
          bundledCatalog: YuGiOhCatalog? = nil) throws {
         let bundle = try bundledCatalog ?? YuGiOhCatalog(data: bundledBytes)
+        self.endpoint = endpoint
+        self.configuration = configuration.copy() as! URLSessionConfiguration
+        self.keys = keys
+        bundledSHA256 = YuGiOhReleaseWire.hash(bundledBytes)
         store = try .init(root: root, keys: keys, bundled: bundle, state: .approved,
             bundledSHA256: YuGiOhReleaseWire.hash(bundledBytes))
         client = try endpoint.map { try .init(endpoint: $0, configuration: configuration,
@@ -87,12 +95,55 @@ actor YuGiOhCatalogCoordinator: GameCatalogActivationSource {
             case .notModified: return .notModified
             case let .fetched(envelope):
                 try Task.checkCancellation()
-                return try await activate(envelope)
+                return try await catchUp(envelope)
             }
         } catch {
             await client.resetConditionalState()
             return .rejected
         }
+    }
+
+    /// Follow only signed revision locators at the configured origin. Retained
+    /// envelopes are bounded by both count and aggregate catalog bytes. Nothing
+    /// is staged until the entire missing chain has been fetched and verified.
+    private func catchUp(_ head: YuGiOhCandidateEnvelope) async throws -> RefreshResult {
+        _ = await store.snapshot()
+        let active = await store.activeRelease()
+        let anchor = active?.release.sha256 ?? bundledSHA256
+        var manifest = try YuGiOhReleaseWire.verify(head, keys: keys, state: .approved, now: .now)
+        if manifest.revision <= (active?.release.revision ?? 0) { return try await activate(head) }
+        var chain = [head]
+        var total = head.catalog.count
+        while manifest.parentSHA256 != anchor || (manifest.parentRevision ?? 0) > (active?.release.revision ?? 0) {
+            try Task.checkCancellation()
+            guard chain.count < 32, let revision = manifest.parentRevision,
+                  revision > (active?.release.revision ?? 0), let endpoint else {
+                throw YuGiOhCandidateError.invalidTransition
+            }
+            let url = endpoint.deletingLastPathComponent()
+                .appendingPathComponent("releases/\(revision)/catalog-release.json")
+            let ancestorClient = try SignedCatalogUpdateClient<YuGiOhCandidateEnvelope>(endpoint: url,
+                configuration: configuration, maximumBytes: YuGiOhReleaseWire.maximumEnvelopeBytes)
+            guard case let .fetched(parent) = try await ancestorClient.fetch() else {
+                throw YuGiOhCandidateError.invalidTransition
+            }
+            let parentManifest = try YuGiOhReleaseWire.verify(parent, keys: keys, state: .approved, now: .now)
+            guard parentManifest.revision == revision, parentManifest.sha256 == manifest.parentSHA256,
+                  total <= 128 * 1_024 * 1_024 - parent.catalog.count else {
+                throw YuGiOhCandidateError.invalidTransition
+            }
+            total += parent.catalog.count
+            chain.append(parent)
+            manifest = parentManifest
+        }
+        // Every activation retains the existing parent, revision, immutable
+        // identity and timestamp checks and commits a resumable durable slot.
+        var result: RefreshResult = .notModified
+        for release in chain.reversed() {
+            try Task.checkCancellation()
+            result = try await activate(release)
+        }
+        return result
     }
 
     /// Actor-isolated parsing and signature checks keep the full corpus off the

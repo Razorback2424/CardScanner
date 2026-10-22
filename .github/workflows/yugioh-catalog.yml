@@ -25,7 +25,7 @@ jobs:
             https://scanstash-catalog-prod.web.app/yugioh/v1/current.json|https://catalog.scan-stash.com/yugioh/v1/current.json) ;;
             *) echo "Unapproved parent origin/path" >&2; exit 1 ;;
           esac
-          swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift scripts/yugioh_catalog_publisher.swift -o "$RUNNER_TEMP/yugioh-publisher"
+          swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift TradingCardScanner/Games/YuGiOh/YuGiOhCatalog.swift scripts/yugioh_catalog_publisher.swift -o "$RUNNER_TEMP/yugioh-publisher"
           curl --fail --proto '=https' --tlsv1.2 --max-filesize 68157440 --max-time 60 \
             "$APPROVED_PARENT_URL" -o "$RUNNER_TEMP/yugioh-approved-parent.json"
           "$RUNNER_TEMP/yugioh-publisher" export-parent --input "$RUNNER_TEMP/yugioh-approved-parent.json" \

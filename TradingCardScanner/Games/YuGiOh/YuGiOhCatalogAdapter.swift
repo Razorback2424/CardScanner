@@ -1,5 +1,15 @@
 import Foundation
 
+extension YuGiOhEdition {
+    var variant: PhysicalVariant {
+        switch self { case .first: .yugiohFirstEdition; case .unlimited: .yugiohUnlimited; case .limited: .yugiohLimited }
+    }
+}
+
+extension YuGiOhCatalog {
+    var runtime: CardGameRuntime { YuGiOhGameRuntime(catalog: self).runtime }
+}
+
 struct YuGiOhCatalogAdapter: GameCatalogAdapter {
     let catalog: YuGiOhCatalog
     var game: CardGame { .yuGiOh }

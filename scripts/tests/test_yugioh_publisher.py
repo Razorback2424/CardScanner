@@ -67,6 +67,8 @@ class YuGiOhPublisherTests(unittest.TestCase):
         parent = None
         for revision in range(1, 4):
             parent = self.approve(revision, parent)
+            payload = json.loads(base64.urlsafe_b64decode(json.loads(parent.read_text())["payload"] + "=="))
+            self.assertEqual(payload.get("parentRevision"), revision - 1 if revision > 1 else None)
             self.assertEqual(self.promote(parent).returncode, 0)
             exported = self.root / "approved-parent.json"
             result = self.run_tool("export-parent", input=parent, output=exported)
@@ -126,6 +128,34 @@ class YuGiOhPublisherTests(unittest.TestCase):
             private_key_file=self.private, review_id="fixture", output=self.root / "invalid.json", parent_release=first)
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse((self.root / "invalid.json").exists())
+
+    def test_full_app_schema_rejects_malformed_candidates_before_publication(self):
+        first = self.approve(1)
+        self.assertEqual(self.promote(first).returncode, 0)
+        pointer = self.site / "yugioh/v1/current.json"
+        for attack in ["type", "negative", "listing", "duplicate", "product", "card", "automatic", "edition", "uuid"]:
+            with self.subTest(attack=attack):
+                seed = copy.deepcopy(self.seed)
+                seed["generation"] = "yugioh-en-invalid-schema"
+                row = seed["printings"][0]
+                member = row["m"][0]
+                if attack == "type": member["t"] = "unknownSource"
+                elif attack == "negative": member["q"] = -1
+                elif attack == "listing": member.update(t="providerListing", q=10)
+                elif attack == "duplicate": row["m"].append(copy.deepcopy(member))
+                elif attack == "product": row["p"] = 0
+                elif attack == "card": row["k"] = -1
+                elif attack == "automatic": seed["autoEligibleCodes"] = ["MISSING-EN001"]
+                elif attack == "edition": row["pe"] = ["unknownEdition"]
+                elif attack == "uuid": row["id"] = row["id"].upper()
+                path = self.root / "invalid-catalog.json"
+                path.write_text(json.dumps(seed))
+                output = self.root / "invalid-release.json"
+                result = self.run_tool("approve", catalog=path, revision=2, key_id="yugioh-fixture",
+                    private_key_file=self.private, review_id="fixture", output=output, parent_release=first)
+                self.assertNotEqual(result.returncode, 0, attack)
+                self.assertFalse(output.exists())
+                self.assertEqual(pointer.read_bytes(), first.read_bytes())
 
 
 if __name__ == "__main__":

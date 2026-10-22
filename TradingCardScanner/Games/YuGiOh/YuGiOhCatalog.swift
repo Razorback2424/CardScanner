@@ -2,9 +2,6 @@ import Foundation
 
 enum YuGiOhEdition: String, CaseIterable, Codable, Sendable {
     case first = "yugioh1stEdition", unlimited = "yugiohUnlimited", limited = "yugiohLimited"
-    var variant: PhysicalVariant {
-        switch self { case .first: .yugiohFirstEdition; case .unlimited: .yugiohUnlimited; case .limited: .yugiohLimited }
-    }
     var tcgplayerSubtype: String {
         switch self { case .first: "1st Edition"; case .unlimited: "Unlimited"; case .limited: "Limited" }
     }
@@ -103,7 +100,7 @@ struct YuGiOhCatalog: Sendable {
                 throw LoadError.invalidRow(row.id)
             }
             let printing = Printing(id: id, code: row.c, set: set, card: cards[row.k], rarity: row.r, artLabel: row.art,
-                productID: row.p, productName: row.pn, editions: row.e.sorted { $0.variant.choicePriority < $1.variant.choicePriority },
+                productID: row.p, productName: row.pn, editions: row.e.sorted { Self.editionPriority($0) < Self.editionPriority($1) },
                 coverageVerified: row.ec, editionEvidence: row.ee, pricedEditions: row.pe,
                 membership: row.m ?? [], identityReason: row.ir, canonicalLinkStatus: row.canonicalLink,
                 thumbnailURL: row.img.flatMap(URL.init(string:)),
@@ -126,5 +123,7 @@ struct YuGiOhCatalog: Sendable {
         guard let url = Bundle.main.url(forResource: "catalog", withExtension: "json", subdirectory: "YuGiOhCatalogSeed") else { throw LoadError.missingResource }
         return try Self(data: Data(contentsOf: url, options: .mappedIfSafe))
     }
-    var runtime: CardGameRuntime { YuGiOhGameRuntime(catalog: self).runtime }
+    private static func editionPriority(_ edition: YuGiOhEdition) -> Int {
+        switch edition { case .first: 0; case .unlimited: 1; case .limited: 2 }
+    }
 }

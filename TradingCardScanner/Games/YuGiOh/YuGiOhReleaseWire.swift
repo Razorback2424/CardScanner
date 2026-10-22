@@ -20,6 +20,8 @@ struct YuGiOhCandidateManifest: Codable, Equatable, Sendable {
     let capturedAt: String
     var parentSHA256: String? = nil
     var reviewID: String? = nil
+    /// Signed locator for the immutable parent envelope; the hash remains the authority.
+    var parentRevision: Int? = nil
 }
 
 struct YuGiOhCandidateEnvelope: Codable, Equatable, Sendable {
@@ -77,7 +79,12 @@ enum YuGiOhReleaseWire {
                   manifest.reviewID?.range(of: "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$", options: .regularExpression) != nil else {
                 throw YuGiOhCandidateError.invalidManifest
             }
-        } else if manifest.parentSHA256 != nil || manifest.reviewID != nil { throw YuGiOhCandidateError.invalidManifest }
+            if let parent = manifest.parentRevision {
+                guard (0..<manifest.revision).contains(parent) else { throw YuGiOhCandidateError.invalidManifest }
+            }
+        } else if manifest.parentSHA256 != nil || manifest.reviewID != nil || manifest.parentRevision != nil {
+            throw YuGiOhCandidateError.invalidManifest
+        }
         return manifest
     }
 }

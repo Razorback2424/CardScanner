@@ -233,7 +233,7 @@ fi
 if [ -f "$yugioh_active_path" ]; then
   if [ -z "$yugioh_publisher" ]; then
     yugioh_publisher="${RUNNER_TEMP:-/tmp}/yugioh-catalog-publisher"
-    swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift scripts/yugioh_catalog_publisher.swift -o "$yugioh_publisher"
+    swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift TradingCardScanner/Games/YuGiOh/YuGiOhCatalog.swift scripts/yugioh_catalog_publisher.swift -o "$yugioh_publisher"
   fi
   restore_namespace "$yugioh_active_path" "yugioh/v1" "" "$yugioh_keys" "yugioh-catalog-publisher" catalog.json
 fi

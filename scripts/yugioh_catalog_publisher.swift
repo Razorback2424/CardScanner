@@ -1,4 +1,4 @@
-// Compile with TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift.
+// Compile with YuGiOhReleaseWire.swift and YuGiOhCatalog.swift from the app.
 // Local files only. This executable has no deployment or credential provisioning.
 import CryptoKit
 import Foundation
@@ -69,7 +69,8 @@ enum YuGiOhCatalogPublisher {
             let manifest = YuGiOhCandidateManifest(schemaVersion: 2, revision: revision, generation: generation,
                 policyVersion: YuGiOhReleaseWire.policy, path: "yugioh/v1/releases/\(revision)/catalog.json",
                 sha256: YuGiOhReleaseWire.hash(bytes), bytes: bytes.count, status: YuGiOhPublicationState.approved.rawValue,
-                capturedAt: captured, parentSHA256: YuGiOhReleaseWire.hash(parentBytes), reviewID: try required("review-id"))
+                capturedAt: captured, parentSHA256: YuGiOhReleaseWire.hash(parentBytes), reviewID: try required("review-id"),
+                parentRevision: parentRevision > 0 ? parentRevision : nil)
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
             let payload = try encoder.encode(manifest)
             let envelope = YuGiOhCandidateEnvelope(keyID: keyID, payload: YuGiOhReleaseWire.encodeURL(payload),
@@ -83,6 +84,7 @@ enum YuGiOhCatalogPublisher {
             let root = try file("site-root").appendingPathComponent("yugioh/v1")
             let pointer = root.appendingPathComponent("current.json")
             let parentBytes: Data
+            let parentRevision: Int
             if FileManager.default.fileExists(atPath: pointer.path) {
                 let (previousBytes, previous, previousManifest) = try verified(pointer)
                 if previousManifest.revision == manifest.revision {
@@ -91,8 +93,13 @@ enum YuGiOhCatalogPublisher {
                 }
                 guard manifest.revision > previousManifest.revision else { throw Failure.revision }
                 parentBytes = previous.catalog
-            } else { parentBytes = try read(file("bundle"), limit: YuGiOhReleaseWire.maximumCatalogBytes) }
+                parentRevision = previousManifest.revision
+            } else {
+                parentBytes = try read(file("bundle"), limit: YuGiOhReleaseWire.maximumCatalogBytes)
+                parentRevision = 0
+            }
             guard manifest.parentSHA256 == YuGiOhReleaseWire.hash(parentBytes) else { throw Failure.parent }
+            guard manifest.parentRevision == (parentRevision > 0 ? parentRevision : nil) else { throw Failure.parent }
             try transition(from: parentBytes, to: envelope.catalog)
             let release = root.appendingPathComponent("releases/\(manifest.revision)")
             try immutable(envelope.catalog, at: release.appendingPathComponent("catalog.json"))
@@ -138,6 +145,9 @@ enum YuGiOhCatalogPublisher {
         }
     }
     static func validateCatalog(_ bytes: Data, manifest: YuGiOhCandidateManifest) throws {
+        // Execute the real app loader, including every typed schema, identity,
+        // edition, membership, quantity and automatic-eligibility predicate.
+        _ = try YuGiOhCatalog(data: bytes)
         let catalog = try object(bytes)
         guard catalog["schemaVersion"] as? Int == 1, catalog["policyVersion"] as? String == YuGiOhReleaseWire.policy,
               catalog["generation"] as? String == manifest.generation,
@@ -157,6 +167,8 @@ enum YuGiOhCatalogPublisher {
         }
     }
     static func transition(from parent: Data, to next: Data) throws {
+        _ = try YuGiOhCatalog(data: parent)
+        _ = try YuGiOhCatalog(data: next)
         let old = try object(parent), new = try object(next)
         guard let oldStamp = old["capturedAt"] as? String, let oldDate = YuGiOhReleaseWire.date(oldStamp),
               let newStamp = new["capturedAt"] as? String, let newDate = YuGiOhReleaseWire.date(newStamp), newDate >= oldDate,

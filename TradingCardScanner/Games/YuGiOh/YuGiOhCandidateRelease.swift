@@ -82,6 +82,9 @@ actor YuGiOhCandidateReleaseStore {
         let transition: @Sendable (Core.StoredRelease?, Core.StoredRelease) throws -> Void = { previous, next in
             if state == .approved {
                 guard next.release.parentSHA256 == (previous?.release.sha256 ?? bundledSHA256) else { throw YuGiOhCandidateError.invalidTransition }
+                if let revision = next.release.parentRevision {
+                    guard revision == (previous?.release.revision ?? 0) else { throw YuGiOhCandidateError.invalidTransition }
+                }
             }
             try YuGiOhCandidateVerifier.validateTransition(from: previous?.registry.catalog ?? bundled, to: next.registry.catalog,
                 reviewedSameSnapshot: state == .approved)
