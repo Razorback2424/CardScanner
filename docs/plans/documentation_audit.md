@@ -1,12 +1,19 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-21
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-22
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-21
+## Current authority boundary — updated 2026-10-22
+
+**Latest review corrections on `9a1d8b0`:** the
+[new evidence](../research/yugioh-catalog/audited-verification.md#latest-review-corrections-on-9a1d8b0--2026-10-22)
+supersedes the completion checkpoint's delivery-admission assumptions: signed
+parent revision locators enable bounded ancestor catch-up, the publisher executes
+the app's full catalog loader, and durable lineage sums reject arithmetic overflow.
+Production delivery remains disabled; remaining UI and release gates are retained.
 
 **Completion checkpoint on `eb12b5c`:** the
 [latest evidence](../research/yugioh-catalog/audited-verification.md#completion-checkpoint-on-eb12b5c--2026-10-21)
@@ -20,8 +27,10 @@ gates remain open.
 **Generic iPhone 17 follow-up:** the [interactive record](../research/yugioh-catalog/audited-verification.md#generic-iphone-17-interactive-acceptance--2026-10-21)
 supersedes the older QA-device tap blocker for normal selection, recovery,
 Browse Add, maintenance and reopen. Disabled recovery choices are now rendered
-and verified. CSV export/import remains pending at the system Files sheet;
-physical camera and live production delivery remain separate open gates.
+and verified. CSV export/import was pending at the system Files sheet at this
+checkpoint; the successful isolated roundtrip in the completion evidence above
+supersedes that limitation. Physical camera and live production delivery remain
+separate open gates.
 The 54-test and 37-test follow-ups are separate selections, not cumulative totals.
 
 **Residual F3/F4 after reviewed `09c4a40`:** the earlier blanket closure wording

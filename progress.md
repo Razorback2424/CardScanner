@@ -1,3 +1,21 @@
+# 2026-10-22 — Latest review delivery and lineage corrections
+
+Validated the supplied 22 October review against clean `9a1d8b0`. Added signed
+parent revision locators and bounded immutable-ancestor retrieval for fresh and
+skipped-release clients. The offline publisher now compiles and executes the
+app's complete catalog loader; hosting/workflow compilation includes that source.
+Durable lineage accumulation rejects arithmetic overflow with a recoverable
+error. Local regressions cover malformed catalogs, missing/mismatched ancestry,
+cancellation/reopen/retry, traversal limits and persisted lineage corruption.
+Final verification passed 35 focused native tests and 40 Python tests, with
+zero failures. Build artifacts and compiler caches stayed on the external SSD.
+
+Verification and protocol limits are recorded in the
+[review correction evidence](docs/research/yugioh-catalog/audited-verification.md#latest-review-corrections-on-9a1d8b0--2026-10-22).
+Production delivery remains disabled. Existing CSV UI, recovery-preflight,
+active-source copy, provider, device, CloudKit and release gates remain open;
+no deployment or owner-data reset occurred.
+
 # 2026-10-21 — Cyclic Undo repair and local delivery checkpoint
 
 On reviewed base `eb12b5c`, reproduced and fixed retired-edition A → B → A Undo

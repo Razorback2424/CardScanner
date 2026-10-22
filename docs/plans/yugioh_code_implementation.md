@@ -1,6 +1,14 @@
 # Yu-Gi-Oh! implementation and verification
 
-**Latest local completion checkpoint — 2026-10-21, base `eb12b5c`:** the
+**Latest review corrections — 2026-10-22, base `9a1d8b0`:** approved releases now
+support bounded signed-ancestor catch-up, the publisher validates with the app's
+full catalog loader, and durable lineage arithmetic rejects overflow. The
+focused final run passed 35 native and 40 Python tests. Approved delivery remains
+disabled without owner configuration. See the
+[review correction evidence](../research/yugioh-catalog/audited-verification.md#latest-review-corrections-on-9a1d8b0--2026-10-22)
+for protocol limits and open acceptance gates.
+
+**Completion checkpoint — 2026-10-21, base `eb12b5c` (superseded above):** the
 cyclic correction Undo defect was reproduced and repaired at final-save
 authority, with durable inverse-lineage and tamper regressions. Approved signed
 delivery now has a shared wire format, local publisher, verified parent chain,
@@ -18,9 +26,10 @@ now has rendered evidence for printing/edition selection, disabled discovery
 choices in live/recovery pickers, cancellation/recovery, Browse Add, duplicate
 handling, edits/delete/Undo, dated price display and reopen. See the
 [interactive evidence](../research/yugioh-catalog/audited-verification.md#generic-iphone-17-interactive-acceptance--2026-10-21).
-The older QA-device input blocker below no longer applies to those flows.
-Interactive CSV export/import remains pending at the system Files save sheet;
-physical camera and production delivery remain open. The app still uses
+The older QA-device input blocker below no longer applies to those flows. At this
+checkpoint, CSV export/import remained pending at the system Files save sheet;
+the later completion checkpoint above records a successful isolated roundtrip.
+Physical camera and production delivery remain open. The app still uses
 historical bundled pricing. Follow-up native selections passed 54 and 37 tests
 separately; they are not additive with prior results.
 

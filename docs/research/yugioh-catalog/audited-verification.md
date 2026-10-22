@@ -1,4 +1,72 @@
-# Audited Yu-Gi-Oh! implementation evidence — 2026-10-21
+# Audited Yu-Gi-Oh! implementation evidence — 2026-10-22
+
+## Latest review corrections on 9a1d8b0 — 2026-10-22
+
+Validated the supplied `CardScanner_Latest_Review_2026-10-22.txt` against clean
+base `9a1d8b0be02e771d5ac5c85843810950bf38b01e`. Both delivery findings and the
+carried-over durable-lineage overflow were present. These local corrections
+supersede the earlier implementation's catch-up and publisher-admission claims;
+the earlier executed test counts remain historical evidence.
+
+Approved manifests now carry an optional signed `parentRevision` locator for
+non-bundle parents. The publisher writes it from the verified parent and checks
+it before advancing the pointer. The coordinator fetches immutable
+`yugioh/v1/releases/<revision>/catalog-release.json` ancestors at the configured
+origin, verifies their signatures, exact hashes and descending revisions, then
+stages them oldest first through the existing parent, immutable-identity,
+timestamp and revision gates. Conditional request state is cleared on failure.
+Downloads finish before staging; each successful stage retains the existing
+durable two-slot recovery behavior.
+
+Traversal is limited to 32 envelopes and 128 MiB of aggregate catalog bytes,
+with the existing per-envelope transport limits. Missing, malformed, mismatched
+or over-limit ancestry rejects the refresh. A legacy head without a parent
+locator still works when directly attached to the current catalog; skipped
+legacy ancestry and chains exceeding these limits require a separately reviewed
+bootstrap/checkpoint or updated bundle. No unsigned bootstrap bypass was added.
+Production rollout must use releases produced by the updated publisher and keep
+the referenced immutable archives available.
+
+The Foundation-only catalog loader is now compiled verbatim into the publisher.
+App-specific variant/runtime bridges live in the adapter; edition ordering is
+unchanged. Approve, verify, export-parent and promote run the real loader, so
+membership type/quantity, UUID, product/card references, editions and automatic
+eligibility cannot drift behind a weaker publishing schema. Workflow and hosting
+restore compile commands include this shared source. Durable lineage accumulation
+now uses checked addition and throws on overflow instead of trapping.
+
+Final-source verification passed **35 native tests, zero failures**: 13
+`YuGiOhCandidateDeliveryTests` and 22 `YuGiOhWorkflowTests`. The executed
+`xcodebuild test` used the existing Debug iOS Simulator destination
+`D886FA25-9DBB-473B-8B37-6081C11C9D23`, `CODE_SIGNING_ALLOWED=NO`, serial testing,
+and those two `-only-testing:TradingCardScannerTests/<class>` selections. Derived
+data, cloned packages and result bundle stayed on the external SSD under
+`/Volumes/Keller Family Photos/CodexBuilds/TradingCardScannerMVP_fixed_v4/Oct22Review/`;
+the result bundle is `Results/latest-review-current.xcresult`. This compiled the
+app and test targets and executed fresh/skipped-release, missing/malformed/mismatched ancestor,
+interrupted download/reopen/retry, traversal-limit, signed malformed-schema and
+persisted-overflow regressions. The earlier 32-test pass predates the final test
+additions and is not added to this total. Initial sandbox-only inspection could
+not access CoreSimulator; the external-SSD test invocation succeeded.
+
+The final Swift publisher compiled with `YuGiOhReleaseWire.swift` and
+`YuGiOhCatalog.swift`. `PYTHONPATH=scripts` and
+`YUGIOH_CATALOG_PUBLISHER=<external-SSD review-publisher>` with
+`python3 -m unittest scripts.tests.test_yugioh_publisher
+scripts.tests.test_catalog_hosting_restore scripts.fixtures.yugioh.test_builder`
+passed **40 tests** (5 publisher, 6 hosting, 29 builder). The publisher malformed
+schema matrix rejects unknown membership types, invalid quantities, duplicate
+memberships, invalid product/card references, automatic eligibility, editions
+and UUIDs before approval output or pointer advancement. The app-loader tests
+independently reject signed malformed catalogs. Hosting tests still mock the
+publisher; the publisher tests execute the compiled Swift CLI.
+Shell syntax, new documentation links/anchors and `git diff --check` passed.
+
+Remaining acceptance includes CSV quantity greater than one and mixed-game UI,
+suspended recovery-preflight cancellation/authority changes, and active-source
+pricing wording. Production trust/hosting, provider/image rights, physical
+camera, CloudKit, archive/TestFlight and App Store gates remain open. Production
+activation stays disabled; no deployment or owner-data reset was performed.
 
 ## Completion checkpoint on eb12b5c — 2026-10-21
 
