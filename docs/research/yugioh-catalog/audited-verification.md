@@ -1,4 +1,140 @@
-# Audited Yu-Gi-Oh! implementation evidence — 2026-10-22
+# Audited Yu-Gi-Oh! implementation evidence — 2026-10-23
+
+## Correctness and bounded local acceptance on 7502144 — 2026-10-23
+
+Clean starting HEAD: `7502144038233f62557dce461e68c2f3cdbc5dd8`.
+The acceptance changes were uncommitted while evidence was gathered. Commands
+ran on 22 October local time / 23 October UTC.
+Source, native tests and rendered evidence below supersede the corresponding
+open local items in the older entries; production distribution remains disabled.
+
+### Phase A: shared correctness
+
+The detail's absolute quantity target now retains the count visible at the tap.
+If the initial/no-receipt read finds a different logical total, the UI refreshes
+and requires a new action. It cannot turn displayed 1 → target 2 into a -3
+adjustment after a sibling adds four copies. Absolute CAS, the write serializer,
+atomic ledger/activity writes, slab limits and quantity bounds remain intact.
+Real-store regressions cover missing receipts, unchanged visible inputs with
+sibling rows, repeated taps, read/write races and absolute edit conflicts, with
+persisted quantities and ledger/activity deltas checked.
+
+History identity v2 stores/validates exact product and provider finish in its
+encoded provenance. Old unprovable disk entries are ignored. Lorcana/One Piece
+authority is resolved before cache reads, and withdrawal/ambiguity cannot reuse
+stored product or vendor handles. Provider-finish matching fails closed. Only
+points from the same listing accumulate. In-flight fetches revalidate authority
+before caching; cached, coalesced and fetched returns also revalidate. Both browse
+and collection consumers clear/reload through the existing activation stream,
+subscribe before their authoritative reload, and check authority/cancellation
+again before display. No Yu-Gi-Oh history was added.
+
+Regression coverage includes P1 → P2 inside TTL, a product remap after TTL with
+disjoint timestamps, a provider-finish-only change, missing authority, rejected
+duplicate mappings, legacy disk identity, withdrawn in-flight completion and
+same-listing accumulation. Existing Magic/graded history tests also check game,
+physical-finish and grade isolation. No production credentials are needed.
+
+### Phase B: local acceptance
+
+| Item | Actual result |
+|---|---|
+| Suspended collection recovery preflight | Passed. The real `prepareUnresolvedResolution` call waits inside the catalog printing-choice preflight; cancellation and catalog replacement occur before release. Reopen finds no cards, ledger events or activity. This is separate from download cancellation. |
+| Active-source pricing wording | Fixed. Scanner, collection detail and portfolio now read active runtime authority rather than the static bundle. Native tests cover bundled/approved dates and unavailable authority. The isolated `pricing-source-review` route renders the real notice with bundled and explicitly synthetic approved-source environments. Both show October 20 capture dates and unavailable live per-card refresh, without overlap/clipping after the second screenshot iteration. This does not activate signed delivery. |
+| Multi-quantity mixed-game persistence | Native regression passed: LOB product 21792 First ×2 and Unlimited ×3, IOC product 26366 Limited ×4, and Pokémon Eevee `sv08.5-001` Normal ×5. Four exact positions/14 copies survive CSV import and reopen. Resume adds zero. Explicit additional copies produce 28 copies with matching ledger/activity totals; resuming that run adds zero. LOB First remains provider-unavailable. |
+| Actual mixed-game Files roundtrip and UI totals | **Blocked/unperformed.** The source route opened Settings → Collection & Portfolio → Import CSV → the system Files picker. The Mac was locked; computer-use inventory reported that automatic unlock failed. The simulator semantic snapshot does not expose this system picker. No file selection, mixed-source import, Files export, destination import, rendered totals/unavailable-price comparison or duplicate action is claimed. |
+
+The smallest next action is to unlock the Mac, relaunch `mixed-csv-source` and
+continue Settings → Collection & Portfolio → Import CSV in the Files picker.
+`/tmp/CardScanner-Mixed-Acceptance.csv` contains only the synthetic four-position
+input and was copied into the Simulator app's Documents folder. The DEBUG-only
+states `mixed-csv-source` and `mixed-csv-import` use separate
+`YuGiOhMixedCSVSourceAcceptance` / `YuGiOhMixedCSVImportAcceptance` directories.
+The normal collection and recovery store are not reset or imported into. Older
+seven-copy Files evidence remains historical and does not close this variation.
+
+HIG gate: **PASS** for source wording and its reviewed presentation: standard
+Text/semantic footnote styles, truthful source/date labels, unchanged navigation
+and no new production prompts. The first debug-only review layout overlapped its
+fixture controls and its screenshot marker expected OCR; both were corrected.
+Visual checklist: `/tmp/cardscanner-acceptance-checklist.md`; screenshot:
+`/tmp/cardscanner-ui-pricing/ui-latest.png`. No personal export or screenshot is
+added to the repository.
+
+### Executed verification
+
+All native commands used this prefix, followed by the selections listed below
+and `CODE_SIGNING_ALLOWED=NO`:
+
+```bash
+xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner \
+  -configuration Debug \
+  -destination 'platform=iOS Simulator,id=D886FA25-9DBB-473B-8B37-6081C11C9D23' \
+  -derivedDataPath '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/DerivedData' \
+  -clonedSourcePackagesDirPath '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/SourcePackages' \
+  -parallel-testing-enabled NO
+```
+
+Each selection below means an exact
+`-only-testing:TradingCardScannerTests/<selection>` argument. Counts overlap and
+must not be summed as a full-suite result.
+
+| Log under `/tmp/` | Selected tests | Result |
+|---|---|---|
+| `cardscanner-phase-a.log` | `CollectionActivityHistoryTests`, `JustTCGContractTests`, `LorcanaPricingTests`, `OnePieceIntegrationTests` | 250 executed, three live tests skipped, one failure in the new synthetic history fixture. |
+| `cardscanner-phase-a-final2.log` | `CollectionActivityHistoryTests`; `LorcanaPricingTests/testHistoryRemapsWithinTTLAndNeverMergesAcrossProductsOrProviderFinishes`, `testInvalidAndDuplicateMappingsFailClosed`; `JustTCGContractTests/testDetailFetchesFullProviderHistoryAndCachesItWithoutOwnershipCutoff`, `testGradedHistoryUsesV2ExactVariantAndUSDMarket`; `OnePieceIntegrationTests/testMarketHistoryUsesReviewedOnePieceProductAndFinishMapping` | 43 passed, zero failures. |
+| `cardscanner-phase-b.log` | `YuGiOhWorkflowTests`, `YuGiOhPricingTests`; the new Lorcana history remap test above | 28 passed, zero failures. |
+| `cardscanner-final-pass.log` | `CollectionActivityHistoryTests`, `CollectionItemKindTests`, `YuGiOhPricingTests`; `YuGiOhWorkflowTests/testMixedGameMultiQuantityCSVReopenResumeAndAdditionalCopies`, `testSuspendedCollectionRecoveryPreflightRejectsCancellationAndChangedAuthority`, `testAcceptanceRecoveryPreservesPreexistingNormalBytesAcrossDismissAndClear`; the four history tests from the Phase A final row, excluding the duplicate-mapping test | 79 passed, zero failures. |
+| `cardscanner-final-history.log` | The four history tests from the Phase A final row, excluding duplicate-mapping; `YuGiOhPricingTests/testPricingNoticeDescribesActiveSourceAndNeverFallsBackFromUnavailableAuthority` | Final return-time authority guard and final source compiled; five passed, zero failures. |
+
+Initial fixtures were corrected to use Near Mint, a valid Cold Foil mapping and
+an existing temporary directory. The first mixed-CSV regression expected an
+unavailable enum instead of the existing thrown `providerUnavailable`; correcting
+that expectation produced the passing result. These were fixture failures,
+not reasons to change provider/membership policy. The 79-test result bundle is
+recorded in `cardscanner-final-pass.log`. Build and test products stay on the
+external SSD. No physical camera, CloudKit, archive or release claim follows.
+
+Rendered verification used the existing one-command loop, preserving app data:
+
+```bash
+env DERIVED_DATA='/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/DerivedData' \
+  UI_DEVICE_ID=D886FA25-9DBB-473B-8B37-6081C11C9D23 \
+  UI_PRESERVE_APP_DATA=1 ARTIFACTS_DIR=/tmp/cardscanner-ui-pricing \
+  bash scripts/ui_build_and_shoot.sh TradingCardScanner com.seankeller.CardScanner \
+  YuGiOhAcceptance pricing-source-review
+```
+
+The final pricing capture and the mixed-source launch reused that built app with
+`UI_PREBUILT_APP_PATH=<external DerivedData>/Build/Products/Debug-iphonesimulator/TradingCardScanner.app`,
+`ARTIFACTS_DIR=/tmp/cardscanner-ui-mixed-source` and state `mixed-csv-source`.
+For final pricing capture the artifact directory/state stayed as in the command
+above; log: `/tmp/cardscanner-ui-pricing-verified.log`.
+The native mixed test is not a substitute for the blocked Files interaction.
+
+### Prepared production handoff; no rollout executed
+
+1. The existing signing/trust owner must confirm the dedicated approved YGO pins,
+   signing identity, approved origin and existing hosting namespace configuration.
+   Do not create/rotate keys, dispatch workflows or activate an endpoint as part
+   of this local acceptance pass.
+2. Restore/verify immutable signed approved releases at the existing host, export
+   the latest verified approved parent for `--previous-seed`, and durably retain
+   that parent plus all referenced ancestors through publish/restore. A checked-in
+   bundle alone is not proof of daily approved-parent continuity.
+3. Owner approval is still needed for a bounded new-bundle/checkpoint policy.
+   Current traversal limits are 32 envelopes / 128 MiB aggregate catalog data;
+   four 33,220,209-byte catalogs fit, five do not. Prepare a newly reviewed bundled
+   baseline before a client would need a fifth current-size ancestor traversal.
+   An arbitrary checkpoint cannot bypass the existing authenticated parent/bootstrap
+   rules; a new protocol would require separate review. Keep signed archives.
+4. Finish the blocked Files variation, then separately authorize and demonstrate
+   the real signed-release-to-app path. Provider/image rights, physical camera,
+   CloudKit, archive/TestFlight and App Store acceptance remain owner/external gates.
+
+No deployment, workflow dispatch, endpoint activation, credentials, cloud
+provisioning, purchases or owner-data reset occurred during this acceptance pass.
+Its evidence was gathered before the subsequent auditability commits and push.
 
 ## Latest review follow-up on 38fd8e6 — 2026-10-22
 

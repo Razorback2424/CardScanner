@@ -1,12 +1,23 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-22
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-23
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-22
+## Current authority boundary — updated 2026-10-23
+
+**Focused pass on `7502144`:** the
+[current local evidence](../research/yugioh-catalog/audited-verification.md#correctness-and-bounded-local-acceptance-on-7502144--2026-10-23)
+supersedes the older open suspended-recovery-preflight and static bundled-wording
+items: the former is native-verified, and active-source copy is fixed and rendered
+with explicitly synthetic approved authority. Multi-quantity mixed-game CSV
+persistence/resume/additional copies are native-verified. The system Files
+variation and rendered totals remain unperformed because the Mac is locked;
+older seven-copy Files evidence does not close this new variation. Shared quantity
+intent/history fixes are separate from production trust, continuity, bounded
+new-bundle policy and release gates. No new production activation is claimed.
 
 **Latest review follow-up on `38fd8e6`:** the
 [command-boundary evidence](../research/yugioh-catalog/audited-verification.md#latest-review-follow-up-on-38fd8e6--2026-10-22)

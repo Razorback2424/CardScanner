@@ -1,3 +1,30 @@
+# 2026-10-23 — Focused correctness and bounded local acceptance
+
+Working from clean base `7502144`. Quantity edits retain the count visible before
+the initial async read; stale intent refreshes without saving. History cache v2
+pins exact product/provider finish, resolves current catalog authority before
+reading and fences completion across activation. The focused Phase A run passed
+43 native tests. Phase B's initial selection passed 28 tests, including suspended
+collection recovery preflight cancellation/authority replacement and active-source
+pricing wording. The combined follow-up passed 79 tests, including the four-position
+14-copy mixed-game CSV reopen/resume/additional-copy regression and slab guards.
+A final five-test pass verified return-time history authority and final source.
+These overlapping selections are not full-suite or release certification.
+
+Screenshot loop: the initial debug pricing review overlapped its fixture controls
+and timed out waiting for an OCR-only readiness marker. The second iteration fixed
+the debug layout/readiness and passed visual inspection in
+`/tmp/cardscanner-ui-pricing/ui-latest.png`. Bundled and synthetic approved-source
+text is legible, retains October 20 capture dates and discloses unavailable live
+refresh. Final tested-build capture was inspected again with the same result.
+Mixed-quantity Files interaction is blocked at the system picker because the Mac
+is locked; native persistence evidence does not close UI totals or Files acceptance.
+The [current evidence](docs/research/yugioh-catalog/audited-verification.md#correctness-and-bounded-local-acceptance-on-7502144--2026-10-23)
+records exact selections, isolated routes, unperformed steps and the prepared
+owner handoff for trust/hosting, approved-parent continuity and bounded bundles.
+The acceptance pass performed no rollout or owner-data reset; its evidence was
+recorded before the subsequent auditability commits and push.
+
 # 2026-10-22 — Magic publication preflight and latest review follow-up
 
 Reviewed the latest attachment against `main` at `38fd8e6`. The actual failed

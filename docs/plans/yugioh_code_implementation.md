@@ -1,5 +1,19 @@
 # Yu-Gi-Oh! implementation and verification
 
+**Current bounded acceptance — 2026-10-23, base `7502144`:** shared quantity
+intent and exact-provider history defects are fixed. Recovery-preflight
+suspension/cancellation/authority replacement is native-verified. Scanner,
+collection detail and portfolio use active-source price wording, rendered with
+bundled and synthetic approved-source environments. Mixed-game quantities,
+CSV reopen/resume and explicit additional copies pass native verification.
+The latest combined selection passed 79 tests; this is not a full-suite result.
+Actual mixed-game Files export/import/reopen and rendered totals remain open:
+the Mac is locked at the system Files picker. Unlock and continue the dedicated
+source/destination acceptance routes. See the
+[current evidence and prepared owner handoff](../research/yugioh-catalog/audited-verification.md#correctness-and-bounded-local-acceptance-on-7502144--2026-10-23).
+Production trust/hosting, durable approved-parent continuity and a bounded
+new-bundle policy remain owner gates. No rollout or release readiness is claimed.
+
 **Latest review corrections — 2026-10-22, base `9a1d8b0`:** approved releases now
 support bounded signed-ancestor catch-up, the publisher validates with the app's
 full catalog loader, and durable lineage arithmetic rejects overflow. The
