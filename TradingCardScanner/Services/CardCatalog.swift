@@ -254,7 +254,8 @@ actor CardCatalog {
 
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
         guard let adapter = gameCatalogAdapters.adapter(for: identifier.game) else { throw CatalogLookupError.staleCatalog }
-        let prepared = try adapter.prepareLookupIdentifier(identifier)
+        let prepared = try identifier.game == .onePiece
+            ? adapter.identifierForRetry(identifier) : adapter.prepareLookupIdentifier(identifier)
         try await adapter.validateAcquisition(prepared, printingID: printingID, automatic: automatic)
     }
 

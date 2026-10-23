@@ -52,6 +52,10 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
     }
 
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
+        try lookupCurrent(identifier)
+    }
+
+    private func lookupCurrent(_ identifier: ScanIdentifier) throws -> CatalogLookupOutcome {
         let card = try canonical(for: identifier)
         guard let card else { return .catalogIncomplete(nil) }
         let summary = CanonicalCardSummary(id: card.id, game: game, name: card.name,
@@ -83,6 +87,29 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
     }
 
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
+        try validateCurrentAcquisition(identifier, printingID: printingID, automatic: automatic)
+    }
+
+    /// Called synchronously while the collection serializer also excludes
+    /// catalog authority publication. Rebase evidence, never a printing guess.
+    func validateAcquisition(_ candidate: CollectionCommitCandidate) throws {
+        try Task.checkCancellation()
+        let identifier = try identifierForRetry(candidate.acquisitionIdentifier)
+        try validateCurrentAcquisition(identifier, printingID: candidate.card.physicalPrintingID,
+            automatic: candidate.identityResolution != .userSelectedPrinting)
+        guard let id = UUID(uuidString: candidate.card.physicalPrintingID) else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        let current = try resolution(forPrintingID: id).card
+        guard candidate.card.game == game, candidate.subject.slab == nil,
+              current.canonicalCardID == candidate.card.canonicalCardID,
+              let selected = candidate.resolved.variant,
+              current.variantEvidence.catalogVariants.contains(where: { $0.id == selected.id }) else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+    }
+
+    private func validateCurrentAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) throws {
         guard let canonical = try canonical(for: identifier),
               let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,
               let printing = registry.printingByID[id], printing.canonicalCardID == canonical.id,
@@ -92,7 +119,7 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         // Recheck the same decision used by lookup. An automatic save cannot
         // bypass a family picker, including after additive catalog activation.
         if automatic {
-            guard case let .resolved(resolution) = try await lookup(identifier),
+            guard case let .resolved(resolution) = try lookupCurrent(identifier),
                   resolution.card.providerID == printingID else {
                 throw CatalogLookupError.invalidPrintingChoice
             }

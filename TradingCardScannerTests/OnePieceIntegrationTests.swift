@@ -762,6 +762,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         try FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
         let paths = CollectionStoragePaths.production(resolvedApplicationSupportURL: support)
         let container = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+        runtimes.configureCollectionAuthority(for: container, configurePricing: false)
         let recovery = UnresolvedScanStore(fileURL: support.appendingPathComponent("Scanner/unresolved-scans.json"))
         let model = ScannerViewModel(gameRegistry: runtimes.registry, priceQuoteService: runtimes.makePriceQuoteService(),
             catalog: runtimes.makeCardCatalog(), unresolvedScanStore: recovery)
@@ -2745,7 +2746,8 @@ final class OnePieceIntegrationTests: XCTestCase {
         // not carry the failed transaction into another printing's acquisition.
         let unrelatedScan = ResolvedScan(request: .init(subject: .init(identifier: try identifier(registry)),
             purpose: .collection, generation: 1, encounterID: UUID()), card: unrelated,
-            resolved: .init(variant: .normal, resolution: .userConfirmed), pokemonPrintRun: nil, options: [.normal])
+            resolved: .init(variant: .normal, resolution: .userConfirmed), identityResolution: .userSelectedPrinting,
+            pokemonPrintRun: nil, options: [.normal])
         _ = try await writer.add(.init(resolvedScan: unrelatedScan))
         let afterOtherSave = ModelContext(container)
         let unrelatedRows = try afterOtherSave.fetch(FetchDescriptor<CollectedCard>())
@@ -2813,7 +2815,8 @@ final class OnePieceIntegrationTests: XCTestCase {
         let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
         let scan = ResolvedScan(request: .init(subject: .init(identifier: try identifier(registry)),
             purpose: .collection, generation: 1, encounterID: UUID()), card: card,
-            resolved: .init(variant: .foil, resolution: .userConfirmed), pokemonPrintRun: nil, options: [.foil])
+            resolved: .init(variant: .foil, resolution: .userConfirmed), identityResolution: .userSelectedPrinting,
+            pokemonPrintRun: nil, options: [.foil])
         let candidate = CollectionCommitCandidate(resolvedScan: scan)
         let writer = ScannerCollectionWriter(modelContainer: container)
         _ = try await writer.add(candidate)
@@ -3109,6 +3112,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let schema = Schema([CollectedCard.self, PriceRecord.self, CollectionActivity.self, InventoryEvent.self,
                              ReferenceQuote.self, PriceObservation.self, PriceCheckDay.self])
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        runtimes.configureCollectionAuthority(for: container, configurePricing: false)
         model.start(context: container.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
         return (model, container)
     }
@@ -3139,6 +3143,202 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(owned.variantID, "foil")
         XCTAssertEqual(owned.variantResolution, .userConfirmed)
     }
+
+    #if DEBUG
+    func testSerializedWriterRejectsRetiredExplicitIdentityWithoutChangingHistoricalOwnership() async throws {
+        let first = try registry()
+        for disposition in ["removed", "superseded", "provisional", "conflicted", "quarantined"] {
+            let release = first.verifiedRelease.release
+            var document = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(release.registry)) as? [String: Any])
+            var printings = try XCTUnwrap(document["printings"] as? [[String: Any]])
+            if disposition != "removed" {
+                printings[1]["status"] = disposition
+                if disposition == "superseded" {
+                    printings[0]["supersedes"] = [uuid(2).uuidString]
+                    let correction = OnePieceRegistryCorrection(id: "fixture-supersession", kind: .supersession,
+                        fromPrintingIDs: [uuid(2)], toPrintingIDs: [uuid(1)],
+                        review: try XCTUnwrap(release.registry.printings.first?.review))
+                    document["corrections"] = [try JSONSerialization.jsonObject(with: JSONEncoder().encode(correction))]
+                }
+            }
+            document["printings"] = printings
+            let state = try JSONDecoder().decode(OnePieceRegistryDocument.self, from: JSONSerialization.data(withJSONObject: document))
+            let next = try OnePieceCatalogBuilder.build(registry: state, observations: release.observations,
+                inventories: release.inventories, revision: 2, generatedAt: date)
+            let key = Curve25519.Signing.PrivateKey(), keyID = "one-piece-retirement-fixture"
+            let signed = try OnePieceCatalogSignature.sign(next, keyID: keyID, privateKey: key)
+            let current = try disposition == "removed" ? registry(count: 1, revision: 2)
+                : OnePieceCatalogRegistry(verifiedRelease: OnePieceCatalogSignature.verify(signed,
+                    trustedKeys: [keyID: key.publicKey], now: now))
+            let root = failureRoot("RetiredIdentity")
+            let container = try failureContainer(at: root)
+            try failureRuntimes(first).configureCollectionAuthority(for: container, configurePricing: false)
+            let card = try OnePieceCatalogAdapter(registry: first).resolution(forPrintingID: uuid(2)).card
+            let scan = ResolvedScan(request: .init(subject: .init(identifier: try identifier(first)),
+                purpose: .collection, generation: 1, encounterID: UUID()), card: card,
+                resolved: .init(variant: .foil, resolution: .userConfirmed), identityResolution: .userSelectedPrinting,
+                pokemonPrintRun: nil, options: [.foil])
+            let candidate = CollectionCommitCandidate(resolvedScan: scan)
+            let writer = ScannerCollectionWriter(modelContainer: container)
+            let receipt = try await writer.add(candidate)
+            let before = try failureSnapshot(container)
+            let source = OnePieceSnapshotTestSource(.init(revision: 2, catalog: OnePieceCatalogAdapter(registry: current),
+                recognizer: OnePieceRecognitionAdapter(profile: .init(registry: current)),
+                variantPolicy: OnePieceVariantPolicy(registry: current), browse: nil, importer: nil))
+            let publication = CollectionAuthorizedActivationSource(source: source, container: container)
+            let installed = await publication.currentSnapshot()
+            XCTAssertEqual(installed?.revision, 2)
+            do {
+                _ = try await writer.add(candidate)
+                XCTFail("A retained UUID cannot authorize a new acquisition: \(disposition)")
+            } catch is CatalogLookupError {}
+            XCTAssertEqual(try failureSnapshot(container), before, disposition)
+            XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), before, disposition)
+            try await writer.undo(receipt)
+            XCTAssertTrue(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).isEmpty,
+                "Historical ownership still supports Undo: \(disposition)")
+        }
+    }
+
+    func testSerializedWriterRejectsAutomaticAcquisitionAfterScannerPreflight() async throws {
+        let first = try registry(count: 1)
+        let second = try registry(count: 2, secondStatus: .conflicted, revision: 2)
+        let root = failureRoot("FinalAuthority")
+        let container = try failureContainer(at: root)
+        try failureRuntimes(first).configureCollectionAuthority(for: container, configurePricing: false)
+        let adapter = OnePieceCatalogAdapter(registry: first)
+        let scan = ResolvedScan(request: .init(subject: .init(identifier: try identifier(first)),
+            purpose: .collection, generation: 1, encounterID: UUID()),
+            card: try adapter.resolution(forPrintingID: uuid(1)).card,
+            resolved: .init(variant: .foil, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [.foil])
+        let candidate = CollectionCommitCandidate(resolvedScan: scan)
+        // Complete the real async preflight before changing the writer authority.
+        let catalog = try failureRuntimes(first).makeCardCatalog()
+        try await catalog.validateAcquisition(candidate.acquisitionIdentifier,
+            printingID: candidate.card.physicalPrintingID, automatic: true)
+        let key = Curve25519.Signing.PrivateKey(), keyID = "one-piece-final-authority-fixture"
+        let seed = try OnePieceCatalogSignature.sign(first.verifiedRelease.release, keyID: keyID, privateKey: key)
+        let store = try OnePieceCatalogReleaseStore(root: root.appendingPathComponent("catalog"),
+            keys: [keyID: key.publicKey], bundledEnvelope: seed, now: now)
+        let coordinator = OnePieceCatalogCoordinator(store: store)
+        let publication = CollectionAuthorizedActivationSource(source: coordinator, container: container)
+        _ = await publication.currentSnapshot()
+        let envelope = try OnePieceCatalogSignature.sign(second.verifiedRelease.release, keyID: keyID, privateKey: key)
+        guard case .activated = await coordinator.activateEnvelope(envelope, now: now) else { return XCTFail() }
+        let installed = await publication.currentSnapshot()
+        XCTAssertEqual(installed?.revision, 2)
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        do {
+            _ = try await writer.add(candidate)
+            XCTFail("Final writer must reject the old automatic decision")
+        } catch is CatalogLookupError {}
+        XCTAssertEqual(try failureSnapshot(container), [])
+        XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), [])
+    }
+
+    func testRetainedAutomaticFinishRequiresCurrentPrintingChoice() async throws {
+        try await assertRetainedAcquisition(retry: false, explicit: false, withdrawn: false)
+    }
+
+    func testFailedAutomaticSaveRetryRequiresCurrentPrintingChoice() async throws {
+        try await assertRetainedAcquisition(retry: true, explicit: false, withdrawn: false)
+    }
+
+    func testRetainedExplicitFinishSurvivesKnownHeldSibling() async throws {
+        try await assertRetainedAcquisition(retry: false, explicit: true, withdrawn: false)
+    }
+
+    func testRetainedExplicitFinishRejectsWithdrawnIdentity() async throws {
+        try await assertRetainedAcquisition(retry: false, explicit: true, withdrawn: true)
+    }
+
+    private func assertRetainedAcquisition(retry: Bool, explicit: Bool, withdrawn: Bool) async throws {
+        let first = try registry(count: explicit ? 2 : 1)
+        let second = try registry(count: 2, secondStatus: .provisional, revision: 2,
+                                  firstStatus: withdrawn ? .quarantined : .verified)
+        let root = failureRoot("RetainedAcquisition")
+        let container = try failureContainer(at: root)
+        let runtimes = try failureRuntimes(first)
+        runtimes.configureCollectionAuthority(for: container, configurePricing: false)
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        if retry { await writer.setSaveOverrideForTesting { throw OnePieceInjectedSaveFailure() } }
+        let model = ScannerViewModel(gameRegistry: runtimes.registry, catalog: runtimes.makeCardCatalog(),
+            unresolvedScanStore: UnresolvedScanStore(fileURL: root.appendingPathComponent("recovery.json")),
+            collectionAddOverride: { try await writer.add($0) })
+        model.start(context: container.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        let key = Curve25519.Signing.PrivateKey(), keyID = "one-piece-retained-acquisition-fixture"
+        let seed = try OnePieceCatalogSignature.sign(first.verifiedRelease.release, keyID: keyID, privateKey: key)
+        let store = try OnePieceCatalogReleaseStore(root: root.appendingPathComponent("catalog"),
+            keys: [keyID: key.publicKey], bundledEnvelope: seed, now: now)
+        let coordinator = OnePieceCatalogCoordinator(store: store)
+        let publication = CollectionAuthorizedActivationSource(source: coordinator, container: container)
+        model.observeCatalogActivations([publication])
+        func generation() -> String? {
+            guard case let .identified(subject) = model.scanner.recognitionOutcomeForTesting(["OP01-120"]) else { return nil }
+            return subject.identifier.catalogGeneration
+        }
+        let installed = await waitUntil { generation() == first.generation }
+        XCTAssertTrue(installed)
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), .init(identifier: try identifier(first)), nil)
+        if explicit {
+            let choosing = await waitUntil { model.pendingIdentityChoice != nil }
+            XCTAssertTrue(choosing)
+            model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first { $0.id == uuid(1).uuidString.lowercased() }))
+        }
+        let finish = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(finish)
+        if retry {
+            model.choose(.foil)
+            let failed = await waitUntil { model.unresolvedScans.first?.pendingCommit != nil && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(failed)
+            XCTAssertEqual(try failureSnapshot(container), [])
+        }
+        let envelope = try OnePieceCatalogSignature.sign(second.verifiedRelease.release, keyID: keyID, privateKey: key)
+        guard case .activated = await coordinator.activateEnvelope(envelope, now: now) else { return XCTFail("Expected activation") }
+        let updated = await waitUntil { generation() == second.generation }
+        XCTAssertTrue(updated)
+        if retry {
+            model.resolveUnresolved(id: try XCTUnwrap(model.unresolvedScans.first?.id), choice: .retrySave)
+        } else {
+            model.choose(.foil)
+        }
+        if explicit && !withdrawn {
+            let committed = await waitUntil { model.successCount == 1 }
+            XCTAssertTrue(committed)
+        } else {
+            let rejected = await waitUntil { model.unresolvedScans.first?.pendingCommit == nil && !model.unresolvedScans.isEmpty }
+            XCTAssertTrue(rejected)
+            XCTAssertEqual(model.successCount, 0)
+            XCTAssertTrue(model.sessionScans.isEmpty)
+            XCTAssertEqual(try failureSnapshot(container), [])
+            let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+            model.resolveUnresolved(id: rowID, choice: .retryLookup)
+            if withdrawn {
+                let retained = await waitUntil { !model.isIdentificationProcessingForTesting }
+                XCTAssertTrue(retained)
+                XCTAssertEqual(model.successCount, 0)
+                XCTAssertEqual(try failureSnapshot(container), [])
+                return
+            }
+            let choosing = await waitUntil { model.pendingIdentityChoice != nil }
+            XCTAssertTrue(choosing)
+            model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first))
+            let finish = await waitUntil { model.pendingChoice != nil }
+            XCTAssertTrue(finish)
+            model.choose(.foil)
+            let committed = await waitUntil { model.successCount == 1 && model.unresolvedScans.isEmpty }
+            XCTAssertTrue(committed)
+        }
+        let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.quantity, 1)
+        XCTAssertEqual(rows.first?.catalogProviderID, uuid(1).uuidString.lowercased())
+        XCTAssertEqual(rows.first?.variantID, "foil")
+        XCTAssertEqual(model.sessionScans.count, 1)
+    }
+    #endif
 
     func testFinishLockCannotSelectPrintingOrOverrideItsSoleSupportedFinish() async throws {
         let registry = try reviewedAwardRegistry()

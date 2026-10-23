@@ -6134,7 +6134,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private static func revalidatesBundledAcquisition(_ game: CardGame) -> Bool {
-        game == .lorcana || game == .yuGiOh
+        game == .lorcana || game == .yuGiOh || game == .onePiece
     }
 
     private func fileUnresolved(

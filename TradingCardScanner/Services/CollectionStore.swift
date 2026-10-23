@@ -641,6 +641,9 @@ actor ScannerCollectionWriter: BackgroundModelActor {
 
     func containsCollectionEntry(for candidate: CollectionCommitCandidate) throws -> Bool {
         try performOwnershipWrite { context in
+            if candidate.identifier.game == .onePiece {
+                try validateScanAcquisition(candidate, in: context)
+            }
             try validateAcquisitionContext(candidate.acquisitionIdentifier, in: context)
             let baseKey = candidate.card.collectionKey(variant: candidate.resolved.variant)
             let key = candidate.pokemonPrintRun.map {
@@ -883,6 +886,14 @@ actor ScannerCollectionWriter: BackgroundModelActor {
     }
 
     private func validateScanAcquisition(_ candidate: CollectionCommitCandidate, in context: ModelContext) throws {
+        if candidate.identifier.game == .onePiece {
+            guard let adapter = CollectionStoreSessionRegistry.shared
+                .mutationAuthority(for: .onePiece, container: context.container).adapter as? OnePieceCatalogAdapter else {
+                throw CatalogLookupError.staleCatalog
+            }
+            try adapter.validateAcquisition(candidate)
+            return
+        }
         guard candidate.identifier.game == .yuGiOh else { return }
         guard let adapter = CollectionStoreSessionRegistry.shared
             .mutationAuthority(for: .yuGiOh, container: context.container).adapter as? YuGiOhCatalogAdapter else {
