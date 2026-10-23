@@ -3318,6 +3318,14 @@ final class ScannerViewModel: ObservableObject {
             receipt = nil
             receiptTask?.cancel()
         }
+        // Both banners act on this scan by id; once it is undone, a tap could
+        // only fail silently against a copy that is no longer owned.
+        if pendingGradedVariantCorrection?.scanID == scanID {
+            pendingGradedVariantCorrection = nil
+        }
+        if pendingSlabConversionOffer?.scanID == scanID {
+            dismissSlabConversionOffer()
+        }
         if let removedHistoryEntry {
             clearAcknowledgement(for: removedHistoryEntry.encounterID)
         }
