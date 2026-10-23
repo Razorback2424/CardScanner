@@ -44,6 +44,16 @@ struct YuGiOhCatalog: Sendable {
     static var bundledPricingNotice: String {
         (try? bundled.get().historicalPricingNotice) ?? "Yu-Gi-Oh! live pricing is unavailable."
     }
+    static let unavailablePricingNotice = "Yu-Gi-Oh! pricing source is unavailable. Live per-card refresh is unavailable."
+
+    static func activePricingNotice(in runtimes: CardGameRuntimeContainer?) async -> String {
+        guard let runtime = runtimes?.runtime(for: .yuGiOh) else { return unavailablePricingNotice }
+        let adapter: (any GameCatalogAdapter)?
+        if let source = runtime.activationSource {
+            adapter = await source.currentSnapshot()?.catalog
+        } else { adapter = runtime.catalog }
+        return (adapter as? YuGiOhCatalogAdapter)?.catalog.historicalPricingNotice ?? unavailablePricingNotice
+    }
     static let marketHistoryUnavailableNotice = "Market price history is unavailable for Yu-Gi-Oh! Quotes are dated snapshots."
     private struct Seed: Decodable {
         let schemaVersion: Int; let generation: String; let capturedAt: String

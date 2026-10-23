@@ -275,7 +275,7 @@ private struct CollectionCardDetailContent: View {
                         heroSection
                         cardIdentitySection
                         if card.cardGame == .yuGiOh {
-                            Text(YuGiOhCatalog.bundledPricingNotice)
+                            YuGiOhPricingNotice()
                                 .font(.footnote).foregroundStyle(.secondary).padding()
                         }
                         valuationSection(model: chartModel)
@@ -315,6 +315,20 @@ private struct CollectionCardDetailContent: View {
         .environment(\.colorScheme, .dark)
         .task(id: MarketHistoryLoadID(request: marketHistoryRequest, retry: marketHistoryRetry)) {
             await loadMarketHistory()
+        }
+        .task(id: runtimes?.runtime(for: card.cardGame)?.catalog?.generation) {
+            let source = runtimes?.runtime(for: card.cardGame)?.activationSource
+            let events = await source?.activationSnapshots()
+            // Subscribe before the authoritative reload, closing a missed-event
+            // window between the first load and installing this observer.
+            marketHistory = []
+            marketHistoryRetry += 1
+            guard let events else { return }
+            for await _ in events {
+                guard !Task.isCancelled else { return }
+                marketHistory = []
+                marketHistoryRetry += 1
+            }
         }
         .onChange(of: history.range) { _, _ in selectedPriceDate = nil }
         .navigationTitle("")
@@ -992,8 +1006,12 @@ private struct CollectionCardDetailContent: View {
     private func loadMarketHistory() async {
         guard card.cardGame != .yuGiOh else { return }
         let request = marketHistoryRequest
-        let cached = await CardMarketHistoryService.shared.cached(request)
+        marketHistory = []
+        let resolved = await request.resolvingMarketMapping(in: runtimes)
+        let cached = await CardMarketHistoryService.shared.cached(request, runtimes: runtimes)
         guard !Task.isCancelled, request == marketHistoryRequest else { return }
+        guard await request.resolvingMarketMapping(in: runtimes) == resolved,
+              !Task.isCancelled, request == marketHistoryRequest else { return }
         marketHistory = cached
         marketHistoryError = nil
         isLoadingMarketHistory = true
@@ -1014,10 +1032,11 @@ private struct CollectionCardDetailContent: View {
         }
 #endif
         do {
-            let resolved = await request.resolvingMarketMapping(in: runtimes)
-            let points = try await CardMarketHistoryService.shared.history(for: resolved)
+            let points = try await CardMarketHistoryService.shared.history(for: request, runtimes: runtimes)
             try Task.checkCancellation()
             guard request == marketHistoryRequest else { return }
+            guard await request.resolvingMarketMapping(in: runtimes) == resolved,
+                  !Task.isCancelled, request == marketHistoryRequest else { return }
             marketHistory = points
         } catch is CancellationError { return }
         catch {
@@ -2480,6 +2499,27 @@ private extension PriceObservationKind {
     }
 }
 
+/// All surfaces describe the catalog currently supplying quote authority.
+struct YuGiOhPricingNotice: View {
+    @Environment(\.cardGameRuntimes) private var runtimes
+    @State private var notice = YuGiOhCatalog.unavailablePricingNotice
+
+    var body: some View {
+        Text(notice)
+            .task(id: runtimes?.runtime(for: .yuGiOh)?.catalog?.generation) {
+                let source = runtimes?.runtime(for: .yuGiOh)?.activationSource
+                let events = await source?.activationSnapshots()
+                notice = await YuGiOhCatalog.activePricingNotice(in: runtimes)
+                if let events {
+                    for await _ in events {
+                        guard !Task.isCancelled else { return }
+                        notice = await YuGiOhCatalog.activePricingNotice(in: runtimes)
+                    }
+                }
+            }
+    }
+}
+
 /// Shared by catalog and collection details; no ownership is required.
 struct CardMarketHistoryPanel: View {
     @Environment(\.cardGameRuntimes) private var runtimes
@@ -2510,20 +2550,35 @@ struct CardMarketHistoryPanel: View {
                                     retry: { retryID += 1 }).padding(.horizontal, 16)
         }
         .task(id: MarketHistoryLoadID(request: request, retry: retryID)) { await load() }
+        .task(id: runtimes?.runtime(for: request.game)?.catalog?.generation) {
+            let source = runtimes?.runtime(for: request.game)?.activationSource
+            let events = await source?.activationSnapshots()
+            points = []
+            retryID += 1
+            guard let events else { return }
+            for await _ in events {
+                guard !Task.isCancelled else { return }
+                points = []
+                retryID += 1
+            }
+        }
     }
 
     @MainActor
     private func load() async {
-        let cached = await CardMarketHistoryService.shared.cached(request)
+        points = []
+        let resolved = await request.resolvingMarketMapping(in: runtimes)
+        let cached = await CardMarketHistoryService.shared.cached(request, runtimes: runtimes)
         guard !Task.isCancelled else { return }
+        guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
         points = cached
         isLoading = true
         error = nil
         defer { if !Task.isCancelled { isLoading = false } }
         do {
-            let resolved = await request.resolvingMarketMapping(in: runtimes)
-            let result = try await CardMarketHistoryService.shared.history(for: resolved)
+            let result = try await CardMarketHistoryService.shared.history(for: request, runtimes: runtimes)
             try Task.checkCancellation()
+            guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
             points = result
         } catch is CancellationError { return }
         catch {

@@ -525,6 +525,49 @@ enum YuGiOhFixture {
     }
 }
 
+private actor YuGiOhNoticeSource: GameCatalogActivationSource {
+    nonisolated let game = CardGame.yuGiOh
+    private var catalog: YuGiOhCatalog?
+    func install(_ value: YuGiOhCatalog) { catalog = value }
+    func currentSnapshot() -> GameCatalogSnapshot? {
+        guard let catalog else { return nil }
+        return .init(revision: catalog.publicationRevision ?? 0, catalog: YuGiOhCatalogAdapter(catalog: catalog),
+            recognizer: YuGiOhRecognitionAdapter(catalog: catalog), variantPolicy: YuGiOhVariantPolicy())
+    }
+    func activationSnapshots() -> AsyncStream<GameCatalogSnapshot> { AsyncStream { $0.finish() } }
+}
+
+private actor YuGiOhRecoveryPreflightGate {
+    private var started = false
+    private var continuation: CheckedContinuation<Void, Never>?
+    func hold() async {
+        started = true
+        await withCheckedContinuation { continuation = $0 }
+    }
+    func waitUntilStarted() async {
+        while !started { await Task.yield() }
+    }
+    func release() { continuation?.resume(); continuation = nil }
+}
+
+private struct SuspendedYuGiOhRecoveryAdapter: GameCatalogAdapter {
+    let base: YuGiOhCatalogAdapter
+    let gate: YuGiOhRecoveryPreflightGate
+    var game: CardGame { base.game }
+    var generation: String { base.generation }
+    func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome { try await base.lookup(identifier) }
+    func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome? {
+        await gate.hold()
+        return try await base.lookup(identifier)
+    }
+    func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
+        try await base.resolve(candidate, for: identifier)
+    }
+    func validateVariantCorrection(printingID: String, variantID: String?) throws {
+        try base.validateVariantCorrection(printingID: printingID, variantID: variantID)
+    }
+}
+
 private actor YuGiOhTestPriceSource: YuGiOhMarketPriceSource {
     var available = false
     var calls: [String] = []
@@ -553,6 +596,33 @@ private final class YuGiOhPricingProtocol: URLProtocol {
 
 @MainActor
 final class YuGiOhPricingTests: XCTestCase {
+    @MainActor
+    func testPricingNoticeDescribesActiveSourceAndNeverFallsBackFromUnavailableAuthority() async throws {
+        let bundled = try YuGiOhFixture.catalog()
+        var object = YuGiOhFixture.object()
+        object["generation"] = "yugioh-en-approved-wording"
+        object["capturedAt"] = "2026-10-21T00:00:00Z"
+        var approved = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        approved.publicationRevision = 1
+        let base = bundled.runtime
+        let source = YuGiOhNoticeSource()
+        let runtime = CardGameRuntime(descriptor: base.descriptor, variantPolicy: base.variantPolicy,
+            catalog: base.catalog, activationSource: source)
+        let runtimes = try CardGameRuntimeContainer(runtimes: [runtime])
+        let unavailable = await YuGiOhCatalog.activePricingNotice(in: runtimes)
+        XCTAssertEqual(unavailable, YuGiOhCatalog.unavailablePricingNotice)
+        await source.install(bundled)
+        let bundleText = await YuGiOhCatalog.activePricingNotice(in: runtimes)
+        XCTAssertEqual(bundleText, bundled.historicalPricingNotice)
+        XCTAssertTrue(bundleText.contains("a bundled snapshot"))
+        await source.install(approved)
+        let approvedText = await YuGiOhCatalog.activePricingNotice(in: runtimes)
+        XCTAssertEqual(approvedText, approved.historicalPricingNotice)
+        XCTAssertTrue(approvedText.contains("a verified periodic snapshot"))
+        XCTAssertFalse(approvedText.contains("bundled"))
+        XCTAssertNotEqual(bundleText, approvedText)
+    }
+
     func testRealListingOnlyPairAndBundledSnapshotNeverPretendLiveRefresh() async throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         let p = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 21792 })
@@ -663,6 +733,121 @@ final class YuGiOhImportTests: XCTestCase {
 
 @MainActor
 final class YuGiOhWorkflowTests: XCTestCase {
+    func testMixedGameMultiQuantityCSVReopenResumeAndAdditionalCopies() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-mixed-csv-\(UUID())")
+        let source = try container(root.appendingPathComponent("source.store"))
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let pokemon = CardGameRuntime(descriptor: PokemonGameRuntime.descriptor,
+            variantPolicy: PokemonVariantPolicy(), catalog: PokemonCatalogAdapter())
+        let runtimes = try CardGameRuntimeContainer(runtimes: [pokemon, catalog.runtime])
+        _ = try await runtimes.bound(to: source)
+        let store = CollectionStore(context: source.mainContext)
+        for (product, variant, quantity) in [(21792, PhysicalVariant.yugiohFirstEdition, 2),
+                                            (21792, .yugiohUnlimited, 3), (26366, .yugiohLimited, 4)] {
+            let printing = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == product })
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card
+            _ = try store.add(card, resolved: .init(variant: variant, resolution: .userConfirmed), quantity: quantity)
+        }
+        let eevee = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"sv08.5-001","localId":"001","name":"Eevee","set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":180,"official":131}}}"#.utf8)), setCode: "PRE")
+        _ = try store.add(eevee, resolved: .init(variant: .normal, resolution: .userConfirmed), quantity: 5)
+        let exported = try await CollectionCSV.exportIsolated(from: source)
+        let plan = try CollectionCSV.parse(Data(exported.text.utf8))
+        XCTAssertEqual(plan.entries.count, 4)
+        XCTAssertEqual(plan.totalQuantity, 14)
+        let targetURL = root.appendingPathComponent("target.store")
+        let target = try container(targetURL)
+        let bound = try await runtimes.bound(to: target)
+        let adapters = await bound.currentImportAdapters()
+        func apply(_ plan: CollectionCSVImportPlan) async throws -> CollectionCSVImportResult {
+            let token = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+            defer { CollectionWriteSerializer.endExclusive(token) }
+            return try await CollectionCSV.applyIsolated(plan, to: target, exclusiveToken: token,
+                gameRegistry: bound.registry, gameImportAdapters: adapters)
+        }
+        let imported = try await apply(plan)
+        XCTAssertEqual(imported.importedQuantity, 14)
+        XCTAssertTrue(imported.failedRows.isEmpty)
+        func verify(_ multiple: Int) throws {
+            let reopened = try container(targetURL)
+            let originals = try source.mainContext.fetch(FetchDescriptor<CollectedCard>())
+            let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 4)
+            for original in originals {
+                let row = try XCTUnwrap(rows.first { $0.collectionKey == original.collectionKey })
+                XCTAssertEqual(row.game, original.game)
+                XCTAssertEqual(row.providerID, original.providerID)
+                XCTAssertEqual(row.catalogProviderID, original.catalogProviderID)
+                XCTAssertEqual(row.variantID, original.variantID)
+                XCTAssertEqual(row.quantity, original.quantity * multiple)
+            }
+            let events = try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 14 * multiple)
+            XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>()).reduce(0) { $0 + $1.deltaQuantity }, 14 * multiple)
+        }
+        try verify(1)
+        let resumed = try await apply(plan)
+        XCTAssertEqual(resumed.alreadyImportedEntries, 4)
+        XCTAssertEqual(resumed.importedQuantity, 0)
+        try verify(1)
+        let additional = plan.importingAgainAsAdditionalCopies()
+        defer { CollectionCSV.finishImportAgainRun(additional) }
+        let extra = try await apply(additional)
+        XCTAssertEqual(extra.importedQuantity, 14)
+        try verify(2)
+        let extraResume = try await apply(additional)
+        XCTAssertEqual(extraResume.importedQuantity, 0)
+        try verify(2)
+        let printing = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 21792 })
+        do {
+            _ = try await YuGiOhPriceAdapter(catalog: catalog).refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
+            XCTFail("Listing-only First Edition must remain unvalued")
+        } catch PriceQuoteError.providerUnavailable {}
+    }
+
+    func testSuspendedCollectionRecoveryPreflightRejectsCancellationAndChangedAuthority() async throws {
+        for changeAuthority in [false, true] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-preflight-\(UUID())")
+            let original = try container(root.appendingPathComponent("collection.store"))
+            let catalog = try YuGiOhFixture.catalog(count: 2, auto: false)
+            let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+            let service = bound.makeCardCatalog()
+            let model = ScannerViewModel(gameRegistry: bound.registry, priceQuoteService: bound.makePriceQuoteService(),
+                catalog: service, unresolvedScanStore: UnresolvedScanStore(fileURL: root.appendingPathComponent("recovery.json")))
+            model.start(context: original.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+            model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), try YuGiOhFixture.subject(catalog), nil)
+            let appeared = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(appeared)
+            let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first)
+            model.dismissIdentityChoice()
+            let row = try XCTUnwrap(model.unresolvedScans.first)
+            let gate = YuGiOhRecoveryPreflightGate()
+            await service.install(SuspendedYuGiOhRecoveryAdapter(base: .init(catalog: catalog), gate: gate))
+            let preflight = Task { await model.prepareUnresolvedResolution(id: row.id, choice: .printing(candidate)) }
+            await gate.waitUntilStarted()
+            if changeAuthority {
+                var object = YuGiOhFixture.object(count: 2, auto: false)
+                object["generation"] = "yugioh-en-replacement"
+                let replacement = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+                await service.install(YuGiOhCatalogAdapter(catalog: replacement))
+            } else { preflight.cancel() }
+            await gate.release()
+            let prepared = await preflight.value
+            XCTAssertFalse(prepared, "The collection recovery preflight itself was suspended")
+            if changeAuthority {
+                model.resolveUnresolved(id: row.id, choice: .printing(candidate))
+                let rejected = await waitUntil { model.unresolvedResolutionErrors[row.id] != nil && !model.isIdentificationProcessingForTesting }
+                XCTAssertTrue(rejected)
+            }
+            XCTAssertNil(model.pendingChoice)
+            XCTAssertEqual(model.unresolvedScans.map(\.id), [row.id])
+            model.viewDisappeared()
+            let reopened = try container(root.appendingPathComponent("collection.store"))
+            XCTAssertTrue(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+            XCTAssertTrue(try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+            XCTAssertTrue(try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+        }
+    }
+
     func testMalformedDurableLineageOverflowRejectsWithoutTrapping() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-overflow-\(UUID())/collection.store")
         let original = try container(url), catalog = try YuGiOhFixture.catalog()
@@ -1070,6 +1255,8 @@ final class YuGiOhWorkflowTests: XCTestCase {
 
     func testAcceptanceRecoveryPreservesPreexistingNormalBytesAcrossDismissAndClear() async throws {
         XCTAssertEqual(YuGiOhAcceptanceLaunch.storageDirectory(arguments: ["-ui_debug_route", "YuGiOhAcceptance", "-ui_debug_state", "csv-import"]), "YuGiOhCSVImportAcceptance")
+        XCTAssertEqual(YuGiOhAcceptanceLaunch.storageDirectory(arguments: ["-ui_debug_route", "YuGiOhAcceptance", "-ui_debug_state", "mixed-csv-source"]), "YuGiOhMixedCSVSourceAcceptance")
+        XCTAssertEqual(YuGiOhAcceptanceLaunch.storageDirectory(arguments: ["-ui_debug_route", "YuGiOhAcceptance", "-ui_debug_state", "mixed-csv-import"]), "YuGiOhMixedCSVImportAcceptance")
         XCTAssertEqual(YuGiOhAcceptanceLaunch.storageDirectory(arguments: ["-ui_debug_route", "WholeCardScanner", "-ui_debug_state", "csv-import"]), "YuGiOhAcceptance")
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-isolation-\(UUID())")
         let catalog = try YuGiOhCatalog.bundled.get()

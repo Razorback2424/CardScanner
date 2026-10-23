@@ -232,7 +232,7 @@ struct PortfolioView: View {
                         portfolioHero
                             .padding(.horizontal, 16)
                         if portfolio.holdings.contains(where: { $0.collectionKey.hasPrefix("yu-gi-oh:") }) {
-                            Text(YuGiOhCatalog.bundledPricingNotice)
+                            YuGiOhPricingNotice()
                                 .font(.footnote).foregroundStyle(.secondary).padding(.horizontal, 16)
                         }
 

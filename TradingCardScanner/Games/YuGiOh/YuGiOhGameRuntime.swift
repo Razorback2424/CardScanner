@@ -33,13 +33,29 @@ struct YuGiOhGameRuntime: Sendable {
 #if DEBUG && LOCAL_ONLY_SIGNING
 /// Fixture OCR routed through normal scanner choices, with a separate store.
 enum YuGiOhAcceptanceLaunch {
+    static var pricingSourceReview: Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard enabled, let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "pricing-source-review"
+    }
+
+    /// Presentation fixture only; never changes acquisition or price authority.
+    static let pricingReviewRuntimes: CardGameRuntimeContainer? = {
+        guard var catalog = try? YuGiOhCatalog.bundled.get() else { return nil }
+        catalog.publicationRevision = 1
+        return try? CardGameRuntimeContainer(runtimes: [catalog.runtime])
+    }()
     static var storageDirectory: String { storageDirectory(arguments: ProcessInfo.processInfo.arguments) }
     static func storageDirectory(arguments: [String]) -> String {
         guard let route = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(route + 1),
               arguments[route + 1] == "YuGiOhAcceptance",
-              let state = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(state + 1),
-              arguments[state + 1] == "csv-import" else { return "YuGiOhAcceptance" }
-        return "YuGiOhCSVImportAcceptance"
+              let state = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(state + 1) else { return "YuGiOhAcceptance" }
+        switch arguments[state + 1] {
+        case "csv-import": return "YuGiOhCSVImportAcceptance"
+        case "mixed-csv-source": return "YuGiOhMixedCSVSourceAcceptance"
+        case "mixed-csv-import": return "YuGiOhMixedCSVImportAcceptance"
+        default: return "YuGiOhAcceptance"
+        }
     }
     static func recoveryFileURL(applicationSupport: URL) -> URL {
         applicationSupport.appendingPathComponent(storageDirectory).appendingPathComponent("Scanner/unresolved-scans.json")

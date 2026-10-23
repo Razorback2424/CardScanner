@@ -97,6 +97,9 @@ final class JustTCGContractTests: XCTestCase {
         card.variantID = PhysicalVariant.foil.id
         let otherFinish = await service.cached(CardMarketHistoryRequest(card: card))
         XCTAssertTrue(otherFinish.isEmpty)
+        card.game = CardGame.pokemon.rawValue
+        let otherGame = await service.cached(CardMarketHistoryRequest(card: card))
+        XCTAssertTrue(otherGame.isEmpty, "Physical identifiers do not share history across games")
     }
 
     @MainActor
@@ -128,6 +131,9 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(query["variant_id"], "psa10")
         XCTAssertEqual(query["include"], "price_history.1y")
         XCTAssertEqual(query["regions"], "NA")
+        card.justTCGVariantID = "psa9"
+        let otherGrade = await service.cached(.init(card: card))
+        XCTAssertTrue(otherGrade.isEmpty)
     }
 
     func testProviderHistoryDecodesBothSchemasWithoutRelabelingForeignCurrency() throws {

@@ -8,7 +8,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     let printingID: String
     let variantID: String?
     let itemKind: CollectionItemKind
-    let marketVariantID: String?
+    var marketVariantID: String?
     var lookups: [JustTCGBatchLookup]
     let name: String
     let setName: String
@@ -18,6 +18,11 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     let treatments: [String]
     var exactProductID: String?
     var providerPrinting: String? = nil
+    var authorityRevision: String? = nil
+
+    var requiresCatalogMapping: Bool {
+        itemKind != .gradedCard && (game == .onePiece || game == .lorcana)
+    }
 
     @MainActor
     init(card: CollectedCard) {
@@ -56,12 +61,25 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     /// Newer game modules own their reviewed marketplace mappings. Resolve
     /// those from the active catalog, preserving physical UUID/finish identity.
     func resolvingMarketMapping(in runtimes: CardGameRuntimeContainer?) async -> Self {
-        guard (game == .onePiece || game == .lorcana), marketVariantID == nil,
-              let runtime = runtimes?.runtime(for: game),
-              let id = UUID(uuidString: catalogID ?? printingID) else { return self }
-        let snapshot = await runtime.activationSource?.currentSnapshot()
-        let catalog = snapshot?.catalog ?? runtime.catalog
         var result = self
+        guard requiresCatalogMapping else { return result }
+        // Persisted product/variant handles are never authority for these games.
+        result.exactProductID = nil
+        result.providerPrinting = nil
+        result.marketVariantID = nil
+        result.lookups = []
+        result.authorityRevision = nil
+        guard let runtime = runtimes?.runtime(for: game),
+              let id = UUID(uuidString: catalogID ?? printingID) else { return result }
+        let catalog: (any GameCatalogAdapter)?
+        if let source = runtime.activationSource {
+            guard let snapshot = await source.currentSnapshot() else { return result }
+            catalog = snapshot.catalog
+            result.authorityRevision = "\(snapshot.revision):\(snapshot.catalog.generation)"
+        } else {
+            catalog = runtime.catalog
+            result.authorityRevision = catalog?.generation
+        }
         if let catalog = catalog as? OnePieceCatalogAdapter,
            let printing = catalog.registry.printingByID[id], printing.status == .verified {
             let mappings = printing.marketMappings.filter {
@@ -120,9 +138,10 @@ actor CardMarketHistoryService {
     /// The identity is encoded rather than relying on Swift's process-random hash.
     private func identityData(_ request: CardMarketHistoryRequest) -> Data {
         (try? JSONEncoder().encode([
-            request.game.rawValue, request.printingID, request.variantID ?? "", request.itemKind.rawValue,
+            "history-v2", request.game.rawValue, request.printingID, request.variantID ?? "", request.itemKind.rawValue,
             request.itemKind == .gradedCard ? (request.marketVariantID ?? "") : "",
-            request.printRun?.rawValue ?? "", request.treatments.sorted().joined(separator: "|")
+            request.printRun?.rawValue ?? "", request.treatments.sorted().joined(separator: "|"),
+            request.exactProductID ?? "", request.providerPrinting ?? ""
         ])) ?? Data()
     }
 
@@ -132,8 +151,12 @@ actor CardMarketHistoryService {
         return root.appendingPathComponent(String(hash, radix: 16) + ".json")
     }
 
-    func cached(_ request: CardMarketHistoryRequest) -> [JustTCGHistoryPoint] {
-        readCache(request)?.points ?? []
+    func cached(_ request: CardMarketHistoryRequest, runtimes: CardGameRuntimeContainer? = nil) async -> [JustTCGHistoryPoint] {
+        let resolved = await request.resolvingMarketMapping(in: runtimes)
+        guard !resolved.requiresCatalogMapping || resolved.exactProductID != nil else { return [] }
+        let points = readCache(resolved)?.points ?? []
+        guard await resolved.resolvingMarketMapping(in: runtimes) == resolved else { return [] }
+        return points
     }
 
     private func readCache(_ request: CardMarketHistoryRequest) -> Cached? {
@@ -144,18 +167,34 @@ actor CardMarketHistoryService {
         return cached
     }
 
-    func history(for request: CardMarketHistoryRequest, now: Date = .now) async throws -> [JustTCGHistoryPoint] {
+    func history(for input: CardMarketHistoryRequest, now: Date = .now,
+                 runtimes: CardGameRuntimeContainer? = nil) async throws -> [JustTCGHistoryPoint] {
+        let request = await input.resolvingMarketMapping(in: runtimes)
+        guard !request.requiresCatalogMapping || request.exactProductID != nil else { throw HistoryError.noListing }
         let old = readCache(request)
-        if let old, now.timeIntervalSince(old.fetchedAt) < 6 * 60 * 60 { return old.points }
-        if let task = pending[request] { return try await task.value }
-        let task = Task { try await self.fetchAndCache(request, oldPoints: old?.points ?? [], now: now) }
+        if let old, now.timeIntervalSince(old.fetchedAt) < 6 * 60 * 60 {
+            return try await currentResult(old.points, for: request, runtimes: runtimes)
+        }
+        if let task = pending[request] {
+            return try await currentResult(task.value, for: request, runtimes: runtimes)
+        }
+        let task = Task { try await self.fetchAndCache(request, oldPoints: old?.points ?? [], now: now, runtimes: runtimes) }
         pending[request] = task
         defer { pending[request] = nil }
-        return try await task.value
+        return try await currentResult(task.value, for: request, runtimes: runtimes)
     }
 
-    private func fetchAndCache(_ request: CardMarketHistoryRequest, oldPoints: [JustTCGHistoryPoint], now: Date) async throws -> [JustTCGHistoryPoint] {
+    private func currentResult(_ points: [JustTCGHistoryPoint], for request: CardMarketHistoryRequest,
+                               runtimes: CardGameRuntimeContainer?) async throws -> [JustTCGHistoryPoint] {
+        guard await request.resolvingMarketMapping(in: runtimes) == request else { throw CancellationError() }
+        try Task.checkCancellation()
+        return points
+    }
+
+    private func fetchAndCache(_ request: CardMarketHistoryRequest, oldPoints: [JustTCGHistoryPoint], now: Date,
+                               runtimes: CardGameRuntimeContainer?) async throws -> [JustTCGHistoryPoint] {
         let received = try await fetch(request)
+        guard await request.resolvingMarketMapping(in: runtimes) == request else { throw CancellationError() }
         // Retain previously retrieved provider history as the API's rolling
         // window advances. Never trim this series to collection membership.
         var byTime: [Double: JustTCGHistoryPoint] = [:]
@@ -192,7 +231,7 @@ actor CardMarketHistoryService {
         }
 
         var lookups = request.lookups
-        if let catalogID = request.catalogID {
+        if !request.requiresCatalogMapping, let catalogID = request.catalogID {
             lookups.insert(contentsOf: PriceFallbackQuoteResolver.verifiedLookups(
                 catalogID: catalogID, variant: request.variantID.map(PhysicalVariant.resolving)
             ), at: 0)
@@ -242,12 +281,12 @@ actor CardMarketHistoryService {
             (lookup.wireKey, lookup.value), ("include_price_history", "true"),
             ("priceHistoryDuration", "1y")
         ], lane: .interactive)
-        if case let .tcgplayerID(productID) = lookup, let printing = request.providerPrinting,
-           let card = response.data.first(where: { $0.tcgplayerId == productID }),
-           let variant = card.variants?.first(where: {
+        if case let .tcgplayerID(productID) = lookup, let printing = request.providerPrinting {
+            guard let card = response.data.first(where: { $0.tcgplayerId == productID }),
+                  let variant = card.variants?.first(where: {
                $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
                    && $0.printing?.caseInsensitiveCompare(printing) == .orderedSame
-           }) {
+                  }) else { throw HistoryError.noListing }
             return Self.points(from: variant)
         }
         guard case let .matched(_, variant) = JustTCGRefreshCoordinator.exactListing(

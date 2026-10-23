@@ -46,6 +46,103 @@ private final class LorcanaPricingProtocol: URLProtocol {
 /// Synthetic physical review evidence exercises contracts, never catalog coverage.
 @MainActor
 final class LorcanaPricingTests: XCTestCase {
+    func testHistoryRemapsWithinTTLAndNeverMergesAcrossProductsOrProviderFinishes() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: root.lastPathComponent))
+        defer { try? FileManager.default.removeItem(at: root); defaults.removePersistentDomain(forName: root.lastPathComponent) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://history.invalid")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture"), root: root)
+        let initial = try registry(mappings: [mapping()])
+        let source = HistoryActivationFixture()
+        func install(_ revision: Int, _ mappings: [LorcanaMarketMapping]) async throws {
+            let runtime = LorcanaGameRuntime(registry: try registry(mappings: mappings)).runtime
+            await source.install(.init(revision: revision, catalog: runtime.catalog!,
+                recognizer: runtime.recognizer!, variantPolicy: runtime.variantPolicy))
+        }
+        try await install(1, [mapping()])
+        let base = LorcanaGameRuntime(registry: initial).runtime
+        let runtimes = try CardGameRuntimeContainer(runtimes: [.init(descriptor: base.descriptor,
+            variantPolicy: base.variantPolicy, catalog: base.catalog, activationSource: source)])
+        let card = try LorcanaCatalogAdapter(registry: initial).resolution(forPrintingID: id()).card
+        var request = CardMarketHistoryRequest(card: card, variant: .foil, printRun: nil)
+        request.exactProductID = "stale-stored-product"
+        func reply(_ product: Int, _ finish: String, _ timestamp: Int, _ price: Int) {
+            LorcanaPricingProtocol.handler = { _ in Data("""
+                {"data":[{"tcgplayerId":"\(product)","variants":[{"printing":"\(finish)","condition":"Near Mint","priceHistory":[{"p":\(price),"t":\(timestamp)}]}]}]}
+                """.utf8) }
+        }
+        reply(510153, "Holofoil", 1700000000, 10)
+        let p1 = try await service.history(for: request, now: now, runtimes: runtimes)
+        XCTAssertEqual(p1.map(\.p), [10])
+        try await install(2, [mapping(product: 510154)])
+        let remappedCache = await service.cached(request, runtimes: runtimes)
+        XCTAssertTrue(remappedCache.isEmpty, "Both consumers must resolve before displaying cache")
+        reply(510154, "Holofoil", 1700100000, 20)
+        let p2 = try await service.history(for: request, now: now, runtimes: runtimes)
+        XCTAssertEqual(p2.map(\.p), [20], "A remap inside TTL must fetch P2")
+        reply(510154, "Holofoil", 1700200000, 30)
+        let accumulated = try await service.history(for: request, now: now.addingTimeInterval(7 * 3600), runtimes: runtimes)
+        XCTAssertEqual(accumulated.map(\.p), [20, 30], "Only same-listing points accumulate")
+        try await install(3, [mapping(product: 510156)])
+        reply(510156, "Holofoil", 1700250000, 35)
+        let expiredRemap = try await service.history(for: request, now: now.addingTimeInterval(14 * 3600), runtimes: runtimes)
+        XCTAssertEqual(expiredRemap.map(\.p), [35], "An expired P2 series must not merge into a new product")
+        let changedFinish = LorcanaMarketMapping(finish: .foil, groupID: 22937, productID: 510154,
+            productName: "Fixture Elsa", productNumber: "207/204", providerVariantID: "Cold Foil",
+            market: "us", currency: "USD", condition: "aggregate", evidenceReferences: ["fixture:finish"])
+        // Return to P2 with a different finish: no P2 Holofoil points may leak.
+        try await install(4, [changedFinish])
+        reply(510154, "Cold Foil", 1700300000, 40)
+        let finish = try await service.history(for: request, now: now.addingTimeInterval(14 * 3600), runtimes: runtimes)
+        XCTAssertEqual(finish.map(\.p), [40])
+        try await install(5, [])
+        let withdrawn = await service.cached(request, runtimes: runtimes)
+        XCTAssertTrue(withdrawn.isEmpty)
+        do { _ = try await service.history(for: request, runtimes: runtimes); XCTFail("Withdrawn mapping fetched") }
+        catch { XCTAssertTrue(error is CardMarketHistoryService.HistoryError) }
+        let unresolved = await request.resolvingMarketMapping(in: runtimes)
+        XCTAssertNil(unresolved.exactProductID)
+        XCTAssertTrue(unresolved.lookups.isEmpty)
+
+        // A legacy identity has no product/finish provenance and is never read.
+        let oldIdentity = try JSONEncoder().encode([request.game.rawValue, request.printingID,
+            request.variantID ?? "", request.itemKind.rawValue, "", "", ""])
+        var hash: UInt64 = 14_695_981_039_346_656_037
+        for byte in oldIdentity { hash = (hash ^ UInt64(byte)) &* 1_099_511_628_211 }
+        let legacy: [String: Any] = ["requestData": oldIdentity.base64EncodedString(),
+            "fetchedAt": now.timeIntervalSinceReferenceDate, "points": [["p": 999, "t": 1700000000]]]
+        try JSONSerialization.data(withJSONObject: legacy).write(to: root.appendingPathComponent(String(hash, radix: 16) + ".json"))
+        try await install(6, [mapping(product: 510155)])
+        let legacyCache = await service.cached(request, runtimes: runtimes)
+        XCTAssertTrue(legacyCache.isEmpty)
+
+        // Pause the actual transport response; activation changes before it ends.
+        let started = expectation(description: "history transport suspended")
+        let gate = DispatchSemaphore(value: 0)
+        LorcanaPricingProtocol.handler = { _ in
+            started.fulfill()
+            _ = gate.wait(timeout: .now() + 10)
+            return Data(#"{"data":[{"tcgplayerId":"510155","variants":[{"printing":"Holofoil","condition":"Near Mint","priceHistory":[{"p":50,"t":1700400000}]}]}]}"#.utf8)
+        }
+        let pending = Task { try await service.history(for: request, runtimes: runtimes) }
+        await fulfillment(of: [started], timeout: 5)
+        try await install(7, [])
+        gate.signal()
+        do { _ = try await pending.value; XCTFail("Old authority completed") } catch is CancellationError {}
+        let afterWithdrawal = await service.cached(request, runtimes: runtimes)
+        XCTAssertTrue(afterWithdrawal.isEmpty)
+        try await install(8, [mapping(product: 510155)])
+        let oldRequestCache = await service.cached(request, runtimes: runtimes)
+        XCTAssertTrue(oldRequestCache.isEmpty, "Old in-flight work must not repopulate the cache")
+    }
+
     func testMarketHistoryUsesReviewedLorcanaProductAndFinishMapping() async throws {
         let registry = try registry(mappings: [mapping()])
         let runtimes = try CardGameRuntimeContainer(runtimes: [LorcanaGameRuntime(registry: registry).runtime])
@@ -1054,4 +1151,12 @@ final class LorcanaPricingTests: XCTestCase {
             .write(to: documents.appendingPathComponent("lorcana-live-pricing-results.json"), options: .atomic)
     }
     #endif
+}
+
+private actor HistoryActivationFixture: GameCatalogActivationSource {
+    nonisolated let game = CardGame.lorcana
+    private var snapshot: GameCatalogSnapshot?
+    func install(_ value: GameCatalogSnapshot) { snapshot = value }
+    func currentSnapshot() -> GameCatalogSnapshot? { snapshot }
+    func activationSnapshots() -> AsyncStream<GameCatalogSnapshot> { AsyncStream { $0.finish() } }
 }

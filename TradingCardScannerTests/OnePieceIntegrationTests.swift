@@ -117,6 +117,12 @@ final class OnePieceIntegrationTests: XCTestCase {
         let normal = await CardMarketHistoryRequest(card: card, variant: .normal, printRun: nil)
             .resolvingMarketMapping(in: runtimes)
         XCTAssertTrue(normal.lookups.isEmpty, "An unmapped finish must not borrow the foil product")
+        var stale = foil
+        stale.marketVariantID = "stored-old-provider-variant"
+        let unavailable = await stale.resolvingMarketMapping(in: nil)
+        XCTAssertNil(unavailable.exactProductID)
+        XCTAssertNil(unavailable.marketVariantID)
+        XCTAssertTrue(unavailable.lookups.isEmpty, "Missing runtime authority cannot reuse stored handles")
     }
 
     func testOnePieceSealedAddUndoAndExactVendorRepricingRespectRuntimeGates() async throws {

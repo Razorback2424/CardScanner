@@ -48,6 +48,9 @@ struct ScannerView: View {
 
     private var acceptanceReady: Bool {
         if YuGiOhAcceptanceLaunch.enabled {
+            if YuGiOhAcceptanceLaunch.pricingSourceReview || YuGiOhAcceptanceLaunch.storageDirectory != "YuGiOhAcceptance" {
+                return runtimes?.runtime(for: .yuGiOh) != nil
+            }
             return injectedYuGiOhSample && (yuGiOhDiagnostic != nil
                 || (model.recognitionCount > 0 && !model.isIdentificationProcessingForTesting
                     && (model.pendingIdentityChoice != nil || model.pendingChoice != nil
@@ -170,22 +173,33 @@ struct ScannerView: View {
                 .padding(8).frame(maxWidth: .infinity, alignment: .leading).background(.regularMaterial)
             }
             if YuGiOhAcceptanceLaunch.enabled {
-                VStack(spacing: 4) {
-                    Text("Yu-Gi-Oh! fixture OCR · Separate test collection").font(.caption).foregroundStyle(.secondary)
-                    if let yuGiOhDiagnostic {
-                        Text(yuGiOhDiagnostic).font(.caption)
-                            .accessibilityIdentifier("yugioh-recognition-diagnostic")
+                if YuGiOhAcceptanceLaunch.pricingSourceReview {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Bundled source").font(.headline)
+                        YuGiOhPricingNotice()
+                        Text("Synthetic approved-source presentation").font(.headline)
+                        YuGiOhPricingNotice()
+                            .environment(\.cardGameRuntimes, YuGiOhAcceptanceLaunch.pricingReviewRuntimes)
                     }
-                    HStack {
-                        Menu(yuGiOhSample.rawValue) {
-                            ForEach(YuGiOhAcceptanceLaunch.Sample.allCases) { sample in
-                                Button(sample.rawValue) { yuGiOhSample = sample }
-                            }
+                    .font(.footnote).padding().background(.regularMaterial)
+                } else {
+                    VStack(spacing: 4) {
+                        Text("Yu-Gi-Oh! fixture OCR · Separate test collection").font(.caption).foregroundStyle(.secondary)
+                        if let yuGiOhDiagnostic {
+                            Text(yuGiOhDiagnostic).font(.caption)
+                                .accessibilityIdentifier("yugioh-recognition-diagnostic")
                         }
-                        Button("Inject code", action: injectYuGiOhSample)
-                            .disabled(model.pendingIdentityChoice != nil || model.pendingChoice != nil || model.isIdentificationProcessingForTesting)
-                    }
-                }.padding(8).frame(maxWidth: .infinity).background(.regularMaterial)
+                        HStack {
+                            Menu(yuGiOhSample.rawValue) {
+                                ForEach(YuGiOhAcceptanceLaunch.Sample.allCases) { sample in
+                                    Button(sample.rawValue) { yuGiOhSample = sample }
+                                }
+                            }
+                            Button("Inject code", action: injectYuGiOhSample)
+                                .disabled(model.pendingIdentityChoice != nil || model.pendingChoice != nil || model.isIdentificationProcessingForTesting)
+                        }
+                    }.padding(8).frame(maxWidth: .infinity).background(.regularMaterial)
+                }
             }
             if OnePieceCatalogBootstrap.isAcceptanceLaunch() {
                 VStack(spacing: 4) {
@@ -518,7 +532,7 @@ private struct ScannerChrome: View {
     private var scanFeedback: some View {
         if model.scanAcknowledgement?.subject.identifier.game == .yuGiOh
             || model.pendingIdentityChoice?.displayCandidates.first?.game == .yuGiOh {
-            Text(YuGiOhCatalog.bundledPricingNotice)
+            YuGiOhPricingNotice()
                 .font(.footnote).foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
         }
