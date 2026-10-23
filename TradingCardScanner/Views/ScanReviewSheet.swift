@@ -286,12 +286,9 @@ struct ScanSessionReviewSheet: View {
     }
 
     private var sessionSummary: some View {
-        let pricedScans = model.sessionScans.compactMap { scan -> Money? in
-            guard case let .price(price) = scan.price else { return nil }
-            return Money(rounding: price.unitMarketPriceUSD)
-        }
-        let knownValue = pricedScans.sum()
-        let unpricedCount = model.sessionScans.count - pricedScans.count
+        let value = model.sessionKnownValue
+        let knownValue = value.total
+        let unpricedCount = model.sessionScans.count - value.pricedCount
 
         return VStack(alignment: .leading, spacing: 4) {
             Text("\(model.sessionScans.count) card\(model.sessionScans.count == 1 ? "" : "s") added")

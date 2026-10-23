@@ -2248,11 +2248,15 @@ final class ScannerViewModel: ObservableObject {
 
     /// The value of this visit's adds, from the same per-scan quotes the
     /// receipts showed. The live session pill and the departure summary share
-    /// it so the number never disagrees between the two.
+    /// it so the number never disagrees between the two. A non-USD quote stays
+    /// visible on its receipt but counts as unpriced, matching the portfolio.
     var sessionKnownValue: (total: Money, pricedCount: Int) {
         let prices = sessionScans.compactMap { scan -> Money? in
             guard case let .price(price) = scan.price else { return nil }
-            return Money(rounding: price.unitMarketPriceUSD)
+            return PortfolioPriceEligibility.eligibleUnitPrice(
+                amount: price.unitMarketPriceUSD,
+                currencyCode: price.currencyCode
+            )
         }
         return (prices.sum(), prices.count)
     }
