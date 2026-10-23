@@ -19,7 +19,7 @@ the requested outcome. A reviewed subset is not adopted as a substitute.
 | Lorcana later physical coverage | Recomputed local payload: 1,749 physical records across sets 1–8. Parsed discrepancy CSV: 1,833 discovery-only rows; sets 9–14 have 243, 242, 243, 243, 247 and 242 rows respectively. These are source records, not a certified physical-printing denominator. |
 | Hyperia City release status | Corrected: the [official announcement](https://www.disneylorcana.com/en-US/news/2026/09/hyp-press-release/) gives October 16 prerelease and October 23 general availability. Set 14 belongs in the current released-set reconciliation. |
 | Privacy/support configuration | Confirmed: Release build settings contain empty URLs. Publication and mailbox operation need actual acceptance; source placeholders are not working pages. |
-| StoreKit implementation | Existing `CollectorToolsStore` and `CollectorToolsTests` include local purchase/store reconstruction/restore/refund and two-card ZIP coverage. Store reconstruction occurs in one process; actual app termination/restart remains unrun. Local simulation does not establish sandbox, TestFlight or production availability. |
+| StoreKit implementation | Existing `CollectorToolsStore` and `CollectorToolsTests` include local purchase/store reconstruction/restore/refund and two-card ZIP coverage. The later app-process follow-up below verifies owned-state reload and paid access across termination/relaunch; fresh purchase provenance and completed Files save remain open. Local simulation does not establish sandbox, TestFlight or production availability. |
 | Other game coverage and pricing | Existing source and dated evidence support the attachment's qualified descriptions. No new exhaustive physical identity census or live pricing census was performed. Yu-Gi-Oh pricing remains dated bundled data. |
 
 The installed Xcode reports 27.1. Apple's [upload SDK requirement](https://developer.apple.com/news/?id=ueeok6yw)
@@ -222,7 +222,7 @@ All named bundles and matching `logs/*.log` are under external SSD
 `/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/`. These results concern
 the base SHA plus local changes, not a committed or published release.
 
-### Remaining bounded manual acceptance — unrun
+### Earlier bounded manual checklist — historical at `bb72741`
 
 The current XCTest harness owns and clears its local StoreKit session in one
 app process; it has no controlled cross-process purchase/share fixture. Do not
@@ -252,3 +252,102 @@ Neither step 3 nor steps 4–5 were completed in this session. Simulator results
 do not certify physical-device, third-party destination, real-store,
 TestFlight, or production product availability. Production One Piece remains
 disabled; signing, keys, pins, publication and pricing scope are unchanged.
+
+## App-process and Files acceptance follow-up — 2026-10-23
+
+**Candidate:** clean `bb72741e19fe69ce12ca5ae323a99c8712ff73e0` at entry,
+remote `Razorback2424/CardScanner`, reviewed checkout path unchanged. The three
+commits after `872dbf2` contain the supplied eight-file review snapshot:
+`git diff --binary 872dbf2..HEAD` SHA-256 is exactly
+`e68040ccaa6c4f296300aad095744b06ebca89a3cfe045ac58f70d676f9e3312`.
+Entry unstaged/staged diff is empty (SHA-256
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
+No pre-existing changes or untracked files were present.
+
+The existing external `logs/acquisition-verified.log` was read, not rerun.
+Its SHA-256 is `e23721bcb8745f8e9ceb635705ce54894ab65f6dfccdf7b33be6780e1bbb4dd4`;
+it records **106 passed, zero failed**, comprising 97 One Piece and nine
+Collector Tools cases. The exact reviewed-delta match establishes relevance
+to this candidate. These remain historical XCTest results, not new UI passes.
+
+### Build and process evidence
+
+Used existing **iPhone 17 / iOS 27.0 Simulator**, Xcode **27.1 (27A9275)**,
+Debug app version **1.0**. Installed the
+existing 14:16 external artifact from
+`CardScannerBuilds/yugioh/DerivedData/Build/Products/Debug-iphonesimulator/TradingCardScanner.app`;
+the previously installed Simulator binary differed and was excluded from
+acceptance. Installed and external `TradingCardScanner.debug.dylib` match at
+SHA-256 `756f9a92c05805de7f776b5c78db9908d26e3dbb9fa1560c70211370331fc8a6`.
+Launcher executable hash is
+`d8d6a524785266224e336dc967d9992e5d722f29ec1b6762b3e8f417cbefb2bd`.
+No new build or XCTest run was needed; another project's subsequent external
+build was left running.
+
+All accepted launches used existing `-ui_debug_route YuGiOhAcceptance`, with
+its separate collection and no injected scan. Earlier exploration also used
+the isolated synthetic `LorcanaReview` route. Neither grants ownership.
+The shared StoreKit scheme was temporarily pointed at the existing executable
+with isolated arguments for Xcode Run Without Building; it was restored
+byte-for-byte before documentation edits. No transactions or acceptance data
+were cleared between owned-state checkpoints.
+
+| Check | Observed result and limit |
+| --- | --- |
+| Purchase/interruption | In PID `50377`, Pro → Collector Tools showed $9.99; one purchase action reached “Contacting the App Store…” with purchase/restore disabled. The process was subsequently terminated. No second purchase or Restore action was sent. A completed purchase confirmation and local transaction identifier/environment were not captured; fresh local purchase completion and transaction-count reconciliation remain unverified. |
+| Ownership before restart | Following an Xcode local-configuration launch attempt (PID `51811`) and direct launch PID `52218`, the offer reported **Collector Tools unlocked**, and centering opened Take Photo / Choose Photo / Choose File. This uses the production adapter, without an ownership override. It does not establish when the interrupted purchase completed. |
+| Actual owned-process restart | Stopped PID `52218`; `ps -p 52218` returned no process (exit 1). Relaunched as **PID `52845`**. Before buying/restoring, the offer again reported **Collector Tools unlocked**; centering source controls and Batch → Choose an even number of photos were accessible. **Entitlement reload and both paid access gates pass across an actual process boundary.** Fresh purchase provenance remains the separate gap above. |
+| Share cancellation | Prepared four synthetic 900×1260 JPEG inputs into `Card-01` and `Card-02`. System sharing displayed “Listing photos” and Save to Files. Dismissed the popover once; the pairs, Start Over and generated ZIP remained. Reopening sharing succeeded without preparing again. |
+| Background/resume | Opened system Files (PID `55046`), then resumed CardScanner using plain `simctl launch`, which returned the same **PID `52845`**. Prepared pairs and ZIP remained. This is background/resume, separate from termination and explicit generation cancellation. |
+| Files handoff | Reopened sharing → Save to Files reached **On My iPhone** and created a new empty “untitled folder.” Naming, entering that folder and Save did not yield a verifiable final copy through available input tooling. A SaveToFiles extension **temporary staging ZIP** exists; it is not a completed destination save. **Completed isolated destination handoff remains unverified.** |
+| Reopened content | Independently opened the app's retained temporary ZIP with Python ZipFile/Pillow: exact twenty relative JPEG paths, ten per card folder, every JPEG fully decoded with positive dimensions and bytes equal to generated originals. ZIP SHA-256 `fe11d996ea102dff0e8822ff0742ba5e00a3c8f90c663f4c23a34b279e28c74e`. **This is not reopening a saved Files destination.** |
+| Unowned free export / other interruptions | Actual unowned single-card export, explicit purchase cancellation/pending approval, duplicate transaction counts and cancellation during photo generation were not completed. No new restart-persistence promise is imposed on temporary prepared photos. |
+
+### Tooling limits and remaining manual steps
+
+Simulator snapshots worked, but some reported successful taps without a
+corresponding visible change. Native Device Hub controls were the fallback.
+`wait_for_ui(textContains: "Save to Files", timeoutMs: 15000)` returned
+`WAIT_TIMEOUT`; a later screenshot did show the share popover. The Files save
+view remained absent from both automation trees; typing and Save attempts
+returned unchanged trees. The later `wait_for_ui(textContains: "Save",
+timeoutMs: 10000)` also returned `WAIT_TIMEOUT`. No final saved ZIP was found;
+only the app output and SaveToFiles staging copy were found. These observations
+do not isolate a product defect, so no app fix or regression was added.
+
+Xcode initially retained a physical-device destination despite an attempted
+Simulator row selection. The unexpected Run Without Building action was
+stopped immediately; only after the destination visibly read iPhone 17 was
+the Simulator attempt continued. No successful physical-device install,
+collection access or device acceptance is established by this pass.
+Native keyboard capture was restored to off. The generated images, app's
+prepared batch, staging copy and empty test folder were left available.
+
+Remaining manual checklist (local StoreKit only):
+
+1. In Xcode, verify **iPhone 17 Simulator**, Debug and
+   `CollectorTools.storekit` before Run; retain isolated collection arguments.
+   Use StoreKit transaction management to record the local transaction and
+   environment. Capture a fresh purchase completion through the production
+   adapter in an unowned isolated test context, without clearing this pass's
+   retained transactions. Verify exactly one request/transaction after
+   cancellation, pending approval and interrupted-process reconciliation.
+2. In **Pro → eBay Listing Photos → Batch**, reopen the retained batch share,
+   choose **Save to Files**, create/enter an acceptance-only local folder and
+   finish Save. In system **Files**, reopen that destination ZIP. Expect
+   `eBay Listing Photos/Card-01` and `Card-02`, each containing
+   `01-Front.jpg`, `02-Front-TL.jpg`, `03-Front-TR.jpg`, `04-Front-BR.jpg`,
+   `05-Front-BL.jpg`, `06-Back.jpg`, `07-Back-TL.jpg`, `08-Back-TR.jpg`,
+   `09-Back-BR.jpg`, `10-Back-BL.jpg`; decode all twenty destination JPEGs.
+3. In a separately unowned isolated local context, **Pro → eBay Listing Photos
+   → Single card**: choose synthetic front/back, generate and complete free
+   export. During batch preparation, exercise **Cancel** separately from
+   backgrounding and process termination; expect retained source pairs and no
+   stale completed archive according to the current workflow.
+
+**Final scope:** only this evidence ledger and `progress.md` changed. No source,
+tests or scheme changes remain; no commit/push, production configuration or
+catalog publication was performed. Local StoreKit evidence is not real
+sandbox/TestFlight/production purchase proof. Next launch workstreams remain
+**released Lorcana coverage** and **approved One Piece production setup**;
+neither was begun in this bounded pass.

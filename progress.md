@@ -1,3 +1,22 @@
+# 2026-10-23 — Bounded process-restart and photo-export acceptance
+
+Validated clean `bb72741` against the exact supplied reviewed-delta SHA-256.
+Read the relevant historical 106/106 test log; no XCTest suite was rerun.
+Using the existing Debug artifact and isolated Simulator storage, verified
+owned entitlement reload and centering/batch access across terminated PID
+52218 → new PID 52845, without purchase/restore or ownership overrides between
+those checkpoints. Prepared a synthetic two-card ZIP, presented/canceled/
+reopened system sharing and verified twenty exact decodable JPEGs in the
+retained temporary archive. Background/resume retained the same PID and work.
+Save to Files reached its local destination view, but completed save and
+reopened destination contents remain unverified because system input/AX
+tooling did not complete the handoff. Fresh local purchase provenance, other
+purchase/generation interruptions and unowned single-card UI export also
+remain open. No product defect was isolated; only evidence documents changed.
+See the [bounded acceptance record](docs/release/five-game-launch-readiness-2026-10-23.md#app-process-and-files-acceptance-follow-up--2026-10-23)
+for exact limits and manual entry points. Released Lorcana coverage and approved
+One Piece production setup remain next; neither was started.
+
 # 2026-10-23 — Yu-Gi-Oh automatic-resolution verification
 
 Re-ran the current candidate based on `1ac6750`: 457 selected iOS 27.0 Simulator
