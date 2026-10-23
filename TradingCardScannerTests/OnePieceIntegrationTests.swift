@@ -584,14 +584,22 @@ final class OnePieceIntegrationTests: XCTestCase {
             trustedKeys: [keyID: key.publicKey], now: ISO8601DateFormatter().date(from: timestamp)!))
     }
 
-    func testReviewedAwardCorpusResolvesSoleVerifiedPrintingAndKeepsUnverifiedParticipationUnowned() async throws {
+    func testReviewedAwardCorpusRequiresWinnerSelectionAndKeepsUnverifiedParticipationUnowned() async throws {
         let registry = try reviewedAwardRegistry()
         let adapter = OnePieceCatalogAdapter(registry: registry)
         let profile = OnePieceScanProfile(registry: registry, languageConfirmation: .userConfirmedEnglish)
         guard case let .identified(subject) = profile.identify([.init(text: "P-001")]),
-              case let .resolved(selected) = try await adapter.lookup(subject.identifier) else {
-            return XCTFail("A sole verified printing should not require a picker")
+              case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(subject.identifier) else {
+            return XCTFail("A known participant sibling must prevent automatic winner selection")
         }
+        XCTAssertEqual(candidates.count, 1)
+        let candidate = try XCTUnwrap(candidates.first)
+        let selected = try await adapter.resolve(candidate, for: subject.identifier)
+        try await adapter.validateAcquisition(subject.identifier, printingID: candidate.id, automatic: false)
+        do {
+            try await adapter.validateAcquisition(subject.identifier, printingID: candidate.id, automatic: true)
+            XCTFail("Number-only acquisition must not bypass known award ambiguity")
+        } catch CatalogLookupError.invalidPrintingChoice {}
         XCTAssertEqual(selected.card.providerID, "348ad90a-43d8-49b5-a384-4d9cc2a1fe27")
         XCTAssertEqual(selected.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
         XCTAssertThrowsError(try adapter.resolution(forPrintingID:
@@ -763,8 +771,15 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Real reviewed printed number should be recognized")
         }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let presented = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(presented, "Number-only P-001 must ask for the award presentation")
+        XCTAssertEqual(model.successCount, 0)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let candidates = try XCTUnwrap(model.pendingIdentityChoice).displayCandidates
+        XCTAssertEqual(candidates.map(\.id), ["348ad90a-43d8-49b5-a384-4d9cc2a1fe27"])
+        model.choose(try XCTUnwrap(candidates.first))
         let saved = await waitUntil { model.successCount == 1 }
-        XCTAssertTrue(saved, "The sole verified printing and sole finish should save automatically")
+        XCTAssertTrue(saved, "Explicit winner selection with one supported finish should save")
         XCTAssertNil(model.pendingIdentityChoice)
         XCTAssertNil(model.pendingChoice)
         model.viewDisappeared()
@@ -935,10 +950,14 @@ final class OnePieceIntegrationTests: XCTestCase {
             switch try await adapter.lookup(subject.identifier) {
             case let .resolved(resolution):
                 XCTAssertEqual(printings.count, 1)
+                XCTAssertEqual(registry.printingsByCanonicalID[canonical.id]?.count, 1,
+                               "Filtering held siblings must not manufacture automatic certainty")
                 XCTAssertEqual(resolution.card.physicalPrintingID, printings.first?.id.uuidString.lowercased())
                 XCTAssertFalse(resolution.card.variantEvidence.catalogVariants.isEmpty)
             case let .needsPrintingChoice(_, candidates):
-                XCTAssertGreaterThan(printings.count, 1)
+                XCTAssertFalse(printings.isEmpty)
+                XCTAssertGreaterThan(registry.printingsByCanonicalID[canonical.id]?.count ?? 0, 1,
+                                     "Multiple verified or known held siblings require printing review")
                 XCTAssertEqual(Set(candidates.map(\.id)), Set(printings.map { $0.id.uuidString.lowercased() }))
                 XCTAssertTrue(candidates.allSatisfy { $0.selectionEvidence(among: candidates) != .insufficient },
                               "Verified choices must carry a usable collector distinction")
@@ -1114,6 +1133,12 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Retail Nami number must be recognized")
         }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let presented = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(presented, "Known standard/artwork siblings require selection of FILM RED Nami")
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
+            $0.id == nami.id.uuidString.lowercased()
+        }))
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved)
         XCTAssertNil(model.pendingIdentityChoice)
@@ -1167,8 +1192,8 @@ final class OnePieceIntegrationTests: XCTestCase {
             model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
             let resolvedOrChoice = await waitUntil { model.successCount == 1 || model.pendingIdentityChoice != nil }
             XCTAssertTrue(resolvedOrChoice)
-            let verified = reviewed.printingsByCanonicalID[printing.canonicalCardID]?.filter { $0.status == .verified } ?? []
-            if verified.count > 1 {
+            let knownPrintings = reviewed.printingsByCanonicalID[printing.canonicalCardID] ?? []
+            if knownPrintings.count > 1 {
                 let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
                     $0.id == printing.id.uuidString.lowercased()
                 })
@@ -1762,14 +1787,13 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
     }
 
-    func testSoleVerifiedPrintingResolvesInIncompleteScopeWithoutSelectingConflictedRecords() async throws {
-        for registry in [try registry(count: 1, complete: false), try registry(secondStatus: .conflicted)] {
-            let adapter = OnePieceCatalogAdapter(registry: registry)
-            guard case let .resolved(selected) = try await adapter.lookup(identifier(registry, confirmedEnglish: true)) else {
-                return XCTFail("Only available verified printings participate in the choice")
-            }
-            XCTAssertEqual(selected.card.providerID, uuid(1).uuidString.lowercased())
+    func testSoleVerifiedPrintingResolvesInIncompleteScopeWithoutKnownSiblings() async throws {
+        let incomplete = try registry(count: 1, complete: false)
+        let adapter = OnePieceCatalogAdapter(registry: incomplete)
+        guard case let .resolved(selected) = try await adapter.lookup(identifier(incomplete, confirmedEnglish: true)) else {
+            return XCTFail("Unknown global coverage alone must not create a choice")
         }
+        XCTAssertEqual(selected.card.providerID, uuid(1).uuidString.lowercased())
         let registry = try registry()
         let unknownPrintingNumber = try ScanIdentifier(game: .onePiece, namespace: "numbered-card",
             fields: [.init(key: "number", value: "P-001")], displayIdentifier: "P-001", suppressionIdentity: "number:P-001",
@@ -1778,6 +1802,25 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Known canonical without physical records remains incomplete")
         }
         XCTAssertEqual(canonical?.printedIdentifier, "P-001")
+    }
+
+    func testKnownIneligibleSiblingRequiresExplicitChoice() async throws {
+        for status: OnePieceReconciliationStatus in [.provisional, .conflicted, .quarantined] {
+            let registry = try registry(secondStatus: status)
+            let adapter = OnePieceCatalogAdapter(registry: registry)
+            let scan = try identifier(registry, confirmedEnglish: true)
+            guard case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(scan) else {
+                return XCTFail("Known ineligible siblings require explicit selection")
+            }
+            XCTAssertEqual(candidates.map(\.id), [uuid(1).uuidString.lowercased()])
+            let candidate = try XCTUnwrap(candidates.first)
+            _ = try await adapter.resolve(candidate, for: scan)
+            try await adapter.validateAcquisition(scan, printingID: candidate.id, automatic: false)
+            do {
+                try await adapter.validateAcquisition(scan, printingID: candidate.id, automatic: true)
+                XCTFail("Automatic acquisition must recheck the known ambiguity")
+            } catch CatalogLookupError.invalidPrintingChoice {}
+        }
     }
 
     func testPersistedSingletonChoiceStillRevalidatesAgainstCurrentResolvedPrinting() async throws {

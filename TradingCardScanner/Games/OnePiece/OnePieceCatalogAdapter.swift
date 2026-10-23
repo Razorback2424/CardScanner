@@ -59,11 +59,13 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         let all = registry.printingsByCanonicalID[card.id] ?? []
         let eligible = all.filter { $0.status == .verified }
         guard !eligible.isEmpty else { return .catalogIncomplete(summary) }
-        // Match the other games: a picker supplies a distinction between
-        // available verified printings, not confirmation of a single option.
-        // Coverage metadata and OCR language do not create additional choices;
-        // provisional/conflicted records remain ineligible for ownership.
-        if eligible.count == 1 {
+        // A known provisional/conflicted sibling still makes number-only input
+        // ambiguous. Filtering it out must not automatically select another
+        // presentation (for example, P-001 winner versus participant).
+        // Explicit selection remains available for the verified printing only.
+        // Unknown global coverage alone does not manufacture a second choice;
+        // this index already excludes superseded history.
+        if eligible.count == 1 && all.count == 1 {
             return .resolved(try resolution(for: eligible[0], canonical: card))
         }
         return .needsPrintingChoice(canonical: summary, candidates: eligible.map { candidate($0, canonical: card) })
