@@ -16,8 +16,11 @@ import time
 import unicodedata
 import urllib.request
 import uuid
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+from yugioh_official_inventory import RULE as FAMILY_RULE, extract as extract_inventory
 LANES = {"1st Edition": "yugioh1stEdition", "Unlimited": "yugiohUnlimited", "Limited": "yugiohLimited"}
 RARITIES = set("UR SR SCR SE UTR ULR PUR PCR PSR QCSR QCR GR STR CR R C SP SSP MSR ESR GSR PGR".split())
 CODE = re.compile(r"^(?:[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})|IOC-SE[1-4])$")
@@ -67,7 +70,7 @@ def stable(namespace, material):
 def packed(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
 
-def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=10000, price_provenance=None, previous=None, taxonomy_scopes=None):
+def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=10000, price_provenance=None, previous=None, taxonomy_scopes=None, printing_inventory=None):
     entries = collections.defaultdict(list)
     identity_entries = collections.defaultdict(set)
     names, by_id = {}, {}
@@ -188,7 +191,18 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                    if contradicted or (prior or {}).get('historicalContradictions') else {})})
     families = collections.defaultdict(list)
     for row in rows: families[row["c"]].append(row)
+    release_name_counts = collections.Counter((row['g'], norm(row['pn'])) for row in rows)
     auto = []
+    inventories = printing_inventory if isinstance(printing_inventory, list) else [printing_inventory] if printing_inventory else []
+    release_inventories = {}
+    for inventory in inventories:
+        assert inventory['rule'] == FAMILY_RULE and inventory['language'] == 'en'
+        assert inventory['count'] == len(inventory['rows']) > 0
+        assert inventory['groupID'] not in release_inventories, 'duplicate release scope'
+        official_names = collections.defaultdict(list)
+        for entry in inventory['rows']:
+            official_names[norm(entry['name'])].append(entry)
+        release_inventories[inventory['groupID']] = (inventory, official_names)
     for code, family in families.items():
         source_rows = set(entries[code])
         matched = set().union(*(correspondence[x["p"]] for x in family))
@@ -200,9 +214,24 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         counts = collections.Counter(labels)
         for row in family:
             if counts[(row["g"], row["r"], row["art"], row["pn"])] > 1: row["ir"] = "indistinguishableProduct"
-        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and not family[0]["art"] and family[0]["ec"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
+        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and not family[0]["art"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
             cid = entries[code][0][0]
-            if len(by_id[cid].get("card_images", [])) == 1: auto.append(code)
+            row = family[0]
+            inventory, official_names = release_inventories.get(row['g'], (None, {}))
+            official = official_names.get(norm(row['pn']), [])
+            # Release inventory covers all names, rarities and displayed artwork.
+            # Certify reviewed release scopes with an exact, unique two-source
+            # crosswalk; marketplace membership still says nothing about editions
+            # being exhaustive. No name aliases or artwork inference here.
+            verified_family = (inventory is not None and code.startswith(inventory['codePrefix'])
+                and row['r'] in inventory['rarities'] and len(official) == 1
+                and official[0]['rarities'] == [row['r']] and official[0]['artwork'] == 1
+                and norm(by_id[cid]['name']) == norm(row['pn'])
+                and release_name_counts[(row['g'], norm(row['pn']))] == 1)
+            if len(by_id[cid].get("card_images", [])) == 1 and (row['ec'] or verified_family):
+                if verified_family:
+                    row['pf'] = {k: inventory[k] for k in ('rule', 'url', 'sha256', 'count', 'capturedAt', 'productsSHA256', 'groupID', 'codePrefix', 'language', 'rarities')}
+                auto.append(code)
     ordered_cards = sorted(canonical.values(), key=lambda x: x["id"])
     indices = {x["id"]: i for i, x in enumerate(ordered_cards)}
     dates = {x["g"]: x["d"] for x in sets}
@@ -237,6 +266,7 @@ def main():
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--previous-seed", type=pathlib.Path)
     parser.add_argument("--price-receipt", type=pathlib.Path, help="Offline census receipt; binds provider snapshot time to exact raw hashes")
+    parser.add_argument("--official-inventory-html", type=pathlib.Path, action='append', help="Captured full Konami release inventory; repeat for each reviewed release")
     parser.add_argument("--hosting-root", type=pathlib.Path, help="Stage an immutable candidate under the existing Firebase site; never deploy")
     parser.add_argument("--publication-revision", type=int, default=1, help="Candidate publication sequence, independent of provider capture time")
     args = parser.parse_args()
@@ -295,8 +325,24 @@ def main():
     previous = json.loads(args.previous_seed.read_text()) if args.previous_seed else None
     if previous: assert previous.get("policyVersion") == POLICY, "unrecognized historical membership policy"
     taxonomy_scopes = {r['groupID'] for r in CORRESPONDENCE_RULES['rules'] if product_hashes.get(r['groupID']) == r['expectedProductsSHA256']}
+    inventories = []
+    profiles = [json.loads((ROOT / name).read_text()) for name in json.loads((ROOT / 'yugioh_printing_inventories.json').read_text())['inventories']]
+    for path in args.official_inventory_html or []:
+        data = path.read_bytes()
+        inventory = next((p for p in profiles if p['sha256'] == hashlib.sha256(data).hexdigest()), None)
+        assert inventory is not None, 'unreviewed official inventory capture'
+        actual = extract_inventory(data, inventory)
+        assert all(inventory[k] == v for k, v in actual.items()), 'official inventory changed; review required'
+        assert inventory['productsSHA256'] == product_hashes[inventory['groupID']], 'product snapshot changed; review required'
+        timestamp = max(timestamp, inventory['capturedAt'])
+        inventories.append(inventory)
     seed, stats, exceptions, incomplete = build(groups, products, prices, cards, json.loads((ROOT / "yugioh_name_aliases.json").read_text()), json.loads((ROOT / "yugioh_physical_editions.json").read_text())["products"], timestamp,
-        price_provenance=price_provenance, previous={x["p"]: x for x in previous["printings"]} if previous else None, taxonomy_scopes=taxonomy_scopes)
+        price_provenance=price_provenance, previous={x["p"]: x for x in previous["printings"]} if previous else None, taxonomy_scopes=taxonomy_scopes, printing_inventory=inventories)
+    if inventories:
+        stats['printingFamilyRule'] = FAMILY_RULE
+        stats['printingFamilySources'] = [{k: i[k] for k in ('url', 'sha256', 'count', 'capturedAt', 'productsSHA256', 'groupID', 'codePrefix', 'rarities')} for i in inventories]
+        stats['certifiedPrintingFamilies'] = sum(bool(p.get('pf')) for p in seed['printings'])
+        stats['excludedProductsInReviewedReleases'] = sum(p['g'] in {i['groupID'] for i in inventories} and not p.get('pf') for p in seed['printings'])
     stats['correspondenceRuleVersion'] = CORRESPONDENCE_RULES['version']
     stats['taxonomyScopeDriftGroups'] = sorted({r['groupID'] for r in CORRESPONDENCE_RULES['rules']} - taxonomy_scopes)
     retained = {p['p'] for p in seed['printings']}
@@ -361,7 +407,11 @@ def validate_output(seed, strict=False):
         family = families[code]
         assert len(family) == 1, 'automatic family is not a singleton'
         row = family[0]
-        assert not row['ir'] and row['ec'] and row['e'] and row['ee'], 'automatic row lacks admission evidence'
+        assert not row['ir'] and (row['ec'] or row.get('pf')) and row['e'] and row['ee'], 'automatic row lacks admission evidence'
+        if row.get('pf'):
+            assert row['pf']['rule'] == FAMILY_RULE and row['g'] == row['pf']['groupID'] and row['c'].startswith(row['pf']['codePrefix']) and row['r'] in row['pf']['rarities']
+            assert row['pf']['count'] > 0 and row['pf']['language'] == 'en' and not row['art']
+            assert all(re.fullmatch('[a-f0-9]{64}', row['pf'][k]) for k in ('sha256', 'productsSHA256'))
 
 def stage_hosting(seed, root, revision=1):
     """An isolated namespace on the existing host. No deploy/signing authority."""

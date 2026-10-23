@@ -1,0 +1,861 @@
+{
+  "rule": "konami-release-family-v1",
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&sess=1&pid=11101003&rp=99999&request_locale=en",
+  "sha256": "88e0fdcf83ea41c9ac85f74df46bb7f6f5daaf09e5ed859a9ac3817528ab60ea",
+  "count": 105,
+  "rows": [
+    {
+      "name": "Jinzo",
+      "cid": 4758,
+      "rarities": [
+        "Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Steel Ogre Grotto #2",
+      "cid": 4741,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Three-Headed Geedo",
+      "cid": 4752,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Parasite Paracide",
+      "cid": 4769,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "7 Completed",
+      "cid": 4806,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Lightforce Sword",
+      "cid": 4808,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Chain Destruction",
+      "cid": 4813,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Time Seal",
+      "cid": 4984,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Graverobber",
+      "cid": 4985,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gift of The Mystical Elf",
+      "cid": 4986,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Eye of Truth",
+      "cid": 4987,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dust Tornado",
+      "cid": 4988,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Call of the Haunted",
+      "cid": 4989,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Solomon",
+      "cid": 4990,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Earthshaker",
+      "cid": 4991,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Enchanted Javelin",
+      "cid": 4992,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mirror Wall",
+      "cid": 4993,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gust",
+      "cid": 4940,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Driving Snow",
+      "cid": 4941,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Armored Glass",
+      "cid": 4942,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "World Suppression",
+      "cid": 4943,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mystic Probe",
+      "cid": 4944,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Metal Detector",
+      "cid": 4945,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Numinous Healer",
+      "cid": 4946,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Appropriate",
+      "cid": 4947,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Forced Requisition",
+      "cid": 4948,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "DNA Surgery",
+      "cid": 4951,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Regulation of Tribe",
+      "cid": 4952,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Backup Soldier",
+      "cid": 4953,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Major Riot",
+      "cid": 4955,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ceasefire",
+      "cid": 4956,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Light of Intervention",
+      "cid": 4957,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Respect Play",
+      "cid": 4958,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Magical Hats",
+      "cid": 4962,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Nobleman of Crossout",
+      "cid": 4963,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Nobleman of Extermination",
+      "cid": 4964,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Shallow Grave",
+      "cid": 4965,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Premature Burial",
+      "cid": 4966,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Inspection",
+      "cid": 4967,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Prohibition",
+      "cid": 4968,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Morphing Jar #2",
+      "cid": 4969,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Flame Champion",
+      "cid": 4971,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Twin-Headed Fire Dragon",
+      "cid": 4972,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Darkfire Soldier #1",
+      "cid": 4973,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mr. Volcano",
+      "cid": 4974,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Darkfire Soldier #2",
+      "cid": 4975,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Kiseitai",
+      "cid": 4976,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Cyber Falcon",
+      "cid": 4977,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Flying Kamakiri #2",
+      "cid": 4979,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sky Scout",
+      "cid": 4980,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Buster Blader",
+      "cid": 4983,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Michizure",
+      "cid": 4939,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Minor Goblin Official",
+      "cid": 4949,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gamble",
+      "cid": 4950,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Attack and Receive",
+      "cid": 4954,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Solemn Wishes",
+      "cid": 5125,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Skull Invitation",
+      "cid": 4961,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bubonic Vermin",
+      "cid": 4970,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dark Bat",
+      "cid": 4978,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Oni Tank T-34",
+      "cid": 4981,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Overdrive",
+      "cid": 4982,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Burning Land",
+      "cid": 5126,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Cold Wave",
+      "cid": 5127,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fairy Meteor Crush",
+      "cid": 5128,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Limiter Removal",
+      "cid": 5129,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rain of Mercy",
+      "cid": 5151,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Monster Recovery",
+      "cid": 5152,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Shift",
+      "cid": 5130,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Insect Imitation",
+      "cid": 5131,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dimensionhole",
+      "cid": 5132,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ground Collapse",
+      "cid": 5170,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Magic Drain",
+      "cid": 5133,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Infinite Dismissal",
+      "cid": 5112,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gravity Bind",
+      "cid": 5134,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Type Zero Magic Crusher",
+      "cid": 5153,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Shadow of Eyes",
+      "cid": 5135,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Legendary Fisherman",
+      "cid": 5069,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sword Hunter",
+      "cid": 4774,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Drill Bug",
+      "cid": 4775,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Deepsea Warrior",
+      "cid": 4776,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bite Shoes",
+      "cid": 4777,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spikebot",
+      "cid": 4778,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Invitation to a Dark Sleep",
+      "cid": 4746,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Thousand-Eyes Idol",
+      "cid": 4739,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Thousand-Eyes Restrict",
+      "cid": 4740,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Girochin Kuwagata",
+      "cid": 5136,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Hayabusa Knight",
+      "cid": 5137,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bombardment Beetle",
+      "cid": 5138,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "4-Starred Ladybug of Doom",
+      "cid": 5139,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gradius",
+      "cid": 5140,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Vampire Baby",
+      "cid": 5141,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mad Sword Beast",
+      "cid": 5142,
+      "rarities": [
+        "Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Skull Mariner",
+      "cid": 5143,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The All-Seeing White Tiger",
+      "cid": 5144,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Attack Force",
+      "cid": 5145,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Island Turtle",
+      "cid": 5146,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Wingweaver",
+      "cid": 5147,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Science Soldier",
+      "cid": 5148,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Souls of the Forgotten",
+      "cid": 5149,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dokuroyaiba",
+      "cid": 5150,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Fiend Megacyber",
+      "cid": 4761,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gearfried the Iron Knight",
+      "cid": 5059,
+      "rarities": [
+        "Super Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Insect Barrier",
+      "cid": 4832,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Beast of Talwar",
+      "cid": 4789,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Imperial Order",
+      "cid": 4960,
+      "rarities": [
+        "Secret Rare"
+      ],
+      "artwork": 1
+    }
+  ],
+  "releaseName": "PHARAOH'S SERVANT",
+  "groupID": 259,
+  "codePrefix": "PSV-",
+  "language": "en",
+  "rarities": [
+    "Common",
+    "Rare",
+    "Secret Rare",
+    "Super Rare",
+    "Ultra Rare"
+  ],
+  "capturedAt": "2026-10-23T04:04:10Z",
+  "productsSHA256": "76c89a63c7d536f1ce5177377ab9a17cdc4413286f48a056f2f022b2f4608812"
+}

@@ -1,0 +1,99 @@
+{
+  "groups": [
+    {
+      "groupId": 23481,
+      "name": "25th Anniversary Tin: Dueling Mirrors",
+      "abbreviation": "MP24",
+      "isSupplemental": false,
+      "publishedOn": "2024-09-20T00:00:00",
+      "modifiedOn": "2026-09-14T22:55:35.233",
+      "categoryId": 2
+    }
+  ],
+  "products": [
+    {
+      "productId": 579846,
+      "name": "Synchro World",
+      "cleanName": "Synchro World",
+      "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/579846_200w.jpg",
+      "categoryId": 2,
+      "groupId": 23481,
+      "url": "https://www.tcgplayer.com/product/579846/yugioh-25th-anniversary-tin-dueling-mirrors-synchro-world",
+      "modifiedOn": "2026-01-08T13:08:22.22",
+      "imageCount": 1,
+      "presaleInfo": {
+        "isPresale": false,
+        "releasedOn": null,
+        "note": null
+      },
+      "extendedData": [
+        {
+          "name": "Number",
+          "displayName": "Number",
+          "value": "MP24-EN372"
+        },
+        {
+          "name": "Rarity",
+          "displayName": "Rarity",
+          "value": "Common"
+        },
+        {
+          "name": "Attribute",
+          "displayName": "Attribute",
+          "value": "SPELL"
+        },
+        {
+          "name": "Card Type",
+          "displayName": "Card Type",
+          "value": "Field Spell"
+        },
+        {
+          "name": "Description",
+          "displayName": "Description",
+          "value": "Each time a monster is Synchro Summoned, place 2 Signal Counters on this card. If this card in its owner's control is destroyed by an opponent's card effect: You can Special Summon 1 \"Crimson Dragon\" from your Extra Deck. You can remove 4, 7, or 10 Signal Counters from your field; apply the appropriate effect.<br>\u2022 4: Increase or decrease the Level of 1 face-up monster you control by 1.<br>\u2022 7: Special Summon 1 Tuner from your GY.<br>\u2022 10: Special Summon 1 Synchro Monster from your GY."
+        }
+      ]
+    }
+  ],
+  "prices": [
+    {
+      "productId": 579846,
+      "lowPrice": 0.01,
+      "midPrice": 0.2,
+      "highPrice": 19.75,
+      "marketPrice": 0.2,
+      "directLowPrice": 0.05,
+      "subTypeName": "1st Edition"
+    }
+  ],
+  "cards": [
+    {
+      "id": 36742774,
+      "name": "Synchro World",
+      "card_sets": [
+        {
+          "set_name": "25th Anniversary Tin: Dueling Mirrors",
+          "set_code": "MP24-EN372",
+          "set_rarity": "Common",
+          "set_rarity_code": "(C)",
+          "set_price": "0"
+        },
+        {
+          "set_name": "Duelist Nexus",
+          "set_code": "DUNE-EN051",
+          "set_rarity": "Common",
+          "set_rarity_code": "(C)",
+          "set_price": "0"
+        }
+      ],
+      "card_images": [
+        {
+          "id": 36742774,
+          "image_url": "https://images.ygoprodeck.com/images/cards/36742774.jpg",
+          "image_url_small": "https://images.ygoprodeck.com/images/cards_small/36742774.jpg",
+          "image_url_cropped": "https://images.ygoprodeck.com/images/cards_cropped/36742774.jpg"
+        }
+      ]
+    }
+  ]
+}
