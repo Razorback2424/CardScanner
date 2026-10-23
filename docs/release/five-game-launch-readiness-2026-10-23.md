@@ -19,7 +19,7 @@ the requested outcome. A reviewed subset is not adopted as a substitute.
 | Lorcana later physical coverage | Recomputed local payload: 1,749 physical records across sets 1–8. Parsed discrepancy CSV: 1,833 discovery-only rows; sets 9–14 have 243, 242, 243, 243, 247 and 242 rows respectively. These are source records, not a certified physical-printing denominator. |
 | Hyperia City release status | Corrected: the [official announcement](https://www.disneylorcana.com/en-US/news/2026/09/hyp-press-release/) gives October 16 prerelease and October 23 general availability. Set 14 belongs in the current released-set reconciliation. |
 | Privacy/support configuration | Confirmed: Release build settings contain empty URLs. Publication and mailbox operation need actual acceptance; source placeholders are not working pages. |
-| StoreKit implementation | Existing `CollectorToolsStore` and `CollectorToolsTests` include local purchase/store reconstruction/restore/refund and two-card ZIP coverage. The later app-process follow-up below verifies owned-state reload and paid access across termination/relaunch; fresh purchase provenance and completed Files save remain open. Local simulation does not establish sandbox, TestFlight or production availability. |
+| StoreKit implementation | Existing `CollectorToolsStore` and `CollectorToolsTests` include local purchase/store reconstruction/restore/refund and two-card ZIP coverage. The later app-process follow-up verifies owned-state reload and paid access across termination/relaunch; the Files destination follow-up closes local save/reopen acceptance. Fresh purchase provenance remains open. Local simulation does not establish sandbox, TestFlight or production availability. |
 | Other game coverage and pricing | Existing source and dated evidence support the attachment's qualified descriptions. No new exhaustive physical identity census or live pricing census was performed. Yu-Gi-Oh pricing remains dated bundled data. |
 
 The installed Xcode reports 27.1. Apple's [upload SDK requirement](https://developer.apple.com/news/?id=ueeok6yw)
@@ -323,7 +323,8 @@ collection access or device acceptance is established by this pass.
 Native keyboard capture was restored to off. The generated images, app's
 prepared batch, staging copy and empty test folder were left available.
 
-Remaining manual checklist (local StoreKit only):
+Manual checklist recorded at `bb72741` (local StoreKit only; step 2 is now
+completed by the Files destination follow-up below):
 
 1. In Xcode, verify **iPhone 17 Simulator**, Debug and
    `CollectorTools.storekit` before Run; retain isolated collection arguments.
@@ -351,3 +352,61 @@ catalog publication was performed. Local StoreKit evidence is not real
 sandbox/TestFlight/production purchase proof. Next launch workstreams remain
 **released Lorcana coverage** and **approved One Piece production setup**;
 neither was begun in this bounded pass.
+
+## Files destination save and reopen — 2026-10-23
+
+**Candidate:** clean `14c1c95` at entry. Continued the retained synthetic
+two-card batch on the existing **iPhone 17 / iOS 27.0 Simulator** without a
+build, reinstall, purchase/restore action or new XCTest run. The installed debug
+dylib still matches the earlier accepted artifact at SHA-256
+`756f9a92c05805de7f776b5c78db9908d26e3dbb9fa1560c70211370331fc8a6`.
+
+The Save to Files view was already inside the empty acceptance folder. A native
+Device Hub tap on **Save** completed the handoff; the view subsequently
+dismissed back to the retained batch. The first immediate screenshot was
+unchanged, so completion was verified from the later UI and actual destination
+rather than the tap response alone.
+
+Opened system **Files** from the Simulator Home screen. Recents displayed the
+133 KB ZIP; **Show in Enclosing Folder** navigated to
+**On My iPhone → CardScanner-Acceptanc** (the actual retained folder spelling).
+Tapped **eBay Listing Photos.zip** in that destination. Files extracted
+**eBay Listing Photos**, and opening it displayed **Card-01** and **Card-02**,
+each labeled **10 items**. Opened Card-01 and observed the numbered front/back
+JPEG thumbnails. Extraction was performed by Files, not by the verification
+script.
+
+Independent read-only Python ZipFile/Pillow verification of the destination
+and Files-extracted output passed:
+
+- The destination is a separate file in
+  `group.com.apple.FileProvider.LocalStorage` under
+  `File Provider Storage/CardScanner-Acceptanc/eBay Listing Photos.zip`,
+  outside the app temporary directory and SaveToFiles extension staging.
+- The **133,164-byte** destination ZIP equals the retained prepared archive;
+  SHA-256 is
+  `fe11d996ea102dff0e8822ff0742ba5e00a3c8f90c663f4c23a34b279e28c74e`.
+  CRC checking passes, with exactly the twenty expected relative JPEG paths
+  listed in checklist step 2, ten per card and no extra entries. Numbered
+  filenames establish display order; ZIP member storage order is not sorted.
+- Every archived JPEG and every JPEG extracted by Files fully decodes with
+  positive dimensions. All twenty destination/extracted byte sequences equal
+  their generated originals; the extracted tree contains exactly those files.
+
+Local synthetic-only receipt:
+`/private/tmp/cardscanner-files-20261023/saved-zip-verification.json`, SHA-256
+`91909191bc2c70aacc3be9af8bc2ed646c146c24da6190e3c30f199aeaf910a8`.
+The verification script is beside the receipt. The saved ZIP, Files-extracted
+folders and app batch remain available; keyboard capture stayed off.
+
+**Closed:** actual local Save to Files handoff and reopening/extracting that
+saved archive in system Files. This supersedes the earlier unverified Files
+handoff row and checklist step 2 only. The existing ownership restart is already
+closed. Fresh purchase/interruption reconciliation, unowned single-card export
+through the UI and cancellation during generation remain unperformed. Real
+device, third-party destination, sandbox/TestFlight and production/catalog
+gates remain separate.
+
+Only this ledger and `progress.md` changed. The prior **106 passed, zero
+failures** result remains historical and relevant; no broad test rerun, source
+change, commit, push or production action was performed.

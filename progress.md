@@ -1,3 +1,20 @@
+# 2026-10-23 — Saved Files ZIP acceptance
+
+Continued from clean `14c1c95` with the same accepted installed Debug binary
+and retained synthetic batch. Completed **Save to Files** in the local
+`CardScanner-Acceptanc` folder, then opened the destination ZIP in system
+Files. Files extracted `Card-01` and `Card-02`, each with ten items. Independent
+CRC, exact-path, full JPEG decode and byte comparisons passed for all twenty
+destination/archive and Files-extracted images against generated originals.
+The destination ZIP SHA-256 remains
+`fe11d996ea102dff0e8822ff0742ba5e00a3c8f90c663f4c23a34b279e28c74e`.
+This closes the prior local Files handoff/reopen gap; ownership restart was
+already closed. Fresh purchase/interruption reconciliation, unowned single-card
+UI export, generation cancellation, TestFlight and catalog-production work
+remain separate. Only evidence documents changed; no build, test rerun,
+commit, push or production action. See the
+[destination evidence and receipt](docs/release/five-game-launch-readiness-2026-10-23.md#files-destination-save-and-reopen--2026-10-23).
+
 # 2026-10-23 — Bounded process-restart and photo-export acceptance
 
 Validated clean `bb72741` against the exact supplied reviewed-delta SHA-256.
