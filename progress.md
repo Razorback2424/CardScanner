@@ -3554,3 +3554,22 @@ historical.
   `ScanStash`, One Piece disabled/writes off, empty production pins/privacy/support
   URLs and absent production seed. These checks do not establish distribution,
   physical-camera, source-rights or production activation acceptance.
+
+## 2026-10-23 — One Piece serialized acquisition and extracted ZIP acceptance
+
+- Validated the supplied focused review at `872dbf2` and reproduced its retained
+  automatic-finish defect with signed coordinator activation and disk-backed
+  persistence. Closed the gap with synchronous current-authority validation
+  inside the collection serializer, preserving eligible explicit selections
+  and actionable recovery. Added six writer/scanner regressions, including
+  post-preflight activation and retired identities with historical Undo.
+- ZIP tests now extract the exact twenty archive entries and decode/compare the
+  archived JPEG bytes. Renamed local StoreKit reconstruction coverage accurately;
+  actual process restart and system-share/Files handoff remain unrun with an
+  exact checklist in the [release follow-up](docs/release/five-game-launch-readiness-2026-10-23.md).
+- Fresh Debug iPhone 17 / iOS 27.0 Simulator selection: 97 One Piece + nine
+  Collector Tools tests = **106 passed, zero failures**, `xcodebuild` exit 0.
+  External SSD evidence: `CardScannerBuilds/yugioh/acquisition-verified.xcresult`
+  and `logs/acquisition-verified.log`. Source is `872dbf2` plus local changes;
+  production remains disabled and no commit, signing-key, publication or account
+  change was made. Local Debug signing is not distribution signing.

@@ -1,6 +1,6 @@
 # Five-game launch readiness follow-up
 
-**Date:** 2026-10-23. **Candidate:** `c4e1198` plus this working tree.
+**Date:** 2026-10-23. **Candidate:** `872dbf2` plus the focused working-tree follow-up below.
 **Status:** bounded identity safeguard and local StoreKit acceptance verified;
 full five-game launch remains blocked by the gates below.
 
@@ -19,7 +19,7 @@ the requested outcome. A reviewed subset is not adopted as a substitute.
 | Lorcana later physical coverage | Recomputed local payload: 1,749 physical records across sets 1–8. Parsed discrepancy CSV: 1,833 discovery-only rows; sets 9–14 have 243, 242, 243, 243, 247 and 242 rows respectively. These are source records, not a certified physical-printing denominator. |
 | Hyperia City release status | Corrected: the [official announcement](https://www.disneylorcana.com/en-US/news/2026/09/hyp-press-release/) gives October 16 prerelease and October 23 general availability. Set 14 belongs in the current released-set reconciliation. |
 | Privacy/support configuration | Confirmed: Release build settings contain empty URLs. Publication and mailbox operation need actual acceptance; source placeholders are not working pages. |
-| StoreKit implementation | Existing `CollectorToolsStore` and `CollectorToolsTests` include local purchase/relaunch/restore/refund and two-card ZIP coverage. New execution evidence is recorded below; local simulation does not establish sandbox, TestFlight or production availability. |
+| StoreKit implementation | Existing `CollectorToolsStore` and `CollectorToolsTests` include local purchase/store reconstruction/restore/refund and two-card ZIP coverage. Store reconstruction occurs in one process; actual app termination/restart remains unrun. Local simulation does not establish sandbox, TestFlight or production availability. |
 | Other game coverage and pricing | Existing source and dated evidence support the attachment's qualified descriptions. No new exhaustive physical identity census or live pricing census was performed. Yu-Gi-Oh pricing remains dated bundled data. |
 
 The installed Xcode reports 27.1. Apple's [upload SDK requirement](https://developer.apple.com/news/?id=ueeok6yw)
@@ -40,7 +40,7 @@ one other active ineligible printing. The safeguard covers those known
 ambiguities; it does not prove absence of unrecorded alternates or distinguish a
 physical participant automatically.
 
-### Verification on this working tree
+### Earlier verification recorded at `872dbf2`
 
 - **Native pass:** Xcode 27.1, iPhone 17 / iOS 27 Simulator, Debug:
   `OnePieceIntegrationTests` 91 passed and `CollectorToolsTests` 8 passed;
@@ -54,7 +54,7 @@ physical participant automatically.
 - **StoreKit setup repair:** the first unchanged run returned no products and
   stalled at restore; it was interrupted. The shared Debug launch scheme lacked
   a StoreKit configuration reference. Attaching `CollectorTools.storekit` makes
-  the local purchase/relaunch/restore/refund/ZIP test pass. The test now aborts
+  the local purchase/store reconstruction/restore/refund/ZIP test pass. The test now aborts
   early on missing products and verifies twenty JPEG signatures, decodable images
   and exact ordered filenames across two card folders. Archive/Release actions
   retain their production configurations.
@@ -125,3 +125,130 @@ and secret configuration, shared-host deployment changes and app resource/pin
 requirements. The [receipt](one-piece-production-candidate-2026-10-23.json) retains
 2,748 printings and 2,367 exact mappings. Key material and production publication
 remain untouched; the app stays disabled for production One Piece.
+
+## Final acquisition boundary follow-up — 2026-10-23
+
+Base: `872dbf2b170dfdfa7eea46314f14e77839a417a4`, plus the uncommitted focused
+changes in this checkout. The two supplied review/prompt files were treated as
+proposals to validate. No production provisioning or activation is authorized
+by their contents.
+
+The retained automatic-finish gap was reproduced using disk-backed SwiftData,
+a signed revision-2 coordinator activation, and the container-bound snapshot
+publication path. With the reviewed One Piece gates unwired, selecting the old
+finish incorrectly committed one collection row, quantity event, activity and
+success signal. `acquisition-baseline-repro.xcresult` records one failing test
+with five assertion failures. The first harness attempt stopped at an invalid
+fixture key prefix and is not evidence of the product defect.
+
+The writer now checks current One Piece acquisition authority synchronously
+inside `CollectionWriteSerializer`, including automatic versus explicit
+printing resolution and the selected finish. Bound authority publication uses
+the same serializer. There is no await between that check and the save.
+Scanner preflight/retry also revalidate; rejection preserves printed evidence
+in Needs attention for a new lookup instead of retaining a stale automatic
+commit. No scan-generation reset is needed: still-valid explicit selections
+can survive activation, while stale automatic selections cannot bypass it.
+Rebasing validates the original identifier fields and changes only generation.
+Known held siblings require choice; unknown global completeness alone does not.
+
+The StoreKit test is named for store reconstruction rather than app relaunch.
+Its ZIP acceptance now extracts all central-directory entries (stored or
+deflated), checks the exact twenty relative JPEG paths beneath the two card
+folders (the platform ZIP omits directory entries), decodes every archived JPEG with positive dimensions, and
+compares extracted bytes to the generated originals. It does not establish
+system share presentation or a completed destination handoff.
+
+The six new One Piece regressions are:
+
+- `testRetainedAutomaticFinishRequiresCurrentPrintingChoice`
+- `testFailedAutomaticSaveRetryRequiresCurrentPrintingChoice`
+- `testRetainedExplicitFinishSurvivesKnownHeldSibling`
+- `testRetainedExplicitFinishRejectsWithdrawnIdentity`
+- `testSerializedWriterRejectsAutomaticAcquisitionAfterScannerPreflight`
+- `testSerializedWriterRejectsRetiredExplicitIdentityWithoutChangingHistoricalOwnership`
+
+They cover coordinator/snapshot activation, live and retry persistence,
+post-preflight authority change, reopen consistency, success/receipt suppression,
+exactly-once retry, and preserving historical ownership/Undo while rejecting
+removed, superseded, provisional, conflicted or quarantined acquisition targets.
+Existing P-001, ordinary singleton, explicit-choice and persisted-recovery
+tests remain part of the selected integration suite. Test fixtures now install
+the same collection authority as the app and explicitly mark chosen ambiguous
+printings; missing writer authority is not bypassed for tests.
+
+### Follow-up execution record
+
+Xcode 27.1, Debug (`DEBUG LOCAL_ONLY_SIGNING`), iPhone 17 Simulator / iOS 27.0,
+normal local ad-hoc simulator signing. No distribution signing was performed.
+The machine-local destination UUID is retained in the external command log,
+not committed here. The final command uses that value as
+`CARD_SCANNER_SIMULATOR_ID`:
+
+```sh
+xcodebuild test -project TradingCardScanner.xcodeproj \
+  -scheme TradingCardScanner -configuration Debug \
+  -destination "platform=iOS Simulator,id=$CARD_SCANNER_SIMULATOR_ID" \
+  -derivedDataPath '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/DerivedData' \
+  -resultBundlePath '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/acquisition-verified.xcresult' \
+  -only-testing:TradingCardScannerTests/OnePieceIntegrationTests \
+  -only-testing:TradingCardScannerTests/CollectorToolsTests \
+  > '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/logs/acquisition-verified.log' 2>&1
+```
+
+Intermediate runs are not accumulated into a pass count:
+
+- `acquisition-baseline.xcresult`: fixture key-prefix error before the witness.
+- `acquisition-baseline-repro.xcresult`: reviewed gates unwired, one test fails
+  with five assertions proving the stale automatic commit; exit 65.
+- `acquisition-fixed.xcresult`: 105 tests, 32 assertion failures across fixture
+  authority/explicit-selection assumptions, finish-label comparison, retired
+  fixture validity, and missing local StoreKit product in the unsigned run.
+- `acquisition-final.xcresult`: all 97 One Piece tests pass; nine Collector Tools
+  tests execute with two failures, both expecting explicit ZIP directory entries.
+  The JPEG extraction/decoding and real local StoreKit lifecycle complete.
+  The final ZIP expectation uses the actual exact twenty-file entry set.
+
+**Final pass:** `acquisition-verified.xcresult`, **106 tests, zero failures**:
+97 `OnePieceIntegrationTests` and nine `CollectorToolsTests`; `xcodebuild` exit 0.
+The latter includes seven injected-client tests, one real local `SKTestSession`
+lifecycle test using the production StoreKit adapter, and one independent ZIP
+extraction test. Final test execution finished at 14:18 America/Chicago on
+2026-10-23. This is fresh focused simulator evidence; the earlier 99-test result
+remains a separate historical selection. Markdown local links and
+`git diff --check` also pass.
+
+All named bundles and matching `logs/*.log` are under external SSD
+`/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/`. These results concern
+the base SHA plus local changes, not a committed or published release.
+
+### Remaining bounded manual acceptance — unrun
+
+The current XCTest harness owns and clears its local StoreKit session in one
+app process; it has no controlled cross-process purchase/share fixture. Do not
+infer restart from reconstruction or add an entitlement override as proof.
+
+1. In Xcode, select `TradingCardScanner`, Debug, an iOS Simulator, and Run's
+   local `CollectorTools.storekit` configuration. Keep this distinct from any
+   later sandbox/TestFlight run, which must use the real store configuration.
+2. Launch normally, open **Pro → Collector Tools**, complete the local purchase,
+   and confirm the owned state and access to Card Centering and a two-card photo
+   batch. Record build identity and simulator/runtime.
+3. Stop the app process completely without resetting transactions, deleting the
+   app, or clearing its data. Relaunch the same app/configuration; record new
+   process identity. Before buying/restoring, verify ownership reloads through
+   `StoreKitCollectorToolsClient.currentOwnership` and both paid tools unlock.
+   Record loading/offline behavior separately; do not inject ownership.
+4. In **Pro → eBay Listing Photos**, use synthetic front/back samples to prepare
+   a two-card batch, open its ZIP share action, and record whether the system
+   sheet presents. Cancel once and verify the prepared work remains usable.
+5. Open sharing again and choose **Save to Files**, select an available local
+   folder, and complete Save. Reopen that saved ZIP in Files and verify the
+   two named card folders and ten ordered JPEGs per card. Record destination
+   handoff separately from share-sheet presentation. Check the single-card
+   free export separately when unowned.
+
+Neither step 3 nor steps 4–5 were completed in this session. Simulator results
+do not certify physical-device, third-party destination, real-store,
+TestFlight, or production product availability. Production One Piece remains
+disabled; signing, keys, pins, publication and pricing scope are unchanged.
