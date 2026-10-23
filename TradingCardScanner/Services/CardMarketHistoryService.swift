@@ -21,7 +21,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     var authorityRevision: String? = nil
 
     var requiresCatalogMapping: Bool {
-        itemKind != .gradedCard && (game == .onePiece || game == .lorcana)
+        itemKind == .rawCard && (game == .onePiece || game == .lorcana)
     }
 
     @MainActor
@@ -58,12 +58,13 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         exactProductID = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: printRun).map(String.init)
     }
 
-    /// Newer game modules own their reviewed marketplace mappings. Resolve
+    /// Newer game modules own their reviewed raw-card marketplace mappings. Resolve
     /// those from the active catalog, preserving physical UUID/finish identity.
     func resolvingMarketMapping(in runtimes: CardGameRuntimeContainer?) async -> Self {
         var result = self
         guard requiresCatalogMapping else { return result }
-        // Persisted product/variant handles are never authority for these games.
+        // Raw printings require current catalog authority. Sealed and graded
+        // products retain the exact vendor listing selected by their pickers.
         result.exactProductID = nil
         result.providerPrinting = nil
         result.marketVariantID = nil

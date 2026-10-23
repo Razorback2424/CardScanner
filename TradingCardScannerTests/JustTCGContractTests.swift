@@ -97,9 +97,69 @@ final class JustTCGContractTests: XCTestCase {
         card.variantID = PhysicalVariant.foil.id
         let otherFinish = await service.cached(CardMarketHistoryRequest(card: card))
         XCTAssertTrue(otherFinish.isEmpty)
+        card.variantID = PhysicalVariant.nonfoil.id
+        let restoredFinish = await service.cached(CardMarketHistoryRequest(card: card))
+        XCTAssertEqual(restoredFinish, merged)
         card.game = CardGame.pokemon.rawValue
         let otherGame = await service.cached(CardMarketHistoryRequest(card: card))
         XCTAssertTrue(otherGame.isEmpty, "Physical identifiers do not share history across games")
+    }
+
+    @MainActor
+    func testOnePieceSealedHistoryUsesExactVariantAndReusesPersistedCache() async throws {
+        try await assertSealedHistory(game: .onePiece)
+    }
+
+    @MainActor
+    func testLorcanaSealedHistoryUsesExactVariantAndReusesPersistedCache() async throws {
+        try await assertSealedHistory(game: .lorcana)
+    }
+
+    @MainActor
+    private func assertSealedHistory(game: CardGame) async throws {
+        let suite = "SealedHistory-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let transport = JustTCGTransport(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key")
+        let service = CardMarketHistoryService(transport: transport, root: root)
+        let card = CollectedCard(collectionKey: "sealed-history", game: game, providerID: "sealed-history",
+            name: "Fixture Booster Box", setName: "Fixture Set", setCode: "", cardNumber: "",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: nil, variantResolution: .userConfirmed)
+        // Match the vendor identities persisted by CollectionStore.addSealed.
+        card.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
+        card.catalogProviderID = "vendor-box"
+        card.justTCGCardID = "vendor-box"
+        card.justTCGVariantID = "vendor-exact"
+        card.tcgplayerProductID = "12345"
+        let request = CardMarketHistoryRequest(card: card)
+        let resolved = await request.resolvingMarketMapping(in: nil)
+        XCTAssertEqual(resolved, request, "Sealed listings do not require a raw-printing UUID")
+        RecordingURLProtocol.reset(body: #"{"data":[{"uuid":"vendor-box","tcgplayerId":"12345","variants":[{"uuid":"raw","condition":"Near Mint","priceHistory":[{"p":1,"t":1700000000}]},{"uuid":"vendor-other","condition":"Sealed","priceHistory":[{"p":999,"t":1700000000}]},{"uuid":"vendor-exact","condition":"Sealed","priceHistory":[{"p":99,"t":1700000000}]}]}]}"#)
+        let points = try await service.history(for: request)
+        XCTAssertEqual(points.map(\.p), [99])
+        let url = try XCTUnwrap(RecordingURLProtocol.recorded().first)
+        let query = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertEqual(query.first(where: { $0.name == "variantId" })?.value, "vendor-exact")
+        XCTAssertEqual(query.first(where: { $0.name == "include_price_history" })?.value, "true")
+        XCTAssertEqual(query.first(where: { $0.name == "priceHistoryDuration" })?.value, "1y")
+        let reopened = CardMarketHistoryService(transport: transport, root: root)
+        let cached = await reopened.cached(request)
+        XCTAssertEqual(cached, points)
+        let reused = try await reopened.history(for: request)
+        XCTAssertEqual(reused, points)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "Fresh disk cache avoids another provider request")
+        card.justTCGVariantID = "vendor-other"
+        let differentListing = await reopened.cached(.init(card: card))
+        XCTAssertTrue(differentListing.isEmpty, "A different exact sealed listing cannot reuse the old series")
     }
 
     @MainActor
