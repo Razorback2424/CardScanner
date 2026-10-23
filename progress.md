@@ -3521,3 +3521,36 @@ historical.
   deployment or physical-device installation. See the
   [canonical plan](docs/plans/yugioh_code_implementation.md) and
   [commands, counts and remaining owner action](docs/research/yugioh-catalog/verification.md).
+- **2026-10-23 — Supplied five-game launch-readiness review (`c4e1198` plus local changes):**
+  validated the exact source pin, resolved Release settings and Lorcana payload/
+  discrepancy counts. One Piece now requires explicit verified-printing choice
+  when a known active held sibling exists; P-001 cannot automatically become the
+  winner. Unambiguous singletons and explicit acquisition remain supported.
+  Fixed missing local StoreKit scheme configuration and strengthened missing-
+  product/JPEG acceptance. Final native selection: 91 One Piece + 8 Collector
+  Tools tests, **99 passed, zero failed**, including real local StoreKit
+  purchase/relaunch/restore/refund and ordered decodable twenty-JPEG/two-card ZIP
+  output. Initial StoreKit setup failure and intermediate old-policy assertions
+  are recorded separately. Reconciled Hyperia City's October 23 general release
+  and stale monetization-approval wording. Production One Piece configuration,
+  Lorcana later-set physical authority, physical-device/camera, rights, public
+  pages, sandbox/TestFlight and distribution gates remain open; full five-game
+  scope was not reduced. No commit, push, deployment or device installation.
+  See the [validated findings and finish sequence](docs/release/five-game-launch-readiness-2026-10-23.md).
+  Owner-directed continuation prepared an unsigned production revision-1
+  bootstrap candidate on the external SSD, SHA-256
+  `251165ad79ebe34e9b2d8a37919f711d8affb2d550386eac7a71bd27d8323c0b`.
+  The current publisher validates 2,748 retained printings / 2,367 exact mappings;
+  decoded comparison proves only revision/timestamp changed from the reviewed
+  unsigned r3, and all 2,745 owner-r2 printing objects remain unchanged. The
+  existing host's One Piece pointer returned 404. Signing-environment metadata
+  and secret-name API requests also returned 404, leaving protection/access
+  unverified. [Production setup and receipt](docs/release/one-piece-production-setup-2026-10-23.md)
+  are ready for owner review. No production key generation/provisioning, signing,
+  workflow dispatch, publication or activation occurred; production stays disabled.
+  Final independent checks: all 46 One Piece core/publisher package tests pass;
+  unsigned production replay is byte-identical. Normal Release simulator build
+  succeeds for arm64/x86_64 with signing disabled. Built-app inspection confirms
+  `ScanStash`, One Piece disabled/writes off, empty production pins/privacy/support
+  URLs and absent production seed. These checks do not establish distribution,
+  physical-camera, source-rights or production activation acceptance.

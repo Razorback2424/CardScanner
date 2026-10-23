@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "signatureStatus": "unsigned; owner approval required before production key provisioning or publication",
+  "revision": 1,
+  "generatedAt": "2026-10-23T16:36:00Z",
+  "payloadBytes": 16409901,
+  "payloadSHA256": "251165ad79ebe34e9b2d8a37919f711d8affb2d550386eac7a71bd27d8323c0b",
+  "sourceReviewedRevision": 3,
+  "sourceReviewedPayloadSHA256": "65070cad955e848fefa91cd6c87d0e23a753d0b245b70a496c7b28fea2837822",
+  "onlyPublicationMetadataChanged": true,
+  "previousOwnerRevision": 2,
+  "previousOwnerPrintingRecordsPreservedUnchanged": 2745,
+  "retainedPhysicalPrintingCount": 2748,
+  "printingStatuses": {"verified": 2493, "provisional": 224, "conflicted": 31},
+  "exactMarketMappingCount": 2367,
+  "proposedKeyID": "one-piece-production-2026-10-23-01",
+  "keyProvisioned": false,
+  "productionEnabled": false,
+  "hostPointerHTTPStatus": 404,
+  "hostPointerCheckedOn": "2026-10-23"
+}

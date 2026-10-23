@@ -8,6 +8,18 @@ history.
 
 ## Current authority boundary — updated 2026-10-23
 
+**Five-game attachment review on `c4e1198`:** the
+[launch follow-up](../release/five-game-launch-readiness-2026-10-23.md)
+confirms the Release-only One Piece configuration gap and Lorcana discrepancy
+counts. Hyperia City is released as of October 23, so earlier upcoming wording
+does not exclude it from the current denominator. The bounded One Piece safeguard
+requires review when a known ineligible sibling survives beside a verified
+singleton; older automatic P-001 winner expectations are superseded by this
+working-tree change. Full five-game, physical-device and distribution gates
+remain open. Test evidence is recorded separately from implementation.
+The documentation map's older monetization “pending owner approval” wording is
+also superseded by the October 20 owner-approved offer in the monetization plan.
+
 **Automatic scanning pass, local 2026-10-22 on `1ac6750`:** the
 [automatic-family verification](../research/yugioh-catalog/automatic-family-verification.md)
 supersedes older blanket manual-printing/zero-automatic statements only within

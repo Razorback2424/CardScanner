@@ -1,5 +1,11 @@
 # Lorcana normal-workflow pricing rollout
 
+**2026-10-23 launch reconciliation:** the [five-game follow-up](../release/five-game-launch-readiness-2026-10-23.md)
+recomputes 1,833 discovery-only rows, including 1,460 across sets 9–14. Hyperia
+City has reached its October 23 general release, per the linked official source;
+set 14 is no longer upcoming. The existing sets 1–8 policy below describes the
+implemented scope, not completion of the requested full-game launch scope.
+
 **Enchanted extension — 2026-10-15:** the
 [four-game review](catalog-variant-coverage-2026-10-15/README.md) adds all 132
 original Enchanted printings across sets 1–8 using exact footers, reviewed

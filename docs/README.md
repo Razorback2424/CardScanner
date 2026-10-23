@@ -2,6 +2,13 @@
 
 **Status:** current navigation map — 2026-10-15
 
+The [23 October five-game launch follow-up](release/five-game-launch-readiness-2026-10-23.md)
+validates the supplied readiness audit, tracks the bounded One Piece identity
+safeguard and keeps catalog, physical-device and owner release gates explicit.
+The [One Piece production setup](release/one-piece-production-setup-2026-10-23.md)
+contains the exact unsigned candidate and protected signing/deployment proposal
+for owner approval; production remains disabled.
+
 The [20 October card-detail cleanup](release/card-detail-cleanup-2026-10-20.md)
 records bounded chart, artwork, explicit refresh and provenance work separately
 from the unconfirmed hang incident.
@@ -51,7 +58,7 @@ chronological notes.
 
 | Concern | Current authority |
 | --- | --- |
-| Launch commercial rationale and remaining batch-photo gaps | [`plans/CARDSCANNER_LAUNCH_MONETIZATION.md`](plans/CARDSCANNER_LAUNCH_MONETIZATION.md) — proposed free core/free single output and $9.99 one-time batch unlock; price and entitlement boundary pending owner approval. First genuine purchase target: November 2, 2026, Colorado time, without guarantee. |
+| Launch commercial rationale and remaining batch-photo gaps | [`plans/CARDSCANNER_LAUNCH_MONETIZATION.md`](plans/CARDSCANNER_LAUNCH_MONETIZATION.md) — owner-approved free core/free single output and $9.99 one-time Collector Tools unlock for batch photos and guided centering; local StoreKit implementation exists, production product/release gates remain open. First genuine purchase target: November 2, 2026, Colorado time, without guarantee. |
 | Bulk intake differentiation study | [`plans/bulk-intake-differentiation-plan.md`](plans/bulk-intake-differentiation-plan.md) — owner-approved stages; metrics first, then a required device baseline before behavior changes. Formal study protocol remains pending. |
 | Product behavior and supported scope | [`README.md`](../README.md), `TradingCardScanner/`, and `TradingCardScannerTests/` |
 | Card coverage gaps and research priorities | [`audits/card-coverage-gaps-and-research.md`](audits/card-coverage-gaps-and-research.md) — dated source/data review separating explicit exclusions, unresolved printings and unverified completeness; game-specific plans retain implementation authority. |

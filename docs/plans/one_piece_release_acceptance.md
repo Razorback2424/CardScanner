@@ -1,5 +1,17 @@
 # One Piece v1 release acceptance
 
+**2026-10-23 safety follow-up:** number-only scans with a known retained
+provisional/conflicted/quarantined sibling now require explicit selection among
+verified printings. P-001 therefore requires winner confirmation before saving;
+participant ownership remains unavailable. A family with one active verified
+printing still resolves directly. See the [five-game launch follow-up](../release/five-game-launch-readiness-2026-10-23.md)
+for current verification and open production gates. Older direct-save P-001
+evidence below describes the previous behavior.
+The [production setup proposal](../release/one-piece-production-setup-2026-10-23.md)
+now identifies a validated unsigned production-bootstrap payload and exact hash.
+Owner approval is required before production key provisioning or publication;
+no production authority or activation is established by this preparation.
+
 **Status:** owner app supports One Piece in its existing local collection;
 production publication disabled, production writes off.
 **Date:** 2026-10-05. Latest local acceptance: `merge/one-piece-integration`,
@@ -90,7 +102,7 @@ Launch with `-ui_debug_route OnePieceAcceptance`. Optional `-ui_debug_state`:
 | `same-number` (default) | ST11-003 | Choose original ST11 and later ST16 separately; both support normal, only ST11 has an exact mapping. |
 | `starter` | ST01-003 | Sole verified starter printing/normal finish saves directly. |
 | `booster` | OP01-120 | Sole available verified Shanks/foil printing saves directly. |
-| `unmapped` | P-001 | Verified winner/foil saves without manufacturing a quote. |
+| `unmapped` | P-001 | Explicitly select the verified winner/foil; participant remains unavailable and no quote is manufactured. |
 | `unknown` | OP01-999 | Missing number in a recognized series goes to Needs attention without ownership. |
 
 The route's number menu and **Inject number** action allow repeated encounters.
