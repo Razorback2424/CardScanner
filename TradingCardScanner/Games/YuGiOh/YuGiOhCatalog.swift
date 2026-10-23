@@ -11,6 +11,27 @@ struct YuGiOhCatalog: Sendable {
     struct SetInfo: Hashable, Sendable { let groupID: Int; let name: String; let abbreviation: String; let releaseDate: Date? }
     struct Card: Hashable, Sendable { let id: UUID; let name: String; let passcodes: Set<Int> }
     struct Printing: Hashable, Sendable {
+        /// Printing-family coverage only. Edition membership and coverage stay
+        /// independent. This value travels inside the hashed/signed catalog.
+        struct FamilyEvidence: Hashable, Decodable, Sendable {
+            let rule: String; let url: String; let sha256: String; let count: Int
+            let capturedAt: String; let productsSHA256: String
+            let groupID: Int; let codePrefix: String; let language: String; let rarities: [String]
+            var isReviewed: Bool {
+                guard rule == "konami-release-family-v1", count > 0, groupID > 0, language == "en",
+                      !rarities.isEmpty, Set(rarities).count == rarities.count, rarities.allSatisfy({ !$0.isEmpty }),
+                      codePrefix.range(of: "^[A-Z0-9]{2,4}-(?:EN|E)?$", options: .regularExpression) != nil,
+                      [sha256, productsSHA256].allSatisfy({ $0.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil }),
+                      let source = URLComponents(string: url), source.scheme == "https", source.host == "www.db.yugioh-card.com",
+                      source.user == nil, source.password == nil, source.port == nil, source.fragment == nil,
+                      source.path == "/yugiohdb/card_search.action" else { return false }
+                let queries = source.queryItems ?? []
+                guard Set(queries.map(\.name)).count == queries.count else { return false }
+                let values = Dictionary(uniqueKeysWithValues: queries.map { ($0.name, $0.value ?? "") })
+                return values["ope"] == "1" && values["request_locale"] == "en" && values["rp"] == "99999"
+                    && values["pid"]?.range(of: "^[0-9]+$", options: .regularExpression) != nil
+            }
+        }
         struct Membership: Hashable, Decodable, Sendable {
             let e: YuGiOhEdition; let t: String; let q: Double?; let h: String?; let s: String?; let st: String?
         }
@@ -22,6 +43,7 @@ struct YuGiOhCatalog: Sendable {
         let membership: [Membership]
         let identityReason: String?
         let canonicalLinkStatus: String?
+        let familyEvidence: FamilyEvidence?
         var explicitSelectionSupported: Bool {
             identityReason == nil && !editions.isEmpty && (coverageVerified || !membership.isEmpty)
         }
@@ -46,14 +68,6 @@ struct YuGiOhCatalog: Sendable {
     }
     static let unavailablePricingNotice = "Yu-Gi-Oh! pricing source is unavailable. Live per-card refresh is unavailable."
 
-    static func activePricingNotice(in runtimes: CardGameRuntimeContainer?) async -> String {
-        guard let runtime = runtimes?.runtime(for: .yuGiOh) else { return unavailablePricingNotice }
-        let adapter: (any GameCatalogAdapter)?
-        if let source = runtime.activationSource {
-            adapter = await source.currentSnapshot()?.catalog
-        } else { adapter = runtime.catalog }
-        return (adapter as? YuGiOhCatalogAdapter)?.catalog.historicalPricingNotice ?? unavailablePricingNotice
-    }
     static let marketHistoryUnavailableNotice = "Market price history is unavailable for Yu-Gi-Oh! Quotes are dated snapshots."
     private struct Seed: Decodable {
         let schemaVersion: Int; let generation: String; let capturedAt: String
@@ -68,6 +82,7 @@ struct YuGiOhCatalog: Sendable {
         let pe: [YuGiOhEdition]; let img: String?
         let m: [Printing.Membership]?; let ir: String?
         let canonicalLink: String?
+        let pf: Printing.FamilyEvidence?
     }
     init(data: Data) throws {
         let seed = try JSONDecoder().decode(Seed.self, from: data)
@@ -112,13 +127,23 @@ struct YuGiOhCatalog: Sendable {
             let printing = Printing(id: id, code: row.c, set: set, card: cards[row.k], rarity: row.r, artLabel: row.art,
                 productID: row.p, productName: row.pn, editions: row.e.sorted { Self.editionPriority($0) < Self.editionPriority($1) },
                 coverageVerified: row.ec, editionEvidence: row.ee, pricedEditions: row.pe,
-                membership: row.m ?? [], identityReason: row.ir, canonicalLinkStatus: row.canonicalLink,
+                membership: row.m ?? [], identityReason: row.ir, canonicalLinkStatus: row.canonicalLink, familyEvidence: row.pf,
                 thumbnailURL: row.img.flatMap(URL.init(string:)),
                 imageURL: row.img.flatMap { URL(string: $0.replacingOccurrences(of: "_200w", with: "_in_1000x1000")) })
             byID[id] = printing; byCode[row.c, default: []].append(printing)
         }
+        for printing in byID.values where printing.familyEvidence != nil {
+            guard let authority = printing.familyEvidence, authority.isReviewed,
+                  let captured = plainISO.date(from: authority.capturedAt), captured <= date,
+                  printing.set.groupID == authority.groupID, printing.code.hasPrefix(authority.codePrefix), authority.rarities.contains(printing.rarity),
+                  printing.artLabel == nil, printing.identityReason == nil, printing.canonicalLinkStatus == "linked",
+                  byCode[printing.code]?.count == 1, !seed.incompleteCodes.contains(printing.code) else {
+                throw LoadError.invalidRow("printing family authority")
+            }
+        }
         for code in seed.autoEligibleCodes {
-            guard let family = byCode[code], family.count == 1, family[0].coverageVerified, family[0].explicitSelectionSupported,
+            guard let family = byCode[code], family.count == 1,
+                  family[0].coverageVerified || family[0].familyEvidence != nil, family[0].explicitSelectionSupported,
                   family[0].artLabel == nil else { throw LoadError.invalidRow("automatic eligibility") }
         }
         generation = seed.generation; capturedAt = date; setsByGroupID = sets

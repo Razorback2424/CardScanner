@@ -8,6 +8,13 @@ history.
 
 ## Current authority boundary — updated 2026-10-23
 
+**Automatic scanning pass, local 2026-10-22 on `1ac6750`:** the
+[automatic-family verification](../research/yugioh-catalog/automatic-family-verification.md)
+supersedes older blanket manual-printing/zero-automatic statements only within
+260 independently crosswalked families. The implementation is release-driven
+and game-wide; source certification remains bounded. Unknown edition coverage,
+uncertified releases, physical camera and production/release gates remain open.
+
 **Focused pass on `7502144`:** the
 [current local evidence](../research/yugioh-catalog/audited-verification.md#correctness-and-bounded-local-acceptance-on-7502144--2026-10-23)
 supersedes the older open suspended-recovery-preflight and static bundled-wording

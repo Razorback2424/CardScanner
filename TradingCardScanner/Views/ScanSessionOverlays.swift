@@ -525,7 +525,7 @@ struct VariantChoiceBar: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 5) {
-                    ScannerQuestionEyebrow(text: "Which finish is this?")
+                    ScannerQuestionEyebrow(text: choice.card.game == .yuGiOh ? "Which edition is this?" : "Which finish is this?")
                         .accessibilityHidden(true)
                     Text(choice.card.name)
                         .font(.title3.bold())
@@ -559,12 +559,20 @@ struct VariantChoiceBar: View {
 
             if let duplicate = choice.duplicateChoiceContext {
                 let previousFinish = duplicate.previousFinishLabel ?? "an unconfirmed finish"
-                Text("Added this session as \(previousFinish). Choose this copy’s finish to add another.")
+                Text(choice.card.game == .yuGiOh
+                     ? "Added this session as \(previousFinish). Choose this copy’s edition to add another."
+                     : "Added this session as \(previousFinish). Choose this copy’s finish to add another.")
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.82))
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+            if choice.card.game == .yuGiOh && !choice.card.variantEvidence.physicalCoverageVerified {
+                Text("Supported editions shown. Other editions may not yet be cataloged. No readable stamp does not establish Unlimited.")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.82))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             options
         }
         .foregroundStyle(.white)

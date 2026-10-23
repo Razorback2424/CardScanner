@@ -113,6 +113,11 @@ enum VariantOutcome: Equatable {
 /// list and must never be added to it: an optical model may one day *rank* the
 /// options under the user's thumb, but it may not answer for them.
 enum VariantResolver {
+    static func resolveAcquisition(_ evidence: VariantEvidence, printedEdition: PrintedEditionEvidence,
+                                   finishLock: VariantLock? = nil, printedFinish: PhysicalVariant? = nil) -> VariantOutcome {
+        gate(evidence, printedEdition: printedEdition)
+            ?? resolve(evidence, finishLock: finishLock, printedFinish: printedFinish)
+    }
     /// Empty options mean the existing Needs attention path, never an unknown
     /// persisted identity. Contradictory positives cannot be erased by a lock.
     static func gate(_ evidence: VariantEvidence, printedEdition: PrintedEditionEvidence) -> VariantOutcome? {

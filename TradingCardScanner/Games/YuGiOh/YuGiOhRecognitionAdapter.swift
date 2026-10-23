@@ -51,7 +51,15 @@ struct YuGiOhRecognitionAdapter: GameRecognitionAdapter {
         let editionLines = footer.filter { $0.boundingBox.map { $0.minX < 0.5 } ?? true }
             + band.filter { $0.boundingBox.map { $0.maxX <= 0.5 } ?? true }
         return .identified(.init(identifier: try! Self.identifier(code: code, generation: catalog.generation),
-            printedEdition: .merged(editionLines.map { Self.edition($0.text) })))
+            printedEdition: .merged(editionLines.map { line in
+                let evidence = Self.edition(line.text)
+                // Vision supplies confidence; unscored recorded/injected lines
+                // retain their existing semantics. A faint positive stamp must
+                // not newly authorize an automatic acquisition.
+                if !evidence.observed.isEmpty, !evidence.isConflict, let confidence = line.confidence,
+                   !confidence.isFinite || confidence < 0.8 { return .unreadable }
+                return evidence
+            })))
     }
     /// Only digit-led First tokens are accepted. T/S/I fragments overlap Limited
     /// and are deliberately illegible. These are synthetic rules, not camera calibration.

@@ -48,7 +48,8 @@ struct ScannerView: View {
 
     private var acceptanceReady: Bool {
         if YuGiOhAcceptanceLaunch.enabled {
-            if YuGiOhAcceptanceLaunch.pricingSourceReview || YuGiOhAcceptanceLaunch.storageDirectory != "YuGiOhAcceptance" {
+            if YuGiOhAcceptanceLaunch.pricingSourceReview
+                || (YuGiOhAcceptanceLaunch.initialSample == nil && YuGiOhAcceptanceLaunch.storageDirectory != "YuGiOhAcceptance") {
                 return runtimes?.runtime(for: .yuGiOh) != nil
             }
             return injectedYuGiOhSample && (yuGiOhDiagnostic != nil

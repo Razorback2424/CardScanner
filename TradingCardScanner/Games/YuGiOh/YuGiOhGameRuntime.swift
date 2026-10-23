@@ -51,6 +51,8 @@ enum YuGiOhAcceptanceLaunch {
               arguments[route + 1] == "YuGiOhAcceptance",
               let state = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(state + 1) else { return "YuGiOhAcceptance" }
         switch arguments[state + 1] {
+        case "MP24-EN372": return "YuGiOhAutomaticEditionAcceptance"
+        case "MP24-EN372-first": return "YuGiOhAutomaticFirstAcceptance"
         case "csv-import": return "YuGiOhCSVImportAcceptance"
         case "mixed-csv-source": return "YuGiOhMixedCSVSourceAcceptance"
         case "mixed-csv-import": return "YuGiOhMixedCSVImportAcceptance"
@@ -74,9 +76,12 @@ enum YuGiOhAcceptanceLaunch {
     enum Sample: String, CaseIterable, Identifiable {
         case older = "LOB-001", modern = "RA02-EN001", limited = "IOC-SE1", unknown = "LOB-999"
         case reissue = "LOB-EN001", mixedDiscovery = "DCR-EN000", european = "MRL-E104"
+        case mp24 = "MP24-EN372", mp24First = "MP24-EN372-first"
         var id: String { rawValue }
         var lines: [RecognizedLine] {
-            [.init(text: rawValue)] + (self == .limited ? [.init(text: "Limited Edition")] : [])
+            [.init(text: self == .mp24First ? Sample.mp24.rawValue : rawValue)]
+                + (self == .limited ? [.init(text: "Limited Edition")] : [])
+                + (self == .mp24First ? [.init(text: "1st Edition")] : [])
         }
     }
     /// Optional deterministic fixture OCR for the existing screenshot script.

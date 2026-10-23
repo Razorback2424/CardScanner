@@ -4341,9 +4341,9 @@ final class ScannerViewModel: ObservableObject {
             evidence = evidence.excludingFirstEditionPseudoFinish()
         }
 
-        let outcome = VariantResolver.gate(evidence, printedEdition: request.subject.slab == nil ? request.subject.printedEdition : .absent)
-            ?? VariantResolver.resolve(
+        let outcome = VariantResolver.resolveAcquisition(
             evidence,
+            printedEdition: request.subject.slab == nil ? request.subject.printedEdition : .absent,
             finishLock: request.subject.slab == nil ? finishLocks[card.game] : nil,
             printedFinish: request.subject.slab?.printedFinish
         )

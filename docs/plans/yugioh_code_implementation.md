@@ -1,5 +1,14 @@
 # Yu-Gi-Oh! implementation and verification
 
+**Automatic scanning update — 2026-10-22, base `1ac6750`:** shared resolution
+and final-save policy now separate verified printing families from exhaustive
+edition coverage. Release-driven evidence admits 260 families across MP24,
+Duelist Nexus and Pharaoh's Servant. Supported positive edition evidence skips
+both questions; unresolved edition asks only that question for certified
+families. This supersedes the blanket manual-printing contract below, but does
+not certify all printings. See the [current automatic-family verification](../research/yugioh-catalog/automatic-family-verification.md)
+for scope counts, commands, evidence gaps and validation status.
+
 **Current bounded acceptance — 2026-10-23, base `7502144`:** shared quantity
 intent and exact-provider history defects are fixed. Recovery-preflight
 suspension/cancellation/authority replacement is native-verified. Scanner,
@@ -95,9 +104,11 @@ input. Missing future rows retain historical membership through
 `--previous-seed`; explicit conflicting revisions remove only the affected
 edition. Historical values are not copied into a new quote.
 
-Unknown exhaustive coverage does not block explicit choice. It always prevents
-singleton/lock inference. Reliable copy-specific First/Limited text can resolve
-a supported edition only after printing selection; missing stamps never imply
+Unknown exhaustive edition coverage does not block explicit choice or supported
+positive edition text. It prevents inferring an edition from a singleton or lock.
+Reliable copy-specific First/Limited text can resolve a supported edition after
+either certified automatic printing resolution or explicit printing selection;
+missing stamps never imply
 Unlimited. Conflicting positives enter Needs attention. No stock-image stamp or
 canonical image array resolves the owner's printing or edition.
 

@@ -8,6 +8,15 @@ extension YuGiOhEdition {
 
 extension YuGiOhCatalog {
     var runtime: CardGameRuntime { YuGiOhGameRuntime(catalog: self).runtime }
+
+    static func activePricingNotice(in runtimes: CardGameRuntimeContainer?) async -> String {
+        guard let runtime = runtimes?.runtime(for: .yuGiOh) else { return unavailablePricingNotice }
+        let adapter: (any GameCatalogAdapter)?
+        if let source = runtime.activationSource {
+            adapter = await source.currentSnapshot()?.catalog
+        } else { adapter = runtime.catalog }
+        return (adapter as? YuGiOhCatalogAdapter)?.catalog.historicalPricingNotice ?? unavailablePricingNotice
+    }
 }
 
 struct YuGiOhCatalogAdapter: GameCatalogAdapter {
@@ -53,10 +62,39 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
         return try resolution(forPrintingID: p.id)
     }
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
+        try validatePrintingAcquisition(identifier, printingID: printingID, automatic: automatic)
+    }
+    private func validatePrintingAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) throws {
         let code = try code(for: prepareLookupIdentifier(identifier))
         guard let p = catalog.printingsByCode[code]?.first(where: { $0.idString == printingID }),
               !automatic || catalog.autoEligibleCodes.contains(code) else { throw CatalogLookupError.invalidPrintingChoice }
         _ = try resolution(forPrintingID: p.id)
+    }
+    /// Re-run the same edition policy against current authority at the write
+    /// boundary. The candidate carries the actual capture, never a synthetic tap.
+    func validateAcquisition(_ candidate: CollectionCommitCandidate) throws {
+        try Task.checkCancellation()
+        try validatePrintingAcquisition(candidate.acquisitionIdentifier,
+            printingID: candidate.card.physicalPrintingID,
+            automatic: candidate.identityResolution != .userSelectedPrinting)
+        guard let id = UUID(uuidString: candidate.card.physicalPrintingID) else { throw CatalogLookupError.invalidPrintingChoice }
+        let current = try resolution(forPrintingID: id).card
+        guard candidate.card.game == .yuGiOh, candidate.subject.slab == nil,
+              current.canonicalCardID == candidate.card.canonicalCardID,
+              let selected = candidate.resolved.variant,
+              current.variantEvidence.catalogVariants.contains(selected) else { throw CatalogLookupError.invalidPrintingChoice }
+        let outcome = VariantResolver.resolveAcquisition(current.variantEvidence, printedEdition: candidate.subject.printedEdition)
+        switch outcome {
+        case let .resolved(resolved):
+            guard resolved.variant == selected,
+                  candidate.resolved.resolution == resolved.resolution || candidate.resolved.resolution == .userConfirmed else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        case let .needsChoice(options, _):
+            guard candidate.resolved.resolution == .userConfirmed, options.contains(selected) else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        }
     }
     func validateVariantCorrection(printingID: String, variantID: String?) throws {
         guard let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,

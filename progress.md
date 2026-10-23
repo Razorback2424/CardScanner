@@ -1,3 +1,30 @@
+# 2026-10-23 — Yu-Gi-Oh automatic-resolution verification
+
+Re-ran the current candidate based on `1ac6750`: 457 selected iOS 27.0 Simulator
+tests passed with zero failures, including catalog admission, current-authority
+save validation, scanner workflows and neighboring-game regressions. The Python
+builder suite passed 33 tests and its self-test passed. Results are on the
+external SSD at `CardBuilds/yugioh-integration-20261023/`; no device-install or
+physical-camera claim is made. See the [automatic-family evidence](docs/research/yugioh-catalog/automatic-family-verification.md).
+
+# 2026-10-22 — Game-wide Yu-Gi-Oh! automatic resolution
+
+Validated the supplied scanning prompt against clean `1ac6750`. Replaced the
+coupled printing/edition authority assumption with release-driven family
+provenance and shared acquisition resolution at recognition and final save.
+Verified 260 families across MP24, Duelist Nexus and Pharaoh's Servant; every
+edition-coverage flag remains unknown. Positive supported edition text can skip
+both pickers, while absent text requires the edition answer. Updated Yu-Gi-Oh!
+copy and isolated debug OCR routes. All-printings source coverage remains open;
+this is not full automatic-scanning completion. Builder (33), local publisher
+(5) and final native (119) regressions pass. The earlier lifecycle failure also
+passed on both unchanged HEAD and the final implementation in isolation.
+Final Simulator and generic iOS builds passed. Inspected edition-only and
+positive-First injected UI captures; the explicit edition tap and automatic
+one-card receipt/Undo both work. First-launch camera permission was declined;
+these remain fixture/UI evidence, not physical-camera acceptance. See the
+[current evidence](docs/research/yugioh-catalog/automatic-family-verification.md).
+
 # 2026-10-22 — Validated b11fd6f sealed-history review
 
 Confirmed the attached review's P2 against clean `b11fd6f`; both new sealed-history

@@ -517,6 +517,17 @@ enum YuGiOhFixture {
         object["incompleteCodes"] = ["RA02-EN037"]
         return object
     }
+    static func mp24Object() throws -> [String: Any] {
+        let url = try XCTUnwrap(Bundle.main.url(forResource: "catalog", withExtension: "json", subdirectory: "YuGiOhCatalogSeed"))
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        var row = try XCTUnwrap((object["printings"] as? [[String: Any]])?.first { $0["c"] as? String == "MP24-EN372" })
+        let card = (object["cards"] as! [[String: Any]])[row["k"] as! Int]
+        row["k"] = 0
+        object["cards"] = [card]; object["printings"] = [row]
+        object["sets"] = (object["sets"] as! [[String: Any]]).filter { $0["g"] as? Int == 23481 }
+        object["autoEligibleCodes"] = ["MP24-EN372"]; object["incompleteCodes"] = []
+        return object
+    }
     static func subject(_ catalog: YuGiOhCatalog, _ edition: PrintedEditionEvidence = .absent) throws -> ScanSubject {
         .init(identifier: try identifier(catalog), printedEdition: edition)
     }
@@ -733,6 +744,82 @@ final class YuGiOhImportTests: XCTestCase {
 
 @MainActor
 final class YuGiOhWorkflowTests: XCTestCase {
+    func testMP24WriterRejectsContradictionWithdrawalAndStaleGenerationWithoutPartialWrites() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-MP24-write-\(UUID())/collection.store")
+        let original = try container(url), catalog = try YuGiOhCatalog.bundled.get()
+        let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let p = try XCTUnwrap(catalog.printingsByCode["MP24-EN372"]?.first)
+        let card = try adapter.resolution(forPrintingID: p.id).card
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: p.code, generation: catalog.generation)
+        func candidate(_ evidence: PrintedEditionEvidence) -> CollectionCommitCandidate {
+            .init(resolvedScan: .init(request: .init(subject: .init(identifier: identifier, printedEdition: evidence),
+                purpose: .collection, generation: 0), card: card,
+                resolved: .init(variant: .yugiohFirstEdition, resolution: .printedLabel), pokemonPrintRun: nil,
+                options: [.yugiohFirstEdition]))
+        }
+        let writer = ScannerCollectionWriter(modelContainer: original)
+        for evidence in [PrintedEditionEvidence.absent, .observed(.yugiohLimited),
+                         .merged([.observed(.yugiohFirstEdition), .observed(.yugiohLimited)])] {
+            do { _ = try await writer.add(candidate(evidence)); XCTFail("Unsupported acquisition must be rejected") } catch {}
+        }
+        var object = try YuGiOhFixture.mp24Object()
+        object["generation"] = "yugioh-en-withdrawn"
+        object["autoEligibleCodes"] = []
+        var rows = object["printings"] as! [[String: Any]]
+        rows[0].removeValue(forKey: "pf"); rows[0]["e"] = []; rows[0]["m"] = []
+        object["printings"] = rows
+        let withdrawn = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        let withdrawalBound = try await CardGameRuntimeContainer(runtimes: [withdrawn.runtime]).bound(to: original)
+        do { _ = try await writer.add(candidate(.observed(.yugiohFirstEdition))); XCTFail("Old authority must not commit") } catch {}
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+        XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+        // Retry after a fresh authority installation succeeds without a partial
+        // event from any rejected attempt. These are isolated test stores.
+        let retryBound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+        _ = try await writer.add(candidate(.observed(.yugiohFirstEdition)))
+        XCTAssertEqual(try original.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 1)
+        XCTAssertEqual(try original.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        withExtendedLifetime((bound, withdrawalBound, retryBound)) {}
+    }
+    func testAutomaticAndEditionOnlyAcrossModernAndLegacyCatalogReopen() async throws {
+        for (code, observed) in ["MP24-EN372", "DUNE-EN051", "PSV-001"].flatMap({ code in [true, false].map { (code, $0) } }) {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-MP24-\(UUID())/collection.store")
+            let catalog = try YuGiOhCatalog.bundled.get(), original = try container(url)
+            let printing = try XCTUnwrap(catalog.printingsByCode[code]?.first)
+            let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
+            let model = ScannerViewModel(gameRegistry: bound.registry, priceQuoteService: bound.makePriceQuoteService(),
+                catalog: bound.makeCardCatalog(), unresolvedScanStore: UnresolvedScanStore(fileURL: url.deletingLastPathComponent().appendingPathComponent("recovery.json")))
+            model.start(context: original.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+            defer { model.viewDisappeared() }
+            let lines: [RecognizedLine] = [.init(text: code, confidence: 0.99)]
+                + (observed ? [.init(text: "1st Edition", confidence: 0.99)] : [])
+            guard case let .identified(subject) = YuGiOhRecognitionAdapter(catalog: catalog).identify(lines) else { return XCTFail() }
+            model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+            let settled = await waitUntil { observed ? model.successCount == 1 : model.pendingChoice != nil }
+            XCTAssertTrue(settled)
+            XCTAssertNil(model.pendingIdentityChoice)
+            if !observed {
+                XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+                XCTAssertEqual(model.pendingChoice?.options, printing.editions.map(\.variant))
+                model.choose(.yugiohFirstEdition)
+                let saved = await waitUntil { model.successCount == 1 }
+                XCTAssertTrue(saved)
+            }
+            XCTAssertNil(model.pendingChoice)
+            let rows = try original.mainContext.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1); XCTAssertEqual(rows.first?.quantity, 1)
+            XCTAssertEqual(rows.first?.variantID, "yugioh1stEdition")
+            XCTAssertEqual(rows.first?.identityResolutionRaw, IdentityResolution.printedIdentifier.rawValue)
+            XCTAssertEqual(rows.first?.variantResolutionRaw, (observed ? VariantResolution.printedLabel : .userConfirmed).rawValue)
+            XCTAssertEqual(try original.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+            let reopened = try container(url)
+            let restored = try XCTUnwrap(reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(restored.collectionKey, "yu-gi-oh:\(printing.idString)#yugioh1stEdition")
+            XCTAssertEqual(restored.quantity, 1)
+        }
+    }
     func testMixedGameMultiQuantityCSVReopenResumeAndAdditionalCopies() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-mixed-csv-\(UUID())")
         let source = try container(root.appendingPathComponent("source.store"))
@@ -1623,6 +1710,33 @@ final class YuGiOhWorkflowTests: XCTestCase {
 }
 
 final class YuGiOhCatalogTests: XCTestCase {
+    func testPrintingFamilyProvenanceIsValidatedAndOldCatalogDefaultsUnavailable() throws {
+        let source = try YuGiOhFixture.mp24Object()
+        for attack in ["hash", "count", "scope", "art", "quarantine", "duplicate", "missing"] {
+            var object = source
+            var rows = object["printings"] as! [[String: Any]]
+            var authority = rows[0]["pf"] as! [String: Any]
+            switch attack {
+            case "hash": authority["sha256"] = "invalid"
+            case "count": authority["count"] = 0
+            case "scope": rows[0]["c"] = "LOB-001"
+            case "art": rows[0]["art"] = "Alternate Art"
+            case "quarantine": rows[0]["ir"] = "conflictingIdentity"
+            case "duplicate": var other = rows[0]; other["id"] = UUID().uuidString.lowercased(); other["p"] = 999999; rows.append(other)
+            default: rows[0].removeValue(forKey: "pf")
+            }
+            if attack != "missing" { rows[0]["pf"] = authority }
+            object["printings"] = rows
+            XCTAssertThrowsError(try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object)), attack)
+        }
+        var old = source
+        var rows = old["printings"] as! [[String: Any]]
+        rows[0].removeValue(forKey: "pf"); old["printings"] = rows; old["autoEligibleCodes"] = []
+        let decoded = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: old))
+        XCTAssertTrue(decoded.autoEligibleCodes.isEmpty)
+        XCTAssertNil(decoded.printingByID.values.first?.familyEvidence)
+        XCTAssertFalse(try XCTUnwrap(decoded.printingByID.values.first).coverageVerified)
+    }
     func testQuarantinedReviewedSingletonDoesNotPoisonSafeSiblingInActualLoader() throws {
         var object = YuGiOhFixture.object(count: 2, auto: false)
         var rows = object["printings"] as! [[String: Any]]
@@ -1654,7 +1768,8 @@ final class YuGiOhCatalogTests: XCTestCase {
         XCTAssertEqual(rows.count, 46_542)
         XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 46_303)
         XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 239)
-        XCTAssertTrue(catalog.autoEligibleCodes.isEmpty)
+        XCTAssertEqual(catalog.autoEligibleCodes.count, 260)
+        XCTAssertTrue(catalog.autoEligibleCodes.contains("MP24-EN372"))
         XCTAssertTrue(rows.allSatisfy { !$0.coverageVerified })
         XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 59_965)
         XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_264)
@@ -1761,6 +1876,17 @@ final class GameRecognitionRegistrySupplementalTests: XCTestCase {
 }
 
 final class YuGiOhRecognitionTests: XCTestCase {
+    func testLowConfidencePositiveEditionRequiresAnAnswer() throws {
+        let adapter = YuGiOhRecognitionAdapter(catalog: try YuGiOhFixture.catalog())
+        for confidence in [Float(0.2), .nan, .infinity] {
+            guard case let .identified(subject) = adapter.identify([.init(text: "RA02-EN037"),
+                .init(text: "1st Edition", confidence: confidence)]) else { return XCTFail() }
+            XCTAssertEqual(subject.printedEdition, .unreadable)
+        }
+        guard case let .identified(subject) = adapter.identify([.init(text: "RA02-EN037"),
+            .init(text: "1st Edition", confidence: 0.99)]) else { return XCTFail() }
+        XCTAssertEqual(subject.printedEdition, .observed(.yugiohFirstEdition))
+    }
     func testTwoKnownCodesRemainAmbiguous() throws {
         var object = YuGiOhFixture.object(count: 2, auto: false)
         var rows = object["printings"] as! [[String: Any]]
@@ -1818,6 +1944,66 @@ final class YuGiOhRecognitionTests: XCTestCase {
 
 @MainActor
 final class YuGiOhResolutionTests: XCTestCase {
+    func testGameWideEditionPolicyIsIndependentOfReleaseAndRarity() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get(), adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        for code in ["MP24-EN372", "DUNE-EN051", "PSV-001"] {
+            let p = try XCTUnwrap(catalog.printingsByCode[code]?.first)
+            let identifier = try YuGiOhRecognitionAdapter.identifier(code: code, generation: catalog.generation)
+            guard case let .resolved(resolution) = try await adapter.lookup(identifier) else { return XCTFail(code) }
+            let evidence = resolution.card.variantEvidence
+            XCTAssertFalse(evidence.physicalCoverageVerified)
+            XCTAssertEqual(VariantResolver.resolveAcquisition(evidence, printedEdition: .observed(.yugiohFirstEdition)),
+                .resolved(.init(variant: .yugiohFirstEdition, resolution: .printedLabel)), code)
+            guard case .needsChoice = VariantResolver.resolveAcquisition(evidence, printedEdition: .absent) else { return XCTFail(code) }
+            try await adapter.validateAcquisition(identifier, printingID: p.idString, automatic: true)
+        }
+        for edition in YuGiOhEdition.allCases {
+            let evidence = VariantEvidence(game: .yuGiOh, setID: "any-release", cardNumber: "any-code",
+                catalogVariants: [edition.variant], physicalCoverageVerified: false, explicitMembershipSupported: true)
+            XCTAssertEqual(VariantResolver.resolveAcquisition(evidence, printedEdition: .observed(edition.variant)),
+                .resolved(.init(variant: edition.variant, resolution: .printedLabel)))
+            XCTAssertEqual(VariantResolver.resolveAcquisition(evidence, printedEdition: .absent),
+                .needsChoice(options: [edition.variant], lockDidNotApply: nil))
+        }
+    }
+    func testMP24SaveRevalidatesActualEvidenceAndCurrentFamilyAuthority() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get(), adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let p = try XCTUnwrap(catalog.printingsByCode["MP24-EN372"]?.first)
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: p.code, generation: catalog.generation)
+        let card = try adapter.resolution(forPrintingID: p.id).card
+        func candidate(_ evidence: PrintedEditionEvidence, _ resolution: VariantResolution = .printedLabel,
+                       _ variant: PhysicalVariant = .yugiohFirstEdition) -> CollectionCommitCandidate {
+            .init(resolvedScan: .init(request: .init(subject: .init(identifier: identifier, printedEdition: evidence),
+                purpose: .collection, generation: 0), card: card,
+                resolved: .init(variant: variant, resolution: resolution), pokemonPrintRun: nil,
+                options: card.variantEvidence.catalogVariants))
+        }
+        let positive = candidate(.observed(.yugiohFirstEdition))
+        XCTAssertNoThrow(try adapter.validateAcquisition(positive))
+        XCTAssertNoThrow(try adapter.validateAcquisition(candidate(.absent, .userConfirmed)))
+        for bad in [candidate(.absent), candidate(.unreadable), candidate(.observed(.yugiohLimited)),
+                    candidate(.merged([.observed(.yugiohLimited), .observed(.yugiohFirstEdition)])),
+                    candidate(.observed(.yugiohFirstEdition), .finishLock)] {
+            XCTAssertThrowsError(try adapter.validateAcquisition(bad))
+        }
+        let withdrawn = try replacementOfMP24()
+        XCTAssertThrowsError(try YuGiOhCatalogAdapter(catalog: withdrawn).validateAcquisition(positive))
+        let canceled = Task { try adapter.validateAcquisition(positive) }
+        canceled.cancel()
+        do { try await canceled.value; XCTFail("Cancellation must reject acquisition") } catch is CancellationError {}
+    }
+
+    private func replacementOfMP24() throws -> YuGiOhCatalog {
+        // A generation replacement retains the UUID but cannot inherit the old
+        // scan's authority, even if the exact edition remains supported.
+        var object = try YuGiOhFixture.mp24Object()
+        object["generation"] = "yugioh-en-replaced-family"
+        object["autoEligibleCodes"] = []
+        var rows = object["printings"] as! [[String: Any]]
+        for i in rows.indices { rows[i].removeValue(forKey: "pf") }
+        object["printings"] = rows
+        return try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+    }
     func testRealDCRFamilyKeepsUnsupportedDiscoveryDisabled() async throws {
         let catalog = try YuGiOhCatalog.bundled.get(), adapter = YuGiOhCatalogAdapter(catalog: catalog)
         let identifier = try YuGiOhRecognitionAdapter.identifier(code: "DCR-EN000", generation: catalog.generation)

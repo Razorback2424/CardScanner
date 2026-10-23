@@ -1,5 +1,11 @@
 # Audited Yu-Gi-Oh! implementation evidence — 2026-10-23
 
+**Automatic scanning update — local 2026-10-22:** the
+[automatic-family verification](automatic-family-verification.md) is the current
+authority for the game-wide resolution policy and its bounded source coverage.
+It supersedes earlier blanket zero-automatic/manual-printing statements; other
+acceptance and release gates below remain separate.
+
 ## Sealed-history review follow-up on b11fd6f — 2026-10-22 local
 
 Validated the supplied `CardScanner_Review_b11fd6f_2026-10-23.txt` against clean

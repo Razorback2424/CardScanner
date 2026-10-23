@@ -571,6 +571,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
 
         return try performOwnershipWrite { context in
           do {
+            try validateScanAcquisition(candidate, in: context)
             let store = CollectionStore(context: context)
 
             if let slab = candidate.subject.slab {
@@ -624,6 +625,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             // Both add and correction use the same staging gate: a lookup with
             // no provider observation must leave the price ledger untouched.
             stagePrice(candidate.price, for: stored, in: context)
+            try validateScanAcquisition(candidate, in: context)
             try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
             return mutation
           } catch {
@@ -878,6 +880,15 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             }
             _ = try adapter.prepareLookupIdentifier(identifier)
         }
+    }
+
+    private func validateScanAcquisition(_ candidate: CollectionCommitCandidate, in context: ModelContext) throws {
+        guard candidate.identifier.game == .yuGiOh else { return }
+        guard let adapter = CollectionStoreSessionRegistry.shared
+            .mutationAuthority(for: .yuGiOh, container: context.container).adapter as? YuGiOhCatalogAdapter else {
+            throw CatalogLookupError.staleCatalog
+        }
+        try adapter.validateAcquisition(candidate)
     }
 
     func undo(_ mutation: CollectionMutation) throws {
