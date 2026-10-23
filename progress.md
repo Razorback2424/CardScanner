@@ -1,3 +1,20 @@
+# 2026-10-22 — Validated b11fd6f sealed-history review
+
+Confirmed the attached review's P2 against clean `b11fd6f`; both new sealed-history
+tests failed against the original source. Restricted One Piece/Lorcana catalog
+mapping enforcement to raw cards, preserving exact sealed vendor identities and
+the existing cache format. Added both-game exact-variant fetch, persisted-cache
+reuse and listing-isolation coverage. Fixed the cross-game cache assertion to
+restore and confirm the cached finish before changing game.
+
+Focused Simulator verification passed eight tests with zero failures, including
+raw remap/withdrawal, graded history and existing sealed add/undo/repricing.
+[Review follow-up evidence](docs/research/yugioh-catalog/audited-verification.md#sealed-history-review-follow-up-on-b11fd6f--2026-10-22-local)
+records the selection and logs. This is synthetic-provider service evidence;
+mixed-game Files/UI acceptance, device installation and production/release gates
+remain open. The review validation run made no commit or push; this follow-up is
+being recorded in separate auditability commits.
+
 # 2026-10-23 — Focused correctness and bounded local acceptance
 
 Working from clean base `7502144`. Quantity edits retain the count visible before

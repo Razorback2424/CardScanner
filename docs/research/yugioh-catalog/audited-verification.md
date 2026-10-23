@@ -1,5 +1,45 @@
 # Audited Yu-Gi-Oh! implementation evidence — 2026-10-23
 
+## Sealed-history review follow-up on b11fd6f — 2026-10-22 local
+
+Validated the supplied `CardScanner_Review_b11fd6f_2026-10-23.txt` against clean
+HEAD `b11fd6fa5e6ad43f3e01d0a33599029888c46be1` (23 October UTC).
+The reported P2 is confirmed: the shared resolver cleared sealed One Piece and
+Lorcana vendor identities and required a raw-printing UUID. Both new native
+regressions failed against the original source at the identity-preservation
+assertion and history request. Catalog mapping enforcement now applies only to
+raw cards; sealed products retain their exact vendor listing. Raw-card stored
+handle fallback remains prohibited. Existing sealed `printingID` already embeds
+the vendor variant, so the persisted cache identity format is unchanged.
+
+The two sealed regressions check exact variant selection against raw and other
+sealed distractors, one-year history parameters, disk-cache reads after service
+recreation, within-TTL reuse without another request, and cache isolation when
+the vendor variant changes. The existing cross-game cache test now restores and
+confirms the cached physical finish before changing only the game.
+
+Native verification used the command prefix in **Executed verification** below,
+with `CODE_SIGNING_ALLOWED=NO` and these exact selections:
+
+- `JustTCGContractTests/testOnePieceSealedHistoryUsesExactVariantAndReusesPersistedCache`
+- `JustTCGContractTests/testLorcanaSealedHistoryUsesExactVariantAndReusesPersistedCache`
+- `JustTCGContractTests/testDetailFetchesFullProviderHistoryAndCachesItWithoutOwnershipCutoff`
+- `JustTCGContractTests/testGradedHistoryUsesV2ExactVariantAndUSDMarket`
+- `LorcanaPricingTests/testHistoryRemapsWithinTTLAndNeverMergesAcrossProductsOrProviderFinishes`
+- `LorcanaPricingTests/testMarketHistoryUsesReviewedLorcanaProductAndFinishMapping`
+- `OnePieceIntegrationTests/testMarketHistoryUsesReviewedOnePieceProductAndFinishMapping`
+- `OnePieceIntegrationTests/testOnePieceSealedAddUndoAndExactVendorRepricingRespectRuntimeGates`
+
+Final result: **8 passed, zero failures**, recorded in
+`/tmp/cardscanner-sealed-history-after.log`. The initial two-test reproduction
+is in `/tmp/cardscanner-sealed-history-before.log`. Tests use synthetic transport
+fixtures; no live-provider or rendered chart acceptance is claimed. An initial
+sandboxed setup attempt could not access Simulator/cache services; the native
+runs succeeded with authorized access and the existing external-drive artifacts.
+The review's mixed-game Files/rendered-total checks, physical installation,
+production trust/hosting, continuity, bounded-bundle and release gates remain
+open. This follow-up does not recertify earlier acceptance evidence or a full suite.
+
 ## Correctness and bounded local acceptance on 7502144 — 2026-10-23
 
 Clean starting HEAD: `7502144038233f62557dce461e68c2f3cdbc5dd8`.
@@ -20,7 +60,7 @@ sibling rows, repeated taps, read/write races and absolute edit conflicts, with
 persisted quantities and ledger/activity deltas checked.
 
 History identity v2 stores/validates exact product and provider finish in its
-encoded provenance. Old unprovable disk entries are ignored. Lorcana/One Piece
+encoded provenance. Old unprovable disk entries are ignored. Raw Lorcana/One Piece
 authority is resolved before cache reads, and withdrawal/ambiguity cannot reuse
 stored product or vendor handles. Provider-finish matching fails closed. Only
 points from the same listing accumulate. In-flight fetches revalidate authority
