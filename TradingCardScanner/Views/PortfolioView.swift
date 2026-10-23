@@ -231,11 +231,6 @@ struct PortfolioView: View {
                     LazyVStack(alignment: .leading, spacing: 24) {
                         portfolioHero
                             .padding(.horizontal, 16)
-                        if portfolio.holdings.contains(where: { $0.collectionKey.hasPrefix("yu-gi-oh:") }) {
-                            YuGiOhPricingNotice()
-                                .font(.footnote).foregroundStyle(.secondary).padding(.horizontal, 16)
-                        }
-
                         if let summary = portfolio.summary {
                             if !summary.defects.isEmpty {
                                 integrityWarning(summary.defects)
@@ -530,10 +525,6 @@ struct PortfolioView: View {
                 refresh: refresh,
                 isRecomputing: portfolio.isRecomputing
             )
-
-            if let summary = portfolio.summary {
-                PortfolioExcludedCopiesDisclosure(summary: summary)
-            }
 
             if portfolio.summary?.isMigrationDay == true {
                 Text("Tracking started today")
@@ -1564,6 +1555,11 @@ private struct PortfolioDetailsView: View {
                 }
                 refreshStatus
                 PortfolioExcludedCopiesDisclosure(summary: summary)
+                if portfolio.holdings.contains(where: { $0.collectionKey.hasPrefix("yu-gi-oh:") }) {
+                    YuGiOhPricingNotice()
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             if !summary.defects.isEmpty {
