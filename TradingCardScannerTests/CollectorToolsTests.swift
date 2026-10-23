@@ -185,10 +185,11 @@ final class CollectorToolsTests: XCTestCase {
         await store.loadProduct()
         store.start()
         XCTAssertFalse(store.isOwned)
-        XCTAssertNotNil(store.displayPrice)
+        _ = try XCTUnwrap(store.displayPrice, "Local StoreKit must return a product before purchase/restore acceptance")
         let products = try await Product.products(for: [CollectorToolsStore.productID])
         XCTAssertEqual(store.displayPrice, products.first?.displayPrice)
-        XCTAssertEqual(products.first?.price, Decimal(string: "9.99"))
+        let product = try XCTUnwrap(products.first, "Check the scheme's local StoreKit configuration")
+        XCTAssertEqual(product.price, Decimal(string: "9.99"))
         await store.purchase()
         XCTAssertTrue(store.canUseCentering)
         XCTAssertTrue(store.canPreparePhotos(cardCount: 2))
@@ -211,8 +212,20 @@ final class CollectorToolsTests: XCTestCase {
         let zip = try Data(contentsOf: XCTUnwrap(archive))
         XCTAssertEqual(Array(zip.prefix(2)), [0x50, 0x4b])
         for name in ["Card-01", "Card-02"] {
-            let files = try FileManager.default.contentsOfDirectory(atPath: directory.appendingPathComponent(name).path)
-            XCTAssertEqual(files.filter { $0.hasSuffix(".jpg") }.count, 10)
+            let cardDirectory = directory.appendingPathComponent(name)
+            let files = try FileManager.default.contentsOfDirectory(atPath: cardDirectory.path)
+                .filter { $0.hasSuffix(".jpg") }.sorted()
+            XCTAssertEqual(files, ["01-Front.jpg", "02-Front-TL.jpg", "03-Front-TR.jpg", "04-Front-BR.jpg",
+                                   "05-Front-BL.jpg", "06-Back.jpg", "07-Back-TL.jpg", "08-Back-TR.jpg",
+                                   "09-Back-BR.jpg", "10-Back-BL.jpg"])
+            for file in files {
+                let url = cardDirectory.appendingPathComponent(file)
+                let bytes = try Data(contentsOf: url)
+                XCTAssertEqual(Array(bytes.prefix(3)), [0xff, 0xd8, 0xff])
+                let image = try XCTUnwrap(UIImage(contentsOfFile: url.path)?.cgImage)
+                XCTAssertGreaterThan(image.width, 0)
+                XCTAssertGreaterThan(image.height, 0)
+            }
         }
         let relaunched = CollectorToolsStore()
         await relaunched.reconcile()
