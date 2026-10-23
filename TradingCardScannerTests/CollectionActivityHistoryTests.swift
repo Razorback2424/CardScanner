@@ -6,6 +6,75 @@ import XCTest
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testMissingReceiptRejectsStaleTapAndAbsoluteEditWithoutNegativeLedgerDelta() async throws {
+        for target in [2, 9] { // plus and an absolute edit retain their original CAS intent
+            let context = try makeContext()
+            let mutation = try CollectionStore(context: context).add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let input = CollectionDetailQuantityState.Input(collectionKey: mutation.collectionKey,
+                physicalQuantity: 1, logicalQuantity: 1, isLogicalConflict: false, treatments: [])
+            var state = CollectionDetailQuantityState()
+            let observed = state.expectedQuantity(for: input)
+            // The initial read is pending while a sibling adds a separate row.
+            await Task.yield()
+            let sibling = ModelContext(context.container)
+            let duplicate = makeCollectedCard(quantity: 4)
+            sibling.insert(duplicate)
+            let operation = UUID()
+            _ = InventoryLedger(context: sibling).record(duplicate, kind: .acquire,
+                source: .scan, deltaQuantity: 4, operationID: operation)
+            _ = try CollectionStore(context: sibling).appendActivity(duplicate, source: .scan,
+                kind: .added, deltaQuantity: 4, ledgerOperationIDs: [operation])
+            try sibling.save()
+            let reader = CollectionDetailQuantityReader(modelContainer: context.container)
+            let value = try await reader.logicalQuantity(forAnyKey: mutation.collectionKey, magicTreatmentIDsRaw: [])
+            let live = try XCTUnwrap(value)
+            state.update(live, for: input)
+            XCTAssertEqual(live, 5)
+            XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
+                try CollectionDetailQuantityState.validateIntent(observed: observed, refreshed: live)
+                return try CollectionStore(context: $0).setQuantity(target, forCollectionKey: mutation.collectionKey, expectedCurrent: live)
+            })
+            // Two subsequent taps use the refreshed receipt; the second write
+            // races a stale absolute editor and must leave that editor rejected.
+            for count in [6, 7] {
+                let saved = try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
+                    try CollectionStore(context: $0).setQuantity(count, forCollectionKey: mutation.collectionKey,
+                        expectedCurrent: state.expectedQuantity(for: input))
+                }
+                state.update(saved, for: input)
+            }
+            XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
+                try CollectionStore(context: $0).setQuantity(2, forCollectionKey: mutation.collectionKey, expectedCurrent: 5)
+            })
+            let verification = ModelContext(context.container)
+            XCTAssertEqual(try verification.fetch(FetchDescriptor<CollectedCard>()).reduce(0) { $0 + $1.quantity }, 7)
+            let events = try verification.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(InventoryLedger.quantities(from: events)[mutation.collectionKey], 7)
+            XCTAssertFalse(events.contains { $0.deltaQuantity < 0 })
+            let activities = try verification.fetch(FetchDescriptor<CollectionActivity>())
+            XCTAssertEqual(activities.reduce(0) { $0 + $1.deltaQuantity }, 7)
+        }
+    }
+
+    func testInitialQuantityReadAndWriteRaceRetainsStoreCAS() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let reader = CollectionDetailQuantityReader(modelContainer: context.container)
+        let value = try await reader.logicalQuantity(forAnyKey: mutation.collectionKey, magicTreatmentIDsRaw: [])
+        let read = try XCTUnwrap(value)
+        try CollectionDetailQuantityState.validateIntent(observed: 1, refreshed: read)
+        _ = try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
+            try CollectionStore(context: $0).setQuantity(5, forCollectionKey: mutation.collectionKey, expectedCurrent: 1)
+        }
+        XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
+            try CollectionStore(context: $0).setQuantity(2, forCollectionKey: mutation.collectionKey, expectedCurrent: read)
+        })
+        let verification = ModelContext(context.container)
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [5])
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<InventoryEvent>()).reduce(0) { $0 + $1.deltaQuantity }, 5)
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<CollectionActivity>()).reduce(0) { $0 + $1.deltaQuantity }, 5)
+    }
+
     func testDetailQuantityInvalidatesWhenASiblingDuplicateArrivesAndCanStillBeEdited() async throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)

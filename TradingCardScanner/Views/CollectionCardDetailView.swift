@@ -35,6 +35,16 @@ struct CollectionDetailQuantityState {
         savedQuantity(for: input) ?? input.displayedQuantity
     }
 
+    /// An absolute target belongs to the count visible when the user acted,
+    /// including when the first authoritative read has not completed yet.
+    func expectedQuantity(for input: Input) -> Int {
+        displayedQuantity(for: input)
+    }
+
+    static func validateIntent(observed: Int, refreshed: Int) throws {
+        guard observed == refreshed else { throw CollectionStoreError.staleQuantity }
+    }
+
     @discardableResult
     mutating func update(
         _ quantity: Int?,
@@ -1390,12 +1400,19 @@ private struct CollectionCardDetailContent: View {
     private func updateQuantity(_ newQuantity: Int) {
         guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
         let input = quantityInput
+        let observedQuantity = quantityState.expectedQuantity(for: input)
         guard let expectedCurrent = quantityState.savedQuantity(for: input) else {
             Task { @MainActor in
                 await refreshDisplayedQuantity(for: input)
                 guard quantityInput == input else { return }
                 guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
                     errorMessage = "The current quantity could not be loaded. Try again in a moment."
+                    return
+                }
+                do {
+                    try CollectionDetailQuantityState.validateIntent(observed: observedQuantity, refreshed: refreshedQuantity)
+                } catch {
+                    errorMessage = error.localizedDescription
                     return
                 }
                 persistQuantity(newQuantity, expectedCurrent: refreshedQuantity, input: input)
