@@ -186,6 +186,7 @@ final class CollectorToolsTests: XCTestCase {
         await store.loadProduct()
         store.start()
         XCTAssertFalse(store.isOwned)
+        XCTAssertTrue(session.allTransactions().isEmpty, "Fresh purchase must start without inherited transactions")
         _ = try XCTUnwrap(store.displayPrice, "Local StoreKit must return a product before purchase/restore acceptance")
         let products = try await Product.products(for: [CollectorToolsStore.productID])
         XCTAssertEqual(store.displayPrice, products.first?.displayPrice)
@@ -194,6 +195,17 @@ final class CollectorToolsTests: XCTestCase {
         await store.purchase()
         XCTAssertTrue(store.canUseCentering)
         XCTAssertTrue(store.canPreparePhotos(cardCount: 2))
+        XCTAssertEqual(session.allTransactions().count, 1)
+        var verifiedEntitlementCount = 0
+        for await result in Transaction.currentEntitlements {
+            let transaction = try result.payloadValue
+            verifiedEntitlementCount += 1
+            XCTAssertEqual(transaction.productID, CollectorToolsStore.productID)
+            XCTAssertEqual(transaction.productType, .nonConsumable)
+            XCTAssertEqual(transaction.environment, .xcode)
+            XCTAssertNil(transaction.revocationDate)
+        }
+        XCTAssertEqual(verifiedEntitlementCount, 1)
 
         let (directory, archive) = try await makeValidatedPhotoZIP()
         defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory) }
@@ -202,6 +214,9 @@ final class CollectorToolsTests: XCTestCase {
         XCTAssertTrue(reconstructed.isOwned)
         await reconstructed.restore()
         XCTAssertTrue(reconstructed.isOwned)
+        await reconstructed.restore()
+        await store.purchase()
+        XCTAssertEqual(session.allTransactions().count, 1, "Restore and an already-owned purchase action must not buy again")
         let transaction = try XCTUnwrap(session.allTransactions().first)
         try session.refundTransaction(identifier: transaction.identifier)
         for _ in 0..<100 {
@@ -213,9 +228,103 @@ final class CollectorToolsTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: archive.path))
     }
 
+    /// Ask to Buy goes through Product.purchase and Transaction.updates, not a
+    /// fake delivery. This covers pending approval separately from sheet cancel.
+    func testLocalStoreKitPendingApprovalDoesNotGrantEarlyOrPurchaseAgain() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "CollectorTools", withExtension: "storekit"))
+        let session = try SKTestSession(contentsOf: url)
+        session.resetToDefaultState()
+        session.disableDialogs = true
+        session.clearTransactions()
+        defer { session.clearTransactions(); session.resetToDefaultState() }
+        session.askToBuyEnabled = true
+        let store = CollectorToolsStore()
+        await store.reconcile()
+        await store.loadProduct()
+        store.start()
+        _ = try XCTUnwrap(store.displayPrice)
+        XCTAssertEqual(store.ownership, .unowned)
+        XCTAssertTrue(session.allTransactions().isEmpty)
+
+        await store.purchase()
+        XCTAssertEqual(store.ownership, .unowned)
+        XCTAssertFalse(store.isBusy)
+        XCTAssertEqual(store.message, "Awaiting approval. Your work is still here.")
+        XCTAssertFalse(store.canPreparePhotos(cardCount: 2))
+        XCTAssertFalse(store.canUseCentering)
+        XCTAssertTrue(store.canPreparePhotos(cardCount: 1))
+        let pending = try XCTUnwrap(session.allTransactions().first)
+        XCTAssertEqual(session.allTransactions().count, 1)
+        XCTAssertEqual(pending.productIdentifier, CollectorToolsStore.productID)
+        try session.approveAskToBuyTransaction(identifier: pending.identifier)
+        for _ in 0..<100 {
+            if store.isOwned { break }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        XCTAssertTrue(store.isOwned)
+        await store.purchase()
+        await store.restore()
+        XCTAssertEqual(session.allTransactions().count, 1)
+        XCTAssertTrue(store.isOwned)
+    }
+
     func testPhotoZIPExtractsExactlyTwentyDecodableJPEGs() async throws {
         let (directory, _) = try await makeValidatedPhotoZIP()
         EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+    }
+
+    /// StoreKit's interrupted-purchase simulation is distinct from Ask to Buy
+    /// and from sending the app to the background.
+    func testLocalStoreKitInterruptedPurchaseReconcilesAfterIssueResolution() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "CollectorTools", withExtension: "storekit"))
+        let session = try SKTestSession(contentsOf: url)
+        session.resetToDefaultState()
+        session.disableDialogs = true
+        session.clearTransactions()
+        defer { session.clearTransactions(); session.resetToDefaultState() }
+        session.interruptedPurchasesEnabled = true
+        let store = CollectorToolsStore()
+        await store.reconcile()
+        await store.loadProduct()
+        store.start()
+        _ = try XCTUnwrap(store.displayPrice)
+        XCTAssertEqual(store.ownership, .unowned)
+        XCTAssertTrue(session.allTransactions().isEmpty)
+
+        await store.purchase()
+        let interrupted = try XCTUnwrap(session.allTransactions().first)
+        var fixtureGrantedEntitlement = false
+        for await result in Transaction.currentEntitlements {
+            let transaction = try result.payloadValue
+            if transaction.productID == CollectorToolsStore.productID, transaction.revocationDate == nil {
+                fixtureGrantedEntitlement = true
+            }
+        }
+        XCTAssertEqual(session.allTransactions().count, 1)
+        XCTAssertTrue(interrupted.hasPurchaseIssue)
+        XCTAssertEqual(interrupted.productIdentifier, CollectorToolsStore.productID)
+        if !fixtureGrantedEntitlement {
+            XCTAssertFalse(store.isOwned)
+            XCTAssertFalse(store.canUseCentering)
+            XCTAssertFalse(store.canPreparePhotos(cardCount: 2))
+        }
+        XCTAssertTrue(store.canPreparePhotos(cardCount: 1))
+        try session.resolveIssueForTransaction(identifier: interrupted.identifier)
+        for _ in 0..<100 {
+            if store.isOwned { break }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        XCTAssertTrue(store.isOwned)
+        await store.purchase()
+        await store.restore()
+        XCTAssertTrue(store.isOwned)
+        XCTAssertEqual(session.allTransactions().count, 1)
+        // Xcode 27.1 / iOS 27.0 can report a verified, unrevoked entitlement
+        // while SKTestTransaction is failed and hasPurchaseIssue is true.
+        // That is not a valid unowned interruption fixture. Do not weaken the
+        // production entitlement authority or call this scenario accepted.
+        try XCTSkipIf(fixtureGrantedEntitlement,
+                      "Local StoreKit supplied a verified entitlement before issue resolution; interrupted-purchase acceptance requires sandbox follow-up.")
     }
 
     private func makeValidatedPhotoZIP() async throws -> (URL, URL) {
