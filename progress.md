@@ -3636,3 +3636,108 @@ historical.
 - Exact matrix, commands, UI/build identity, retained external synthetic evidence
   and sandbox/TestFlight handoff are in the [release ledger](docs/release/five-game-launch-readiness-2026-10-23.md#isolated-collector-tools-purchase-and-cancellation-acceptance--2026-10-23).
   Only tests and documentation changed; no commit/push or production actions.
+
+### 2026-10-23 — Three-gate independent preparation at `4cefbfa`
+
+- Preserved the existing plan diff. No app/catalog/workflow change, commit,
+  push, production key/environment creation, signing, publication or activation.
+- Owner confirmed no paid Apple Developer Program account. Enrollment is the
+  concrete first blocker for App Store Connect, real-store sandbox and TestFlight.
+  Source product ID/type and production scheme configuration match; no real
+  product/account availability was inspected or claimed.
+- Replayed the 1,749-printing Lorcana catalog byte-identically with unchanged
+  UUID ledger; independently reproduced all 1,833 discovery-only discrepancy IDs.
+  Captured twelve fresh later-set product/price feeds. Isolated dry run retains
+  every existing physical object and deterministically prepares 970 additional
+  exact joins / 1,940 mappings; 490 later-set and 373 earlier/special/Quest rows
+  remain held. No additions were installed. Set 13's 207 denominator, newer foil
+  policy, 19 exact-join holds and newer Hydra artwork/text drift require review.
+- Revalidated the retained unsigned One Piece hash and metadata-only difference
+  from the reviewed source; current publisher replay is byte-identical. Both
+  public pointers return 404. Read-only GitHub environment inventory confirms
+  proposed signing and deployment environments are absent. Exact candidate/key
+  custody/reviewer approval is prepared; publication and activation stay separate.
+- Fresh checks pass: One Piece Core 46; Lorcana Python 14; One Piece Python 47;
+  normalization 8; hosting restoration 6. Existing Collector Tools XCTest runs
+  were not repeated. External artifacts/receipts/worklist are retained under
+  `CardScannerBuilds/ThreeGatePreparation-20261023/` on the external SSD.
+  The [launch ledger](docs/release/five-game-launch-readiness-2026-10-23.md#independent-preparation-executed--2026-10-23)
+  owns results, limits, owner blockers and approval details. All launch gates open.
+
+### 2026-10-23 — Lorcana isolated candidate and held-row review
+
+- Continued at `4cefbfa` plus prior preparation-document changes. Honored the
+  owner's hold on production keys, publication, activation and bundle adoption.
+  The active catalog, UUID ledger, configuration and workflows remain unchanged.
+- Validated all original 970 additions through native footer resolution,
+  supported finish/CSV identity, acquisition checks and representative disk-store
+  add/Undo/reopen/CSV replay. That first two-test run passes with no skips.
+- Added an explicit opt-in later-set review mode to the existing Python builder.
+  Scoped set 13's 207 denominator, 25 explicit separate Normal/Foil product
+  pairs, later Epic/Enchanted/Iconic physical numbers/patterns, set-9 zero and
+  set-10 single-pattern Whisper Holofoil. Unexpected siblings, multiple foil
+  patterns, wrong source groups and duplicate lanes remain held. Default
+  generator replay remains byte-identical to the active catalog.
+- The isolated candidate now adds 1,440 physical records / 2,652 exact mappings,
+  preserving all 1,749 existing physical objects and original 970 identity/
+  mapping identities. Second replay with the retained review UUID ledger matches.
+  Every original discrepancy row has a disposition: 1,440 validated candidate,
+  393 held (20 later-set, 373 earlier/special/Quest). Retained 15 further product
+  captures; row-level evidence requirements and exact associations are external.
+- Final native selection: **136 passed, zero failed, three existing live-opt-in
+  skips / 139 cases**, exit 0. All three candidate checks execute, including
+  every new lane through the real pricing adapter using retained feeds; this
+  is not a fresh live census. Python discovery/builder tests: **20 passed**.
+- Packaging remains blocked: 11,364,404-byte candidate exceeds the 8 MiB
+  byte-loader bounds. Typed-manifest acceptance is separate from package loading;
+  no bound was relaxed. No paid Apple account is needed for completed checks.
+  No physical-camera, rights, accessibility, archive or launch coverage claim.
+  Detailed evidence and reproduction are in the
+  [candidate review](docs/research/lorcana-expansion-candidate-review-2026-10-23.md).
+
+### 2026-10-23 — Actual Lorcana loader and Disney100 held-row continuation
+
+- Resolved the local 8 MiB blocker with one shared 16 MiB manifest budget in
+  registry byte decoding and bundled market loading. The app's actual resource
+  loader reads at most each resource limit plus one before rejection; source
+  binding, schema/identity/record limits and discovery/Browse bounds remain.
+  Signed network payload/envelope limits remain 8/12 MiB.
+- Replaced the candidate tests' typed-manifest bypass with byte loading and an
+  isolated resource bundle through the same function used by `bundledMarket`.
+  Exact original 1,440-addition candidate: five focused tests pass, zero failures/
+  skips, including size boundary/oversize/source-binding checks and all mappings.
+- Continued the held ledger with six exact Disney100 source/product joins.
+  Manufacturer distribution/foil/printed-signature evidence, source footers and
+  exact group 23305 products agree. New explicit review option preserves all
+  previous objects; signatures are modeled as printed designs, not autographs.
+  Isolated candidate: 1,446 additions, 3,195 total objects, 6,022 total mappings;
+  remaining held rows: 387. Candidate/replay/UUID ledger and all-row dispositions
+  are external under the existing review root's `LoaderAndDisney100/` directory.
+- Final six-suite native selection: **138 passed, zero failed, three existing
+  live-opt-in skips / 141 cases**, exit 0. All three candidate tests execute,
+  including 2,658 exact captured price lanes and foil-only Normal rejection.
+  Python builder/discovery selection: **23 passed**. SDK/Simulator diagnostics
+  remain; no full-app or physical-device/performance certification.
+- Active catalog/discovery/UUID resources, production keys, hosting and rollout
+  settings remain untouched. No publication, activation, enrollment or upload.
+  The [review checkpoint](docs/research/lorcana-expansion-candidate-review-2026-10-23.md#local-loader-and-disney100-follow-up--2026-10-23)
+  owns detailed evidence and the remaining physical/distribution/model checks.
+
+### 2026-10-24 — Portfolio period-switch chart flash
+
+- Kept the completed history result rendered while a requested period computes;
+  the selected chip, chart, totals and movers now present the same completed
+  period and switch together. Animation follows the displayed range. Scrub
+  selection resets on both the request and the completed range change.
+- Added delayed-calculation coverage for retained chart rendering (actual
+  SwiftUI hosting height), aligned period selection, rapid taps, obsolete-result
+  rejection and clearing inputs. Final focused run: **51 passed, zero failures**,
+  xcodebuild exit 0; `git diff --check` passes. The first test fixture lacked a
+  published close and was corrected before the successful runs.
+- Inspected the settled iPhone 17 runtime screenshot. Scoped HIG gate passes;
+  existing Reduce Motion and selected-chip accessibility remain intact. Live
+  tap-driven animation verification remains limited: simulator input reports
+  successful taps without changing the visible selection; native input is
+  unavailable while the Mac is locked. No physical-device verification.
+- Results, final runtime screenshot and checklist are on the external SSD under
+  `CodexBuilds/PortfolioPeriodSwitch-20261024/`. Existing Lorcana work is preserved.

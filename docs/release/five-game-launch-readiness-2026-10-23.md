@@ -1,6 +1,300 @@
 # Five-game launch readiness follow-up
 
-**Date:** 2026-10-23. **Current follow-up base:** `main` at `b6e4728`, plus the
+## Three-gate execution plan — 2026-10-23
+
+**Planning baseline:** clean `4cefbfa`. All three gates remain open. This section
+orders the remaining work; it records no new runtime, provider or release pass.
+Detailed historical evidence below retains its original candidate identity.
+
+| Gate | Execution owner | Close only when |
+| --- | --- | --- |
+| Live Collector Tools availability | Release owner for App Store Connect; engineering/QA for acceptance | Exact distribution candidate retrieves the intended real-store product and passes the sandbox/TestFlight lifecycle matrix, with production availability checked separately at release. |
+| Released Lorcana coverage | Catalog reviewer for physical identity/source decisions; engineering/QA for integration | Every in-scope released physical printing/finish is reconciled, admitted or explicitly held with a launch-blocking disposition; final catalog passes identity, persistence and representative physical-device acceptance. |
+| Approved signed One Piece delivery | Owner/reviewer for rights, keys and publication; engineering/QA for delivery and activation | Approved bytes are signed, independently verified, hosted, bundled and accepted through the actual Release path with approved acquisition activation. |
+
+### 1. Establish candidate and evidence boundaries
+
+- Retain `4cefbfa` as the local review baseline. Record each later catalog/code
+  change and freeze a new final candidate only after all three workstreams land.
+- Use isolated test collections and genuinely unowned sandbox accounts. Retain
+  private receipts/logs outside the repository, preferably on the external SSD.
+  Record sanitized build/SHA, device/OS, store environment, catalog revision/hash,
+  scenario, expected/actual result and evidence location for every gate check.
+- Preserve the two existing focused results as **12 passed, zero failures,
+  one skip each**. The contradictory entitled interrupted-purchase fixture is
+  an open check; it must not count as unowned interruption acceptance.
+
+### 2. Live product availability and purchase acceptance
+
+1. Inspect App Store Connect's exact bundle/product association for
+   `com.seankeller.CardScanner.collectorTools` (non-consumable), product metadata,
+   territory availability and agreement/tax/banking prerequisites. Record actual
+   status and blockers; a local `.storekit` definition proves none of these.
+2. Prepare a distribution candidate using real StoreKit configuration, without
+   local StoreKit simulation or entitlement overrides. Inspect its archive and
+   identify the exact uploaded build. Execute on physical-device sandbox and
+   that exact TestFlight build; label the environments separately.
+3. Run fresh purchase from unowned state, user cancellation, genuinely unowned
+   interrupted purchase/relaunch, transaction redelivery, restore on a fresh
+   install, and pending purchase completion/cancellation. Where the environment
+   cannot induce a state, record it as unexecuted and seek an appropriate sandbox
+   setup; an injected-client test alone cannot close the live acceptance row.
+4. For each interruption/pending case, verify selected cards and prepared work
+   survive, controls/status stay accurate, cancellation remains available, and
+   paid access follows verified entitlement. Verify redelivery does not repeat
+   fulfillment or duplicate output. Check offline launch/purchase/recovery for
+   owned and unowned states without granting access from a network failure.
+5. Recheck free single-card export, paid multi-card ZIP, export cancellation and
+   retry through Files on the candidate. Inspect pending/error/purchase/export
+   flows with VoiceOver and accessibility text sizes on device.
+
+**Exit evidence:** product lookup identity/display price, sanitized transaction
+provenance and before/after entitlement, retained-work observations, exported
+archive validation and accessibility results per scenario. Sandbox/TestFlight
+passes close their acceptance rows only. Before calling production availability
+closed, verify approved product/release territory status and real-store lookup
+in the released app; retain a pending release-day check until that is possible.
+
+### 3. Released Lorcana coverage
+
+1. Reconcile the released English physical-single denominator as of the candidate
+   freeze date against current official release/card evidence. Include sets
+   9–14, earlier-set gaps, promos, special distributions and Quest objects;
+   identify other-language and non-single objects explicitly. Discovery counts
+   are leads rather than proof of a physical-printing denominator.
+2. Disposition every retained discrepancy: the recorded snapshot has 1,833
+   discovery-only rows, including 373 earlier/special/Quest rows. Track exact
+   source evidence, physical printing, finish, existing/permanent UUID, admission
+   or hold reason and reviewer. Recompute counts from current inputs before use.
+3. Build only evidence-backed additions. Preserve existing UUIDs and ownership;
+   keep ambiguous joins held. Review exact provider product/finish mappings
+   independently of identity support: unavailable price is a valid result.
+4. Replay generators for deterministic output; run focused catalog, ownership,
+   scan-resolution, pricing and CSV regressions. Then check live mapped lanes
+   and representative physical cards across new sets and special/variant cases:
+   identify/choose, finish, save, duplicate/quantity, reopen, refresh/offline and
+   mixed-game CSV. Include ambiguous and unsupported cases without guessing.
+
+**Exit evidence:** versioned denominator/discrepancy reconciliation with zero
+unexplained gaps, reviewed source/rights disposition, catalog/hash and UUID
+retention report, focused test results and device/provider receipts. A held
+in-scope printing keeps the complete-coverage gate open unless the owner makes
+an explicit scope decision; do not silently reduce five-game launch scope.
+The [Lorcana acceptance ledger](lorcana-production-acceptance.md) continues to
+own detailed integration evidence.
+
+### 4. Approved signed One Piece production delivery
+
+1. Revalidate retained candidate bytes against the exact approval hash and
+   inspect the current host pointer and effective signing/deployment protection.
+   Use the [prepared production proposal](one-piece-production-setup-2026-10-23.md)
+   for the concrete revision-1 candidate and configuration. A changed payload
+   needs a new receipt/review; an existing production lineage needs continuation
+   review rather than another bootstrap.
+2. Present the revalidated candidate, rights disposition and protection/key
+   storage plan for owner approval before key creation/provisioning. After that
+   approval, provision dedicated production signing, pin only public material,
+   sign the exact approved bytes and independently verify the resulting envelope.
+3. Prepare publication from that verified envelope, preserving all existing
+   shared-host namespaces and immutable revisions. Obtain the separate required
+   publication approval, deploy, and verify origin/custom-domain readback,
+   signatures, payload/envelope hashes and cache behavior.
+4. Bundle the identical verified envelope with production pins/origin. Follow
+   the staged rollout in the [release acceptance authority](../plans/one_piece_release_acceptance.md):
+   validation-only, authority with writes off, then approved writes-enabled
+   acceptance. Inspect actual Release resources/settings at each transition.
+5. Exercise cold/offline seed use, failed/tampered update retention, interruption,
+   increasing-revision rollback and disabled-build preservation. On device,
+   verify ordinary singletons, P-001 held-sibling explicit choice, exact finishes,
+   stale retained selections, save/retry/relaunch and historical ownership.
+
+**Exit evidence:** owner approvals, protected workflow/run identity, public pin,
+signed envelope/payload digests, hosted/bundled equality, staged Release/device
+results and rollback/disable receipts. Signing alone does not close delivery;
+delivery alone does not certify complete physical coverage or source rights.
+
+### 5. Execution order and final decision
+
+Start product/account inspection, Lorcana reconciliation and One Piece candidate
+revalidation independently. Complete local preparation and focused verification
+before requesting the existing owner-controlled One Piece approvals. Run live
+acceptance once its account/catalog dependencies are ready. After the final
+code/catalog changes, freeze one candidate, run relevant combined regressions,
+inspect its signed archive and repeat affected checks on its exact TestFlight
+build. Earlier-build results remain supporting evidence only.
+
+Keep three independent pass/blocked decisions, each with evidence and remaining
+owner action. Full five-game launch requires all three plus the existing rights,
+privacy/support, physical-device and submission gates. No calendar estimate or
+November 2 target overrides an unresolved gate. Planning authorizes no production
+key creation, publication, activation or App Store submission.
+
+## Independent preparation executed — 2026-10-23
+
+**Later owner direction:** keep keys and all production changes on hold. The
+[Lorcana candidate review](../research/lorcana-expansion-candidate-review-2026-10-23.md)
+now validates the original 1,440 additions through the actual resource loader
+and six further Disney100 printings, with all 387 remaining discrepancy rows
+explicitly held. A bounded 16 MiB local loader resolves the packaging blocker;
+signed-network bounds remain unchanged. These isolated candidates are not
+installed in the bundled production catalog. This supersedes the earlier
+unreviewed-970 and local size-blocker status below. Earlier key-approval requests below are on hold;
+no new approval or account action is requested by this review pass.
+
+**Base:** `4cefbfa`, with the existing uncommitted three-gate plan preserved.
+Only documentation changes in the repository. All three launch gates remain
+open; no production keys, environment changes, signing, publication, app catalog
+adoption, production activation, archive or upload were performed.
+
+### Product/account result
+
+The owner confirmed in this session that they do **not** have paid Apple
+Developer Program membership. App Store Connect opens to the Apple Account
+sign-in page; no app/product/account record was inspected. Enrollment is the
+first external dependency, not a demonstrated missing-product defect.
+Apple's [membership overview](https://developer.apple.com/help/account/membership/programs-overview)
+identifies App Store Connect and TestFlight as program resources;
+[sandbox testing](https://developer.apple.com/documentation/StoreKit/testing-in-app-purchases-with-sandbox)
+requires an active program account and real product configuration.
+
+Source/configuration checks pass: app bundle `com.seankeller.CardScanner`;
+local product and production adapter both use
+`com.seankeller.CardScanner.collectorTools`, non-consumable. The local fixture's
+9.99 is not a live-store price. The ordinary Debug scheme has local StoreKit
+simulation; `TradingCardScanner-DebugProduction` has none, and both archive
+actions select Release. Resolved Release settings use iPhoneOS 27.1, One Piece
+`disabled` and writes `NO`. Build-settings inspection is not a new build/archive.
+The existing two 12-pass/one-skip Collector Tools runs were not rerun.
+
+**Owner action:** enroll independently, then provide authorized App Store Connect
+access for read-only product/account inspection. Enrollment/payment and agreement
+acceptance were not initiated. After enrollment, verify app/product association,
+agreements and distribution signing before the real-store acceptance matrix.
+A paired wired iPhone is currently connected with Developer Mode enabled;
+connectivity is not device, sandbox or TestFlight acceptance.
+
+### Lorcana preparation result
+
+The bundled 1,749-printing / 3,364-mapping catalog regenerates **byte-identically**
+from retained inputs, with an unchanged permanent UUID ledger. Recomputing the
+discovery-only alias difference reproduces all **1,833** existing discrepancy
+IDs exactly. A complete row worklist now retains source links, baseline blockers,
+fresh-capture join disposition and blank physical/finish/reviewer evidence fields.
+
+Twelve fresh public TCGCSV captures cover products and prices for all six exact
+groups: Fabled `24348`, Whispers `24414`, Winterspell `24500`, Wilds Unknown
+`24617`, Attack of the Vine! `24666`, Hyperia City `24740`. Envelope counts and
+product category/group identity were validated; capture receipts retain URLs,
+retrieval timestamps and hashes. No prices or captures were installed in the app.
+
+The existing builder, using the bundled discovery and fresh market captures,
+produces an **unreviewed isolated dry run** with these exact joins:
+
+| Set | Candidate additions | Remaining later-set held rows |
+| --- | ---: | ---: |
+| 9 — Fabled | 200 | 43 |
+| 10 — Whispers in the Well | 185 | 57 |
+| 11 — Winterspell | 200 | 43 |
+| 12 — Wilds Unknown | 185 | 58 |
+| 13 — Attack of the Vine! | 0 | 247 |
+| 14 — Hyperia City | 200 | 42 |
+| Total | 970 | 490 |
+
+The 970 candidates contain 1,940 finish mappings. Every existing physical object
+is preserved unchanged; a second replay using the retained dry-run UUID ledger
+is identical. Candidate SHA-256:
+`25a23e1a8124081dd141a1806e6a54e8f2a16dbf24352e9c82b9ecced13c1815`.
+This is a reproducible review artifact, not approved acquisition authority.
+The 373 earlier/special/Quest rows remain separately accounted for.
+
+Concrete remaining engineering/review work:
+
+- Set 13 has printed denominator **207**; current builder policy requires 204.
+  Its 247 rows are held intentionally. Verify distribution/finish evidence and
+  add scoped policy/tests before any adoption; do not globally replace 204.
+- Of the other later-set holds, 19 fail exact title/number/qualified-sibling
+  joins (four Winterspell, fifteen Wilds Unknown). All other later-set holds
+  fall outside the current physical/finish policy, including number zero,
+  mixed treatments and newer foil patterns. Review individual source/product
+  evidence before extending policy; price-lane names alone are insufficient.
+- The newly fetched LorcanaJSON snapshot is generated **2026-10-16**, versus
+  the retained October 10 snapshot. It retains the same 3,556 source IDs with
+  zero additions/removals, but changes 258 card objects: 257 format/tournament
+  metadata updates, plus Hydra — Deadly Serpent (`544`, `108/204`, set 3)
+  ability text and image URLs. Set 14 metadata also changes. The drift report
+  is retained; no blanket source refresh was adopted.
+- Reconcile physical identity/finish evidence, official release status, rights,
+  promos and partial Quest inventories before treating discovery as a complete
+  denominator. Then run native candidate-loading, ownership, scan and device
+  acceptance after reviewed adoption. These are technical/review tasks that
+  can continue independently of Apple enrollment; no new owner scope reduction
+  is requested.
+
+Official [Hyperia announcement](https://www.disneylorcana.com/en-US/news/2026/09/hyp-press-release/)
+still establishes October 23 general availability. The official
+[Attack of the Vine page](https://www.disneylorcana.com/en-US/product/attack-of-the-vine)
+also identifies distinct participant and Top 8 foil prizes, reinforcing the
+need to reconcile marketed distributions separately from ordinary joins.
+
+### One Piece preparation result and approval packet
+
+The retained unsigned revision-1 candidate is still **16,409,901 bytes**, SHA-256
+`251165ad79ebe34e9b2d8a37919f711d8affb2d550386eac7a71bd27d8323c0b`.
+The reviewed revision-3 source also matches its recorded hash. Comparing decoded
+objects shows only `revision` and `generatedAt` changed. Rebuilding through the
+current publisher from the retained registry/observations/inventories yields
+the exact recorded candidate hash again. The 2,748 retained printings and 2,367
+market mappings retain their original reviewed/held boundaries.
+
+Read-only GitHub inspection succeeds with repository administration access.
+The environment list contains neither `one-piece-catalog-signing` nor
+`one-piece-catalog-production`; the direct signing-environment query returns
+404. The required protected environments therefore have not been provisioned.
+Both the existing Firebase-origin and custom-domain One Piece `current.json`
+return **HTTP 404** in fresh direct requests. A pre-publication recheck is still
+mandatory; this result is not permission to bootstrap over future hosted data.
+
+**Concrete approval requested before key creation/provisioning:** approve the
+exact candidate digest above and a dedicated Ed25519 key under proposed ID
+`one-piece-production-2026-10-23-01`, with the live private seed restricted to
+the protected GitHub signing environment and a separate offline recovery copy.
+Specify the offline recovery custodian/location and an independent GitHub
+reviewer. The proposed no-self-review policy requires someone other than the
+workflow initiator; if only one operator is available, explicitly approve an
+owner-only protection policy instead. No relaxed fallback is assumed.
+The [existing concrete proposal](one-piece-production-setup-2026-10-23.md) owns
+the environment, public pin, exact workflow inputs and later deployment design.
+
+**Publication is not ready for approval:** source/publication-rights evidence,
+protected delivery configuration and the independently verified signed-envelope
+digest must be available first. Present those exact artifacts in a separate
+publication request. Production app activation follows its own Release/device
+acceptance and approval; key approval grants neither publication nor activation.
+
+### Fresh verification and retained artifacts
+
+| Selection | Fresh result |
+| --- | --- |
+| `swift test --package-path OnePieceCatalogCore` using existing external scratch path | 46 passed, zero failures; exit 0 |
+| Lorcana Python discovery/market builders | 14 passed; exit 0 |
+| `test_one_piece*.py` Python preparation tests | 47 passed; exit 0 |
+| Bounded One Piece normalization tests | 8 passed; exit 0 |
+| Shared hosting-restoration tests | 6 passed; exit 0 |
+| Existing Lorcana catalog/UUID replay; One Piece unsigned publisher replay | Exact matches |
+| Later-set isolated dry-run replay and retention validation | Exact match; existing physical objects unchanged |
+
+External evidence root:
+`CardScannerBuilds/ThreeGatePreparation-20261023/` on the mounted external SSD.
+It retains `preparation-receipt.json`, `lorcana-coverage-worklist.csv`,
+`lorcana-later-set-preparation.json`, the isolated candidate/UUID ledger/join
+report, both source snapshots' drift comparison, twelve market captures with
+receipts, unsigned One Piece replay, preparation scripts, package/supporting
+test logs, resolved build-settings log and an artifact hash manifest. These are
+synthetic/catalog preparation artifacts, not a personal collection export.
+No new iOS XCTest, physical-card, accessibility, sandbox, TestFlight, archive,
+production signing or production activation result is claimed.
+
+**Date:** 2026-10-23. **Earlier follow-up base:** `main` at `b6e4728`, plus the
 focused test/documentation changes in the Collector Tools acceptance section.
 Earlier candidate identities below remain historical.
 **Status:** bounded identity safeguard and qualified local Collector Tools acceptance verified;

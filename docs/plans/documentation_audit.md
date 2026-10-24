@@ -8,6 +8,34 @@ history.
 
 ## Current authority boundary — updated 2026-10-23
 
+**Lorcana actual-loader follow-up:** the
+[current checkpoint](../research/lorcana-expansion-candidate-review-2026-10-23.md#local-loader-and-disney100-follow-up--2026-10-23)
+supersedes the 8 MiB local packaging blocker recorded below. Shared 16 MiB local
+manifest bounds, bounded resource reads and the same app resource-loader path
+accept the exact 1,440 candidate. Six further Disney100 records pass isolated
+acceptance, leaving 387 held. Final focused result: 138 passed, zero failures,
+three live-opt-in skips / 141 cases; 23 Python tests pass. Signed transport bounds,
+active catalog resources, keys, hosting and rollout remain unchanged/on hold.
+
+**Lorcana isolated expansion review on `4cefbfa` plus local tooling/tests:** the
+[candidate review](../research/lorcana-expansion-candidate-review-2026-10-23.md)
+supersedes the unreviewed-970 preparation status with 1,440 native-validated
+candidate additions and 393 explicitly held discrepancy rows. It does not
+change the bundled production catalog, historical physical evidence or launch
+coverage status. The 8 MiB delivery bound remains a packaging blocker. The owner
+has explicitly placed keys and production changes on hold, superseding the
+earlier pending key-provisioning request; paid Apple enrollment is still absent.
+
+**Three-gate preparation on `4cefbfa`:** the
+[execution record](../release/five-game-launch-readiness-2026-10-23.md#independent-preparation-executed--2026-10-23)
+records exact Lorcana/One Piece replays, fresh preparation tests and an isolated
+970-printing Lorcana dry run. None is adopted production authority. The owner
+confirmed no paid Apple Developer Program membership, so enrollment precedes
+App Store Connect product setup and sandbox/TestFlight acceptance. One Piece
+signing/deployment environments are absent in fresh read-only inspection;
+key creation, publication and activation remain separate approvals. This
+supersedes any inference that the remaining account issue is merely sign-in.
+
 **Five-game attachment review on `c4e1198`:** the
 [launch follow-up](../release/five-game-launch-readiness-2026-10-23.md)
 confirms the Release-only One Piece configuration gap and Lorcana discrepancy
