@@ -1,7 +1,9 @@
 # Five-game launch readiness follow-up
 
-**Date:** 2026-10-23. **Candidate:** `872dbf2` plus the focused working-tree follow-up below.
-**Status:** bounded identity safeguard and local StoreKit acceptance verified;
+**Date:** 2026-10-23. **Current follow-up base:** `main` at `b6e4728`, plus the
+focused test/documentation changes in the Collector Tools acceptance section.
+Earlier candidate identities below remain historical.
+**Status:** bounded identity safeguard and qualified local Collector Tools acceptance verified;
 full five-game launch remains blocked by the gates below.
 
 This reviews the supplied `cardscanner_launch_readiness_2026-10-23.txt` against
@@ -107,7 +109,7 @@ production activation or source-rights acceptance is claimed.
    free one-card output, ordered two-card ZIP and guided centering output.
 6. Owner-controlled gates: commercial catalog/artwork/export permission, published
    privacy/support and accurate privacy metadata, paid agreement/tax/banking,
-   product `com.seankeller.CardScanner.collectorTools`, review material, signed
+   configured Collector Tools product identifier, review material, signed
    archive inspection, exact-build TestFlight acceptance and app plus first-IAP
    submission. No sale, submission or account change is claimed here.
 
@@ -181,19 +183,20 @@ printings; missing writer authority is not bypassed for tests.
 
 Xcode 27.1, Debug (`DEBUG LOCAL_ONLY_SIGNING`), iPhone 17 Simulator / iOS 27.0,
 normal local ad-hoc simulator signing. No distribution signing was performed.
-The machine-local destination UUID is retained in the external command log,
-not committed here. The final command uses that value as
+Set `CARD_SCANNER_EXTERNAL_SSD_ROOT` to the machine-local external SSD build
+root. The machine-local destination UUID is retained in the external command
+log, not committed here. The final command uses that value as
 `CARD_SCANNER_SIMULATOR_ID`:
 
 ```sh
 xcodebuild test -project TradingCardScanner.xcodeproj \
   -scheme TradingCardScanner -configuration Debug \
   -destination "platform=iOS Simulator,id=$CARD_SCANNER_SIMULATOR_ID" \
-  -derivedDataPath '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/DerivedData' \
-  -resultBundlePath '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/acquisition-verified.xcresult' \
+  -derivedDataPath "$CARD_SCANNER_EXTERNAL_SSD_ROOT/yugioh/DerivedData" \
+  -resultBundlePath "$CARD_SCANNER_EXTERNAL_SSD_ROOT/yugioh/acquisition-verified.xcresult" \
   -only-testing:TradingCardScannerTests/OnePieceIntegrationTests \
   -only-testing:TradingCardScannerTests/CollectorToolsTests \
-  > '/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/logs/acquisition-verified.log' 2>&1
+  > "$CARD_SCANNER_EXTERNAL_SSD_ROOT/yugioh/logs/acquisition-verified.log" 2>&1
 ```
 
 Intermediate runs are not accumulated into a pass count:
@@ -218,8 +221,8 @@ extraction test. Final test execution finished at 14:18 America/Chicago on
 remains a separate historical selection. Markdown local links and
 `git diff --check` also pass.
 
-All named bundles and matching `logs/*.log` are under external SSD
-`/Volumes/Keller Family Photos/CardScannerBuilds/yugioh/`. These results concern
+All named bundles and matching `logs/*.log` are under
+`$CARD_SCANNER_EXTERNAL_SSD_ROOT/yugioh/`. These results concern
 the base SHA plus local changes, not a committed or published release.
 
 ### Earlier bounded manual checklist — historical at `bb72741`
@@ -410,3 +413,134 @@ gates remain separate.
 Only this ledger and `progress.md` changed. The prior **106 passed, zero
 failures** result remains historical and relevant; no broad test rerun, source
 change, commit, push or production action was performed.
+
+## Isolated Collector Tools purchase and cancellation acceptance — 2026-10-23
+
+Started with clean `main` at `b6e4728a1a7e995f7bccd910530e6df7d4f1a2cb`.
+Confirmed `b6e4728` and `14c1c95`; their owned Files and owned-process restart
+results remain accepted. The completed owned batch Files workflow was not
+repeated. The supplied next-acceptance prompt was validated against the canonical
+[monetization contract](../plans/CARDSCANNER_LAUNCH_MONETIZATION.md) and current
+source. Free core, free one-card output (including one pair in Batch), the one
+non-consumable and all commercial boundaries remain unchanged.
+
+### Isolation and build identity
+
+Created **CardScanner Collector Acceptance 2026-10-23**, a new iPhone 17 / iOS
+27.0 Simulator. Its machine-local UUID, app container paths and artifact hashes
+are retained in `evidence/build-identity.json` under a machine-local external
+evidence root.
+
+The Simulator uses its own app, Photos library, local StoreKit transactions and
+Files provider. No existing Simulator was erased, and the owner's running app
+and saved batch were not changed. Only synthetic photos were imported. Native
+tests later clear transactions only in this disposable destination; their final
+state must not be mistaken for the earlier UI purchase checkpoint.
+
+Xcode **27.1 (27A9275)**, Debug app version **1.0 (1)**. Xcode Run used the
+explicit `CollectorTools.storekit` configuration. Its SHA-256 is
+`ce7f193d55574d38cd6f4223854b77dcf8536b9edc48ef110776024f155c782a`;
+the UI app debug dylib SHA-256 is
+`0937e1fa86770a742a0861f3f55da8a11708f265a6db0e16c81b4c2849bed200`.
+The offer showed the configuration's **$9.99** localized price. Before the first
+purchase, the actual UI was unowned and Xcode's transaction manager showed
+**No Transactions**. No entitlement toggle or production Apple account was used.
+
+### Acceptance matrix
+
+| Check | Result | Evidence and boundary |
+| --- | --- | --- |
+| Unowned free export | **PASS** | Actual Single card UI, two synthetic 3000×4200 inputs, ten images, system Save to Files completed. Destination ZIP is separate from app temporary output: 226,405 bytes, SHA-256 `752f224e69425d2598dff7c19cf4451be20850e0d5277b2e6eb36302c0e34383`. Exact ten expected filenames, CRC, full JPEG decoding and equality to generated originals pass (`free-export-verification.json`). |
+| Paid batch and centering boundary | **PASS** | Six selected pairs → Prepare presents the existing $9.99 offer, with no paid output. Unowned centering shows the guarded explanation; owned centering exposes Take Photo / Choose Photo / Choose File. Guided frame measurement/output itself was not reaccepted here. |
+| Purchase-sheet cancellation | **PASS** | Actual Xcode no-charge sheet dismissed using its close control. App reports cancellation and remains unowned; transaction manager remains empty. Six pairs, `Acceptance Alpha` folder name and the first-pair swap survive. This is separate from generation cancellation. |
+| Fresh UI purchase | **PASS** | A second explicit request completes the actual local sheet; success alert says **Environment: Xcode**. Transaction manager contains exactly one Purchased non-consumable Collector Tools transaction, reason Purchase, United States/$9.99. Production adapter unlocks access through verified entitlements. |
+| Continue without reselection | **PASS** | Continue → Prepare uses the same six pairs/name/swap. Generated archive has exactly sixty decodable JPEGs, ten per expected folder, bytes equal to generated originals. First full front equals the swapped source. `purchased-batch.json`, archive SHA-256 `529fa029d41f5c0e70ea2c4c262ded73011bf4fdef26a575b4a270d09715873c`. |
+| Background/foreground work preservation | **PASS** | Home then plain `simctl launch` returns the same app process. Selected pairs and edited name remain. This does not prove process-death draft recovery. |
+| Actual process relaunch, then Restore | **PASS** | Terminated the prior process; a process check found it absent. Plain launch started a new process. Offer reports owned **before Restore**. Restore uses explicitly simulated Xcode authentication, reports restored and leaves the same single transaction. UI screenshots 14–16 and `restore-transactions.txt`. |
+| Pending / Ask to Buy | **PASS — native local StoreKit** | New focused test uses `Product.purchase`, a deferred test transaction and approval through `SKTestSession`; no access before approval, later verified update unlocks, and owned purchase/restore actions leave one transaction. Pending UI/work preservation was **NOT EXERCISED**. |
+| Interrupted StoreKit purchase | **FAIL — local fixture precondition** | Two diagnostic runs reproduce a failed transaction with `hasPurchaseIssue = true` while StoreKit 2 already supplies a verified, unrevoked Xcode entitlement. The simulator reports “No transactions in response.” A genuinely unowned interrupted state is not established. Final test explicitly skips this invalid fixture after checking issue resolution/count; this is not a passed interruption check or a confirmed production-app defect. |
+| Refund/revocation and duplicate delivery | **PASS — focused tests** | Existing real local refund reconciliation removes paid access while preserving free single/exported files. Existing injected duplicate-delivery/out-of-order/repeat-tap tests pass. Actual StoreKit transaction redelivery was **NOT EXERCISED**; injected delivery is state-logic evidence only. |
+| Cancellation during generation | **PASS** | Twelve 6000×8400 synthetic inputs make real six-pair work observable without app delays. Cancel invoked at **Card 1 of 6**. Returns to Prepare, six pairs and `Cancel Retry` remain, and both temporary photo-output roots are empty (`17-active-generation.txt`, `cancel-cleanup.json`). No partial ZIP is offered. |
+| Retry and stale completion | **PASS** | Same selected large inputs/name retry successfully; exact sixty decodable JPEGs, correct folders and byte equality to originals. Retained `retry-batch.zip`, SHA-256 `a0cad1cadc9a73636f29036791287c6bfbdfaab471409d24cf09dbd57537f723`. Existing deterministic delayed success/failure seam verifies canceled/superseded completions clean only their own run and cannot overwrite the next run. |
+
+The initial smaller generation completed before Cancel could be invoked and is
+not counted as cancellation evidence. Native controls sometimes showed stale
+rendering; refreshing the Simulator frontend restored observation. Early
+automation/LLDB timeouts and successful-looking taps alone were not accepted.
+The local purchase sheet eventually appeared and was exercised, rather than
+replaced by a mock.
+
+### Findings, implementation and focused verification
+
+No material app defect was established in the completed flows; no production
+source, paywall, pricing or generation behavior changed. Added real local pending
+approval coverage and exact initial/success/restore transaction-count and verified
+product/environment assertions to `CollectorToolsTests`. Added a separate
+interrupted-purchase check with an explicit fixture-validity skip. It must become
+an actual acceptance pass in an environment that withholds entitlement until
+resolution. No test-only StoreKit flags were introduced into production code.
+
+The interruption diagnostic follows the app's causal path:
+`start()` reconciliation → `Transaction.currentEntitlements` → verified intended
+non-consumable with no revocation → owned. The fixture simultaneously reports a
+failed purchase issue. Rejecting that verified entitlement using StoreKitTest-only
+state would not be a robust production repair. Keep sandbox interruption
+acceptance open. Apple's [issue-resolution API](https://developer.apple.com/documentation/storekittest/sktestsession/resolveissuefortransaction(identifier:))
+documents delivery after simulated resolution; it does not validate this
+observed contradictory pre-resolution fixture.
+
+**Final selection:** `final.xcresult`, **13 executed: 12 passed, zero failures,
+one explicit interrupted-fixture skip**, build and test execution successful.
+This includes all eleven Collector Tools cases and two existing archive-boundary
+cases. It is not added to the historical 106-test total. Earlier `focused.xcresult`
+has twelve passed before adding the interruption check; `interrupted.xcresult`
+and `interrupted-diagnostic.xcresult` each have one failed case with three failing
+access assertions. The final skip preserves that limitation rather than calling
+those expectations passed. No broad suite was run.
+
+**Precommit rerun on this checkout:** `collector-tools-commit-validation-20261023.xcresult`,
+**13 executed: 12 passed, zero failures, one explicit skip**, `xcodebuild` exit 0.
+The bundle and matching `.log` are under the machine-local
+`CARD_SCANNER_BUILD_ROOT`.
+
+The exact tool-generated `xcodebuild` invocations are retained in the external
+`evidence/logs/` build/test logs. XcodeBuildMCP builds a `.xctestproducts` package,
+then executes `xcodebuild -testProductsPath … test-without-building`. Equivalent
+source invocation for the final bounded selection (set the destination UUID
+from `build-identity.json`, set `CARD_SCANNER_BUILD_ROOT` to the dedicated
+external build root, and use a fresh result path):
+
+```sh
+xcodebuild test -project TradingCardScanner.xcodeproj \
+  -scheme TradingCardScanner -configuration Debug \
+  -destination "platform=iOS Simulator,id=$CARD_SCANNER_SIMULATOR_ID" \
+  -derivedDataPath "$CARD_SCANNER_BUILD_ROOT/DerivedData" \
+  -resultBundlePath "$CARD_SCANNER_FRESH_RESULT_PATH" \
+  -parallel-testing-enabled NO \
+  -only-testing:TradingCardScannerTests/CollectorToolsTests \
+  -only-testing:TradingCardScannerTests/EbayListingPhotoExportTests/testSupersededArchiveSuccessAndFailureCleanOnlyTheirOwnRun \
+  -only-testing:TradingCardScannerTests/EbayListingPhotoExportTests/testCurrentArchiveFailureIsPublishedAfterCleaningItsRun
+```
+
+Synthetic inputs, UI captures, transaction snapshots, verification scripts/JSON,
+the saved free ZIP and retry ZIP remain in external `evidence/`. No raw screenshots,
+logs or collection exports were added to Git. Xcode's incidental scheme formatting
+was restored; the shared scheme has no final diff. Only the focused test file,
+this ledger and `progress.md` changed. HEAD remains `b6e4728`; no commit or push.
+
+### Smallest next external handoff
+
+Run the exact release candidate with a dedicated real sandbox/TestFlight tester:
+fresh cancellation/pending/approval, **interrupted purchase with an authoritative
+unowned state until resolution**, transaction redelivery, relaunch and idempotent
+restore. Include prepared-work retention during pending UI, offline behavior and
+accessibility; do not require new cross-process photo drafts. This pass made no
+Apple account, App Store Connect, signing, phone-install or submission changes.
+
+Verified production configuration blockers remain the previously inspected
+disabled One Piece delivery/writes and missing production seed/pins, plus empty
+privacy/support build settings. Live product availability/pricing, agreements,
+tax/banking, signed archive and current submission state were not inspected in
+this pass. Approved signed catalog delivery, lawful provider/artwork/export use,
+remaining five-game coverage and physical-camera acceptance remain open. Local
+StoreKit UI success and a test-configuration price establish none of those gates.

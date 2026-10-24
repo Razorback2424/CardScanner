@@ -3609,3 +3609,30 @@ historical.
   and `logs/acquisition-verified.log`. Source is `872dbf2` plus local changes;
   production remains disabled and no commit, signing-key, publication or account
   change was made. Local Debug signing is not distribution signing.
+
+## 2026-10-23 — Isolated Collector Tools purchase and cancellation acceptance
+
+- Started clean at `main` / `b6e4728`; preserved the accepted owned Files workflow
+  and existing Simulator. Created a disposable iPhone 17 / iOS 27.0 Simulator.
+  Actual unowned UI and zero transactions preceded free output and purchase.
+- Free UI Save to Files yields exactly ten decodable, byte-matching JPEGs.
+  Actual local purchase-sheet cancel retains six pairs, an edited name and swap.
+  Successful Xcode purchase yields one configured non-consumable transaction;
+  the same pairs generate sixty verified JPEGs without reselection. Actual
+  termination/relaunch reloads owned access before Restore; Restore stays at one
+  transaction. Same-process background recovery passes separately.
+- Real large-image generation canceled at Card 1 of 6, returns to Prepare with
+  pairs/name preserved and empty output roots. Retry produces sixty verified
+  JPEGs. Existing delayed-completion regression passes. No app repair was needed.
+- Added real pending-approval and transaction-count/verified-identity assertions.
+  Final focused native selection: **12 passed, zero failures, one explicit skip**
+  across 13 cases. Precommit rerun on this checkout confirms the same result;
+  `collector-tools-commit-validation-20261023.xcresult` is under the machine-local
+  external build root. Do not add this overlapping selection to historical totals.
+  The skipped interruption fixture exposes a failed/issue transaction while
+  StoreKit 2 already returns a verified unrevoked entitlement; two diagnostic
+  runs failed the no-early-access expectation. This remains an acceptance gap,
+  not a passed interruption check or proven production-app defect.
+- Exact matrix, commands, UI/build identity, retained external synthetic evidence
+  and sandbox/TestFlight handoff are in the [release ledger](docs/release/five-game-launch-readiness-2026-10-23.md#isolated-collector-tools-purchase-and-cancellation-acceptance--2026-10-23).
+  Only tests and documentation changed; no commit/push or production actions.
