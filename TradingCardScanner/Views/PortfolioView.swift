@@ -165,16 +165,11 @@ struct PortfolioView: View {
         nonmutating set { history.range = newValue }
     }
 
-    /// The history result that actually belongs to the current selection.
-    ///
-    /// `historyResult` arrives asynchronously, so between changing the range and
-    /// the replacement landing it still holds the *previous* period's
-    /// accounting. Rendering that under the new label would state a 1M total
-    /// beside a 3M heading — a mismatch a person has no way to detect. Anything
-    /// that describes the selected period reads this and shows nothing until a
-    /// matching result exists.
+    /// Present one completed period at a time. The chart, totals, movers and
+    /// selected chip all retain this result's range until its replacement is
+    /// ready, avoiding an empty frame or old totals under a new period label.
     private var activeHistoryResult: PortfolioHistoryResult? {
-        history.activeResult
+        history.result
     }
 
     /// Scrub values are resolved from the result for the active range. This
@@ -422,7 +417,7 @@ struct PortfolioView: View {
         // cell and leave a gap after it.
         return HStack(spacing: 0) {
             ForEach(Array(ranges.enumerated()), id: \.element) { index, range in
-                let isSelected = range == historyRange
+                let isSelected = range == history.displayedRange
                 Button {
                     historyRange = range
                 } label: {

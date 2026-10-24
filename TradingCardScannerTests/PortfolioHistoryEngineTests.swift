@@ -1,5 +1,7 @@
 import Combine
 import SwiftData
+import SwiftUI
+import UIKit
 import XCTest
 @testable import TradingCardScanner
 
@@ -11,6 +13,7 @@ private actor HistoryCalculationProbe {
     private var ranOnMain = false
     private var started: CheckedContinuation<Void, Never>?
     private var releaseFirst: CheckedContinuation<Void, Never>?
+    private var shouldPause = true
 
     func calculate(_ input: PortfolioHistoryInput, range: PortfolioHistoryRange) async -> PortfolioHistoryResult {
         ranges.append(range)
@@ -18,7 +21,8 @@ private actor HistoryCalculationProbe {
         active += 1
         maximumActive = max(maximumActive, active)
         ranOnMain = ranOnMain || Thread.isMainThread
-        if ranges.count == 1 {
+        if shouldPause {
+            shouldPause = false
             await withCheckedContinuation { continuation in
                 releaseFirst = continuation
                 started?.resume()
@@ -30,9 +34,11 @@ private actor HistoryCalculationProbe {
     }
 
     func waitUntilStarted() async {
-        guard ranges.isEmpty else { return }
+        guard releaseFirst == nil else { return }
         await withCheckedContinuation { started = $0 }
     }
+
+    func pauseNextCalculation() { shouldPause = true }
 
     func release() { releaseFirst?.resume(); releaseFirst = nil }
     func snapshot() -> (ranges: [PortfolioHistoryRange], values: [Money], maximumActive: Int, ranOnMain: Bool) {
@@ -41,6 +47,67 @@ private actor HistoryCalculationProbe {
 }
 
 final class PortfolioHistoryEngineTests: XCTestCase {
+    @MainActor
+    func testPeriodSwitchRetainsCompletedPresentationUntilLatestRangeIsReady() async throws {
+        let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")
+        defer { UserDefaults.standard.set(previousRange, forKey: "portfolioHistoryRange") }
+        let container = try ModelContainer(for: PortfolioDailyClose.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        container.mainContext.insert(PortfolioDailyClose(
+            date: date(29), revision: 1, timeZoneIdentifier: "UTC",
+            closeValue: money(8), market: .zero, flow: .zero, corrections: .zero,
+            pricingAdjustment: .zero, carriedForwardValue: .zero, coverage: .complete,
+            refreshedInstrumentCount: 1, carriedForwardInstrumentCount: 0,
+            pricedPositionCount: 1, excludedCount: 0, inputsFingerprint: "period-switch",
+            revisionReason: nil
+        ))
+        try container.mainContext.save()
+        let probe = HistoryCalculationProbe()
+        let store = PortfolioHistoryStore(calculate: { await probe.calculate($0, range: $1) })
+        store.range = .oneMonth
+        XCTAssertNil(store.result)
+        XCTAssertEqual(store.displayedRange, .oneMonth)
+        store.recompute(context: container.mainContext, summary: PortfolioSummary(currentValue: money(10)),
+            factors: .init(), contributions: .init(), now: date(30, hour: 12))
+        await probe.waitUntilStarted()
+        await probe.release()
+        await store.waitForPendingComputation()
+        let completed = try XCTUnwrap(store.result)
+        XCTAssertFalse(completed.isEmpty)
+
+        await probe.pauseNextCalculation()
+        store.range = .oneWeek
+        await probe.waitUntilStarted()
+        XCTAssertNil(store.activeResult, "Requested-period consumers must still reject old accounting")
+        XCTAssertEqual(store.result, completed, "The chart must retain its completed points while calculating")
+        XCTAssertEqual(store.displayedRange, completed.range, "The selected chip must match the visible totals")
+        let chart = UIHostingController(rootView: PortfolioHistoryView(
+            history: store, selection: .constant(PortfolioHistoryScrubSelection())
+        ))
+        XCTAssertGreaterThanOrEqual(
+            chart.sizeThatFits(in: CGSize(width: 390, height: 1_000)).height, 196,
+            "The pending period must render the chart rather than collapse to the empty-history message"
+        )
+
+        var publications: [PortfolioHistoryRange] = []
+        let subscription = store.$result.compactMap { $0 }.sink { publications.append($0.range) }
+        defer { subscription.cancel() }
+        for range in [PortfolioHistoryRange.oneDay, .all, .threeMonths] { store.range = range }
+        XCTAssertEqual(store.result, completed)
+        XCTAssertEqual(store.displayedRange, .oneMonth)
+        await probe.release()
+        await store.waitForPendingComputation()
+
+        XCTAssertEqual(publications, [.oneMonth, .threeMonths])
+        XCTAssertEqual(store.displayedRange, .threeMonths)
+        XCTAssertEqual(store.activeResult?.range, .threeMonths)
+        XCTAssertEqual(store.result?.range, store.displayedRange)
+
+        store.recompute(context: container.mainContext, summary: nil, factors: .init(), contributions: .init())
+        XCTAssertNil(store.result, "Removing the portfolio must clear the retained chart")
+        XCTAssertEqual(store.displayedRange, .threeMonths)
+    }
+
     @MainActor
     func testHistoryCoalescesRangeAndInputChangesWithoutPublishingStaleResults() async throws {
         let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")

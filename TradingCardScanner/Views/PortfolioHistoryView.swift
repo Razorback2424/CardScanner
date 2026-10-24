@@ -70,7 +70,7 @@ struct PortfolioHistoryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let result = history.activeResult, !result.isEmpty {
+            if let result = history.result, !result.isEmpty {
                 historyChart(result)
 
                 if let disclosure = PortfolioHistoryDisplay.availableHistoryDisclosure(for: result) {
@@ -92,8 +92,11 @@ struct PortfolioHistoryView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.range)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.displayedRange)
         .onChange(of: history.range) { _, _ in
+            resetSelection(forRangeChange: true)
+        }
+        .onChange(of: history.displayedRange) { _, _ in
             resetSelection(forRangeChange: true)
         }
         .onChange(of: isScrubbing) { wasScrubbing, isScrubbing in

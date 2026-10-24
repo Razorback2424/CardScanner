@@ -260,6 +260,13 @@ final class PortfolioHistoryStore: ObservableObject {
         return result
     }
 
+    /// Keep the completed result and its selected chip together while the
+    /// requested range calculates. `range` still tracks the latest tap so
+    /// obsolete calculations cannot publish over a newer request.
+    var displayedRange: PortfolioHistoryRange {
+        result?.range ?? range
+    }
+
     func movementState(for collectionKey: String) -> PortfolioCardMovementState {
         activeResult?.cardMovement(for: collectionKey) ?? .historyRecording
     }
