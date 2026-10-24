@@ -838,3 +838,16 @@ tax/banking, signed archive and current submission state were not inspected in
 this pass. Approved signed catalog delivery, lawful provider/artwork/export use,
 remaining five-game coverage and physical-camera acceptance remain open. Local
 StoreKit UI success and a test-configuration price establish none of those gates.
+
+### 2026-10-24 — Physical-device build and installation attempt
+
+At `e9d26a0`, the focused native selection ran 98 cases: **95 passed, zero
+failed, three live-opt-in cases skipped**. The prepared Lorcana expansion cases
+and the portfolio period-switch regression test executed. The Lorcana Python
+selection passed 23 tests. The generic iOS compile completed with code signing
+disabled.
+
+Xcode recognized the connected personal iPhone as an available destination, but
+the signed device build stalled in Apple's key-signing service. A retry against
+the physical destination timed out after three minutes. No signed app was
+verified or installed; the physical-device acceptance gate remains open.

@@ -3741,3 +3741,17 @@ historical.
   unavailable while the Mac is locked. No physical-device verification.
 - Results, final runtime screenshot and checklist are on the external SSD under
   `CodexBuilds/PortfolioPeriodSwitch-20261024/`. Existing Lorcana work is preserved.
+
+### 2026-10-24 — Device build and focused native verification
+
+- At `e9d26a0`, the focused iOS Simulator run discovered 98 cases: **95 passed,
+  zero failed, three live-opt-in cases skipped**. All three prepared Lorcana
+  expansion cases and the portfolio period-switch regression test executed.
+  Lorcana Python tests: **23 passed**. The changed documentation's relative links
+  and `git diff --check` also passed.
+- A generic iOS build with signing disabled completed. Xcode found the connected
+  personal iPhone, but the signed build remained blocked in Apple's key-signing
+  service; the device-targeted retry timed out after three minutes. No app was
+  installed. Physical-device acceptance remains open.
+- Device-build DerivedData is under the external SSD's
+  `CardScannerBuilds/CommitAndInstall-20261024/` directory.
