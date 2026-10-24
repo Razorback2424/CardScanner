@@ -3,6 +3,51 @@ import XCTest
 @testable import TradingCardScanner
 
 final class LorcanaDiscoveryCatalogTests: XCTestCase {
+    func testLocalManifestByteBudgetIsBoundedWithoutChangingSignedTransport() throws {
+        let maximum = LorcanaCatalogRegistry.maximumManifestBytes
+        var boundary = Data(#"{"schemaVersion":1,"printFamilies":[]}"#.utf8)
+        boundary.append(Data(repeating: 0x20, count: maximum - boundary.count))
+        XCTAssertNoThrow(try LorcanaCatalogRegistry(data: boundary))
+        boundary.append(0x20)
+        XCTAssertThrowsError(try LorcanaCatalogRegistry(data: boundary)) {
+            XCTAssertEqual($0 as? LorcanaCatalogRegistry.ValidationError, .oversizedManifest)
+        }
+        XCTAssertEqual(LorcanaCatalogSignature.maximumPayloadBytes, 8 * 1_024 * 1_024)
+        XCTAssertEqual(LorcanaCatalogSignature.maximumEnvelopeBytes, 12 * 1_024 * 1_024)
+    }
+
+    func testPackagedMarketLoaderPreservesSourceBindingAndResourceBounds() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".bundle")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let resources = root.appendingPathComponent("LorcanaCatalogSeed")
+        try FileManager.default.createDirectory(at: resources, withIntermediateDirectories: true)
+        for name in ["discovery", "market"] {
+            let original = try XCTUnwrap(Bundle.main.url(forResource: name, withExtension: "json", subdirectory: "LorcanaCatalogSeed"))
+            try FileManager.default.copyItem(at: original, to: resources.appendingPathComponent(name + ".json"))
+        }
+        try PropertyListSerialization.data(fromPropertyList: ["CFBundleIdentifier": "fixture.lorcana.bounds", "CFBundlePackageType": "BNDL"],
+            format: .xml, options: 0).write(to: root.appendingPathComponent("Info.plist"))
+        let bundle = try XCTUnwrap(Bundle(url: root))
+        XCTAssertNoThrow(try LorcanaDiscoveryCatalog.loadBundledMarket(from: bundle))
+        let marketURL = resources.appendingPathComponent("market.json")
+        let market = try Data(contentsOf: marketURL)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: market) as? [String: Any])
+        object["discoverySHA256"] = String(repeating: "0", count: 64)
+        try JSONSerialization.data(withJSONObject: object).write(to: marketURL)
+        XCTAssertThrowsError(try LorcanaDiscoveryCatalog.loadBundledMarket(from: bundle)) {
+            guard case BrowseCatalogError.badResponse = $0 else { return XCTFail("Source binding must reject before admission") }
+        }
+        try Data(repeating: 0x20, count: LorcanaCatalogRegistry.maximumManifestBytes + 1).write(to: marketURL)
+        XCTAssertThrowsError(try LorcanaDiscoveryCatalog.loadBundledMarket(from: bundle)) {
+            guard case BrowseCatalogError.badResponse = $0 else { return XCTFail("Oversize resource must reject before decoding") }
+        }
+        try market.write(to: marketURL)
+        try Data(repeating: 0x20, count: 8 * 1_024 * 1_024 + 1).write(to: resources.appendingPathComponent("discovery.json"))
+        XCTAssertThrowsError(try LorcanaDiscoveryCatalog.loadBundledMarket(from: bundle)) {
+            guard case BrowseCatalogError.badResponse = $0 else { return XCTFail("Discovery budget must remain bounded") }
+        }
+    }
+
     func testEverySourceCardIsBrowsableWithArtworkAndFinishMetadata() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundled.get()
         XCTAssertEqual(catalog.cardsByID.values.filter { $0.id.hasPrefix("lorcanajson:") }.count, 3_556)

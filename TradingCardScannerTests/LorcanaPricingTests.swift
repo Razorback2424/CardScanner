@@ -46,6 +46,168 @@ private final class LorcanaPricingProtocol: URLProtocol {
 /// Synthetic physical review evidence exercises contracts, never catalog coverage.
 @MainActor
 final class LorcanaPricingTests: XCTestCase {
+    /// Offline, hash-bound candidate acceptance. The app's bundled production
+    /// catalog remains unchanged; stage reviewed inputs in this test workspace.
+    private func preparedExpansion() throws -> (LorcanaDiscoveryCatalog, [LorcanaPhysicalPrinting]) {
+        let root = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("lorcana-expansion-acceptance")
+        guard let receiptData = try? Data(contentsOf: root.appendingPathComponent("acceptance.json")) else {
+            throw XCTSkip("Prepared expansion acceptance requires an isolated, hash-bound input workspace")
+        }
+        struct Receipt: Decodable { let candidateSHA256: String; let baselineSHA256: String; let expectedAdditions: Int }
+        let receipt = try JSONDecoder().decode(Receipt.self, from: receiptData)
+        let candidateData = try Data(contentsOf: root.appendingPathComponent("candidate.json"))
+        let baselineData = try Data(contentsOf: root.appendingPathComponent("baseline.json"))
+        func digest(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
+        XCTAssertEqual(digest(candidateData), receipt.candidateSHA256)
+        XCTAssertEqual(digest(baselineData), receipt.baselineSHA256)
+        let baseline = try LorcanaCatalogRegistry(data: baselineData)
+        let manifest = try JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self, from: candidateData)
+        // Exercise byte decoding and the exact app resource loader, not the
+        // typed-manifest seam that previously bypassed the packaging bound.
+        _ = try LorcanaCatalogRegistry(data: candidateData, previous: baseline)
+        let discoveryURL = try XCTUnwrap(Bundle.main.url(forResource: "discovery", withExtension: "json", subdirectory: "LorcanaCatalogSeed"))
+        let bundleRoot = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".bundle")
+        defer { try? FileManager.default.removeItem(at: bundleRoot) }
+        let resources = bundleRoot.appendingPathComponent("LorcanaCatalogSeed")
+        try FileManager.default.createDirectory(at: resources, withIntermediateDirectories: true)
+        try FileManager.default.copyItem(at: discoveryURL, to: resources.appendingPathComponent("discovery.json"))
+        try candidateData.write(to: resources.appendingPathComponent("market.json"))
+        let plist = ["CFBundleIdentifier": "fixture.lorcana.candidate", "CFBundlePackageType": "BNDL"]
+        try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
+            .write(to: bundleRoot.appendingPathComponent("Info.plist"))
+        let bundle = try XCTUnwrap(Bundle(url: bundleRoot))
+        let catalog = try LorcanaDiscoveryCatalog.loadBundledMarket(from: bundle)
+        let original = try XCTUnwrap(baseline.physicalCatalog)
+        let additions = manifest.physicalPrintings.filter { original.printingByID[$0.id] == nil }
+        XCTAssertEqual(additions.count, receipt.expectedAdditions)
+        return (catalog, additions)
+    }
+
+    func testPreparedExpansionResolvesEveryPrintingFinishAndCSVIdentity() async throws {
+        let (catalog, additions) = try preparedExpansion()
+        let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
+        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count,
+            physical.manifest.physicalPrintings.reduce(0) { $0 + ($1.marketMappings?.count ?? 0) })
+        let importer = LorcanaImportAdapter(registry: catalog.registry)
+        for printing in additions {
+            let footer = printing.identity.footer
+            guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog)
+                .identify([.init(text: footer.displayIdentifier)]),
+                  case let .resolved(resolution) = try await catalog.lookup(subject.identifier) else {
+                XCTFail("Candidate footer must resolve exactly: \(footer.displayIdentifier)"); continue
+            }
+            let card = resolution.card
+            XCTAssertEqual(card.providerID, printing.id.uuidString.lowercased())
+            XCTAssertEqual(Set(card.variantEvidence.catalogVariants), Set(printing.finishes.map { $0.finish.variant }))
+            try await catalog.validateAcquisition(subject.identifier, printingID: card.providerID, automatic: true)
+            for finish in printing.finishes {
+                let csv = "game,provider_id,card_name,card_number,finish,quantity\nlorcana,\(card.providerID),Candidate,\(footer.displayIdentifier),\(finish.finish.rawValue),1\n"
+                let entry = try XCTUnwrap(CollectionCSV.parse(Data(csv.utf8)).entries.first)
+                try importer.validate(entry)
+                XCTAssertEqual(entry.collectionKey, card.collectionKey(variant: finish.finish.variant))
+                let mapping = try XCTUnwrap(printing.marketMappings?.first { $0.finish == finish.finish })
+                XCTAssertTrue(mapping.hasValidMarketLane)
+            }
+        }
+    }
+
+    func testPreparedExpansionExactPricingThroughRetainedPublicFeeds() async throws {
+        let (catalog, additions) = try preparedExpansion()
+        let workspace = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("lorcana-expansion-acceptance")
+        let cache = FileManager.default.temporaryDirectory.appendingPathComponent("LorcanaCandidatePrices-" + UUID().uuidString)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        let session = URLSession(configuration: config)
+        defer {
+            session.invalidateAndCancel(); LorcanaPricingProtocol.handler = nil
+            try? FileManager.default.removeItem(at: cache)
+        }
+        LorcanaPricingProtocol.handler = { request in
+            let url = try XCTUnwrap(request.url)
+            let group = url.deletingLastPathComponent().lastPathComponent
+            guard ["products", "prices"].contains(url.lastPathComponent), Int(group) != nil else {
+                throw URLError(.unsupportedURL)
+            }
+            return try Data(contentsOf: workspace.appendingPathComponent("feeds/\(group)-\(url.lastPathComponent).json"))
+        }
+        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: cache))
+        struct Feed: Decodable { let results: [Price] }
+        struct Price: Decodable { let productId: Int; let subTypeName: String; let marketPrice: Double? }
+        var feeds: [Int: [Price]] = [:]
+        var checked = 0
+        for printing in additions {
+            for mapping in printing.marketMappings ?? [] {
+                if feeds[mapping.groupID] == nil {
+                    let data = try Data(contentsOf: workspace.appendingPathComponent("feeds/\(mapping.groupID)-prices.json"))
+                    feeds[mapping.groupID] = try JSONDecoder().decode(Feed.self, from: data).results
+                }
+                let expected = try XCTUnwrap(feeds[mapping.groupID]?.first {
+                    $0.productId == mapping.productID && $0.subTypeName == mapping.providerVariantID
+                })
+                let result = try await source.quote(mapping: mapping, generation: catalog.generation, minimumFetchedAt: nil)
+                if let amount = expected.marketPrice {
+                    guard case let .price(price) = result else { XCTFail("Missing exact candidate lane"); continue }
+                    XCTAssertEqual(price.unitMarketPriceUSD, amount)
+                    XCTAssertEqual(price.currencyCode, "USD")
+                    XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(mapping.productID):\(mapping.providerVariantID)")
+                } else {
+                    guard case .unavailable(.tcgCSV) = result else { XCTFail("Null price must remain unavailable"); continue }
+                }
+                checked += 1
+            }
+        }
+        XCTAssertEqual(checked, additions.reduce(0) { $0 + ($1.marketMappings?.count ?? 0) })
+    }
+
+    func testPreparedExpansionOwnershipUndoReopenAndCSVReplay() async throws {
+        let (catalog, additions) = try preparedExpansion()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("LorcanaCandidate-" + UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let url = root.appendingPathComponent("collection.store")
+        let original = try container(url: url)
+        let runtime = try runtimes(catalog.registry, source: LorcanaTestPriceSource())
+        _ = try await runtime.bound(to: original)
+        let groups = Dictionary(grouping: additions) { printing in
+            printing.identity.distributionID + ":" + String(Set(printing.marketMappings?.map(\.productID) ?? []).count)
+        }
+        let store = CollectionStore(context: original.mainContext)
+        var expected: [String: Int] = [:]
+        for sample in groups.values.compactMap({ $0.sorted { $0.id.uuidString < $1.id.uuidString }.first }) {
+            let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: sample.id).card
+            for finish in sample.finishes {
+                let variant = finish.finish.variant
+                _ = try store.add(card, resolved: .init(variant: variant, resolution: .userConfirmed), quantity: 2)
+                let duplicate = try store.add(card, resolved: .init(variant: variant, resolution: .userConfirmed))
+                try store.undo(duplicate)
+                expected[card.collectionKey(variant: variant)] = 2
+            }
+            XCTAssertThrowsError(try store.add(card, resolved: .init(variant: .reverse, resolution: .userConfirmed)))
+            if !sample.finishes.contains(where: { $0.finish == .normal }) {
+                XCTAssertThrowsError(try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed)))
+            }
+        }
+        let reopened = try container(url: url)
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: rows.map { ($0.collectionKey, $0.quantity) }), expected)
+        let exported = try await CollectionCSV.exportIsolated(from: reopened)
+        let plan = try CollectionCSV.parse(Data(exported.text.utf8))
+        let target = try container()
+        let bound = try await runtime.bound(to: target)
+        let token = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+        defer { CollectionWriteSerializer.endExclusive(token) }
+        let imported = try await CollectionCSV.applyIsolated(plan, to: target, exclusiveToken: token,
+            gameRegistry: bound.registry, gameImportAdapters: await bound.currentImportAdapters())
+        XCTAssertTrue(imported.failedRows.isEmpty)
+        XCTAssertEqual(imported.importedQuantity, expected.values.reduce(0, +))
+        let repeated = try await CollectionCSV.applyIsolated(plan, to: target, exclusiveToken: token,
+            gameRegistry: bound.registry, gameImportAdapters: await bound.currentImportAdapters())
+        XCTAssertEqual(repeated.importedQuantity, 0)
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: try ModelContext(target).fetch(FetchDescriptor<CollectedCard>())
+            .map { ($0.collectionKey, $0.quantity) }), expected)
+    }
+
     func testHistoryRemapsWithinTTLAndNeverMergesAcrossProductsOrProviderFinishes() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)

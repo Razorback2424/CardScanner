@@ -67,20 +67,30 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
     }
     /// Normal app registration retains discovery/sealed coverage while exact
     /// reviewed UUIDs use the same physical ownership/pricing authority as review.
-    static let bundledMarket: Result<Self, Error> = Result {
-        guard let source = Bundle.main.url(forResource: "discovery", withExtension: "json", subdirectory: "LorcanaCatalogSeed"),
-              let market = Bundle.main.url(forResource: "market", withExtension: "json", subdirectory: "LorcanaCatalogSeed")
+    static let bundledMarket: Result<Self, Error> = Result { try loadBundledMarket(from: .main) }
+
+    /// The same resource path serves the app bundle and isolated candidate bundles.
+    static func loadBundledMarket(from bundle: Bundle) throws -> Self {
+        guard let source = bundle.url(forResource: "discovery", withExtension: "json", subdirectory: "LorcanaCatalogSeed"),
+              let market = bundle.url(forResource: "market", withExtension: "json", subdirectory: "LorcanaCatalogSeed")
         else { throw BrowseCatalogError.badResponse }
-        let sourceBytes = try Data(contentsOf: source), marketBytes = try Data(contentsOf: market)
+        func readBounded(_ url: URL, maximumBytes: Int) throws -> Data {
+            let handle = try FileHandle(forReadingFrom: url)
+            defer { try? handle.close() }
+            let bytes = try handle.read(upToCount: maximumBytes + 1) ?? Data()
+            guard bytes.count <= maximumBytes else { throw BrowseCatalogError.badResponse }
+            return bytes
+        }
+        let sourceBytes = try readBounded(source, maximumBytes: 8 * 1_024 * 1_024)
+        let marketBytes = try readBounded(market, maximumBytes: LorcanaCatalogRegistry.maximumManifestBytes)
         struct SourceBinding: Decodable { let discoverySHA256: String }
-        guard marketBytes.count <= 8 * 1_024 * 1_024,
-              try JSONDecoder().decode(SourceBinding.self, from: marketBytes).discoverySHA256
+        guard try JSONDecoder().decode(SourceBinding.self, from: marketBytes).discoverySHA256
                 == SHA256.hash(data: sourceBytes).map({ String(format: "%02x", $0) }).joined()
         else { throw BrowseCatalogError.badResponse }
-        let browsePrices = Bundle.main.url(forResource: "browse-prices", withExtension: "json", subdirectory: "LorcanaCatalogSeed")
+        let browsePrices = bundle.url(forResource: "browse-prices", withExtension: "json", subdirectory: "LorcanaCatalogSeed")
         return try Self(data: sourceBytes,
             reviewedManifest: JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self, from: marketBytes),
-            browsePriceData: browsePrices.map { try Data(contentsOf: $0) })
+            browsePriceData: browsePrices.map { try readBounded($0, maximumBytes: 4 * 1_024 * 1_024) })
     }
 
     let game = CardGame.lorcana

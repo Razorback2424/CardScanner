@@ -82,6 +82,9 @@ struct LorcanaCatalogManifest: Codable, Sendable {
 /// Local research snapshot. Construction validates mappings but does not confer
 /// signed-release authority or prove the completeness of any physical universe.
 struct LorcanaCatalogRegistry: Sendable {
+    /// Bounded local manifest budget, including the reviewed later expansions.
+    /// Signed network envelopes retain their separate transport/signature bounds.
+    static let maximumManifestBytes = 16 * 1_024 * 1_024
     enum ValidationError: Error, Equatable {
         case unsupportedSchema
         case invalidFamily
@@ -99,7 +102,7 @@ struct LorcanaCatalogRegistry: Sendable {
     let normalizedPhysicalManifest: LorcanaPhysicalCatalogManifest?
 
     init(data: Data, previous: LorcanaCatalogRegistry? = nil) throws {
-        guard data.count <= 8 * 1_024 * 1_024 else { throw ValidationError.oversizedManifest }
+        guard data.count <= Self.maximumManifestBytes else { throw ValidationError.oversizedManifest }
         struct Schema: Decodable { let schemaVersion: Int }
         let decoder = JSONDecoder()
         switch try decoder.decode(Schema.self, from: data).schemaVersion {
