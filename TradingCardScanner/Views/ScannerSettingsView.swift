@@ -61,7 +61,7 @@ private struct SettingsContentView: View {
 
                     NavigationLink {
                         SettingsCategoryView("Pricing") {
-                            PriceFallbackSettingsSection()
+                            PriceFallbackSettingsSection(onKeySaved: retrySealedNormalization)
                         }
                     } label: {
                         Label("Pricing", systemImage: "dollarsign.circle")
@@ -445,6 +445,17 @@ private struct SettingsContentView: View {
         priceCoverageGaps = PriceCoverageGapLog.shared.currentGaps()
     }
 
+    private func retrySealedNormalization() {
+        guard let token = storageGeneration.currentToken() else { return }
+        let container = modelContext.container
+        let shouldContinue = storageGeneration.continuation(for: token)
+        Task { @MainActor in
+            await catalogNormalizer.normalizeImportedCards(
+                in: container, retryFailedSealed: true, shouldContinue: shouldContinue
+            )
+        }
+    }
+
     private func refreshBrowseHistoryDiagnostics() async {
         browseHistoryDiagnostics = await BrowsePriceHistoryStore.shared.diagnostics()
     }
@@ -799,6 +810,7 @@ private struct SettingsCategoryView<Content: View>: View {
 /// Shared between Scan settings and Collection so the fallback can be managed
 /// where its results and remaining work are visible.
 struct PriceFallbackSettingsSection: View {
+    var onKeySaved: () -> Void = {}
     @Environment(\.modelContext) private var modelContext
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var vendorKeyEntry = ""
@@ -864,6 +876,7 @@ struct PriceFallbackSettingsSection: View {
             hasVendorKey = PriceVendorCredentials.hasKey
             vendorKeyMessageIsError = false
             vendorKeyMessage = "Key saved to keychain."
+            onKeySaved()
             queueGradedPriceRefresh()
         } catch {
             vendorKeyMessageIsError = true

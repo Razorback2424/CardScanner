@@ -774,6 +774,14 @@ struct CollectionView: View {
         Task { @MainActor in
             defer { collectionRefreshRequestInFlight = false }
 
+            let storageGeneration = CollectionStorageGeneration.shared
+            guard let token = storageGeneration.currentToken() else { return }
+            await catalogNormalizer.normalizeImportedCards(
+                in: modelContext.container,
+                retryFailedSealed: true,
+                shouldContinue: storageGeneration.continuation(for: token)
+            )
+            guard !Task.isCancelled, storageGeneration.isCurrent(token) else { return }
             let outcome = await onRefresh()
             guard !Task.isCancelled,
                   let presentation = CollectionRefreshStatusResolver.presentation(for: outcome) else {

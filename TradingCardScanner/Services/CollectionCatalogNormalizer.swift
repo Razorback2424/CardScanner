@@ -42,11 +42,13 @@ struct ImportedCatalogMetadata: Sendable {
     }
 }
 
+private enum SealedNormalizationOutcome: Sendable {
+    case unattempted, transientFailure, definitiveMiss
+}
+
 private struct ImportedCatalogResolution: Sendable {
     var matches: [String: ImportedCatalogMetadata] = [:]
-    /// Sealed rows for which the vendor directory and every relevant product
-    /// page completed successfully, but no unambiguous product existed.
-    var definitiveSealedMisses: Set<String> = []
+    var sealedOutcomes: [String: SealedNormalizationOutcome] = [:]
 }
 
 fileprivate struct ImportedCatalogRowIdentity: Sendable {
@@ -93,6 +95,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// 10: repair saved Pokémon artwork from the active signed Browse catalog.
     nonisolated static let metadataVersion = 10
     private var requestsAnotherPass = false
+    private var retryFailedSealedOnNextPass = false
     /// Input discovery now suspends at the model actor. Keep the same
     /// single-flight guarantee that the old synchronous discovery had, so a
     /// second view appearance cannot start a duplicate provider crawl while
@@ -120,20 +123,24 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// let its save/rollback interact with a scanner transaction.
     func normalizeImportedCards(
         in container: ModelContainer,
+        retryFailedSealed: Bool = false,
         shouldContinue: ContinuationCheck? = nil
     ) async {
         let normalizationContext = ModelContext(container)
         await normalizeImportedCards(
             in: normalizationContext,
+            retryFailedSealed: retryFailedSealed,
             shouldContinue: shouldContinue
         )
     }
 
     func normalizeImportedCards(
         in context: ModelContext,
+        retryFailedSealed: Bool = false,
         shouldContinue: ContinuationCheck? = nil
     ) async {
         guard shouldContinue?() ?? true else { return }
+        retryFailedSealedOnNextPass = retryFailedSealedOnNextPass || retryFailedSealed
         if case .normalizing = status {
             requestsAnotherPass = true
             return
@@ -144,13 +151,19 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
 
         let now = Date.now
+        let retriesSealed = retryFailedSealedOnNextPass
+        retryFailedSealedOnNextPass = false
         isCollectingInputs = true
         let inputActor = await CollectionCatalogNormalizationInputActor.makeBackground(
             modelContainer: context.container
         )
-        let inputs = await inputActor.inputs(now: now, gameRegistry: gameRegistry)
+        let inputs = await inputActor.inputs(now: now, gameRegistry: gameRegistry, retryFailedSealed: retriesSealed)
         isCollectingInputs = false
-        guard shouldContinue?() ?? true else { return }
+        guard !Task.isCancelled, shouldContinue?() ?? true else {
+            requestsAnotherPass = false
+            retryFailedSealedOnNextPass = false
+            return
+        }
         let requests = inputs.requests
 
         guard !requests.isEmpty else {
@@ -175,6 +188,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
         let matches = resolution.matches
         guard !Task.isCancelled, shouldContinue?() ?? true else {
             requestsAnotherPass = false
+            retryFailedSealedOnNextPass = false
             status = .idle
             return
         }
@@ -296,15 +310,19 @@ final class CollectionCatalogNormalizer: ObservableObject {
                                 }
                             }
                         } else {
-                            let isDefinitiveSealedMiss = request.itemKind == .sealedProduct
-                                && resolution.definitiveSealedMisses.contains(request.identityKey)
+                            var version = Self.metadataVersion
+                            if request.itemKind == .sealedProduct {
+                                switch resolution.sealedOutcomes[request.identityKey] {
+                                case .definitiveMiss: version = -Self.metadataVersion
+                                case .transientFailure: break
+                                case .unattempted, nil: continue
+                                }
+                            }
                             for row in rows {
                                 Self.recordCatalogMetadataCheck(
                                     on: row,
                                     at: now,
-                                    version: isDefinitiveSealedMiss
-                                        ? -Self.metadataVersion
-                                        : Self.metadataVersion
+                                    version: version
                                 )
                             }
                         }
@@ -328,6 +346,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
             }
             guard shouldContinue?() ?? true else {
                 requestsAnotherPass = false
+                retryFailedSealedOnNextPass = false
                 status = .idle
                 return
             }
@@ -350,6 +369,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
             }
         } catch {
             requestsAnotherPass = false
+            retryFailedSealedOnNextPass = false
             status = Task.isCancelled || !(shouldContinue?() ?? true) ? .idle : .failed
             Task { @MainActor [weak self] in
                 try? await Task.sleep(for: .seconds(8))
@@ -360,10 +380,11 @@ final class CollectionCatalogNormalizer: ObservableObject {
     }
 
     /// Definitive sealed misses stay asleep until the resolver version changes.
-    /// Transient failures never receive the current version stamp, so they
-    /// remain eligible without turning a deterministic miss into an 8-hour
-    /// metered request loop.
-    nonisolated static func needsNormalization(_ card: CollectedCard, now: Date = .now) -> Bool {
+    /// Transient failures retain the eight-hour automatic backoff. A deliberate
+    /// refresh or newly saved key can retry unresolved sealed rows immediately.
+    nonisolated static func needsNormalization(
+        _ card: CollectedCard, now: Date = .now, retryFailedSealed: Bool = false
+    ) -> Bool {
         guard hasUnresolvedCatalogMetadata(card) else { return false }
         if card.itemKind == .sealedProduct,
            card.justTCGCardID == nil,
@@ -373,6 +394,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
             // deliberately reopens it once against improved matching rules.
             return card.catalogMetadataVersion != -Self.metadataVersion
         }
+        if retryFailedSealed, card.itemKind == .sealedProduct { return true }
         if card.catalogMetadataVersion < Self.metadataVersion { return true }
         guard let checkedAt = card.catalogMetadataCheckedAt else { return true }
         return now.timeIntervalSince(checkedAt) >= Self.retryInterval
@@ -447,7 +469,7 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
         self.modelExecutor = modelExecutor
     }
 
-    fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry) -> ImportedCatalogNormalizationInputs {
+    fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry, retryFailedSealed: Bool) -> ImportedCatalogNormalizationInputs {
         let readContext = ModelContext(modelContext.container)
         let store = CollectionStore(context: readContext, gameRegistry: gameRegistry)
         var allCards = (try? readContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
@@ -502,7 +524,7 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
 
         let candidates = allCards.filter {
             store.permitsSyncedMetadataWrite(for: $0)
-                && CollectionCatalogNormalizer.needsNormalization($0, now: now)
+                && CollectionCatalogNormalizer.needsNormalization($0, now: now, retryFailedSealed: retryFailedSealed)
         }
         let requests = Dictionary(
             candidates.map { card in
@@ -689,8 +711,9 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private func resolveSealed(
         _ requests: [GameImportRequest]
     ) async -> ImportedCatalogResolution {
-        guard !requests.isEmpty, sealedCredentialsAvailable ?? PriceVendorCredentials.hasKey else { return .init() }
         var resolution = ImportedCatalogResolution()
+        for request in requests { resolution.sealedOutcomes[request.identityKey] = .unattempted }
+        guard !requests.isEmpty, sealedCredentialsAvailable ?? PriceVendorCredentials.hasKey else { return resolution }
 
         for game in CardGameRegistry.standard.games(supporting: .sealed) {
             let gameRequests = requests.filter { $0.game == game }
@@ -699,8 +722,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
             do {
                 sets = try await justTCG.sealedSets(game: game)
             } catch {
-                // No current-version stamp: connectivity, quota and provider
-                // failures are retryable and must not masquerade as no match.
+                for request in gameRequests { resolution.sealedOutcomes[request.identityKey] = .transientFailure }
                 continue
             }
             guard !Task.isCancelled else { return resolution }
@@ -714,7 +736,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 guard let set = sets.first(where: {
                     CatalogIdentityNormalization.canonicalSetName($0.name, game: game) == importedSet
                 }) else {
-                    resolution.definitiveSealedMisses.insert(request.identityKey)
+                    resolution.sealedOutcomes[request.identityKey] = .definitiveMiss
                     continue
                 }
                 requestsBySetID[set.id, default: []].append(request)
@@ -735,6 +757,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                         )
                     } catch {
                         completedCatalog = false
+                        for request in setRequests { resolution.sealedOutcomes[request.identityKey] = .transientFailure }
                         break
                     }
                     products += page.items
@@ -749,7 +772,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                         named: request.name,
                         in: products
                     ) else {
-                        resolution.definitiveSealedMisses.insert(request.identityKey)
+                        resolution.sealedOutcomes[request.identityKey] = .definitiveMiss
                         continue
                     }
                     resolution.matches[request.identityKey] = ImportedCatalogMetadata(

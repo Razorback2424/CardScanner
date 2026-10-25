@@ -3,15 +3,36 @@ import SwiftData
 @testable import TradingCardScanner
 
 private actor SealedNormalizationFixture: SealedBrowseProviding {
+    enum Outcome { case match, directoryFailure, pageFailure, missingSet, missingProduct }
     var calls = 0
     let product: SealedProductSummary
+    var outcome: Outcome = .match
+    private var pausesNextDirectory = false
+    private var directoryContinuation: CheckedContinuation<Void, Never>?
     init(product: SealedProductSummary) { self.product = product }
-    func sealedSets(game: CardGame) -> [SealedSetSummary] {
+    func setOutcome(_ outcome: Outcome) { self.outcome = outcome }
+    func pauseNextDirectory() { pausesNextDirectory = true }
+    var isPaused: Bool { directoryContinuation != nil }
+    func resumeDirectory() {
+        pausesNextDirectory = false
+        directoryContinuation?.resume()
+        directoryContinuation = nil
+    }
+    func sealedSets(game: CardGame) async throws -> [SealedSetSummary] {
         calls += 1
+        let outcome = outcome
+        if pausesNextDirectory {
+            pausesNextDirectory = false
+            await withCheckedContinuation { directoryContinuation = $0 }
+        }
+        if outcome == .directoryFailure { throw URLError(.notConnectedToInternet) }
+        if outcome == .missingSet { return [] }
         return [SealedSetSummary(id: "base", name: "Base Set", sealedCount: 1, game: game, releaseDate: nil)]
     }
-    func searchSealedProducts(game: CardGame, setID: String?, query: String?, offset: Int) -> MarketCatalogPage<SealedProductSummary> {
+    func searchSealedProducts(game: CardGame, setID: String?, query: String?, offset: Int) throws -> MarketCatalogPage<SealedProductSummary> {
         calls += 1
+        if outcome == .pageFailure { throw URLError(.timedOut) }
+        if outcome == .missingProduct { return .init(items: [], total: 0, offset: 0, limit: 20, hasMore: false) }
         return MarketCatalogPage(items: [product], total: 1, offset: 0, limit: 20, hasMore: false)
     }
 }
@@ -119,6 +140,124 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
 /// have not got any, which is the case these tests protect.
 @MainActor
 final class CatalogNormalizationTests: XCTestCase {
+    func testMissingSealedCredentialsDoNotStampAnUnattemptedLookup() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        self.container = container
+        let row = importedSealedProduct()
+        container.mainContext.insert(row)
+        try container.mainContext.save()
+        let product = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+            variantID: "sealed-variant", marketPriceUSD: 100, updatedAt: nil,
+            imageURL: URL(string: "https://example.test/box.png"))
+        let fixture = SealedNormalizationFixture(product: product)
+        await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+            sealedCredentialsAvailable: false).normalizeImportedCards(in: container)
+        let unattempted = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertNil(unattempted.catalogMetadataCheckedAt)
+        XCTAssertEqual(unattempted.catalogMetadataVersion, 0)
+        let calls = await fixture.calls
+        XCTAssertEqual(calls, 0)
+        await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+            sealedCredentialsAvailable: true).normalizeImportedCards(in: container)
+        let resolved = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(resolved.catalogProviderID, product.id)
+        XCTAssertEqual(resolved.imageURL, product.imageURL?.absoluteString)
+        XCTAssertEqual(resolved.quantity, 1)
+    }
+
+    func testSealedTransientFailuresBackOffUntilExplicitRecovery() async throws {
+        for failure in [SealedNormalizationFixture.Outcome.directoryFailure, .pageFailure] {
+            let container = try ProductionRowFixtures.makeContainer()
+            self.container = container
+            container.mainContext.insert(importedSealedProduct())
+            try container.mainContext.save()
+            let product = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+                variantID: "sealed-variant", marketPriceUSD: 100, updatedAt: nil,
+                imageURL: URL(string: "https://example.test/box.png"))
+            let fixture = SealedNormalizationFixture(product: product)
+            await fixture.setOutcome(failure)
+            let normalizer = CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+                sealedCredentialsAvailable: true)
+            await normalizer.normalizeImportedCards(in: container)
+            let failed = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertNotNil(failed.catalogMetadataCheckedAt)
+            XCTAssertEqual(failed.catalogMetadataVersion, CollectionCatalogNormalizer.metadataVersion)
+            let failedCalls = await fixture.calls
+            await fixture.setOutcome(.match)
+            await normalizer.normalizeImportedCards(in: container)
+            let throttledCalls = await fixture.calls
+            XCTAssertEqual(throttledCalls, failedCalls)
+            await normalizer.normalizeImportedCards(in: container, retryFailedSealed: true)
+            let resolved = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(resolved.catalogProviderID, product.id)
+            XCTAssertEqual(resolved.imageURL, product.imageURL?.absoluteString)
+            let recoveredCalls = await fixture.calls
+            XCTAssertGreaterThan(recoveredCalls, failedCalls)
+            await normalizer.normalizeImportedCards(in: container, retryFailedSealed: true)
+            let resolvedCalls = await fixture.calls
+            XCTAssertEqual(resolvedCalls, recoveredCalls, "Complete metadata needs no recovery requests")
+        }
+    }
+
+    func testExplicitRecoveryDoesNotReopenConfirmedSealedMisses() async throws {
+        for miss in [SealedNormalizationFixture.Outcome.missingSet, .missingProduct] {
+            let container = try ProductionRowFixtures.makeContainer()
+            self.container = container
+            container.mainContext.insert(importedSealedProduct())
+            try container.mainContext.save()
+            let product = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+                variantID: "sealed-variant", marketPriceUSD: 100, updatedAt: nil, imageURL: nil)
+            let fixture = SealedNormalizationFixture(product: product)
+            await fixture.setOutcome(miss)
+            let normalizer = CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+                sealedCredentialsAvailable: true)
+            await normalizer.normalizeImportedCards(in: container)
+            let row = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(row.catalogMetadataVersion, -CollectionCatalogNormalizer.metadataVersion)
+            let missCalls = await fixture.calls
+            await fixture.setOutcome(.match)
+            await normalizer.normalizeImportedCards(in: container, retryFailedSealed: true)
+            let finalCalls = await fixture.calls
+            XCTAssertEqual(finalCalls, missCalls)
+            XCTAssertFalse(CollectionCatalogNormalizer.needsNormalization(row, retryFailedSealed: true))
+        }
+    }
+
+    func testExplicitSealedRecoveryIsRetainedDuringAnInFlightFailure() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        self.container = container
+        container.mainContext.insert(importedSealedProduct())
+        try container.mainContext.save()
+        let product = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+            variantID: "sealed-variant", marketPriceUSD: 100, updatedAt: nil,
+            imageURL: URL(string: "https://example.test/box.png"))
+        let fixture = SealedNormalizationFixture(product: product)
+        await fixture.setOutcome(.directoryFailure)
+        await fixture.pauseNextDirectory()
+        let normalizer = CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+            sealedCredentialsAvailable: true)
+        let automatic = Task { await normalizer.normalizeImportedCards(in: container) }
+        for _ in 0..<500 {
+            if await fixture.isPaused { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let paused = await fixture.isPaused
+        guard paused else {
+            automatic.cancel()
+            await fixture.resumeDirectory()
+            await automatic.value
+            return XCTFail("Automatic lookup did not reach the provider gate")
+        }
+        await normalizer.normalizeImportedCards(in: container, retryFailedSealed: true)
+        await fixture.setOutcome(.match)
+        await fixture.resumeDirectory()
+        await automatic.value
+        let row = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.catalogProviderID, product.id)
+        let calls = await fixture.calls
+        XCTAssertEqual(calls, 3, "One failed directory plus one coalesced successful pass")
+    }
+
     func testBrowseSealedNormalizationConvergesWithoutChangingOwnershipIdentity() async throws {
         let container = try ProductionRowFixtures.makeContainer()
         self.container = container
