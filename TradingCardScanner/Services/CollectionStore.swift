@@ -1521,8 +1521,8 @@ struct CollectionStore {
         try requireWritableGame(game)
     }
 
-    private func isPersistedYuGiOhMaintenance(_ row: CollectedCard) throws -> Bool {
-        guard row.cardGame == .yuGiOh else { return false }
+    private func isPersistedCatalogMaintenance(_ row: CollectedCard) throws -> Bool {
+        guard row.cardGame == .yuGiOh || row.cardGame == .lorcana else { return false }
         // A separate context reads the durable starting point, not a caller's
         // staged, existing-looking object. Identity changes are new admissions.
         let durable = ModelContext(context.container)
@@ -1543,7 +1543,8 @@ struct CollectionStore {
         if let original {
             guard original.providerID == row.providerID, original.catalogProviderID == row.catalogProviderID,
                   original.cardGame == row.cardGame, original.variantID == row.variantID,
-                  original.itemKindRaw == row.itemKindRaw, original.quantity > 0 else { return false }
+                  original.itemKindRaw == row.itemKindRaw, original.priceKey == row.priceKey,
+                  original.quantity > 0 else { return false }
             // Consolidation deletes physical contributors before changing the
             // representative. Ledger deltas describe their logical position.
             // Every surviving contributor must still have its durable identity;
@@ -1558,6 +1559,7 @@ struct CollectionStore {
                         && persisted.cardGame == candidate.cardGame
                         && persisted.variantID == candidate.variantID
                         && persisted.itemKindRaw == candidate.itemKindRaw
+                        && persisted.priceKey == candidate.priceKey
                         && persisted.quantity > 0
                 }
             }), survivors.allSatisfy({ $0.quantity >= 0 }) else { return false }
@@ -1590,6 +1592,10 @@ struct CollectionStore {
               let reversedID = inverse.reversesEventID,
               let disposal = durableEvents.first(where: { $0.eventID == reversedID && $0.kind == .dispose }),
               disposal.deltaQuantity == -restoredQuantity,
+              inverse.priceStorageKey == disposal.priceStorageKey,
+              inverse.kindRaw == disposal.kindRaw, inverse.sourceRaw == disposal.sourceRaw,
+              inverse.legRaw == disposal.legRaw, inverse.operationID != disposal.operationID,
+              inverse.idempotencyKey == InventoryEvent.idempotencyKey(operationID: inverse.operationID, leg: disposal.leg),
               !durableEvents.contains(where: { $0.reversesEventID == reversedID }),
               !Self.positionWasReacquired(events: durableEvents, since: disposal.recordedAt),
               Date.now.timeIntervalSince(disposal.recordedAt) <= CollectionActivity.restoreWindow else { return false }
@@ -1599,6 +1605,7 @@ struct CollectionStore {
             return snapshot.operationID == disposal.operationID && snapshot.game == row.cardGame
                 && snapshot.providerID == row.providerID && snapshot.catalogProviderID == row.catalogProviderID
                 && snapshot.variant?.id == row.variantID && snapshot.itemKindRaw == row.itemKindRaw
+                && snapshot.pokemonPrintRunRaw == row.pokemonPrintRunRaw
                 && snapshot.quantity == restoredQuantity && activity.remainingQuantity == activity.claimedQuantity
         }
     }
@@ -1627,14 +1634,14 @@ struct CollectionStore {
         }
         let undone = context.insertedModelsArray.compactMap { $0 as? CollectionActivity }.filter { $0.kind == .undone }
         guard undone.count == 1, let undo = undone.first,
-              undo.collectionKey == row.collectionKey, undo.game == .yuGiOh,
+              undo.collectionKey == row.collectionKey, undo.game == row.cardGame,
               undo.itemKindRaw == row.itemKindRaw, undo.variantID == row.variantID,
               undo.signedQuantity == -1, undo.quantity == 1, undo.resolvedQuantity == 0 else { return false }
         let key = row.collectionKey
         let acquisitions = try durable.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate { $0.collectionKey == key }))
         let durableStore = CollectionStore(context: durable)
         for acquisition in acquisitions where acquisition.kind == .added && acquisition.remainingQuantity == 1
-            && acquisition.claimedQuantity == 1 && acquisition.game == .yuGiOh
+            && acquisition.claimedQuantity == 1 && acquisition.game == row.cardGame
             && acquisition.itemKindRaw == row.itemKindRaw && acquisition.variantID == row.variantID {
             let operations = acquisition.ledgerOperationIDs
             guard let lineage = try? durableStore.preflightLineage(operations, expectedCollectionKey: key, expectedQuantity: 1),
@@ -1772,15 +1779,22 @@ struct CollectionStore {
         }
         for model in models {
             if let row = model as? CollectedCard {
-                if try isPersistedYuGiOhMaintenance(row) {
+                if row.cardGame == .yuGiOh, try isPersistedCatalogMaintenance(row) {
                     try requireMaintainableGame(row.cardGame)
                     continue
                 }
                 try requireWritableGame(row.cardGame)
                 let authority = CollectionStoreSessionRegistry.shared.mutationAuthority(for: row.cardGame, container: context.container)
                 guard authority.adapter != nil || !authority.requiresCatalog else { throw CatalogLookupError.invalidPrintingChoice }
-                try authority.adapter?.validateCollectionMutation(printingID: row.providerID, catalogProviderID: row.catalogProviderID,
-                    variantID: row.variantID, itemKindRaw: row.itemKindRaw, collectionKey: row.collectionKey)
+                do {
+                    try authority.adapter?.validateCollectionMutation(printingID: row.providerID, catalogProviderID: row.catalogProviderID,
+                        variantID: row.variantID, itemKindRaw: row.itemKindRaw, collectionKey: row.collectionKey)
+                } catch {
+                    // Ordinary Lorcana writes use current admission without
+                    // reading durable history. Only withdrawn identities need
+                    // the stricter maintenance proof.
+                    guard row.cardGame == .lorcana, try isPersistedCatalogMaintenance(row) else { throw error }
+                }
             }
             if let activity = model as? CollectionActivity { try requireWritableActivity(activity, gamesByKey: gamesByKey) }
             if let event = model as? InventoryEvent {

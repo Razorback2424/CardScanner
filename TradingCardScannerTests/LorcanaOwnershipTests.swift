@@ -14,14 +14,16 @@ final class LorcanaOwnershipTests: XCTestCase {
         UUID(uuidString: String(format: "91000000-0000-0000-0000-%012d", index))!
     }
     private func manifest(count: Int = 1, complete: Bool = true, name: String = "Fixture Elsa",
-                          finishes: [LorcanaPhysicalFinish] = [.normal, .foil]) throws -> LorcanaPhysicalCatalogManifest {
+                          finishes: [LorcanaPhysicalFinish] = [.normal, .foil],
+                          supersedingFirst: Bool = false) throws -> LorcanaPhysicalCatalogManifest {
         let footer = try LorcanaPrintedIdentity(collectorNumber: "207", denominator: "204", language: "en", printedSetMarker: "1")
         let alias = LorcanaSourceAlias(provider: "fixture", id: "shared-family")
         let prints = (1...count).map { index in
             LorcanaPhysicalPrinting(id: id(index), identity: .init(canonicalCardID: canonicalID, footer: footer,
                 artworkID: artworkID, distributionID: "booster", stamp: count > 1 ? "Fixture Stamp \(index)" : nil,
                 size: .standard, layout: "normal"), providerSetCode: "TFC", setName: "Fixture First Chapter",
-                artworkLabel: "Original artwork", distributionLabel: "Fixture Booster", imageURL: nil, status: .verified,
+                artworkLabel: "Original artwork", distributionLabel: "Fixture Booster", imageURL: nil,
+                status: supersedingFirst && index == 1 ? .superseded : .verified,
                 identityEvidence: LorcanaPhysicalEvidenceKind.allCases.map { .init(kind: $0, reference: "fixture:\($0.rawValue)") },
                 finishes: finishes.map { .init(finish: $0, evidenceReferences: ["fixture:\($0.rawValue)"]) },
                 finishUniverseEvidenceReference: "fixture:finishes", sourceAliases: [alias])
@@ -29,8 +31,11 @@ final class LorcanaOwnershipTests: XCTestCase {
         return .init(schemaVersion: 2, reviewedAt: now, printFamilies: [.init(footer: footer, providerSetCode: "TFC",
             name: name, version: nil, rarity: "Fixture", layout: "normal", sourceAliases: [alias], footerEvidenceReference: "fixture:footer")],
             canonicalCards: [.init(id: canonicalID, name: name, version: nil, relationshipEvidenceReferences: ["fixture:canonical"])],
-            physicalPrintings: prints, universes: [.init(footer: footer, printingIDs: prints.map(\.id), isComplete: complete,
-                evidenceReference: complete ? "fixture:universe" : nil)], corrections: [])
+            physicalPrintings: prints, universes: [.init(footer: footer,
+                printingIDs: prints.filter { $0.status != .superseded }.map(\.id), isComplete: complete,
+                evidenceReference: complete ? "fixture:universe" : nil)],
+            corrections: supersedingFirst ? [.init(id: UUID(uuidString: "B1000000-0000-0000-0000-000000000001")!,
+                fromPrintingIDs: [id()], toPrintingIDs: [id(2)], evidenceReferences: ["fixture:correction"])] : [])
     }
     private func registry(count: Int = 1, complete: Bool = true, name: String = "Fixture Elsa") throws -> LorcanaCatalogRegistry {
         try .init(manifest: manifest(count: count, complete: complete, name: name))
@@ -525,6 +530,128 @@ final class LorcanaOwnershipTests: XCTestCase {
         XCTAssertThrowsError(try store.add(card, resolved: .init(variant: .reverse, resolution: .userConfirmed)))
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
+    func testSupersededHoldingCanReduceDeleteAndRestoreAfterReopen() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let kit = try LorcanaLocalReviewKit.make(manifest: manifest(count: 2), root: root, now: now, allowCollectionWrites: true)
+        let url = kit.collectionDirectory.appendingPathComponent("collection.store")
+        let original = try container(url: url)
+        _ = try await kit.bound(to: original)
+        let card = try LorcanaCatalogAdapter(registry: registry(count: 2)).resolution(forPrintingID: id()).card
+        let store = CollectionStore(context: original.mainContext)
+        _ = try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed), quantity: 3)
+        let next = try LorcanaCatalogRegistry(manifest: manifest(count: 2, supersedingFirst: true), previous: registry(count: 2))
+        XCTAssertTrue(CollectionStore.installCatalogAdapter(LorcanaCatalogAdapter(registry: next), revision: 2, for: original))
+        XCTAssertThrowsError(try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed)))
+        XCTAssertThrowsError(try store.setQuantity(4, forCollectionKey: card.collectionKey(variant: .foil), expectedCurrent: 3))
+        XCTAssertEqual(try store.setQuantity(2, forCollectionKey: card.collectionKey(variant: .foil), expectedCurrent: 3), 2)
+        let removed = try store.remove(collectionKey: card.collectionKey(variant: .foil))
+        XCTAssertTrue(try ModelContext(original).fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+
+        let reopened = try container(url: url)
+        _ = try await kit.bound(to: reopened)
+        XCTAssertTrue(CollectionStore.installCatalogAdapter(LorcanaCatalogAdapter(registry: next), revision: 2, for: reopened))
+        let recovered = CollectionStore(context: reopened.mainContext)
+        try recovered.restore(removed)
+        XCTAssertThrowsError(try recovered.restore(removed), "A disposal may be reversed only once")
+        let rows = try ModelContext(reopened).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.collectionKey), [card.collectionKey(variant: .foil)])
+        XCTAssertEqual(rows.map(\.quantity), [2])
+        XCTAssertEqual(try ModelContext(reopened).fetch(FetchDescriptor<InventoryEvent>()).reduce(0) { $0 + $1.deltaQuantity }, 2)
+    }
+
+    func testSupersededHoldingRejectsInsertedLookalikesAndChangedIdentity() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let kit = try LorcanaLocalReviewKit.make(manifest: manifest(count: 2), root: root, now: now, allowCollectionWrites: true)
+        let original = try container()
+        _ = try await kit.bound(to: original)
+        let card = try LorcanaCatalogAdapter(registry: registry(count: 2)).resolution(forPrintingID: id()).card
+        let store = CollectionStore(context: original.mainContext)
+        _ = try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed), quantity: 2)
+        let next = try LorcanaCatalogRegistry(manifest: manifest(count: 2, supersedingFirst: true), previous: registry(count: 2))
+        XCTAssertTrue(CollectionStore.installCatalogAdapter(LorcanaCatalogAdapter(registry: next), revision: 2, for: original))
+        for attack in 0..<4 {
+            let row = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+            switch attack {
+            case 0:
+                let lookalike = CollectedCard(collectionKey: row.collectionKey, game: .lorcana,
+                    providerID: row.providerID, name: row.name, setName: row.setName, setCode: row.setCode,
+                    cardNumber: row.cardNumber, rarity: nil, imageURL: nil, thumbnailURL: nil,
+                    variant: .foil, variantResolution: .userConfirmed, quantity: 1)
+                lookalike.catalogProviderID = row.catalogProviderID
+                original.mainContext.insert(lookalike)
+            case 1: row.variantID = PhysicalVariant.normal.id
+            case 2: row.providerID = id(2).uuidString.lowercased()
+            default: row.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+            }
+            XCTAssertThrowsError(try store.validatePendingGameWrites(), "Rejected changed/fabricated identity \(attack)")
+            original.mainContext.rollback()
+        }
+        XCTAssertEqual(try ModelContext(original).fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [2])
+        XCTAssertEqual(try ModelContext(original).fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+    }
+
+    func testSupersededHoldingUndoRequiresCompleteDurableInverseLineage() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let kit = try LorcanaLocalReviewKit.make(manifest: manifest(count: 2), root: root, now: now, allowCollectionWrites: true)
+        let original = try container()
+        _ = try await kit.bound(to: original)
+        let card = try LorcanaCatalogAdapter(registry: registry(count: 2)).resolution(forPrintingID: id()).card
+        let store = CollectionStore(context: original.mainContext)
+        var mutation = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        for (from, to) in [(PhysicalVariant.normal, PhysicalVariant.foil), (.foil, .normal)] {
+            mutation = try XCTUnwrap(store.recordVariantCorrection(for: card, from: from,
+                to: .init(variant: to, resolution: .userConfirmed), previousCollectionKey: mutation.collectionKey,
+                previousLedgerOperationIDs: mutation.ledgerOperationIDs, activityID: mutation.activityID))
+        }
+        let next = try LorcanaCatalogRegistry(manifest: manifest(count: 2, supersedingFirst: true), previous: registry(count: 2))
+        XCTAssertTrue(CollectionStore.installCatalogAdapter(LorcanaCatalogAdapter(registry: next), revision: 2, for: original))
+        try store.undo(mutation, savesChanges: false)
+        let inverse = try XCTUnwrap(original.mainContext.insertedModelsArray.compactMap { $0 as? InventoryEvent }.first)
+        inverse.reversesEventID = UUID()
+        XCTAssertThrowsError(try store.validatePendingGameWrites())
+        original.mainContext.rollback()
+        try store.undo(mutation)
+        XCTAssertThrowsError(try store.undo(mutation))
+        XCTAssertTrue(try ModelContext(original).fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertEqual(try ModelContext(original).fetch(FetchDescriptor<InventoryEvent>()).reduce(0) { $0 + $1.deltaQuantity }, 0)
+    }
+
+    func testSupersededHoldingRestoreRejectsForgedInverseAndDuplicateRows() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let kit = try LorcanaLocalReviewKit.make(manifest: manifest(count: 2), root: root, now: now, allowCollectionWrites: true)
+        let original = try container()
+        _ = try await kit.bound(to: original)
+        let card = try LorcanaCatalogAdapter(registry: registry(count: 2)).resolution(forPrintingID: id()).card
+        let store = CollectionStore(context: original.mainContext)
+        _ = try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed), quantity: 2)
+        let removed = try store.remove(collectionKey: card.collectionKey(variant: .foil))
+        let next = try LorcanaCatalogRegistry(manifest: manifest(count: 2, supersedingFirst: true), previous: registry(count: 2))
+        XCTAssertTrue(CollectionStore.installCatalogAdapter(LorcanaCatalogAdapter(registry: next), revision: 2, for: original))
+        for duplicateRow in [false, true] {
+            let forged = CollectionStore(context: original.mainContext, beforeSaveForTesting: { context in
+                if duplicateRow {
+                    let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+                    let lookalike = CollectedCard(collectionKey: row.collectionKey, game: .lorcana,
+                        providerID: row.providerID, name: row.name, setName: row.setName, setCode: row.setCode,
+                        cardNumber: row.cardNumber, rarity: nil, imageURL: nil, thumbnailURL: nil,
+                        variant: .foil, variantResolution: .userConfirmed, quantity: 2)
+                    lookalike.catalogProviderID = row.catalogProviderID
+                    context.insert(lookalike)
+                } else {
+                    let inverse = try XCTUnwrap(context.insertedModelsArray.compactMap { $0 as? InventoryEvent }.first)
+                    inverse.reversesEventID = UUID()
+                }
+                XCTAssertThrowsError(try CollectionStore(context: context).validatePendingGameWrites())
+                throw CocoaError(.fileWriteUnknown)
+            })
+            XCTAssertThrowsError(try forged.restore(removed))
+            XCTAssertTrue(try ModelContext(original).fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+            XCTAssertEqual(try ModelContext(original).fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+        }
+        try store.restore(removed)
+        XCTAssertEqual(try ModelContext(original).fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [2])
     }
 
     func testCSVStorageRelaunchAndRoundTripPreservePhysicalFinishKeys() async throws {
