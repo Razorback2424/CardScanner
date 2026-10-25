@@ -1782,6 +1782,36 @@ final class YuGiOhCatalogTests: XCTestCase {
             XCTAssertTrue(p.card.passcodes.allSatisfy { $0 > 0 && $0 <= 99_999_999 })
         }
     }
+    func testFourSetPricingSamplePreservesExactProductsEditionsAndSourceDates() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let adapter = YuGiOhPriceAdapter(catalog: catalog)
+        XCTAssertFalse(YuGiOhGameRuntime.capabilities(for: catalog).contains(.gradedPricing))
+        var groups = Set<Int>()
+        for code in ["LOB-001", "PSV-000", "RA02-EN037", "MP24-EN001"] {
+            let printing = try XCTUnwrap(catalog.printingsByCode[code]?.filter {
+                $0.explicitSelectionSupported && $0.membership.contains { $0.q != nil }
+            }.sorted { $0.idString < $1.idString }.first)
+            let membership = try XCTUnwrap(printing.membership.first { $0.q != nil })
+            groups.insert(printing.set.groupID)
+            guard case let .price(price) = try await adapter.refreshStoredPrinting(printing.idString,
+                variant: membership.e.variant) else { return XCTFail("Missing snapshot quote for \(code)") }
+            XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(printing.productID):\(membership.e.tcgplayerSubtype)", code)
+            XCTAssertEqual(price.unitMarketPriceUSD, membership.q, code)
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            let date = try XCTUnwrap(membership.s.flatMap { ISO8601DateFormatter().date(from: $0) ?? formatter.date(from: $0) })
+            XCTAssertEqual(price.fetchedAt, date, code)
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolutionForExistingHolding(printing.id).card
+            do {
+                _ = try await adapter.refresh(.init(identity: .init(game: .yuGiOh, printingID: card.providerID,
+                    setID: "different-set", displaySetCode: card.setCode, cardNumber: card.cardNumber,
+                    language: card.language), variant: membership.e.variant, pokemonPrintRun: nil, catalogRefreshOverride: nil))
+                XCTFail("Wrong set must not borrow \(code)'s product")
+            } catch PriceQuoteError.identityMismatch {}
+        }
+        XCTAssertEqual(groups.count, 4)
+    }
+
     func testBundledCatalogAndDeterministicPrintingIDs() throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         XCTAssertTrue(catalog.generation.hasPrefix("yugioh-en-"))

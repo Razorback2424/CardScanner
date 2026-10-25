@@ -240,7 +240,7 @@ actor CardMarketHistoryService {
         var variantID = request.marketVariantID
         if variantID == nil, request.game == .magic, lookups.isEmpty, let id = request.catalogID,
                !id.hasPrefix("csv:"), let card = try? await ScryfallService().fetchCard(id: id),
-               let productID = card.tcgplayerID {
+               let productID = card.tcgplayerProductID(for: request.variantID.map(PhysicalVariant.resolving)) {
             lookups = [.tcgplayerID(String(productID))]
         }
         // Older Pokémon print runs also alter vendor sets/printing names.

@@ -386,10 +386,6 @@ final class PriceFallbackQuoteResolver {
         if let productID = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun) {
             lookups.append(.tcgplayerID(String(productID)))
         }
-        if case let .magic(magic) = card.legacyIdentity,
-           let tcgplayerID = magic.tcgplayerID {
-            lookups.append(.tcgplayerID(String(tcgplayerID)))
-        }
         let products = Set(lookups.compactMap { lookup -> String? in
             guard case let .tcgplayerID(id) = lookup else { return nil }
             return id

@@ -1155,7 +1155,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                         rarity: card.rarity,
                         imageURL: card.displayImageURL?.absoluteString,
                         thumbnailURL: card.thumbnailImageURL?.absoluteString,
-                        tcgplayerURL: card.purchaseURIs?.tcgplayer?.absoluteString,
+                        tcgplayerURL: TCGplayerLinkBuilder.url(for: .magic(card), variant: nil)?.absoluteString,
                         setReleaseOrder: card.releaseDate.map {
                             Int($0.timeIntervalSince1970 / 86_400)
                         } ?? 0
@@ -1257,19 +1257,33 @@ enum CatalogIdentityNormalization {
     static func canonicalSetName(_ value: String, game: CardGame) -> String {
         var normalized = canonicalText(value)
         if game == .pokemon {
-            if normalized.hasPrefix("sv ") { normalized.removeFirst(3) }
+            // Marketplace era labels decorate the set name; numbered labels
+            // such as SWSH07 and SV02 must normalize just like bare SV.
+            normalized = normalized.replacingOccurrences(
+                of: #"^(?:sv[0-9]*|swsh[0-9]+) "#, with: "", options: .regularExpression
+            )
             if normalized.hasSuffix(" base set") { normalized.removeLast(9) }
             normalized = normalized.replacingOccurrences(of: " black star promos", with: " promo")
             if normalized.hasSuffix(" promos") { normalized.removeLast() }
             switch normalized {
+            case "scarlet and violet 151": normalized = "151"
+            case "sm": normalized = "sun and moon" // SM Base Set, after suffix removal.
             case "svp promo": normalized = "scarlet and violet promo"
             case "swsh promo": normalized = "sword and shield promo"
             case "mep promo": normalized = "mega evolution promo"
             case "base set unlimited": normalized = "base set"
             case "mee mega evolution energies": normalized = "mega evolution energy"
+            case "sve scarlet and violet energies": normalized = "scarlet and violet energy"
+            case "pokemon rumble": normalized = "rumble"
+            case "poke card creator pack": normalized = "kids wb promo"
             default: break
             }
             if normalized.hasPrefix("ex ") { normalized.removeFirst(3) }
+            // "SM - Cosmic Eclipse" uses an era prefix too. Preserve promo
+            // labels: a promo series is not the era's opening expansion.
+            if normalized.hasPrefix("sm "), !normalized.hasPrefix("sm promo") {
+                normalized.removeFirst(3)
+            }
             normalized = normalized.replacingOccurrences(
                 of: "mcdonald s promos",
                 with: "mcdonald s collection"
@@ -1290,6 +1304,47 @@ enum CatalogIdentityNormalization {
             if normalized.hasSuffix(" art series"),
                normalized.hasPrefix("the lord of the rings ") {
                 normalized.removeFirst("the lord of the rings ".count)
+            }
+            if normalized == "magic game night" || normalized.hasPrefix("magic game night ") {
+                normalized.removeFirst("magic ".count)
+            }
+            // Core-set product titles append the matching printed code.
+            // Keep mismatched years/codes distinct (Magic 2010 is not M11).
+            normalized = normalized.replacingOccurrences(
+                of: #"^(magic 20([0-9]{2})) m\2$"#, with: "$1", options: .regularExpression
+            )
+            // Scryfall and the marketplace title these Commander releases
+            // differently. Keep aliases explicit so a main expansion cannot
+            // collapse into its separately numbered Commander release.
+            switch normalized {
+            case "seventh edition": normalized = "7th edition"
+            case "eighth edition": normalized = "8th edition"
+            case "ninth edition": normalized = "9th edition"
+            case "tenth edition": normalized = "10th edition"
+            case "limited edition alpha": normalized = "alpha edition"
+            case "limited edition beta": normalized = "beta edition"
+            case "2011 commander": normalized = "commander"
+            case "innistrad midnight hunt commander": normalized = "midnight hunt commander"
+            case "innistrad crimson vow commander": normalized = "crimson vow commander"
+            case "streets of new capenna commander": normalized = "new capenna commander"
+            case "kamigawa neon dynasty commander": normalized = "neon dynasty commander"
+            case "the brothers war retro frame artifacts": normalized = "the brothers war retro artifacts"
+            // Card-level source product IDs and whole vendor-group matching
+            // verify these aliases; shared promo groups are not generalized.
+            case "grn guild kit": normalized = "guilds of ravnica guild kits"
+            case "rna guild kit": normalized = "ravnica allegiance guild kits"
+            case "marvel universe eternal legal": normalized = "marvel universe"
+            case "modern event deck 2014": normalized = "magic modern event deck"
+            case "champs and states": normalized = "champs promos"
+            case "european land program": normalized = "european lands"
+            case "tarkir dragonfury": normalized = "tarkir dragonfury promos"
+            case "universes within": normalized = "slx cards"
+            case "time spiral timeshifted": normalized = "timeshifted"
+            case "ugin s fate": normalized = "ugin s fate promos"
+            case "adventures in the forgotten realms commander": normalized = "forgotten realms commander"
+            case "warhammer 40 000": normalized = "warhammer 40 000 commander"
+            case "the lord of the rings tales of middle earth commander": normalized = "tales of middle earth commander"
+            default: break
             }
             normalized = normalized.replacingOccurrences(of: " eternal legal", with: " eternal")
             if normalized == "stellar sights" { normalized = "edge of eternities stellar sights" }

@@ -250,7 +250,13 @@ struct JustTCGV2Card: Decodable, Sendable, JustTCGCardIdentityFields {
     let set: JustTCGV2Set?
     let number: String?
     let rarity: String?
+    let externalIDs: JustTCGV2ExternalIDs?
     let variants: [JustTCGVariant]?
+
+    enum CodingKeys: String, CodingKey {
+        case id, uuid, slug, name, game, set, number, rarity, variants
+        case externalIDs = "external_ids"
+    }
 
     var printedNumber: String? {
         guard let number, number.caseInsensitiveCompare("N/A") != .orderedSame else { return nil }
@@ -262,6 +268,23 @@ struct JustTCGV2Card: Decodable, Sendable, JustTCGCardIdentityFields {
     var identitySetID: String? { self.set?.id }
     var identitySetName: String? { self.set?.name }
     var identityPrintedNumber: String? { printedNumber }
+}
+
+struct JustTCGV2ExternalIDs: Decodable, Sendable {
+    let tcgplayer: String?
+    let scryfall: String?
+
+    private enum CodingKeys: String, CodingKey { case tcgplayer, scryfall }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let value = try? container.decode(String.self, forKey: .tcgplayer) {
+            tcgplayer = value
+        } else {
+            tcgplayer = try container.decodeIfPresent(Int.self, forKey: .tcgplayer).map(String.init)
+        }
+        scryfall = try container.decodeIfPresent(String.self, forKey: .scryfall)
+    }
 }
 
 struct JustTCGV2Game: Decodable, Sendable {

@@ -260,20 +260,20 @@ struct ProductSetDirectory: Sendable {
     /// The vendor set that carries this catalog set, or nil when none does.
     func slug(forCatalogSetName name: String, game: ProductCatalogIdentity.Game) -> String? {
         let key = CatalogIdentityNormalization.canonicalText(name)
-        guard !ambiguousNames.contains(key) else { return nil }
-        if let matched = byName[key] {
+        let ambiguous = ambiguousNames.contains(key)
+        if !ambiguous, let matched = byName[key] {
             return matched
         }
-        if game == .magic {
-            // The catalog and vendor intentionally order some Magic set names
-            // differently, for example "Commander: The Lord of the Rings" and
-            // "The Lord of the Rings Commander". The identity matcher already
-            // carries this rule; set resolution has to use the same rule or the
-            // request is filtered to a slug the vendor never published.
-            let requested = CatalogIdentityNormalization.canonicalSetName(name, game: .magic)
+        if game == .magic || game == .pokemon {
+            // Use the same explicit aliases as card identity matching: "151"
+            // and "SV: Scarlet & Violet 151", or "Commander: The Lord of the
+            // Rings" and "The Lord of the Rings Commander". Resolve only one
+            // published slug; an alias shared by different sets is ambiguous.
+            let catalogGame: CardGame = game == .magic ? .magic : .pokemon
+            let requested = CatalogIdentityNormalization.canonicalSetName(name, game: catalogGame)
             let matches = Set(
                 namedSets.compactMap { set in
-                    CatalogIdentityNormalization.canonicalSetName(set.name, game: .magic) == requested
+                    CatalogIdentityNormalization.canonicalSetName(set.name, game: catalogGame) == requested
                         ? set.id
                         : nil
                 }
@@ -281,6 +281,10 @@ struct ProductSetDirectory: Sendable {
             if matches.count == 1 { return matches.first }
             if matches.count > 1 { return nil }
         }
+        // A weak colon-stripped alias may be shared by a main set and its
+        // Commander release. The canonical check above can distinguish them.
+        // Genuine ambiguity still cannot fall back to a derived slug.
+        guard !ambiguous else { return nil }
         // The derived form still wins where the vendor happens to agree, which
         // covers sets whose published name is missing.
         let derived = "\(ProductCatalogIdentity.slugify(name))-\(game.rawValue)"

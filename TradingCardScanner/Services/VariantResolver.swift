@@ -305,6 +305,10 @@ enum PokemonVariantRules {
                 PokemonCatalogStampVariant.make(base: .pokemonFoilPattern("cosmos"), stamps: ["player-rewards-program"])
             ].compactMap { $0 }
         case "me02.5-178": return [.holo, .loveBall, .pokemonFoilPattern("energy")]
+        // Whole Yellow A review: generated Normal flags omit the actual EX
+        // Holofoil products and the trainers' separate Normal/Holofoil objects.
+        case "xya-24a", "xya-28a", "xya-54a", "xya-55a": return [.holo]
+        case "xya-92a", "xya-107a": return [.normal, .holo]
         default: return nil
         }
     }

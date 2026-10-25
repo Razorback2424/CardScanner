@@ -106,6 +106,53 @@ private final class OnePieceRecoveryReadGate: @unchecked Sendable {
 
 @MainActor
 final class OnePieceIntegrationTests: XCTestCase {
+    func testFourReleaseFamilyPricingSampleUsesReviewedProductMappings() async throws {
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        XCTAssertFalse(runtime.descriptor.capabilities.contains(.gradedPricing))
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OP-set-sample-\(UUID())")
+        defer { OnePiecePriceTestProtocol.handler = nil; try? FileManager.default.removeItem(at: root) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [OnePiecePriceTestProtocol.self]
+        let source = OnePieceTCGCSVPriceSource(session: URLSession(configuration: configuration), cacheDirectory: root)
+        let adapter = OnePiecePriceAdapter(registry: catalog.registry, source: source)
+        var groups = Set<Int>()
+        for number in ["OP01-120", "OP05-119", "ST01-012", "EB01-001"] {
+            let printing = try XCTUnwrap(catalog.registry.printingsByCanonicalID["one-piece:en:" + number]?
+                .first { $0.status == .verified && $0.treatment == "Standard artwork" && !$0.marketMappings.isEmpty })
+            let mapping = try XCTUnwrap(printing.marketMappings.first)
+            let group = try XCTUnwrap(mapping.qualifiers["groupID"].flatMap(Int.init))
+            groups.insert(group)
+            let productID = try XCTUnwrap(Int(mapping.productID))
+            let name = try XCTUnwrap(mapping.qualifiers["productName"])
+            let lane = try XCTUnwrap(mapping.providerVariantID)
+            let product: [String: Any] = ["productId": productID, "categoryId": 68, "groupId": group,
+                "name": name, "extendedData": [["name": "Number", "value": number]]]
+            let products = try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [product]])
+            let prices = try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [
+                ["productId": productID, "subTypeName": lane, "marketPrice": 12.34]
+            ]])
+            OnePiecePriceTestProtocol.handler = { request in
+                XCTAssertTrue(request.url!.path.hasPrefix("/tcgplayer/68/\(group)/"))
+                return request.url!.lastPathComponent == "products" ? products : prices
+            }
+            let card = try catalog.resolution(forPrintingID: printing.id).card
+            let variant: PhysicalVariant = mapping.variantID == "foil" ? .foil : .normal
+            guard case let .price(price) = try await adapter.refreshStoredPrinting(card.providerID, variant: variant) else {
+                return XCTFail("Missing mapped quote for \(number)")
+            }
+            XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(productID):\(lane)", number)
+            XCTAssertEqual(price.unitMarketPriceUSD, 12.34, number)
+            do {
+                _ = try await adapter.refresh(.init(identity: .init(game: .onePiece, printingID: card.providerID,
+                    setID: "different-release", displaySetCode: card.setCode, cardNumber: card.cardNumber,
+                    language: card.language), variant: variant, pokemonPrintRun: nil, catalogRefreshOverride: nil))
+                XCTFail("Wrong release must not borrow \(number)'s product")
+            } catch PriceQuoteError.identityMismatch {}
+        }
+        XCTAssertEqual(groups.count, 4)
+    }
+
     func testMarketHistoryUsesReviewedOnePieceProductAndFinishMapping() async throws {
         let registry = try registry(count: 1, withMarketMapping: true)
         let runtimes = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry).runtime])

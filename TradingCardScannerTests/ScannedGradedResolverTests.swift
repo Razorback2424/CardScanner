@@ -2,6 +2,50 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScannedGradedResolverTests: XCTestCase {
+    func testKnownAmbiguousFinishCannotBeInferredFromTheOnlyPublishedSlab() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-yellow-a-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let entries = try XCTUnwrap(document["cases"] as? [[String: Any]])
+        let entry = try XCTUnwrap(entries.first { ($0["products"] as? [Any])?.count == 2 })
+        let source = try JSONDecoder().decode(TCGdexCard.self,
+            from: JSONSerialization.data(withJSONObject: XCTUnwrap(entry["source"])))
+        let card = IdentifiedCard.pokemon(source, setCode: "")
+        XCTAssertEqual(Set(card.variantEvidence.catalogVariants), [.normal, .holo])
+        let candidate = GradedVariant(id: "only-published-holo", company: .psa,
+            grade: .init(value: "10"), printing: "Holofoil", marketPriceUSD: 123, updatedAt: nil)
+        let recorder = GradedIdentityRecorder()
+        let resolver = ScannedGradedResolver(client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
+            credentialsAvailable: true)
+        let unknown = await resolver.resolve(card: card, slab: slab(company: .psa, value: "10"), pokemonPrintRun: nil)
+        XCTAssertEqual(unknown, .unavailable)
+        let before = await recorder.lastIdentity
+        XCTAssertNil(before)
+        let known = await resolver.resolve(card: card, slab: .init(company: .psa, grade: .init(value: "10"),
+            certificationNumber: nil, labelCardText: [], printedFinish: .holo), pokemonPrintRun: nil)
+        XCTAssertEqual(known, .bound(candidate))
+    }
+
+    func testLabelPrintRunIsUsedWithoutTreatingItsLegacyFlagAsAnotherFinish() async throws {
+        let source = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"base1-4","localId":"4","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"normal":false,"holo":true,"reverse":false,"firstEdition":true}}"#.utf8))
+        let card = IdentifiedCard.pokemon(source, setCode: "BS")
+        XCTAssertEqual(Set(card.variantEvidence.catalogVariants), [.holo, .firstEdition])
+        let candidate = GradedVariant(id: "first-edition-holo", company: .psa,
+            grade: .init(value: "10"), printing: "1st Edition Holofoil", marketPriceUSD: 123, updatedAt: nil)
+        let recorder = GradedIdentityRecorder()
+        let resolver = ScannedGradedResolver(client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
+            credentialsAvailable: true)
+        let evidence = GradedSlabEvidence(company: .psa, grade: .init(value: "10"),
+            certificationNumber: nil, labelCardText: [], printedPrintRun: .firstEdition)
+        let result = await resolver.resolve(card: card, slab: evidence, pokemonPrintRun: nil)
+        XCTAssertEqual(result, .bound(candidate))
+        let identity = await recorder.lastIdentity
+        XCTAssertEqual(identity?.pokemonPrintRun, .firstEdition)
+        let unlimited = GradedVariant(id: "unlimited", company: .psa, grade: .init(value: "10"),
+            printing: "Unlimited Holofoil", marketPriceUSD: 5, updatedAt: nil)
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [unlimited], for: evidence))
+    }
+
     func testOwnedNormalCGC10RejectsReverseHoloAndMissingFinish() {
         let evidence = GradedSlabEvidence(company: .cgc,
             grade: CardGrade(value: "10", label: "Gem Mint"), certificationNumber: "SYNTHETIC-001",

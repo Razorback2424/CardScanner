@@ -25,6 +25,119 @@ private actor EditionPriceProbe {
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testSystematicBundledSetDirectoryConcordance() throws {
+        struct Inventory: Decodable {
+            struct Group: Decodable { let game, id, name: String }
+            let upstreamBuild: String
+            let groups: [Group]
+        }
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "vendor-groups", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let inventory = try JSONDecoder().decode(Inventory.self, from: Data(contentsOf: url))
+        var requested: [(game: CardGame, id: String, name: String)] = []
+        // Count every bundled Browse descriptor, including unresolved ones.
+        // This is a set-name concordance audit, not a live JustTCG coverage claim.
+        for set in MagicCatalogRegistry.bundledSeed.descriptors where set.browseEnabled {
+            requested.append((.magic, set.code, set.displayName))
+        }
+        let manifestURL = try XCTUnwrap(Bundle.main.url(forResource: "manifest", withExtension: "json",
+            subdirectory: "PokemonChecklistSnapshot"))
+        let manifest = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any])
+        let entries = try XCTUnwrap(manifest["entries"] as? [[String: Any]])
+        var seen = Set<String>()
+        for entry in entries {
+            let id = try XCTUnwrap(entry["providerID"] as? String)
+            guard seen.insert(id).inserted else { continue }
+            let resource = try XCTUnwrap(entry["resource"] as? String)
+            let cards = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf:
+                manifestURL.deletingLastPathComponent().appendingPathComponent(resource))) as? [[String: Any]])
+            let first = try XCTUnwrap(cards.first)
+            var name = try XCTUnwrap(first["setName"] as? String)
+            // Snapshot rows decorate Browse titles with their declared print
+            // run. Detail pricing receives the underlying TCGdex set name;
+            // the print run is supplied independently to the graded client.
+            if let set = entry["set"] as? [String: Any], let identity = set["catalogID"] as? [String: Any],
+               let raw = identity["pokemonPrintRun"] as? String, let run = PokemonPrintRun(rawValue: raw) {
+                let suffix = " — " + run.label
+                if name.hasSuffix(suffix) { name.removeLast(suffix.count) }
+            }
+            requested.append((.pokemon, id, name))
+        }
+        var rows: [[String: String]] = [], regressions: [String] = []
+        for game in [CardGame.pokemon, .magic] {
+            let groups = inventory.groups.filter { $0.game == game.rawValue }
+            let names = Dictionary(uniqueKeysWithValues: groups.map { ($0.id, $0.name) })
+            // Deliberately use opaque TCGplayer IDs here. This proves name
+            // resolution without inventing a JustTCG slug from a group name.
+            let directory = ProductSetDirectory(sets: groups.map { (id: $0.id, name: Optional($0.name)) })
+            let vendorGame: ProductCatalogIdentity.Game = game == .magic ? .magic : .pokemon
+            for set in requested.filter({ $0.game == game }).sorted(by: { $0.id < $1.id }) {
+                let id = ProductCatalogIdentity.setSlug(setName: set.name, japaneseSetID: nil,
+                    game: vendorGame, directory: directory)
+                let vendorName = id.flatMap { names[$0] }
+                var status = "unresolved"
+                if let id, let vendorName {
+                    let identity = GradedCardIdentity(name: "Audit card", setName: set.name, collectorNumber: "1")
+                    let data = try JSONSerialization.data(withJSONObject: ["name": "Audit card", "number": "1",
+                        "game": ["id": vendorGame.rawValue], "set": ["id": id, "name": vendorName]])
+                    let card = try JSONDecoder().decode(JustTCGV2Card.self, from: data)
+                    status = identity.matches(card, game: game, expectedSetSlug: id) ? "resolved" : "resolvedButRejected"
+                    if status == "resolvedButRejected" { regressions.append("\(set.id): \(set.name) → \(vendorName)") }
+                }
+                rows.append(["game": game.rawValue, "catalogID": set.id, "catalogName": set.name,
+                    "vendorGroupID": id ?? "", "vendorName": vendorName ?? "", "status": status])
+            }
+        }
+        let report: [String: Any] = ["schemaVersion": 1, "upstreamBuild": inventory.upstreamBuild,
+            "boundary": "Bundled Browse sets against captured TCGplayer group names; unresolved is not proof of vendor absence. No JustTCG slug or graded availability certification.",
+            "rows": rows]
+        let reportData = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+        let reportURL = FileManager.default.temporaryDirectory.appendingPathComponent("set-pricing-concordance.json")
+        try reportData.write(to: reportURL, options: .atomic)
+        print("SET_AUDIT_REPORT: \(reportURL.path)")
+        let attachment = XCTAttachment(data: reportData, uniformTypeIdentifier: "public.json")
+        attachment.name = "set-pricing-concordance.json"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        let resolvedCount = rows.filter { $0["status"] == "resolved" }.count
+        let unresolvedCount = rows.filter { $0["status"] == "unresolved" }.count
+        print("SET_AUDIT: \(rows.count) sets, \(resolvedCount) resolved, \(unresolvedCount) unresolved, \(regressions.count) rejected")
+        XCTAssertEqual(regressions, [], "A directory-resolved set must not fail graded matching on its display name")
+    }
+
+    func testResolvedGradedSetIDSurvivesDisplayAliasesWithoutWeakeningIdentity() throws {
+        for (game, catalogID, vendorGame, catalogName, vendorName) in [
+            (CardGame.pokemon, "xy6-1", "pokemon", "Roaring Skies", "XY - Roaring Skies"),
+            (.magic, "fixture", "magic-the-gathering", "The Big Score", "Outlaws of Thunder Junction: The Big Score"),
+            (.pokemon, "SV8a-001", "pokemon-japan", "Terastal Festival ex", "SV8a: Terastal Fest ex")
+        ] {
+            let identity = GradedCardIdentity(name: "Audit card", setName: catalogName,
+                collectorNumber: "001/100", catalogID: catalogID)
+            func card(setID: String?, gameID: String?, name: String = "Audit card", number: String = "1/100") throws -> JustTCGV2Card {
+                var set: [String: String] = ["name": vendorName]
+                if let setID { set["id"] = setID }
+                var object: [String: Any] = ["name": name, "number": number, "set": set]
+                if let gameID { object["game"] = ["id": gameID] }
+                return try JSONDecoder().decode(JustTCGV2Card.self, from: JSONSerialization.data(withJSONObject: object))
+            }
+            XCTAssertTrue(identity.matches(try card(setID: "reviewed-set", gameID: vendorGame),
+                game: game, expectedSetSlug: "reviewed-set"), catalogName)
+            for wrong in [
+                try card(setID: "other-set", gameID: vendorGame),
+                try card(setID: nil, gameID: vendorGame),
+                try card(setID: "reviewed-set", gameID: "other-game"),
+                try card(setID: "reviewed-set", gameID: nil),
+                try card(setID: "reviewed-set", gameID: vendorGame, name: "Unrelated card"),
+                try card(setID: "reviewed-set", gameID: vendorGame, number: "2/100"),
+                try card(setID: "reviewed-set", gameID: vendorGame, number: "1/101")
+            ] {
+                XCTAssertFalse(identity.matches(wrong, game: game, expectedSetSlug: "reviewed-set"), catalogName)
+            }
+            XCTAssertFalse(identity.matches(try card(setID: "reviewed-set", gameID: vendorGame), game: game),
+                "An unresolved fallback still requires a matching display set")
+        }
+    }
+
     func testKnownJapaneseGradedFinishUsesTrustedCatalogLanguage() throws {
         for (catalogID, printing, gameID, accepted) in [
             ("M2-001", "Holofoil - Japanese", "pokemon-japan", true),
@@ -1940,6 +2053,154 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(serverClock.serverClockOffset, observedOffset)
     }
 
+    func testGradedZapdos202LookupResolves151AndReturnsOnlyTheRequestedPrinting() async throws {
+        let directory = ProductSetDirectoryProvider()
+        let slug = "sv-scarlet-violet-151-pokemon"
+        _ = try await directory.directory(for: .pokemon) {
+            ProductSetDirectory(sets: [(id: slug, name: "SV: Scarlet & Violet 151")])
+        }
+        // Same name, three collector numbers: only the SIR in the screenshot
+        // may supply slab handles or prices. Prices and handles are synthetic.
+        let cards = [
+            (number: "145/165", set: slug, game: "pokemon", handle: "wrong-art"),
+            (number: "202/165", set: "other-set-pokemon", game: "pokemon", handle: "wrong-set"),
+            (number: "202/165", set: slug, game: "pokemon-japan", handle: "wrong-game"),
+            (number: "202/166", set: slug, game: "pokemon", handle: "wrong-total"),
+            (number: "192/165", set: slug, game: "pokemon", handle: "wrong-rarity"),
+            (number: "202/165", set: slug, game: "pokemon", handle: "fixture-psa10")
+        ].map { row in
+            """
+            {"id":"\(row.handle)-card","name":"Zapdos ex - \(row.number)","number":"\(row.number)",
+             "game":{"id":"\(row.game)"},"set":{"id":"\(row.set)","name":"SV: Scarlet & Violet 151"},
+             "variants":[{"id":"\(row.handle)","type":"graded","printing":"Holofoil",
+             "grading":{"company":"PSA","grade":10},
+             "markets":[{"region":"NA","currency":"USD","price":123}]}]}
+            """
+        }
+        RecordingURLProtocol.reset(body: "{\"data\":[\(cards.joined(separator: ","))]}")
+        let client = try gradedFixtureClient(directory: directory)
+        let result = try await client.lookup(identity: GradedCardIdentity(
+            name: "Zapdos ex", setName: "151", collectorNumber: "202/165", catalogID: "sv03.5-202"
+        ), game: .pokemon)
+
+        guard case let .matched(variants) = result else {
+            return XCTFail("The vendor's longer 151 set name must not become a card-not-found result: \(result)")
+        }
+        XCTAssertEqual(variants.map(\.id), ["fixture-psa10"])
+        XCTAssertEqual(variants.first?.marketPriceUSD, 123)
+        let requests = RecordingURLProtocol.recorded()
+        XCTAssertEqual(requests.count, 1)
+        let url = try XCTUnwrap(requests.first)
+        XCTAssertEqual(url.path, "/v2/cards")
+        let query = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertEqual(query.first { $0.name == "set" }?.value, slug)
+        XCTAssertEqual(query.first { $0.name == "q" }?.value, "Zapdos ex")
+        XCTAssertEqual(query.first { $0.name == "graded" }?.value, "only")
+    }
+
+    func testGradedSetNameSampleAcrossEightPokemonSets() async throws {
+        // Catalog names/card identities come from the bundled checklist. Vendor
+        // display names were checked against TCGplayer's published set pages.
+        // Handles and prices are synthetic; this tests matching, not coverage.
+        let samples: [(catalog: String, vendor: String, slug: String, card: String, id: String)] = [
+            ("Sword & Shield", "SWSH01: Sword & Shield Base Set", "swsh01-sword-shield-base-set-pokemon", "Celebi V", "swsh1-1"),
+            ("Evolving Skies", "SWSH07: Evolving Skies", "swsh07-evolving-skies-pokemon", "Pinsir", "swsh7-1"),
+            ("Sun & Moon", "SM Base Set", "sm-base-set-pokemon", "Caterpie", "sm1-1"),
+            ("Cosmic Eclipse", "SM - Cosmic Eclipse", "sm-cosmic-eclipse-pokemon", "Venusaur & Snivy GX", "sm12-1"),
+            ("Paldea Evolved", "SV02: Paldea Evolved", "sv02-paldea-evolved-pokemon", "Hoppip", "sv02-001"),
+            ("XY", "XY Base Set", "xy-base-set-pokemon", "Venusaur EX", "xy1-1"),
+            ("Dragon", "EX Dragon", "ex-dragon-pokemon", "Absol", "ex3-1"),
+            ("Prismatic Evolutions", "SV: Prismatic Evolutions", "sv-prismatic-evolutions-pokemon", "Exeggcute", "sv08.5-001")
+        ]
+        let directory = ProductSetDirectoryProvider()
+        let sets = samples.map { (id: $0.slug, name: Optional($0.vendor)) }
+        let published = try await directory.directory(for: .pokemon) {
+            ProductSetDirectory(sets: sets)
+        }
+        let client = try gradedFixtureClient(directory: directory)
+        var failures: [String] = []
+        for sample in samples {
+            let label = "\(sample.catalog) → \(sample.vendor)"
+            let identity = GradedCardIdentity(name: sample.card, setName: sample.catalog,
+                collectorNumber: "001", catalogID: sample.id)
+            if JustTCGV2GradedClient.resolvedSetSlug(
+                identity: identity, game: .pokemon, directory: published
+            ) != sample.slug {
+                failures.append("\(label): set did not resolve")
+            }
+            let body: [String: Any] = ["data": [[
+                "id": "fixture-card", "name": sample.card, "number": "1",
+                "game": ["id": "pokemon"], "set": ["id": sample.slug, "name": sample.vendor],
+                "variants": [["id": "fixture-psa10", "type": "graded", "printing": "Holofoil",
+                    "grading": ["company": "PSA", "grade": 10],
+                    "markets": [["region": "NA", "currency": "USD", "price": 123]]]]
+            ]]]
+            let data = try JSONSerialization.data(withJSONObject: body)
+            RecordingURLProtocol.reset(body: try XCTUnwrap(String(data: data, encoding: .utf8)))
+            let result = try await client.lookup(identity: identity, game: .pokemon)
+            guard case let .matched(variants) = result else {
+                failures.append("\(label): \(result)")
+                continue
+            }
+            XCTAssertEqual(variants.map(\.id), ["fixture-psa10"], label)
+            XCTAssertEqual(variants.first?.marketPriceUSD, 123, label)
+            let requests = RecordingURLProtocol.recorded()
+            XCTAssertEqual(requests.count, 1, label)
+            let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(requests.first),
+                resolvingAgainstBaseURL: false)?.queryItems)
+            XCTAssertEqual(query.first { $0.name == "set" }?.value, sample.slug, label)
+        }
+        XCTAssertEqual(failures, [], "Every sampled set must resolve and accept its own graded listing")
+    }
+
+    func testGradedSetNameSampleAcrossFourMagicSets() async throws {
+        // Scryfall names are pinned in MagicTreatmentSnapshot; vendor display
+        // names were checked on TCGplayer. Prices and handles are synthetic.
+        let samples: [(catalog: String, vendor: String, slug: String, card: String)] = [
+            ("Forgotten Realms Commander", "Commander: Adventures in the Forgotten Realms",
+             "commander-adventures-in-the-forgotten-realms-magic-the-gathering", "Galea, Kindler of Hope"),
+            ("Warhammer 40,000 Commander", "Universes Beyond: Warhammer 40,000",
+             "universes-beyond-warhammer-40000-magic-the-gathering", "Szarekh, the Silent King"),
+            ("Tales of Middle-earth Commander", "Commander: The Lord of the Rings: Tales of Middle-earth",
+             "commander-the-lord-of-the-rings-tales-of-middle-earth-magic-the-gathering", "Éowyn, Shieldmaiden"),
+            ("Fallout", "Universes Beyond: Fallout", "universes-beyond-fallout-magic-the-gathering",
+             "Caesar, Legion's Emperor")
+        ]
+        let directory = ProductSetDirectoryProvider()
+        let sets = samples.map { (id: $0.slug, name: Optional($0.vendor)) }
+        let published = try await directory.directory(for: .magic) { ProductSetDirectory(sets: sets) }
+        let client = try gradedFixtureClient(directory: directory)
+        var failures: [String] = []
+        for sample in samples {
+            let label = "\(sample.catalog) → \(sample.vendor)"
+            let identity = GradedCardIdentity(name: sample.card, setName: sample.catalog, collectorNumber: "1")
+            if JustTCGV2GradedClient.resolvedSetSlug(identity: identity, game: .magic, directory: published) != sample.slug {
+                failures.append("\(label): set did not resolve")
+            }
+            let body: [String: Any] = ["data": [[
+                "id": "fixture-card", "name": sample.card, "number": "1",
+                "game": ["id": "magic-the-gathering"], "set": ["id": sample.slug, "name": sample.vendor],
+                "variants": [["id": "fixture-psa10", "type": "graded", "printing": "Foil",
+                    "grading": ["company": "PSA", "grade": 10],
+                    "markets": [["region": "NA", "currency": "USD", "price": 123]]]]
+            ]]]
+            let bytes = try JSONSerialization.data(withJSONObject: body)
+            RecordingURLProtocol.reset(body: try XCTUnwrap(String(data: bytes, encoding: .utf8)))
+            let result = try await client.lookup(identity: identity, game: .magic)
+            guard case let .matched(variants) = result else {
+                failures.append("\(label): \(result)"); continue
+            }
+            XCTAssertEqual(variants.map(\.id), ["fixture-psa10"], label)
+            XCTAssertEqual(variants.first?.marketPriceUSD, 123, label)
+            let requests = RecordingURLProtocol.recorded()
+            XCTAssertEqual(requests.count, 1, label)
+            let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(requests.first),
+                resolvingAgainstBaseURL: false)?.queryItems)
+            XCTAssertEqual(query.first { $0.name == "set" }?.value, sample.slug, label)
+        }
+        XCTAssertEqual(failures, [], "Every sampled Magic set must resolve and match its own graded listing")
+    }
+
     func testGradedSearchFindsSpinarakOnLaterPage() async throws {
         let directory = ProductSetDirectoryProvider()
         _ = try await directory.directory(for: .pokemon) {
@@ -2014,7 +2275,498 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
     }
 
-    private func gradedFixtureClient(directory: ProductSetDirectoryProvider, maximumPages: Int = 3) throws -> JustTCGV2GradedClient {
+    func testEveryReviewedUnownAndFutsalCardUsesItsOwnExactGradedProduct() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-subset-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let cases = try XCTUnwrap(document["cases"] as? [[String: Any]])
+        XCTAssertEqual(cases.count, 33)
+        var sourceIDs = Set<String>()
+        for entry in cases {
+            let source = try JSONDecoder().decode(TCGdexCard.self,
+                from: JSONSerialization.data(withJSONObject: XCTUnwrap(entry["source"])))
+            sourceIDs.insert(source.id)
+            XCTAssertEqual(source.catalogVariants, [.holo])
+            var vendor = try XCTUnwrap(entry["vendor"] as? [String: Any])
+            let product = try XCTUnwrap((vendor["external_ids"] as? [String: String])?["tcgplayer"])
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: .pokemon(source, setCode: ""),
+                variant: .holo, printRun: .unlimited).map(String.init), product)
+            vendor["variants"] = [["id": "reviewed-holo-slab", "type": "graded", "printing": "Holofoil",
+                "grading": ["company": "PSA", "grade": 10],
+                "markets": [["region": "NA", "currency": "USD", "price": 123]]]]
+            let body = String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self)
+            for run: PokemonPrintRun? in [nil, .unlimited] {
+                RecordingURLProtocol.reset(body: body)
+                let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider())
+                let identity = GradedCardIdentity(name: source.name, setName: source.set.name,
+                    collectorNumber: source.localId, catalogID: source.id, pokemonPrintRun: run, finish: .holo)
+                let result = try await client.lookup(identity: identity, game: .pokemon)
+                guard case let .matched(variants) = result else { XCTFail("\(source.id): \(result)"); continue }
+                XCTAssertEqual(variants.map(\.id), ["reviewed-holo-slab"], source.id)
+                XCTAssertEqual(variants.first?.cardID, vendor["id"] as? String, source.id)
+                XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "Reviewed subsets skip name/set lookup")
+                let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(RecordingURLProtocol.recorded().first), resolvingAgainstBaseURL: false)?.queryItems)
+                XCTAssertEqual(query.first { $0.name == "tcgplayer_id" }?.value, product, source.id)
+                XCTAssertEqual(query.first { $0.name == "game" }?.value, "pokemon", source.id)
+                XCTAssertNil(query.first { $0.name == "q" })
+                XCTAssertNil(query.first { $0.name == "set" })
+            }
+        }
+        XCTAssertEqual(sourceIDs, ReviewedPokemonProductIdentity.catalogIDs.filter { !$0.hasPrefix("xya-") })
+    }
+
+    func testReviewedPokemonSubsetRefusesWrongMetadataEditionAndFinish() async throws {
+        let valid = GradedCardIdentity(name: "Unown", setName: "Unseen Forces Unown Collection",
+            collectorNumber: "A/28", catalogID: "exu-A", pokemonPrintRun: .unlimited, finish: .holo)
+        XCTAssertNotNil(try ReviewedPokemonProductIdentity(identity: valid))
+        let invalid = [
+            GradedCardIdentity(name: "Unown", setName: valid.setName, collectorNumber: "B/28", catalogID: "exu-A"),
+            GradedCardIdentity(name: "Unown", setName: valid.setName, collectorNumber: "A/29", catalogID: "exu-A"),
+            GradedCardIdentity(name: "Pikachu", setName: valid.setName, collectorNumber: "A", catalogID: "exu-A"),
+            GradedCardIdentity(name: "Unown", setName: "Unseen Forces", collectorNumber: "A", catalogID: "exu-A"),
+            GradedCardIdentity(name: "Unown", setName: valid.setName, collectorNumber: "A", catalogID: "exu-A", pokemonPrintRun: .firstEdition),
+            GradedCardIdentity(name: "Unown", setName: valid.setName, collectorNumber: "A", catalogID: "exu-A", pokemonPrintRun: .shadowless),
+            GradedCardIdentity(name: "Unown", setName: valid.setName, collectorNumber: "A", catalogID: "exu-A", finish: .reverse),
+            GradedCardIdentity(name: "Unown", setName: valid.setName, collectorNumber: "A", catalogID: "exu-A", finish: .normal)
+        ]
+        let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider())
+        for identity in invalid {
+            RecordingURLProtocol.reset()
+            let result = try await client.lookup(identity: identity, game: .pokemon)
+            XCTAssertEqual(result, .localIdentityUnresolved)
+            XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+        }
+        XCTAssertNil(try ReviewedPokemonProductIdentity(identity: .init(name: "Unown",
+            setName: valid.setName, collectorNumber: "A", catalogID: "exu-not-reviewed")))
+        XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName(valid.setName, game: .pokemon),
+            CatalogIdentityNormalization.canonicalSetName("Unseen Forces", game: .pokemon))
+        XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName("Pokémon Futsal 2020", game: .pokemon),
+            CatalogIdentityNormalization.canonicalSetName("Miscellaneous Cards & Products", game: .pokemon))
+    }
+
+    func testEncodedUnownQuestionMarkIsScopedToItsReviewedProviderIdentity() throws {
+        for number in ["%3F", "%3f/28", "?", "?/28"] {
+            let context = try XCTUnwrap(ReviewedPokemonProductIdentity(identity: .init(name: "Unown",
+                setName: "Unseen Forces Unown Collection", collectorNumber: number, catalogID: "exu-%3F")))
+            XCTAssertEqual(context.productIDs, ["90167"])
+        }
+        for number in ["%3F/29", "?/29", "%3Q", "A", "%253F"] {
+            XCTAssertThrowsError(try ReviewedPokemonProductIdentity(identity: .init(name: "Unown",
+                setName: "Unseen Forces Unown Collection", collectorNumber: number, catalogID: "exu-%3F")))
+        }
+        XCTAssertFalse(ProductCatalogIdentity.numbersMatch("%3F", "?"), "Printed numbers are not globally URL-decoded")
+    }
+
+    func testReviewedPokemonExactProductRejectsOtherLettersLanguagesAndFinishes() throws {
+        let context = try XCTUnwrap(ReviewedPokemonProductIdentity(identity: .init(name: "Unown",
+            setName: "Unseen Forces Unown Collection", collectorNumber: "A", catalogID: "exu-A")))
+        var card: [String: Any] = ["id": "card", "name": "Unown (A)", "number": "A/28",
+            "game": ["id": "pokemon"], "external_ids": ["tcgplayer": "90168"]]
+        func matches(_ card: [String: Any]) throws -> Bool {
+            context.matches(try JSONDecoder().decode(JustTCGV2Card.self, from: JSONSerialization.data(withJSONObject: card)))
+        }
+        XCTAssertTrue(try matches(card))
+        card["external_ids"] = ["tcgplayer": "90169"]
+        XCTAssertFalse(try matches(card), "Unown B cannot price Unown A even with A's printed number")
+        card["external_ids"] = ["tcgplayer": "90168"]; card["game"] = ["id": "pokemon-japan"]
+        XCTAssertFalse(try matches(card))
+        for (printing, type, language, admitted) in [
+            ("Holofoil", "graded", "en", true), ("Holofoil", "graded", "Japanese", false),
+            ("Reverse Holofoil", "graded", "en", false), ("Normal", "graded", "en", false),
+            ("1st Edition Holofoil", "graded", "en", false), ("Holofoil", "raw", "en", false)
+        ] {
+            let variant = try JSONDecoder().decode(JustTCGVariant.self, from: JSONSerialization.data(withJSONObject:
+                ["id": "slab", "type": type, "printing": printing, "language": language]))
+            XCTAssertEqual(context.admits(variant, productID: "90168", requestedFinish: .holo), admitted, printing)
+            XCTAssertFalse(context.admits(variant, productID: "90169", requestedFinish: .holo))
+        }
+    }
+
+    func testYellowAWholeSetReconcilesGeneratedFinishesAndExactProducts() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-yellow-a-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let cases = try XCTUnwrap(document["cases"] as? [[String: Any]])
+        XCTAssertEqual(cases.count, 6)
+        var seen = Set<String>(), laneCount = 0
+        for entry in cases {
+            let source = try JSONDecoder().decode(TCGdexCard.self,
+                from: JSONSerialization.data(withJSONObject: XCTUnwrap(entry["source"])))
+            let card = IdentifiedCard.pokemon(source, setCode: "")
+            seen.insert(source.id)
+            let products = try XCTUnwrap(entry["products"] as? [[String: Any]])
+            let expectedFinishes = products.compactMap { ($0["finish"] as? String).map(PhysicalVariant.resolving) }
+            XCTAssertEqual(source.variants?.normal, true, "Retain the upstream generated flag as evidence")
+            XCTAssertEqual(Set(source.catalogVariants), Set(expectedFinishes), source.id)
+            XCTAssertFalse(source.catalogVariants.contains(.reverse))
+            var vendors: [String: [String: Any]] = [:]
+            for product in products {
+                laneCount += 1
+                let finish = PhysicalVariant.resolving(try XCTUnwrap(product["finish"] as? String))
+                let printing = try XCTUnwrap(product["printing"] as? String)
+                var vendor = try XCTUnwrap(product["vendor"] as? [String: Any])
+                let id = try XCTUnwrap((vendor["external_ids"] as? [String: String])?["tcgplayer"])
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: finish, printRun: .unlimited).map(String.init), id)
+                XCTAssertEqual(TCGplayerLinkBuilder.url(for: card, variant: finish)?.path, "/product/" + id)
+                let total = try XCTUnwrap((vendor["number"] as? String)?.split(separator: "/").last.flatMap { Int($0) })
+                XCTAssertEqual(card.displayCardNumber, "\(source.localId)/\(total)")
+                XCTAssertEqual(card.cardNumber, source.localId)
+                vendor["variants"] = [["id": id + "-slab", "type": "graded", "printing": printing,
+                    "grading": ["company": "PSA", "grade": 10],
+                    "markets": [["region": "NA", "currency": "USD", "price": 123]]],
+                    ["id": "wrong-finish", "type": "graded", "printing": printing == "Normal" ? "Holofoil" : "Normal",
+                     "grading": ["company": "PSA", "grade": 10]]]
+                vendors[id] = vendor
+                RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self))
+                let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider())
+                let result = try await client.lookup(identity: .init(name: source.name, setName: source.set.name,
+                    collectorNumber: source.localId, catalogID: source.id, pokemonPrintRun: .unlimited, finish: finish), game: .pokemon)
+                guard case let .matched(values) = result else { XCTFail("\(source.id) \(finish): \(result)"); continue }
+                XCTAssertEqual(values.map(\.id), [id + "-slab"])
+                XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+            }
+            let identity = GradedCardIdentity(name: source.name, setName: source.set.name,
+                collectorNumber: source.localId, catalogID: source.id)
+            let context = try XCTUnwrap(ReviewedPokemonProductIdentity(identity: identity))
+            let ordered = context.productIDs.map { vendors[$0]! }
+            RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [ordered[0]]]), as: UTF8.self))
+            if ordered.count > 1 {
+                RecordingURLProtocol.laterPageBody = try JSONSerialization.data(withJSONObject: ["data": [ordered[1]]])
+            }
+            let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider())
+            let result = try await client.lookup(identity: identity, game: .pokemon)
+            guard case let .matched(values) = result else { XCTFail("Whole finish discovery: \(source.id)"); continue }
+            XCTAssertEqual(Set(values.map(\.id)), Set(context.productIDs.map { $0 + "-slab" }))
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, products.count)
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: card, variant: .reverse, printRun: nil))
+            if products.count == 1 {
+                XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: source.id, variant: .normal))
+                guard case .unavailable = CardPricing.price(for: card, variant: .normal, magicTreatments: []) else {
+                    XCTFail("Generated Normal must not price a reviewed EX Holofoil")
+                    continue
+                }
+                var conflicting = try XCTUnwrap(entry["source"] as? [String: Any])
+                var detail = try XCTUnwrap((conflicting["variants_detailed"] as? [[String: Any]])?.first)
+                detail["pricing"] = ["tcgplayer": ["normal": ["productId": Int(context.productIDs[0])!, "marketPrice": 999]]]
+                conflicting["variants_detailed"] = [detail]
+                let stale = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: conflicting))
+                guard case .unavailable = CardPricing.price(for: .pokemon(stale, setCode: ""), variant: .normal, magicTreatments: []) else {
+                    XCTFail("A conflicting detailed quote cannot override the reviewed physical finish")
+                    continue
+                }
+            }
+        }
+        XCTAssertEqual(laneCount, 8)
+        XCTAssertEqual(seen, ReviewedPokemonProductIdentity.catalogIDs.filter { $0.hasPrefix("xya-") })
+    }
+
+    func testYellowANumberReconciliationPreservesSuffixAndActualPrintedTotal() throws {
+        for number in ["24a", "024a", "24a/119", "024a/119"] {
+            let identity = GradedCardIdentity(name: "M Manectric-EX", setName: "Yellow A Alternate",
+                collectorNumber: number, catalogID: "xya-24a", finish: .holo)
+            XCTAssertEqual(try ReviewedPokemonProductIdentity(identity: identity)?.productIDs, ["131696"])
+        }
+        for number in ["24", "24b", "24a/6", "24a/120"] {
+            XCTAssertThrowsError(try ReviewedPokemonProductIdentity(identity: .init(name: "M Manectric-EX",
+                setName: "Yellow A Alternate", collectorNumber: number, catalogID: "xya-24a", finish: .holo)))
+        }
+        XCTAssertThrowsError(try ReviewedPokemonProductIdentity(identity: .init(name: "M Manectric-EX",
+            setName: "Yellow A Alternate", collectorNumber: "24a", catalogID: "xya-24a", finish: .normal)))
+        XCTAssertFalse(ProductCatalogIdentity.numbersMatch("24a", "024a"), "No global suffix-number relaxation")
+        XCTAssertNil(PokemonVariantRules.reviewedVariants(cardID: "xya-999"))
+    }
+
+    func testExactMagicProductLookupAcrossAllReviewedReleaseFamilies() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "magic-direct-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let cases = try XCTUnwrap(document["cases"] as? [[String: Any]])
+        XCTAssertEqual(cases.count, 103)
+        XCTAssertEqual(Set(cases.compactMap { $0["code"] as? String }).count, 52)
+        for entry in cases {
+            let source = try JSONDecoder().decode(ScryfallCard.self, from: JSONSerialization.data(withJSONObject: XCTUnwrap(entry["source"])))
+            var vendor = try XCTUnwrap(entry["vendor"] as? [String: Any])
+            let finish = try XCTUnwrap(source.finishes?.first)
+            let printing = finish == "foil" ? "Foil" : finish == "etched" ? "Etched Foil" : "Normal"
+            vendor["variants"] = [["id": "fixture-slab", "type": "graded", "printing": printing,
+                "grading": ["company": "PSA", "grade": 10],
+                "markets": [["region": "NA", "currency": "USD", "price": 123]]]]
+            let body = try JSONSerialization.data(withJSONObject: ["data": [vendor]])
+            RecordingURLProtocol.reset(body: try XCTUnwrap(String(data: body, encoding: .utf8)))
+            let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider(), magicCardLoader: { id in
+                guard id == source.id else { throw ScryfallError.identityMismatch }
+                return source
+            })
+            let identity = GradedCardIdentity(name: source.name, setName: source.setName,
+                collectorNumber: source.collectorNumber, catalogID: source.id, finish: .resolving(finish))
+            let result = try await client.lookup(identity: identity, game: .magic, companies: [.psa], grades: ["10"])
+            guard case let .matched(variants) = result else {
+                XCTFail("\(entry["code"] ?? ""): \(source.name) \(source.collectorNumber): \(result)"); continue
+            }
+            XCTAssertEqual(variants.map(\.id), ["fixture-slab"], source.name)
+            XCTAssertEqual(variants.first?.marketPriceUSD, 123, source.name)
+            let requests = RecordingURLProtocol.recorded()
+            XCTAssertEqual(requests.count, 1, "Exact product lookup must skip the set directory")
+            let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(requests.first), resolvingAgainstBaseURL: false)?.queryItems)
+            XCTAssertEqual(query.first { $0.name == "tcgplayer_id" }?.value, source.tcgplayerID.map(String.init))
+            XCTAssertNil(query.first { $0.name == "q" })
+            XCTAssertNil(query.first { $0.name == "set" })
+            XCTAssertEqual(query.first { $0.name == "graded" }?.value, "only")
+            XCTAssertEqual(query.first { $0.name == "grading_company" }?.value, "PSA")
+            XCTAssertEqual(query.first { $0.name == "grade" }?.value, "10")
+        }
+    }
+
+    func testMagicProductIdentityRejectsConflictingCatalogEvidence() throws {
+        let fixture = try directMagicFixture()
+        let source = try decodeMagicSource(fixture.source)
+        let identity = GradedCardIdentity(name: source.name, setName: source.setName,
+            collectorNumber: source.collectorNumber, catalogID: source.id)
+        _ = try MagicGradedProductIdentity(identity: identity, card: source)
+        let changes: [(String, Any)] = [
+            ("id", UUID().uuidString), ("object", "not-card"), ("name", "Another card"),
+            ("set_name", "Another release"), ("collector_number", "999wrong"),
+            ("lang", "ja"), ("digital", true), ("games", ["arena"]), ("oversized", true),
+            ("layout", "vanguard"), ("layout", "token"), ("released_at", "2999-01-01"),
+            ("finishes", []), ("finishes", ["foil", "foil"]), ("finishes", ["unknown"])
+        ]
+        for (key, value) in changes {
+            var changed = fixture.source; changed[key] = value
+            XCTAssertThrowsError(try MagicGradedProductIdentity(identity: identity, card: decodeMagicSource(changed)), key)
+        }
+        XCTAssertThrowsError(try MagicGradedProductIdentity(identity: .init(name: source.name,
+            setName: source.setName, collectorNumber: source.collectorNumber, catalogID: source.id,
+            pokemonPrintRun: .unlimited), card: source))
+        let unavailable = source.finishes?.contains("etched") == true ? "nonexistent" : "etched"
+        XCTAssertThrowsError(try MagicGradedProductIdentity(identity: .init(name: source.name,
+            setName: source.setName, collectorNumber: source.collectorNumber, catalogID: source.id,
+            finish: .resolving(unavailable)), card: source))
+    }
+
+    func testMagicProductIdentityRequiresReturnedProductGameAndSourceAgreement() throws {
+        let fixture = try directMagicFixture()
+        let source = try decodeMagicSource(fixture.source)
+        let context = try MagicGradedProductIdentity(identity: .init(name: source.name,
+            setName: source.setName, collectorNumber: source.collectorNumber, catalogID: source.id), card: source)
+        func matches(_ vendor: [String: Any]) throws -> Bool {
+            context.matches(try JSONDecoder().decode(JustTCGV2Card.self,
+                from: JSONSerialization.data(withJSONObject: vendor)))
+        }
+        XCTAssertTrue(try matches(fixture.vendor))
+        for (key, value) in [("external_ids", ["tcgplayer": "wrong"] as Any),
+                             ("external_ids", NSNull()), ("game", ["id": "pokemon"]),
+                             ("game", NSNull()), ("name", "Another card"), ("id", "")] {
+            var changed = fixture.vendor; changed[key] = value
+            XCTAssertFalse(try matches(changed), key)
+        }
+        var changed = fixture.vendor
+        changed["external_ids"] = ["tcgplayer": context.productID!, "scryfall": UUID().uuidString]
+        XCTAssertFalse(try matches(changed))
+        changed["external_ids"] = ["tcgplayer": source.tcgplayerID!, "scryfall": source.id] as [String: Any]
+        XCTAssertTrue(try matches(changed), "Numeric wire product IDs still bind the exact product")
+        changed["number"] = "vendor-number-convention"
+        changed["set"] = ["id": "shared-promos", "name": "Shared vendor group"]
+        XCTAssertTrue(try matches(changed), "Verified product identity outranks vendor display conventions")
+    }
+
+    func testMagicProductVariantAdmissionPreservesLanguageFinishAndGradedType() throws {
+        let fixture = try directMagicFixture()
+        let source = try decodeMagicSource(fixture.source)
+        let context = try MagicGradedProductIdentity(identity: .init(name: source.name,
+            setName: source.setName, collectorNumber: source.collectorNumber, catalogID: source.id), card: source)
+        let finish = try XCTUnwrap(source.finishes?.first)
+        let printing = finish == "foil" ? "Foil" : finish == "etched" ? "Etched Foil" : "Normal"
+        func admits(_ values: [String: Any]) throws -> Bool {
+            context.admits(try JSONDecoder().decode(JustTCGVariant.self,
+                from: JSONSerialization.data(withJSONObject: values)), requestedFinish: .resolving(finish))
+        }
+        let valid: [String: Any] = ["id": "slab", "type": "graded", "printing": printing]
+        XCTAssertTrue(try admits(valid))
+        XCTAssertEqual(finish, "nonfoil")
+        let legacy = try MagicGradedProductIdentity(identity: .init(name: source.name, setName: source.setName,
+            collectorNumber: source.collectorNumber, catalogID: source.id, finish: .normal), card: source)
+        XCTAssertEqual(legacy.productIDs, context.productIDs, "Legacy Normal is the same Magic nonfoil finish")
+        for (key, value) in [("type", "raw"), ("language", "Japanese"), ("printing", "Unknown"),
+                             ("printing", finish == "foil" ? "Normal" : "Foil")] {
+            var changed = valid; changed[key] = value
+            XCTAssertFalse(try admits(changed), key)
+        }
+    }
+
+    func testExactMagicProductCannotFallBackToAnUnverifiedReturnedCard() async throws {
+        let fixture = try directMagicFixture()
+        let source = try decodeMagicSource(fixture.source)
+        let identity = GradedCardIdentity(name: source.name, setName: source.setName,
+            collectorNumber: source.collectorNumber, catalogID: source.id)
+        var vendor = fixture.vendor
+        vendor["name"] = source.name; vendor["number"] = source.collectorNumber
+        vendor["set"] = ["id": "same-set", "name": source.setName]
+        vendor["external_ids"] = ["tcgplayer": "wrong-product"]
+        RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self))
+        let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider(), magicCardLoader: { _ in source })
+        let rejected = try await client.lookup(identity: identity, game: .magic)
+        XCTAssertEqual(rejected, .noProductMatch)
+        vendor["external_ids"] = ["tcgplayer": String(source.tcgplayerID!)]
+        RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor, vendor]]), as: UTF8.self))
+        let ambiguous = try await client.lookup(identity: identity, game: .magic)
+        XCTAssertEqual(ambiguous, .incompleteSearch)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        vendor["variants"] = Array(repeating: ["id": "same-slab", "type": "graded", "printing": "Normal",
+            "grading": ["company": "PSA", "grade": 10]] as [String: Any], count: 2)
+        RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self))
+        let duplicateVariant = try await client.lookup(identity: identity, game: .magic)
+        XCTAssertEqual(duplicateVariant, .incompleteSearch)
+    }
+
+    func testUnresolvedMagicCatalogEvidenceDoesNotRequestVendorData() async throws {
+        let fixture = try directMagicFixture()
+        let source = try decodeMagicSource(fixture.source)
+        let identity = GradedCardIdentity(name: "Conflicting imported name", setName: source.setName,
+            collectorNumber: source.collectorNumber, catalogID: source.id)
+        RecordingURLProtocol.reset()
+        let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider(), magicCardLoader: { _ in source })
+        let result = try await client.lookup(identity: identity, game: .magic)
+        XCTAssertEqual(result, .localIdentityUnresolved)
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+    }
+
+    func testMagicWithoutSourceProductIDRetainsStrictNameSetNumberFallback() async throws {
+        let fixture = try directMagicFixture()
+        var values = fixture.source; values["tcgplayer_id"] = NSNull()
+        let source = try decodeMagicSource(values)
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .magic) {
+            ProductSetDirectory(sets: [(id: "source-set", name: source.setName)])
+        }
+        var vendor = fixture.vendor
+        vendor["number"] = source.collectorNumber
+        vendor["name"] = source.name
+        vendor["set"] = ["id": "source-set", "name": source.setName]
+        RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self))
+        let client = try gradedFixtureClient(directory: directory, magicCardLoader: { _ in source })
+        let result = try await client.lookup(identity: .init(name: source.name, setName: source.setName,
+            collectorNumber: source.collectorNumber, catalogID: source.id), game: .magic)
+        XCTAssertEqual(result, .cardFoundWithoutGradedVariants)
+        let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(RecordingURLProtocol.recorded().first), resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertNil(query.first { $0.name == "tcgplayer_id" })
+        XCTAssertEqual(query.first { $0.name == "set" }?.value, "source-set")
+    }
+
+    func testAllFortyTimeshiftPrintingsKeepEtchedAndFoilProductsSeparate() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "magic-direct-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let entries = try XCTUnwrap(document["etchedCases"] as? [[String: Any]])
+        XCTAssertEqual(entries.count, 40)
+        for entry in entries {
+            let source = try decodeMagicSource(XCTUnwrap(entry["source"] as? [String: Any]))
+            let raw = IdentifiedCard.magic(source)
+            for (finish, product) in [(PhysicalVariant.foil, source.tcgplayerID!), (.etched, source.tcgplayerEtchedID!)] {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: raw, variant: finish, printRun: nil), product)
+                XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: raw, variant: finish), [.tcgplayerID(String(product))])
+                XCTAssertEqual(CardMarketHistoryRequest(card: raw, variant: finish, printRun: nil).exactProductID, String(product))
+                let link = try XCTUnwrap(TCGplayerLinkBuilder.url(for: raw, variant: finish))
+                XCTAssertEqual(link.path, "/product/\(product)")
+                let row = CollectedCard(card: raw, resolved: .init(variant: finish, resolution: .userConfirmed))
+                XCTAssertEqual(TCGplayerLinkBuilder.url(for: row), link)
+                row.tcgplayerURL = "https://www.tcgplayer.com/product/incorrect"
+                row.applyCatalogMetadata(from: raw)
+                XCTAssertEqual(TCGplayerLinkBuilder.url(for: row), link)
+            }
+            XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: raw, variant: nil).isEmpty)
+            XCTAssertNil(TCGplayerLinkBuilder.url(for: raw, variant: nil))
+            var foil = try XCTUnwrap(entry["vendor"] as? [String: Any])
+            var etched = try XCTUnwrap(entry["etchedVendor"] as? [String: Any])
+            func slab(_ id: String, printing: String) -> [String: Any] {
+                ["id": id, "type": "graded", "printing": printing,
+                 "grading": ["company": "PSA", "grade": 10],
+                 "markets": [["region": "NA", "currency": "USD", "price": 123]]]
+            }
+            // Put an incorrect finish under each product too. A source-level
+            // finish list cannot authorize another product's etched/foil slab.
+            foil["variants"] = [slab("foil", printing: "Foil"), slab("wrong-etched", printing: "Etched Foil")]
+            etched["variants"] = [slab("etched", printing: "Etched Foil"), slab("wrong-foil", printing: "Foil")]
+            let identity = GradedCardIdentity(name: source.name, setName: source.setName,
+                collectorNumber: source.collectorNumber, catalogID: source.id)
+            let context = try MagicGradedProductIdentity(identity: identity, card: source)
+            XCTAssertEqual(context.productIDs.count, 2)
+            let etchedSlab = try JSONDecoder().decode(JustTCGVariant.self,
+                from: JSONSerialization.data(withJSONObject: slab("etched", printing: "Etched Foil")))
+            XCTAssertFalse(context.admits(etchedSlab, productID: String(source.tcgplayerID!), requestedFinish: .etched))
+            let products = [String(source.tcgplayerID!): foil, String(source.tcgplayerEtchedID!): etched]
+            let ordered = context.productIDs.map { products[$0]! }
+            RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [ordered[0]]]), as: UTF8.self))
+            RecordingURLProtocol.laterPageBody = try JSONSerialization.data(withJSONObject: ["data": [ordered[1]]])
+            let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider(), magicCardLoader: { _ in source })
+            let result = try await client.lookup(identity: identity, game: .magic)
+            guard case let .matched(variants) = result else { XCTFail("\(source.name): \(result)"); continue }
+            XCTAssertEqual(Set(variants.map(\.id)), ["foil", "etched"], source.name)
+            let requested = try RecordingURLProtocol.recorded().map { url in
+                try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "tcgplayer_id" }?.value)
+            }
+            XCTAssertEqual(requested, context.productIDs)
+
+            RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [etched]]), as: UTF8.self))
+            let selected = try await client.lookup(identity: .init(name: source.name, setName: source.setName,
+                collectorNumber: source.collectorNumber, catalogID: source.id, finish: .resolving("etched")), game: .magic)
+            guard case let .matched(etchedOnly) = selected else { XCTFail("Etched selection: \(source.name)"); continue }
+            XCTAssertEqual(etchedOnly.map(\.id), ["etched"])
+            let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(RecordingURLProtocol.recorded().first), resolvingAgainstBaseURL: false)?.queryItems)
+            XCTAssertEqual(query.first { $0.name == "tcgplayer_id" }?.value, String(source.tcgplayerEtchedID!))
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        }
+    }
+
+    func testExactMagic404IsAProductMissAndCatalogOutageIsNot() async throws {
+        let fixture = try directMagicFixture()
+        let source = try decodeMagicSource(fixture.source)
+        let identity = GradedCardIdentity(name: source.name, setName: source.setName,
+            collectorNumber: source.collectorNumber, catalogID: source.id)
+        RecordingURLProtocol.reset(status: 404)
+        let client = try gradedFixtureClient(directory: ProductSetDirectoryProvider(), magicCardLoader: { _ in source })
+        let missing = try await client.lookup(identity: identity, game: .magic)
+        XCTAssertEqual(missing, .noProductMatch)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        RecordingURLProtocol.reset()
+        let unavailable = try gradedFixtureClient(directory: ProductSetDirectoryProvider(), magicCardLoader: { _ in
+            throw ScryfallError.providerUnavailable
+        })
+        do {
+            _ = try await unavailable.lookup(identity: identity, game: .magic)
+            XCTFail("Catalog outage cannot become an ordinary vendor miss")
+        } catch ScryfallError.providerUnavailable { }
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+    }
+
+    func testUnboundMagicIdentityDoesNotTrustImportedProductMetadata() async throws {
+        RecordingURLProtocol.reset()
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .magic) { ProductSetDirectory(sets: []) }
+        let client = try gradedFixtureClient(directory: directory, magicCardLoader: { _ in
+            XCTFail("An arbitrary imported identifier must not authorize a source product lookup")
+            throw ScryfallError.identityMismatch
+        })
+        let result = try await client.lookup(identity: .init(name: "Card", setName: "Set", collectorNumber: "1",
+            catalogID: "csv:untrusted-product-123"), game: .magic)
+        XCTAssertEqual(result, .noProductMatch)
+        let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(RecordingURLProtocol.recorded().first), resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertNil(query.first { $0.name == "tcgplayer_id" })
+    }
+
+    private func decodeMagicSource(_ values: [String: Any]) throws -> ScryfallCard {
+        try JSONDecoder().decode(ScryfallCard.self, from: JSONSerialization.data(withJSONObject: values))
+    }
+
+    private func directMagicFixture() throws -> (source: [String: Any], vendor: [String: Any]) {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "magic-direct-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let first = try XCTUnwrap((document["cases"] as? [[String: Any]])?.first)
+        return (try XCTUnwrap(first["source"] as? [String: Any]), try XCTUnwrap(first["vendor"] as? [String: Any]))
+    }
+
+    private func gradedFixtureClient(directory: ProductSetDirectoryProvider, maximumPages: Int = 3,
+                                     magicCardLoader: JustTCGV2GradedClient.MagicCardLoader? = nil) throws -> JustTCGV2GradedClient {
         let sessionConfig = URLSessionConfiguration.ephemeral
         sessionConfig.protocolClasses = [RecordingURLProtocol.self]
         var config = JustTCGTransport.Configuration()
@@ -2022,7 +2774,8 @@ final class JustTCGContractTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "graded-fixture-\(UUID())"))
         return JustTCGV2GradedClient(transport: JustTCGTransport(configuration: config,
             session: URLSession(configuration: sessionConfig), ledger: JustTCGRequestLedger(defaults: defaults),
-            pacer: JustTCGPacer(), apiKeyOverride: "synthetic-key"), setDirectoryProvider: directory, maximumPages: maximumPages)
+            pacer: JustTCGPacer(), apiKeyOverride: "synthetic-key"), setDirectoryProvider: directory,
+            maximumPages: maximumPages, magicCardLoader: magicCardLoader)
     }
 
     // MARK: - Delta safety
@@ -2060,6 +2813,7 @@ final class JustTCGContractTests: XCTestCase {
         nonisolated(unsafe) static var requestedURLs: [URL] = []
         nonisolated(unsafe) static var body = Data(#"{"data":[]}"#.utf8)
         nonisolated(unsafe) static var laterPageBody: Data?
+        nonisolated(unsafe) static var responseStatus = 200
         nonisolated(unsafe) static var responseHeaders: [String: String] = [
             "Content-Type": "application/json"
         ]
@@ -2067,11 +2821,13 @@ final class JustTCGContractTests: XCTestCase {
 
         static func reset(
             body newBody: String = #"{"data":[]}"#,
-            headers newHeaders: [String: String] = ["Content-Type": "application/json"]
+            headers newHeaders: [String: String] = ["Content-Type": "application/json"],
+            status: Int = 200
         ) {
             lock.lock(); defer { lock.unlock() }
             requestedURLs = []
             laterPageBody = nil
+            responseStatus = status
             body = Data(newBody.utf8)
             responseHeaders = newHeaders
         }
@@ -2097,7 +2853,7 @@ final class JustTCGContractTests: XCTestCase {
             }
             let response = HTTPURLResponse(
                 url: request.url ?? URL(string: "https://example.invalid")!,
-                statusCode: 200,
+                statusCode: Self.responseStatus,
                 httpVersion: nil,
                 headerFields: Self.responseHeadersSnapshot()
             )!

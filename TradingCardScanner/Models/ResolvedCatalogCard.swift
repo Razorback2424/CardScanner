@@ -104,6 +104,10 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
 
     var marketPrices: [CardMarketPrice] { CardPricing.publishedPrices(for: self) }
     var providerPurchaseURL: String? { legacyIdentity?.providerPurchaseURL }
+    func providerPurchaseURL(for variant: PhysicalVariant?) -> String? {
+        guard case .magic = legacyIdentity else { return providerPurchaseURL }
+        return TCGplayerLinkBuilder.url(for: self, variant: variant)?.absoluteString
+    }
     var updatesProviderPurchaseURL: Bool { legacyIdentity?.updatesProviderPurchaseURL ?? false }
     var catalogMetadataThumbnailURL: String? {
         legacyIdentity?.catalogMetadataThumbnailURL ?? thumbnailImageURL?.absoluteString

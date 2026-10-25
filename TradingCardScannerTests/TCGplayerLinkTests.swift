@@ -214,6 +214,30 @@ final class TCGplayerLinkTests: XCTestCase {
         )
     }
 
+    func testMagicSeparateEtchedProductNeverBorrowsOrdinaryProductOrPurchaseURI() throws {
+        func source(_ fields: String) throws -> IdentifiedCard {
+            .magic(try JSONDecoder().decode(ScryfallCard.self, from: Data("""
+            {"id":"printing", "name":"Test", "set":"tst", "set_name":"Test", "collector_number":"1",
+             "lang":"en", "digital":false, "purchase_uris":{"tcgplayer":"https://www.tcgplayer.com/product/100"},
+             \(fields)}
+            """.utf8)))
+        }
+        let separate = try source(#""finishes":["nonfoil","foil","etched"],"tcgplayer_id":100,"tcgplayer_etched_id":200"#)
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: separate, variant: .normal)?.path, "/product/100")
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: separate, variant: .etched)?.path, "/product/200")
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: separate, variant: nil))
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: separate, variant: .reverse))
+        let onlyEtched = try source(#""finishes":["etched"],"tcgplayer_id":null,"tcgplayer_etched_id":200"#)
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: onlyEtched, variant: nil)?.path, "/product/200")
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: onlyEtched, variant: .foil))
+        let shared = try source(#""finishes":["foil","etched"],"tcgplayer_id":100"#)
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: shared, variant: .etched)?.path, "/product/100")
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: shared, variant: nil)?.path, "/product/100")
+        let missingOrdinary = try source(#""finishes":["foil","etched"],"tcgplayer_id":null,"tcgplayer_etched_id":200"#)
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: missingOrdinary, variant: nil))
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: missingOrdinary, variant: .foil)?.path, "/product/100")
+    }
+
     private func browseMagic(tcgplayerID: String) throws -> IdentifiedCard {
         let json = """
         {

@@ -46,6 +46,53 @@ private final class LorcanaPricingProtocol: URLProtocol {
 /// Synthetic physical review evidence exercises contracts, never catalog coverage.
 @MainActor
 final class LorcanaPricingTests: XCTestCase {
+    func testFourSetPricingSampleUsesExactProductNumbersAndFinishLanes() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("Lorcana-set-sample-\(UUID())")
+        defer { LorcanaPricingProtocol.handler = nil; try? FileManager.default.removeItem(at: root) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [LorcanaPricingProtocol.self]
+        let source = LorcanaTCGCSVPriceSource(transport: .init(session: URLSession(configuration: configuration), cacheDirectory: root))
+        let adapter = LorcanaPriceAdapter(registry: catalog.registry, source: source)
+        var groups = Set<Int>()
+        for code in ["1", "2", "3", "4"] {
+            let printing = try XCTUnwrap(physical.manifest.physicalPrintings.filter {
+                $0.providerSetCode == code && ($0.marketMappings?.count ?? 0) == 2
+            }.min { Int($0.identity.footer.collectorNumber)! < Int($1.identity.footer.collectorNumber)! })
+            let mappings = try XCTUnwrap(printing.marketMappings)
+            let first = try XCTUnwrap(mappings.first)
+            groups.insert(first.groupID)
+            let product: [String: Any] = ["productId": first.productID, "categoryId": 71, "groupId": first.groupID,
+                "name": first.productName, "extendedData": [["name": "Number", "value": first.productNumber]]]
+            let products = try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [product]])
+            let rows: [[String: Any]] = mappings.map {
+                ["productId": $0.productID, "subTypeName": $0.providerVariantID,
+                 "marketPrice": $0.finish == .normal ? 12.34 : 56.78]
+            }
+            let prices = try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": rows])
+            LorcanaPricingProtocol.handler = { request in
+                XCTAssertTrue(request.url!.path.hasPrefix("/tcgplayer/71/\(first.groupID)/"))
+                return request.url!.lastPathComponent == "products" ? products : prices
+            }
+            let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: printing.id).card
+            for mapping in mappings {
+                guard case let .price(price) = try await adapter.refreshStoredPrinting(card.providerID, variant: mapping.finish.variant) else {
+                    return XCTFail("Missing mapped quote for Lorcana set \(code) / \(mapping.finish)")
+                }
+                XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(mapping.productID):\(mapping.providerVariantID)")
+                XCTAssertEqual(price.unitMarketPriceUSD, mapping.finish == .normal ? 12.34 : 56.78)
+            }
+            do {
+                _ = try await adapter.refresh(.init(identity: .init(game: .lorcana, printingID: card.providerID,
+                    setID: "different-set", displaySetCode: card.setCode, cardNumber: card.cardNumber,
+                    language: card.language), variant: .normal, pokemonPrintRun: nil, catalogRefreshOverride: nil))
+                XCTFail("Wrong set must not borrow Lorcana set \(code)'s product")
+            } catch PriceQuoteError.identityMismatch {}
+        }
+        XCTAssertEqual(groups.count, 4)
+    }
+
     /// Offline, hash-bound candidate acceptance. The app's bundled production
     /// catalog remains unchanged; stage reviewed inputs in this test workspace.
     private func preparedExpansion() throws -> (LorcanaDiscoveryCatalog, [LorcanaPhysicalPrinting]) {

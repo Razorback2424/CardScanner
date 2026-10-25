@@ -54,7 +54,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     private let gameRegistry: CardGameRegistry
 
     init(
-        client: any ScannedGradedLookupClient = JustTCGV2GradedClient(transport: .shared),
+        client: any ScannedGradedLookupClient = JustTCGV2GradedClient(transport: .shared,
+            magicCardLoader: JustTCGV2GradedClient.loadMagicCard),
         timeout: Duration = .seconds(60),
         timeoutRetryCount: Int = 1,
         credentialsAvailable: Bool? = nil,
@@ -74,12 +75,21 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     ) async -> ScannedGradedOutcome {
         guard gameRegistry.supports(card.game, .gradedPricing) else { return .unavailable }
         guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .unavailable }
+        let knownRun = pokemonPrintRun ?? slab.printedPrintRun
+        let physicalChoices = card.variantEvidence.catalogVariants.filter {
+            !(card.game == .pokemon && knownRun != nil && $0 == .firstEdition)
+        }
+        guard slab.printedFinish != nil || Set(physicalChoices.map(\.id)).count <= 1 else {
+            // Missing sales for another physical finish do not identify the
+            // slab in front of the camera. Keep it unbound until confirmed.
+            return .unavailable
+        }
 
         // The timeout task is created here, after catalog/label resolution has
         // completed. This covers the cold set-directory request plus the card
         // request at the transport's 25-second timeout and the shared pacer's
         // spacing. The resolver runs after save, so this does not hold scanning.
-        let identity = GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun, finish: slab.printedFinish)
+        let identity = GradedCardIdentity(card, pokemonPrintRun: knownRun, finish: slab.printedFinish)
         for attempt in 0...timeoutRetryCount {
             do {
                 let result = try await withThrowingTaskGroup(of: GradedVariantLookupResult.self) { group in
@@ -102,7 +112,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
 
                 switch result {
                 case let .matched(variants):
-                    guard let exact = Self.matchingVariant(in: variants, for: slab, printRun: pokemonPrintRun) else {
+                    guard let exact = Self.matchingVariant(in: variants, for: slab, printRun: knownRun) else {
                         return .gradeNotTracked(GradedMarketCoverage(
                             status: .gradeNotListed,
                             variants: variants,
@@ -150,6 +160,9 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
             ((finish ?? slab.printedFinish).map {
                 GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun, isJapanese: isJapanese)
             } ?? (variant.printing != nil))
+                && ((printRun ?? slab.printedPrintRun).map {
+                    ProductEdition.from($0).admits(printing: variant.printing ?? "")
+                } ?? true)
                 && variant.company == slab.company
                 && normalized(variant.grade.value) == normalized(slab.grade.value)
                 && normalized(variant.grade.qualifier) == normalized(slab.grade.qualifier)

@@ -270,6 +270,66 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")), manifestBefore)
     }
 
+    func testYellowARepairsBundledAndOldOfflineChecklistSlotsWithoutRewritingSource() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("yellow-a-upgrade-\(UUID())")
+        let store = PokemonChecklistStore(root: root)
+        let bundled = await store.bundledSnapshot()
+        let bundle = try XCTUnwrap(bundled)
+        let entry = try XCTUnwrap(bundle.entry(forProviderID: "xya"))
+        let current = try XCTUnwrap(bundle.checklist(for: entry.set.catalogID))
+        let expected: [String: Set<PhysicalVariant>] = [
+            "xya-24a": [.holo], "xya-28a": [.holo], "xya-54a": [.holo], "xya-55a": [.holo],
+            "xya-92a": [.normal, .holo], "xya-107a": [.normal, .holo]
+        ]
+        func assertSlots(_ cards: [CatalogCardSummary], file: StaticString = #filePath, line: UInt = #line) {
+            XCTAssertEqual(cards.count, 8, file: file, line: line)
+            XCTAssertEqual(Set(cards.map(\.providerID)), Set(expected.keys), file: file, line: line)
+            for (id, variants) in expected {
+                let rows = cards.filter { $0.providerID == id }
+                XCTAssertEqual(Set(rows.compactMap(\.masterSetVariant)), variants, file: file, line: line)
+                XCTAssertTrue(rows.allSatisfy { $0.isSoleSlotForCard == (variants.count == 1) }, file: file, line: line)
+                XCTAssertTrue(rows.allSatisfy { !$0.isExpandedMasterSetVariant }, file: file, line: line)
+            }
+        }
+        assertSlots(current)
+        var seen = Set<String>()
+        let old = current.compactMap { row -> CatalogCardSummary? in
+            guard seen.insert(row.providerID).inserted else { return nil }
+            var value = row
+            value.masterSetVariant = .normal
+            value.isExpandedMasterSetVariant = false
+            value.isSoleSlotForCard = true
+            return value
+        }
+        XCTAssertEqual(old.count, 6)
+        let manifest = PokemonChecklistSnapshotManifest(schemaVersion: bundle.manifest.schemaVersion,
+            rulesVersion: bundle.manifest.rulesVersion, generatedAt: bundle.manifest.generatedAt,
+            directoryFingerprint: bundle.manifest.directoryFingerprint, entries: [entry])
+        try await store.replace(.init(manifest: manifest, checklists: [entry.set.id: old]))
+        let resource = root.appendingPathComponent(entry.resource)
+        let before = try Data(contentsOf: resource)
+        let manifestURL = root.appendingPathComponent("manifest.json")
+        let manifestBefore = try Data(contentsOf: manifestURL)
+        let upgraded = PokemonChecklistStore(root: root)
+        for _ in 0..<2 {
+            let loaded = await upgraded.mergedChecklist(for: entry.set.catalogID)
+            assertSlots(try XCTUnwrap(loaded))
+            let entries = await upgraded.mergedEntries()
+            let repaired = try XCTUnwrap(entries.first { $0.providerID == "xya" })
+            XCTAssertEqual(repaired.set.cardCount, 8)
+            XCTAssertEqual(repaired.standardSlotCount, 8)
+            XCTAssertEqual(repaired.expandedSlotCount, 8)
+            XCTAssertEqual(repaired.officialCount, entry.officialCount)
+            XCTAssertEqual(repaired.providerFingerprint, entry.providerFingerprint)
+            XCTAssertEqual(repaired.providerProbeFingerprint, entry.providerProbeFingerprint)
+            let snapshot = await upgraded.mergedSnapshot()
+            assertSlots(try XCTUnwrap(snapshot?.checklist(for: entry.set.catalogID)))
+            await upgraded.discardDecodedChecklists()
+        }
+        XCTAssertEqual(try Data(contentsOf: resource), before)
+        XCTAssertEqual(try Data(contentsOf: manifestURL), manifestBefore)
+    }
+
     func testNilPrintRunSoleStampedHoloNeedsExactObjectQuoteAndProduct() throws {
         func card(extra: [[String: Any]] = [], product: Int? = 123, quoteProduct: Int = 123,
                   quote: Bool = true, normal: Bool = false, listing: String = "holofoil") throws -> IdentifiedCard {

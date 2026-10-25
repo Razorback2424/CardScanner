@@ -12,6 +12,125 @@ private actor DirectoryLoadCounter {
 /// Every case here is taken from the live coverage spike. The rejections are
 /// real wrong answers the vendor returned, not invented ones.
 final class ProductCatalogIdentityTests: XCTestCase {
+    func testCardLevelReviewedMagicAliasesResolveOnlyExactProducts() throws {
+        struct Proof: Decodable {
+            struct Card: Decodable { let name, number, productID: String }
+            struct Case: Decodable {
+                let code, catalogName, vendorName, groupID: String
+                let cards, products: [Card]
+            }
+            let cases: [Case]
+        }
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "magic-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let proof = try JSONDecoder().decode(Proof.self, from: Data(contentsOf: url))
+        let directoryURL = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "vendor-groups", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let inventory = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: directoryURL)) as? [String: Any])
+        let groups = try XCTUnwrap(inventory["groups"] as? [[String: Any]])
+        let directory = ProductSetDirectory(sets: try groups.filter { $0["game"] as? String == "magic" }.map {
+            (id: try XCTUnwrap($0["id"] as? String), name: try XCTUnwrap($0["name"] as? String))
+        })
+        var failures: [String] = []
+        XCTAssertEqual(proof.cases.count, 10)
+        XCTAssertEqual(proof.cases.reduce(0) { $0 + $1.cards.count }, 594)
+        for entry in proof.cases {
+            if directory.slug(forCatalogSetName: entry.catalogName, game: .magic) != entry.groupID {
+                failures.append("\(entry.code): unresolved alias")
+            }
+            // IDs are opaque TCGplayer group/product IDs in this fixture, not
+            // asserted JustTCG slugs/UUIDs. Test real names and printed numbers
+            // against every product in the independently captured group.
+            let candidates = try entry.products.map { product in
+                try JSONDecoder().decode(JustTCGV2Card.self, from: JSONSerialization.data(withJSONObject: [
+                    "id": product.productID, "name": product.name, "number": product.number,
+                    "game": ["id": "magic-the-gathering"], "set": ["id": entry.groupID, "name": entry.vendorName]
+                ]))
+            }
+            for card in entry.cards {
+                let identity = GradedCardIdentity(name: card.name, setName: entry.catalogName, collectorNumber: card.number)
+                let matches = candidates.filter { identity.matches($0, game: .magic, expectedSetSlug: entry.groupID) }
+                if matches.map(\.id) != [card.productID] {
+                    failures.append("\(entry.code) / \(card.name) \(card.number): nonunique or wrong product")
+                }
+            }
+        }
+        XCTAssertEqual(failures, [], "Aliases need full card-level membership, collector-number and uniqueness proof")
+    }
+
+    func testSystematicReviewedSetAliasesResolveWithoutMergingNeighboringReleases() throws {
+        struct Inventory: Decodable {
+            struct Group: Decodable { let game, id, name: String }
+            let groups: [Group]
+        }
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "vendor-groups", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let groups = try JSONDecoder().decode(Inventory.self, from: Data(contentsOf: url)).groups
+        let magic = ProductSetDirectory(sets: groups.filter { $0.game == "magic" }.map { (id: $0.id, name: Optional($0.name)) })
+        for (name, id) in [
+            ("Tenth Edition", "1"), ("Seventh Edition", "2"), ("Eighth Edition", "3"), ("Ninth Edition", "4"),
+            ("Limited Edition Alpha", "7"), ("Limited Edition Beta", "17"),
+            ("Magic 2010", "68"), ("Magic 2011", "69"), ("Magic 2012", "70"),
+            ("Magic 2013", "364"), ("Magic 2014", "1113"), ("Magic 2015", "1293"),
+            ("Commander 2011", "25"), ("Midnight Hunt Commander", "2893"),
+            ("New Capenna Commander", "3031"), ("Neon Dynasty Commander", "2967"), ("Crimson Vow Commander", "2900"),
+            ("The Brothers' War Retro Artifacts", "17665"), ("Game Night", "2359"),
+            ("Game Night 2019", "2562"), ("Game Night: Free-for-All", "3129"),
+            ("The Lord of the Rings: Tales of Middle-earth", "23019")
+        ] {
+            XCTAssertEqual(magic.slug(forCatalogSetName: name, game: .magic), id, name)
+        }
+        let pokemon = ProductSetDirectory(sets: groups.filter { $0.game == "pokemon" }.map { (id: $0.id, name: Optional($0.name)) })
+        XCTAssertEqual(pokemon.slug(forCatalogSetName: "Scarlet & Violet Energy", game: .pokemon), "24382")
+        XCTAssertEqual(pokemon.slug(forCatalogSetName: "Pokémon Rumble", game: .pokemon), "1433")
+        for (left, right) in [
+            ("Magic 2010", "Magic 2010 (M11)"), ("Limited Edition Alpha", "Limited Edition Beta"),
+            ("Game Night", "Game Night 2019"), ("New Capenna Commander", "Streets of New Capenna"),
+            ("Duel Decks Anthology: Elves vs. Goblins", "Duel Decks: Elves vs. Goblins"),
+            ("Friday Night Magic 2000", "FNM Promos"),
+            ("GRN Guild Kit", "RNA Guild Kit"), ("GRN Guild Kit", "Guilds of Ravnica"),
+            ("Time Spiral Timeshifted", "Time Spiral"), ("Universes Within", "Secret Lair Drop Series"),
+            ("Marvel Universe", "Marvel's Spider-Man"), ("Ugin's Fate", "Fate Reforged"),
+            ("Modern Event Deck 2014", "Modern Masters 2015")
+        ] {
+            XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName(left, game: .magic),
+                CatalogIdentityNormalization.canonicalSetName(right, game: .magic), "\(left) / \(right)")
+        }
+    }
+
+    func testRumbleAliasMatchesEveryIndependentlyCapturedCatalogCard() throws {
+        try assertPokemonWholeSetProof("rumble-proof", cardCount: 16)
+    }
+
+    func testCreatorPackAliasMatchesAllFiveCardsAndExcludesTheSealedPack() throws {
+        try assertPokemonWholeSetProof("creator-pack-proof", cardCount: 5)
+        XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName("Poké Card Creator Pack", game: .pokemon),
+            CatalogIdentityNormalization.canonicalSetName("EX Hidden Legends", game: .pokemon))
+    }
+
+    private func assertPokemonWholeSetProof(_ resource: String, cardCount: Int, file: StaticString = #filePath, line: UInt = #line) throws {
+        struct Proof: Decodable {
+            struct Card: Decodable { let name, number: String }
+            let catalogName, vendorName, groupID: String
+            let cards, products: [Card]
+        }
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: resource, withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let proof = try JSONDecoder().decode(Proof.self, from: Data(contentsOf: url))
+        let directory = ProductSetDirectory(sets: [(id: proof.groupID, name: proof.vendorName)])
+        let resolved = try XCTUnwrap(directory.slug(forCatalogSetName: proof.catalogName, game: .pokemon))
+        XCTAssertEqual(resolved, proof.groupID)
+        XCTAssertEqual(proof.cards.count, cardCount, file: file, line: line)
+        for card in proof.cards {
+            let matches = proof.products.filter {
+                ProductCatalogIdentity.isSameCard(requestedName: card.name, requestedNumber: card.number,
+                    requestedSetSlug: resolved, candidateName: $0.name, candidateNumber: $0.number,
+                    candidateSetSlug: proof.groupID)
+            }
+            XCTAssertEqual(matches.count, 1, card.name)
+        }
+    }
+
 
     func testSetDirectoryProviderCachesPerGameUntilTTL() async throws {
         let provider = ProductSetDirectoryProvider(ttl: 60)
@@ -45,6 +164,64 @@ final class ProductCatalogIdentityTests: XCTestCase {
     }
 
     // MARK: - Set slugs
+
+    func testEnglish151SetAliasResolvesThePublishedVendorSlug() {
+        let slug = "sv-scarlet-violet-151-pokemon"
+        let directory = ProductSetDirectory(sets: [
+            (id: slug, name: "SV: Scarlet & Violet 151")
+        ])
+
+        for name in ["151", "SV: 151", "Scarlet & Violet—151", "SV: Scarlet & Violet 151"] {
+            XCTAssertEqual(ProductCatalogIdentity.setSlug(
+                setName: name, japaneseSetID: nil, game: .pokemon, directory: directory
+            ), slug, name)
+            XCTAssertEqual(CatalogIdentityNormalization.canonicalSetName(name, game: .pokemon), "151")
+        }
+        XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName("Scarlet & Violet", game: .pokemon), "151")
+        XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName("Pokemon Card 151", game: .pokemon), "151")
+    }
+
+    func testEnglish151AliasRefusesAmbiguousVendorSets() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "vendor-151-one", name: "SV: Scarlet & Violet 151"),
+            (id: "vendor-151-two", name: "Scarlet & Violet—151")
+        ])
+        XCTAssertNil(ProductCatalogIdentity.setSlug(
+            setName: "151", japaneseSetID: nil, game: .pokemon, directory: directory
+        ))
+    }
+
+    func testMagicCommanderAliasesKeepMainExpansionsAndGamesDistinct() {
+        for (commander, expansion) in [
+            ("Forgotten Realms Commander", "Adventures in the Forgotten Realms"),
+            ("Tales of Middle-earth Commander", "The Lord of the Rings: Tales of Middle-earth"),
+            ("Warhammer 40,000 Commander", "Universes Beyond: Fallout")
+        ] {
+            XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName(commander, game: .magic),
+                CatalogIdentityNormalization.canonicalSetName(expansion, game: .magic))
+        }
+        XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName("Warhammer 40,000 Commander", game: .pokemon),
+            CatalogIdentityNormalization.canonicalSetName("Universes Beyond: Warhammer 40,000", game: .pokemon))
+    }
+
+    func testPokemonEraAliasesKeepExpansionsAndPromosDistinct() {
+        for (catalog, other) in [
+            ("Sword & Shield", "Base Set"),
+            ("Evolving Skies", "SWSH08: Fusion Strike"),
+            ("Sun & Moon", "SM - Cosmic Eclipse"),
+            ("Sun & Moon", "Base Set"),
+            ("Sun & Moon", "SM Promos"),
+            ("Paldea Evolved", "SV04: Paradox Rift"),
+            ("Paldea Evolved", "SVunknown: Paldea Evolved"),
+            ("XY", "XY - Roaring Skies")
+        ] {
+            XCTAssertNotEqual(CatalogIdentityNormalization.canonicalSetName(catalog, game: .pokemon),
+                CatalogIdentityNormalization.canonicalSetName(other, game: .pokemon), "\(catalog) / \(other)")
+        }
+        XCTAssertEqual(CatalogIdentityNormalization.canonicalSetName("SM Promos", game: .pokemon), "sm promo")
+        XCTAssertEqual(CatalogIdentityNormalization.canonicalSetName("SWSH Black Star Promos", game: .pokemon),
+            "sword and shield promo")
+    }
 
     /// Their Japanese slugs are `<tcgdex-ja-id>-<name>-pokemon-japan`, so the id
     /// already resolved for the catalog is an exact key. Verified unique across

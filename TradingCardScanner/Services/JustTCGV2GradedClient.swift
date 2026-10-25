@@ -9,11 +9,10 @@ import Foundation
 ///
 /// ## Why this does not batch yet
 ///
-/// The batching research establishes `POST /v1/cards` for v1 variants. It does
-/// **not** establish that a v2 graded variant UUID may be passed as `variantId`
-/// to that endpoint, nor that `/v2/cards` exposes its own POST batching. Until
-/// the contract slice answers that, graded refresh groups by underlying card and
-/// asks once per card with `graded=only`.
+/// v2 batch supports known slab IDs but does not accept graded discovery
+/// filters and returns only priced graded variants. This path also needs to
+/// distinguish a known card without slab history, so it groups by underlying
+/// card and uses GET with `graded=only`.
 ///
 /// The interface deliberately hides which of those it is doing, so moving graded
 /// work onto batching later changes this file and nothing else.
@@ -143,9 +142,16 @@ struct GradedCardIdentity: Hashable, Sendable {
             imported: projection.name,
             catalog: candidateName
         ) else { return false }
-        guard CatalogIdentityNormalization.canonicalSetName(projection.setName, game: game)
-            == CatalogIdentityNormalization.canonicalSetName(card.identitySetName ?? "", game: game)
-        else { return false }
+        // Once the vendor directory has resolved the set, the exact game and
+        // set ID checked above are authoritative. Rechecking the catalog's
+        // display name against the vendor's decorated label rejects valid
+        // sets (XY - Roaring Skies, bonus sheets, Japanese abbreviations).
+        // An unscoped fallback still needs the strict set-name comparison.
+        if expectedSetSlug == nil {
+            guard CatalogIdentityNormalization.canonicalSetName(projection.setName, game: game)
+                == CatalogIdentityNormalization.canonicalSetName(card.identitySetName ?? "", game: game)
+            else { return false }
+        }
 
         let requestedNumber = projection.collectorNumber.trimmingCharacters(in: .whitespacesAndNewlines)
         let candidateNumber = card.identityPrintedNumber?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -193,21 +199,214 @@ enum GradedVariantLookupResult: Equatable, Sendable {
     case localIdentityUnresolved
 }
 
+protocol GradedProductIdentity: Sendable {
+    var productIDs: [String] { get }
+    func matches(_ card: JustTCGV2Card) -> Bool
+    func admits(_ variant: JustTCGVariant, productID: String?, requestedFinish: PhysicalVariant?) -> Bool
+}
+
+/// Derived from a freshly resolved catalog printing, never from an imported
+/// marketplace handle. The product ID remains tied to the source UUID, full
+/// collector identifier, release, language and available physical finishes.
+struct MagicGradedProductIdentity: GradedProductIdentity {
+    let catalogID: String
+    let productIDs: [String]
+    var productID: String? { productIDs.count == 1 ? productIDs.first : nil }
+    private let names: [String]
+    private let finishesByProduct: [String: Set<String>]
+
+    private static func catalogFinishID(_ finish: PhysicalVariant) -> String {
+        // Legacy CSV exports may store Magic nonfoil as Normal; both already
+        // project to the same vendor printing in ProductFinish.
+        finish == .normal ? PhysicalVariant.nonfoil.id : finish.id
+    }
+
+    init(identity: GradedCardIdentity, card: ScryfallCard, now: Date = .now) throws {
+        guard identity.pokemonPrintRun == nil,
+              let requestedID = identity.catalogID, UUID(uuidString: requestedID) != nil,
+              card.id.caseInsensitiveCompare(requestedID) == .orderedSame,
+              card.object == "card",
+              CatalogIdentityNormalization.canonicalText(identity.name) == CatalogIdentityNormalization.canonicalText(card.name),
+              CatalogIdentityNormalization.canonicalSetName(identity.setName, game: .magic)
+                == CatalogIdentityNormalization.canonicalSetName(card.setName, game: .magic),
+              ProductCatalogIdentity.numbersMatch(identity.collectorNumber, card.collectorNumber)
+        else { throw ScryfallError.identityMismatch }
+        guard card.language == "en", !card.digital, card.games?.contains("paper") == true,
+              card.oversized == false, let layout = card.layout,
+              !ScryfallService.unsupportedLayouts.contains(layout),
+              let released = card.releaseDate, released <= now,
+              let available = card.finishes, !available.isEmpty,
+              available.allSatisfy({ ["nonfoil", "foil", "etched"].contains($0) }),
+              Set(available).count == available.count,
+              identity.finish.map({ available.contains(Self.catalogFinishID($0)) }) ?? true
+        else { throw ScryfallError.unsupportedPrinting }
+        catalogID = card.id
+        var products: [String: Set<String>] = [:]
+        var missingProduct = false
+        for finish in identity.finish.map({ [Self.catalogFinishID($0)] }) ?? available {
+            guard let id = card.tcgplayerProductID(for: PhysicalVariant.resolving(finish)).map(String.init) else {
+                missingProduct = true
+                continue
+            }
+            products[id, default: []].insert(finish)
+        }
+        // A partial product projection must not claim complete grade discovery.
+        // Retain the strict legacy search if any requested finish lacks an ID.
+        finishesByProduct = missingProduct ? [:] : products
+        productIDs = finishesByProduct.keys.sorted()
+        // Only provider-declared faces may answer a one-face vendor title.
+        names = [card.name] + (card.cardFaces ?? []).compactMap(\.name)
+    }
+
+    func matches(_ card: JustTCGV2Card) -> Bool {
+        guard let productID = card.externalIDs?.tcgplayer, productIDs.contains(productID),
+              card.game?.id == ProductCatalogIdentity.Game.magic.rawValue,
+              let name = card.name, !(card.id ?? card.uuid ?? "").isEmpty,
+              names.contains(where: { CatalogIdentityNormalization.namesMatch(imported: $0, catalog: name) })
+        else { return false }
+        if let sourceID = card.externalIDs?.scryfall,
+           sourceID.caseInsensitiveCompare(catalogID) != .orderedSame { return false }
+        return true
+    }
+
+    func admits(_ variant: JustTCGVariant, productID: String? = nil, requestedFinish: PhysicalVariant?) -> Bool {
+        guard variant.type?.caseInsensitiveCompare("graded") == .orderedSame,
+              variant.language == nil || ["en", "english"].contains(variant.language!.lowercased()),
+              let printing = variant.printing,
+              let finishes = (productID ?? self.productID).flatMap({ finishesByProduct[$0] }) else { return false }
+        if let requestedFinish, !finishes.contains(Self.catalogFinishID(requestedFinish)) { return false }
+        let allowed = requestedFinish.map { [$0] } ?? finishes.map(PhysicalVariant.resolving)
+        return allowed.contains { GradedCardIdentity.matchesFinish($0, printing: printing) }
+    }
+}
+
+/// Reviewed subset identities, not aliases equating a TCGdex set with its
+/// broader vendor group. Whole-source receipts and native product replays are
+/// pinned in pokemon-subset-product-proof.json and the Yellow A finish proof.
+/// Entries are standard English physical objects without edition or stamp ambiguity.
+struct ReviewedPokemonProductIdentity: GradedProductIdentity {
+    private struct Entry: Sendable {
+        let catalogID, name, setName, printedNumber: String
+        let productID: Int
+        var finish: PhysicalVariant = .holo
+    }
+
+    private static let entries: [Entry] = {
+        let unown: [(String, Int)] = [
+            ("!", 90166), ("%3F", 90167), ("A", 90168), ("B", 90169), ("C", 90170),
+            ("D", 90171), ("E", 90172), ("F", 90173), ("G", 90174), ("H", 90175),
+            ("I", 90176), ("J", 90177), ("K", 90178), ("L", 90179), ("M", 90180),
+            ("N", 90181), ("O", 90182), ("P", 90183), ("Q", 90184), ("R", 90185),
+            ("S", 90186), ("T", 90187), ("U", 90188), ("V", 90189), ("W", 90190),
+            ("X", 90191), ("Y", 90192), ("Z", 90193)
+        ]
+        let futsal: [(String, String, Int)] = [
+            ("1", "Pikachu on the Ball", 223761), ("2", "Eevee on the Ball", 223760),
+            ("3", "Grookey on the Ball", 227413), ("4", "Scorbunny on the Ball", 248016),
+            ("5", "Sobble on the Ball", 248015)
+        ]
+        return unown.map { local, product in
+            Entry(catalogID: "exu-" + local, name: "Unown", setName: "Unseen Forces Unown Collection",
+                printedNumber: (local == "%3F" ? "?" : local) + "/28", productID: product)
+        } + futsal.map { local, name, product in
+            Entry(catalogID: "fut2020-" + local, name: name, setName: "Pokémon Futsal 2020",
+                printedNumber: local + "/5", productID: product)
+        } + [
+            Entry(catalogID: "xya-24a", name: "M Manectric-EX", setName: "Yellow A Alternate", printedNumber: "24a/119", productID: 131696),
+            Entry(catalogID: "xya-28a", name: "Jolteon-EX", setName: "Yellow A Alternate", printedNumber: "28a/83", productID: 131697),
+            Entry(catalogID: "xya-54a", name: "Zygarde-EX", setName: "Yellow A Alternate", printedNumber: "54a/124", productID: 131698),
+            Entry(catalogID: "xya-55a", name: "M Lucario-EX", setName: "Yellow A Alternate", printedNumber: "55a/111", productID: 131695),
+            Entry(catalogID: "xya-92a", name: "Trainers’ Mail", setName: "Yellow A Alternate", printedNumber: "92a/108", productID: 133815, finish: .normal),
+            Entry(catalogID: "xya-92a", name: "Trainers’ Mail", setName: "Yellow A Alternate", printedNumber: "92a/108", productID: 133816),
+            Entry(catalogID: "xya-107a", name: "Professor Sycamore", setName: "Yellow A Alternate", printedNumber: "107a/122", productID: 133814, finish: .normal),
+            Entry(catalogID: "xya-107a", name: "Professor Sycamore", setName: "Yellow A Alternate", printedNumber: "107a/122", productID: 133813)
+        ]
+    }()
+    private static let byID = Dictionary(grouping: entries, by: \.catalogID)
+    static var catalogIDs: Set<String> { Set(byID.keys) }
+
+    private let selectedEntries: [Entry]
+    private let printRun: PokemonPrintRun?
+    var productIDs: [String] { selectedEntries.map { String($0.productID) }.sorted() }
+
+    static func productID(for card: TCGdexCard, variant: PhysicalVariant, printRun: PokemonPrintRun?) -> Int? {
+        guard let identity = try? Self(identity: .init(name: card.name, setName: card.set.name,
+            collectorNumber: card.localId, catalogID: card.id, pokemonPrintRun: printRun, finish: variant)),
+              identity.productIDs.count == 1 else { return nil }
+        return identity.productIDs.first.flatMap(Int.init)
+    }
+
+    static func printedNumber(for card: TCGdexCard) -> String? {
+        guard let identity = try? Self(identity: .init(name: card.name, setName: card.set.name,
+            collectorNumber: card.localId, catalogID: card.id)) else { return nil }
+        let numbers = Set(identity.selectedEntries.map(\.printedNumber))
+        return numbers.count == 1 ? numbers.first : nil
+    }
+
+    init?(identity: GradedCardIdentity) throws {
+        guard let id = identity.catalogID, let records = Self.byID[id], let entry = records.first else { return nil }
+        var number = identity.collectorNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        // TCGdex's literal provider key is percent-encoded. Translate only this
+        // reviewed card's local symbol, preserving any stated denominator.
+        if id == "exu-%3F", number.lowercased() == "%3f" || number.lowercased().hasPrefix("%3f/") {
+            number = "?" + number.dropFirst(3)
+        }
+        if id.hasPrefix("xya-") {
+            // Only these reviewed letter-suffix cards need the vendor's padded
+            // numeric prefix reconciled; suffixes and denominators stay intact.
+            number = number.replacingOccurrences(of: #"^0+([0-9]+[a-zA-Z])(?=/|$)"#,
+                with: "$1", options: .regularExpression)
+        }
+        guard CatalogIdentityNormalization.canonicalText(identity.name) == CatalogIdentityNormalization.canonicalText(entry.name),
+              CatalogIdentityNormalization.canonicalSetName(identity.setName, game: .pokemon)
+                == CatalogIdentityNormalization.canonicalSetName(entry.setName, game: .pokemon),
+              ProductCatalogIdentity.numbersMatch(number, entry.printedNumber),
+              identity.finish.map({ finish in records.contains { $0.finish == finish } }) ?? true,
+              identity.pokemonPrintRun == nil || identity.pokemonPrintRun == .unlimited
+        else { throw TCGdexError.identityMismatch }
+        selectedEntries = records.filter { identity.finish == nil || $0.finish == identity.finish }
+        printRun = identity.pokemonPrintRun
+    }
+
+    func matches(_ card: JustTCGV2Card) -> Bool {
+        selectedEntries.contains { entry in card.externalIDs?.tcgplayer == String(entry.productID)
+            && card.game?.id == ProductCatalogIdentity.Game.pokemon.rawValue
+            && !(card.id ?? card.uuid ?? "").isEmpty
+            && card.name.map { CatalogIdentityNormalization.namesMatch(imported: entry.name, catalog: $0) } == true }
+    }
+
+    func admits(_ variant: JustTCGVariant, productID: String?, requestedFinish: PhysicalVariant?) -> Bool {
+        guard let entry = selectedEntries.first(where: { String($0.productID) == productID }),
+              requestedFinish == nil || requestedFinish == entry.finish,
+              variant.type?.caseInsensitiveCompare("graded") == .orderedSame,
+              variant.language == nil || ["en", "english"].contains(variant.language!.lowercased()) else { return false }
+        return GradedCardIdentity.matchesFinish(entry.finish, printing: variant.printing, printRun: printRun)
+    }
+}
+
 struct JustTCGV2GradedClient: Sendable {
     static let apiVersion = "v2"
 
     private let transport: JustTCGTransport
     private let setDirectoryProvider: ProductSetDirectoryProvider
     private let maximumPages: Int
+    typealias MagicCardLoader = @Sendable (String) async throws -> ScryfallCard
+    private let magicCardLoader: MagicCardLoader?
+
+    static func loadMagicCard(_ id: String) async throws -> ScryfallCard {
+        try await ScryfallService().fetchCard(id: id)
+    }
 
     init(
         transport: JustTCGTransport,
         setDirectoryProvider: ProductSetDirectoryProvider = .shared,
-        maximumPages: Int = 3
+        maximumPages: Int = 3,
+        magicCardLoader: MagicCardLoader? = nil
     ) {
         self.transport = transport
         self.setDirectoryProvider = setDirectoryProvider
         self.maximumPages = max(1, maximumPages)
+        self.magicCardLoader = magicCardLoader
     }
 
     /// Keep the outgoing query testable as a value. A missing set is a
@@ -216,6 +415,7 @@ struct JustTCGV2GradedClient: Sendable {
         identity: GradedCardIdentity,
         game: CardGame,
         setSlug: String?,
+        verifiedProductID: String? = nil,
         companies: Set<GradingCompany> = [],
         grades: Set<String> = []
     ) -> [(String, String)] {
@@ -233,7 +433,10 @@ struct JustTCGV2GradedClient: Sendable {
             // whether any returned card is the requested one.
             ("limit", String(JustTCGQuota.maximumPageSize))
         ]
-        if let setSlug {
+        if let verifiedProductID {
+            query.removeAll { $0.0 == "q" }
+            query.insert(("tcgplayer_id", verifiedProductID), at: 1)
+        } else if let setSlug {
             query.insert(("set", setSlug), at: 1)
         }
         if companies.count == 1,
@@ -322,8 +525,9 @@ struct JustTCGV2GradedClient: Sendable {
     /// surcharge and returns data the raw path already has. One card-level
     /// response also reveals which other grades JustTCG currently lists.
     ///
-    /// The variants are found by set and name, not by `cardId`. v2 **ignores**
-    /// that parameter and answers with a browse:
+    /// Exact Magic printings and reviewed Pokémon subsets use the documented
+    /// `tcgplayer_id`, checked against returned external_ids. Others use set/name, not the
+    /// legacy camelCase `cardId`. v2 ignores that parameter and browses:
     /// asking for `cardId=base1-4` returns twenty arbitrary graded cards from
     /// across the game — Charizard Star, Shining Celebi, Rayquaza VMAX — and
     /// nothing in the response says it was not a hit. The existing note that a
@@ -344,69 +548,100 @@ struct JustTCGV2GradedClient: Sendable {
         guard let vendorGame = identity.vendorGame(for: game) else {
             throw CardGameSupportError.unsupportedGame(game)
         }
-        let directory: ProductSetDirectory
-        do {
-            directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
-                let response: GradedSetsResponse = try await transport.get(
-                    "v1/sets", query: [("game", vendorGame.rawValue)], lane: lane
-                )
-                return ProductSetDirectory(
-                    sets: response.data.compactMap { set in
-                        set.id.map { (id: $0, name: set.name) }
-                    }
-                )
-            }
-        } catch let error as JustTCGTransport.TransportError {
-            switch error {
-            case .budgetReached, .monthlyBudgetReached: return .incompleteSearch
-            default: throw error
-            }
-        }
-        let setSlug = Self.resolvedSetSlug(
-            identity: identity,
-            game: game,
-            directory: directory
-        )
-        if identity.pokemonPrintRun != nil, setSlug == nil {
-            // A known print run without a trustworthy vendor set projection is
-            // ambiguous. Do not issue a browse request whose first result could
-            // become an authoritative slab binding.
-            return .localIdentityUnresolved
-        }
-        let query = Self.requestQuery(
-            identity: identity,
-            game: game,
-            setSlug: setSlug,
-            companies: companies,
-            grades: grades
-        )
-
-        var cards: [JustTCGV2Card] = []
-        var cursor: String?
-        var visited = Set<String>()
-        for pageIndex in 0..<maximumPages {
-            try Task.checkCancellation()
-            var pageQuery = query
-            if let cursor { pageQuery.append(("cursor", cursor)) }
-            let page: (value: JustTCGV2CardsResponse, link: String?)
+        var exactProduct: (any GradedProductIdentity)?
+        if game == .pokemon {
             do {
-                page = try await transport.getPage("v2/cards", query: pageQuery, lane: lane)
+                exactProduct = try ReviewedPokemonProductIdentity(identity: identity)
+            } catch TCGdexError.identityMismatch {
+                return .localIdentityUnresolved
+            }
+        }
+        if game == .magic, let id = identity.catalogID, UUID(uuidString: id) != nil,
+           let magicCardLoader {
+            do {
+                let source = try await magicCardLoader(id)
+                try Task.checkCancellation()
+                let verified = try MagicGradedProductIdentity(identity: identity, card: source)
+                if !verified.productIDs.isEmpty { exactProduct = verified }
+            } catch ScryfallError.identityMismatch {
+                return .localIdentityUnresolved
+            } catch ScryfallError.unsupportedPrinting {
+                return .localIdentityUnresolved
+            } catch ScryfallError.cardNotFound {
+                return .localIdentityUnresolved
+            }
+        }
+        let setSlug: String?
+        if exactProduct != nil {
+            // A product spans vendor grouping conventions; a display-name set
+            // filter can exclude this exact printing (anthologies, promos).
+            setSlug = nil
+        } else {
+            let directory: ProductSetDirectory
+            do {
+                directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
+                    let response: GradedSetsResponse = try await transport.get(
+                        "v1/sets", query: [("game", vendorGame.rawValue)], lane: lane
+                    )
+                    return ProductSetDirectory(sets: response.data.compactMap { set in
+                        set.id.map { (id: $0, name: set.name) }
+                    })
+                }
             } catch let error as JustTCGTransport.TransportError {
                 switch error {
                 case .budgetReached, .monthlyBudgetReached: return .incompleteSearch
                 default: throw error
                 }
             }
-            cards.append(contentsOf: page.value.data)
-            do { cursor = try Self.nextCursor(from: page.link) }
-            catch { return .incompleteSearch }
-            guard let cursor else { break }
-            guard visited.insert(cursor).inserted, pageIndex + 1 < maximumPages else { return .incompleteSearch }
+            setSlug = Self.resolvedSetSlug(identity: identity, game: game, directory: directory)
+        }
+        if identity.pokemonPrintRun != nil, setSlug == nil, exactProduct == nil {
+            // A known print run without a trustworthy vendor set projection is
+            // ambiguous. Do not issue a browse request whose first result could
+            // become an authoritative slab binding.
+            return .localIdentityUnresolved
+        }
+        var cards: [JustTCGV2Card] = []
+        let productQueries: [String?] = exactProduct?.productIDs.map(Optional.some) ?? [nil]
+        for productID in productQueries {
+            let query = Self.requestQuery(identity: identity, game: game, setSlug: setSlug,
+                verifiedProductID: productID, companies: companies, grades: grades)
+            var productCards: [JustTCGV2Card] = []
+            var cursor: String?
+            var visited = Set<String>()
+            productPages: for pageIndex in 0..<maximumPages {
+                try Task.checkCancellation()
+                var pageQuery = query
+                if let cursor { pageQuery.append(("cursor", cursor)) }
+                let page: (value: JustTCGV2CardsResponse, link: String?)
+                do {
+                    page = try await transport.getPage("v2/cards", query: pageQuery, lane: lane)
+                } catch let error as JustTCGTransport.TransportError {
+                    switch error {
+                    case .budgetReached, .monthlyBudgetReached: return .incompleteSearch
+                    case .badResponse(status: 404) where productID != nil && pageIndex == 0:
+                        break productPages
+                    default: throw error
+                    }
+                }
+                productCards.append(contentsOf: page.value.data)
+                do { cursor = try Self.nextCursor(from: page.link) }
+                catch { return .incompleteSearch }
+                guard let cursor else { break }
+                guard visited.insert(cursor).inserted, pageIndex + 1 < maximumPages else { return .incompleteSearch }
+            }
+            if let exactProduct, let productID {
+                let exact = productCards.filter { $0.externalIDs?.tcgplayer == productID && exactProduct.matches($0) }
+                guard exact.count <= 1 else { return .incompleteSearch }
+                cards.append(contentsOf: exact)
+            } else {
+                cards.append(contentsOf: productCards)
+            }
         }
 
         // Only cards that are demonstrably the one asked for.
         let matchingCards = cards.filter {
-            identity.matches($0, game: game, expectedSetSlug: setSlug)
+            exactProduct?.matches($0) ?? identity.matches($0, game: game, expectedSetSlug: setSlug)
         }
         var variants: [GradedVariant] = []
         // Keep incompatible finish evidence visible to final selection. A card
@@ -416,12 +651,16 @@ struct JustTCGV2GradedClient: Sendable {
             pokemonPrintRun: identity.pokemonPrintRun)
         for card in matchingCards {
             for variant in card.variants ?? [] {
-                guard cardIdentity.matches(
+                let matchesVariant = exactProduct.map {
+                    $0.admits(variant, productID: card.externalIDs?.tcgplayer, requestedFinish: nil)
+                }
+                    ?? cardIdentity.matches(
                         card,
                         variant: variant,
                         game: game,
                         expectedSetSlug: setSlug
-                    ),
+                    )
+                guard matchesVariant,
                       let id = variant.variantId,
                       let grading = variant.grading,
                       let company = grading.gradingCompany else {
@@ -445,6 +684,7 @@ struct JustTCGV2GradedClient: Sendable {
                 ))
             }
         }
+        if exactProduct != nil, Set(variants.map(\.id)).count != variants.count { return .incompleteSearch }
         if !variants.isEmpty { return .matched(variants) }
         return matchingCards.isEmpty
             ? .noProductMatch

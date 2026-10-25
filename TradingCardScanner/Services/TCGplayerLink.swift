@@ -51,14 +51,18 @@ enum TCGplayerLinkBuilder {
         case .none: return nil
         case let .magic(magic):
             return productURL(
-                productID: magic.tcgplayerID.map(String.init),
+                productID: magic.tcgplayerProductID(for: variant).map(String.init),
                 variantID: variant?.id,
                 game: .magic
-            ) ?? providerURL(magic.purchaseURIs?.tcgplayer?.absoluteString)
+            ) ?? providerURL(magic.tcgplayerPurchaseURI(for: variant)?.absoluteString)
         case let .pokemon(pokemon, _):
             // TCGdex's ordinary product identity must not be used for a
             // Shadowless virtual set, whose marketplace identity is distinct.
             guard pokemonPrintRun != .shadowless else { return nil }
+            if pokemon.set.id == "xya", let variant,
+               let id = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun) {
+                return productURL(productID: String(id), variantID: variant.id, game: .pokemon)
+            }
             let selected = pokemonPrintRun == .firstEdition ? PhysicalVariant.firstEdition : variant
             let productID: String?
             if let selected {

@@ -338,7 +338,7 @@ final class CollectedCard {
         setReleaseOrder = card.setReleaseOrder
         imageURL = card.storedImageURL
         thumbnailURL = card.catalogMetadataThumbnailURL
-        if card.updatesProviderPurchaseURL { tcgplayerURL = card.providerPurchaseURL }
+        if card.updatesProviderPurchaseURL { tcgplayerURL = card.providerPurchaseURL(for: variant) }
     }
 
     func applyCatalogMetadata(
@@ -400,7 +400,7 @@ final class CollectedCard {
         )
         magicTreatmentQualifiers = card.magicTreatmentQualifiers(for: resolved.variant)
         magicContentKindRaw = card.magicContentKind.rawValue
-        tcgplayerURL = card.providerPurchaseURL
+        tcgplayerURL = card.providerPurchaseURL(for: resolved.variant)
     }
 
     var cardGame: CardGame {

@@ -11,7 +11,8 @@ final class GradedVariantModel: ObservableObject {
     private let client: JustTCGV2GradedClient
 
     init(transport: JustTCGTransport) {
-        self.client = JustTCGV2GradedClient(transport: transport)
+        self.client = JustTCGV2GradedClient(transport: transport,
+            magicCardLoader: JustTCGV2GradedClient.loadMagicCard)
     }
 
     var isConfigured: Bool { PriceVendorCredentials.hasKey }

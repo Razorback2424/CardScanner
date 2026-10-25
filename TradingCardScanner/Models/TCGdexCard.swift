@@ -629,6 +629,9 @@ struct ScryfallCard: Codable, Identifiable, Sendable {
     /// cards and tokens commonly come back `null`. When present, it belongs to
     /// the exact Scryfall printing, including a treated foil printing.
     let tcgplayerID: Int?
+    /// Some etched printings have a separate marketplace product from the
+    /// same collector-number card's ordinary foil/nonfoil product.
+    let tcgplayerEtchedID: Int?
 
     enum CodingKeys: String, CodingKey {
         case object, id, name, digital, frame, layout, rarity, finishes, prices
@@ -648,6 +651,7 @@ struct ScryfallCard: Codable, Identifiable, Sendable {
         case cardFaces = "card_faces"
         case purchaseURIs = "purchase_uris"
         case tcgplayerID = "tcgplayer_id"
+        case tcgplayerEtchedID = "tcgplayer_etched_id"
     }
 
     var releaseDate: Date? {
@@ -656,6 +660,44 @@ struct ScryfallCard: Codable, Identifiable, Sendable {
 
     var catalogVariants: [PhysicalVariant] {
         (finishes ?? []).map(PhysicalVariant.resolving)
+    }
+
+    /// An etched product may be distinct from the ordinary foil/nonfoil card.
+    /// An absent finish can choose a product only when every possible finish
+    /// has the same published handle.
+    func tcgplayerProductID(for finish: PhysicalVariant?) -> Int? {
+        guard let scope = tcgplayerFinishScope(for: finish) else { return nil }
+        let ordinary = tcgplayerID.flatMap { $0 > 0 ? $0 : nil }
+        let etched = tcgplayerEtchedID.flatMap { $0 > 0 ? $0 : nil } ?? ordinary
+        let products = scope.compactMap { $0 == "etched" ? etched : ordinary }
+        guard products.count == scope.count, Set(products).count == 1 else { return nil }
+        return products.first
+    }
+
+    /// Scryfall's general purchase URI cannot substitute for a separate etched
+    /// handle. Other finishes can still use it when no numeric ID is published.
+    func tcgplayerPurchaseURI(for finish: PhysicalVariant?) -> URL? {
+        guard let scope = tcgplayerFinishScope(for: finish) else { return nil }
+        if let etched = tcgplayerEtchedID, etched > 0, etched != tcgplayerID,
+           scope.contains("etched") { return nil }
+        return purchaseURIs?.tcgplayer
+    }
+
+    private func tcgplayerFinishScope(for finish: PhysicalVariant?) -> [String]? {
+        let supported: Set<String> = ["nonfoil", "foil", "etched"]
+        if let finish {
+            let id = finish == .normal ? PhysicalVariant.nonfoil.id : finish.id
+            guard supported.contains(id), finishes?.contains(id) ?? true else { return nil }
+            return [id]
+        }
+        if let finishes {
+            guard !finishes.isEmpty, finishes.allSatisfy(supported.contains) else { return nil }
+            return finishes
+        }
+        // Older catalog payloads may omit finishes. Preserve an ordinary
+        // handle only when no separate etched product creates ambiguity.
+        if let etched = tcgplayerEtchedID, etched > 0, etched != tcgplayerID { return nil }
+        return ["nonfoil", "foil"]
     }
 
     /// Treatment evidence is resolved from the exact Scryfall printing. The

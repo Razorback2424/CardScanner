@@ -202,7 +202,16 @@ final class PriceCheckCoordinator {
         self.quoteService = quoteService
     }
 
+    private func requiresPhysicalReview(_ scan: ResolvedScan) -> Bool {
+        guard scan.card.game == .pokemon, let finish = scan.resolved.variant else { return false }
+        return PokemonVariantRules.requiresPhysicalReview(cardID: scan.card.providerID, variant: finish)
+    }
+
     func present(_ resolvedScan: ResolvedScan) -> PriceCheckResult {
+        if requiresPhysicalReview(resolvedScan) {
+            return PriceCheckResult(resolvedScan: resolvedScan, quote: .unavailable(nil),
+                checkedAt: resolvedScan.catalogRetrievedAt, quoteState: .unsupportedFinish, shouldAutoRefresh: false)
+        }
         if resolvedScan.request.subject.slab != nil {
             let quote: PriceLookup
             let state: PriceCheckQuoteState
@@ -353,13 +362,17 @@ final class PriceCheckCoordinator {
         shouldContinue: PriceCheckContinuationCheck? = nil
     ) async -> PriceCheckRefreshOutcome {
         guard shouldContinue?() ?? true else { return .cancelled }
+        guard !requiresPhysicalReview(result.resolvedScan) else { return .failed(.unsupportedFinish) }
         if let slab = result.resolvedScan.request.subject.slab {
             guard quoteService.supportsGradedPricing(for: result.card.game) else {
                 return .failed(.unsupportedGame)
             }
             let outcome = await gradedResolver.resolve(
                 card: result.card,
-                slab: slab,
+                slab: GradedSlabEvidence(company: slab.company, grade: slab.grade,
+                    certificationNumber: slab.certificationNumber, labelCardText: slab.labelCardText,
+                    printedFinish: result.resolvedScan.resolved.variant ?? slab.printedFinish,
+                    printedPrintRun: result.pokemonPrintRun ?? slab.printedPrintRun),
                 pokemonPrintRun: result.pokemonPrintRun
             )
             guard shouldContinue?() ?? true else { return .cancelled }

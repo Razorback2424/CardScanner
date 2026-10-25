@@ -457,7 +457,7 @@ struct ScryfallService: Sendable {
     /// Layouts that are not a single scannable card. Denied rather than allowed,
     /// so a layout Scryfall adds later is supported by default instead of being
     /// silently rejected.
-    private static let unsupportedLayouts: Set<String> = [
+    static let unsupportedLayouts: Set<String> = [
         "token", "double_faced_token", "emblem", "art_series",
         "vanguard", "scheme", "planar", "augment", "host"
     ]

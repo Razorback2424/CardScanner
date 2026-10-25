@@ -240,7 +240,7 @@ struct RefreshRowPatch: Sendable {
         let tcgplayerURL: String?
         imageURL = card.storedImageURL
         thumbnailURL = card.catalogMetadataThumbnailURL
-        tcgplayerURL = card.providerPurchaseURL
+        tcgplayerURL = card.providerPurchaseURL(for: row.variantID.map(PhysicalVariant.resolving))
         let metadata = ImportedCatalogMetadata(
             providerID: card.providerID,
             setCode: card.setCode,
@@ -1804,7 +1804,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             byCard[identity.groupingKey(game: slab.game), default: []].append(slab)
         }
 
-        let client = JustTCGV2GradedClient(transport: sharedTransport)
+        let client = JustTCGV2GradedClient(transport: sharedTransport,
+            magicCardLoader: JustTCGV2GradedClient.loadMagicCard)
         var priced = 0
         var persistenceFailed = false
         var lookupMisses = 0

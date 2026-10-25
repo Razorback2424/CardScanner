@@ -24,7 +24,7 @@ enum LegacyResolvedCard: Identifiable, Sendable {
             return "https://www.tcgplayer.com/product/\(mapping.productID)"
         }
         guard case let .magic(card) = self else { return nil }
-        return card.purchaseURIs?.tcgplayer?.absoluteString
+        return card.tcgplayerPurchaseURI(for: nil)?.absoluteString
     }
 
     var updatesProviderPurchaseURL: Bool {
@@ -119,6 +119,7 @@ enum LegacyResolvedCard: Identifiable, Sendable {
     var displayCardNumber: String {
         switch self {
         case let .pokemon(card, _):
+            if let printed = ReviewedPokemonProductIdentity.printedNumber(for: card) { return printed }
             if PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: card.set.id)?.recognitionKind == .energy {
                 return card.localId
             }

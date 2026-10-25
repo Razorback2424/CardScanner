@@ -124,9 +124,16 @@ enum CardPricing {
     static func tcgplayerProductID(
         for card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?
     ) -> Int? {
+        if case let .magic(magic) = card.legacyIdentity {
+            guard printRun == nil else { return nil }
+            return magic.tcgplayerProductID(for: variant)
+        }
         guard case let .pokemon(pokemon, _) = card.legacyIdentity, let variant,
               printRun != .shadowless else { return nil }
         guard !PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) else { return nil }
+        if pokemon.set.id == "xya", ReviewedPokemonProductIdentity.catalogIDs.contains(pokemon.id) {
+            return ReviewedPokemonProductIdentity.productID(for: pokemon, variant: variant, printRun: printRun)
+        }
         let detailed = exactDetailedVariants(on: pokemon, variant: variant, printRun: printRun)
         let products = detailed.reduce(into: Set<Int>()) { $0.formUnion(productIDs(in: $1)) }
         if products.count == 1, detailed.allSatisfy({ productIDs(in: $0) == products }) {
@@ -253,6 +260,9 @@ enum CardPricing {
         case .none:
             return .unavailable(nil)
         case let .pokemon(pokemon, _):
+            if let variant, PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) {
+                return .unavailable(.tcgplayer)
+            }
             if pokemonPrintRun == .firstEdition {
                 guard let variant,
                       let resolved = unambiguousPrice(from: exactDetailedVariants(
@@ -279,11 +289,6 @@ enum CardPricing {
                     return .unavailable(.tcgplayer)
                 }
                 return .price(resolved)
-            }
-
-            // Reviewed catalog ambiguity cannot be repaired by a flat listing.
-            if let variant, PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) {
-                return .unavailable(.tcgplayer)
             }
 
             guard let tcg = pokemon.pricing?.tcgplayer else {

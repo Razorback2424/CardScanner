@@ -14,10 +14,12 @@ enum PokemonChecklistSnapshotVersion {
 /// Read-time repair of reviewed identities only. Source resources and provider
 /// fingerprints remain untouched, including when an unchanged probe skips a crawl.
 enum PokemonChecklistReviewedProjection {
+    static let setIDs: Set<String> = ["me02.5", "xya"]
+
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var emitted = Set<String>()
         return cards.flatMap { base -> [CatalogCardSummary] in
-            guard base.game == .pokemon, base.setID.providerID == "me02.5",
+            guard base.game == .pokemon, setIDs.contains(base.setID.providerID),
                   base.pokemonPrintRun == nil,
                   let variants = PokemonVariantRules.reviewedVariants(cardID: base.providerID) else { return [base] }
             guard emitted.insert(base.providerID).inserted else { return [] }
@@ -35,7 +37,7 @@ enum PokemonChecklistReviewedProjection {
     }
 
     static func entry(_ entry: PokemonChecklistSnapshotEntry, cards: [CatalogCardSummary]) -> PokemonChecklistSnapshotEntry {
-        guard entry.providerID == "me02.5", entry.set.pokemonPrintRun == nil else { return entry }
+        guard setIDs.contains(entry.providerID), entry.set.pokemonPrintRun == nil else { return entry }
         let old = entry.set
         let set = CatalogSet(catalogID: old.catalogID, name: old.name, code: old.code,
             logoURL: old.logoURL, symbolURL: old.symbolURL, cardCount: cards.count,
@@ -852,7 +854,7 @@ actor PokemonChecklistStore {
     }
 
     /// Returns only manifest entries and verifies that the referenced resource
-    /// exists. Only the narrowly repaired set is decoded for corrected counts,
+    /// exists. Only the narrowly repaired sets are decoded for corrected counts,
     /// so Browse and scanning need not materialise the entire Pokémon corpus.
     func mergedEntries() -> [PokemonChecklistSnapshotEntry] {
         installMemoryWarningObserverIfNeeded()
@@ -860,7 +862,8 @@ actor PokemonChecklistStore {
             bundled: bundledValidEntries(),
             downloaded: downloadedValidEntries()
         ).map { entry in
-            guard entry.providerID == "me02.5", let cards = mergedChecklist(for: entry.set.catalogID) else { return entry }
+            guard PokemonChecklistReviewedProjection.setIDs.contains(entry.providerID),
+                  let cards = mergedChecklist(for: entry.set.catalogID) else { return entry }
             return PokemonChecklistReviewedProjection.entry(entry, cards: cards)
         }
     }

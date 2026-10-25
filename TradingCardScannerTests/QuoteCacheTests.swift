@@ -445,6 +445,46 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertEqual(cached?.amount, 125)
     }
 
+    func testGradedPriceCheckForwardsConfirmedFinishBeforeLabelOrMissingFinish() async throws {
+        for labelFinish: PhysicalVariant? in [nil, .normal] {
+            let recorder = GradedFinishRecorder()
+            let coordinator = PriceCheckCoordinator(context: try makeContext(),
+                gradedResolver: StubGradedResolver(outcome: .unavailable, finishRecorder: recorder))
+            let result = coordinator.present(priceCheckScan(variant: .holo,
+                slab: .init(company: .psa, grade: .init(value: "10"), certificationNumber: nil,
+                    labelCardText: [], printedFinish: labelFinish)))
+            _ = await coordinator.refresh(result)
+            let snapshot = await recorder.snapshot()
+            XCTAssertEqual(snapshot.finish, .holo)
+            XCTAssertEqual(snapshot.calls, 1)
+        }
+    }
+
+    func testReviewedYellowARejectsAnOldNormalReferenceWithoutDeletingTheCache() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-yellow-a-product-proof", withExtension: "json",
+            subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let entry = try XCTUnwrap((document["cases"] as? [[String: Any]])?.first)
+        let source = try JSONDecoder().decode(TCGdexCard.self,
+            from: JSONSerialization.data(withJSONObject: XCTUnwrap(entry["source"])))
+        let context = try makeContext()
+        let cache = QuoteCache(context: context)
+        _ = cache.store(quote(999, at: .now), game: .pokemon, printingID: source.id, variantID: PhysicalVariant.normal.id)
+        let template = priceCheckScan(variant: .normal)
+        let scan = ResolvedScan(request: template.request, card: .pokemon(source, setCode: ""), resolved: template.resolved,
+            pokemonPrintRun: nil, options: [.holo], catalogRetrievedAt: .now, gradedOutcome: nil)
+        let provider = StubPriceCheckProvider(outcome: .quote(quote(123, at: .now)))
+        let coordinator = PriceCheckCoordinator(context: context, refreshProvider: provider)
+        let result = coordinator.present(scan)
+        XCTAssertEqual(result.quoteState, .unsupportedFinish)
+        XCTAssertFalse(result.hasUsableAmount)
+        XCTAssertFalse(result.shouldAutoRefresh)
+        let refresh = await coordinator.refresh(result)
+        XCTAssertEqual(refresh, .failed(.unsupportedFinish))
+        XCTAssertEqual(provider.calls, 0)
+        XCTAssertEqual(cache.quote(game: .pokemon, printingID: source.id, variantID: PhysicalVariant.normal.id)?.amount, 999)
+    }
+
     func testUnboundGradedRefreshStillStoresVendorVariantQuoteWhenRowIsMissing() throws {
         let context = try makeContext()
         let variant = GradedVariant(
@@ -587,12 +627,21 @@ private final class StubPriceCheckProvider: PriceCheckRefreshProvider {
 
 private struct StubGradedResolver: ScannedGradedResolving {
     let outcome: ScannedGradedOutcome
+    var finishRecorder: GradedFinishRecorder? = nil
 
     func resolve(
         card: IdentifiedCard,
         slab: GradedSlabEvidence,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> ScannedGradedOutcome {
-        outcome
+        await finishRecorder?.record(slab.printedFinish)
+        return outcome
     }
+}
+
+private actor GradedFinishRecorder {
+    private var finish: PhysicalVariant?
+    private var calls = 0
+    func record(_ value: PhysicalVariant?) { finish = value; calls += 1 }
+    func snapshot() -> (finish: PhysicalVariant?, calls: Int) { (finish, calls) }
 }
