@@ -1,0 +1,346 @@
+game,catalogID,catalogName,vendorGroupID,vendorName,status,codeCandidates,sourceGroupID,sourceGroupName,disposition
+pokemon,bog,Best of game,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+pokemon,exu,Unseen Forces Unown Collection,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+pokemon,fut2020,Pokémon Futsal 2020,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+pokemon,xya,Yellow A Alternate,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,BCHR,Chronicles Foreign Black Border,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,CMB1,Mystery Booster Playtest Cards 2019,,,unresolved,2570: Mystery Booster: Convention Edition Exclusives,2570,Mystery Booster: Convention Edition Exclusives,Needs independent set/release evidence; never an automatic pricing join
+magic,CMB2,Mystery Booster Playtest Cards 2021,,,unresolved,,2570,Mystery Booster: Convention Edition Exclusives,Needs independent set/release evidence; never an automatic pricing join
+magic,CP1,Magic 2015 Clash Pack,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,CP2,Fate Reforged Clash Pack,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,CP3,Magic Origins Clash Pack,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,CST,Coldsnap Theme Decks,,,unresolved,,1348,Coldsnap Theme Deck Reprints,Needs independent set/release evidence; never an automatic pricing join
+magic,DCI,DCI Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,DKM,Deckmasters,,,unresolved,1311: Deckmasters Garfield vs Finkel,1311,Deckmasters Garfield vs Finkel,Needs independent set/release evidence; never an automatic pricing join
+magic,DVD,Duel Decks Anthology: Divine vs. Demonic,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,EVG,Duel Decks Anthology: Elves vs. Goblins,,,unresolved,33: Duel Decks: Elves vs. Goblins,33,Duel Decks: Elves vs. Goblins,Needs independent set/release evidence; never an automatic pricing join
+magic,F01,Friday Night Magic 2001,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F02,Friday Night Magic 2002,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F03,Friday Night Magic 2003,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F04,Friday Night Magic 2004,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F05,Friday Night Magic 2005,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F06,Friday Night Magic 2006,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F07,Friday Night Magic 2007,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F08,Friday Night Magic 2008,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F09,Friday Night Magic 2009,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F10,Friday Night Magic 2010,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F11,Friday Night Magic 2011,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F12,Friday Night Magic 2012,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F13,Friday Night Magic 2013,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F14,Friday Night Magic 2014,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F15,Friday Night Magic 2015,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F16,Friday Night Magic 2016,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F17,Friday Night Magic 2017,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,F18,Friday Night Magic 2018,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,FBB,Foreign Black Border,,,unresolved,,1689,Revised Edition (Foreign Black Border),Needs independent set/release evidence; never an automatic pricing join
+magic,FNM,Friday Night Magic 2000,,,unresolved,45: FNM Promos,45,FNM Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G00,Judge Gift Cards 2000,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G01,Judge Gift Cards 2001,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G02,Judge Gift Cards 2002,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G03,Judge Gift Cards 2003,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G04,Judge Gift Cards 2004,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G05,Judge Gift Cards 2005,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G06,Judge Gift Cards 2006,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G07,Judge Gift Cards 2007,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G08,Judge Gift Cards 2008,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G09,Judge Gift Cards 2009,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G10,Judge Gift Cards 2010,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G11,Judge Gift Cards 2011,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,G17,2017 Gift Pack,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,G18,M19 Gift Pack,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,G99,Judge Gift Cards 1999,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,GDY,Game Day Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,GVL,Duel Decks Anthology: Garruk vs. Liliana,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,H17,HasCon 2017,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,H1R,Modern Horizons 1 Timeshifts,,,unresolved,,2422,Modern Horizons,Needs independent set/release evidence; never an automatic pricing join
+magic,H2R,Modern Horizons 2 Timeshifts,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,HHO,Happy Holidays,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,J12,Judge Gift Cards 2012,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J13,Judge Gift Cards 2013,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J14,Judge Gift Cards 2014,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J15,Judge Gift Cards 2015,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J16,Judge Gift Cards 2016,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J17,Judge Gift Cards 2017,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J18,Judge Gift Cards 2018,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,J19,Judge Gift Cards 2019,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,J20,Judge Gift Cards 2020,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,JGP,Judge Gift Cards 1998,,,unresolved,,62,Judge Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,JP1,Hobby Japan Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,JVC,Duel Decks Anthology: Jace vs. Chandra,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,LMAR,Marvel Legends Series Inserts,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,MED,Mythic Edition,,,unresolved,2326: Mythic Edition: Guilds of Ravnica,2326,Mythic Edition: Guilds of Ravnica,Needs independent set/release evidence; never an automatic pricing join
+magic,MGB,Multiverse Gift Box,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,MPR,Magic Player Rewards 2001,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,OARC,Archenemy Schemes,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,OE01,Archenemy: Nicol Bolas Schemes,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,OHOP,Planechase Planes,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,OPC2,Planechase 2012 Planes,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,OPCA,Planechase Anthology Planes,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P03,Magic Player Rewards 2003,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P04,Magic Player Rewards 2004,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P05,Magic Player Rewards 2005,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P06,Magic Player Rewards 2006,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P07,Magic Player Rewards 2007,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P08,Magic Player Rewards 2008,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P09,Magic Player Rewards 2009,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P10,Magic Player Rewards 2010,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P10E,Tenth Edition Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P11,Magic Player Rewards 2011,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P15A,15th Anniversary Cards,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P22,Judge Gift Cards 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P23,Judge Gift Cards 2023,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P2HG,Two-Headed Giant Tournament,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P30A,30th Anniversary Play Promos,,,unresolved,,3178,30th Anniversary Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,P30H,30th Anniversary History Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P30M,30th Anniversary Misc Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P30T,30th Anniversary Celebration Tokyo,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P5DN,Fifth Dawn Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P8ED,Eighth Edition Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,P9ED,Ninth Edition Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAER,Aether Revolt Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAFR,Adventures in the Forgotten Realms Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAKH,Amonkhet Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL00,Arena League 2000,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL01,Arena League 2001,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL02,Arena League 2002,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL03,Arena League 2003,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL04,Arena League 2004,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL05,Arena League 2005,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL06,Arena League 2006,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAL99,Arena League 1999,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PALA,Shards of Alara Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PALP,Asia Pacific Land Program,,,unresolved,,9,APAC Lands,Needs independent set/release evidence; never an automatic pricing join
+magic,PAPC,Apocalypse Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PARB,Alara Reborn Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PARL,Arena League 1996,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PAVR,Avacyn Restored Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBBD,Battlebond Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBFZ,Battle for Zendikar Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBIG,The Big Score Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBLB,Bloomburrow Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBNG,Born of the Gods Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBOK,Betrayers of Kamigawa Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PBRO,The Brothers' War Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCBB,Cowboy Bebop,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCHK,Champions of Kamigawa Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCLB,Battle for Baldur's Gate Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCMR,Commander Legends Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCNS,Conspiracy Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCON,Conflux Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PCSP,Coldsnap Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDFT,Aetherdrift Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDGM,Dragon's Maze Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDIS,Dissension Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDKA,Dark Ascension Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDMU,Dominaria United Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDOM,Dominaria Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDP10,Duels of the Planeswalkers 2010 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDP12,Duels of the Planeswalkers 2012 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDP13,Duels of the Planeswalkers 2013 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDP14,Duels of the Planeswalkers 2014 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDP15,Duels of the Planeswalkers 2015 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDRC,Dragon Con,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDSK,Duskmourn: House of Horror Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDST,Darksteel Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDTK,Dragons of Tarkir Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PDTP,Duels of the Planeswalkers 2009 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PECL,Lorwyn Eclipsed Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PELD,Throne of Eldraine Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PEMN,Eldritch Moon Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PEOE,Edge of Eternities Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PEVE,Eventide Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PEWK,Eternal Weekend,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PEXO,Exodus Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PF19,MagicFest 2019,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PF20,MagicFest 2020,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PF23,MagicFest 2023,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PF24,MagicFest 2024,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PF25,MagicFest 2025,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PF26,MagicFest 2026,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PFDN,Foundations Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PFIN,Final Fantasy Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PFRF,Fate Reforged Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PFUT,Future Sight Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PGPT,Guildpact Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PGRN,Guilds of Ravnica Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PGRU,Guru,,,unresolved,,56,Guru Lands,Needs independent set/release evidence; never an automatic pricing join
+magic,PGTC,Gatecrash Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH17,2017 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH18,2018 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH19,2019 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH20,2020 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH21,2021 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH22,2022 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PH23,2023 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PHOP,Planechase Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PHOU,Hour of Devastation Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PHPR,HarperPrism Book Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PHTR,2016 Heroes of the Realm,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PHUK,Hachette UK,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PIDW,IDW Comics Inserts,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PIKO,Ikoria: Lair of Behemoths Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PINV,Invasion Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PISD,Innistrad Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJ21,Judge Gift Cards 2021,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJAS,Junior APAC Series,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJJT,Japan Junior Tournament,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJOU,Journey into Nyx Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJSC,Japan Standard Cup,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJSE,Junior Series Europe,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PJUD,Judgment Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PKHM,Kaldheim Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PKLD,Kaladesh Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PKTK,Khans of Tarkir Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PL21,Year of the Ox 2021,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PL22,Year of the Tiger 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PL23,Year of the Rabbit 2023,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PL24,Year of the Dragon 2024,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PL25,Year of the Snake 2025,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PL26,Year of the Horse 2026,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLCI,The Lost Caverns of Ixalan Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLG20,Love Your LGS 2020,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLG21,Love Your LGS 2021,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLG22,Love Your LGS 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLG24,Love Your LGS 2024,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLG25,Love Your LGS 2025,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLGM,DCI Legend Membership,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLGN,Legions Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLNY,Lunar New Year 2018,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLRW,Lorwyn Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLST,The List,,,unresolved,,2715,The List Reprints,Needs independent set/release evidence; never an automatic pricing join
+magic,PLTC,Tales of Middle-earth Deluxe Commander Kit,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PLTR,Tales of Middle-earth Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM10,Magic 2010 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM11,Magic 2011 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM12,Magic 2012 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM13,Magic 2013 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM14,Magic 2014 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM15,Magic 2015 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM19,Core Set 2019 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PM20,Core Set 2020 Promos,,,unresolved,,92,Prerelease Cards,Needs independent set/release evidence; never an automatic pricing join
+magic,PM21,Core Set 2021 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMAT,March of the Machine: The Aftermath Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMBS,Mirrodin Besieged Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMDA,Magic × Duel Masters Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMEI,Media and Collaboration Promos,,,unresolved,,72,Media Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,PMH1,Modern Horizons Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMH2,Modern Horizons 2 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMH3,Modern Horizons 3 Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMID,Innistrad: Midnight Hunt Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMKM,Murders at Karlov Manor Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMMQ,Mercadian Masques Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMOM,March of the Machine Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMOR,Morningtide Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS,Magic Premiere Shop 2005,,,unresolved,,369,Magic Premiere Shop,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS06,Magic Premiere Shop 2006,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS07,Magic Premiere Shop 2007,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS08,Magic Premiere Shop 2008,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS09,Magic Premiere Shop 2009,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS10,Magic Premiere Shop 2010,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMPS11,Magic Premiere Shop 2011,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PMRD,Mirrodin Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PNAT,Nationals Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PNCC,New Capenna Commander Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PNEM,Nemesis Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PNEO,Kamigawa: Neon Dynasty Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PNPH,New Phyrexia Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PODY,Odyssey Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,POGW,Oath of the Gatewatch Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PONE,Phyrexia: All Will Be One Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PONS,Onslaught Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PORI,Magic Origins Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,POTJ,Outlaws of Thunder Junction Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PPCY,Prophecy Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PPLC,Planar Chaos Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PPLS,Planeshift Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PPP1,M20 Promo Packs,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PPTK,Portal Three Kingdoms Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PR2,Magic Player Rewards 2002,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PR23,Regional Championship Qualifiers 2023,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRAV,Ravnica: City of Guilds Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRCQ,Regional Championship Qualifiers 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRED,Redemption Program,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRIX,Rivals of Ixalan Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRNA,Ravnica Allegiance Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PROE,Rise of the Eldrazi Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRTR,Return to Ravnica Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRW2,RNA Ravnica Weekend,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PRWK,GRN Ravnica Weekend,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PS11,Salvat 2011,,,unresolved,2988: Magic Encyclopedia 2011 (Salvat),2988,Magic Encyclopedia 2011 (Salvat),Needs independent set/release evidence; never an automatic pricing join
+magic,PS14,San Diego Comic-Con 2014,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PS15,San Diego Comic-Con 2015,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PS16,San Diego Comic-Con 2016,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PS17,San Diego Comic-Con 2017,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PS18,San Diego Comic-Con 2018,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PS19,San Diego Comic-Con 2019,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSAL,Salvat 2005,,,unresolved,2989: Magic Encyclopedia 2005 (Salvat/Hachette),2989,Magic Encyclopedia 2005 (Salvat/Hachette),Needs independent set/release evidence; never an automatic pricing join
+magic,PSCG,Scourge Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSDC,San Diego Comic-Con 2013,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSHM,Shadowmoor Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSNC,Streets of New Capenna Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSOI,Shadows over Innistrad Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSOK,Saviors of Kamigawa Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSOM,Scars of Mirrodin Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSOS,Secrets of Strixhaven Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSPL,Spotlight Series,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSPM,Marvel's Spider-Man Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSS1,BFZ Standard Series,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSS2,XLN Standard Showdown,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSS3,M19 Standard Showdown,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSS4,MKM Standard Showdown,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSS5,FIN Standard Showdown,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSTH,Stronghold Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSTX,Strixhaven: School of Mages Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PSUS,Junior Super Series,,,unresolved,,61,Junior Series Promos,Needs independent set/release evidence; never an automatic pricing join
+magic,PSVC,Summer Vacation Promos 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTDM,Tarkir: Dragonstorm Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTHB,Theros Beyond Death Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTHS,Theros Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTLA,Avatar: The Last Airbender Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTMP,Tempest Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTOR,Torment Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTSNC,Streets of New Capenna Southeast Asia Tokens,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTSP,Time Spiral Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PTSR,Time Spiral Remastered Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PUDS,Urza's Destiny Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PULG,Urza's Legacy Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PUMA,Ultimate Box Topper,,,unresolved,,2361,Ultimate Masters: Box Toppers,Needs independent set/release evidence; never an automatic pricing join
+magic,PUNH,Unhinged Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PUNK,Black Lotus Unknown Planechase,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PURL,URL/Convention Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PUSG,Urza's Saga Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PUST,Unstable Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PVAN,Vanguard Series,,,unresolved,,119,Vanguard,Needs independent set/release evidence; never an automatic pricing join
+magic,PVOW,Innistrad: Crimson Vow Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW11,Wizards Play Network 2011,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW12,Wizards Play Network 2012,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW21,Wizards Play Network 2021,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW22,Wizards Play Network 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW23,Wizards Play Network 2023,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW24,Wizards Play Network 2024,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW25,Wizards Play Network 2025,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PW26,Wizards Play Network 2026,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PWAR,War of the Spark Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PWCS,Planeswalker Championship Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PWOE,Wilds of Eldraine Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PWOR,World Championship Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PWOS,Wizards of the Coast Online Store,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PWWK,Worldwake Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PXLN,Ixalan Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PXTC,XLN Treasure Chest,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PZEN,Zendikar Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,PZNR,Zendikar Rising Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,Q06,Pioneer Challenger Decks 2021,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,Q07,Challenger Decks 2022,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,RFIN,Final Fantasy Regional Promos,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,RIN,Rinascimento,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,SCH,Store Championships,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,SLC,Secret Lair Countdown,,,unresolved,17667: Secret Lair Countdown Kit,17667,Secret Lair Countdown Kit,Needs independent set/release evidence; never an automatic pricing join
+magic,SLP,Secret Lair Promo,,,unresolved,22970: Secret Lair Showdown,22970,Secret Lair Showdown,Needs independent set/release evidence; never an automatic pricing join
+magic,SLU,Secret Lair: Ultimate Edition,,,unresolved,2632: Secret Lair Series,2632,Secret Lair Series,Needs independent set/release evidence; never an automatic pricing join
+magic,SUM,Summer Magic / Edgar,,,unresolved,2642: Summer Magic,2642,Summer Magic,Needs independent set/release evidence; never an automatic pricing join
+magic,SUNF,Unfinity Sticker Sheets,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,TMC,Teenage Mutant Ninja Turtles Eternal,,,unresolved,24496: Commander: Teenage Mutant Ninja Turtles,24496,Commander: Teenage Mutant Ninja Turtles,Needs independent set/release evidence; never an automatic pricing join
+magic,ULST,The List (Unfinity Foil Edition),,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join
+magic,UNK,Unknown Event,,,unresolved,23025: Un-Known Event Playtest Cards,23025,Un-Known Event Playtest Cards,Needs independent set/release evidence; never an automatic pricing join
+magic,WMC,World Magic Cup Qualifiers,,,unresolved,,,,Needs independent set/release evidence; never an automatic pricing join

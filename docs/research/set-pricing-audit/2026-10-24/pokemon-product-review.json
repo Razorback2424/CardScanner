@@ -1,0 +1,357 @@
+{
+  "boundary": "Five unresolved Pokemon names independently reviewed. Parent-group membership is not automatic subset/printing authority or graded availability.",
+  "cases": [
+    {
+      "catalogID": "bog",
+      "catalogName": "Best of game",
+      "disposition": "withheldAmbiguousProducts",
+      "reason": "Whole detailed-source review establishes 15 standard products (seven unstamped/eight Winner) and eight excluded jumbo objects across nine cards. Graded selection, binding, cached quotes and correction must preserve stamp provenance before these products can be admitted.",
+      "receipts": {
+        "3-1455-products.json": {
+          "bytes": 19337,
+          "sha256": "4db4f1d81506358cc44e29b555463776b25ceaeafeffd5ad013e85e424a94eea",
+          "sourceURL": "https://tcgcsv.com/tcgplayer/3/1455/products"
+        },
+        "tcgdex-bog.json": {
+          "bytes": 778,
+          "sha256": "3b8ac97cd86a45a22397fd415006c4aef522cffc2bee4116db023f539e3ac67a",
+          "sourceURL": "https://api.tcgdex.net/v2/en/sets/bog"
+        },
+        "tcgdex-card-bog-1.json": {
+          "bytes": 2706,
+          "sha256": "cb80e66453c9f6ee8972d2c75b6dacf76a829232f7778b143aca7725d4b49225",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-1"
+        },
+        "tcgdex-card-bog-2.json": {
+          "bytes": 2451,
+          "sha256": "5cc45b44031c29921ddbe66ade2c8592f394e4b42dbbf92a146d934367ac6386",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-2"
+        },
+        "tcgdex-card-bog-3.json": {
+          "bytes": 1632,
+          "sha256": "9a63b2f758344ad105bacaa05575b679fecc8b0c3cca6f9e65218e625cfb86f6",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-3"
+        },
+        "tcgdex-card-bog-4.json": {
+          "bytes": 1917,
+          "sha256": "c1e71434da6e641ac8317a02790021f3b802eacd90150549e23d1c8a3c60a7b5",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-4"
+        },
+        "tcgdex-card-bog-5.json": {
+          "bytes": 1850,
+          "sha256": "25cb2b9a91e586533e4e895c4671c891e247e155a93b8553f93245ec4767b338",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-5"
+        },
+        "tcgdex-card-bog-6.json": {
+          "bytes": 2670,
+          "sha256": "a11e54d1459c837bd762ac107acae1dac0f646bb9a02aa6bb77fca33ef1e368e",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-6"
+        },
+        "tcgdex-card-bog-7.json": {
+          "bytes": 2439,
+          "sha256": "cc812d6209706d16d2b043601ccb5524d8ec20633d19e29ad400f3e091290d93",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-7"
+        },
+        "tcgdex-card-bog-8.json": {
+          "bytes": 1800,
+          "sha256": "bd5b922ea18b3c084e0a1387f3eb677e65e1376758cadd93e33ef24d8b541f14",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-8"
+        },
+        "tcgdex-card-bog-9.json": {
+          "bytes": 1752,
+          "sha256": "939a5c751c32e0b98bac378619c331c6d4a26f18a200ea397e25243ac62bd5e2",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-9"
+        }
+      },
+      "sourceCards": 9,
+      "vendorGroupID": 1455,
+      "vendorProducts": 15
+    },
+    {
+      "catalogID": "ex5.5",
+      "catalogName": "Pok\u00e9 Card Creator Pack",
+      "disposition": "reviewedAliasImplemented",
+      "reason": "All five source cards match distinct product names/numbers; the same group also names the sealed Poke Card Creator Pack. Native whole-group proof required.",
+      "receipts": {
+        "3-2214-products.json": {
+          "bytes": 7254,
+          "sha256": "5e22a5ee57f99e725c5fd6d958c52facfa0f20e5e095fac0596c0abaa8cb453a",
+          "sourceURL": "https://tcgcsv.com/tcgplayer/3/2214/products"
+        },
+        "tcgdex-ex5.5.json": {
+          "bytes": 480,
+          "sha256": "e9a928cea5ed7b80d845818cefc278b8a0e056b6168dcb3915bf2d334a6b98ac",
+          "sourceURL": "https://api.tcgdex.net/v2/en/sets/ex5.5"
+        }
+      },
+      "sourceCards": 5,
+      "vendorGroupID": 2214,
+      "vendorProducts": 6
+    },
+    {
+      "catalogID": "exu",
+      "catalogName": "Unseen Forces Unown Collection",
+      "disposition": "wholeSubsetGradedProductsImplemented",
+      "reason": "Every detailed source card has exactly one standard English unstamped Holofoil object and an explicit TCGplayer product ID. All products match the independently captured vendor group. Graded requests use reviewed per-card identities; broader vendor groups remain separate catalog namespaces.",
+      "receipts": {
+        "3-1398-products.json": {
+          "bytes": 195902,
+          "sha256": "1f9ffd5fdb9d2d9a5675fadbc9e1895b3361933cffdfd3a9476c129b6f2f2e5f",
+          "sourceURL": "https://tcgcsv.com/tcgplayer/3/1398/products"
+        },
+        "tcgdex-card-exu-%21.json": {
+          "bytes": 2169,
+          "sha256": "cf5d22488f112fabb853bf9faa719fa8b2ad54211be51600cf2ac33c75da6ef9",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-%21"
+        },
+        "tcgdex-card-exu-%253F.json": {
+          "bytes": 2284,
+          "sha256": "a955e614ff29002f367911638aee2f74d3e60f868b0fe633371782ccd4b356c3",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-%253F"
+        },
+        "tcgdex-card-exu-A.json": {
+          "bytes": 2193,
+          "sha256": "81b101f665a95fdbc78085c8e0bdda9ca8eadadefa68fbf948d7bb6194b5b0c2",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-A"
+        },
+        "tcgdex-card-exu-B.json": {
+          "bytes": 2175,
+          "sha256": "d66496f40fbfc30e5650bdfc9999ec2064c6329921d8449ca8fcdf10a9c86ef0",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-B"
+        },
+        "tcgdex-card-exu-C.json": {
+          "bytes": 2236,
+          "sha256": "12140213454d51770f1900b8a5a2f13074651f4847e3519bcf29e16f624595a7",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-C"
+        },
+        "tcgdex-card-exu-D.json": {
+          "bytes": 2220,
+          "sha256": "a91900d0a1b483c6b25ad8054471b15994bc6c44fc8d3128dcff2a3f7bcc07ec",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-D"
+        },
+        "tcgdex-card-exu-E.json": {
+          "bytes": 2288,
+          "sha256": "55eb1b71c3b8a7e23392a528e85a99e4249702350c7e1678f5324131b8c63b65",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-E"
+        },
+        "tcgdex-card-exu-F.json": {
+          "bytes": 2275,
+          "sha256": "f3e3762e4221b3a4b45f9f5931c581c1da2fcf9ee942269233596c4c07c8ace2",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-F"
+        },
+        "tcgdex-card-exu-G.json": {
+          "bytes": 2191,
+          "sha256": "baade8e0947036f221b93b66f0dd0b0f2bd17fec26fe3dd726766c494d5882b1",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-G"
+        },
+        "tcgdex-card-exu-H.json": {
+          "bytes": 2222,
+          "sha256": "11fb8d883d06278dfee88129550f5bd93fd9d635dd1cb4c925dfe29ad9f2c04b",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-H"
+        },
+        "tcgdex-card-exu-I.json": {
+          "bytes": 2237,
+          "sha256": "b76192445b64efbb991d7f7bf49ac3cc8fb5f1b7c5a5b6a93550ed8a35b7716c",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-I"
+        },
+        "tcgdex-card-exu-J.json": {
+          "bytes": 2210,
+          "sha256": "b8fe4b46f8e8ac17c61b306bc6d094d38f576b90af84626dea77a8621c06ac5b",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-J"
+        },
+        "tcgdex-card-exu-K.json": {
+          "bytes": 2095,
+          "sha256": "9f8d2562c2879be48ba17f5e1f31e2f42b226777cc283768aaf1376d366ea7e4",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-K"
+        },
+        "tcgdex-card-exu-L.json": {
+          "bytes": 2167,
+          "sha256": "d58806951394ff0be174b1e0bed2b0ff91cc09b896eeda7da149cd75cc138b72",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-L"
+        },
+        "tcgdex-card-exu-M.json": {
+          "bytes": 2241,
+          "sha256": "f0ed7072c07dff413c99dcf887a06e6f2c76d8d5ae99db3f4e761f59a23b643e",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-M"
+        },
+        "tcgdex-card-exu-N.json": {
+          "bytes": 2116,
+          "sha256": "59e1d6bc643947c5024c86ad3f3785044274ec2f1177d570cdf1a9d2424ee7ef",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-N"
+        },
+        "tcgdex-card-exu-O.json": {
+          "bytes": 2122,
+          "sha256": "30699b66bcfaa0cdf194b9ab8575e542bdb1e762d0e2194cba219a63ff70034c",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-O"
+        },
+        "tcgdex-card-exu-P.json": {
+          "bytes": 2142,
+          "sha256": "d3ecc2901d0ca688955aea865c7ff88bddb30a40630ad288cd914cf62c22353e",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-P"
+        },
+        "tcgdex-card-exu-Q.json": {
+          "bytes": 2177,
+          "sha256": "1965d460322933a8a637b69b1b953d292c0c66aa1cbee1ea77bdbbc13f933e3a",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-Q"
+        },
+        "tcgdex-card-exu-R.json": {
+          "bytes": 2255,
+          "sha256": "6a6e41c87daf3b01e24b7f0a51d0883972901ef5e1d0f6a13b07e04ada17efd3",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-R"
+        },
+        "tcgdex-card-exu-S.json": {
+          "bytes": 2209,
+          "sha256": "e1eb1a63cadd3566fc809b200eafae9fdac640f82470ecfb65816f84d20995bb",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-S"
+        },
+        "tcgdex-card-exu-T.json": {
+          "bytes": 2191,
+          "sha256": "e4571360419988fda5b9f1aaaadf0a416b312c316cb2bdc16b6c25abde2494c6",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-T"
+        },
+        "tcgdex-card-exu-U.json": {
+          "bytes": 2167,
+          "sha256": "7f4b67fcabc38cd25ffa2951276a6ec12eb51906a717f7903fb0461744df62f5",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-U"
+        },
+        "tcgdex-card-exu-V.json": {
+          "bytes": 2231,
+          "sha256": "16be638acf8b65c06aee3f9729ba9a0e03fa6f7fa4b4bd13abd747cf3fadd258",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-V"
+        },
+        "tcgdex-card-exu-W.json": {
+          "bytes": 2181,
+          "sha256": "7fc3b692eae575e961f13c89231a9db81276f7cdc104ea2ee9b99a03550fda0b",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-W"
+        },
+        "tcgdex-card-exu-X.json": {
+          "bytes": 2160,
+          "sha256": "09b0f62f17489d92e103b442373fe4f87c3c04e3cedb623ac75213b32ff53ee8",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-X"
+        },
+        "tcgdex-card-exu-Y.json": {
+          "bytes": 2085,
+          "sha256": "f6bdbebc72773b4981c4a8c5bfda4552867146cb34fe959449edb4786f30c17d",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-Y"
+        },
+        "tcgdex-card-exu-Z.json": {
+          "bytes": 2187,
+          "sha256": "3d55c3d25d67398e695e7945201f51f4fbfdc56f4db9b9c417ce1743e856bb7f",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/exu-Z"
+        },
+        "tcgdex-exu.json": {
+          "bytes": 1485,
+          "sha256": "d8a69051a64f60e9cf1361a885b2c7f9d10d82c7f1073bf4fed899fb8a16a0cf",
+          "sourceURL": "https://api.tcgdex.net/v2/en/sets/exu"
+        }
+      },
+      "sourceCards": 28,
+      "vendorGroupID": 1398,
+      "vendorProducts": 149
+    },
+    {
+      "catalogID": "fut2020",
+      "catalogName": "Pok\u00e9mon Futsal 2020",
+      "disposition": "wholeSubsetGradedProductsImplemented",
+      "reason": "Every detailed source card has exactly one standard English unstamped Holofoil object and an explicit TCGplayer product ID. All products match the independently captured vendor group. Graded requests use reviewed per-card identities; broader vendor groups remain separate catalog namespaces.",
+      "receipts": {
+        "3-2374-products.json": {
+          "bytes": 1883448,
+          "sha256": "ae532fe4ee7e83f9bf378be2036ceaa42fa4a6a35fc693e820168e229f71425b",
+          "sourceURL": "https://tcgcsv.com/tcgplayer/3/2374/products"
+        },
+        "tcgdex-card-fut2020-1.json": {
+          "bytes": 1759,
+          "sha256": "6dd275221174789c1191bac083329de10887136889f4b6b0d0e22c480e692088",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/fut2020-1"
+        },
+        "tcgdex-card-fut2020-2.json": {
+          "bytes": 1684,
+          "sha256": "4055c9b6e02fa2569dd68f20158073d3b780313e69e367b2c94a8c01c80bf4e8",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/fut2020-2"
+        },
+        "tcgdex-card-fut2020-3.json": {
+          "bytes": 1740,
+          "sha256": "fd17f65e9d3fcd5df3f33a452cef8112903b3ca926f0c8f123d550ffbd151c0c",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/fut2020-3"
+        },
+        "tcgdex-card-fut2020-4.json": {
+          "bytes": 1795,
+          "sha256": "11b07b73412745d01de17c681e06f44f4c792bf8d655f8fdc415c84ee83b304c",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/fut2020-4"
+        },
+        "tcgdex-card-fut2020-5.json": {
+          "bytes": 1761,
+          "sha256": "9f96b192f51d8a4557eb03f81a49f8589065256a6085b05e63b783ff5224d844",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/fut2020-5"
+        },
+        "tcgdex-fut2020.json": {
+          "bytes": 986,
+          "sha256": "0123b55cd4ee4ad5ed8a808c96c017483d876f36d2c785fff4531b649fa2f537",
+          "sourceURL": "https://api.tcgdex.net/v2/en/sets/fut2020"
+        }
+      },
+      "sourceCards": 5,
+      "vendorGroupID": 2374,
+      "vendorProducts": 1532
+    },
+    {
+      "catalogID": "xya",
+      "catalogName": "Yellow A Alternate",
+      "disposition": "reviewedFinishesAndProductsImplemented",
+      "reason": "All six detailed records carry generated Normal metadata. Independent vendor product/finish review establishes four EX Holofoil products and separate Normal/Holofoil trainer products. App choices, raw/graded identities, links and printed totals now use the reviewed eight products. Existing holdings are not rewritten; incompatible Normal EX rows require physical review.",
+      "receipts": {
+        "3-1938-prices.json": {
+          "bytes": 9093,
+          "sha256": "8fa6b4759427809365c6a9a4c2e260652171fe70cc45a0ab766aeaf25a286e4b",
+          "sourceURL": "https://tcgcsv.com/tcgplayer/3/1938/prices"
+        },
+        "3-1938-products.json": {
+          "bytes": 74053,
+          "sha256": "1a9b45512eb52cb6a94290ace999d279d2ac3483333f84599ff05bfdffd94989",
+          "sourceURL": "https://tcgcsv.com/tcgplayer/3/1938/products"
+        },
+        "tcgdex-card-xya-107a.json": {
+          "bytes": 590,
+          "sha256": "203ec66428decbd5ef0268b01d16281b9dbb73f67471d32dfbd039481589c488",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/xya-107a"
+        },
+        "tcgdex-card-xya-24a.json": {
+          "bytes": 866,
+          "sha256": "d408c4c8548a86995e921d9df915d83d969910f8da249fdbc184fff386a35c24",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/xya-24a"
+        },
+        "tcgdex-card-xya-28a.json": {
+          "bytes": 1014,
+          "sha256": "1c744e6ba38c562bb80d4e4d2856beab149d25fa609c2a7ac29cfaf0331ae58e",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/xya-28a"
+        },
+        "tcgdex-card-xya-54a.json": {
+          "bytes": 968,
+          "sha256": "4413be0dcd17d87e56415f6173850bffcb9b7dde393c247fb76fab48744b6ca6",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/xya-54a"
+        },
+        "tcgdex-card-xya-55a.json": {
+          "bytes": 818,
+          "sha256": "7eca3d382257b19c2de149d93ae4c45c048f77351d5bbdc41edae78894e9537f",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/xya-55a"
+        },
+        "tcgdex-card-xya-92a.json": {
+          "bytes": 731,
+          "sha256": "077738fd32b143862d2eddd4c7528d4fa1c3a57a30c692c50e916ac4095fa146",
+          "sourceURL": "https://api.tcgdex.net/v2/en/cards/xya-92a"
+        },
+        "tcgdex-xya.json": {
+          "bytes": 573,
+          "sha256": "e58f7e16b569a7fa44868ae36202fa6498403b2b005505d7f5538e6d70ede6fb",
+          "sourceURL": "https://api.tcgdex.net/v2/en/sets/xya"
+        }
+      },
+      "sourceCards": 6,
+      "vendorGroupID": 1938,
+      "vendorProducts": 57
+    }
+  ],
+  "schemaVersion": 1,
+  "upstreamBuild": "2026-10-24T20:05:44+0000"
+}

@@ -1,0 +1,184 @@
+code,sourceID,name,collectorNumber,finish,productID,sample,verification
+CMB1,25d09421-08d5-4ca9-8937-5f937bc9c929,Smelt // Herd // Saw,100,nonfoil,202685,releaseFamily,nativeContractFixture
+CMB1,e899b761-2f23-466c-87c5-d98421138ca6,Start // Fire,101,nonfoil,202693,releaseFamily,nativeContractFixture
+CMB2,097165ee-f959-49e3-a5c1-f78043e538d9,Smelt // Herd // Saw,100,nonfoil,246957,releaseFamily,nativeContractFixture
+CMB2,e244eac9-8b94-4ac9-8dfd-744598148cd3,Start // Fire,101,nonfoil,246974,releaseFamily,nativeContractFixture
+CST,6c1e2ca0-7bb1-45eb-a57d-a8f00f5293a1,Skull Catapult,336,nonfoil,82414,releaseFamily,nativeContractFixture
+CST,d8222dd3-12fa-4c4c-baf4-46eb6e07289c,Deadly Insect,86a,nonfoil,82407,releaseFamily,nativeContractFixture
+DKM,38df2956-8588-4da7-b092-c0ea752b2979,Incinerate,14★,foil,79627,releaseFamily,nativeContractFixture
+DKM,f4e5992d-22c2-4f9c-93db-2dc1e71f5672,Icy Manipulator,36★,foil,79649,releaseFamily,nativeContractFixture
+FNM,390dc916-2207-4a76-a886-13fe47496a4a,River Boa,1,foil,38148,releaseFamily,nativeContractFixture
+FNM,1ef36c44-dda9-45e3-bd58-b336235731e0,Stone Rain,10,foil,38162,releaseFamily,nativeContractFixture
+G00,7700d907-e212-4893-8c65-02c8906a803c,Counterspell,1,foil,21702,releaseFamily,nativeContractFixture
+G00,33a6402e-1042-41be-a903-3a572aa5be3f,Vampiric Tutor,2,foil,38278,releaseFamily,nativeContractFixture
+G01,2b70b374-94b6-48d5-a1d7-04d012049c22,Ball Lightning,1,foil,37963,releaseFamily,nativeContractFixture
+G01,5dd34ceb-2659-44fe-b11d-b6b71dcfef02,Oath of Druids,2,foil,38262,releaseFamily,nativeContractFixture
+G02,40afb383-0453-4e27-82a7-5712ef5b39c3,Hammer of Bogardan,1,foil,38249,releaseFamily,nativeContractFixture
+G02,417d6751-6c77-4886-9d6a-5e5c9773825c,Tradewind Rider,2,foil,38277,releaseFamily,nativeContractFixture
+G03,3292ac2c-11cf-4fa1-aec5-5ce9a7ba2afb,Intuition,1,foil,38251,releaseFamily,nativeContractFixture
+G03,70364605-5f20-40e1-b18b-dec6d3d4d3aa,Argothian Enchantress,2,foil,37961,releaseFamily,nativeContractFixture
+G04,4a2f582b-9119-4b52-878e-2c937f7f8541,Armageddon,1,foil,38230,releaseFamily,nativeContractFixture
+G04,52ec6882-a92b-4ee0-b601-638994a65337,Balance,2,foil,37962,releaseFamily,nativeContractFixture
+G05,b825eb24-751c-438a-a058-e08a17a30894,Gemstone Mine,1,foil,38243,releaseFamily,nativeContractFixture
+G05,eea5640f-2f6e-485d-bd4c-4c4f9a29afc0,Regrowth,2,foil,38269,releaseFamily,nativeContractFixture
+G06,0ab545ad-5690-48f4-8d5e-7a06cfe8fc7c,Exalted Angel,1,foil,38240,releaseFamily,nativeContractFixture
+G06,00c1c7c9-ca58-465a-9001-05e1c7baa51a,Grim Lavamancer,2,foil,38246,releaseFamily,nativeContractFixture
+G07,68c1142a-58c1-4a8e-808b-d47a45abb76b,Ravenous Baloth,1,foil,38268,releaseFamily,nativeContractFixture
+G07,c40e77eb-4363-4fd6-9f38-877d42e0f48c,Cunning Wish,2,foil,38235,releaseFamily,nativeContractFixture
+G08,a0d59d90-0a4f-45f1-81ad-23a348a1a868,Orim's Chant,1,foil,38263,releaseFamily,nativeContractFixture
+G08,3af9ca89-d7b1-4533-8033-e9c805f39155,Mind's Desire,2,foil,38259,releaseFamily,nativeContractFixture
+G09,531e952f-6136-489e-b3c5-a533a4f9898f,Dark Ritual,1,foil,38236,releaseFamily,nativeContractFixture
+G09,6af7133c-2c65-4977-9b72-c29985ec9d47,Wooded Foothills,10,foil,38282,releaseFamily,nativeContractFixture
+G10,f51b9925-4aab-4056-a723-8dd799e9a7da,Sinkhole,1,foil,39030,releaseFamily,nativeContractFixture
+G10,8c68f1e6-b1f2-4e04-beee-97abad3cd4d5,Natural Order,2,foil,38261,releaseFamily,nativeContractFixture
+G11,fc0d11d3-4d55-43a4-b59d-acc41aa671c5,Bitterblossom,1,foil,39331,releaseFamily,nativeContractFixture
+G11,298b410e-263e-4cb8-bc6d-309ecf3310d9,Sword of Fire and Ice,2,foil,39031,releaseFamily,nativeContractFixture
+G99,57733946-5a1f-469d-a933-9507bdbf9d74,Memory Lapse,1,foil,38258,releaseFamily,nativeContractFixture
+GK1,01ce2601-ae94-4ab5-bbd2-65f47281ca28,Turn // Burn,45,nonfoil,177342,releaseFamily,nativeContractFixture
+GK1,6f4fad58-ef91-4bcc-8a6a-48d033701fd4,"Etrata, the Silencer",1,foil,177193,releaseFamily,nativeContractFixture
+GK2,ff875d47-b46e-481e-8fba-cc90870483e0,"Isperia, Supreme Judge",1,foil,183595,releaseFamily,nativeContractFixture
+GK2,74de5ed5-eab0-44ff-aa9a-077d487f1b5e,Detention Sphere,10,nonfoil,184799,releaseFamily,nativeContractFixture
+H1R,f48ab69d-8a01-4dcb-af70-31e2c62278df,Ephemerate,1,foil,239666,releaseFamily,nativeContractFixture
+H1R,b05fa81a-a0f5-4cb1-b4c7-f4016ab65c4c,Tribute Mage,10,foil,239656,releaseFamily,nativeContractFixture
+J12,387e7f85-cdd0-42ad-9205-1932fa0c8230,"Xiahou Dun, the One-Eyed",1,foil,57649,releaseFamily,nativeContractFixture
+J12,7393a74a-5bf4-468f-a40e-3ad1b99bb701,Flusterstorm,2,foil,57648,releaseFamily,nativeContractFixture
+J13,5d7ef391-60d7-41cd-b3fe-d1ce250e807a,Crucible of Worlds,4,foil,70911,releaseFamily,nativeContractFixture
+J13,e136f064-459a-49b1-a501-9b935db11e35,Swords to Plowshares,1,foil,67747,releaseFamily,nativeContractFixture
+J14,99577b28-4bfc-4192-bb23-c1f73666295e,Plains,1★,foil,92165,releaseFamily,nativeContractFixture
+J14,644791df-ac34-45c7-90c1-0ebd9e519840,Island,2★,foil,92163,releaseFamily,nativeContractFixture
+J15,bf195465-092b-4812-b400-b3af433eaeec,Temporal Manipulation,1,foil,116504,releaseFamily,nativeContractFixture
+J15,a7b7a85c-1316-4a67-988e-71ab0ff912da,Shardless Agent,2,foil,116503,releaseFamily,nativeContractFixture
+J16,e09165df-55bb-4a61-b8b7-c01430602938,Stoneforge Mystic,1,foil,189039,releaseFamily,nativeContractFixture
+J16,8c6b2642-4d17-4c0b-a3c3-b29d5ffdfbf8,Mana Drain,2,foil,119727,releaseFamily,nativeContractFixture
+J17,d4cd810d-9697-480f-bdb1-8729966a6449,"Avacyn, Angel of Hope",1,foil,129383,releaseFamily,nativeContractFixture
+J17,f639b8b9-0439-407c-9ed6-764ba96aec4e,Capture of Jingzhou,2,foil,146130,releaseFamily,nativeContractFixture
+J18,4c679459-939a-4040-b6a3-e02a11f4071c,Merchant Scroll,1,foil,166624,releaseFamily,nativeContractFixture
+J18,f9ab4647-e025-4a63-b2c1-a90541ab17d1,Vampiric Tutor,2,foil,170592,releaseFamily,nativeContractFixture
+JGP,6e8b2951-3c66-4042-add9-b2615951ba52,Lightning Bolt,1,foil,38253,releaseFamily,nativeContractFixture
+JGP,a5423cb8-38a2-4769-8999-de6ab5ebc294,Stroke of Genius,2,foil,38272,releaseFamily,nativeContractFixture
+MAR,ec191a2f-12b1-438b-b2fe-f88fb82d9b87,Comeuppance,1,nonfoil,652296,releaseFamily,nativeContractFixture
+MAR,deda48c4-527f-4367-83ed-3b3c30beaab8,"Lorthos, the Tidemaker",10,nonfoil,651367,releaseFamily,nativeContractFixture
+MD1,d563249e-7203-4d54-af5a-82d2f1a584cb,Soul Warden,1,nonfoil,82739,releaseFamily,nativeContractFixture
+MD1,9b370b3f-ae0d-4744-8b3d-3c48c81c1326,Sword of Feast and Famine,10,nonfoil,82749,releaseFamily,nativeContractFixture
+MED,6052dc6a-8f70-4c3b-b111-b213c29a7a7f,"Elspeth, Knight-Errant",GR1,foil,175241,releaseFamily,nativeContractFixture
+MED,7ffc77bf-21e7-4e1e-a635-d6b61213b3e1,"Liliana, the Last Hope",GR2,foil,175244,releaseFamily,nativeContractFixture
+P30A,978c9a84-c316-4d12-912d-d75ea43f06c3,Serra Angel,1,foil,284951,releaseFamily,nativeContractFixture
+P30A,788d404d-b866-4f29-a716-d2f1eb925111,Exalted Angel,10,foil,453552,releaseFamily,nativeContractFixture
+PALP,7aee0798-703a-40e1-9a01-dfbaceb255f4,Forest,1,nonfoil,21667,releaseFamily,nativeContractFixture
+PALP,2b42c421-da39-41e1-af2e-005aebb3a7c7,Swamp,10,nonfoil,21679,releaseFamily,nativeContractFixture
+PCMP,521a1843-e604-4954-be21-38b31867f670,Electrolyze,1,nonfoil,38050,releaseFamily,nativeContractFixture
+PCMP,f78edb37-e36e-4761-8293-154744040d65,"Doran, the Siege Tower",10,foil,38049,releaseFamily,nativeContractFixture
+PELP,356547d1-f97e-4ef6-ab32-43e4673393ff,Forest,1,nonfoil,21640,releaseFamily,nativeContractFixture
+PELP,5e3264ab-2fe4-4708-97d6-36c51f83a414,Swamp,10,nonfoil,21653,releaseFamily,nativeContractFixture
+PGRU,412af58e-e46e-4346-aa25-6624f0c3d142,Plains,1,nonfoil,21638,releaseFamily,nativeContractFixture
+PGRU,90b3ef81-2c77-4355-afcb-7b419d4bcb2c,Swamp,3,nonfoil,21639,releaseFamily,nativeContractFixture
+PLST,2fe1dcfb-c765-476f-bc5d-7904eaec00ba,Commit // Memory,AKH-211,nonfoil,204631,releaseFamily,nativeContractFixture
+PLST,eb4ef637-3d58-4288-94c2-628f98b888cc,Insult // Injury,AKH-213,nonfoil,583374,releaseFamily,nativeContractFixture
+PM20,578849a7-df76-4fc6-9792-485af4a6fb8d,Knight of the Ebon Legion,105s,foil,194064,releaseFamily,nativeContractFixture
+PM20,097b02c7-ef0b-4c7f-893e-22e116f38bfd,Legion's End,106s,foil,194043,releaseFamily,nativeContractFixture
+PMEI,5a450153-45b5-4aea-aa27-8ffe6301e8b6,Fireball,1995-1,nonfoil,21703,releaseFamily,nativeContractFixture
+PMEI,27f7db50-05b9-48f6-9086-f5b0788f9972,Blue Elemental Blast,1995-2,nonfoil,21701,releaseFamily,nativeContractFixture
+PSUS,15425ce4-0541-460b-9d50-8de388837a34,Thran Quarry,1,foil,38226,releaseFamily,nativeContractFixture
+PSUS,72e6a305-8dee-4aeb-808e-2847bce44133,Slith Firewalker,10,foil,192803,releaseFamily,nativeContractFixture
+PTKDF,47202d15-cb80-496f-84fb-8e3998c3d27b,Dragon Fodder,135,nonfoil,96438,releaseFamily,nativeContractFixture
+PTKDF,ce134b85-2cbd-4dab-b233-040fd1f31765,Dragonlord's Servant,138,nonfoil,96437,releaseFamily,nativeContractFixture
+PUMA,38cd438d-be12-40aa-bd6c-be55e88b63ce,"Emrakul, the Aeons Torn",U1,foil,179447,releaseFamily,nativeContractFixture
+PUMA,247689bc-b97c-4a2a-8854-1cde24a185b0,Karn Liberated,U2,foil,179449,releaseFamily,nativeContractFixture
+SLC,0d656542-f0cd-485d-9d74-05573a2d49e4,Altar of the Brood,1,nonfoil,662007,releaseFamily,nativeContractFixture
+SLC,1050fea7-307b-47fb-94f4-36f5cb481b2b,"Junji, the Midnight Sky",10,nonfoil,662025,releaseFamily,nativeContractFixture
+SLP,87776882-d3f6-4f80-8529-01feb416bb36,Questing Druid // Seek the Beast,38,nonfoil,619754,releaseFamily,nativeContractFixture
+SLP,cdf8c817-3fdf-4121-96b6-869f9c0e496d,"Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar",49,nonfoil,677175,releaseFamily,nativeContractFixture
+SLU,79631e0a-b962-48f1-98fa-d871b2862866,Barkchannel Pathway // Tidechannel Pathway,11,foil,231813,releaseFamily,nativeContractFixture
+SLU,022c7fe3-45bb-4efe-9b0c-2e4807d607b8,Blightstep Pathway // Searstep Pathway,12,foil,231814,releaseFamily,nativeContractFixture
+SLX,d571c367-c786-41f9-9cdb-cb02594fa413,"Casal, Lurkwood Pathfinder // Casal, Pathbreaker Owlbear",29,nonfoil,630007,releaseFamily,nativeContractFixture
+SLX,823b019e-10c0-4712-8167-d4f37a71e782,Havengul Laboratory // Havengul Mystery,9,nonfoil,268625,releaseFamily,nativeContractFixture
+SUM,3b1a98e4-9bc6-416c-801d-141e1bdca54d,Animate Wall,1,nonfoil,211679,releaseFamily,nativeContractFixture
+SUM,7f09d805-ce3a-4f5a-8ea3-fe07f652af3c,Circle of Protection: Blue,10,nonfoil,211699,releaseFamily,nativeContractFixture
+TMC,c0b94a92-48d5-4d08-a8fa-6f3a992db941,Double Jump // Flying Kick,35,nonfoil,679604,releaseFamily,nativeContractFixture
+TMC,72e637db-7112-406f-809b-0eda248488b5,"Leonardo, the Balance",1,nonfoil,657747,releaseFamily,nativeContractFixture
+TSB,4a9f1e99-9de8-45cb-b035-4f920477e2e5,Assault // Battery,106,nonfoil,14559,releaseFamily,nativeContractFixture
+TSB,96c9646b-9223-4d4f-a7d0-fc6208cac8b8,"Akroma, Angel of Wrath",1,nonfoil,14557,releaseFamily,nativeContractFixture
+UGIN,8cec48b8-58b2-4894-96e4-8477b83d4cf6,"Ugin, the Spirit Dragon",1,nonfoil,95578,releaseFamily,nativeContractFixture
+UGIN,1177d512-3e3b-4cea-a162-1fab169aefb8,Jeering Instigator,113,nonfoil,95580,releaseFamily,nativeContractFixture
+UNK,17879408-2e40-4658-8dd3-dab6e98528aa,"Garruk's Lost Wolf // Hey, Has Anyone Seen Garruk?",CG03a,nonfoil,548349,releaseFamily,nativeContractFixture
+UNK,62d881f3-32d0-482c-99d2-73c79e57700a,Fast // Furious,CR15a,nonfoil,650203,releaseFamily,nativeContractFixture
+H1R,f48ab69d-8a01-4dcb-af70-31e2c62278df,Ephemerate,1,foil,239666,wholeH1REtchedPair,nativeContractFixture
+H1R,f48ab69d-8a01-4dcb-af70-31e2c62278df,Ephemerate,1,etched,239667,wholeH1REtchedPair,nativeContractFixture
+H1R,47f44d5a-f3d6-4a9a-8bd3-b17a88565c51,Generous Gift,2,foil,240413,wholeH1REtchedPair,nativeContractFixture
+H1R,47f44d5a-f3d6-4a9a-8bd3-b17a88565c51,Generous Gift,2,etched,240414,wholeH1REtchedPair,nativeContractFixture
+H1R,f2bdcfec-d412-442c-91c8-53022c8e316d,Giver of Runes,3,foil,239620,wholeH1REtchedPair,nativeContractFixture
+H1R,f2bdcfec-d412-442c-91c8-53022c8e316d,Giver of Runes,3,etched,239398,wholeH1REtchedPair,nativeContractFixture
+H1R,55c67d56-62d5-417a-b1a6-51c91ba3abb1,King of the Pride,4,foil,239859,wholeH1REtchedPair,nativeContractFixture
+H1R,55c67d56-62d5-417a-b1a6-51c91ba3abb1,King of the Pride,4,etched,239860,wholeH1REtchedPair,nativeContractFixture
+H1R,ab9eef1c-8e8e-45e6-aaef-98ff569a1845,Ranger-Captain of Eos,5,foil,240140,wholeH1REtchedPair,nativeContractFixture
+H1R,ab9eef1c-8e8e-45e6-aaef-98ff569a1845,Ranger-Captain of Eos,5,etched,240141,wholeH1REtchedPair,nativeContractFixture
+H1R,673cfb84-b76f-44c2-9ca1-5d57d1ac525f,"Sisay, Weatherlight Captain",6,foil,240285,wholeH1REtchedPair,nativeContractFixture
+H1R,673cfb84-b76f-44c2-9ca1-5d57d1ac525f,"Sisay, Weatherlight Captain",6,etched,240286,wholeH1REtchedPair,nativeContractFixture
+H1R,8a2ab58d-a632-4162-82b2-664e9ac4b319,Archmage's Charm,7,foil,239973,wholeH1REtchedPair,nativeContractFixture
+H1R,8a2ab58d-a632-4162-82b2-664e9ac4b319,Archmage's Charm,7,etched,239974,wholeH1REtchedPair,nativeContractFixture
+H1R,3989e920-05df-4b30-9ec3-e6ecaa436fce,Faerie Seer,8,foil,239610,wholeH1REtchedPair,nativeContractFixture
+H1R,3989e920-05df-4b30-9ec3-e6ecaa436fce,Faerie Seer,8,etched,239452,wholeH1REtchedPair,nativeContractFixture
+H1R,b769ba9e-2ac8-48a9-9f45-23a4ccd0cb96,Force of Negation,9,foil,239621,wholeH1REtchedPair,nativeContractFixture
+H1R,b769ba9e-2ac8-48a9-9f45-23a4ccd0cb96,Force of Negation,9,etched,239399,wholeH1REtchedPair,nativeContractFixture
+H1R,b05fa81a-a0f5-4cb1-b4c7-f4016ab65c4c,Tribute Mage,10,foil,239656,wholeH1REtchedPair,nativeContractFixture
+H1R,b05fa81a-a0f5-4cb1-b4c7-f4016ab65c4c,Tribute Mage,10,etched,239657,wholeH1REtchedPair,nativeContractFixture
+H1R,86d744cd-225c-4279-898a-858dc316cf7f,"Urza, Lord High Artificer",11,foil,240143,wholeH1REtchedPair,nativeContractFixture
+H1R,86d744cd-225c-4279-898a-858dc316cf7f,"Urza, Lord High Artificer",11,etched,240144,wholeH1REtchedPair,nativeContractFixture
+H1R,e681338b-9938-4db0-bb95-28c460a98acf,Changeling Outcast,12,foil,240416,wholeH1REtchedPair,nativeContractFixture
+H1R,e681338b-9938-4db0-bb95-28c460a98acf,Changeling Outcast,12,etched,240415,wholeH1REtchedPair,nativeContractFixture
+H1R,d25ae489-1600-4eca-afd2-6274d525046a,Defile,13,foil,240210,wholeH1REtchedPair,nativeContractFixture
+H1R,d25ae489-1600-4eca-afd2-6274d525046a,Defile,13,etched,240211,wholeH1REtchedPair,nativeContractFixture
+H1R,35c48959-caba-430a-9ac3-0e3459277ed0,Plague Engineer,14,foil,240298,wholeH1REtchedPair,nativeContractFixture
+H1R,35c48959-caba-430a-9ac3-0e3459277ed0,Plague Engineer,14,etched,240302,wholeH1REtchedPair,nativeContractFixture
+H1R,b358328b-53f2-45ba-a5f2-d0a666241d53,Undead Augur,15,foil,239855,wholeH1REtchedPair,nativeContractFixture
+H1R,b358328b-53f2-45ba-a5f2-d0a666241d53,Undead Augur,15,etched,239856,wholeH1REtchedPair,nativeContractFixture
+H1R,cae12ba4-80d9-4c2d-af64-d88d003a0d6f,Goblin Engineer,16,foil,240257,wholeH1REtchedPair,nativeContractFixture
+H1R,cae12ba4-80d9-4c2d-af64-d88d003a0d6f,Goblin Engineer,16,etched,240258,wholeH1REtchedPair,nativeContractFixture
+H1R,61f8ba6c-1fc9-42c5-94ea-1ee495fa4090,Magmatic Sinkhole,17,foil,240420,wholeH1REtchedPair,nativeContractFixture
+H1R,61f8ba6c-1fc9-42c5-94ea-1ee495fa4090,Magmatic Sinkhole,17,etched,240421,wholeH1REtchedPair,nativeContractFixture
+H1R,7ee142dc-bb72-4aa0-9037-cfc70de19cae,Shenanigans,18,foil,239672,wholeH1REtchedPair,nativeContractFixture
+H1R,7ee142dc-bb72-4aa0-9037-cfc70de19cae,Shenanigans,18,etched,239673,wholeH1REtchedPair,nativeContractFixture
+H1R,ad7eac9d-31e3-480e-92fa-58458d6f83b2,"Ayula, Queen Among Bears",19,foil,239629,wholeH1REtchedPair,nativeContractFixture
+H1R,ad7eac9d-31e3-480e-92fa-58458d6f83b2,"Ayula, Queen Among Bears",19,etched,239630,wholeH1REtchedPair,nativeContractFixture
+H1R,96c5607b-55fe-43c2-93fe-0084d84499d9,Deep Forest Hermit,20,foil,239725,wholeH1REtchedPair,nativeContractFixture
+H1R,96c5607b-55fe-43c2-93fe-0084d84499d9,Deep Forest Hermit,20,etched,239726,wholeH1REtchedPair,nativeContractFixture
+H1R,ebd30c7a-7a8c-4176-b1e7-91f4c4a55140,Force of Vigor,21,foil,240349,wholeH1REtchedPair,nativeContractFixture
+H1R,ebd30c7a-7a8c-4176-b1e7-91f4c4a55140,Force of Vigor,21,etched,240350,wholeH1REtchedPair,nativeContractFixture
+H1R,6311f606-eed9-46b7-80b1-1f823a1183d0,Llanowar Tribe,22,foil,239814,wholeH1REtchedPair,nativeContractFixture
+H1R,6311f606-eed9-46b7-80b1-1f823a1183d0,Llanowar Tribe,22,etched,239815,wholeH1REtchedPair,nativeContractFixture
+H1R,4da5a18d-b5d2-4c38-ae04-164f3e1adc6b,Scale Up,23,foil,240112,wholeH1REtchedPair,nativeContractFixture
+H1R,4da5a18d-b5d2-4c38-ae04-164f3e1adc6b,Scale Up,23,etched,240113,wholeH1REtchedPair,nativeContractFixture
+H1R,7739490e-1389-440b-9efa-9df0e4fd30dc,Weather the Storm,24,foil,240159,wholeH1REtchedPair,nativeContractFixture
+H1R,7739490e-1389-440b-9efa-9df0e4fd30dc,Weather the Storm,24,etched,240160,wholeH1REtchedPair,nativeContractFixture
+H1R,2e1da79b-4392-47cc-ade9-776827695276,Etchings of the Chosen,25,foil,240316,wholeH1REtchedPair,nativeContractFixture
+H1R,2e1da79b-4392-47cc-ade9-776827695276,Etchings of the Chosen,25,etched,240317,wholeH1REtchedPair,nativeContractFixture
+H1R,59fa538b-fa1c-4cdc-9fc0-801d6b618f01,The First Sliver,26,foil,239661,wholeH1REtchedPair,nativeContractFixture
+H1R,59fa538b-fa1c-4cdc-9fc0-801d6b618f01,The First Sliver,26,etched,239659,wholeH1REtchedPair,nativeContractFixture
+H1R,05aa5b50-0f8a-4f8a-8b48-3c52512ea615,Ice-Fang Coatl,27,foil,240264,wholeH1REtchedPair,nativeContractFixture
+H1R,05aa5b50-0f8a-4f8a-8b48-3c52512ea615,Ice-Fang Coatl,27,etched,240265,wholeH1REtchedPair,nativeContractFixture
+H1R,a92b3ded-40d9-4e50-a64c-b326e3fd52ed,Ingenious Infiltrator,28,foil,239617,wholeH1REtchedPair,nativeContractFixture
+H1R,a92b3ded-40d9-4e50-a64c-b326e3fd52ed,Ingenious Infiltrator,28,etched,239618,wholeH1REtchedPair,nativeContractFixture
+H1R,87731608-7038-453f-97dc-12cfa5b9211d,Lavabelly Sliver,29,foil,240423,wholeH1REtchedPair,nativeContractFixture
+H1R,87731608-7038-453f-97dc-12cfa5b9211d,Lavabelly Sliver,29,etched,240422,wholeH1REtchedPair,nativeContractFixture
+H1R,e5434026-a606-41df-8dfd-23694040b488,Soulherder,30,foil,239669,wholeH1REtchedPair,nativeContractFixture
+H1R,e5434026-a606-41df-8dfd-23694040b488,Soulherder,30,etched,239670,wholeH1REtchedPair,nativeContractFixture
+H1R,2afc63e4-10be-415b-9512-f6c1a477af8f,Sword of Sinew and Steel,31,foil,240185,wholeH1REtchedPair,nativeContractFixture
+H1R,2afc63e4-10be-415b-9512-f6c1a477af8f,Sword of Sinew and Steel,31,etched,240194,wholeH1REtchedPair,nativeContractFixture
+H1R,f714386f-607a-41fd-ae72-f2d2641841aa,Sword of Truth and Justice,32,foil,239622,wholeH1REtchedPair,nativeContractFixture
+H1R,f714386f-607a-41fd-ae72-f2d2641841aa,Sword of Truth and Justice,32,etched,239520,wholeH1REtchedPair,nativeContractFixture
+H1R,7a32f159-cc51-40d9-8c33-88ca8eb8b6f4,Talisman of Conviction,33,foil,240124,wholeH1REtchedPair,nativeContractFixture
+H1R,7a32f159-cc51-40d9-8c33-88ca8eb8b6f4,Talisman of Conviction,33,etched,240123,wholeH1REtchedPair,nativeContractFixture
+H1R,e0373057-f5c2-4cfb-b6a4-dea05035d1c6,Talisman of Creativity,34,foil,240131,wholeH1REtchedPair,nativeContractFixture
+H1R,e0373057-f5c2-4cfb-b6a4-dea05035d1c6,Talisman of Creativity,34,etched,240130,wholeH1REtchedPair,nativeContractFixture
+H1R,b9383190-c4b2-4b38-8938-2c57782faf03,Talisman of Curiosity,35,foil,240127,wholeH1REtchedPair,nativeContractFixture
+H1R,b9383190-c4b2-4b38-8938-2c57782faf03,Talisman of Curiosity,35,etched,240128,wholeH1REtchedPair,nativeContractFixture
+H1R,b8ed2d68-fd97-411f-8a8e-7e100cdb4c0e,Talisman of Hierarchy,36,foil,240121,wholeH1REtchedPair,nativeContractFixture
+H1R,b8ed2d68-fd97-411f-8a8e-7e100cdb4c0e,Talisman of Hierarchy,36,etched,240120,wholeH1REtchedPair,nativeContractFixture
+H1R,ca1f4df7-6c34-406d-9cb5-84e18f6a7f3f,Talisman of Resilience,37,foil,240118,wholeH1REtchedPair,nativeContractFixture
+H1R,ca1f4df7-6c34-406d-9cb5-84e18f6a7f3f,Talisman of Resilience,37,etched,240119,wholeH1REtchedPair,nativeContractFixture
+H1R,b1211495-12ba-4f57-90f9-8befec5fc03d,Universal Automaton,38,foil,239623,wholeH1REtchedPair,nativeContractFixture
+H1R,b1211495-12ba-4f57-90f9-8befec5fc03d,Universal Automaton,38,etched,239459,wholeH1REtchedPair,nativeContractFixture
+H1R,8445249d-5482-462b-9372-31aa745f33b4,Hall of Heliod's Generosity,39,foil,239624,wholeH1REtchedPair,nativeContractFixture
+H1R,8445249d-5482-462b-9372-31aa745f33b4,Hall of Heliod's Generosity,39,etched,239451,wholeH1REtchedPair,nativeContractFixture
+H1R,991a1790-a3a2-4def-8848-cc698915a242,Prismatic Vista,40,foil,240309,wholeH1REtchedPair,nativeContractFixture
+H1R,991a1790-a3a2-4def-8848-cc698915a242,Prismatic Vista,40,etched,240310,wholeH1REtchedPair,nativeContractFixture

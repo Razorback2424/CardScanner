@@ -1,0 +1,62 @@
+game,catalogID,catalogName,vendorGroupID,vendorName,diagnosis,status
+pokemon,me01,Mega Evolution,24380,ME01: Mega Evolution,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,me02,Phantasmal Flames,24448,ME02: Phantasmal Flames,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,me02.5,Ascended Heroes,24541,ME: Ascended Heroes,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,me03,Perfect Order,24587,ME03: Perfect Order,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,me04,Chaos Rising,24655,ME04: Chaos Rising,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,me05,Pitch Black,24688,ME05: Pitch Black,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,swsh12.5,Crown Zenith,17688,SWSH: Crown Zenith,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,swsh12.5gg,Crown Zenith Galarian Gallery,17689,SWSH: Crown Zenith: Galarian Gallery,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy10,Fates Collide,1780,XY - Fates Collide,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy11,Steam Siege,1815,XY - Steam Siege,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy12,Evolutions,1842,XY - Evolutions,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy2,Flashfire,1464,XY - Flashfire,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy3,Furious Fists,1481,XY - Furious Fists,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy4,Phantom Forces,1494,XY - Phantom Forces,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy5,Primal Clash,1509,XY - Primal Clash,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy6,Roaring Skies,1534,XY - Roaring Skies,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy7,Ancient Origins,1576,XY - Ancient Origins,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy8,BREAKthrough,1661,XY - BREAKthrough,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,xy9,BREAKpoint,1701,XY - BREAKpoint,resolvedDirectoryButDisplayNameRejected,resolved
+magic,BIG,The Big Score,23443,Outlaws of Thunder Junction: The Big Score,resolvedDirectoryButDisplayNameRejected,resolved
+magic,MP2,Amonkhet Invocations,1909,Masterpiece Series: Amonkhet Invocations,resolvedDirectoryButDisplayNameRejected,resolved
+magic,MPS,Kaladesh Inventions,1837,Masterpiece Series: Kaladesh Inventions,resolvedDirectoryButDisplayNameRejected,resolved
+magic,MUL,Multiverse Legends,22989,March of the Machine: Multiverse Legends,resolvedDirectoryButDisplayNameRejected,resolved
+magic,OTP,Breaking News,23442,Outlaws of Thunder Junction: Breaking News,resolvedDirectoryButDisplayNameRejected,resolved
+magic,SDS,Stardates,24771,Star Trek: Stardates,resolvedDirectoryButDisplayNameRejected,resolved
+magic,SLZ,The Zeta Set,24836,Secret Lair x MSCHF: The Zeta Set,resolvedDirectoryButDisplayNameRejected,resolved
+pokemon,ru1,Pokémon Rumble,1433,Rumble,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+pokemon,sve,Scarlet & Violet Energy,24382,SVE: Scarlet & Violet Energies,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,10E,Tenth Edition,1,10th Edition,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,7ED,Seventh Edition,2,7th Edition,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,8ED,Eighth Edition,3,8th Edition,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,9ED,Ninth Edition,4,9th Edition,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,BRR,The Brothers' War Retro Artifacts,17665,The Brothers' War: Retro Frame Artifacts,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,CMD,Commander 2011,25,Commander,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,GN2,Game Night 2019,2562,Magic Game Night 2019,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,GN3,Game Night: Free-for-All,3129,Magic Game Night: Free-For-All,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,GNT,Game Night,2359,Magic Game Night,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,LEA,Limited Edition Alpha,7,Alpha Edition,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,LEB,Limited Edition Beta,17,Beta Edition,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,LTR,The Lord of the Rings: Tales of Middle-earth,23019,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,M10,Magic 2010,68,Magic 2010 (M10),reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,M11,Magic 2011,69,Magic 2011 (M11),reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,M12,Magic 2012,70,Magic 2012 (M12),reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,M13,Magic 2013,364,Magic 2013 (M13),reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,M14,Magic 2014,1113,Magic 2014 (M14),reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,M15,Magic 2015,1293,Magic 2015 (M15),reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,MIC,Midnight Hunt Commander,2893,Commander: Innistrad: Midnight Hunt,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,NCC,New Capenna Commander,3031,Commander: Streets of New Capenna,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,NEC,Neon Dynasty Commander,2967,Commander: Kamigawa: Neon Dynasty,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,VOC,Crimson Vow Commander,2900,Commander: Innistrad: Crimson Vow,reviewedNameAliasOrWeakAliasAmbiguity,resolved
+magic,GK1,GRN Guild Kit,2334,Guilds of Ravnica: Guild Kits,cardLevelReviewedAlias,resolved
+magic,GK2,RNA Guild Kit,2388,Ravnica Allegiance: Guild Kits,cardLevelReviewedAlias,resolved
+magic,MAR,Marvel Universe,24432,Marvel Universe Eternal-Legal,cardLevelReviewedAlias,resolved
+magic,MD1,Modern Event Deck 2014,1346,Magic Modern Event Deck,cardLevelReviewedAlias,resolved
+magic,PCMP,Champs and States,21,Champs Promos,cardLevelReviewedAlias,resolved
+magic,PELP,European Land Program,38,European Lands,cardLevelReviewedAlias,resolved
+magic,PTKDF,Tarkir Dragonfury,1520,Tarkir Dragonfury Promos,cardLevelReviewedAlias,resolved
+magic,SLX,Universes Within,3054,SLX Cards,cardLevelReviewedAlias,resolved
+magic,TSB,Time Spiral Timeshifted,111,Timeshifted,cardLevelReviewedAlias,resolved
+magic,UGIN,Ugin's Fate,1507,Ugin's Fate Promos,cardLevelReviewedAlias,resolved
+pokemon,ex5.5,Poké Card Creator Pack,2214,Kids WB Promos,cardLevelReviewedAlias,resolved

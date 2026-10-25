@@ -2,6 +2,13 @@
 
 **Status:** current navigation map — 2026-10-15
 
+The [systematic set pricing audit](research/set-pricing-audit.md) records the
+2026-10-24 full directory census, 61 additional lookup repairs, installed
+mapping checks, Magic product/etched samples and whole reviewed Pokémon subset
+product identities. Its
+prioritized review queue keeps name resolution, physical scope, quote
+availability and live graded coverage separate.
+
 The [23 October five-game launch follow-up](release/five-game-launch-readiness-2026-10-23.md)
 validates the supplied readiness audit, tracks the bounded One Piece identity
 safeguard and keeps catalog, physical-device and owner release gates explicit.

@@ -1,3 +1,128 @@
+# 2026-10-24 — Finish-aware Magic raw product identity
+
+Continued the systematic audit on `30a56af` plus preserved local changes.
+Found the raw fallback, market history and marketplace-link paths still used
+the ordinary Scryfall product for etched copies with a separate product ID.
+Shared finish-aware selection now supplies all raw/graded paths and links saved
+when adding or refreshing owned rows. Unknown finishes cannot choose between
+distinct products; legacy Normal retains nonfoil semantics. All **40 H1R pairs**
+pass raw/history/link projections and graded HTTP replays. Focused native
+verification: **311 passed, zero failed**. All **15 Python tests**, both Magic
+proofs, both Pokémon proofs and the whole installed mapping replay pass; census
+and ledger hashes are unchanged. No saved holdings, signed catalogs, keys,
+rollout flags or deployments were modified by this audit run. Live authenticated
+graded coverage remains unverified. See the
+[current audit](docs/research/set-pricing-audit.md#direct-magic-printing-identity).
+
+# 2026-10-24 — Yellow A physical finish reconciliation
+
+Continued on `30a56af` plus preserved local changes. Reviewed all six generated
+Normal Yellow A records against the complete vendor group and price lanes.
+Four EX cards are Holofoil; both trainers have separate Normal/Holofoil products.
+Added all eight exact products to the reviewed raw/graded identity route,
+corrected variant choices, exact marketplace links and printed totals, and
+kept provider/local identifiers stable. Scoped padding preserves letter suffixes
+and stated denominators. Bundled/old offline Browse checklists project the
+correct eight physical slots and counts without rewriting source files or
+fingerprints; the upgrade/cache tests pass in a **76-test** follow-up.
+Conflicting detailed quotes and stale Normal EX Price
+Check references cannot override reviewed physical identity; no cached data or
+holdings are rewritten. Scans require a known finish when the catalog is
+ambiguous, and Price Check forwards confirmed finish/edition evidence. Native
+validation: **356 broad tests passed**, plus later **190 pipeline** and **39 cache
+review** checks, zero failed. All 15 Python tests and both Pokémon/Magic source
+projections pass. The reviewed Pokémon scope is now 39 cards/41 products.
+Best of remains open: all nine detailed sources establish 15 standard products
+and eight excluded jumbo objects, retained for stamp provenance work. No signed
+catalog, key, rollout, deployment or collection changes. See the
+[current audit](docs/research/set-pricing-audit.md#yellow-a-finish-reconciliation).
+
+# 2026-10-24 — Reviewed Pokémon subset graded identities
+
+Continued on `30a56af` plus preserved local changes. Independently captured every
+detailed Unown Collection and Futsal card: all 33 have one standard English
+unstamped Holofoil object and an explicit TCGplayer product ID. Added reviewed
+per-card graded identities through the shared exact-product path. Parent vendor
+groups stay separate catalog namespaces; the question-mark translation is
+scoped to `exu-%3F` and preserves denominators/provider IDs. Wrong letters,
+metadata, finishes, languages and edition claims fail closed. All 33 mappings
+pass native requests with absent and Unlimited print runs; existing raw product
+extraction agrees with the same source IDs. Targeted verification: **155 passed**;
+broad five-game pricing/ownership/treatment/cache selection: **339 passed**, zero
+failures. All 14 Python tests, complete subset/source projection verification,
+Magic proof replay, cross-game mapping replay, links and diff checks pass.
+Detailed Best of samples expose stamp/jumbo provenance work; two Yellow A
+samples have generated Normal metadata without product IDs, while all eight
+candidate vendor finish lanes have quotes. Those remaining fixes need physical
+identity reconciliation. The 463-resolved/345-unaliased name census is unchanged;
+it is not a count of application lookup failures. No collection, signed catalog,
+key, rollout or deployment changes. See the
+[current audit](docs/research/set-pricing-audit.md#reviewed-pokémon-subset-identity)
+for retained receipts and live-provider limitations.
+
+# 2026-10-24 — Exact Magic graded product identity
+
+Continued on `30a56af` plus preserved local changes. Added a shared exact-product
+route to the graded picker, scanned resolver and owned refresh. Re-resolved
+Scryfall UUID/name/set/number and English paper/finish evidence authorizes the
+snake-case v2 product request; returned external product/game/source IDs must
+agree. Vendor group and collector-number conventions no longer block that
+verified product. Source-declared face names handle Pathway-style vendor names.
+Missing source product coverage retains the strict legacy route; source outages,
+ambiguity, budget and pagination failures remain distinct from vendor absence.
+All 40 H1R printings retain separate ordinary/etched product IDs, and legacy
+Magic Normal imports retain nonfoil semantics. Native replays cover 103 cases
+across 52 families plus every H1R etched pair: 141 distinct source printings,
+181 product IDs. Samples cover 42 still-unaliased directory names; they do not
+certify every printing or live graded availability. Broad verification:
+**335 passed, zero failed**. Subsequent compatibility follow-up: **182 passed,
+zero failed**. All 13 Python tests, pinned proof projections, cross-game replay,
+documentation links and diff checks pass. The name census remains 463 resolved
+and 345 unaliased; its scope is explicit. No collection, signed catalog, key,
+deployment or rollout changes. See the
+[current audit and sample ledger](docs/research/set-pricing-audit.md#direct-magic-printing-identity).
+
+# 2026-10-24 — Card-level set pricing audit, second pass
+
+Continued on `30a56af` plus preserved local changes. Completed independent
+product/number review of all 58 queued Magic sets with known source groups:
+8,448 English paper prints across 37 vendor groups. Ten aliases passed native
+whole-group uniqueness checks for all 594 source cards. A proposed Secret Lair
+alias was withheld after the native proof exposed ten double-faced name
+rejections. Reviewed all five remaining Pokémon catalogs (53 cards), repaired
+Creator Pack/Kids WB with a five-card proof, and retained specific identity
+limitations for the other four. The census now resolves 463/808 names, with
+345 explicitly queued and zero directory-resolved-but-rejected cases; the
+cumulative systematic regression ledger contains 61 repairs. Final focused
+native selection: **186 passed, zero failed**; expanded Magic-stage selection:
+309 passed, six opt-in skips, zero failed. All 12 Python audit tests pass,
+including pagination, rate limits and offline receipt validation. Projection
+validation added 14 omitted sealed/numberless fixture records;
+the affected 31 native identity tests passed again with those records included.
+Source captures and full card diagnostics remain on the external SSD; per-set
+metrics, dispositions and replay input are retained in the
+[current audit](docs/research/set-pricing-audit.md). No signed catalog, key,
+deployment, collection or rollout changes. JustTCG graded/device coverage and
+the remaining identity repairs are still open.
+
+# 2026-10-24 — Systematic set pricing identity audit
+
+Continued on `30a56af` plus preserved local changes. Captured all 1,443 public
+vendor groups and inventoried 1,804 installed directory entries. The native
+Pokémon/Magic census checks 808 distinct Browse set names: 452 now resolve,
+356 remain explicitly queued, and zero resolved sets fail graded identity.
+Fixed 26 redundant display-name rejections and 24 reviewed aliases/ambiguity
+cases. Ten edition-decorated audit rows were corrected as projections, not
+counted as application fixes. All 5,731 installed One Piece/Lorcana lanes
+across 56 groups match retained live identities and have quotes. Yu-Gi-Oh's
+59,965 edition memberships retain dated snapshot authority; 1,701 have no quote.
+Independent GN2 card-level IDs resolve a contradictory Scryfall set-level
+group field. Final focused native verification: **184 passed, zero failed**;
+six Python audit tests passed. No signed catalog, key, deployment, collection
+or rollout changes. JustTCG graded/device/provider-wide coverage remains open.
+See the [current audit and replay workflow](docs/research/set-pricing-audit.md)
+for exact denominators, source hashes, all 50 regressions and next-review order.
+
 # 2026-10-23 — Saved Files ZIP acceptance
 
 Continued from clean `14c1c95` with the same accepted installed Debug binary

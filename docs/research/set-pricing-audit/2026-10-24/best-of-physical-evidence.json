@@ -1,0 +1,247 @@
+{
+  "boundary": "Whole-source standard-object evidence. Graded stamp provenance is not implemented by this artifact.",
+  "catalogCards": 9,
+  "excludedJumboObjects": 8,
+  "objects": [
+    {
+      "catalogID": "bog-1",
+      "foil": "cosmos",
+      "name": "Electabuzz",
+      "productID": 85106,
+      "sourceNumber": "1",
+      "stamps": [],
+      "type": "reverse",
+      "vendorName": "Electabuzz - 1",
+      "vendorNumber": "001/009"
+    },
+    {
+      "catalogID": "bog-1",
+      "foil": "cosmos",
+      "name": "Electabuzz",
+      "productID": 167078,
+      "sourceNumber": "1",
+      "stamps": [
+        "winner"
+      ],
+      "type": "reverse",
+      "vendorName": "Electabuzz - 1 [Winner]",
+      "vendorNumber": "001/009"
+    },
+    {
+      "catalogID": "bog-2",
+      "foil": "cosmos",
+      "name": "Hitmonchan",
+      "productID": 86098,
+      "sourceNumber": "2",
+      "stamps": [],
+      "type": "reverse",
+      "vendorName": "Hitmonchan - 2",
+      "vendorNumber": "002/009"
+    },
+    {
+      "catalogID": "bog-2",
+      "foil": "cosmos",
+      "name": "Hitmonchan",
+      "productID": 117599,
+      "sourceNumber": "2",
+      "stamps": [
+        "winner"
+      ],
+      "type": "reverse",
+      "vendorName": "Hitmonchan - 2 [Winner]",
+      "vendorNumber": "002/009"
+    },
+    {
+      "catalogID": "bog-3",
+      "foil": "cosmos",
+      "name": "Professor Elm",
+      "productID": 88387,
+      "sourceNumber": "3",
+      "stamps": [],
+      "type": "reverse",
+      "vendorName": "Professor Elm - 3",
+      "vendorNumber": "003/009"
+    },
+    {
+      "catalogID": "bog-4",
+      "foil": null,
+      "name": "Rocket\u2019s Scizor",
+      "productID": 88786,
+      "sourceNumber": "4",
+      "stamps": [],
+      "type": "normal",
+      "vendorName": "Rocket's Scizor - 4",
+      "vendorNumber": "004/009"
+    },
+    {
+      "catalogID": "bog-4",
+      "foil": null,
+      "name": "Rocket\u2019s Scizor",
+      "productID": 167081,
+      "sourceNumber": "4",
+      "stamps": [
+        "winner"
+      ],
+      "type": "normal",
+      "vendorName": "Rocket's Scizor - 4 [Winner]",
+      "vendorNumber": "004/009"
+    },
+    {
+      "catalogID": "bog-5",
+      "foil": null,
+      "name": "Rocket\u2019s Sneasel",
+      "productID": 88793,
+      "sourceNumber": "5",
+      "stamps": [],
+      "type": "normal",
+      "vendorName": "Rocket's Sneasel - 5",
+      "vendorNumber": "005/009"
+    },
+    {
+      "catalogID": "bog-5",
+      "foil": null,
+      "name": "Rocket\u2019s Sneasel",
+      "productID": 107877,
+      "sourceNumber": "5",
+      "stamps": [
+        "winner"
+      ],
+      "type": "normal",
+      "vendorName": "Rocket's Sneasel - 5 [Winner]",
+      "vendorNumber": "005/009"
+    },
+    {
+      "catalogID": "bog-6",
+      "foil": null,
+      "name": "Dark Ivysaur",
+      "productID": 84616,
+      "sourceNumber": "6",
+      "stamps": [],
+      "type": "normal",
+      "vendorName": "Dark Ivysaur - 6",
+      "vendorNumber": "006/009"
+    },
+    {
+      "catalogID": "bog-6",
+      "foil": null,
+      "name": "Dark Ivysaur",
+      "productID": 107876,
+      "sourceNumber": "6",
+      "stamps": [
+        "winner"
+      ],
+      "type": "normal",
+      "vendorName": "Dark Ivysaur - 6 [Winner]",
+      "vendorNumber": "006/009"
+    },
+    {
+      "catalogID": "bog-7",
+      "foil": null,
+      "name": "Dark Venusaur",
+      "productID": 84666,
+      "sourceNumber": "7",
+      "stamps": [],
+      "type": "normal",
+      "vendorName": "Dark Venusaur - 7",
+      "vendorNumber": "007/009"
+    },
+    {
+      "catalogID": "bog-7",
+      "foil": null,
+      "name": "Dark Venusaur",
+      "productID": 167077,
+      "sourceNumber": "7",
+      "stamps": [
+        "winner"
+      ],
+      "type": "normal",
+      "vendorName": "Dark Venusaur - 7 [Winner]",
+      "vendorNumber": "007/009"
+    },
+    {
+      "catalogID": "bog-8",
+      "foil": "cosmos",
+      "name": "Rocket\u2019s Mewtwo",
+      "productID": 167080,
+      "sourceNumber": "8",
+      "stamps": [
+        "winner"
+      ],
+      "type": "reverse",
+      "vendorName": "Rocket's Mewtwo - 8 [Winner]",
+      "vendorNumber": "008/009"
+    },
+    {
+      "catalogID": "bog-9",
+      "foil": "cosmos",
+      "name": "Rocket\u2019s Hitmonchan",
+      "productID": 167079,
+      "sourceNumber": "9",
+      "stamps": [
+        "winner"
+      ],
+      "type": "reverse",
+      "vendorName": "Rocket's Hitmonchan - 9 [Winner]",
+      "vendorNumber": "009/009"
+    }
+  ],
+  "receipts": {
+    "3-1455-products.json": {
+      "bytes": 19337,
+      "sha256": "4db4f1d81506358cc44e29b555463776b25ceaeafeffd5ad013e85e424a94eea",
+      "sourceURL": "https://tcgcsv.com/tcgplayer/3/1455/products"
+    },
+    "tcgdex-bog.json": {
+      "bytes": 778,
+      "sha256": "3b8ac97cd86a45a22397fd415006c4aef522cffc2bee4116db023f539e3ac67a",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/bog"
+    },
+    "tcgdex-card-bog-1.json": {
+      "bytes": 2706,
+      "sha256": "cb80e66453c9f6ee8972d2c75b6dacf76a829232f7778b143aca7725d4b49225",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-1"
+    },
+    "tcgdex-card-bog-2.json": {
+      "bytes": 2451,
+      "sha256": "5cc45b44031c29921ddbe66ade2c8592f394e4b42dbbf92a146d934367ac6386",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-2"
+    },
+    "tcgdex-card-bog-3.json": {
+      "bytes": 1632,
+      "sha256": "9a63b2f758344ad105bacaa05575b679fecc8b0c3cca6f9e65218e625cfb86f6",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-3"
+    },
+    "tcgdex-card-bog-4.json": {
+      "bytes": 1917,
+      "sha256": "c1e71434da6e641ac8317a02790021f3b802eacd90150549e23d1c8a3c60a7b5",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-4"
+    },
+    "tcgdex-card-bog-5.json": {
+      "bytes": 1850,
+      "sha256": "25cb2b9a91e586533e4e895c4671c891e247e155a93b8553f93245ec4767b338",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-5"
+    },
+    "tcgdex-card-bog-6.json": {
+      "bytes": 2670,
+      "sha256": "a11e54d1459c837bd762ac107acae1dac0f646bb9a02aa6bb77fca33ef1e368e",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-6"
+    },
+    "tcgdex-card-bog-7.json": {
+      "bytes": 2439,
+      "sha256": "cc812d6209706d16d2b043601ccb5524d8ec20633d19e29ad400f3e091290d93",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-7"
+    },
+    "tcgdex-card-bog-8.json": {
+      "bytes": 1800,
+      "sha256": "bd5b922ea18b3c084e0a1387f3eb677e65e1376758cadd93e33ef24d8b541f14",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-8"
+    },
+    "tcgdex-card-bog-9.json": {
+      "bytes": 1752,
+      "sha256": "939a5c751c32e0b98bac378619c331c6d4a26f18a200ea397e25243ac62bd5e2",
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/bog-9"
+    }
+  },
+  "schemaVersion": 1,
+  "standardProducts": 15
+}
