@@ -1,0 +1,149 @@
+{
+  "cards": [
+    {
+      "name": "Venusaur",
+      "number": "1"
+    },
+    {
+      "name": "Cherrim",
+      "number": "2"
+    },
+    {
+      "name": "Ninetales",
+      "number": "3"
+    },
+    {
+      "name": "Heatran",
+      "number": "4"
+    },
+    {
+      "name": "Starmie",
+      "number": "5"
+    },
+    {
+      "name": "Gyarados",
+      "number": "6"
+    },
+    {
+      "name": "Pikachu",
+      "number": "7"
+    },
+    {
+      "name": "Zapdos",
+      "number": "8"
+    },
+    {
+      "name": "Mewtwo",
+      "number": "9"
+    },
+    {
+      "name": "Mew",
+      "number": "10"
+    },
+    {
+      "name": "Diglett",
+      "number": "11"
+    },
+    {
+      "name": "Lucario",
+      "number": "12"
+    },
+    {
+      "name": "Skuntank",
+      "number": "13"
+    },
+    {
+      "name": "Bastiodon",
+      "number": "14"
+    },
+    {
+      "name": "Rattata",
+      "number": "15"
+    },
+    {
+      "name": "Bibarel",
+      "number": "16"
+    }
+  ],
+  "catalogName": "Pok\u00e9mon Rumble",
+  "groupID": "1433",
+  "products": [
+    {
+      "name": "Bastiodon",
+      "number": "14"
+    },
+    {
+      "name": "Bibarel",
+      "number": "16"
+    },
+    {
+      "name": "Cherrim",
+      "number": "2"
+    },
+    {
+      "name": "Diglett",
+      "number": "11"
+    },
+    {
+      "name": "Gyarados",
+      "number": "6"
+    },
+    {
+      "name": "Heatran",
+      "number": "4"
+    },
+    {
+      "name": "Lucario",
+      "number": "12"
+    },
+    {
+      "name": "Mew",
+      "number": "10"
+    },
+    {
+      "name": "Mewtwo",
+      "number": "9"
+    },
+    {
+      "name": "Ninetales",
+      "number": "3"
+    },
+    {
+      "name": "Pikachu",
+      "number": "7"
+    },
+    {
+      "name": "Rattata",
+      "number": "15"
+    },
+    {
+      "name": "Skuntank",
+      "number": "13"
+    },
+    {
+      "name": "Starmie",
+      "number": "5"
+    },
+    {
+      "name": "Venusaur",
+      "number": "1"
+    },
+    {
+      "name": "Zapdos",
+      "number": "8"
+    }
+  ],
+  "receipts": {
+    "3-1433-products.json": {
+      "bytes": 16514,
+      "sha256": "12066e3d69d1ffe7d92189c59bbe0c5b3f5f0df44d32c70cb9c4c7f07b2e0a1b",
+      "sourceURL": "https://tcgcsv.com/tcgplayer/3/1433/products"
+    },
+    "tcgdex-ru1.json": {
+      "bytes": 1905,
+      "sha256": "dbc0eb680903b02ecfc676ed2b5869f965817bf08806fc9994e1289bed704380",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/ru1"
+    }
+  },
+  "vendorName": "Rumble"
+}
