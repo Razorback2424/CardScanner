@@ -283,7 +283,7 @@ final class QuoteCacheTests: XCTestCase {
 
         let result = coordinator.present(scan)
         XCTAssertEqual(result.display.amount, 12.34)
-        XCTAssertEqual(result.quoteState, .current)
+        XCTAssertEqual(result.quoteState, .stale)
         XCTAssertTrue(result.shouldAutoRefresh)
         XCTAssertNotNil(QuoteCache(context: context).quote(
             game: .pokemon,
@@ -317,6 +317,164 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertEqual(result.display.amount, 3.21)
         XCTAssertEqual(result.quoteState, .current)
         XCTAssertFalse(result.shouldAutoRefresh)
+    }
+
+    func testRecentlyFetchedOldProviderPriceStillAutoRefreshes() throws {
+        let context = try makeContext()
+        let old = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-10-14T22:55:12Z"))
+        let fetched = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-10-26T00:00:00Z"))
+        let pricing = TCGdexPricing(tcgplayer: TCGPlayerPricing(
+            updated: ISO8601DateFormatter().string(from: old), normal: nil,
+            holo: nil, holofoil: TCGPlayerPricePoint(marketPrice: 4.43), reverse: nil, reverseHolofoil: nil
+        ), cardmarket: nil)
+        let result = PriceCheckCoordinator(context: context).present(
+            priceCheckScan(variant: .holo, pricing: pricing, catalogRetrievedAt: fetched, cardNumber: "195")
+        )
+        XCTAssertEqual(result.card.providerID, "sv10-195")
+        XCTAssertEqual(result.card.name, "Clamperl")
+        XCTAssertEqual(result.resolved.variant, .holo)
+        XCTAssertTrue(result.shouldAutoRefresh)
+        XCTAssertEqual(result.display.sourceUpdatedAt, old)
+        XCTAssertEqual(result.display.state(), .stale)
+        XCTAssertEqual(result.quoteState, .stale)
+    }
+
+    func testSuccessfulUnchangedCheckKeepsSourceDateAndReportsNoNewerData() throws {
+        let scan = priceCheckScan(variant: .holo, cardNumber: "195")
+        let old = Date.now.addingTimeInterval(-12 * 24 * 60 * 60)
+        let primary = quote(4.43, at: old)
+        var result = PriceCheckResult(resolvedScan: scan, quote: primary, checkedAt: old, quoteState: .stale)
+        let checked = Date.now
+        result.completeRefresh(.price(NormalizedPrice(unitMarketPriceUSD: 4.43, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "reverse-holofoil", sourceUpdatedAt: old, fetchedAt: checked)), at: checked)
+        XCTAssertEqual(result.quoteState, .stale)
+        XCTAssertEqual(result.refreshFeedback, .noNewerData)
+        XCTAssertEqual(result.lastSuccessfulCheckAt, checked)
+        XCTAssertEqual(result.display.sourceUpdatedAt, old)
+        XCTAssertEqual(result.display.amount, 4.43)
+        XCTAssertFalse(result.isRefreshing)
+        let retryAt = checked.addingTimeInterval(60)
+        result.completeRefresh(result.quote, issue: .rateLimited(retryAt: retryAt), at: checked)
+        XCTAssertEqual(result.refreshFeedback, .noNewerData)
+        XCTAssertEqual(result.quoteState, .lastKnown(.rateLimited(retryAt: retryAt)))
+        XCTAssertEqual(result.lastSuccessfulCheckAt, checked)
+    }
+
+    func testFailedCheckPreservesSuccessfulCheckAndQuoteProvenance() throws {
+        let old = Date.now.addingTimeInterval(-12 * 24 * 60 * 60)
+        var result = PriceCheckResult(resolvedScan: priceCheckScan(), quote: quote(4.43, at: old), checkedAt: old)
+        let previous = result.quote
+        let attempted = Date.now
+        result.recordFailedCheck(at: attempted)
+        XCTAssertEqual(result.quote, previous)
+        XCTAssertEqual(result.lastSuccessfulCheckAt, old)
+        XCTAssertEqual(result.checkedAt, attempted)
+        XCTAssertEqual(result.refreshFeedback, .failed)
+        XCTAssertTrue(result.refreshFailed)
+    }
+
+    func testNewerExactQuoteCompletesAsFreshAndUpdated() throws {
+        let old = Date.now.addingTimeInterval(-12 * 24 * 60 * 60)
+        var result = PriceCheckResult(resolvedScan: priceCheckScan(), quote: quote(4.43, at: old), checkedAt: old)
+        let fresh = quote(4.03, at: .now)
+        result.completeRefresh(fresh)
+        XCTAssertEqual(result.quote, fresh)
+        XCTAssertEqual(result.quoteState, .current)
+        XCTAssertEqual(result.refreshFeedback, .updated)
+    }
+
+    func testLiveStalePrimaryTriesFallbackOnceAndKeepsSpecificFailures() async throws {
+        let context = try makeContext()
+        let old = quote(4.43, at: .now.addingTimeInterval(-12 * 24 * 60 * 60))
+        let scan = priceCheckScan(variant: .holo, cardNumber: "195")
+        for issue in [PriceCheckRefreshIssue.fallbackDisabled, .fallbackUnconfigured,
+                      .rateLimited(retryAt: .now.addingTimeInterval(60)),
+                      .budgetLimited(resetAt: .now.addingTimeInterval(60)),
+                      .providerUnavailable, .noExactPrice] {
+            var calls = 0
+            let provider = LivePriceCheckRefreshProvider(
+                quoteService: PriceQuoteService(catalogRefreshOverride: { _, _, _ in old }),
+                fallbackResolver: PriceFallbackQuoteResolver(context: context),
+                fallbackOverride: { card, variant, printRun in
+                    calls += 1
+                    XCTAssertEqual(card.providerID, scan.card.providerID)
+                    XCTAssertEqual(variant, .holo)
+                    XCTAssertNil(printRun)
+                    return .failed(issue)
+                })
+            let outcome = await provider.refresh(card: scan.card, variant: .holo, pokemonPrintRun: nil)
+            XCTAssertEqual(outcome, .lastKnown(old, issue))
+            XCTAssertEqual(calls, 1)
+        }
+    }
+
+    func testLiveFallbackRequiresDemonstrablyNewerDataAndFreshPrimarySkipsFallback() async throws {
+        let context = try makeContext()
+        let scan = priceCheckScan(variant: .holo, cardNumber: "195")
+        let oldDate = Date.now.addingTimeInterval(-12 * 24 * 60 * 60)
+        let old = quote(4.43, at: oldDate)
+        let fresh = quote(4.03, at: .now)
+        let unknownAge = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 99, currencyCode: "USD",
+            source: .justTCG, sourceVariantID: "exact", sourceUpdatedAt: nil, fetchedAt: .now))
+        for (primary, alternate, expected, expectedCalls) in [
+            (old, fresh, fresh, 1), (old, quote(99, at: oldDate.addingTimeInterval(-60)), old, 1),
+            (old, unknownAge, old, 1), (fresh, old, fresh, 0)
+        ] {
+            var calls = 0
+            let provider = LivePriceCheckRefreshProvider(
+                quoteService: PriceQuoteService(catalogRefreshOverride: { _, _, _ in primary }),
+                fallbackResolver: PriceFallbackQuoteResolver(context: context),
+                fallbackOverride: { _, _, _ in calls += 1; return .quote(alternate) })
+            let outcome = await provider.refresh(card: scan.card, variant: .holo, pokemonPrintRun: nil)
+            XCTAssertEqual(outcome, .quote(expected))
+            XCTAssertEqual(calls, expectedCalls)
+        }
+    }
+
+    func testStalePrimaryRespectsActualDisabledFallbackSetting() async throws {
+        let previous = UserDefaults.standard.object(forKey: "usesPriceFallback")
+        UserDefaults.standard.set(false, forKey: "usesPriceFallback")
+        defer { UserDefaults.standard.set(previous, forKey: "usesPriceFallback") }
+        let context = try makeContext()
+        let old = quote(4.43, at: .now.addingTimeInterval(-12 * 24 * 60 * 60))
+        let provider = LivePriceCheckRefreshProvider(
+            quoteService: PriceQuoteService(catalogRefreshOverride: { _, _, _ in old }),
+            fallbackResolver: PriceFallbackQuoteResolver(context: context))
+        let scan = priceCheckScan(variant: .holo)
+        let outcome = await provider.refresh(card: scan.card, variant: .holo, pokemonPrintRun: nil)
+        XCTAssertEqual(outcome, .lastKnown(old, .fallbackDisabled))
+    }
+
+    func testNewDownloadOfOldProviderDataDoesNotReplaceNewerLocalQuote() throws {
+        let context = try makeContext()
+        let old = Date.now.addingTimeInterval(-12 * 24 * 60 * 60)
+        let recent = Date.now.addingTimeInterval(-60)
+        QuoteCache(context: context).store(quote(4.03, at: recent),
+            game: .pokemon, printingID: "sv10-085", variantID: "normal")
+        let pricing = TCGdexPricing(tcgplayer: TCGPlayerPricing(
+            updated: ISO8601DateFormatter().string(from: old), normal: TCGPlayerPricePoint(marketPrice: 4.43),
+            holo: nil, holofoil: nil, reverse: nil, reverseHolofoil: nil
+        ), cardmarket: nil)
+        let result = PriceCheckCoordinator(context: context).present(
+            priceCheckScan(variant: .normal, pricing: pricing)
+        )
+        XCTAssertEqual(result.display.amount, 4.03)
+        XCTAssertEqual(result.display.sourceUpdatedAt, recent)
+        XCTAssertFalse(result.shouldAutoRefresh)
+    }
+
+    func testRefreshCannotRegressToOlderProviderData() async throws {
+        let context = try makeContext()
+        let recent = quote(4.03, at: .now.addingTimeInterval(-60))
+        let old = quote(4.43, at: .now.addingTimeInterval(-12 * 24 * 60 * 60))
+        QuoteCache(context: context).store(recent,
+            game: .pokemon, printingID: "sv10-085", variantID: nil)
+        let coordinator = PriceCheckCoordinator(context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .quote(old)))
+        let outcome = await coordinator.refresh(coordinator.present(priceCheckScan()))
+        XCTAssertEqual(outcome, .quote(recent))
+        XCTAssertEqual(QuoteCache(context: context).quote(
+            game: .pokemon, printingID: "sv10-085", variantID: nil)?.effectiveAmount, 4.03)
     }
 
     func testPriceCheckPrefersNewerLocalEvidenceOverCachedCatalogPrice() throws {
@@ -557,12 +715,13 @@ final class QuoteCacheTests: XCTestCase {
         pricing: TCGdexPricing? = nil,
         catalogRetrievedAt: Date = .now,
         slab: GradedSlabEvidence? = nil,
-        gradedOutcome: ScannedGradedOutcome? = nil
+        gradedOutcome: ScannedGradedOutcome? = nil,
+        cardNumber: String = "085"
     ) -> ResolvedScan {
         let card = TCGdexCard(
-            id: "sv10-085",
-            localId: "085",
-            name: "Example Pokémon",
+            id: "sv10-\(cardNumber)",
+            localId: cardNumber,
+            name: cardNumber == "195" ? "Clamperl" : "Example Pokémon",
             image: nil,
             rarity: nil,
             set: TCGdexSetBrief(
@@ -576,7 +735,7 @@ final class QuoteCacheTests: XCTestCase {
         )
         let identifier = ScanIdentifier.pokemon(
             setCode: "DRI",
-            cardNumber: "085",
+            cardNumber: cardNumber,
             printedTotal: 182,
             setDefinition: PokemonSetDefinition(
                 printedCode: "DRI",

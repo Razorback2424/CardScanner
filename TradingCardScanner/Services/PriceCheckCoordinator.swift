@@ -39,6 +39,8 @@ enum PriceCheckQuoteState: Equatable, Sendable {
     case unsupportedGame
     case checking
     case current
+    /// A usable quote whose market-data date exceeds the freshness policy.
+    case stale
     case lastKnown(PriceCheckRefreshIssue)
     case noExactPrice
     case notMatched
@@ -58,6 +60,7 @@ enum PriceCheckQuoteState: Equatable, Sendable {
 
 enum PriceCheckRefreshOutcome: Equatable, Sendable {
     case quote(PriceLookup)
+    case lastKnown(PriceLookup, PriceCheckRefreshIssue)
     case failed(PriceCheckRefreshIssue)
     /// Cancellation is an internal lifecycle result and is never presented as
     /// provider failure. The view model ignores it when the request is stale.
@@ -79,16 +82,19 @@ protocol PriceCheckRefreshProvider {
 }
 
 @MainActor
-private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
+final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
     private let quoteService: PriceQuoteService
     private let fallbackResolver: PriceFallbackQuoteResolver
+    private let fallbackOverride: ((IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async -> PriceCheckRefreshOutcome)?
 
     init(
         quoteService: PriceQuoteService = PriceQuoteService(),
-        fallbackResolver: PriceFallbackQuoteResolver
+        fallbackResolver: PriceFallbackQuoteResolver,
+        fallbackOverride: ((IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async -> PriceCheckRefreshOutcome)? = nil
     ) {
         self.quoteService = quoteService
         self.fallbackResolver = fallbackResolver
+        self.fallbackOverride = fallbackOverride
     }
 
     func refresh(
@@ -107,6 +113,20 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             )
             if case .price = catalogQuote,
                PriceCheckCoordinator.isUsableUSD(catalogQuote) {
+                if card.game == .pokemon,
+                   case let .price(price) = catalogQuote, price.isStale(),
+                   quoteService.allowsProviderFallback(for: card.game) {
+                    let alternate = await fallback(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
+                    if case .cancelled = alternate { return .cancelled }
+                    if case let .quote(.price(newer)) = alternate,
+                       newer.isUsableUSD, let sourceDate = newer.sourceUpdatedAt,
+                       sourceDate > price.effectiveAsOf {
+                        return alternate
+                    }
+                    if case let .failed(issue) = alternate {
+                        return .lastKnown(catalogQuote, issue)
+                    }
+                }
                 return .quote(catalogQuote)
             }
             guard quoteService.allowsProviderFallback(for: card.game) else { return .quote(catalogQuote) }
@@ -142,6 +162,9 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceCheckRefreshOutcome {
+        if let fallbackOverride {
+            return await fallbackOverride(card, variant, pokemonPrintRun)
+        }
         switch await fallbackResolver.resolve(
             card: card,
             variant: variant,
@@ -289,7 +312,7 @@ final class PriceCheckCoordinator {
 
         if Self.isUsableUSD(catalogQuote),
            let catalogEvidence = Self.evidence(from: catalogQuote),
-           localEvidence.map({ catalogEvidence.retrievedAt > $0.retrievedAt }) ?? true {
+           localEvidence.map({ Self.isNewer(catalogEvidence, than: $0, game: key.game) }) ?? true {
             _ = cache.store(
                 catalogQuote,
                 game: key.game,
@@ -302,10 +325,10 @@ final class PriceCheckCoordinator {
                 resolvedScan: resolvedScan,
                 quote: catalogQuote,
                 checkedAt: catalogEvidence.retrievedAt,
-                quoteState: .current,
+                quoteState: key.game == .pokemon && Self.isStale(catalogEvidence, game: key.game) ? .stale : .current,
                 // Identification stays fast, but an old session-cache payload
                 // must not disable the newer-price check.
-                shouldAutoRefresh: Self.isStale(catalogEvidence)
+                shouldAutoRefresh: Self.isStale(catalogEvidence, game: key.game)
             )
         }
 
@@ -336,8 +359,8 @@ final class PriceCheckCoordinator {
                 resolvedScan: resolvedScan,
                 quote: localLookup,
                 checkedAt: local.retrievedAt,
-                quoteState: .current,
-                shouldAutoRefresh: Self.isStale(local)
+                quoteState: key.game == .pokemon && Self.isStale(local, game: key.game) ? .stale : .current,
+                shouldAutoRefresh: Self.isStale(local, game: key.game)
             )
         }
 
@@ -414,19 +437,40 @@ final class PriceCheckCoordinator {
             }
         }
 
-        let outcome = await refreshProvider.refresh(
+        var outcome = await refreshProvider.refresh(
             card: result.card,
             variant: result.resolved.variant,
             pokemonPrintRun: result.pokemonPrintRun
         )
-        guard shouldContinue?() ?? true else { return .cancelled }
-        if case let .quote(.price(price)) = outcome, !price.isUsableUSD {
+        guard !Task.isCancelled, shouldContinue?() ?? true else { return .cancelled }
+        let lookup: PriceLookup?
+        let issue: PriceCheckRefreshIssue?
+        switch outcome {
+        case let .quote(value): lookup = value; issue = nil
+        case let .lastKnown(value, failure): lookup = value; issue = failure
+        case .failed, .cancelled: return outcome
+        }
+        if case let .price(price)? = lookup, !price.isUsableUSD {
             return .failed(.providerUnavailable)
         }
-        if case .quote(.unavailable(nil)) = outcome {
+        if case .unavailable(nil)? = lookup {
             return .failed(.providerUnavailable)
         }
-        if case let .quote(quote) = outcome,
+        if result.card.game == .pokemon,
+           case let .price(candidate)? = lookup,
+           case let .price(previous) = result.quote, previous.isUsableUSD,
+           (candidate.effectiveAsOf < previous.effectiveAsOf
+            || (previous.sourceUpdatedAt != nil && candidate.sourceUpdatedAt == nil)) {
+            // A successful check can still return older upstream data.
+            // Preserve the better quote while the view records this new check.
+            outcome = issue.map { .lastKnown(result.quote, $0) } ?? .quote(result.quote)
+        }
+        let successfulQuote: PriceLookup?
+        switch outcome {
+        case let .quote(value), let .lastKnown(value, _): successfulQuote = value
+        default: successfulQuote = nil
+        }
+        if let quote = successfulQuote,
            case .price = quote {
             let key = quoteKey(for: result.resolvedScan)
             _ = cache.store(
@@ -498,7 +542,7 @@ final class PriceCheckCoordinator {
         )
     }
 
-    /// Chooses by successful evidence time, not by last failed attempt. Ties
+    /// Chooses by market-data time, then successful retrieval, never a failed attempt. Ties
     /// consistently favor the quote cache Price Check already owns.
     private func newestLocalEvidence(for key: QuoteKey) -> LocalEvidence? {
         let record = collectionPrices.record(
@@ -522,7 +566,19 @@ final class PriceCheckCoordinator {
             $0.price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame
         }
         return (usdEvidence.isEmpty ? evidence : usdEvidence)
-            .max(by: { $0.retrievedAt < $1.retrievedAt })
+            .max(by: { Self.isNewer($1, than: $0, game: key.game) })
+    }
+
+    private static func isNewer(_ candidate: LocalEvidence, than previous: LocalEvidence, game: CardGame) -> Bool {
+        guard game == .pokemon else { return candidate.retrievedAt > previous.retrievedAt }
+        if previous.price.sourceUpdatedAt != nil, candidate.price.sourceUpdatedAt == nil { return false }
+        if candidate.price.sourceUpdatedAt != nil, previous.price.sourceUpdatedAt == nil {
+            return candidate.price.effectiveAsOf > previous.price.effectiveAsOf
+        }
+        if candidate.price.effectiveAsOf != previous.price.effectiveAsOf {
+            return candidate.price.effectiveAsOf > previous.price.effectiveAsOf
+        }
+        return candidate.retrievedAt > previous.retrievedAt
     }
 
     private static func evidence(from record: PriceRecord) -> LocalEvidence? {
@@ -580,8 +636,9 @@ final class PriceCheckCoordinator {
         return LocalEvidence(price: price, retrievedAt: price.fetchedAt)
     }
 
-    private static func isStale(_ evidence: LocalEvidence, now: Date = .now) -> Bool {
-        now.timeIntervalSince(evidence.retrievedAt) > PriceDisplay.staleAfter
+    private static func isStale(_ evidence: LocalEvidence, game: CardGame, now: Date = .now) -> Bool {
+        game == .pokemon ? evidence.price.isStale(now: now)
+            : now.timeIntervalSince(evidence.retrievedAt) > PriceDisplay.staleAfter
     }
 
     static func isUsableUSD(_ quote: PriceLookup) -> Bool {

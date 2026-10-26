@@ -517,6 +517,12 @@ private enum FinishChoiceDuplicatePreflight {
     case duplicate(PendingDuplicateChoiceContext)
 }
 
+enum PriceCheckRefreshFeedback: Equatable {
+    case updated
+    case noNewerData
+    case failed
+}
+
 struct PriceCheckResult: Identifiable {
     let id = UUID()
     let resolvedScan: ResolvedScan
@@ -528,6 +534,41 @@ struct PriceCheckResult: Identifiable {
     var shouldAutoRefresh = true
     var refreshFailed = false
     var isRefreshing = false
+    var refreshFeedback: PriceCheckRefreshFeedback?
+    var lastSuccessfulCheckAt: Date?
+
+    var successfulQuoteState: PriceCheckQuoteState {
+        guard hasUsableAmount else { return .checking }
+        if card.game == .pokemon, resolvedScan.request.subject.slab == nil,
+           display.state() == .stale { return .stale }
+        return .current
+    }
+
+    mutating func completeRefresh(_ refreshed: PriceLookup, issue: PriceCheckRefreshIssue? = nil, at date: Date = .now) {
+        let unchanged: Bool
+        if case let .price(previous) = quote, case let .price(next) = refreshed {
+            unchanged = previous.source == next.source
+                && previous.sourceUpdatedAt == next.sourceUpdatedAt
+                && previous.unitMarketPriceUSD == next.unitMarketPriceUSD
+        } else { unchanged = false }
+        quote = refreshed
+        checkedAt = date
+        lastSuccessfulCheckAt = date
+        isRefreshing = false
+        refreshFailed = issue != nil
+        // The primary check succeeded; any fallback issue stays visible in
+        // quoteState rather than hiding this completed check's result.
+        refreshFeedback = unchanged ? .noNewerData : .updated
+        quoteState = issue.map { .lastKnown($0) } ?? successfulQuoteState
+    }
+
+    mutating func recordFailedCheck(at date: Date = .now) {
+        if hasUsableAmount { lastSuccessfulCheckAt = lastSuccessfulCheckAt ?? checkedAt }
+        checkedAt = date
+        refreshFeedback = .failed
+        isRefreshing = false
+        refreshFailed = true
+    }
 
     var card: IdentifiedCard { resolvedScan.card }
     var resolved: ResolvedVariant { resolvedScan.resolved }
@@ -5890,6 +5931,7 @@ final class ScannerViewModel: ObservableObject {
         result.shouldAutoRefresh = false
         result.quoteState = .checking
         result.refreshFailed = false
+        result.refreshFeedback = nil
         priceCheckResult = result
         let resultID = result.id
         let refreshID = UUID()
@@ -5907,8 +5949,7 @@ final class ScannerViewModel: ObservableObject {
                 guard self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
-                latest.isRefreshing = false
-                latest.refreshFailed = true
+                latest.recordFailedCheck()
                 latest.quoteState = latest.hasUsableAmount
                     ? .lastKnown(.providerUnavailable)
                     : .providerUnavailable
@@ -5916,21 +5957,21 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
             let shouldContinue = self.storageGenerationContinuation
-            switch await priceCheckCoordinator.refresh(
+            let outcome = await priceCheckCoordinator.refresh(
                 result,
                 shouldContinue: shouldContinue
-            ) {
-            case let .quote(refreshed):
+            )
+            switch outcome {
+            case let .quote(refreshed), let .lastKnown(refreshed, _):
                 guard !Task.isCancelled,
                       self.isStorageGenerationCurrent,
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
-                latest.quote = refreshed
-                latest.checkedAt = .now
-                latest.isRefreshing = false
-                latest.refreshFailed = false
-                latest.quoteState = latest.hasUsableAmount ? .current : .checking
+                // A primary request can succeed while its optional fallback fails.
+                let issue: PriceCheckRefreshIssue?
+                if case let .lastKnown(_, failure) = outcome { issue = failure } else { issue = nil }
+                latest.completeRefresh(refreshed, issue: issue)
                 self.priceCheckResult = latest
             case let .failed(issue):
                 guard !Task.isCancelled,
@@ -5947,8 +5988,7 @@ final class ScannerViewModel: ObservableObject {
                         shouldContinue: shouldContinue
                     )
                 }
-                latest.checkedAt = .now
-                latest.isRefreshing = false
+                latest.recordFailedCheck()
                 latest.refreshFailed = issue != .mappingUnavailable
                 latest.quoteState = latest.hasUsableAmount
                     ? .lastKnown(issue)
@@ -5962,7 +6002,7 @@ final class ScannerViewModel: ObservableObject {
                       latest.id == resultID else { return }
                 latest.isRefreshing = false
                 latest.refreshFailed = false
-                latest.quoteState = latest.hasUsableAmount ? .current : .checking
+                latest.quoteState = latest.successfulQuoteState
                 self.priceCheckResult = latest
             }
         }
@@ -5975,7 +6015,7 @@ final class ScannerViewModel: ObservableObject {
         guard var result = priceCheckResult, result.isRefreshing else { return }
         result.isRefreshing = false
         result.refreshFailed = false
-        result.quoteState = result.hasUsableAmount ? .current : .checking
+        result.quoteState = result.successfulQuoteState
         priceCheckResult = result
     }
 

@@ -248,6 +248,22 @@ private final class ScannerStubPriceCheckProvider: PriceCheckRefreshProvider {
     }
 }
 
+@MainActor
+private final class ScannerGatedPriceCheckProvider: PriceCheckRefreshProvider {
+    let gate = ScannerFetchGate()
+    private(set) var calls = 0
+
+    func refresh(card: IdentifiedCard, variant: PhysicalVariant?, pokemonPrintRun: PokemonPrintRun?) async -> PriceCheckRefreshOutcome {
+        calls += 1
+        let first = calls == 1
+        if first { await gate.hold() }
+        // Deliberately ignore cancellation, as a late transport response may.
+        return .quote(.price(NormalizedPrice(unitMarketPriceUSD: first ? 999 : 4.43,
+            currencyCode: "USD", source: .tcgplayer, sourceVariantID: "normal",
+            sourceUpdatedAt: .now.addingTimeInterval(-12 * 24 * 60 * 60), fetchedAt: .now)))
+    }
+}
+
 private actor ScannerPrintRunRecorder {
     private(set) var values: [PokemonPrintRun?] = []
 
@@ -1501,7 +1517,10 @@ final class ScannerViewModelTests: XCTestCase {
         )
 
         confirm(model, subject, encounterID: UUID())
-        let presented = await waitUntil { model.priceCheckResult != nil }
+        let presented = await waitUntil {
+            model.priceCheckResult?.hasUsableAmount == true
+                && model.priceCheckResult?.isRefreshing == false
+        }
         XCTAssertTrue(presented)
         guard let result = model.priceCheckResult else {
             return XCTFail("graded Price Check should present a result")
@@ -1548,6 +1567,34 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.priceCheckResult?.quoteState, .providerUnavailable)
         XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "USD")
         XCTAssertNil(model.priceCheckResult?.display.amount)
+    }
+
+    func testPriceCheckRepeatedTapsDismissalAndNewScanCannotPublishObsoleteRefresh() async throws {
+        let provider = ScannerGatedPriceCheckProvider()
+        let model = try makeModel(variants: [.normal], priceCheckProvider: provider)
+        model.setPurpose(.priceCheck)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await provider.gate.waitUntilStarted()
+        XCTAssertTrue(model.priceCheckResult?.isRefreshing == true)
+        model.refreshPriceCheckQuote()
+        model.refreshPriceCheckQuote()
+        XCTAssertEqual(provider.calls, 1)
+
+        model.dismissPriceCheckResult()
+        XCTAssertNil(model.priceCheckResult)
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        await assertEventually { model.priceCheckResult?.display.amount == 4.43 && model.priceCheckResult?.isRefreshing == false }
+        let currentID = try XCTUnwrap(model.priceCheckResult?.id)
+        XCTAssertEqual(model.priceCheckResult?.quoteState, .stale)
+        XCTAssertEqual(provider.calls, 2)
+        await provider.gate.release()
+        await settle()
+        XCTAssertEqual(model.priceCheckResult?.id, currentID)
+        XCTAssertEqual(model.priceCheckResult?.card.cardNumber, "002")
+        XCTAssertEqual(model.priceCheckResult?.display.amount, 4.43)
+        XCTAssertEqual(provider.calls, 2, "A stale result must not start an automatic refresh loop")
+        let cached = try context().fetch(FetchDescriptor<ReferenceQuote>())
+        XCTAssertFalse(cached.contains { $0.effectiveAmount == 999 }, "Dismissed requests must not write late cache results")
     }
 
     func testSameIdentityWithoutSpatialProofIsSuppressed() async throws {
@@ -4179,6 +4226,7 @@ final class ScannerViewModelTests: XCTestCase {
         gradedResolverGate: ScannerGradedResolverGate? = nil,
         writeCoordinator: DerivedStateWriteCoordinator? = nil,
         priceCheckOutcome: PriceCheckRefreshOutcome? = nil,
+        priceCheckProvider: (any PriceCheckRefreshProvider)? = nil,
         storageGeneration: CollectionStorageGeneration? = nil,
         collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil,
         certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)? = nil,
@@ -4247,7 +4295,7 @@ final class ScannerViewModelTests: XCTestCase {
                 )
             }
                 ?? ScannedGradedResolver(),
-            priceCheckRefreshProvider: priceCheckOutcome.map {
+            priceCheckRefreshProvider: priceCheckProvider ?? priceCheckOutcome.map {
                 ScannerStubPriceCheckProvider(outcome: $0)
             },
             catalogCoordinator: catalogCoordinator,
