@@ -2065,6 +2065,7 @@ struct CatalogSetCardsView: View {
     @State private var priceLoadState = CatalogPriceLoadState()
     @State private var contentGeneration = UUID()
     @State private var visibleGroups: [CatalogCardDisplayGroup] = []
+    @State private var setProgress = SetCompletion(owned: 0, total: nil)
     @State private var priceLoadTask: Task<Void, Never>?
     @State private var isVisible = false
     @State private var viewport = CGRect.zero
@@ -2100,11 +2101,13 @@ struct CatalogSetCardsView: View {
         return cards.filter { !$0.isExpandedMasterSetVariant }
     }
 
-    private var completion: SetCompletion {
-        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        return CatalogSetCompletionPresentation.progress(
-            for: set, slots: masterSetSlots, isFullyLoaded: cursor == nil && !cards.isEmpty,
-            ownership: owned, completions: setCompletionStore.index, tier: masterSetTier
+    private var completionInputs: CatalogSetCompletionInputs {
+        let isFullyLoaded = cursor == nil && !cards.isEmpty
+        return CatalogSetCompletionInputs(
+            set: set, slots: masterSetSlots, isFullyLoaded: isFullyLoaded,
+            ownershipRevision: projectionStore.revision,
+            completions: set.game == .pokemon && isFullyLoaded ? nil : setCompletionStore.index,
+            tier: masterSetTier
         )
     }
 
@@ -2235,11 +2238,16 @@ struct CatalogSetCardsView: View {
             priceReloadAfterCurrentLoad = false
         }
         .onChange(of: cards) { _, _ in refreshVisibleGroups() }
+        .onChange(of: completionInputs, initial: true) { _, inputs in
+            let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
+            setProgress = inputs.progress(ownership: owned)
+        }
         .onChange(of: search) { _, _ in refreshVisibleGroups() }
         .onChange(of: ownership) { _, _ in refreshVisibleGroups() }
         .onChange(of: masterSetTier) { _, _ in refreshVisibleGroups() }
-        .onChange(of: prices) { _, _ in refreshVisibleGroups() }
-        .onChange(of: priceLoadState.hasLoadedPrices) { _, _ in refreshVisibleGroups() }
+        .onChange(of: prices) { _, _ in
+            if sort.needsPrices { refreshVisibleGroups() }
+        }
         .onChange(of: projectionStore.revision) { _, _ in refreshVisibleGroups() }
         .onChange(of: sort) { _, newSort in
             refreshVisibleGroups()
@@ -2344,23 +2352,23 @@ struct CatalogSetCardsView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(set.game == .pokemon ? "Master Set Progress" : "Set Progress")
                         .font(.headline)
-                    Text(completion.label)
+                    Text(setProgress.label)
                         .font(.title2.bold())
-                        .foregroundStyle(completion.owned > 0 ? Color.green : Color.primary)
+                        .foregroundStyle(setProgress.owned > 0 ? Color.green : Color.primary)
                         .contentTransition(.numericText())
                 }
                 Spacer()
-                if let fraction = completion.fraction {
+                if let fraction = setProgress.fraction {
                     Text(fraction, format: .percent.precision(.fractionLength(0)))
                         .font(.headline.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
             }
 
-            ProgressView(value: completion.fraction ?? 0)
+            ProgressView(value: setProgress.fraction ?? 0)
                 .tint(.green)
                 .accessibilityLabel(set.game == .pokemon ? "Master set progress" : "Set progress")
-                .accessibilityValue(completion.label)
+                .accessibilityValue(setProgress.label)
 
             if set.game == .pokemon {
                 Picker("Master set definition", selection: $masterSetTier) {
@@ -2442,7 +2450,6 @@ struct CatalogSetCardsView: View {
             }
             guard contentGeneration == requestID, !Task.isCancelled else { return }
             cards = deduplicated(reset ? refreshedCards : cards + refreshedCards)
-            refreshVisibleGroups()
             loadedPageCount = reset ? pagesLoaded : loadedPageCount + pagesLoaded
             if reset { paginationRevision += 1 }
             cursor = page.nextCursor
@@ -2466,7 +2473,6 @@ struct CatalogSetCardsView: View {
                 cards = []
                 cursor = nil
                 loadedPageCount = 0
-                refreshVisibleGroups()
             }
             self.error = error.localizedDescription
         }

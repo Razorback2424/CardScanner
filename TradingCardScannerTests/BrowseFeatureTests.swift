@@ -3653,6 +3653,41 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(stored.thumbnailURL, stored.imageURL)
     }
 
+    func testSetScreenCompletionInvalidatesOnlyForProgressDependencies() {
+        let slot = summary(id: "set-1", number: "1")
+        let set = CatalogSet(
+            catalogID: slot.setID, name: slot.setName, code: slot.setCode,
+            logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 1
+        )
+        let staleIndex = CatalogSetCompletionIndex(completions: [
+            set.id: SetCompletion(owned: 9, total: 10, unit: "variations")
+        ])
+        func inputs(
+            set: CatalogSet = set, slots: [CatalogCardSummary] = [slot],
+            loaded: Bool = true, revision: UInt = 1,
+            index: CatalogSetCompletionIndex? = staleIndex,
+            tier: PokemonMasterSetTier = .standard
+        ) -> CatalogSetCompletionInputs {
+            CatalogSetCompletionInputs(
+                set: set, slots: slots, isFullyLoaded: loaded,
+                ownershipRevision: revision, completions: index, tier: tier
+            )
+        }
+        let baseline = inputs()
+        XCTAssertEqual(baseline, inputs(), "Unchanged progress inputs reuse the cached count")
+        XCTAssertNotEqual(baseline, inputs(loaded: false))
+        XCTAssertNotEqual(baseline, inputs(revision: 2))
+        XCTAssertNotEqual(baseline, inputs(slots: []))
+        XCTAssertNotEqual(baseline, inputs(index: nil))
+        XCTAssertNotEqual(baseline, inputs(tier: .expanded))
+        XCTAssertNotEqual(baseline, inputs(set: set.withSortRank(2)))
+        let owned = CatalogOwnershipIndex(rows: [])
+        XCTAssertEqual(baseline.progress(ownership: owned), owned.progress(for: [slot]),
+                       "Fully loaded slots take precedence over a stale directory index")
+        XCTAssertEqual(inputs(loaded: false).progress(ownership: owned),
+                       staleIndex.completion(for: set, tier: .standard))
+    }
+
     func testSetQuerySortsByNumberAndPriceWithUnknownPricesLast() {
         let cards = [
             summary(id: "set-10", number: "10"),

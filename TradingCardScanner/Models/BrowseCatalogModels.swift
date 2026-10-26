@@ -1047,6 +1047,24 @@ enum CatalogSetCompletionPresentation {
     }
 }
 
+/// Only these inputs invalidate set-screen progress. Search, ordering and
+/// incoming prices must not recount the owner's whole loaded checklist.
+struct CatalogSetCompletionInputs: Equatable {
+    let set: CatalogSet
+    let slots: [CatalogCardSummary]
+    let isFullyLoaded: Bool
+    let ownershipRevision: UInt
+    let completions: CatalogSetCompletionIndex?
+    let tier: PokemonMasterSetTier
+
+    func progress(ownership: CatalogOwnershipIndex) -> SetCompletion {
+        CatalogSetCompletionPresentation.progress(
+            for: set, slots: slots, isFullyLoaded: isFullyLoaded,
+            ownership: ownership, completions: completions, tier: tier
+        )
+    }
+}
+
 /// Sorting options for the catalog's set directory. These are deliberately
 /// separate from `CatalogSetSort`, which sorts cards inside one set.
 enum CatalogSetListSort: String, CaseIterable, Identifiable, Sendable {
