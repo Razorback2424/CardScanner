@@ -747,7 +747,8 @@ struct EbayListingPhotosView: View {
                 let backData = try await data(from: pair.back, side: "back")
                 let output = try await EbayListingPhotoExport.makeListingPhotos(
                     frontData: frontData,
-                    backData: backData
+                    backData: backData,
+                    includePreviews: false
                 )
                 completedOutput = output
                 let folderName = uniqueFolderName(

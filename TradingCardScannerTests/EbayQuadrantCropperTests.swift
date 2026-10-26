@@ -1,5 +1,6 @@
 import XCTest
 import CoreGraphics
+import CryptoKit
 import ImageIO
 import UIKit
 import UniformTypeIdentifiers
@@ -255,6 +256,41 @@ private actor ListingArchiveGate {
     }
 }
 
+/// Blocks only the injected test worker, with a deadline and a sticky release
+/// so early cancellation, assertion failure, or release-before-arrival cannot hang it.
+private final class ListingFrontCheckpoint: @unchecked Sendable {
+    let reached = XCTestExpectation(description: "Five front JPEGs written")
+    private let condition = NSCondition()
+    private var directory: URL?
+    private var released = false
+
+    var contentDirectory: URL? {
+        condition.lock()
+        defer { condition.unlock() }
+        return directory
+    }
+
+    func pause(at directory: URL) throws {
+        condition.lock()
+        defer { condition.unlock() }
+        self.directory = directory
+        reached.fulfill()
+        let deadline = Date().addingTimeInterval(30)
+        while !released {
+            guard condition.wait(until: deadline) else { throw CheckpointError.timedOut }
+        }
+    }
+
+    func release() {
+        condition.lock()
+        defer { condition.unlock() }
+        released = true
+        condition.broadcast()
+    }
+
+    private enum CheckpointError: Error { case timedOut }
+}
+
 final class EbayListingPhotoExportTests: XCTestCase {
     @MainActor
     func testSupersededArchiveSuccessAndFailureCleanOnlyTheirOwnRun() async throws {
@@ -376,6 +412,184 @@ final class EbayListingPhotoExportTests: XCTestCase {
         XCTAssertEqual(output.pixelDimensions[6].width, 63)
         XCTAssertEqual(output.pixelDimensions[6].height, 88)
     }
+
+    func testFilesOnlyExportMatchesPreviewExportForUprightAndRotatedSources() async throws {
+        let front = try XCTUnwrap(cornerFixtureImage(width: 100, height: 140).cgImage)
+        let back = try XCTUnwrap(sourceFixture().cgImage)
+        for orientation in [CGImagePropertyOrientation.up, .right] {
+            let frontData = try jpegData(for: front, orientation: orientation)
+            let backData = try jpegData(for: back, orientation: orientation)
+            let previewOutput = try await EbayListingPhotoExport.makeListingPhotos(
+                frontData: frontData, backData: backData
+            )
+            defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: previewOutput.contentDirectory) }
+            let filesOnlyOutput = try await EbayListingPhotoExport.makeListingPhotos(
+                frontData: frontData, backData: backData, includePreviews: false
+            )
+            defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: filesOnlyOutput.contentDirectory) }
+
+            XCTAssertEqual(previewOutput.previews.count, 10)
+            for preview in previewOutput.previews {
+                let image = try XCTUnwrap(preview.cgImage)
+                XCTAssertGreaterThan(min(image.width, image.height), 0)
+                XCTAssertLessThanOrEqual(max(image.width, image.height), EbayListingPhotoExport.previewMaximumPixelDimension)
+            }
+            XCTAssertTrue(filesOnlyOutput.previews.isEmpty)
+            XCTAssertEqual(filesOnlyOutput.urls.count, 10)
+            XCTAssertEqual(filesOnlyOutput.urls.map(\.lastPathComponent), previewOutput.urls.map(\.lastPathComponent))
+            XCTAssertEqual(filesOnlyOutput.pixelDimensions, previewOutput.pixelDimensions)
+            XCTAssertEqual(filesOnlyOutput.reducedQualityNames, previewOutput.reducedQualityNames)
+            // Full JPEG equality covers pixels, orientation and all encoded metadata.
+            XCTAssertEqual(
+                try filesOnlyOutput.urls.map { try Data(contentsOf: $0) },
+                try previewOutput.urls.map { try Data(contentsOf: $0) }
+            )
+            XCTAssertNotEqual(try Data(contentsOf: filesOnlyOutput.urls[0]), try Data(contentsOf: filesOnlyOutput.urls[5]))
+        }
+    }
+
+    func testFilesOnlyFailureAndCancellationCleanOnlyTheirPartialRun() async throws {
+        let data = try jpegData(for: XCTUnwrap(sourceFixture().cgImage))
+        let existing = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data)
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: existing.contentDirectory) }
+        let directory = try XCTUnwrap(existing.contentDirectory)
+        let archive = try await EbayListingPhotoExport.makeArchive(at: directory)
+        let originalFiles = try existing.urls.map { try Data(contentsOf: $0) }
+        let originalArchive = try Data(contentsOf: archive)
+        let runRoot = EbayListingPhotoExport.container(of: directory).deletingLastPathComponent()
+        let originalRuns = try FileManager.default.contentsOfDirectory(atPath: runRoot.path).sorted()
+
+        // Front files are already written when decoding the invalid back fails.
+        do {
+            _ = try await EbayListingPhotoExport.makeListingPhotos(
+                frontData: data, backData: Data(), includePreviews: false
+            )
+            XCTFail("Expected a back decode failure")
+        } catch EbayListingPhotoExport.Error.decodeFailed(side: "back") {
+        }
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: runRoot.path).sorted(), originalRuns)
+
+        let gate = ListingArchiveGate()
+        let task = Task {
+            await gate.waitForRelease()
+            return try await EbayListingPhotoExport.makeListingPhotos(
+                frontData: data, backData: data, includePreviews: false
+            )
+        }
+        await gate.waitUntilStarted()
+        task.cancel()
+        await gate.release()
+        do {
+            let unexpected = try await task.value
+            EbayListingPhotoExport.removeRunContainer(forContentDirectory: unexpected.contentDirectory)
+            XCTFail("Expected cancellation")
+        } catch is CancellationError {
+        }
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: runRoot.path).sorted(), originalRuns)
+        XCTAssertEqual(try existing.urls.map { try Data(contentsOf: $0) }, originalFiles)
+        XCTAssertEqual(try Data(contentsOf: archive), originalArchive)
+    }
+
+#if DEBUG
+    func testFilesOnlyMidOperationCancellationRetryPreservesOwnedOutputs() async throws {
+        let frontData = try jpegData(for: XCTUnwrap(cornerFixtureImage(width: 100, height: 140).cgImage))
+        let backData = try jpegData(for: XCTUnwrap(sourceFixture().cgImage))
+        XCTAssertNotEqual(frontData, backData)
+        // Earlier export is also the retry's reference. Swap the inputs for the
+        // old worker so a stale overwrite cannot accidentally match the retry.
+        let earlier = try await EbayListingPhotoExport.makeListingPhotos(
+            frontData: backData, backData: frontData, includePreviews: false
+        )
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: earlier.contentDirectory) }
+        let earlierDirectory = try XCTUnwrap(earlier.contentDirectory)
+        let archive = try await EbayListingPhotoExport.makeArchive(at: earlierDirectory)
+        let earlierBytes = try earlier.urls.map { try Data(contentsOf: $0) }
+        let archiveBytes = try Data(contentsOf: archive)
+        let names = [
+            "01-Front.jpg", "02-Front-TL.jpg", "03-Front-TR.jpg",
+            "04-Front-BR.jpg", "05-Front-BL.jpg", "06-Back.jpg",
+            "07-Back-TL.jpg", "08-Back-TR.jpg", "09-Back-BR.jpg", "10-Back-BL.jpg"
+        ]
+        let runRoot = EbayListingPhotoExport.container(of: earlierDirectory).deletingLastPathComponent()
+        let originalRuns = try FileManager.default.contentsOfDirectory(atPath: runRoot.path).sorted()
+        let checkpoint = ListingFrontCheckpoint()
+        let old = Task {
+            try await EbayListingPhotoExport.makeListingPhotos(
+                frontData: frontData, backData: backData, includePreviews: false,
+                afterFrontWritten: { try checkpoint.pause(at: $0) }
+            )
+        }
+        defer {
+            old.cancel()
+            checkpoint.release()
+            EbayListingPhotoExport.removeRunContainer(forContentDirectory: checkpoint.contentDirectory)
+        }
+        await fulfillment(of: [checkpoint.reached], timeout: 10)
+        let partial = try XCTUnwrap(checkpoint.contentDirectory)
+        XCTAssertNotEqual(partial, earlierDirectory)
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: partial.path).sorted(), Array(names.prefix(5)))
+        let partialBytes = try names.prefix(5).map { try Data(contentsOf: partial.appendingPathComponent($0)) }
+        XCTAssertTrue(partialBytes.allSatisfy { !$0.isEmpty })
+        XCTAssertEqual(partialBytes[0], frontData)
+
+        old.cancel()
+        // Use the real allocator: fresh UUID container, same listing filenames.
+        // Finish the retry before releasing the old worker to stress late cleanup.
+        let retry = try await EbayListingPhotoExport.makeListingPhotos(
+            frontData: backData, backData: frontData, includePreviews: false
+        )
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: retry.contentDirectory) }
+        let retryDirectory = try XCTUnwrap(retry.contentDirectory)
+        XCTAssertNotEqual(retryDirectory, partial)
+        XCTAssertNotEqual(retryDirectory, earlierDirectory)
+        XCTAssertEqual(retry.urls.map(\.lastPathComponent), names)
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: retryDirectory.path).sorted(), names)
+        XCTAssertTrue(retry.previews.isEmpty)
+        let retryBytes = try retry.urls.map { try Data(contentsOf: $0) }
+        XCTAssertEqual(retryBytes, earlierBytes)
+        XCTAssertEqual(retryBytes[0], backData)
+        XCTAssertEqual(retryBytes[5], frontData)
+        for (index, data) in retryBytes.enumerated() {
+            let source = try XCTUnwrap(CGImageSourceCreateWithData(data as CFData, nil))
+            XCTAssertEqual(CGImageSourceGetType(source) as String?, UTType.jpeg.identifier)
+            let image = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil))
+            XCTAssertEqual(image.width, index % 5 == 0 ? 100 : (index < 5 ? 60 : 63))
+            XCTAssertEqual(image.height, index % 5 == 0 ? 140 : (index < 5 ? 84 : 88))
+        }
+        // The old output is still present when the complete retry is captured.
+        XCTAssertEqual(try names.prefix(5).map { try Data(contentsOf: partial.appendingPathComponent($0)) }, partialBytes)
+        checkpoint.release()
+        do {
+            let unexpected = try await old.value
+            EbayListingPhotoExport.removeRunContainer(forContentDirectory: unexpected.contentDirectory)
+            XCTFail("Old worker reported success after mid-operation cancellation")
+        } catch is CancellationError {
+        }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: EbayListingPhotoExport.container(of: partial).path))
+        XCTAssertEqual(try retry.urls.map { try Data(contentsOf: $0) }, retryBytes)
+        XCTAssertEqual(try earlier.urls.map { try Data(contentsOf: $0) }, earlierBytes)
+        XCTAssertEqual(try Data(contentsOf: archive), archiveBytes)
+        XCTAssertEqual(
+            try FileManager.default.contentsOfDirectory(atPath: runRoot.path).sorted(),
+            (originalRuns + [EbayListingPhotoExport.container(of: retryDirectory).lastPathComponent]).sorted()
+        )
+        func hashes(_ data: [Data]) -> [String] {
+            data.map { SHA256.hash(data: $0).map { String(format: "%02x", $0) }.joined() }
+        }
+        let evidence = XCTAttachment(string: """
+        Sequence: five front JPEGs written and checked -> cancel old -> complete retry -> release old -> CancellationError -> old container absent.
+        Distinct UUID containers; identical filenames; retry reverses old front/back identities; zero previews.
+        Ordered names: \(names)
+        Old partial SHA256: \(hashes(partialBytes))
+        Earlier files SHA256 (unchanged): \(hashes(earlierBytes))
+        Earlier archive SHA256 (unchanged): \(hashes([archiveBytes]))
+        Retry SHA256 (before/after old cleanup identical): \(hashes(retryBytes))
+        """)
+        evidence.name = "Mid-operation cancellation and retry identity evidence"
+        evidence.lifetime = .keepAlways
+        add(evidence)
+    }
+#endif
 
     /// A source that cannot fit the budget at 0.75 must still export, because a
     /// single oversized image previously discarded all ten outputs.

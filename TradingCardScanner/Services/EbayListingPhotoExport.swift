@@ -29,6 +29,7 @@ enum EbayListingPhotoExport {
 
     struct Output: @unchecked Sendable {
         let urls: [URL]
+        /// Empty when the caller opts out of grid previews.
         let previews: [UIImage]
         let pixelDimensions: [PixelDimensions]
         let reducedQualityNames: [String]
@@ -61,11 +62,43 @@ enum EbayListingPhotoExport {
     }
 
     /// Decodes one front/back pair, produces ten files in listing order, and
-    /// returns only small previews plus Sendable metadata to the caller.
+    /// returns small previews plus Sendable metadata to the caller. File-only
+    /// batch callers can skip rendering previews from the already-decoded images.
     static func makeListingPhotos(
         frontData: Data,
         backData: Data,
-        maximumByteCount: Int = maximumJPEGByteCount
+        maximumByteCount: Int = maximumJPEGByteCount,
+        includePreviews: Bool = true
+    ) async throws -> Output {
+        try await runListingPhotos(
+            frontData: frontData, backData: backData,
+            maximumByteCount: maximumByteCount, includePreviews: includePreviews,
+            afterFrontWritten: nil
+        )
+    }
+
+#if DEBUG
+    /// Per-call test checkpoint at the existing between-sides cancellation boundary.
+    static func makeListingPhotos(
+        frontData: Data,
+        backData: Data,
+        includePreviews: Bool,
+        afterFrontWritten: @escaping @Sendable (URL) throws -> Void
+    ) async throws -> Output {
+        try await runListingPhotos(
+            frontData: frontData, backData: backData,
+            maximumByteCount: maximumJPEGByteCount, includePreviews: includePreviews,
+            afterFrontWritten: afterFrontWritten
+        )
+    }
+#endif
+
+    private static func runListingPhotos(
+        frontData: Data,
+        backData: Data,
+        maximumByteCount: Int,
+        includePreviews: Bool,
+        afterFrontWritten: (@Sendable (URL) throws -> Void)?
     ) async throws -> Output {
         let directory = try await RunDirectoryStore.shared.beginRun()
         do {
@@ -74,7 +107,9 @@ enum EbayListingPhotoExport {
                     frontData: frontData,
                     backData: backData,
                     directory: directory,
-                    maximumByteCount: maximumByteCount
+                    maximumByteCount: maximumByteCount,
+                    includePreviews: includePreviews,
+                    afterFrontWritten: afterFrontWritten
                 )
             }
 
@@ -368,21 +403,26 @@ enum EbayListingPhotoExport {
         frontData: Data,
         backData: Data,
         directory: URL,
-        maximumByteCount: Int
+        maximumByteCount: Int,
+        includePreviews: Bool,
+        afterFrontWritten: (@Sendable (URL) throws -> Void)?
     ) throws -> Output {
         try checkCancellation()
         let front = try processSide(
             data: frontData,
             side: .front,
             directory: directory,
-            maximumByteCount: maximumByteCount
+            maximumByteCount: maximumByteCount,
+            includePreviews: includePreviews
         )
+        try afterFrontWritten?(directory)
         try checkCancellation()
         let back = try processSide(
             data: backData,
             side: .back,
             directory: directory,
-            maximumByteCount: maximumByteCount
+            maximumByteCount: maximumByteCount,
+            includePreviews: includePreviews
         )
         return Output(
             urls: front.urls + back.urls,
@@ -396,7 +436,8 @@ enum EbayListingPhotoExport {
         data: Data,
         side: Side,
         directory: URL,
-        maximumByteCount: Int
+        maximumByteCount: Int,
+        includePreviews: Bool
     ) throws -> SideOutput {
         try checkCancellation()
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
@@ -446,9 +487,11 @@ enum EbayListingPhotoExport {
             }
             let fullURL = try write(fullData, named: fullName, to: directory)
             output.urls.append(fullURL)
-            output.previews.append(
-                try preview(for: image, maximumPixelDimension: previewMaximumPixelDimension)
-            )
+            if includePreviews {
+                output.previews.append(
+                    try preview(for: image, maximumPixelDimension: previewMaximumPixelDimension)
+                )
+            }
             output.pixelDimensions.append(dimensions)
             if reducedQuality {
                 output.reducedQualityNames.append(fullName)
@@ -475,9 +518,11 @@ enum EbayListingPhotoExport {
                 )
                 let url = try write(encoded.data, named: name, to: directory)
                 output.urls.append(url)
-                output.previews.append(
-                    try preview(for: crop, maximumPixelDimension: previewMaximumPixelDimension)
-                )
+                if includePreviews {
+                    output.previews.append(
+                        try preview(for: crop, maximumPixelDimension: previewMaximumPixelDimension)
+                    )
+                }
                 output.pixelDimensions.append(
                     PixelDimensions(width: crop.width, height: crop.height)
                 )
