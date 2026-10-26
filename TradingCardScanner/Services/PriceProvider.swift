@@ -16,6 +16,12 @@ struct NormalizedPrice: Equatable, Sendable {
     /// Catalog-owned mapping evidence; nil for providers without this contract.
     var catalogIdentity: String? = nil
 
+    var effectiveAsOf: Date { sourceUpdatedAt ?? fetchedAt }
+
+    func isStale(now: Date = .now) -> Bool {
+        now.timeIntervalSince(effectiveAsOf) > PriceDisplay.staleAfter
+    }
+
     var isUsableUSD: Bool {
         PortfolioPriceEligibility.eligibleUnitPrice(
             amount: unitMarketPriceUSD, currencyCode: currencyCode

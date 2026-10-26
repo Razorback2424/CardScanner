@@ -127,6 +127,37 @@ struct PriceCheckResultView: View {
                         openSettingsButton
                     }
                 }
+                if !result.isRefreshing, result.successfulQuoteState == .stale {
+                    Label("Latest available quote is more than a day old", systemImage: "clock.badge.exclamationmark")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.orange)
+                }
+
+                if !result.isRefreshing {
+                    if let successfulCheck = result.lastSuccessfulCheckAt
+                        ?? (result.refreshFeedback == .failed || result.checkTimeIsRetrievalEvidence ? nil : result.checkedAt) {
+                        Text("Last checked \(successfulCheck.formatted(date: .abbreviated, time: .standard))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if result.checkTimeIsRetrievalEvidence, let retrieved = display.fetchedAt {
+                        Text("Quote received \(retrieved.formatted(date: .abbreviated, time: .standard))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    if result.refreshFeedback == .failed {
+                        Text("Last attempt failed \(result.checkedAt.formatted(date: .abbreviated, time: .standard))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if result.refreshFeedback == .noNewerData {
+                        Text("Checked; no newer price data available")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if result.refreshFeedback == .updated {
+                        Text("Price updated")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             } else {
                 noQuoteState
             }
@@ -266,7 +297,7 @@ struct PriceCheckResultView: View {
                 systemImage: "calendar.badge.clock",
                 description: Text("The optional fallback allowance resets \(resetAt.formatted(date: .abbreviated, time: .shortened)).")
             )
-        case .current, .lastKnown(_):
+        case .current, .stale, .lastKnown(_):
             exactPriceUnavailableState
         }
     }
@@ -365,7 +396,7 @@ struct PriceCheckResultView: View {
             prefix = ""
         }
         if let asOf = display.sourceUpdatedAt {
-            return "\(prefix)\(source) · Updated \(asOf.formatted(date: .abbreviated, time: .shortened))"
+            return "\(prefix)\(source) · Price data as of \(asOf.formatted(date: .abbreviated, time: .shortened))"
         }
         if let retrieved = display.fetchedAt {
             return "\(prefix)\(source) · Retrieved \(retrieved.formatted(date: .abbreviated, time: .shortened))"

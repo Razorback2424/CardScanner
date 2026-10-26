@@ -24,6 +24,8 @@ final class ReferenceQuote {
     var sourceUpdatedAt: Date?
     var retrievedAt: Date?
     var lastCheckedAt: Date?
+    /// Explicit completed checks only. Nil for legacy rows and retrieval-only evidence.
+    var lastSuccessfulCheckAt: Date?
     var lastFailureAt: Date?
     var catalogPriceIdentity: String?
     var invalidatedAt: Date?
@@ -76,7 +78,7 @@ final class ReferenceQuote {
         )
     }
 
-    func apply(_ lookup: PriceLookup, at date: Date) {
+    func apply(_ lookup: PriceLookup, at date: Date, isReplay: Bool = false) {
         if case let .price(price) = lookup, let invalidatedAt, price.fetchedAt <= invalidatedAt { return }
         // Cached catalog responses can finish after a newer lookup. Their
         // arrival time must not replace the newer price or its freshness.
@@ -86,7 +88,7 @@ final class ReferenceQuote {
         case let .price(price):
             guard price.unitMarketPriceUSD >= 0,
                   Money(rounding: price.unitMarketPriceUSD) != nil else {
-                recordFailure(at: date)
+                if !isReplay { recordFailure(at: date) }
                 return
             }
             amount = price.unitMarketPriceUSD
@@ -107,7 +109,7 @@ final class ReferenceQuote {
 
         // Presenting an existing quote replays its retrieval date; it is not
         // a new successful check that can clear a later failed refresh.
-        guard lastCheckedAt.map({ date >= $0 }) ?? true else { return }
+        guard !isReplay, lastCheckedAt.map({ date >= $0 }) ?? true else { return }
         lastCheckedAt = date
         lastFailureAt = nil
     }
