@@ -112,7 +112,18 @@ struct CatalogCardDetailView: View {
 
             VStack(spacing: 6) {
                 Text(details.card.name).font(.title2.bold()).multilineTextAlignment(.center)
-                Text(details.card.setName).foregroundStyle(.secondary)
+                NavigationLink {
+                    CatalogSetCardsView(set: details.set, catalog: catalog)
+                } label: {
+                    Text(details.card.setName)
+                        .multilineTextAlignment(.center)
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(Color.accentColor)
+                .accessibilityHint("View cards in this set")
+                .accessibilityIdentifier("card-set-link")
                 if let printRun = summary.pokemonPrintRun {
                     Text(printRun.label)
                         .font(.subheadline.weight(.semibold))

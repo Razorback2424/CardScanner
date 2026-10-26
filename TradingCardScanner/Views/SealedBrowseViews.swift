@@ -720,7 +720,7 @@ struct SealedProductGridView: View {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(model.products) { product in
                     NavigationLink {
-                        SealedProductDetailView(game: game, product: product)
+                        SealedProductDetailView(game: game, product: product, sourceSet: set)
                     } label: {
                         SealedProductTile(product: product)
                     }
@@ -774,6 +774,66 @@ struct SealedProductGridView: View {
     }
 }
 
+/// Own the destination's product lane so opening a set never overwrites the
+/// search results or set grid underneath the product detail.
+struct SealedProductSetDestination: View {
+    let game: CardGame
+    let setName: String
+    let sourceSet: SealedSetSummary?
+    @StateObject private var model: SealedBrowseModel
+    @State private var finishedLoading = false
+
+    init(game: CardGame, setName: String, sourceSet: SealedSetSummary? = nil,
+         gameRegistry: CardGameRegistry) {
+        self.game = game
+        self.setName = setName
+        self.sourceSet = sourceSet
+        _model = StateObject(wrappedValue: SealedBrowseModel(
+            transport: JustTCGTransport.shared, gameRegistry: gameRegistry
+        ))
+    }
+
+    private var resolvedSet: SealedSetSummary? {
+        if let sourceSet, sourceSet.game == game { return sourceSet }
+        // Names are all search results carry. Never guess between similarly
+        // named sets or cross the card/sealed provider boundary.
+        let matches = model.sets.filter {
+            $0.game == game && $0.name.caseInsensitiveCompare(setName) == .orderedSame
+        }
+        return matches.count == 1 ? matches.first : nil
+    }
+
+    var body: some View {
+        Group {
+            if let set = resolvedSet {
+                SealedProductGridView(game: game, set: set, model: model)
+            } else if !finishedLoading {
+                ProgressView("Loading set…")
+            } else {
+                ContentUnavailableView {
+                    Label("Couldn't load this set", systemImage: "shippingbox")
+                } description: {
+                    Text(model.errorMessage ?? "This set isn't available in the sealed catalog.")
+                } actions: {
+                    Button("Retry") {
+                        Task { await load(forceRefresh: true) }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+        }
+        .navigationTitle(setName)
+        .navigationBarTitleDisplayMode(.inline)
+        .task { if sourceSet == nil { await load() } }
+    }
+
+    private func load(forceRefresh: Bool = false) async {
+        finishedLoading = false
+        await model.loadSetsIfNeeded(game: game, forceRefresh: forceRefresh)
+        finishedLoading = true
+    }
+}
+
 struct SealedProductTile: View {
     let product: SealedProductSummary
 
@@ -810,6 +870,7 @@ struct SealedProductDetailView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let game: CardGame
     let product: SealedProductSummary
+    var sourceSet: SealedSetSummary? = nil
 
     @Environment(\.modelContext) private var modelContext
     @State private var pendingMutation: CollectionMutation?
@@ -837,8 +898,19 @@ struct SealedProductDetailView: View {
 
             Section {
                 LabeledContent("Product", value: product.name)
-                if let setName = product.setName {
-                    LabeledContent("Set", value: setName)
+                if let setName = sourceSet?.name ?? product.setName, !setName.isEmpty {
+                    NavigationLink {
+                        SealedProductSetDestination(
+                            game: game, setName: setName, sourceSet: sourceSet,
+                            gameRegistry: runtimes?.registry ?? .standard
+                        )
+                    } label: {
+                        LabeledContent("Set") {
+                            Text(setName).foregroundStyle(Color.accentColor)
+                        }
+                    }
+                    .accessibilityHint("View sealed products in this set")
+                    .accessibilityIdentifier("sealed-set-link")
                 }
                 if let price = product.marketPriceUSD {
                     LabeledContent("Market price") {

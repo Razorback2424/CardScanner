@@ -524,11 +524,27 @@ private struct CollectionCardDetailContent: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             if !provenanceLine.isEmpty {
-                Text(provenanceLine)
+                if !card.setName.isEmpty {
+                    NavigationLink {
+                        setDestination
+                    } label: {
+                        Text(provenanceLine)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(minHeight: 44)
+                            .contentShape(Rectangle())
+                    }
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(Color.accentColor)
+                    .accessibilityHint("View this set")
+                    .accessibilityIdentifier("collection-set-link")
+                } else {
+                    Text(provenanceLine)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
             }
 
             identityStatusRow
@@ -949,7 +965,15 @@ private struct CollectionCardDetailContent: View {
         CardPrintingDetailsView(
             cardName: card.name,
             facts: cardFacts,
-            confidenceNote: identityConfidenceNote
+            confidenceNote: identityConfidenceNote,
+            setDestination: setDestination
+        )
+    }
+
+    private var setDestination: some View {
+        CollectionSetDestination(
+            game: card.cardGame, setName: card.setName, setCode: card.setCode,
+            printRun: card.pokemonPrintRun, isSealed: card.itemKind == .sealedProduct
         )
     }
 
@@ -1995,10 +2019,11 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
     }
 }
 
-private struct CardPrintingDetailsView: View {
+private struct CardPrintingDetailsView<SetDestination: View>: View {
     let cardName: String
     let facts: [CardDetailFact]
     let confidenceNote: String?
+    let setDestination: SetDestination
 
     var body: some View {
         ScrollView {
@@ -2008,12 +2033,24 @@ private struct CardPrintingDetailsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 ForEach(facts) { fact in
-                    LabeledContent(fact.label) {
-                        Text(fact.value)
-                            .font(.callout.weight(.medium))
-                            .multilineTextAlignment(.trailing)
+                    if fact.label == "Set" {
+                        NavigationLink {
+                            setDestination
+                        } label: {
+                            LabeledContent(fact.label) {
+                                Text(fact.value).foregroundStyle(Color.accentColor)
+                            }
+                            .frame(minHeight: 44)
+                        }
+                        .font(.callout)
+                    } else {
+                        LabeledContent(fact.label) {
+                            Text(fact.value)
+                                .font(.callout.weight(.medium))
+                                .multilineTextAlignment(.trailing)
+                        }
+                        .font(.callout)
                     }
-                    .font(.callout)
                 }
 
                 if let confidenceNote {
@@ -2029,6 +2066,63 @@ private struct CardPrintingDetailsView: View {
         .navigationTitle("Printing details")
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityLabel("Printing details for \(cardName)")
+    }
+}
+
+private struct CollectionSetDestination: View {
+    @Environment(\.cardGameRuntimes) private var runtimes
+    let game: CardGame
+    let setName: String
+    let setCode: String
+    let printRun: PokemonPrintRun?
+    let isSealed: Bool
+    @State private var catalog: BrowseCatalog?
+    @State private var set: CatalogSet?
+    @State private var failure: String?
+
+    var body: some View {
+        Group {
+            if isSealed {
+                SealedProductSetDestination(
+                    game: game, setName: setName, gameRegistry: runtimes?.registry ?? .standard
+                )
+            } else if let set, let catalog {
+                CatalogSetCardsView(set: set, catalog: catalog)
+            } else if let failure {
+                ContentUnavailableView {
+                    Label("Couldn't load this set", systemImage: "rectangle.stack")
+                } description: {
+                    Text(failure)
+                } actions: {
+                    Button("Retry") { Task { await load() } }
+                        .buttonStyle(.borderedProminent)
+                }
+            } else {
+                ProgressView("Loading set…")
+            }
+        }
+        .navigationTitle(setName)
+        .navigationBarTitleDisplayMode(.inline)
+        .task { if !isSealed, set == nil { await load() } }
+    }
+
+    private func load() async {
+        failure = nil
+        let catalog = catalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        self.catalog = catalog
+        do {
+            let sets = try await catalog.sets(for: game)
+            let matches = sets.filter {
+                $0.catalogID.pokemonPrintRun == printRun &&
+                ((!setCode.isEmpty && $0.code.caseInsensitiveCompare(setCode) == .orderedSame) ||
+                 (setCode.isEmpty && $0.name.caseInsensitiveCompare(setName) == .orderedSame))
+            }
+            let named = matches.filter { $0.name.caseInsensitiveCompare(setName) == .orderedSame }
+            set = matches.count == 1 ? matches.first : (named.count == 1 ? named.first : nil)
+            if set == nil { failure = "This set isn't available in the card catalog." }
+        } catch {
+            failure = "The set catalog couldn't load. Please try again."
+        }
     }
 }
 
