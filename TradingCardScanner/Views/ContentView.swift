@@ -119,6 +119,7 @@ struct ContentView: View {
                 runtimes: runtimes,
                 history: history,
                 refresh: refresh,
+                completionSignal: refreshCompletionSignal,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 opensMovementDetailsOnLaunch: isMovementDebugRoute,
                 opensCardDetailOnLaunch: isCardDetailDebugRoute || isCardFinishPerformanceDetailRoute,

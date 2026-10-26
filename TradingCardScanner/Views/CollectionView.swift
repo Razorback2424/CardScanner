@@ -186,6 +186,9 @@ struct CollectionView: View {
     /// on every progress publication is exactly the cost this screen's
     /// projection cache exists to avoid.
     let refresh: PriceRefreshController
+    /// Advances once when a refresh pass ends. Observed so the grid re-sorts
+    /// then, rather than on every streamed price checkpoint.
+    @ObservedObject var completionSignal: PriceRefreshCompletionSignal
     let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
     let opensCardDetailOnLaunch: Bool
@@ -244,6 +247,7 @@ struct CollectionView: View {
         runtimes: CardGameRuntimeContainer? = nil,
         history: PortfolioHistoryStore,
         refresh: PriceRefreshController,
+        completionSignal: PriceRefreshCompletionSignal,
         opensBrowseOnLaunch: Bool,
         opensMovementDetailsOnLaunch: Bool = false,
         opensCardDetailOnLaunch: Bool = false,
@@ -258,6 +262,7 @@ struct CollectionView: View {
         _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
         self.history = history
         self.refresh = refresh
+        _completionSignal = ObservedObject(wrappedValue: completionSignal)
         self.opensBrowseOnLaunch = opensBrowseOnLaunch
         self.opensMovementDetailsOnLaunch = opensMovementDetailsOnLaunch
         self.opensCardDetailOnLaunch = opensCardDetailOnLaunch
@@ -1054,9 +1059,16 @@ struct CollectionView: View {
     private struct QueryCacheKey: Equatable {
         let projectionRevision: UInt
         let priceRevision: UInt
+        let refreshCompletion: UInt
         let searchQuery: String
         let filters: CollectionFilters
         let sort: CollectionSort
+
+        /// Same question; only prices or pass completion changed.
+        func asksSameQuery(as other: Self) -> Bool {
+            projectionRevision == other.projectionRevision && searchQuery == other.searchQuery
+                && filters == other.filters && sort == other.sort
+        }
     }
 
     private struct PricedRowsCacheKey: Equatable {
@@ -1099,8 +1111,8 @@ struct CollectionView: View {
             let value = build()
             pricedRowsKey = key
             pricedRowsValue = value
-            visibleKey = nil
-            visibleValue = []
+            // The visible order is kept: its key already includes prices,
+            // and a live refresh reuses that order instead of re-sorting.
             snapshotKey = nil
             snapshotValue = nil
             return value
@@ -1108,10 +1120,17 @@ struct CollectionView: View {
 
         func visible(
             for key: QueryCacheKey,
-            build: () -> [CollectionRow]
+            holdsOrder: Bool,
+            build: () -> [CollectionRow],
+            keepingOrder: ([String]) -> [CollectionRow]
         ) -> [CollectionRow] {
             if visibleKey == key { return visibleValue }
-            let value = build()
+            let value: [CollectionRow]
+            if holdsOrder, let previous = visibleKey, previous.asksSameQuery(as: key) {
+                value = keepingOrder(visibleValue.map(\.id))
+            } else {
+                value = build()
+            }
             visibleKey = key
             visibleValue = value
             snapshotKey = nil
@@ -1167,18 +1186,34 @@ struct CollectionView: View {
         let queryKey = QueryCacheKey(
             projectionRevision: projectionStore.revision,
             priceRevision: priceSnapshot.revision,
+            refreshCompletion: completionSignal.generation,
             searchQuery: searchQuery,
             filters: filters,
             sort: sort
         )
-        let visible = projectionCache.visible(for: queryKey) {
-            CollectionQuery.apply(
-                nameQuery: searchQuery,
-                filters: filters,
-                sort: sort,
-                to: pricedRows
-            )
-        }
+        // Read, not observed: a running pass already re-renders this view
+        // through price checkpoints, and its end advances `completionSignal`.
+        let visible = projectionCache.visible(
+            for: queryKey,
+            holdsOrder: refresh.isPassInFlight,
+            build: {
+                CollectionQuery.apply(
+                    nameQuery: searchQuery,
+                    filters: filters,
+                    sort: sort,
+                    to: pricedRows
+                )
+            },
+            keepingOrder: { previousIDs in
+                CollectionQuery.apply(
+                    nameQuery: searchQuery,
+                    filters: filters,
+                    sort: sort,
+                    to: pricedRows,
+                    keepingOrderOf: previousIDs
+                )
+            }
+        )
 
         return projectionCache.snapshot(for: queryKey) {
             let entries = visible.map { row in

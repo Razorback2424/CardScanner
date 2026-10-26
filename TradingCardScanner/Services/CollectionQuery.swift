@@ -474,6 +474,25 @@ enum CollectionQuery {
         self.sort(filter(rows, nameQuery: nameQuery, with: filters), by: sort)
     }
 
+    /// Filters normally, but keeps rows that were already visible in their
+    /// previous order. A price refresh streams values every second; sorting
+    /// on each one would move tiles under the user's finger. Rows that newly
+    /// match are sorted and placed after them.
+    static func apply(
+        nameQuery: String = "",
+        filters: CollectionFilters,
+        sort: CollectionSort,
+        to rows: [CollectionRow],
+        keepingOrderOf previousIDs: [String]
+    ) -> [CollectionRow] {
+        let filtered = filter(rows, nameQuery: nameQuery, with: filters)
+        var rank: [String: Int] = [:]
+        for (index, id) in previousIDs.enumerated() where rank[id] == nil { rank[id] = index }
+        let kept = filtered.filter { rank[$0.id] != nil }.sorted { rank[$0.id]! < rank[$1.id]! }
+        let added = self.sort(filtered.filter { rank[$0.id] == nil }, by: sort)
+        return kept + added
+    }
+
     /// Unknown is not worthless, so an unpriced card sinks to the bottom of *both*
     /// price sorts rather than sorting as zero.
     private static func priceOrder(

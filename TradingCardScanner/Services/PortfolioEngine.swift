@@ -247,6 +247,9 @@ final class PortfolioEngine: ObservableObject {
     func endPriceRefresh(context: ModelContext, requiresReplay: Bool = true) {
         guard priceRefreshInFlight else { return }
         priceRefreshInFlight = false
+        // Live deltas kept the visible order still; rank once, now.
+        let ranked = PortfolioHoldingSnapshot.rankedByUnitPrice(holdings)
+        if ranked != holdings { holdings = ranked }
         guard priceRefreshReplayOwed || requiresReplay else { return }
         priceRefreshReplayOwed = false
         recompute(context: context)
@@ -295,7 +298,11 @@ final class PortfolioEngine: ObservableObject {
             return updated
         }
         guard changed else { return }
-        holdings = PortfolioHoldingSnapshot.rankedByUnitPrice(updatedHoldings)
+        // While a refresh pass streams values, keep rows where the user is
+        // looking; `endPriceRefresh` re-ranks once the pass settles.
+        holdings = priceRefreshInFlight
+            ? updatedHoldings
+            : PortfolioHoldingSnapshot.rankedByUnitPrice(updatedHoldings)
         // This is intentionally only the live headline/holding valuation. The
         // authoritative terminal replay still owns attribution, coverage,
         // unpriced counts, historical closes, and their persistence; changing
