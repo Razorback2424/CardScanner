@@ -1,3 +1,19 @@
+# 2026-10-25 — Magic publication failure investigation
+
+Inspected run 40191118826 on `main` at `9c73abe`. Core/fixture validation and
+live candidate preparation passed; publication preflight found all five
+required signing/Firebase variables empty and stopped before signing/deploying.
+Read-only inspection confirmed no repository or Magic production secrets,
+no Magic production protection rules, and no automatic Magic environment.
+Firebase secret names exist only in the Pokémon production environment; their
+values cannot be retrieved from GitHub. The hosted Magic pointer returned 404
+and the config still uses the temporary Pokémon public pin. Updated the
+[runbook](docs/plans/magic_catalog_key_handling_runbook.md#publication-failure-and-recovery--2026-10-25)
+with exact provisioning, protection, pin replacement and fresh-run recovery
+steps, and reconciled the documented setup with actual GitHub state. No keys,
+workflow guards, environment settings, rollout or deployment were changed.
+Resolution requires owner-held credentials and the dedicated Magic key/pin.
+
 # 2026-10-24 — Finish-aware Magic raw product identity
 
 Continued the systematic audit on `30a56af` plus preserved local changes.

@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-10-23
 
+**Magic publication operational check — 2026-10-25, `9c73abe`:** the
+[publication runbook](magic_catalog_key_handling_runbook.md#publication-failure-and-recovery--2026-10-25)
+records a successful candidate preparation followed by missing signing/Firebase
+credentials in run 40191118826. Its descriptions of protected and automatic
+environments are setup requirements: fresh inspection found an empty,
+unprotected Magic production environment and no Magic automatic environment.
+The temporary Pokémon public pin also remains unreplaced. These operational
+gaps supersede any inference that the documented environment setup is deployed;
+no credentials, protection settings, rollout or hosting were changed.
+
 **Lorcana actual-loader follow-up:** the
 [current checkpoint](../research/lorcana-expansion-candidate-review-2026-10-23.md#local-loader-and-disney100-follow-up--2026-10-23)
 supersedes the 8 MiB local packaging blocker recorded below. Shared 16 MiB local

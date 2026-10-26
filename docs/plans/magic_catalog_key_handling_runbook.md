@@ -1,11 +1,56 @@
 # Magic catalog signing and publication runbook
 
-Status: current implementation companion — 2026-09-20
+Status: current implementation companion — operational check 2026-10-25
 
 Magic and Pokémon use independent Ed25519 signing keys. The Pokémon private
 key must not be provisioned into either Magic publication environment. Magic
 catalog releases are signed authority for MagicCatalogSetDescriptor values;
 card-level Scryfall data remains live and is outside this signed catalog.
+
+## Publication failure and recovery — 2026-10-25
+
+On `main` at `9c73abe`, [run 40191118826](https://github.com/Razorback2424/CardScanner/actions/runs/40191118826)
+passed core/fixture validation and live candidate preparation. Publication
+stopped at `Check required Magic publication configuration`: all five required
+variables were empty. Signing and Firebase deployment never ran. The later
+missing-report warning is secondary: the job stopped before downloading the
+candidate containing that report.
+
+Read-only GitHub inspection found no repository secrets and no secrets,
+reviewer rules or deployment branch policy in `magic-catalog-production`.
+`magic-catalog-production-auto` was absent. Firebase secret names exist in
+`pokemon-catalog-production`; environment secrets are not inherited by another
+environment, and GitHub does not return their stored values. The Magic hosted
+pointer returned HTTP 404. `Config/MagicCatalogProduction.xcconfig` still has
+the temporary Pokémon public pin. The environment descriptions below are
+required setup, not evidence that setup has been completed.
+
+Recovery requires these owner-controlled inputs and settings:
+
+1. Recover the original Firebase service-account JSON and confirmed project/site
+   values from secure owner storage. Provision `FIREBASE_SERVICE_ACCOUNT`,
+   `FIREBASE_PROJECT_ID` and `FIREBASE_HOSTING_SITE_ID` separately into both Magic
+   environments. Do not copy or reuse the Pokémon signing key.
+2. Provision a dedicated Magic Ed25519 key as described below. Add
+   `MAGIC_CATALOG_SIGNING_KEY` and `MAGIC_CATALOG_KEY_ID` to both environments.
+   Replace the temporary pin in
+   [the production config](../../Config/MagicCatalogProduction.xcconfig) with
+   its matching Magic key ID and public key. Transfer private material through
+   secure credential tooling, never chat, repository files or command output.
+3. Configure required reviewer(s) and a `main` deployment restriction on
+   `magic-catalog-production`; create `magic-catalog-production-auto` with a
+   `main` restriction and no reviewer requirement.
+4. Once the public config is reviewed and available on `main`, dispatch a fresh
+   `Magic catalog` run with `publish=true`. Review the initial candidate in the
+   protected environment before approving publication. Verify the signed hosted
+   pointer against the dedicated Magic pin after deployment. A retry without
+   this setup will fail again; a green validation-only run does not verify
+   publication.
+
+The preflight already correctly rejects missing credentials. Keep that failure
+and the signing guards intact; suppressing the check cannot repair publication.
+Rollout remains `legacy-live`. No keys, GitHub settings or deployments were
+changed during this investigation; production recovery remains incomplete.
 
 ## Key custody and public pin
 
