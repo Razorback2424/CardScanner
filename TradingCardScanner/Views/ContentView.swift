@@ -181,6 +181,7 @@ struct ContentView: View {
             if debugRoute == "MagicTreatmentSlice4" {
                 MagicTreatmentSlice4DebugView()
                     .environmentObject(projectionStore)
+                    .environmentObject(setCompletionStore)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color(uiColor: .systemBackground))
                     .ignoresSafeArea()
