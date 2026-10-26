@@ -6,6 +6,47 @@ import XCTest
 
 @MainActor
 final class DetailDeletionRenderTests: XCTestCase {
+    func testHistoryLoadingAndFailuresKeepSavedDataAndDistinguishEmptyPeriods() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let points = [JustTCGHistoryPoint(p: 20, t: now.addingTimeInterval(-30 * 86_400).timeIntervalSince1970)]
+        let all = PriceHistoryChartModel.market(points: points, range: .all, now: now)
+        let week = PriceHistoryChartModel.market(points: points, range: .oneWeek, now: now)
+        let empty = PriceHistoryChartModel.market(points: [], range: .oneWeek, now: now)
+
+        XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: true, error: nil), .loading)
+        XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false, error: nil), .unavailable)
+        XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false, error: "offline"), .failed)
+        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: true, error: nil), .chart)
+        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: false, error: "offline"), .chart)
+        XCTAssertEqual(MarketHistoryPresentation(model: week, hasHistory: true, isLoading: true, error: nil), .outsideRange)
+        XCTAssertEqual(MarketHistoryPresentation(model: week, hasHistory: true, isLoading: false, error: "offline"), .outsideRange)
+        XCTAssertFalse(all.samples.isEmpty, "Switching to all history must recover the saved samples")
+
+        var range = PortfolioHistoryRange.oneWeek
+        var selection: Date? = now
+        let content = MarketHistoryChartContent(model: week, hasHistory: true, isLoading: false,
+            error: nil, direction: .flat,
+            range: Binding(get: { range }, set: { range = $0 }),
+            selection: Binding(get: { selection }, set: { selection = $0 }), retry: {})
+        content.showAllHistory()
+        XCTAssertEqual(range, .all, "The recovery action must select all history")
+        XCTAssertNil(selection, "The current quote must not retain an out-of-range scrub selection")
+        XCTAssertEqual(PriceHistoryChartModel.market(points: points, range: range, now: now).samples.count, 1)
+    }
+
+    func testLoadingHistoryUsesCompactLayoutAtStandardAndAccessibleTextSizes() {
+        let model = PriceHistoryChartModel.market(points: [], range: .oneWeek)
+        for size in [DynamicTypeSize.large, .accessibility3] {
+            let content = MarketHistoryChartContent(model: model, hasHistory: false, isLoading: true,
+                error: nil, direction: .flat, range: .constant(.oneWeek), selection: .constant(nil), retry: {})
+                .environment(\.dynamicTypeSize, size)
+            let controller = UIHostingController(rootView: content)
+            let measured = controller.sizeThatFits(in: CGSize(width: 350, height: 1000))
+            XCTAssertGreaterThanOrEqual(measured.height, 44)
+            XCTAssertLessThan(measured.height, 160, "Loading should stay compact and leave ownership controls reachable")
+        }
+    }
+
     func testHostedDenseChartLayoutAndSnapshot() throws {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         let points = (0..<1000).map { index in

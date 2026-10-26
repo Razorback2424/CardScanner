@@ -180,7 +180,7 @@ final class JustTCGContractTests: XCTestCase {
         card.justTCGVariantID = "normal-nm"
         card.dateAdded = .now
         let request = CardMarketHistoryRequest(card: card)
-        RecordingURLProtocol.reset(body: #"{"data":[{"variants":[{"uuid":"foil-nm","printing":"Foil","priceHistory":[{"p":900,"t":1700000000}]},{"uuid":"normal-nm","printing":"Normal","priceHistory":[{"p":25,"t":1700200000},{"p":20,"t":1700000000},{"p":-1,"t":1700300000},{"p":22,"t":1700200000},{"p":999,"t":9999999999}]}]}]}"#)
+        RecordingURLProtocol.reset(body: #"{"data":[{"tcgplayerId":"12345","variants":[{"uuid":"foil-nm","printing":"Foil","priceHistory":[{"p":900,"t":1700000000}]},{"uuid":"normal-nm","printing":"Normal","priceHistory":[{"p":25,"t":1700200000},{"p":20,"t":1700000000},{"p":-1,"t":1700300000},{"p":22,"t":1700200000},{"p":999,"t":9999999999}]}]}]}"#)
         let points = try await service.history(for: request)
         XCTAssertEqual(points.map(\.p), [20, 22])
         XCTAssertTrue(points.allSatisfy { Date(timeIntervalSince1970: $0.t) < card.dateAdded })
@@ -195,7 +195,7 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
 
         // A later rolling window must retain older downloaded points for ALL.
-        RecordingURLProtocol.reset(body: #"{"data":[{"variants":[{"uuid":"normal-nm","priceHistory":[{"p":24,"t":1700400000}]}]}]}"#)
+        RecordingURLProtocol.reset(body: #"{"data":[{"tcgplayerId":"12345","variants":[{"uuid":"normal-nm","priceHistory":[{"p":24,"t":1700400000}]}]}]}"#)
         let later = Date.now.addingTimeInterval(7 * 3600)
         async let first = service.history(for: request, now: later)
         async let second = service.history(for: request, now: later)
@@ -216,6 +216,220 @@ final class JustTCGContractTests: XCTestCase {
         card.game = CardGame.pokemon.rawValue
         let otherGame = await service.cached(CardMarketHistoryRequest(card: card))
         XCTAssertTrue(otherGame.isEmpty, "Physical identifiers do not share history across games")
+
+        card.game = CardGame.magic.rawValue
+        card.tcgplayerProductID = "12345"
+        let reopened = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        let reboundRequest = CardMarketHistoryRequest(card: card)
+        let rebound = await reopened.cached(reboundRequest)
+        XCTAssertEqual(rebound, merged, "Binding the product the provider returned must recover this printing's saved history across launches")
+        let reused = try await reopened.history(for: reboundRequest, now: later)
+        XCTAssertEqual(reused, merged)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "A fresh recovered cache must not fetch again")
+        card.tcgplayerProductID = "67890"
+        let changedProduct = await reopened.cached(CardMarketHistoryRequest(card: card))
+        XCTAssertTrue(changedProduct.isEmpty, "A product correction must not inherit the earlier product's history")
+
+        RecordingURLProtocol.reset(status: 403)
+        do {
+            _ = try await reopened.history(for: reboundRequest, now: later.addingTimeInterval(7 * 3600))
+            XCTFail("The failed refresh should throw")
+        } catch { }
+        let afterFailure = await reopened.cached(reboundRequest)
+        XCTAssertEqual(afterFailure, merged, "A failed refresh must preserve the complete saved series")
+    }
+
+    /// A provider answer of "no matching listing" is remembered for a bounded
+    /// interval, so reopening the card does not spend shared daily quota again.
+    @MainActor
+    func testProviderNoListingIsNotRequestedAgainUntilItsRetryInterval() async throws {
+        let suite = "MarketHistoryMiss-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        func makeService() -> CardMarketHistoryService {
+            CardMarketHistoryService(transport: .init(configuration: settings,
+                session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+                pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        }
+        let service = makeService()
+        let card = CollectedCard(collectionKey: "history-miss", game: .magic, providerID: "history-miss",
+                                 name: "Test", setName: "Test", setCode: "tst", cardNumber: "1",
+                                 rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil,
+                                 variantResolution: .userConfirmed)
+        card.justTCGVariantID = "missing-normal"
+        let request = CardMarketHistoryRequest(card: card)
+        let now = Date.now
+        // The provider answers, but not with the requested listing.
+        let miss = #"{"data":[{"tcgplayerId":"12345","variants":[{"uuid":"other-foil","printing":"Foil","condition":"Near Mint","priceHistory":[{"p":90,"t":1700000000}]}]}]}"#
+        func expectNoListing(_ service: CardMarketHistoryService, _ request: CardMarketHistoryRequest,
+                             at date: Date, _ message: String) async {
+            do {
+                _ = try await service.history(for: request, now: date)
+                XCTFail("\(message): expected no listing")
+            } catch CardMarketHistoryService.HistoryError.noListing {
+            } catch { XCTFail("\(message): \(error)") }
+        }
+
+        RecordingURLProtocol.reset(body: miss)
+        await expectNoListing(service, request, at: now, "first open")
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        await expectNoListing(service, request, at: now.addingTimeInterval(3600), "reopen")
+        await expectNoListing(makeService(), request, at: now.addingTimeInterval(7 * 3600), "relaunch")
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "A recent provider miss must not spend another request")
+
+        // A newly bound vendor listing is new input and is requested at once.
+        card.justTCGVariantID = "bound-normal"
+        let rebound = CardMarketHistoryRequest(card: card)
+        RecordingURLProtocol.reset(body: #"{"data":[{"tcgplayerId":"12345","variants":[{"uuid":"bound-normal","printing":"Normal","condition":"Near Mint","priceHistory":[{"p":20,"t":1700000000}]}]}]}"#)
+        let found = try await service.history(for: rebound, now: now.addingTimeInterval(7 * 3600))
+        XCTAssertEqual(found.map(\.p), [20])
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "Changed lookup input must not wait out the miss")
+
+        // A listing that later disappears keeps its saved series without
+        // asking again until the retry interval passes.
+        RecordingURLProtocol.reset(body: miss)
+        card.justTCGVariantID = "bound-normal"
+        await expectNoListing(service, rebound, at: now.addingTimeInterval(14 * 3600), "withdrawn listing")
+        await expectNoListing(service, rebound, at: now.addingTimeInterval(15 * 3600), "withdrawn reopen")
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        let retained = await service.cached(rebound)
+        XCTAssertEqual(retained.map(\.p), [20], "A provider miss must not discard saved history")
+
+        await expectNoListing(service, rebound, at: now.addingTimeInterval(39 * 3600), "after retry interval")
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 2, "An expired miss asks the provider again")
+    }
+
+    /// An unbound lookup records which product it actually resolved. A later
+    /// exact binding to a different product must neither adopt nor merge it.
+    @MainActor
+    func testFirstExactBindingNeverAdoptsAnotherProductsHistory() async throws {
+        let suite = "MarketHistoryBinding-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        func makeService() -> CardMarketHistoryService {
+            CardMarketHistoryService(transport: .init(configuration: settings,
+                session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+                pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        }
+        func cacheFile(for request: CardMarketHistoryRequest) throws -> URL {
+            let identity = try JSONEncoder().encode(request.historyIdentity).base64EncodedString()
+            return try XCTUnwrap(FileManager.default.contentsOfDirectory(at: root,
+                includingPropertiesForKeys: nil).first { url in
+                let entry = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any]
+                return entry?["requestData"] as? String == identity
+            })
+        }
+        let now = Date.now
+        let later = now.addingTimeInterval(7 * 3600)
+        let cases: [(String, CardGame, String?)] = [
+            ("first-binding-magic", .magic, "11111"),
+            ("first-binding-pokemon", .pokemon, "11111"),
+            ("missing-provenance", .magic, nil),
+            ("legacy-on-disk", .magic, "11111")
+        ]
+
+        for (key, game, productA) in cases {
+            let service = makeService()
+            let card = CollectedCard(collectionKey: key, game: game, providerID: key,
+                                     name: "Test", setName: "Test", setCode: "tst", cardNumber: "1",
+                                     rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil,
+                                     variantResolution: .userConfirmed)
+            card.quantity = 3
+            card.dateAdded = now
+            // The unbound lookup resolves product A's Normal listing.
+            card.justTCGVariantID = "\(key)-a-normal"
+            let unbound = CardMarketHistoryRequest(card: card)
+            let productField = productA.map { #""tcgplayerId":"\#($0)","# } ?? ""
+            RecordingURLProtocol.reset(body: #"{"data":[{\#(productField)"variants":[{"uuid":"\#(key)-a-normal","printing":"Normal","condition":"Near Mint","priceHistory":[{"p":10,"t":1700000000},{"p":11,"t":1700100000}]}]}]}"#)
+            let pointsA = try await service.history(for: unbound, now: now)
+            XCTAssertEqual(pointsA, [.init(p: 10, t: 1700000000), .init(p: 11, t: 1700100000)], key)
+            let fileA = try cacheFile(for: unbound)
+            if key == "legacy-on-disk" {
+                // Exercise decoding an actual pre-provenance disk entry.
+                var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fileA)) as? [String: Any])
+                legacy.removeValue(forKey: "sourceProductID")
+                try JSONSerialization.data(withJSONObject: legacy).write(to: fileA, options: .atomic)
+            }
+            let savedFiles = try Dictionary(uniqueKeysWithValues:
+                FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil)
+                    .map { ($0, try Data(contentsOf: $0)) })
+            let reopened = makeService()
+            if let productA, key != "legacy-on-disk" {
+                var matching = unbound
+                matching.exactProductID = productA
+                let reusedA = try await reopened.history(for: matching, now: now)
+                XCTAssertEqual(reusedA, pointsA, "\(key): trustworthy matching provenance permits reuse")
+                XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "\(key): reuse must not fetch again")
+            }
+
+            // A correction binds the same local printing/finish to product B.
+            card.tcgplayerProductID = "22222"
+            card.justTCGVariantID = "\(key)-b-normal"
+            let bound = CardMarketHistoryRequest(card: card)
+            XCTAssertEqual(bound.exactProductID, "22222")
+            XCTAssertEqual(bound.printingID, unbound.printingID)
+            XCTAssertEqual(bound.variantID, unbound.variantID)
+            let cachedB = await reopened.cached(bound)
+            XCTAssertTrue(cachedB.isEmpty, "\(key): product B must not display product A's saved history")
+
+            RecordingURLProtocol.reset(status: 403)
+            do {
+                _ = try await reopened.history(for: bound, now: now)
+                XCTFail("\(key): a failed B refresh must not return A's or unverified history")
+            } catch JustTCGTransport.TransportError.badResponse(let status) {
+                XCTAssertEqual(status, 403)
+            }
+            let afterFailure = await makeService().cached(bound)
+            XCTAssertTrue(afterFailure.isEmpty, "\(key): failure must not persist history under B")
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+
+            RecordingURLProtocol.reset(body: #"{"data":[{"tcgplayerId":"22222","variants":[{"uuid":"\#(key)-b-normal","printing":"Normal","condition":"Near Mint","priceHistory":[{"p":50,"t":1700200000}]}]}]}"#)
+            let pointsB = try await reopened.history(for: bound, now: now)
+            XCTAssertEqual(pointsB, [.init(p: 50, t: 1700200000)], "\(key): a fresh exact fetch must not merge product A's points")
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "\(key): product B must fetch its own history")
+            let query = URLComponents(url: try XCTUnwrap(RecordingURLProtocol.recorded().first),
+                resolvingAgainstBaseURL: false)?.queryItems
+            XCTAssertEqual(query?.first(where: { $0.name == "variantId" })?.value, "\(key)-b-normal")
+
+            RecordingURLProtocol.reset(body: #"{"data":[{"tcgplayerId":"22222","variants":[{"uuid":"\#(key)-b-normal","printing":"Normal","condition":"Near Mint","priceHistory":[{"p":51,"t":1700300000}]}]}]}"#)
+            let refreshedB = try await makeService().history(for: bound, now: later)
+            XCTAssertEqual(refreshedB, [.init(p: 50, t: 1700200000), .init(p: 51, t: 1700300000)],
+                "\(key): B retains only its own rolling history")
+            let restoredB = try await makeService().history(for: bound, now: later)
+            XCTAssertEqual(restoredB, refreshedB)
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "\(key): reloaded B history must be reused")
+            let persistedB = try XCTUnwrap(JSONSerialization.jsonObject(with:
+                Data(contentsOf: cacheFile(for: bound))) as? [String: Any])
+            XCTAssertEqual(persistedB["sourceProductID"] as? String, "22222")
+
+            // Product A's series stays under its original unbound identity.
+            card.tcgplayerProductID = nil
+            card.justTCGVariantID = "\(key)-a-normal"
+            let retainedA = await makeService().cached(CardMarketHistoryRequest(card: card))
+            XCTAssertEqual(retainedA, pointsA, "\(key): the unbound history is retained, not relabelled")
+            for (url, data) in savedFiles {
+                XCTAssertEqual(try Data(contentsOf: url), data, "\(key): existing cache entries must remain unchanged")
+            }
+            XCTAssertEqual(card.quantity, 3)
+            XCTAssertEqual(card.dateAdded, now)
+            XCTAssertEqual(card.collectionKey, key)
+        }
     }
 
     @MainActor

@@ -3880,3 +3880,29 @@ historical.
   installed. Physical-device acceptance remains open.
 - Device-build DerivedData is under the external SSD's
   `CardScannerBuilds/CommitAndInstall-20261024/` directory.
+
+### 2026-10-25 — Seamless card market-history loading
+
+- Collection and catalog detail now distinguish initial loading, unavailable
+  history, an empty selected period and a failed request. Loading uses one compact
+  row; saved charts remain usable during refresh and after failures. Empty periods
+  offer View all history. Provenance/timestamps live under Price details.
+- Removed duplicate startup history reloads for games without catalog-owned
+  mappings. Recover the same raw Pokémon/Magic printing's unbound disk cache when
+  its product ID is learned, while preserving game/finish/product isolation and
+  catalog-activation safeguards. A one-time binding claim prevents recovery into
+  a subsequently different product.
+- Final focused native selection: **8 passed, zero failures, zero skips**;
+  simulator build, shell syntax and `git diff --check` pass. Coverage includes
+  cross-launch cache reuse, retained history after refresh failure, listing and
+  catalog-remapping isolation, accessible loading size and the recovery binding.
+  The final MCP response timed out during rebuilding; its runner continued and
+  the completed final xcresult independently confirms the eight passing cases.
+- Inspected deterministic iPhone 17 screenshots for loading, refreshing, empty
+  period, unavailable, first-load failure and saved-history failure. Added a
+  DEBUG-only readiness marker to the existing screenshot harness. Scoped HIG gate
+  passes. Simulator taps reported success without changing the period; the action
+  is verified at the binding level, not claimed as an end-to-end tap check.
+- Build products, final test bundle, screenshots and checklist are external under
+  `CodexBuilds/MarketHistory-20261025/`. No physical-device install, live-provider
+  verification or release-readiness claim. Existing documentation edits preserved.

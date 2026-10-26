@@ -186,7 +186,8 @@ private struct CollectionCardDetailContent: View {
     @State private var selectedPriceDate: Date?
     @State private var marketHistory: [JustTCGHistoryPoint] = []
     @State private var marketHistoryError: String?
-    @State private var isLoadingMarketHistory = false
+    @State private var isLoadingMarketHistory = true
+    @State private var marketHistoryIdentity: [String]?
     @State private var marketHistoryRetry = 0
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
@@ -317,16 +318,17 @@ private struct CollectionCardDetailContent: View {
             await loadMarketHistory()
         }
         .task(id: runtimes?.runtime(for: card.cardGame)?.catalog?.generation) {
+            guard marketHistoryRequest.requiresCatalogMapping else { return }
             let source = runtimes?.runtime(for: card.cardGame)?.activationSource
             let events = await source?.activationSnapshots()
             // Subscribe before the authoritative reload, closing a missed-event
             // window between the first load and installing this observer.
-            marketHistory = []
             marketHistoryRetry += 1
             guard let events else { return }
             for await _ in events {
                 guard !Task.isCancelled else { return }
                 marketHistory = []
+                isLoadingMarketHistory = true
                 marketHistoryRetry += 1
             }
         }
@@ -983,8 +985,8 @@ private struct CollectionCardDetailContent: View {
                 // History is a separate provider series, not the quote used by
                 // collection/portfolio valuation. Never let it replace that quote.
                 CardDetailHeroPrice(price: price)
-                if !price.detailAttribution.isEmpty {
-                    Text(price.detailAttribution.joined(separator: "\n"))
+                if let source = price.source {
+                    Text(price.state() == .stale ? "\(source.label) · Saved price" : source.label)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -1006,15 +1008,20 @@ private struct CollectionCardDetailContent: View {
     private func loadMarketHistory() async {
         guard card.cardGame != .yuGiOh else { return }
         let request = marketHistoryRequest
-        marketHistory = []
+        isLoadingMarketHistory = true
+        marketHistoryError = nil
         let resolved = await request.resolvingMarketMapping(in: runtimes)
+        guard !Task.isCancelled, request == marketHistoryRequest else { return }
+        if marketHistoryIdentity != resolved.historyIdentity {
+            marketHistory = []
+            selectedPriceDate = nil
+            marketHistoryIdentity = resolved.historyIdentity
+        }
         let cached = await CardMarketHistoryService.shared.cached(request, runtimes: runtimes)
         guard !Task.isCancelled, request == marketHistoryRequest else { return }
         guard await request.resolvingMarketMapping(in: runtimes) == resolved,
               !Task.isCancelled, request == marketHistoryRequest else { return }
-        marketHistory = cached
-        marketHistoryError = nil
-        isLoadingMarketHistory = true
+        if !cached.isEmpty { marketHistory = cached }
         defer {
             if !Task.isCancelled, request == marketHistoryRequest {
                 isLoadingMarketHistory = false
@@ -1025,8 +1032,21 @@ private struct CollectionCardDetailContent: View {
         if let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1) {
             let state = arguments[index + 1]
             if state.hasPrefix("price-chart") {
-                marketHistory = state == "price-chart" ? CardMarketHistoryFixture.points : []
-                marketHistoryError = state == "price-chart-error" ? "JustTCG history could not be loaded. Try again." : nil
+                switch state {
+                case "price-chart", "price-chart-refreshing", "price-chart-saved-error":
+                    marketHistory = CardMarketHistoryFixture.points
+                case "price-chart-range-empty":
+                    marketHistory = [.init(p: 32, t: Date.now.addingTimeInterval(-400 * 86_400).timeIntervalSince1970)]
+                default: marketHistory = []
+                }
+                marketHistoryError = state == "price-chart-error" || state == "price-chart-saved-error"
+                    ? "JustTCG history could not be loaded. Try again." : nil
+                try? await Task.sleep(for: .milliseconds(500))
+                guard !Task.isCancelled else { return }
+                CardMarketHistoryFixture.markReady()
+                if state == "price-chart-loading" || state == "price-chart-refreshing" {
+                    try? await Task.sleep(for: .seconds(60))
+                }
                 return
             }
         }
@@ -1039,6 +1059,7 @@ private struct CollectionCardDetailContent: View {
                   !Task.isCancelled, request == marketHistoryRequest else { return }
             marketHistory = points
         } catch is CancellationError { return }
+        catch CardMarketHistoryService.HistoryError.noListing { return }
         catch {
             guard !Task.isCancelled, request == marketHistoryRequest else { return }
             marketHistoryError = error.localizedDescription
@@ -1063,50 +1084,32 @@ private struct CollectionCardDetailContent: View {
         movement: CardDetailMovementDisplay
     ) -> some View {
         VStack(spacing: 0) {
-            // This change belongs to JustTCG's historical series, which can
-            // differ from the current valuation quote's source and timestamp.
-            Text("JustTCG history change")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            CardDetailMovementPill(display: movement, currencyCode: "USD")
-                .padding(.top, 6)
-                .padding(.bottom, 16)
+            if model.samples.count > 1 {
+                CardDetailMovementPill(display: movement, currencyCode: "USD")
+                    .padding(.bottom, 16)
+            }
 
-            PriceHistoryChartView(
-                model: model,
-                currencyCode: "USD",
-                direction: movement.direction,
-                selectedDate: $selectedPriceDate
-            )
-            .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
+            MarketHistoryChartContent(model: model, hasHistory: !marketHistory.isEmpty,
+                                      isLoading: isLoadingMarketHistory, error: marketHistoryError,
+                                      direction: movement.direction, range: $history.range,
+                                      selection: $selectedPriceDate, retry: { marketHistoryRetry += 1 })
+                .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
 
-            CardDetailRangeSelector(
-                selection: history.range,
-                direction: movement.direction,
-                onSelect: { history.range = $0 }
-            )
-            .padding(.top, 10)
-
-            Text(model.samples.count > 1 ? "JustTCG market history · Drag to explore" : "JustTCG market history")
+            DisclosureGroup {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(price.detailAttribution, id: \.self) { Text($0) }
+                    MarketHistoryExplanation(points: marketHistory)
+                }
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
                 .padding(.top, 8)
-
-            if let latest = marketHistory.last {
-                Text("Latest history point · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 6)
+            } label: {
+                Text("Price details").frame(minHeight: 44)
             }
-
-            MarketHistoryStatusView(isLoading: isLoadingMarketHistory, error: marketHistoryError,
-                                    hasHistory: !marketHistory.isEmpty, retry: { marketHistoryRetry += 1 })
-                .padding(.horizontal, 16)
-                .padding(.top, 10)
+            .font(.subheadline)
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
 
             if price.refreshFailed {
                 Label("Last refresh failed", systemImage: "exclamationmark.triangle")
@@ -2528,7 +2531,8 @@ struct CardMarketHistoryPanel: View {
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection: Date?
     @State private var error: String?
-    @State private var isLoading = false
+    @State private var isLoading = true
+    @State private var loadedIdentity: [String]?
     @State private var retryID = 0
 
     var body: some View {
@@ -2542,23 +2546,27 @@ struct CardMarketHistoryPanel: View {
                 Text("\(sample.amount.formatted(currencyCode: "USD")) · \(sample.date.formatted(date: .abbreviated, time: .omitted))")
                     .font(.subheadline.monospacedDigit()).padding(.horizontal, 16)
             }
-            PriceHistoryChartView(model: model, currencyCode: "USD", direction: direction, selectedDate: $selection)
-            CardDetailRangeSelector(selection: range, direction: direction, onSelect: { range = $0 })
-            Text("JustTCG market history · Drag to explore")
-                .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
-            MarketHistoryStatusView(isLoading: isLoading, error: error, hasHistory: !points.isEmpty,
-                                    retry: { retryID += 1 }).padding(.horizontal, 16)
+            MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
+                                      error: error, direction: direction, range: $range,
+                                      selection: $selection, retry: { retryID += 1 })
+            DisclosureGroup {
+                MarketHistoryExplanation(points: points).font(.caption).foregroundStyle(.secondary)
+            } label: {
+                Text("Price details").frame(minHeight: 44)
+            }
+            .font(.subheadline).padding(.horizontal, 16)
         }
         .task(id: MarketHistoryLoadID(request: request, retry: retryID)) { await load() }
         .task(id: runtimes?.runtime(for: request.game)?.catalog?.generation) {
+            guard request.requiresCatalogMapping else { return }
             let source = runtimes?.runtime(for: request.game)?.activationSource
             let events = await source?.activationSnapshots()
-            points = []
             retryID += 1
             guard let events else { return }
             for await _ in events {
                 guard !Task.isCancelled else { return }
                 points = []
+                isLoading = true
                 retryID += 1
             }
         }
@@ -2566,14 +2574,19 @@ struct CardMarketHistoryPanel: View {
 
     @MainActor
     private func load() async {
-        points = []
+        isLoading = true
+        error = nil
         let resolved = await request.resolvingMarketMapping(in: runtimes)
+        guard !Task.isCancelled else { return }
+        if loadedIdentity != resolved.historyIdentity {
+            points = []
+            selection = nil
+            loadedIdentity = resolved.historyIdentity
+        }
         let cached = await CardMarketHistoryService.shared.cached(request, runtimes: runtimes)
         guard !Task.isCancelled else { return }
         guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
-        points = cached
-        isLoading = true
-        error = nil
+        if !cached.isEmpty { points = cached }
         defer { if !Task.isCancelled { isLoading = false } }
         do {
             let result = try await CardMarketHistoryService.shared.history(for: request, runtimes: runtimes)
@@ -2581,6 +2594,7 @@ struct CardMarketHistoryPanel: View {
             guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
             points = result
         } catch is CancellationError { return }
+        catch CardMarketHistoryService.HistoryError.noListing { return }
         catch {
             guard !Task.isCancelled else { return }
             self.error = error.localizedDescription
@@ -2588,23 +2602,102 @@ struct CardMarketHistoryPanel: View {
     }
 }
 
-private struct MarketHistoryStatusView: View {
+/// Loading, empty and filtered-out history are distinct states. Existing
+/// samples always remain usable while a refresh runs or fails.
+enum MarketHistoryPresentation: Equatable {
+    case chart, outsideRange, loading, unavailable, failed
+
+    init(model: PriceHistoryChartModel, hasHistory: Bool, isLoading: Bool, error: String?) {
+        if !model.samples.isEmpty { self = .chart }
+        else if hasHistory { self = .outsideRange }
+        else if isLoading { self = .loading }
+        else if error != nil { self = .failed }
+        else { self = .unavailable }
+    }
+}
+
+struct MarketHistoryChartContent: View {
+    let model: PriceHistoryChartModel
+    let hasHistory: Bool
     let isLoading: Bool
     let error: String?
-    let hasHistory: Bool
+    let direction: CardDetailMovementDisplay.Direction
+    @Binding var range: PortfolioHistoryRange
+    @Binding var selection: Date?
     let retry: () -> Void
 
     var body: some View {
+        let presentation = MarketHistoryPresentation(model: model, hasHistory: hasHistory,
+                                                     isLoading: isLoading, error: error)
         VStack(alignment: .leading, spacing: 8) {
-            if isLoading {
-                ProgressView("Loading market history…").font(.caption)
-            } else if let error {
-                Text(hasHistory ? "Showing saved JustTCG history. \(error)" : error)
-                    .font(.caption).foregroundStyle(.secondary)
-                Button("Retry history", action: retry).font(.subheadline).frame(minHeight: 44)
+            switch presentation {
+            case .chart:
+                PriceHistoryChartView(model: model, currencyCode: "USD", direction: direction, selectedDate: $selection)
+            case .loading:
+                HStack(spacing: 10) {
+                    ProgressView()
+                    Text("Loading price history…").font(.subheadline)
+                }
+                .frame(maxWidth: .infinity, minHeight: 64)
+                .accessibilityElement(children: .combine)
+            case .outsideRange:
+                VStack(spacing: 4) {
+                    Text("No prices in this period").font(.subheadline)
+                    Button("View all history", action: showAllHistory)
+                        .foregroundStyle(.tint)
+                        .frame(minHeight: 44)
+                }
+                .frame(maxWidth: .infinity)
+            case .unavailable:
+                Text("Price history isn’t available yet.")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, minHeight: 64)
+            case .failed:
+                VStack(spacing: 4) {
+                    Text("Couldn’t load price history").font(.subheadline)
+                    Button("Retry", action: retry).foregroundStyle(.tint).frame(minHeight: 44)
+                }
+                .frame(maxWidth: .infinity)
             }
-            Text("Market prices are independent of when you added this card. Lines connect prices reported by JustTCG.")
-                .font(.caption).foregroundStyle(.secondary)
+
+            if hasHistory {
+                CardDetailRangeSelector(selection: range, direction: direction) { range = $0; selection = nil }
+                HStack(spacing: 8) {
+                    Text(model.samples.count > 1 ? "JustTCG · Drag to explore" : "JustTCG price history")
+                    Spacer(minLength: 0)
+                    if isLoading {
+                        ProgressView().controlSize(.mini).accessibilityLabel("Updating price history")
+                    }
+                }
+                .font(.caption).padding(.horizontal, 16)
+                if !isLoading, error != nil {
+                    HStack {
+                        Text("Showing saved history. Couldn’t update.").font(.caption)
+                        Button("Retry", action: retry).font(.subheadline).foregroundStyle(.tint).frame(minHeight: 44)
+                    }
+                    .padding(.horizontal, 16)
+                }
+            }
+        }
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    func showAllHistory() {
+        selection = nil
+        range = .all
+    }
+}
+
+private struct MarketHistoryExplanation: View {
+    let points: [JustTCGHistoryPoint]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("History is provided by JustTCG for this printing and may differ from the current quote. It includes prices from before you added the card.")
+            if let latest = points.last {
+                Text("Latest history point · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -2612,6 +2705,14 @@ private struct MarketHistoryStatusView: View {
 
 #if DEBUG
 enum CardMarketHistoryFixture {
+    static func markReady() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_ready_path"),
+              arguments.indices.contains(index + 1) else { return }
+        try? Data(#"{"marketHistoryReady":true}"#.utf8)
+            .write(to: URL(fileURLWithPath: arguments[index + 1]), options: .atomic)
+    }
+
     static var points: [JustTCGHistoryPoint] {
         let today = Calendar(identifier: .gregorian).startOfDay(for: .now)
         return (0..<365).map { (index: Int) -> JustTCGHistoryPoint in
