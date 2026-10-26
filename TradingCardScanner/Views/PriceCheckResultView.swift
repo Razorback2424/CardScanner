@@ -135,13 +135,17 @@ struct PriceCheckResultView: View {
 
                 if !result.isRefreshing {
                     if let successfulCheck = result.lastSuccessfulCheckAt
-                        ?? (result.refreshFeedback == .failed ? nil : result.checkedAt) {
+                        ?? (result.refreshFeedback == .failed || result.checkTimeIsRetrievalEvidence ? nil : result.checkedAt) {
                         Text("Last checked \(successfulCheck.formatted(date: .abbreviated, time: .standard))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if result.checkTimeIsRetrievalEvidence, let retrieved = display.fetchedAt {
+                        Text("Quote received \(retrieved.formatted(date: .abbreviated, time: .standard))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                     if result.refreshFeedback == .failed {
-                        Text("Last attempt \(result.checkedAt.formatted(date: .abbreviated, time: .standard))")
+                        Text("Last attempt failed \(result.checkedAt.formatted(date: .abbreviated, time: .standard))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else if result.refreshFeedback == .noNewerData {

@@ -536,6 +536,8 @@ struct PriceCheckResult: Identifiable {
     var isRefreshing = false
     var refreshFeedback: PriceCheckRefreshFeedback?
     var lastSuccessfulCheckAt: Date?
+    /// Legacy/replayed evidence has a known retrieval time, not a known successful check.
+    var checkTimeIsRetrievalEvidence = false
 
     var successfulQuoteState: PriceCheckQuoteState {
         guard hasUsableAmount else { return .checking }
@@ -554,6 +556,7 @@ struct PriceCheckResult: Identifiable {
         quote = refreshed
         checkedAt = date
         lastSuccessfulCheckAt = date
+        checkTimeIsRetrievalEvidence = false
         isRefreshing = false
         refreshFailed = issue != nil
         // The primary check succeeded; any fallback issue stays visible in
@@ -563,7 +566,9 @@ struct PriceCheckResult: Identifiable {
     }
 
     mutating func recordFailedCheck(at date: Date = .now) {
-        if hasUsableAmount { lastSuccessfulCheckAt = lastSuccessfulCheckAt ?? checkedAt }
+        if hasUsableAmount, !checkTimeIsRetrievalEvidence {
+            lastSuccessfulCheckAt = lastSuccessfulCheckAt ?? checkedAt
+        }
         checkedAt = date
         refreshFeedback = .failed
         isRefreshing = false
@@ -5971,7 +5976,8 @@ final class ScannerViewModel: ObservableObject {
                 // A primary request can succeed while its optional fallback fails.
                 let issue: PriceCheckRefreshIssue?
                 if case let .lastKnown(_, failure) = outcome { issue = failure } else { issue = nil }
-                latest.completeRefresh(refreshed, issue: issue)
+                latest.completeRefresh(refreshed, issue: issue,
+                    at: priceCheckCoordinator.lastSuccessfulCheckAt(for: latest) ?? .now)
                 self.priceCheckResult = latest
             case let .failed(issue):
                 guard !Task.isCancelled,
@@ -5979,16 +5985,17 @@ final class ScannerViewModel: ObservableObject {
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
-                // A published exact miss is card evidence. Configuration,
-                // allowance, rate-limit, and transport outcomes are not, so
-                // they must not write a ReferenceQuote failure timestamp.
-                if issue == .noExactPrice {
-                    priceCheckCoordinator.recordRefreshFailure(
+                // Raw Pokémon checks retain attempts separately from successful checks.
+                // This timestamp is not evidence of price absence.
+                var attemptedAt = Date.now
+                if (latest.card.game == .pokemon && latest.resolvedScan.request.subject.slab == nil)
+                    || issue == .noExactPrice {
+                    attemptedAt = priceCheckCoordinator.recordRefreshFailure(
                         for: latest,
                         shouldContinue: shouldContinue
-                    )
+                    ) ?? attemptedAt
                 }
-                latest.recordFailedCheck()
+                latest.recordFailedCheck(at: attemptedAt)
                 latest.refreshFailed = issue != .mappingUnavailable
                 latest.quoteState = latest.hasUsableAmount
                     ? .lastKnown(issue)

@@ -477,6 +477,121 @@ final class QuoteCacheTests: XCTestCase {
             game: .pokemon, printingID: "sv10-085", variantID: nil)?.effectiveAmount, 4.03)
     }
 
+    func testRetainedQuoteSuccessfulCheckSurvivesFreshContextPresentation() async throws {
+        try await assertRetainedQuoteCheckSurvivesPresentation(failureAfterSuccess: false)
+    }
+
+    func testRetainedQuoteSuccessAndLaterFailureSurviveFreshContextPresentation() async throws {
+        try await assertRetainedQuoteCheckSurvivesPresentation(failureAfterSuccess: true)
+    }
+
+    private func assertRetainedQuoteCheckSurvivesPresentation(failureAfterSuccess: Bool) async throws {
+        let context = try makeContext()
+        let t1 = Date(timeIntervalSince1970: 1_793_001_600)
+        let t2 = t1.addingTimeInterval(60)
+        let t3 = t2.addingTimeInterval(60)
+        let scan = priceCheckScan(variant: .holo, cardNumber: "195")
+        let retained = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 4.03, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "holofoil", sourceUpdatedAt: t1, fetchedAt: t1))
+        let olderResponse = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 4.43, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "holofoil", sourceUpdatedAt: t1.addingTimeInterval(-3600), fetchedAt: t2))
+        let cache = QuoteCache(context: context)
+        cache.store(retained, game: .pokemon, printingID: "sv10-195", variantID: "holo", at: t1)
+        cache.store(quote(999, at: t1), game: .pokemon, printingID: "sv10-195", variantID: "reverse", at: t1)
+        let coordinator = PriceCheckCoordinator(context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .quote(olderResponse)), now: { t2 })
+        var visible = coordinator.present(scan)
+        XCTAssertFalse(visible.shouldAutoRefresh, "T1's exact quote is still fresh at T2")
+        let outcome = await coordinator.refresh(visible)
+        XCTAssertEqual(outcome, .quote(retained))
+        visible.completeRefresh(retained, at: try XCTUnwrap(coordinator.lastSuccessfulCheckAt(for: visible)))
+        XCTAssertEqual(visible.checkedAt, t2)
+        XCTAssertEqual(visible.lastSuccessfulCheckAt, t2)
+        if failureAfterSuccess {
+            let failedCheck = PriceCheckCoordinator(context: context,
+                refreshProvider: StubPriceCheckProvider(outcome: .failed(.providerUnavailable)), now: { t3 })
+            let failure = await failedCheck.refresh(visible)
+            XCTAssertEqual(failure, .failed(.providerUnavailable))
+            visible.recordFailedCheck(at: try XCTUnwrap(failedCheck.recordRefreshFailure(for: visible)))
+        }
+        try context.save()
+
+        let freshContext = ModelContext(try XCTUnwrap(container))
+        let reopened = PriceCheckCoordinator(context: freshContext, now: { t3 }).present(scan)
+        XCTAssertEqual(reopened.lastSuccessfulCheckAt, t2)
+        XCTAssertFalse(reopened.checkTimeIsRetrievalEvidence)
+        XCTAssertEqual(reopened.checkedAt, failureAfterSuccess ? t3 : t2)
+        XCTAssertEqual(reopened.refreshFailed, failureAfterSuccess)
+        XCTAssertEqual(reopened.refreshFeedback, failureAfterSuccess ? .failed : nil)
+        XCTAssertEqual(reopened.quote, retained)
+        XCTAssertEqual(reopened.display.sourceUpdatedAt, t1)
+        XCTAssertEqual(reopened.display.fetchedAt, t1)
+        XCTAssertEqual(reopened.display.state(now: t3), .current)
+        XCTAssertFalse(reopened.shouldAutoRefresh)
+        XCTAssertEqual(reopened.card.providerID, "sv10-195")
+        XCTAssertEqual(reopened.resolved.variant, .holo)
+        let stored = try XCTUnwrap(QuoteCache(context: freshContext).quote(
+            game: .pokemon, printingID: "sv10-195", variantID: "holo"))
+        XCTAssertEqual(stored.lastCheckedAt, failureAfterSuccess ? t3 : t2)
+        XCTAssertEqual(stored.lastFailureAt, failureAfterSuccess ? t3 : nil)
+        XCTAssertEqual(stored.lastSuccessfulCheckAt, t2)
+        XCTAssertEqual(stored.retrievedAt, t1)
+        XCTAssertEqual(stored.effectiveAmount, 4.03)
+        XCTAssertEqual(QuoteCache(context: freshContext).quote(
+            game: .pokemon, printingID: "sv10-195", variantID: "reverse")?.effectiveAmount, 999)
+    }
+
+    func testLegacyReferenceQuoteStoreMigratesWithUnknownSuccessTime() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("legacy.store")
+        let t1 = Date(timeIntervalSince1970: 1_793_001_600)
+        let t3 = t1.addingTimeInterval(120)
+        // Write the pre-follow-up schema, then reopen the same SQLite file with
+        // the additive optional field. No CloudKit or collection schema changes.
+        try autoreleasepool {
+            let legacy = try ModelContainer(for: LegacyReferenceQuoteFixture.ReferenceQuote.self,
+                PriceRecord.self, PriceObservation.self, PriceCheckDay.self,
+                configurations: ModelConfiguration(url: url, cloudKitDatabase: .none))
+            let row = LegacyReferenceQuoteFixture.ReferenceQuote()
+            row.key = "pokemon:sv10-195:holo"
+            row.game = "pokemon"
+            row.printingID = "sv10-195"
+            row.variantID = "holo"
+            row.amount = 4.03
+            row.sourceRaw = PriceSource.tcgplayer.rawValue
+            row.sourceVariantID = "holofoil"
+            row.sourceUpdatedAt = t1
+            row.retrievedAt = t1
+            row.lastCheckedAt = t3
+            row.lastFailureAt = t3
+            legacy.mainContext.insert(row)
+            try legacy.mainContext.save()
+        }
+        let migrated = try ModelContainer(for: ReferenceQuote.self,
+            PriceRecord.self, PriceObservation.self, PriceCheckDay.self,
+            configurations: ModelConfiguration(url: url, cloudKitDatabase: .none))
+        let row = try XCTUnwrap(QuoteCache(context: migrated.mainContext).quote(
+            game: .pokemon, printingID: "sv10-195", variantID: "holo"))
+        XCTAssertNil(row.lastSuccessfulCheckAt, "Legacy attempt timestamps cannot establish success")
+        let scan = priceCheckScan(variant: .holo, cardNumber: "195")
+        let result = PriceCheckCoordinator(context: migrated.mainContext, now: { t3 }).present(scan)
+        XCTAssertNil(result.lastSuccessfulCheckAt)
+        XCTAssertTrue(result.checkTimeIsRetrievalEvidence)
+        XCTAssertTrue(result.refreshFailed)
+        XCTAssertEqual(result.refreshFeedback, .failed)
+        XCTAssertEqual(result.checkedAt, t3)
+        XCTAssertEqual(result.display.fetchedAt, t1)
+        XCTAssertEqual(result.display.sourceUpdatedAt, t1)
+        XCTAssertEqual(result.display.amount, 4.03)
+        XCTAssertEqual(row.lastCheckedAt, t3)
+        XCTAssertEqual(row.lastFailureAt, t3)
+        var failedAgain = result
+        failedAgain.recordFailedCheck(at: t3.addingTimeInterval(60))
+        XCTAssertNil(failedAgain.lastSuccessfulCheckAt, "A failure cannot promote retrieval evidence into success")
+    }
+
     func testPriceCheckPrefersNewerLocalEvidenceOverCachedCatalogPrice() throws {
         let context = try makeContext()
         let cachedCatalogDate = Date(timeIntervalSince1970: 1_700_000_000)
@@ -803,4 +918,27 @@ private actor GradedFinishRecorder {
     private var calls = 0
     func record(_ value: PhysicalVariant?) { finish = value; calls += 1 }
     func snapshot() -> (finish: PhysicalVariant?, calls: Int) { (finish, calls) }
+}
+
+/// The exact cache model before this follow-up, used only to verify the
+/// automatic additive migration and unknown legacy success-time semantics.
+private enum LegacyReferenceQuoteFixture {
+    @Model final class ReferenceQuote {
+        @Attribute var key: String = ""
+        var game: String = ""
+        var printingID: String = ""
+        var variantID: String?
+        var magicTreatmentIDsRaw: [String] = []
+        var amount: Double?
+        var currencyCode: String = "USD"
+        var sourceRaw: String?
+        var sourceVariantID: String?
+        var sourceUpdatedAt: Date?
+        var retrievedAt: Date?
+        var lastCheckedAt: Date?
+        var lastFailureAt: Date?
+        var catalogPriceIdentity: String?
+        var invalidatedAt: Date?
+        init() {}
+    }
 }

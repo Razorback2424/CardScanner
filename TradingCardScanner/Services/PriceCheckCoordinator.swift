@@ -209,12 +209,14 @@ final class PriceCheckCoordinator {
     private let refreshProvider: PriceCheckRefreshProvider
     private let gradedResolver: ScannedGradedResolving
     private let quoteService: PriceQuoteService
+    private let now: () -> Date
 
     init(
         context: ModelContext,
         refreshProvider: PriceCheckRefreshProvider? = nil,
         quoteService: PriceQuoteService = PriceQuoteService(),
-        gradedResolver: ScannedGradedResolving = ScannedGradedResolver()
+        gradedResolver: ScannedGradedResolving = ScannedGradedResolver(),
+        now: @escaping () -> Date = { .now }
     ) {
         cache = QuoteCache(context: context)
         collectionPrices = PriceStore(context: context)
@@ -223,6 +225,7 @@ final class PriceCheckCoordinator {
             ?? LivePriceCheckRefreshProvider(quoteService: quoteService, fallbackResolver: fallbackResolver)
         self.gradedResolver = gradedResolver
         self.quoteService = quoteService
+        self.now = now
     }
 
     private func requiresPhysicalReview(_ scan: ResolvedScan) -> Bool {
@@ -319,16 +322,17 @@ final class PriceCheckCoordinator {
                 printingID: key.printingID,
                 variantID: key.variantID,
                 at: catalogEvidence.retrievedAt,
-                treatmentIDs: key.treatmentIDs
+                treatmentIDs: key.treatmentIDs,
+                isReplay: true
             )
-            return PriceCheckResult(
-                resolvedScan: resolvedScan,
+            return presentEvidence(
+                resolvedScan, key: key,
                 quote: catalogQuote,
-                checkedAt: catalogEvidence.retrievedAt,
-                quoteState: key.game == .pokemon && Self.isStale(catalogEvidence, game: key.game) ? .stale : .current,
+                retrievedAt: catalogEvidence.retrievedAt,
+                quoteState: key.game == .pokemon && Self.isStale(catalogEvidence, game: key.game, now: now()) ? .stale : .current,
                 // Identification stays fast, but an old session-cache payload
                 // must not disable the newer-price check.
-                shouldAutoRefresh: Self.isStale(catalogEvidence, game: key.game)
+                shouldAutoRefresh: Self.isStale(catalogEvidence, game: key.game, now: now())
             )
         }
 
@@ -341,26 +345,27 @@ final class PriceCheckCoordinator {
                 printingID: key.printingID,
                 variantID: key.variantID,
                 at: local.retrievedAt,
-                treatmentIDs: key.treatmentIDs
+                treatmentIDs: key.treatmentIDs,
+                isReplay: true
             )
             let localLookup = PriceLookup.price(local.price)
             guard Self.isUsableUSD(localLookup) else {
                 // Keep the native-currency evidence visible, but do not call
                 // it a completed USD Price Check. The default refresh flag
                 // schedules the one permitted background attempt.
-                return PriceCheckResult(
-                    resolvedScan: resolvedScan,
+                return presentEvidence(
+                    resolvedScan, key: key,
                     quote: localLookup,
-                    checkedAt: local.retrievedAt,
+                    retrievedAt: local.retrievedAt,
                     quoteState: .checking
                 )
             }
-            return PriceCheckResult(
-                resolvedScan: resolvedScan,
+            return presentEvidence(
+                resolvedScan, key: key,
                 quote: localLookup,
-                checkedAt: local.retrievedAt,
-                quoteState: key.game == .pokemon && Self.isStale(local, game: key.game) ? .stale : .current,
-                shouldAutoRefresh: Self.isStale(local, game: key.game)
+                retrievedAt: local.retrievedAt,
+                quoteState: key.game == .pokemon && Self.isStale(local, game: key.game, now: now()) ? .stale : .current,
+                shouldAutoRefresh: Self.isStale(local, game: key.game, now: now())
             )
         }
 
@@ -473,13 +478,20 @@ final class PriceCheckCoordinator {
         if let quote = successfulQuote,
            case .price = quote {
             let key = quoteKey(for: result.resolvedScan)
+            let completedAt = now()
             _ = cache.store(
                 quote,
                 game: key.game,
                 printingID: key.printingID,
                 variantID: key.variantID,
-                treatmentIDs: key.treatmentIDs
+                at: completedAt,
+                treatmentIDs: key.treatmentIDs,
+                successfulCheckAt: completedAt
             )
+            if issue != nil {
+                _ = cache.recordFailure(game: key.game, printingID: key.printingID,
+                    variantID: key.variantID, at: completedAt, treatmentIDs: key.treatmentIDs)
+            }
         }
         if case .quote(.unavailable) = outcome {
             return .failed(.noExactPrice)
@@ -487,18 +499,28 @@ final class PriceCheckCoordinator {
         return outcome
     }
 
+    func lastSuccessfulCheckAt(for result: PriceCheckResult) -> Date? {
+        let key = quoteKey(for: result.resolvedScan)
+        return cache.quote(game: key.game, printingID: key.printingID,
+            variantID: key.variantID, treatmentIDs: key.treatmentIDs)?.lastSuccessfulCheckAt
+    }
+
+    @discardableResult
     func recordRefreshFailure(
         for result: PriceCheckResult,
         shouldContinue: PriceCheckContinuationCheck? = nil
-    ) {
-        guard shouldContinue?() ?? true else { return }
+    ) -> Date? {
+        guard shouldContinue?() ?? true else { return nil }
         let key = quoteKey(for: result.resolvedScan)
+        let attemptedAt = now()
         _ = cache.recordFailure(
             game: key.game,
             printingID: key.printingID,
             variantID: key.variantID,
+            at: attemptedAt,
             treatmentIDs: key.treatmentIDs
         )
+        return attemptedAt
     }
 
     private struct QuoteKey {
@@ -506,6 +528,24 @@ final class PriceCheckCoordinator {
         let printingID: String
         let variantID: String?
         let treatmentIDs: [String]
+    }
+
+    /// A cached quote's retrieval is not proof of when a later check succeeded.
+    /// Replaying evidence must also leave a subsequent failed attempt visible.
+    private func presentEvidence(
+        _ scan: ResolvedScan, key: QuoteKey, quote: PriceLookup, retrievedAt: Date,
+        quoteState: PriceCheckQuoteState, shouldAutoRefresh: Bool = true
+    ) -> PriceCheckResult {
+        let cached = cache.quote(game: key.game, printingID: key.printingID,
+            variantID: key.variantID, treatmentIDs: key.treatmentIDs)
+        var result = PriceCheckResult(resolvedScan: scan, quote: quote,
+            checkedAt: cached?.lastCheckedAt ?? retrievedAt,
+            quoteState: quoteState, shouldAutoRefresh: shouldAutoRefresh)
+        result.lastSuccessfulCheckAt = cached?.lastSuccessfulCheckAt
+        result.checkTimeIsRetrievalEvidence = result.lastSuccessfulCheckAt == nil
+        result.refreshFailed = cached?.lastFailureAt != nil
+        result.refreshFeedback = result.refreshFailed ? .failed : nil
+        return result
     }
 
     private struct LocalEvidence {

@@ -32,7 +32,9 @@ struct QuoteCache {
         printingID: String,
         variantID: String?,
         at date: Date = .now,
-        treatmentIDs: [String] = []
+        treatmentIDs: [String] = [],
+        isReplay: Bool = false,
+        successfulCheckAt: Date? = nil
     ) -> ReferenceQuote {
         let record = quote(
             game: game,
@@ -58,7 +60,13 @@ struct QuoteCache {
         if record.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
             record.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
-        record.apply(lookup, at: date)
+        record.apply(lookup, at: date, isReplay: isReplay)
+        // Check completion is independent of which quote won the evidence comparison.
+        // Never infer success from lastCheckedAt: that field includes failures.
+        if let successfulCheckAt, case let .price(price) = lookup, price.isUsableUSD,
+           record.lastSuccessfulCheckAt.map({ successfulCheckAt >= $0 }) ?? true {
+            record.lastSuccessfulCheckAt = successfulCheckAt
+        }
         save()
         return record
     }
