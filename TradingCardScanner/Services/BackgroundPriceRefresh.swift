@@ -196,12 +196,20 @@ enum BackgroundPriceRefresh {
     /// The single headless refresh path. `allowsForeground` exists only for the
     /// debug settings action that exercises the same work without a scheduler.
     @MainActor
-    static func run(_ kind: Kind, allowsForeground: Bool = false) async -> Bool {
+    static func run(
+        _ kind: Kind,
+        allowsForeground: Bool = false,
+        storageDependencies: CollectionStorageHeadlessPreflightDependencies? = nil,
+        prepareRuntimes: @Sendable () async -> CardGameRuntimeContainer = {
+            await CardGameRuntimeContainer.preparedAppDefaults()
+        },
+        refreshController: PriceRefreshController? = nil
+    ) async -> Bool {
         guard allowsForeground || UIApplication.shared.applicationState == .background else {
             return true
         }
         guard let storage = await CollectionStorageHeadlessPreflight.prepare(
-            dependencies: .production()
+            dependencies: storageDependencies ?? .production()
         ) else {
             // A fresh background process may not run the foreground bootstrap.
             // Without a previously proven manifest/checkpoint/store tuple, the
@@ -217,6 +225,22 @@ enum BackgroundPriceRefresh {
         let shouldContinue = storage.continuation
         let container = storage.container
         let context = container.mainContext
+        let refreshController = refreshController ?? .shared
+        guard !Task.isCancelled, shouldContinue() else { return false }
+        // A scheduler launch may never construct the foreground app root.
+        // Bind the enabled modules to this proven store before building price
+        // targets, including their catalog-owned quote authority.
+        let runtimes = await prepareRuntimes()
+        guard !Task.isCancelled, shouldContinue() else { return false }
+        do {
+            let bound = try await runtimes.bound(to: container, configurePricing: false, isCurrent: {
+                !Task.isCancelled && shouldContinue()
+            })
+            guard !Task.isCancelled, shouldContinue() else { return false }
+            refreshController.configureGamePricing(bound.makePriceQuoteService())
+        } catch {
+            return false
+        }
         let migration = MagicTreatmentMigrationCoordinator.shared
         // Background Tasks has a small, non-renewable budget, and a scheduled
         // launch is normally a *fresh process* — so deferred Scryfall
@@ -248,7 +272,7 @@ enum BackgroundPriceRefresh {
                     markRecentlyCheckedIfEmpty: false,
                     gradedOnly: false
                 )
-                return await PriceRefreshController.shared.refresh(
+                return await refreshController.refresh(
                     request,
                     container: context.container,
                     shouldContinue: shouldContinue,

@@ -351,7 +351,11 @@ private struct SettingsContentView: View {
 #if DEBUG
                 Button("Run Overnight Price Refresh", systemImage: "moon.stars") {
                     Task {
-                        await BackgroundPriceRefresh.run(.processing, allowsForeground: true)
+                        await BackgroundPriceRefresh.run(.processing, allowsForeground: true,
+                            prepareRuntimes: { [runtimes] in
+                                if let runtimes { return runtimes }
+                                return await CardGameRuntimeContainer.preparedAppDefaults()
+                            })
                     }
                 }
                 .disabled(collectionCardCount == 0)

@@ -3,9 +3,190 @@ import SwiftData
 import XCTest
 @testable import TradingCardScanner
 
+private actor HeadlessPricingProbe {
+    private(set) var preparations = 0
+    private(set) var requests: [String] = []
+    func prepared() { preparations += 1 }
+    func record(_ key: String) { requests.append(key) }
+}
+
+private struct HeadlessVariantPolicy: GameVariantPolicy {
+    let selectableVariants: [PhysicalVariant] = [.normal]
+}
+
+private struct HeadlessPriceAdapter: GamePriceAdapter {
+    let game: CardGame
+    let probe: HeadlessPricingProbe
+    var supportsStoredPrintingRefresh: Bool { true }
+    var allowsProviderFallback: Bool { false }
+    func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
+        throw PriceQuoteError.identityMismatch
+    }
+    func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup {
+        await probe.record(PriceRecord.key(game: game, printingID: printingID, variantID: variant?.id))
+        return .price(.init(unitMarketPriceUSD: 8.16, currencyCode: "USD", source: .tcgCSV,
+            sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: .now,
+            catalogIdentity: "fixture:\(printingID)"))
+    }
+}
+
 @MainActor
 final class CollectionStoreContinuityTests: XCTestCase {
     private let localStoreID = UUID(uuidString: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE")!
+
+    func testColdHeadlessPricingBindsEnabledGamesWithoutForegroundInitialization() async throws {
+        for kind in [BackgroundPriceRefresh.Kind.processing, .appRefresh] {
+            let directory = try makeDirectory()
+            defer { try? FileManager.default.removeItem(at: directory) }
+            let paths = makePaths(in: directory)
+            let manifestStore = CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL)
+            let identity = try manifestStore.ensureStoreFileIdentity()
+            let games: [CardGame] = [.lorcana, .yuGiOh, .onePiece]
+            let expectedKeys = games.map {
+                PriceRecord.key(game: $0, printingID: "fixture-\($0.rawValue)", variantID: "normal")
+            }
+            let withdrawnKey = PriceRecord.key(game: .lorcana, printingID: "withdrawn", variantID: "normal")
+            // Seed a previously used disk store directly. No runtime binding,
+            // scanner, app root, or foreground bootstrap runs in this fixture.
+            do {
+                let seed = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+                for game in games {
+                    let providerID = "fixture-\(game.rawValue)"
+                    seed.mainContext.insert(CollectedCard(collectionKey: "\(game.rawValue):\(providerID)#normal",
+                        game: game, providerID: providerID, name: "Headless fixture", setName: "Fixture",
+                        setCode: "FIX", cardNumber: "1", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                        variant: .normal, variantResolution: .userConfirmed))
+                }
+                try seed.mainContext.save()
+                let prices = PriceStore(context: seed.mainContext)
+                XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 1, currencyCode: "USD", source: .tcgCSV,
+                    sourceVariantID: "old", sourceUpdatedAt: nil, fetchedAt: .distantPast)),
+                    game: .lorcana, printingID: "withdrawn", variantID: "normal"))
+                XCTAssertTrue(prices.save())
+            }
+            try manifestStore.save(.init(storeID: localStoreID, attachmentState: .neverAttached, storeFileIdentity: identity))
+            let generation = CollectionStorageGeneration()
+            defer { generation.suspend() }
+            var opens = 0
+            let dependencies = CollectionStorageHeadlessPreflightDependencies(paths: paths, manifestStore: manifestStore,
+                accountAvailability: { .noAccount }, makeContainer: { mode in
+                    opens += 1
+                    return try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: mode)
+                }, storageGeneration: generation)
+            let probe = HeadlessPricingProbe()
+            let modules = games.map { game in
+                CardGameRuntime(descriptor: .init(game: game, displayName: game.rawValue, sortOrder: 0,
+                    capabilities: [.pricing, .collectionWrite]),
+                    variantPolicy: HeadlessVariantPolicy(),
+                    pricing: HeadlessPriceAdapter(game: game, probe: probe),
+                    priceAuthority: .init(game: game, managedSources: [.tcgCSV], identityByPriceKey: [
+                        PriceRecord.key(game: game, printingID: "fixture-\(game.rawValue)", variantID: "normal"):
+                            "fixture:fixture-\(game.rawValue)"
+                    ]))
+            }
+            let unbound = try CardGameRuntimeContainer(runtimes: modules)
+            // A fresh controller starts with only the legacy pricing adapters.
+            // A warmed shared controller cannot make this regression pass.
+            let controller = PriceRefreshController()
+            let success = await BackgroundPriceRefresh.run(kind, allowsForeground: true,
+                storageDependencies: dependencies, prepareRuntimes: {
+                    await probe.prepared()
+                    return unbound
+                }, refreshController: controller)
+            XCTAssertTrue(success)
+            XCTAssertEqual(opens, 1)
+            let preparations = await probe.preparations
+            XCTAssertEqual(preparations, 1)
+            let requests = await probe.requests
+            XCTAssertEqual(Set(requests), Set(expectedKeys))
+            XCTAssertEqual(requests.count, 3)
+            let reopened = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+            let prices = PriceStore(context: reopened.mainContext)
+            for key in expectedKeys {
+                XCTAssertEqual(prices.record(forKey: key)?.effectiveUnitMarketPriceUSD, 8.16)
+            }
+            XCTAssertNotNil(prices.record(forKey: withdrawnKey)?.invalidatedAt,
+                "Headless binding must install catalog price authority before fetching")
+            XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1, 1, 1])
+        }
+    }
+
+    func testHeadlessPricingDoesNotPrepareRuntimesWithoutAProvenStore() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = makePaths(in: directory)
+        let generation = CollectionStorageGeneration()
+        let probe = HeadlessPricingProbe()
+        var opens = 0
+        let dependencies = CollectionStorageHeadlessPreflightDependencies(paths: paths,
+            manifestStore: .init(directoryURL: paths.collectionStorageDirectoryURL),
+            accountAvailability: { .noAccount }, makeContainer: { mode in
+                opens += 1
+                return try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: mode)
+            }, storageGeneration: generation)
+        let empty = try CardGameRuntimeContainer(runtimes: [])
+        let result = await BackgroundPriceRefresh.run(.processing, allowsForeground: true,
+            storageDependencies: dependencies, prepareRuntimes: {
+                await probe.prepared()
+                return empty
+            }, refreshController: PriceRefreshController())
+        XCTAssertTrue(result, "An unproven store remains a harmless no-op")
+        XCTAssertEqual(opens, 0)
+        let preparations = await probe.preparations
+        XCTAssertEqual(preparations, 0)
+        XCTAssertNil(generation.currentToken())
+    }
+
+    func testHeadlessPricingStopsIfPreparationIsCancelledOrStorageIsReplaced() async throws {
+        for cancelsTask in [false, true] {
+            let directory = try makeDirectory()
+            defer { try? FileManager.default.removeItem(at: directory) }
+            let paths = makePaths(in: directory)
+            let manifestStore = CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL)
+            let identity = try manifestStore.ensureStoreFileIdentity()
+            do {
+                let seed = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+                let prices = PriceStore(context: seed.mainContext)
+                XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 1, currencyCode: "USD", source: .tcgCSV,
+                    sourceVariantID: "old", sourceUpdatedAt: nil, fetchedAt: .distantPast)),
+                    game: .lorcana, printingID: "withdrawn", variantID: "normal"))
+                XCTAssertTrue(prices.save())
+            }
+            try manifestStore.save(.init(storeID: localStoreID, attachmentState: .neverAttached, storeFileIdentity: identity))
+            let generation = CollectionStorageGeneration()
+            defer { generation.suspend() }
+            let dependencies = CollectionStorageHeadlessPreflightDependencies(paths: paths, manifestStore: manifestStore,
+                accountAvailability: { .noAccount }, makeContainer: { mode in
+                    try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: mode)
+                }, storageGeneration: generation)
+            let probe = HeadlessPricingProbe()
+            let unbound = try CardGameRuntimeContainer(runtimes: [
+                .init(descriptor: .init(game: .lorcana, displayName: "Fixture", sortOrder: 0, capabilities: .pricing),
+                    variantPolicy: HeadlessVariantPolicy(), pricing: HeadlessPriceAdapter(game: .lorcana, probe: probe),
+                    priceAuthority: .init(game: .lorcana, managedSources: [.tcgCSV], identityByPriceKey: [:]))
+            ])
+            let controller = PriceRefreshController()
+            let run = Task { @MainActor in
+                await BackgroundPriceRefresh.run(.processing, allowsForeground: true,
+                    storageDependencies: dependencies, prepareRuntimes: {
+                        await probe.prepared()
+                        if cancelsTask { withUnsafeCurrentTask { $0?.cancel() } }
+                        else { await MainActor.run { generation.suspend() } }
+                        return unbound
+                    }, refreshController: controller)
+            }
+            let result = await run.value
+            XCTAssertFalse(result)
+            let preparations = await probe.preparations
+            let requests = await probe.requests
+            XCTAssertEqual(preparations, 1)
+            XCTAssertTrue(requests.isEmpty)
+            let reopened = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+            let key = PriceRecord.key(game: .lorcana, printingID: "withdrawn", variantID: "normal")
+            XCTAssertNil(PriceStore(context: reopened.mainContext).record(forKey: key)?.invalidatedAt,
+                "Cancelled or stale preparation must not install quote authority")
+        }
+    }
 
     private func makeDirectory() throws -> URL {
         let directory = FileManager.default.temporaryDirectory

@@ -136,6 +136,7 @@ struct CardGameRuntimeContainer: Sendable {
     @MainActor
     func bound(to container: ModelContainer,
                recovering previous: Self? = nil,
+               configurePricing: Bool = true,
                isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) async throws -> Self {
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
         if previous == nil { configureCollectionAuthority(for: container, configurePricing: false) }
@@ -176,7 +177,7 @@ struct CardGameRuntimeContainer: Sendable {
         if let previous, previous.registry.games(supporting: []) == bound.registry.games(supporting: []) {
             return previous
         }
-        bound.configureCollectionAuthority(for: container)
+        bound.configureCollectionAuthority(for: container, configurePricing: configurePricing)
         return bound
     }
 
