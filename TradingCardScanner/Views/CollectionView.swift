@@ -323,7 +323,7 @@ struct CollectionView: View {
         }
         .modifier(CollectionFilterPresentation(
             isPresented: $isShowingFilters,
-            filters: collectionFilters(optionRows)
+            filters: collectionFilters(optionRows, collectionRows: snapshot.all)
         ))
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
@@ -391,12 +391,13 @@ struct CollectionView: View {
     }
 
     @ViewBuilder
-    private func collectionFilters(_ optionRows: [CollectionRow]) -> some View {
+    private func collectionFilters(_ optionRows: [CollectionRow], collectionRows: [CollectionRow]) -> some View {
         // Keep tallying and sorting behind the presentation flag.
         if isShowingFilters {
             CollectionFilterSheet(
                 isPresented: $isShowingFilters,
                 filters: $filters,
+                ownedGames: Set(collectionRows.map(\.game)),
                 setOptions: setOptions(optionRows),
                 finishOptions: finishOptions(optionRows),
                 treatmentOptions: treatmentOptions(optionRows),

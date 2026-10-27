@@ -18,11 +18,23 @@ struct CollectionFilterSheet: View {
     @Binding var isPresented: Bool
 
     @Binding var filters: CollectionFilters
+    let ownedGames: Set<CardGame>
     let setOptions: [FilterOption]
     let finishOptions: [FilterOption]
     var treatmentOptions: [FilterOption] = []
     let gradingCompanyOptions: [FilterOption]
     let gradeOptions: [FilterOption]
+
+    var gameOptions: [CardGame] {
+        var games = ownedGames
+        // A removal can empty the selected game while the filters remain open.
+        if let selected = filters.game { games.insert(selected) }
+        return games.sorted { left, right in
+            let leftOrder = CardGameRegistry.standard.descriptor(for: left)?.sortOrder ?? Int.max
+            let rightOrder = CardGameRegistry.standard.descriptor(for: right)?.sortOrder ?? Int.max
+            return leftOrder == rightOrder ? left.rawValue < right.rawValue : leftOrder < rightOrder
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -30,7 +42,7 @@ struct CollectionFilterSheet: View {
                 Section("Show") {
                     Picker("Game", selection: gameSelection) {
                         Text("All Games").tag(nil as CardGame?)
-                        ForEach(CardGameRegistry.standard.games(supporting: .browse)) { game in
+                        ForEach(gameOptions) { game in
                             Text(game.label).tag(game as CardGame?)
                         }
                     }
@@ -176,7 +188,7 @@ struct CollectionFilterSheet: View {
         return "\(minimumQuantity)+ copies"
     }
 
-    private var gameSelection: Binding<CardGame?> {
+    var gameSelection: Binding<CardGame?> {
         Binding(
             get: { filters.game },
             set: { game in

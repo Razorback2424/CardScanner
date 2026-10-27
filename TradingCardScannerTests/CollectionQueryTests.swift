@@ -1,7 +1,70 @@
+import SwiftUI
 import XCTest
 @testable import TradingCardScanner
 
 final class CollectionQueryTests: XCTestCase {
+    @MainActor
+    func testGamePickerIncludesEveryOwnedIdentityWithoutRequiringBrowseCapability() {
+        let retained = CardGame(rawValue: "retained-game")
+        let games: [CardGame] = [.pokemon, .magic, .onePiece, .lorcana, .yuGiOh, retained]
+        let rows = games.map { row(id: $0.rawValue, game: $0, price: nil) }
+        let sheet = filterSheet(ownedGames: Set(rows.map(\.game)))
+        XCTAssertEqual(sheet.gameOptions, games)
+        XCTAssertEqual(Array(sheet.gameOptions.suffix(4)).map(\.label), ["One Piece", "Disney Lorcana", "Yu-Gi-Oh!", "retained-game"])
+        for game in games {
+            var filters = CollectionFilters.none
+            filters.game = game
+            let visible = CollectionQuery.filter(rows, with: filters)
+            XCTAssertEqual(visible.map(\.id), [game.rawValue])
+            XCTAssertEqual(visible.reduce(0) { $0 + $1.quantity }, 1)
+        }
+        for game in [.onePiece, .lorcana, .yuGiOh, retained] as [CardGame] {
+            XCTAssertFalse(CardGameRegistry.standard.supports(game, .browse))
+            XCTAssertFalse(CardGameRegistry.standard.supports(game, .collectionWrite))
+        }
+    }
+
+    @MainActor
+    func testGamePickerOmitsUnownedChoicesAndKeepsSelectionAfterLastHoldingDisappears() {
+        XCTAssertTrue(filterSheet(ownedGames: []).gameOptions.isEmpty)
+        XCTAssertEqual(filterSheet(ownedGames: [.yuGiOh, .magic]).gameOptions, [.magic, .yuGiOh])
+        var filters = CollectionFilters.none
+        filters.game = .onePiece
+        let sheet = filterSheet(ownedGames: [.pokemon], filters: Binding(get: { filters }, set: { filters = $0 }))
+        XCTAssertEqual(sheet.gameOptions, [.pokemon, .onePiece])
+        sheet.gameSelection.wrappedValue = nil
+        XCTAssertEqual(sheet.gameOptions, [.pokemon])
+        XCTAssertFalse(filters.isActive)
+    }
+
+    @MainActor
+    func testGamePickerSelectionClearsOnlyGameScopedDetails() {
+        var filters = CollectionFilters(game: .magic, setCodes: ["magic|TST"], variantIDs: ["foil"],
+            treatmentIDs: ["surgefoil"], minimumQuantity: 2, price: .unpriced,
+            itemKinds: [.gradedCard], gradingCompanies: [.psa], gradeValues: ["10"])
+        let original = filters
+        let sheet = filterSheet(ownedGames: [.magic, .lorcana], filters: Binding(get: { filters }, set: { filters = $0 }))
+        sheet.gameSelection.wrappedValue = .magic
+        XCTAssertEqual(filters, original)
+        sheet.gameSelection.wrappedValue = .lorcana
+        var expected = original
+        expected.game = .lorcana
+        expected.setCodes = []
+        expected.variantIDs = []
+        expected.treatmentIDs = []
+        XCTAssertEqual(filters, expected)
+        XCTAssertEqual(sheet.gameOptions, [.magic, .lorcana], "A selected game must not narrow the list of other owned games")
+        sheet.gameSelection.wrappedValue = nil
+        expected.game = nil
+        XCTAssertEqual(filters, expected)
+    }
+
+    @MainActor
+    private func filterSheet(ownedGames: Set<CardGame>, filters: Binding<CollectionFilters> = .constant(.none)) -> CollectionFilterSheet {
+        CollectionFilterSheet(isPresented: .constant(true), filters: filters, ownedGames: ownedGames,
+            setOptions: [], finishOptions: [], gradingCompanyOptions: [], gradeOptions: [])
+    }
+
     private func row(
         id: String = UUID().uuidString,
         game: CardGame = .pokemon,
