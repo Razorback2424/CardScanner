@@ -1,3 +1,358 @@
+# 2026-10-27 — M06 collection owned-game filter choices
+
+Three native regressions reproduced the Game picker offering only Pokémon and
+Magic despite held Lorcana, Yu-Gi-Oh!, One Piece and a retained unknown identity.
+The picker now receives unique owned games from the full collection snapshot,
+only while presented, independent of search, item-kind and selected-game filters.
+Existing identity descriptors determine stable order/labels; retained unknown IDs
+remain selectable with their raw labels. If a last holding disappears, the current
+game remains a valid selection until changed or cleared. No browse, pricing or
+collection-write capability enabled; no fetch, task, model or cache added.
+
+All three focused regressions pass. They cover mixed/retained identities,
+empty/subset collections, stable order/labels, exact query results/copy counts,
+selection retention/clearing and the real picker binding's game-scoped resets.
+Set/finish/treatment clear on a game change; same-game selection and all other
+filters retain their behavior. Expanded verification on iPhone 17 / iOS 27.0
+Simulator: **124 passed, zero failed/skipped** (46 CollectionQuery, 42
+CollectionItemKind, 36 BrowseCollection). Finalized summaries contain no runtime
+warnings. Evidence is on the external SSD under
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M06-*`.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md#m06-collection-game-filter-omits-owned-games),
+documentation map and audit. Source HIG gate passes; rendered phone/tablet
+sheet/inspector and VoiceOver acceptance remain unverified. No device/provider/
+CloudKit/full-suite/release acceptance claimed. M07 and later findings unchanged.
+
+# 2026-10-27 — M05 opening readiness hold removed
+
+Reproduced the actual hosted opening container waiting about 444 ms on fast
+readiness and 757 ms after a slower load. Removed the pre-reveal sleep and two
+unused hold constants. Handoff now starts at readiness, retaining the existing
+fade/scale, Reduce Motion reveal, post-reveal settling, loading/restoration gates
+and recovery/session-reset behavior. No new production API, state or abstraction.
+
+Added two hosted regression cases: fast/slow handoff within 100 ms with reveal
+completion, and cancellation of old settling on phase reset plus blocked-startup
+recovery exposure. All nine focused opening tests pass. Fixed readiness-to-handoff
+was about 32 ms fast / under 1 ms slow in that run. Expanded verification on
+iPhone 17 / iOS 27.0 Simulator selected 69 opening/storage-bootstrap/storage-policy/
+launch-executor cases: **68 passed, zero failed, one skipped**. The skipped
+data-protection test requires a locked physical device. Expanded hosted timings
+were about 1.5 ms fast / 0.7 ms slow. Finalized summaries contain no runtime warnings.
+The first new fixture build tried to override a read-only SwiftUI environment
+value; corrected before accepted baseline evidence. Evidence is on the external
+SSD under `CodexBuildArtifacts/TradingCardScannerM01/Evidence/M05-*`.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md#m05-opening-handoff-adds-waiting-after-readiness),
+documentation map and audit. Source HIG gate passes; visual/VoiceOver/native
+Reduce Motion and Release-device cold/warm interaction acceptance remain
+unverified. Simulator handoff measurements do not certify total launch latency,
+touch delivery or release readiness. No later finding changed.
+
+# 2026-10-27 — M04 reviewed UI ownership scope completed locally
+
+Finished sealed add/Undo, Browse release-order backfill and Portfolio quantity
+repair using the existing background writer and fresh serialized transactions.
+The caller sweep additionally moved CSV-import and collection-delete exclusive
+lock acquisition off the UI thread while retaining same-task authorization and
+the existing token barrier. Pending feedback, repeat-action guards, cancellation
+and storage-generation checks protect current UI state. Backfill preserves price
+lineage; repair refuses mixed/stale defects without changing owned quantities.
+Removed redundant sealed preflight branches; no schema or new actor added.
+
+The native legacy characterization reproduced five blocking paths at about
+510–632 ms under a forced 500 ms hold. Seven focused regressions pass, covering
+responsive heartbeats, durable results, lineage, exact Undo, real promotion,
+stale repair refusal and canceled/retired exclusive-session cleanup. Expanded
+verification on iPhone 17 / iOS 27.0 Simulator selected 616 cases: **615 passed,
+zero failed, one existing opt-in benchmark skipped**. Finalized result summaries
+contain no runtime warnings. Includes all 74 history, 42 item-kind and 36
+BrowseCollection cases, executor, hosted detail/deletion, artwork, CSV resume,
+ownership stress and earlier pricing/scanner/refresh selections. The initial
+sealed fixture build omitted required `imageURL: nil`; corrected before the
+accepted baseline. Evidence remains on the external SSD under
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-completion-*`.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md#m04-completion-and-caller-sweep--2026-10-27),
+documentation map and audit. No further named M04 UI action implementation slice
+remains; earlier open-slice entries below are historical. Broader automatic
+catalog/normalization, Magic migration, portfolio epoch and shared price/cache
+service transactions remain outside this UI ownership repair and are not
+certified as nonblocking. Source HIG gate passes; Release-device latency,
+rendered pending/back/Cancel/VoiceOver, provider/CloudKit/full-suite/release
+acceptance remain unverified. Later findings were not implemented.
+
+# 2026-10-27 — M04 graded-picker acquisition writes
+
+Reproduced the confirmation's synchronous write blocking a queued main-thread
+heartbeat for about 669 ms under forced 500 ms contention. One method on the
+existing scanner writer/private executor now runs the unchanged store add,
+listing price, promotion, certificate and lineage work off-main. Value inputs
+and a mutation receipt cross the boundary; post-lock cancellation/storage checks
+reject queued obsolete work. The main-actor optimistic promotion preflight and
+duplicate gate branches are removed; the existing in-write permit and same-task
+retry remain authoritative. The real promotion test requires two attempts and
+preserves one physical copy/acquisition with migrated lineage.
+
+The confirmation's save task is view-owned so departure cancels queued work;
+already-started transactions remain atomic. Pending progress/certificate pause
+preserve navigation and the immediate repeat-tap guard. Canceled/retired results
+do not call the success/dismiss callback. Selected-listing pricing, including an
+explicit listing with unrecorded physical finish, stays distinct from M02's
+automatic binding rules. No store/provider policy, new actor or schema added;
+production code size is unchanged while UI coordination is simpler.
+
+All five focused native tests pass. Expanded verification on iPhone 17 / iOS 27.0
+Simulator selected 609 cases: 608 passed, zero failed, one existing opt-in
+benchmark skipped; finalized summary inspected with no runtime warnings. Includes
+all 42 item-kind, 67 history and 36 BrowseCollection cases, both executor tests,
+hosted detail/deletion, artwork, ownership stress and earlier M01–M04 selections.
+Evidence is on the external SSD under
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-graded-picker-*`.
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md)
+and documentation map/audit. HIG source gate passes; rendered pending/back/Cancel/
+VoiceOver, ordinary device latency and provider/release gates remain unverified.
+M04 stays open for sealed acquisition, Browse release-order backfill and Portfolio
+quantity repair; no later finding implemented.
+
+# 2026-10-27 — M04 catalog/raw acquisition writes
+
+Reproduced blocked main-thread heartbeats in raw catalog add, acquisition Undo
+and catalog-price checkpoint under a forced 500 ms lock hold (about 524–647 ms).
+These transactions now extend the existing scanner writer and private executor.
+Catalog details/resolution/print run cross as values; the fresh transaction stages
+and saves the acquisition with its actual stored price identity before returning
+a receipt. Imported aliases, source/provenance, finish/edition and lineage stay
+intact. Post-lock cancellation/storage checks reject queued obsolete work.
+Ownership and price remain separate: price failure returns the durable receipt
+and warning rather than retrying acquisition. Initial and callback quote
+checkpoints run on the worker; shared fallback resolver identity-cache work is
+unchanged. Pending UI pauses overlapping add/Undo and starts the six-second Undo
+window after the receipt, retaining navigation and mutation-matched completion.
+
+All eight final focused native tests pass, including failed final save rollback,
+exact/repeated Undo, intentional copies, imported alias price identity, editions,
+invalid quote rollback, post-commit price failure, stale quote provenance and
+queued lifecycle invalidation for all three methods. Initial fixture builds
+needed the required source-variant string. The first focused run exposed a wrong
+non-USD rejection assumption; the fixture now uses a negative USD amount. A
+separate native red test caught a freshness regression in the first worker
+version; the accepted version mirrors checkpoint replay's actual-write-time
+comparison while retaining the quote's original retrieval time. Neither provider
+currency support nor the original checkpoint freshness policy was changed.
+
+Expanded native verification on iPhone 17 / iOS 27.0 Simulator selected 604 cases:
+603 passed, zero failed, one existing opt-in benchmark skipped. Finalized summary
+inspected with no runtime warnings. Includes all 67 history and 36 BrowseCollection
+cases, three earlier artwork cases, both executor tests, seven hosted detail/
+deletion cases, ownership stress and previous M01–M04 selections. The catalog
+detail view no longer calls the synchronous serializer or saves price contexts
+directly. Evidence is on the external SSD under
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-catalog-raw-*`.
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md)
+and documentation map/audit. Source HIG gate passes; rendered pending-state/VoiceOver,
+ordinary device latency and provider/release gates remain unverified. M04 stays
+open for graded/sealed additions, Browse release-order backfill and Portfolio
+quantity repair; no later finding implemented.
+
+# 2026-10-27 — M04 detail artwork/metadata writes
+
+Reproduced all four synchronous transaction shapes blocking queued main-thread
+heartbeats for about 507–538 ms under forced 500 ms contention. Moved photo
+normalization/file creation and artwork mapping/removal, graded finish correction,
+and marketplace persistence to the existing detail writer's dedicated executor.
+Fresh metadata/claim/lineage checks, shared-file references, retained-game local
+suppression and the task-bound identity gate remain. File cleanup belongs to the
+worker: pre-commit failure removes the minted file; cancellation after commit
+cannot delete referenced artwork. The current mapping is read inside the
+transaction, rather than captured by the UI before waiting. User actions reuse
+pending controls with a native toolbar spinner; navigation remains available.
+
+The first focused run caught a new graded-ledger test assumption and reproduced
+a repeated-finish no-op Debug assertion. The exported crash stack points at the
+repeat call: read-through identity repair dirties the context, then the current
+finish returns no mutation. The detail worker explicitly rolls back that no-op
+context. The corrected test verifies the existing graded behavior: one quantity
+event, one correction activity, unchanged quantity, no repeated mutation. Real
+graded authorization traverses the existing retry gate in the same task.
+
+All six focused cases pass. Expanded native verification on iPhone 17 / iOS 27.0
+Simulator selected 557 cases: 556 passed, zero failed, one existing opt-in
+benchmark skipped; finalized summary inspected with no runtime warnings. Includes
+all 59 history cases, both executor tests, seven hosted detail/deletion cases,
+ownership stress, refresh structural races and all earlier M01–M04 selections.
+Three extra artwork selectors initially used the file name instead of their
+actual XCTest class; the corrected separate prepared-build run passed all three
+with zero failures/skips or runtime warnings in its finalized summary. Evidence is on the
+external SSD under `CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-detail-metadata-*`.
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md)
+and documentation map/audit. No synchronous serializer calls remain in the detail
+view. M04 remains open for catalog/raw, graded-picker, sealed acquisition and
+Portfolio quantity-repair writes; no later finding implemented. Source HIG gate
+passes; rendered pending-state/VoiceOver, PhotosUI/device memory, ordinary
+Release-device latency and release gates remain unverified.
+
+# 2026-10-27 — M04 undo-banner restoration
+
+Reproduced the synchronous Collection/Portfolio undo sequence blocking a queued
+main-thread heartbeat for about 518 ms under a forced 500 ms lock hold. Both
+banners now await a snapshot-restore overload on the existing background activity
+writer. Store validation, durable snapshot authority, ledger inversion and the
+same-task identity gate stay intact. Pending spinner/controls prevent repeat
+taps; matching removal IDs and storage-generation checks prevent an older result
+from clearing a newer banner or surfacing against retired storage.
+
+Five focused native tests pass. Expanded verification on iPhone 17 / iOS 27.0
+Simulator selected 551 cases: 550 passed, zero failed, one existing opt-in
+benchmark skipped. Finalized summary inspected with no runtime warnings. Includes
+all 53 history cases, both executor tests, seven hosted detail/deletion tests and
+earlier M01–M04 selections. Evidence is on the external SSD under
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-undo-*`.
+The first focused build caught an immutable-field error in the new fixture;
+the corrected fixture uses the snapshot's mutable finish and verifies the stored
+finish wins. Production behavior was not changed to accommodate that error.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md)
+and documentation map/audit. M04 remains open for detail artwork/metadata, catalog
+and picker writes. HIG source gate passes; pending-state rendering, VoiceOver,
+ordinary Release-device latency and release gates remain unverified. No later
+finding implemented.
+
+# 2026-10-27 — M04 activity/history writes
+
+Reproduced backfill, removal, restoration and correction blocking queued
+main-thread heartbeats under a forced 500 ms lock hold (about 517–526 ms per
+old sequence). Moved these four transactions to a history model actor using the
+existing dedicated executor, serializer and task-bound identity gate. Capture
+claim quantities before suspension; retain fresh lineage checks and durable
+outcomes. The editor receives a value-only correction/fallback receipt built on
+the context owner. Pending/retry state pauses conflicting actions, rejects
+superseded reload completions and surfaces backfill failures while retaining the
+last complete snapshot. No synchronous serializer calls remain in the history
+view. Read/projection work remains the separate measure-first P06 item.
+
+The first five focused tests pass. Final expanded prepared-build verification on
+iPhone 17 / iOS 27.0 Simulator selected 547 cases: 546 passed, zero failed, one
+existing opt-in aged-store benchmark skipped. Includes all six new history cases,
+49 history tests total, 51 fallback tests, queued storage-retirement coverage,
+both executor tests and earlier M01–M04 selections. The first expanded run's sole
+assertion failure required accepting either existing duplicate-restore refusal;
+the unchanged ledger is explicitly checked. A subsequent runner startup channel
+disconnect and simulator-launch wait recovered without shared resets or source
+changes; the final retry passed. Evidence is on the external SSD in
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-history-*.xcresult` / `.log`.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md),
+documentation map and audit. M04 remains open for undo-banner, detail artwork/
+metadata, catalog and picker writes. Source HIG gate passes the bounded native
+pending/error feedback; rendered history pending-state/VoiceOver and Release-device
+latency remain unverified. No later findings implemented or release gates closed.
+
+# 2026-10-26 — M04 detail ownership write slice
+
+Demonstrated the old detail serializer/store sequence blocking a queued
+main-thread heartbeat under a forced 500 ms ownership-lock hold; native baseline
+reported mainThread=true, heartbeatDuringLock=false and about 515 ms elapsed.
+Moved detail quantity/removal to the existing dedicated background-model-actor
+pattern, preserving fresh-context transactions and task-bound identity retries.
+The UI prevents overlapping actions and shows pending feedback; removal publishes
+its receipt/dismissal after commit. Queued removal also validates the confirmed
+quantity, and cancellation/retired-storage work is fenced after lock acquisition.
+No global serializer or lock-policy change.
+
+Five focused tests pass for heartbeat responsiveness, off-main execution, one
+mutation, stale/repeated-action rejection, cancellation/storage fences,
+task-bound authorization, and removal/undo. Expanded Debug iPhone 17 / iOS 27.0
+Simulator verification selected 490 cases: 489 passed, zero failed, one existing
+opt-in aged-store benchmark skipped. Includes all M01–M03 selections, both
+executor tests, seven detail rendering/deletion cases, structural refresh races
+and ownership stress. Finalized summaries inspected; evidence is on the external
+SSD in `CodexBuildArtifacts/TradingCardScannerM01/Evidence/M04-*.xcresult` / `.log`.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md),
+documentation map and audit. M04 remains **partially repaired**: activity/history,
+undo-banner, artwork/metadata, catalog and picker synchronous writes still need
+independent slices. Source HIG gate passes the bounded pending-feedback change;
+pending-state screenshot/VoiceOver and ordinary Release-device measurements remain
+open. No later findings implemented, no full-suite/device/release acceptance claimed.
+
+# 2026-10-26 — M03 CSV price interpretation
+
+Reproduced `€12.50` importing as USD 12.50 and `12,50` as USD 1,250,
+including incorrect persisted observations and ledger valuation. The four-test
+before-fix selection had three defect tests fail and the supported-format control
+pass. Changed only CollectionCSV.swift: accept one supported Market Price header
+and strict US-style USD amounts, preserve valid zero/fractional/date evidence,
+reject foreign/malformed values and competing/duplicate price columns, and keep
+valid inventory rows without those prices. No conversion, persistence migration,
+or historical price/history cleanup. Re-importing the same inventory is still
+idempotent and does not correct past values.
+
+All four focused regressions pass. Expanded Debug iPhone 17 / iOS 27.0 Simulator
+verification selected 470 cases: 469 passed, zero failed, one existing opt-in
+aged-store benchmark skipped. This includes import/resume, portfolio
+reconciliation and all M01/M02 selections. Finalized native summaries inspected;
+evidence is on the external SSD in
+`CodexBuildArtifacts/TradingCardScannerM01/Evidence/M03-*.xcresult` and `.log`.
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md),
+documentation map and audit. No later findings implemented; no full-suite,
+live-provider, physical-device or release acceptance claimed.
+
+# 2026-10-26 — M02 unknown-finish graded pricing
+
+Reproduced unknown slabs acquiring vendor bindings and $123 quotes, unknown
+Price Check publishing a quote, and a catalog Holo singleton accepting a Normal
+listing. The bounded two-file production fix requires finish evidence for new
+automatic bindings, carries catalog singleton evidence through matching, skips
+unknown unbound vendor refresh, and rejects missing/conflicting printing before
+durable binding. Existing exact listing handles remain refreshable. No schema
+change or historical binding/price cleanup; stored data cannot distinguish an
+explicit selection from an old inferred binding.
+
+Six focused regressions pass. Final expanded Debug simulator verification on
+iPhone 17 / iOS 27.0: 318 passed, zero failed/skipped, including all 126 scanner
+tests and all six M01 regressions. Initial expanded failures exposed scanner
+fixtures that omitted printing or expected unknown-finish pricing; their
+reconciled cases now verify no quote until confirmation, correction/recheck,
+delayed binding, and incompatible-price replacement. Evidence/results are on
+the external SSD in `CodexBuildArtifacts/TradingCardScannerM01/Evidence/`.
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md),
+documentation map and audit. No later findings implemented; no full-suite,
+live-provider, device or release acceptance claimed.
+
+# 2026-10-26 — M01 scanned graded finish collision
+
+Demonstrated Normal + Reverse + Normal merging into one quantity-3 Normal slab
+holding with a focused failing regression. Changed only CollectionStore's scanned
+certificate-less path: match current physical identity including finish, retain
+existing keys/history, and allocate a separate holding key when an incompatible
+row occupies the old key. No schema migration or automatic repair of previously
+merged quantities. Six new regressions pass for Pokémon/Magic, unknown/legacy
+finishes, correction, binding, certificate refinement, undo/restore, on-disk
+reopen and CSV; final standalone selection confirms six passed, zero failed or
+skipped. Expanded simulator run: 123 passed / 124, zero skipped. The sole
+sealed-product metadata assertion reproduces in cached pre-fix test products;
+it remains unchanged. Updated the
+[master report](docs/audits/production-refinement-master-review-2026-10-26.md)
+with exact scope/evidence. Other findings were not implemented; no full-suite or
+device/release acceptance claimed. Build data and expanded evidence use the
+external SSD.
+
+# 2026-10-26 — Production refinement review reconciliation
+
+Reconciled the earlier ten-finding chat review and supplied nine-finding review
+against clean `028b135`. The
+[master report](docs/audits/production-refinement-master-review-2026-10-26.md)
+accounts for every original finding once, prioritizes graded identity/valuation
+and CSV correctness, merges the main-thread removal issue, and separates
+measurement/reproduction work from validated source behavior. Unsupported
+performance estimates and unsafe simplifications are explicitly not adopted.
+Updated the documentation map and authority audit. Production code and tests
+were not changed; no fresh native tests, profiling, provider or release
+acceptance is claimed. Documentation links and diff validation are recorded in
+the handoff.
+
 # 2026-10-25 — Magic publication failure investigation
 
 Inspected run 40191118826 on `main` at `9c73abe`. Core/fixture validation and

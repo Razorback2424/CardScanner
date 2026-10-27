@@ -1,12 +1,225 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-23
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-27
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-23
+## Current authority boundary — updated 2026-10-27
+
+**M06 collection owned-game choices repaired locally — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's M06 evidence](../audits/production-refinement-master-review-2026-10-26.md#m06-collection-game-filter-omits-owned-games)
+supersedes its earlier source-only finding status. Three native regressions
+reproduced the picker offering only Pokémon/Magic despite held Lorcana,
+Yu-Gi-Oh!, One Piece and a retained unknown game. Choices now use unique
+identities from the full collection snapshot, independently of search/selected
+game and browse/write capabilities; known descriptor ordering and raw unknown
+labels are retained. An emptied current selection remains valid until changed
+or cleared. Set/finish/treatment reset semantics and other filters are unchanged.
+Three focused tests and all 124 expanded collection-query/item-kind/BrowseCollection
+cases pass with zero failures/skips; finalized summaries contain no runtime
+warnings. Source HIG gate passes. Phone/tablet sheet/inspector rendering and
+VoiceOver acceptance remain unverified; no provider, CloudKit, full-suite or
+release gate closed and no later finding implemented.
+
+**M05 opening readiness handoff repaired locally — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's M05 evidence](../audits/production-refinement-master-review-2026-10-26.md#m05-opening-handoff-adds-waiting-after-readiness)
+supersedes its earlier source-only opportunity status. The hosted production
+container reproduced about 444 ms fast and 757 ms slow readiness-to-handoff
+waiting. Removed only the pre-reveal sleep and two hold constants; retained
+fade/scale, Reduce Motion reveal, settling, loading gates and recovery/reset.
+All nine focused opening tests pass. Expanded verification selected 69 cases:
+68 passed, zero failed, one physical-device data-protection case skipped. Both
+finalized summaries contain no runtime warnings. Fixed hosted normal-motion
+handoff measured about 32 ms fast / under 1 ms slow in the focused run and
+1.5 ms / 0.7 ms in the expanded run. These are controlled Debug simulator
+handoff measurements, not total launch or touch-delivery claims. The initial
+fixture build's read-only environment override was corrected before accepted
+red/green evidence. Source HIG gate passes; native Reduce Motion settings,
+VoiceOver focus/announcements, rendered transition and Release-device cold/warm
+interaction acceptance remain unverified. No later finding or release gate
+implemented or closed.
+
+**M04 reviewed UI ownership scope complete locally — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's completion and caller sweep](../audits/production-refinement-master-review-2026-10-26.md#m04-completion-and-caller-sweep--2026-10-27)
+supersedes the earlier remaining-caller notes below. Sealed add/Undo, Browse
+release-order backfill and Portfolio quantity repair now use the existing
+background writer. CSV import and collection deletion also await background
+exclusive-lock entry, preserving the same-task identity gate and token barrier.
+A native characterization reproduced five blocking shapes at about 510–632 ms
+under forced 500 ms contention. Seven focused tests pass, including responsive
+heartbeats, price/ownership lineage, stale/mixed repair refusal, real promotion
+authorization, cancellation/storage retirement and exclusive-token cleanup.
+Expanded verification selected 616 cases: 615 passed, zero failed, one existing
+opt-in benchmark skipped; finalized summary inspected with no runtime warnings.
+Includes all 74 history cases and previous expanded selections. An initial new
+fixture compile error was corrected before baseline evidence was accepted.
+No additional named M04 UI action implementation slice remains. Automatic
+catalog activation/normalization, Magic migration, portfolio epoch setup/retry
+and shared pricing/cache service transactions retain their broader authority,
+maintenance and launch boundaries; they are not certified as nonblocking.
+Release-device latency and rendered pending/back/Cancel/VoiceOver acceptance
+remain unverified, as do provider/CloudKit/full-suite/release gates. Later
+findings were not implemented.
+
+**M04 graded-picker acquisition follow-up — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's graded-picker evidence](../audits/production-refinement-master-review-2026-10-26.md#graded-picker-acquisition-follow-up--2026-10-27)
+records a blocked main-thread heartbeat and about 669 ms under forced contention.
+The confirmation now awaits one method on the existing scanner writer/private
+executor; the store's atomic add/price/lineage and certificate rules are unchanged.
+The main-actor optimistic promotion preflight/duplicate gate branches were removed;
+real promotion retains the existing same-task permit retry. The save task is
+view-owned, certificate editing pauses while pending, and canceled/retired
+completions do not dismiss the picker. Five focused tests pass. Expanded native
+verification selected 609 cases: 608 passed, zero failed, one existing opt-in
+benchmark skipped; finalized summary inspected with no runtime warnings. Includes
+all 42 item-kind, 67 history and 36 BrowseCollection cases and previous M01–M04
+expanded selections. Exact selected-listing pricing remains valid independently
+of M02's stricter automatic binding rules. The remaining sealed acquisition,
+Browse backfill and Portfolio repair work was subsequently completed above. Rendered pending/
+back/Cancel/VoiceOver, device/provider and release acceptance remain unverified;
+no later finding implemented.
+
+**M04 catalog/raw acquisition follow-up — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's catalog/raw evidence](../audits/production-refinement-master-review-2026-10-26.md#catalograw-acquisition-follow-up--2026-10-27)
+records blocked UI heartbeats in add, acquisition Undo and the initial catalog
+price checkpoint (about 524–647 ms under forced contention). These writes now
+use the existing scanner writer's dedicated executor with fresh contexts,
+post-lock lifecycle checks and same-task identity retry. Imported aliases,
+finish/edition/provenance and exact Undo stay intact. Ownership commits before
+the separate price attempt; price failure returns the durable receipt/warning,
+never an acquisition retry. Callback quote checkpoints also use this worker;
+the shared fallback resolver's existing main-actor identity-cache work is unchanged.
+Pending feedback and mutation matching preserve the Undo window and failures.
+All eight final focused cases pass after correcting a new non-USD fixture
+assumption and restoring the checkpoint's write-time freshness policy, whose
+omission was caught by the delayed-quote regression before acceptance. Expanded
+verification selected 604 cases: 603 passed, zero failed, one existing opt-in
+benchmark skipped; finalized summary inspected with no runtime warnings. Includes
+all 67 history and 36 BrowseCollection cases, the three earlier artwork cases,
+executor/ownership/UI coverage and previous M01–M04 selections. The catalog detail
+view no longer calls the synchronous serializer or saves price contexts directly.
+The subsequent graded-picker and final sealed/backfill/repair completion are
+recorded above. Device/provider/rendered
+pending-state/VoiceOver and release gates remain unverified; no later finding implemented.
+
+**M04 detail artwork/metadata follow-up — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's detail metadata evidence](../audits/production-refinement-master-review-2026-10-26.md#detail-artworkmetadata-follow-up--2026-10-27)
+records blocked main-thread heartbeats in all four synchronous transaction shapes
+(about 507–538 ms under forced contention). Photo preparation/file ownership,
+artwork mapping/removal, graded finish correction and marketplace persistence
+now use the existing detail writer and dedicated executor. Fresh validation,
+shared files, retained-game suppression and task-bound identity authorization
+stay intact. Native regression also reproduced a repeated-finish no-op Debug
+assertion; the detail worker now explicitly rolls back that fresh no-op context.
+Six focused cases pass after reconciling a new test's incorrect graded-ledger
+expectation and fixing that assertion. Expanded verification selected 557 cases:
+556 passed, zero failed, one existing opt-in benchmark skipped; finalized summary
+inspected with no runtime warnings. Three additional existing artwork regressions
+passed in a separate prepared-build run after correcting their XCTest class
+selection; finalized summary inspected with no runtime warnings. No
+synchronous serializer calls remain in the detail view. M04 stays open for
+catalog/raw, graded-picker, sealed acquisition and Portfolio quantity-repair
+writes. No later findings, provider/device or release gates were implemented.
+
+**M04 undo-banner follow-up — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's undo evidence](../audits/production-refinement-master-review-2026-10-26.md#undo-banner-follow-up--2026-10-27)
+records the shared Collection/Portfolio restore sequence blocking a main-thread
+heartbeat for about 518 ms under forced contention. Both banners now await the
+existing activity writer's snapshot overload, preserving store validation and
+same-task identity authorization. Pending feedback pauses Undo/Dismiss; completion
+checks preserve a newer banner and suppress retired-store results. Five focused
+tests pass, including stored-snapshot authority, ledger agreement, stale/repeated
+refusal, queued cancellation/storage retirement and the existing identity gate.
+Expanded verification selected 551 cases: 550 passed, zero failed, one existing
+opt-in benchmark skipped; finalized summary inspected with no runtime warnings.
+All 53 history cases, both executor tests and earlier M01–M04 selections pass.
+The first focused build's new immutable-field fixture error was corrected without
+changing production behavior. Evidence is in the external SSD's `M04-undo-*`
+bundles/logs. The subsequent detail artwork/metadata slice is recorded above;
+catalog/picker and Portfolio quantity-repair writes remain open. Rendered pending-state/VoiceOver, ordinary device latency and release
+gates remain unverified; no later findings implemented.
+
+**M04 activity/history follow-up — 2026-10-27, `028b135` plus working-tree changes:**
+the [master report's history evidence](../audits/production-refinement-master-review-2026-10-26.md#activityhistory-follow-up--2026-10-27)
+records all four old history write sequences blocking main-thread heartbeats
+under forced contention. Backfill, per-entry removal, restoration and correction
+now await a dedicated background model actor with fresh serialized contexts and
+the existing identity gate. Pending/retry state preserves complete snapshots,
+surfaces backfill failure and pauses actions; correction returns a value-only
+fallback receipt built on its owning executor. Final expanded verification:
+547 selected, 546 passed, zero failed, one existing opt-in benchmark skipped.
+This includes all 49 history and 51 fallback cases and earlier M01–M04 selections.
+An overly specific test assertion was reconciled; a separate runner-startup
+disconnect and simulator-launch wait recovered without shared-service resets or
+code changes. No synchronous serializer calls remain in the activity/history view.
+History read/projection performance stays measure-first under P06. M04 remains
+open for detail artwork/metadata, catalog and picker writes; the subsequent
+undo-banner repair is recorded above. Later findings and device/release gates
+remain open.
+
+**M04 bounded local repair — 2026-10-26, `028b135` plus working-tree changes:**
+the [master report's M04 evidence](../audits/production-refinement-master-review-2026-10-26.md#m04-ui-ownership-actions-can-block-the-main-thread)
+records a forced-contention reproduction: the old detail write blocked a queued
+main-thread heartbeat for about 515 ms. Detail quantity/removal now await a
+dedicated background model actor using the existing serializer/executor and
+identity retry gate. Pending controls, storage/cancellation fences, stale-removal
+quantity validation and durable removal receipts preserve the interaction and
+ownership contracts. Five focused tests pass; expanded verification selected 490:
+489 passed, zero failed, one existing opt-in benchmark skipped. This repairs
+only the detail quantity/removal slice at that checkpoint. The subsequent
+activity/history and undo-banner repairs are recorded above. Artwork/metadata,
+catalog and picker writes remain open; no later finding or device/release gate is closed.
+Pending-state screenshot/VoiceOver acceptance and ordinary Release-device latency
+remain unverified.
+
+**M03 local repair — 2026-10-26, `028b135` plus working-tree changes:** the
+[master report's M03 evidence](../audits/production-refinement-master-review-2026-10-26.md#m03-csv-price-interpretation-can-corrupt-imported-valuation)
+records native reproduction of foreign/decimal-comma values entering USD prices,
+observations and ledger evidence. The single-file CSV repair defines supported
+headers and USD numeric formatting, rejects ambiguous/duplicate price columns,
+and retains inventory when price interpretation is unsupported. Four focused
+tests pass; expanded verification selected 470 cases: 469 passed, zero failed,
+one existing opt-in aged-store performance benchmark skipped. M01/M02 selections
+remain passing. Historical imports/history are not automatically repaired, and
+re-importing the same inventory remains idempotent. M04's subsequent bounded
+repair is recorded above; its remaining callers and runtime/release gates stay open.
+
+**M02 local repair — 2026-10-26, `028b135` plus working-tree changes:** the
+[master report's M02 evidence](../audits/production-refinement-master-review-2026-10-26.md#m02-unknown-finishes-can-receive-authoritative-graded-prices)
+records native reproduction of unknown-finish bindings/quotes and conflicting
+catalog-singleton matching. The resolver, matcher and durable guard now require
+physical finish evidence before a new automatic binding; unknown unbound refresh
+skips vendor work. Exact existing listing handles remain refreshable. Six focused
+regressions and the final 318-test expanded selection pass, zero failed/skipped,
+after reconciling scanner fixtures that assumed the old unsafe behavior. Historical
+bindings/prices are not bulk cleared because their origin is not persisted. This
+superseded report-only status for M02; M03's subsequent repair is recorded above.
+Later findings and release gates remain open.
+
+**M01 local repair — 2026-10-26, `028b135` plus working-tree changes:** the
+[master report's M01 evidence](../audits/production-refinement-master-review-2026-10-26.md#m01-certificate-less-scanned-slabs-can-merge-different-finishes)
+records a failing finish-collision regression followed by the bounded store
+repair. Existing ownership keys/history remain stable; incompatible finishes
+receive separate holdings and unknown finishes do not silently refine another
+acquisition. All six new regressions pass, including binding, certificate
+refinement, correction, undo/restore, on-disk reopen and CSV. Expanded verification
+is 123 passed / 124 executed: the sole sealed-product metadata assertion also
+fails in the cached pre-fix build. It is not repaired or counted as green.
+This superseded the reconciliation's report-only state for M01; M02's subsequent
+repair is recorded above. Other findings and runtime/release gates remain open.
+
+**Production refinement review reconciliation — 2026-10-26, `028b135`:** the
+[master findings report](../audits/production-refinement-master-review-2026-10-26.md)
+is the working authority for the two supplied reviews, with all 19 original
+findings accounted for. It merges synchronous removal into the broader UI-write
+issue, retains graded identity/valuation defects first, and distinguishes
+source-validated behavior from reproduction and measurement work. The supplied
+review's performance percentages, blanket lazy-grid/cutout conclusions,
+actor-isolation allegation, and proposed removal of mapping/OCR safeguards are
+not adopted. Existing implementation/release plans retain their scope; this
+documentation-only reconciliation closes no runtime, provider or release gate.
 
 **Magic publication operational check — 2026-10-25, `9c73abe`:** the
 [publication runbook](magic_catalog_key_handling_runbook.md#publication-failure-and-recovery--2026-10-25)
