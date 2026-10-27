@@ -755,6 +755,7 @@ final class ScannerViewModelTests: XCTestCase {
         let gradedVariant = GradedVariant(
             id: "converted-graded", cardID: "converted-card", company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 250, updatedAt: nil
         )
         let rawQuote = PriceLookup.price(NormalizedPrice(
@@ -836,6 +837,7 @@ final class ScannerViewModelTests: XCTestCase {
             cardID: "graded-card-after-save",
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 250,
             updatedAt: nil
         )
@@ -883,6 +885,7 @@ final class ScannerViewModelTests: XCTestCase {
             cardID: "graded-card-after-session-end",
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 250,
             updatedAt: nil
         )
@@ -924,6 +927,7 @@ final class ScannerViewModelTests: XCTestCase {
             cardID: "graded-card-undo-race",
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 250,
             updatedAt: nil
         )
@@ -1016,6 +1020,7 @@ final class ScannerViewModelTests: XCTestCase {
             cardID: "graded-card-after-cert-refinement",
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 310,
             updatedAt: nil
         )
@@ -1312,7 +1317,7 @@ final class ScannerViewModelTests: XCTestCase {
         }
     }
 
-    func testCorrectedGradedScanKeepsItsCompatibleResolvedPrice() async throws {
+    func testUnknownGradedScanGetsPriceOnlyAfterFinishCorrection() async throws {
         let gradedVariant = GradedVariant(
             id: "graded-v2-correction",
             cardID: "graded-card-correction",
@@ -1338,15 +1343,11 @@ final class ScannerViewModelTests: XCTestCase {
         )
 
         confirm(model, subject, encounterID: UUID())
-        let committedAndBound = await waitUntil {
-            guard let scan = model.recent.first,
-                  scan.subject.slab != nil,
-                  case let .price(price) = scan.price else { return false }
-            return model.recent.count == 1
-                && price.unitMarketPriceUSD == 250
-                && price.source == .justTCG
+        let committed = await waitUntil {
+            model.recent.count == 1 && model.recent.first?.isGradedPricePending == false
         }
-        XCTAssertTrue(committedAndBound)
+        XCTAssertTrue(committed)
+        if case .price = model.recent.first?.price { XCTFail("Unknown finish received a price") }
         let scanID = try XCTUnwrap(model.recent.first?.id)
 
         let correction = await model.correct(scanID: scanID, to: .normal)
@@ -1362,7 +1363,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(price.source, .justTCG)
     }
 
-    func testCompatibleGradedCorrectionRetainsQuoteWhenAnotherLookupWouldBeUnavailable() async throws {
+    func testUnknownGradedFinishCorrectionStaysUnpricedWhenRecheckUnavailable() async throws {
         let variant = GradedVariant(id: "normal-compatible", company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"), printing: "Normal",
             marketPriceUSD: 250, updatedAt: nil)
@@ -1371,19 +1372,15 @@ final class ScannerViewModelTests: XCTestCase {
         useSlabMode(model)
         confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
         await assertEventually {
-            guard case .price = model.recent.first?.price else { return false }
-            return model.recent.first?.isGradedPricePending == false
+            model.recent.count == 1 && model.recent.first?.isGradedPricePending == false
         }
         let scanID = try XCTUnwrap(model.recent.first?.id)
         let result = await model.correct(scanID: scanID, to: .normal)
         XCTAssertEqual(result, .saved)
         await assertEventually { model.recent.first?.isGradedPricePending == false }
-        guard case let .price(price) = model.recent.first?.price else {
-            return XCTFail("A proven compatible graded quote must survive correction without a successful recheck")
-        }
-        XCTAssertEqual(price.unitMarketPriceUSD, 250)
+        if case .price = model.recent.first?.price { XCTFail("Unknown finish must not seed a retained quote") }
         let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
-        XCTAssertEqual(row.justTCGVariantID, "normal-compatible")
+        XCTAssertNil(row.justTCGVariantID)
         XCTAssertEqual(row.quantity, 1)
         XCTAssertEqual(row.variant, .normal)
     }
@@ -1397,7 +1394,7 @@ final class ScannerViewModelTests: XCTestCase {
         let model = try makeModel(variants: [.normal, .holo], gradedOutcome: .bound(holo),
             gradedRecheckOutcome: .bound(normal))
         useSlabMode(model)
-        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint", finish: .holo), encounterID: UUID())
         await assertEventually {
             guard case let .price(price) = model.recent.first?.price else { return false }
             return price.unitMarketPriceUSD == 250 && model.recent.first?.isGradedPricePending == false
@@ -1452,6 +1449,7 @@ final class ScannerViewModelTests: XCTestCase {
             cardID: "graded-card-1",
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
+            printing: "Normal",
             marketPriceUSD: 250,
             updatedAt: nil
         )
@@ -4633,7 +4631,8 @@ final class ScannerViewModelTests: XCTestCase {
     private func gradedSubject(
         value: String,
         label: String,
-        certificationNumber: String? = "12345678"
+        certificationNumber: String? = "12345678",
+        finish: PhysicalVariant? = nil
     ) -> ScanSubject {
         ScanSubject(
             identifier: scannerIdentifier(),
@@ -4641,7 +4640,8 @@ final class ScannerViewModelTests: XCTestCase {
                 company: .psa,
                 grade: CardGrade(value: value, label: label),
                 certificationNumber: certificationNumber,
-                labelCardText: []
+                labelCardText: [],
+                printedFinish: finish
             )
         )
     }

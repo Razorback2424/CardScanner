@@ -30,6 +30,64 @@ private actor UpgradeProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testSelectedMarketVariantRefreshDoesNotInferADifferentFinish() async throws {
+        for candidateID in ["selected-holo", "different-holo"] {
+            let (container, context) = try makePriceContext()
+            let row = gradedImport(name: "Selected listing", catalogID: "ex7-78", finish: nil)
+            row.justTCGVariantID = "selected-holo"
+            row.justTCGAPIVersion = "v2"
+            context.insert(row)
+            try context.save()
+            let worker = PriceRefreshModelActor(modelContainer: container)
+            await worker.setGradedLookupOverrideForTesting { _, _ in
+                .matched([GradedVariant(id: candidateID, company: .cgc, grade: .init(value: "10"),
+                    printing: "Holofoil", marketPriceUSD: 123, updatedAt: nil)])
+            }
+            guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+                return XCTFail("Expected completed refresh")
+            }
+            XCTAssertEqual(result.priced, candidateID == "selected-holo" ? 1 : 0)
+            let fresh = ModelContext(container)
+            let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(saved.justTCGVariantID, "selected-holo")
+            XCTAssertNil(saved.variant)
+        }
+    }
+
+    @MainActor
+    func testUnknownFinishRefreshStaysUnboundUntilConfirmed() async throws {
+        let (container, context) = try makePriceContext()
+        let row = gradedImport(name: "Unknown finish", catalogID: "ex7-78", finish: nil)
+        context.insert(row)
+        try context.save()
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setGradedLookupOverrideForTesting { _, _ in
+            .matched([GradedVariant(id: "sole-holo", company: .cgc, grade: .init(value: "10"),
+                printing: "Holofoil", marketPriceUSD: 123, updatedAt: nil)])
+        }
+        for _ in 0..<2 {
+            guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+                return XCTFail("Expected completed refresh")
+            }
+            XCTAssertEqual(result.priced, 0)
+            let fresh = ModelContext(container)
+            let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertNil(saved.justTCGVariantID)
+            XCTAssertNil(PriceStore(context: fresh).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD)
+        }
+        row.variantID = PhysicalVariant.holo.id
+        try context.save()
+        guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+            return XCTFail("Expected confirmed refresh")
+        }
+        XCTAssertEqual(result.priced, 1)
+        let fresh = ModelContext(container)
+        let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(saved.justTCGVariantID, "sole-holo")
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD, 123)
+    }
+
+    @MainActor
     func testPriceSnapshotPublishesOneBatchAndKeepsForeignPriceDiagnostics() {
         let store = PriceSnapshotStore()
         let keys = (0..<200).map { "price-\($0)" }
@@ -130,7 +188,7 @@ final class PricingTests: XCTestCase {
             ("M2-001", .holo, "Holofoil", false),
             ("ex7-78", .holo, "Holofoil - Japanese", false),
             ("ex7-78", .holo, "Holofoil", true),
-            ("M2-001", nil, "Holofoil - Japanese", true)
+            ("M2-001", nil, "Holofoil - Japanese", false)
         ] {
             let (container, context) = try makePriceContext()
             let row = gradedImport(name: "Imported", catalogID: catalogID, finish: finish)

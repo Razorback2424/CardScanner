@@ -25,8 +25,12 @@ enum GradedVariantBinding {
         treatmentIDs: [String],
         at fetchedAt: Date
     ) throws -> GradedVariantBindingReceipt {
-        if let finish = row.variant, let printing = variant.printing,
-           !GradedCardIdentity.matchesFinish(finish, printing: printing, printRun: row.pokemonPrintRun) {
+        let finishMatches = row.variant.map {
+            GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: row.pokemonPrintRun,
+                isJapanese: ProductCatalogIdentity.game(for: row.cardGame,
+                    catalogID: row.catalogProviderID ?? row.underlyingPrintingID) == .pokemonJapan)
+        } ?? (row.justTCGVariantID == variant.id)
+        guard finishMatches else {
             return GradedVariantBindingReceipt(quote: .unavailable(.justTCG), priceKey: row.priceKey, wasAccepted: false)
         }
         if let run = row.pokemonPrintRun,
@@ -1791,7 +1795,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             guard CardGameRegistry.standard.supports($0.game, .gradedPricing),
                   $0.itemKind == .gradedCard else { return false }
             if $0.marketVariantID != nil { return true }
-            return $0.canResolveGradedVariant
+            return $0.variantID != nil && $0.canResolveGradedVariant
         }
         guard !slabs.isEmpty, gradedLookupOverride != nil || PriceVendorCredentials.hasKey else {
             return (0, false, 0, 0, 0, 0)
@@ -1852,7 +1856,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 ),
                 finish: target.variantID.map(PhysicalVariant.resolving),
                 printRun: target.pokemonPrintRun,
-                isJapanese: target.gradedIdentity?.vendorGame(for: target.game) == .pokemonJapan
+                isJapanese: target.gradedIdentity?.vendorGame(for: target.game) == .pokemonJapan,
+                boundVariantID: target.marketVariantID
             )
         }
 

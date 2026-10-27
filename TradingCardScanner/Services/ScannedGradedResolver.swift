@@ -79,7 +79,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         let physicalChoices = card.variantEvidence.catalogVariants.filter {
             !(card.game == .pokemon && knownRun != nil && $0 == .firstEdition)
         }
-        guard slab.printedFinish != nil || Set(physicalChoices.map(\.id)).count <= 1 else {
+        let finishes = Set(physicalChoices)
+        guard let finish = slab.printedFinish ?? (finishes.count == 1 ? finishes.first : nil) else {
             // Missing sales for another physical finish do not identify the
             // slab in front of the camera. Keep it unbound until confirmed.
             return .unavailable
@@ -89,7 +90,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         // completed. This covers the cold set-directory request plus the card
         // request at the transport's 25-second timeout and the shared pacer's
         // spacing. The resolver runs after save, so this does not hold scanning.
-        let identity = GradedCardIdentity(card, pokemonPrintRun: knownRun, finish: slab.printedFinish)
+        let identity = GradedCardIdentity(card, pokemonPrintRun: knownRun, finish: finish)
         for attempt in 0...timeoutRetryCount {
             do {
                 let result = try await withThrowingTaskGroup(of: GradedVariantLookupResult.self) { group in
@@ -112,7 +113,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
 
                 switch result {
                 case let .matched(variants):
-                    guard let exact = Self.matchingVariant(in: variants, for: slab, printRun: knownRun) else {
+                    guard let exact = Self.matchingVariant(in: variants, for: slab, finish: finish, printRun: knownRun,
+                        isJapanese: identity.vendorGame(for: card.game) == .pokemonJapan) else {
                         return .gradeNotTracked(GradedMarketCoverage(
                             status: .gradeNotListed,
                             variants: variants,
@@ -154,12 +156,18 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         for slab: GradedSlabEvidence,
         finish: PhysicalVariant? = nil,
         printRun: PokemonPrintRun? = nil,
-        isJapanese: Bool = false
+        isJapanese: Bool = false,
+        boundVariantID: String? = nil
     ) -> GradedVariant? {
+        let knownFinish = finish ?? slab.printedFinish
+        // An existing exact listing handle can be refreshed. A unique market
+        // lane cannot establish a new binding without physical finish evidence.
+        guard knownFinish != nil || boundVariantID != nil else { return nil }
         let candidates = variants.filter { variant in
-            ((finish ?? slab.printedFinish).map {
-                GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun, isJapanese: isJapanese)
-            } ?? (variant.printing != nil))
+            (boundVariantID.map { $0 == variant.id } ?? true)
+                && (knownFinish.map {
+                    GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun, isJapanese: isJapanese)
+                } ?? (variant.printing != nil))
                 && ((printRun ?? slab.printedPrintRun).map {
                     ProductEdition.from($0).admits(printing: variant.printing ?? "")
                 } ?? true)
@@ -168,8 +176,6 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
                 && normalized(variant.grade.qualifier) == normalized(slab.grade.qualifier)
         }
         guard !candidates.isEmpty else { return nil }
-        if finish == nil, slab.printedFinish == nil,
-           Set(candidates.compactMap { $0.printing?.lowercased() }).count != 1 { return nil }
         if candidates.count == 1,
            isBlackLabel(candidates[0].grade.label),
            !isBlackLabel(slab.grade.label) {

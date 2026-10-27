@@ -1,7 +1,74 @@
 import XCTest
+import SwiftData
 @testable import TradingCardScanner
 
 final class ScannedGradedResolverTests: XCTestCase {
+    @MainActor
+    func testPriceCheckRequiresFinishBeforePublishingOrCachingGradedQuote() async throws {
+        for finish: PhysicalVariant? in [nil, .normal] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let candidate = variant(id: "sole-normal", company: .psa, grade: .init(value: "10"))
+            let resolver = ScannedGradedResolver(client: StubLookupClient(result: .matched([candidate])),
+                credentialsAvailable: true)
+            let coordinator = PriceCheckCoordinator(context: container.mainContext, gradedResolver: resolver)
+            let scan = ResolvedScan(request: ScanRequest(subject: ScanSubject(
+                identifier: .pokemon(setCode: "DRI", cardNumber: "085", printedTotal: 182,
+                    setDefinition: .init(printedCode: "DRI", tcgdexSetID: "sv10", officialCount: 182, releaseIndex: 0)),
+                slab: .init(company: .psa, grade: .init(value: "10"), certificationNumber: nil, labelCardText: [])),
+                purpose: .priceCheck, generation: 0), card: card,
+                resolved: .init(variant: finish, resolution: .userConfirmed), pokemonPrintRun: nil,
+                options: [], gradedOutcome: nil)
+            let outcome = await coordinator.refresh(coordinator.present(scan))
+            if finish == nil {
+                if case .quote = outcome { XCTFail("Unknown finish must not publish a graded quote") }
+                XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<ReferenceQuote>()), 0)
+            } else {
+                guard case let .quote(.price(quote)) = outcome else { return XCTFail("Confirmed finish must price") }
+                XCTAssertEqual(quote.unitMarketPriceUSD, 125)
+                XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<ReferenceQuote>()), 1)
+            }
+            XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        }
+    }
+
+    func testUnknownCatalogFinishCannotBindTheOnlyPublishedFinish() async {
+        XCTAssertTrue(card.variantEvidence.catalogVariants.isEmpty)
+        let candidate = variant(id: "sole-normal", company: .psa, grade: .init(value: "10"))
+        let evidence = GradedSlabEvidence(company: .psa, grade: .init(value: "10"),
+            certificationNumber: nil, labelCardText: [])
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [candidate], for: evidence))
+        let recorder = GradedIdentityRecorder()
+        let result = await ScannedGradedResolver(
+            client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
+            credentialsAvailable: true
+        ).resolve(card: card, slab: evidence, pokemonPrintRun: nil)
+        XCTAssertEqual(result, .unavailable)
+        let identity = await recorder.lastIdentity
+        XCTAssertNil(identity, "No vendor request can establish a missing physical finish")
+    }
+
+    func testCatalogSingletonConstrainsThePublishedFinish() async throws {
+        let source = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"base1-4","localId":"4","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"normal":false,"holo":true,"reverse":false,"firstEdition":false}}"#.utf8))
+        let card = IdentifiedCard.pokemon(source, setCode: "BS")
+        XCTAssertEqual(card.variantEvidence.catalogVariants, [.holo])
+        let evidence = GradedSlabEvidence(company: .psa, grade: .init(value: "10"),
+            certificationNumber: nil, labelCardText: [])
+        for printing in ["Normal", "Holofoil"] {
+            let candidate = GradedVariant(id: "sole-listing", company: .psa, grade: evidence.grade,
+                printing: printing, marketPriceUSD: 123, updatedAt: nil)
+            let recorder = GradedIdentityRecorder()
+            let outcome = await ScannedGradedResolver(
+                client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
+                credentialsAvailable: true
+            ).resolve(card: card, slab: evidence, pokemonPrintRun: nil)
+            if printing == "Holofoil" { XCTAssertEqual(outcome, .bound(candidate)) }
+            else if case .bound = outcome { XCTFail("Catalog Holo must reject a Normal listing") }
+            let identity = await recorder.lastIdentity
+            XCTAssertEqual(identity?.finish, .holo)
+        }
+    }
+
     func testKnownAmbiguousFinishCannotBeInferredFromTheOnlyPublishedSlab() async throws {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-yellow-a-product-proof", withExtension: "json",
             subdirectory: "TradingCards/SetPricingAudit"))
@@ -17,7 +84,7 @@ final class ScannedGradedResolverTests: XCTestCase {
         let recorder = GradedIdentityRecorder()
         let resolver = ScannedGradedResolver(client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
             credentialsAvailable: true)
-        let unknown = await resolver.resolve(card: card, slab: slab(company: .psa, value: "10"), pokemonPrintRun: nil)
+        let unknown = await resolver.resolve(card: card, slab: slab(company: .psa, value: "10", finish: nil), pokemonPrintRun: nil)
         XCTAssertEqual(unknown, .unavailable)
         let before = await recorder.lastIdentity
         XCTAssertNil(before)
@@ -333,13 +400,15 @@ final class ScannedGradedResolverTests: XCTestCase {
         company: GradingCompany,
         value: String,
         label: String? = nil,
-        qualifier: String? = nil
+        qualifier: String? = nil,
+        finish: PhysicalVariant? = .normal
     ) -> GradedSlabEvidence {
         GradedSlabEvidence(
             company: company,
             grade: CardGrade(value: value, label: label, qualifier: qualifier),
             certificationNumber: nil,
-            labelCardText: []
+            labelCardText: [],
+            printedFinish: finish
         )
     }
 
