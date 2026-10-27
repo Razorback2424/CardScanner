@@ -594,6 +594,7 @@ enum CollectionCSV {
         }
 
         let headers = rawHeaders.map(normalizeHeader)
+        let hasCompetingMarketPrices = headers.filter { $0.hasPrefix("market_price") }.count > 1
         let isPortfolioExport = headers.contains("category")
             && headers.contains("product_name")
             && headers.contains("card_number")
@@ -611,6 +612,12 @@ enum CollectionCSV {
         for values in table.dropFirst() {
             var row: [String: String] = [:]
             for (index, header) in headers.enumerated() where row[header] == nil {
+                // Include duplicate normalized headers in the ambiguity check;
+                // the row dictionary otherwise silently keeps the first one.
+                if hasCompetingMarketPrices, header.hasPrefix("market_price") {
+                    row[header] = ""
+                    continue
+                }
                 row[header] = index < values.count
                     ? values[index].trimmingCharacters(in: .whitespacesAndNewlines)
                     : ""
@@ -1713,16 +1720,32 @@ enum CollectionCSV {
     private static func portfolioMarketPrice(
         in row: [String: String]
     ) -> (amount: Double, asOf: Date?)? {
-        guard let field = row.first(where: { $0.key.hasPrefix("market_price") }),
+        let fields = row.filter { $0.key.hasPrefix("market_price") }
+        // The supported portfolio export has one USD Market Price column,
+        // optionally labeled "Market Price (As of YYYY-MM-DD)". Other price
+        // columns or explicit foreign currency must not establish a USD value.
+        guard fields.count == 1, let field = fields.first,
+              field.key.range(of: #"^market_price(?:_\(as_of_\d{4}_\d{2}_\d{2}\))?$"#,
+                  options: .regularExpression) != nil,
+              ["currency", "currency_code"].compactMap({ nonempty(row[$0]) })
+                .allSatisfy({ $0.uppercased() == "USD" }),
               let amount = currencyAmount(field.value),
               amount.isFinite, amount >= 0 else {
             return nil
         }
-        return (amount, dateEmbedded(in: field.key))
+        let asOf = dateEmbedded(in: field.key)
+        guard field.key == "market_price" || asOf != nil else { return nil }
+        return (amount, asOf)
     }
 
     private static func currencyAmount(_ value: String) -> Double? {
-        let cleaned = value.filter { $0.isNumber || $0 == "." || $0 == "-" }
+        // Validate before removing known formatting. Stripping arbitrary
+        // characters turns decimal commas, currency and malformed text into
+        // plausible but incorrect USD prices.
+        guard value.range(of: #"^\$?(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.[0-9]+)?$"#,
+            options: .regularExpression) != nil else { return nil }
+        let cleaned = value.replacingOccurrences(of: "$", with: "")
+            .replacingOccurrences(of: ",", with: "")
         return Double(cleaned)
     }
 

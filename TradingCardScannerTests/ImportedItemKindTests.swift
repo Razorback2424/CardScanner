@@ -8,6 +8,85 @@ import SwiftData
 /// represent them. Every grade string below is taken verbatim from a real
 /// marketplace export.
 final class ImportedItemKindTests: XCTestCase {
+    func testPortfolioPriceAcceptsSupportedUSDFormatsAndDatedHeader() throws {
+        for (cell, amount) in [("0.00", 0.0), ("12.50", 12.5), ("$1,234.56", 1234.56),
+                               ("1,234.56", 1234.56), ("0.0042", 0.0042)] {
+            let plan = try CollectionCSV.parse(priceCSV(columns: [("Market Price", cell)]))
+            XCTAssertEqual(plan.entries.first?.importedMarketPriceUSD, amount, cell)
+            XCTAssertEqual(plan.totalQuantity, 2)
+        }
+        let plan = try CollectionCSV.parse(priceCSV(columns: [("Market Price (As of 2026-10-26)", "$12.50")]))
+        let entry = try XCTUnwrap(plan.entries.first)
+        XCTAssertEqual(entry.importedMarketPriceUSD, 12.5)
+        XCTAssertEqual(entry.importedPriceAsOf, ISO8601DateFormatter().date(from: "2026-10-26T00:00:00Z"))
+    }
+
+    func testPortfolioPriceRejectsForeignAndMalformedCellsWithoutDroppingInventory() throws {
+        for cell in ["€12.50", "£12.50", "CAD 12.50", "12.50 EUR", "12,50", "1.234,56",
+                     "12abc50", "1,23.45", "1,234,56", "-12.50", "NaN", "inf", "1e3", ""] {
+            let plan = try CollectionCSV.parse(priceCSV(columns: [("Market Price", cell)]))
+            XCTAssertNil(plan.entries.first?.importedMarketPriceUSD, cell)
+            XCTAssertNil(plan.entries.first?.importedPriceAsOf, cell)
+            XCTAssertEqual(plan.totalQuantity, 2, cell)
+            XCTAssertEqual(plan.skippedRows, 0, cell)
+        }
+        for currency in ["EUR", "CAD", "GBP"] {
+            let plan = try CollectionCSV.parse(priceCSV(columns: [("Market Price", "$12.50"), ("Currency", currency)]))
+            XCTAssertNil(plan.entries.first?.importedMarketPriceUSD, currency)
+        }
+        let usd = try CollectionCSV.parse(priceCSV(columns: [("Market Price", "$12.50"), ("Currency", "USD")]))
+        XCTAssertEqual(usd.entries.first?.importedMarketPriceUSD, 12.5)
+    }
+
+    func testPortfolioPriceRejectsCompetingOrUnsupportedColumnsInEitherOrder() throws {
+        for pair in [[("Market Price", "12.50"), ("Market Price EUR", "99.00")],
+                     [("Market Price", "12.50"), ("Market Price (As of 2026-10-26)", "99.00")],
+                     [("Market Price", "12.50"), ("market-price", "99.00")]] {
+            for columns in [pair, Array(pair.reversed())] {
+                let plan = try CollectionCSV.parse(priceCSV(columns: columns))
+                XCTAssertNil(plan.entries.first?.importedMarketPriceUSD, "\(columns)")
+                XCTAssertEqual(plan.totalQuantity, 2)
+            }
+        }
+        for header in ["Market Price EUR", "Market Price Change"] {
+            let plan = try CollectionCSV.parse(priceCSV(columns: [(header, "12.50")]))
+            XCTAssertNil(plan.entries.first?.importedMarketPriceUSD, header)
+        }
+    }
+
+    @MainActor
+    func testRejectedCSVPricesCannotSeedValuationOrLedgerEvidence() throws {
+        for columns in [[("Market Price", "€12.50")], [("Market Price", "12,50")],
+                        [("Market Price", "12.50"), ("Market Price EUR", "99.00")],
+                        [("Market Price", "12.50"), ("market-price", "99.00")],
+                        [("Market Price", "12.50"), ("Currency", "EUR")],
+                        [("Market Price", "$1,234.56")]] {
+            let plan = try CollectionCSV.parse(priceCSV(columns: columns))
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            _ = try CollectionCSV.apply(plan, to: container.mainContext)
+            let fresh = ModelContext(container)
+            let row = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(row.quantity, 2)
+            let accepted = columns.count == 1 && columns[0].1 == "$1,234.56"
+            XCTAssertEqual(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD,
+                accepted ? 1234.56 : nil)
+            let observations = try fresh.fetch(FetchDescriptor<PriceObservation>())
+            XCTAssertEqual(observations.count, accepted ? 1 : 0)
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(events.count, 1)
+            XCTAssertEqual(events.first?.unitPriceUSDTenThousandths, accepted ? 12_345_600 : nil)
+            XCTAssertEqual(events.first?.deltaQuantity, 2)
+        }
+    }
+
+    private func priceCSV(columns: [(String, String)]) -> Data {
+        func quoted(_ value: String) -> String { "\"" + value.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }
+        let headers = ["Category", "Set", "Product Name", "Card Number", "Variance", "Grade", "Quantity"] + columns.map(\.0)
+        let cells = ["Pokemon", "Synthetic Set", "Synthetic Card", "1", "Normal", "Ungraded", "2"] + columns.map(\.1)
+        return Data((headers.map(quoted).joined(separator: ",") + "\n" + cells.map(quoted).joined(separator: ",") + "\n").utf8)
+    }
+
 
     func testBlankGameCellsRetainFormatDefaultsAndPortfolioAliases() throws {
         let pokemon = "game,provider_id,card_name,quantity\n ,base1-4,Charizard,1\n"
