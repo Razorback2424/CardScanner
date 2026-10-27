@@ -49,6 +49,46 @@ private extension CollectionDetailWriter {
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testHistoryMissingStorageTokenClearsLoading() async {
+        let generation = CollectionStorageGeneration()
+        XCTAssertNil(generation.currentToken())
+        var loading = true // reload() sets this before the task starts.
+        await CollectionActivityLogReadState.withHistoryLoading(
+            requestID: [0, 1], currentRequestID: { [0, 1] },
+            setLoading: { loading = $0 }, generation: generation
+        ) { _ in XCTFail("Missing storage must exit before loading history") }
+        XCTAssertFalse(loading)
+    }
+
+    func testObsoleteHistoryRequestDoesNotClearNewerLoading() async {
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        var requestID: [UInt] = [0, 1]
+        var loading = false
+        var resumeOld: CheckedContinuation<Void, Never>?
+        let started = expectation(description: "Old history request started")
+        let old = Task { @MainActor in
+            await CollectionActivityLogReadState.withHistoryLoading(
+                requestID: requestID, currentRequestID: { requestID },
+                setLoading: { loading = $0 }, generation: generation
+            ) { _ in
+                await withCheckedContinuation { resumeOld = $0; started.fulfill() }
+            }
+        }
+        await fulfillment(of: [started], timeout: 3)
+        requestID = [0, 2]
+        await CollectionActivityLogReadState.withHistoryLoading(
+            requestID: requestID, currentRequestID: { requestID },
+            setLoading: { loading = $0 }, generation: generation
+        ) { _ in
+            old.cancel()
+            resumeOld?.resume()
+            await old.value
+            XCTAssertTrue(loading, "An obsolete request cannot clear the active request's flag")
+        }
+        XCTAssertFalse(loading, "The current request clears its own loading flag")
+    }
+
     func testRemainingBackgroundOwnershipPathsKeepMainActorResponsive() async throws {
         for action in ["sealedAdd", "sealedUndo", "browseBackfill", "quantityRepair", "exclusiveEntry"] {
             let context = try makeDetailMetadataContext()

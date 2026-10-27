@@ -21,6 +21,19 @@ struct CollectionActivityLogReadState {
     private(set) var errorMessage: String?
     var permitsActions: Bool { snapshot != nil && errorMessage == nil }
 
+    static func withHistoryLoading(
+        requestID: [UInt], currentRequestID: () -> [UInt],
+        setLoading: (Bool) -> Void, generation: CollectionStorageGeneration,
+        operation: (StorageGenerationToken) async -> Void
+    ) async {
+        setLoading(true)
+        defer {
+            if requestID == currentRequestID() { setLoading(false) }
+        }
+        guard let token = generation.currentToken() else { return }
+        await operation(token)
+    }
+
     mutating func recordFailure(_ error: Error) {
         errorMessage = error.localizedDescription
     }
@@ -218,30 +231,31 @@ struct CollectionActivityLogView: View {
     private func loadHistory() async {
         let requestID = [revisionStore.revision, reloadRetry]
         let generation = CollectionStorageGeneration.shared
-        guard let token = generation.currentToken() else { return }
-        let shouldContinue = generation.continuation(for: token)
-        isLoadingHistory = true
-        defer {
-            if requestID == [revisionStore.revision, reloadRetry] { isLoadingHistory = false }
-        }
-        do {
-            let writer = await CollectionActivityWriter.makeBackground(modelContainer: modelContext.container)
-            try await CollectionExclusiveWrites.retryingIfRequired {
-                try await writer.backfill(shouldContinue: shouldContinue)
+        await CollectionActivityLogReadState.withHistoryLoading(
+            requestID: requestID,
+            currentRequestID: { [revisionStore.revision, reloadRetry] },
+            setLoading: { isLoadingHistory = $0 }, generation: generation
+        ) { token in
+            let shouldContinue = generation.continuation(for: token)
+            do {
+                let writer = await CollectionActivityWriter.makeBackground(modelContainer: modelContext.container)
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.backfill(shouldContinue: shouldContinue)
+                }
+                // Sibling-context saves merge asynchronously. Read the SwiftUI
+                // context after that merge turn instead of immediately observing
+                // its pre-write snapshot.
+                await Task.yield()
+                guard !Task.isCancelled, generation.isCurrent(token),
+                      requestID == [revisionStore.revision, reloadRetry] else { return }
+                reloadSnapshot()
+            } catch is CancellationError {
+            } catch {
+                guard !Task.isCancelled, generation.isCurrent(token),
+                      requestID == [revisionStore.revision, reloadRetry] else { return }
+                readState.recordFailure(error)
+                pendingRemovalID = nil
             }
-            // Sibling-context saves merge asynchronously. Read the SwiftUI
-            // context after that merge turn instead of immediately observing
-            // its pre-write snapshot.
-            await Task.yield()
-            guard !Task.isCancelled, generation.isCurrent(token),
-                  requestID == [revisionStore.revision, reloadRetry] else { return }
-            reloadSnapshot()
-        } catch is CancellationError {
-        } catch {
-            guard !Task.isCancelled, generation.isCurrent(token),
-                  requestID == [revisionStore.revision, reloadRetry] else { return }
-            readState.recordFailure(error)
-            pendingRemovalID = nil
         }
     }
 
