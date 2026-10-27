@@ -1,8 +1,102 @@
+import Combine
+import SwiftData
+import SwiftUI
 import XCTest
 @testable import TradingCardScanner
 
 @MainActor
 final class AppOpeningTests: XCTestCase {
+    func testHostedReadyHandoffDoesNotImposeAHoldForFastOrSlowLaunches() async throws {
+        for (name, slow) in [("fast", false), ("slow", true)] {
+            try await withOpeningHost { opening in
+                if slow { try await Task.sleep(for: .milliseconds(200)) }
+                XCTAssertFalse(opening.handoff, "Loading must keep content gated")
+                let began = self.expectation(description: "Ready handoff: \(name)")
+                let started = ContinuousClock.now
+                var elapsed: Duration?
+                let observation = opening.$handoff.filter { $0 }.prefix(1).sink { _ in
+                    elapsed = started.duration(to: .now)
+                    began.fulfill()
+                }
+                defer { observation.cancel() }
+                opening.portfolioDidLoad(copies: 3)
+                await self.fulfillment(of: [began], timeout: 2)
+                let duration = try XCTUnwrap(elapsed)
+                print("M05 hosted \(name) readiness-to-handoff: \(duration)")
+                XCTAssertLessThan(duration, .milliseconds(100), "Readiness must begin the reveal without a presentation hold")
+                XCTAssertEqual(opening.fastHandoff, !slow)
+                let finished = self.expectation(description: "Reveal completes: \(name)")
+                let completion = opening.$showsOpening.filter { !$0 }.prefix(1).sink { _ in finished.fulfill() }
+                defer { completion.cancel() }
+                await self.fulfillment(of: [finished], timeout: 2)
+                XCTAssertTrue(opening.handoff)
+                XCTAssertFalse(opening.showsOpening)
+            }
+        }
+    }
+
+    func testHostedPhaseResetCancelsSettlingAndBlockedOpeningExposesContent() async throws {
+        try await withOpeningHost { opening in
+            let began = self.expectation(description: "Initial handoff")
+            let observation = opening.$handoff.filter { $0 }.prefix(1).sink { _ in began.fulfill() }
+            defer { observation.cancel() }
+            opening.portfolioDidLoad(copies: nil)
+            await self.fulfillment(of: [began], timeout: 2)
+            opening.reset()
+            try await Task.sleep(for: .milliseconds(750))
+            XCTAssertFalse(opening.handoff)
+            XCTAssertTrue(opening.showsOpening, "The canceled settling task must not hide a new opening")
+
+            let exposed = self.expectation(description: "Blocked startup reveals recovery content")
+            let recovery = opening.$showsOpening.filter { !$0 }.prefix(1).sink { _ in exposed.fulfill() }
+            defer { recovery.cancel() }
+            opening.blocked = true
+            await self.fulfillment(of: [exposed], timeout: 2)
+            XCTAssertTrue(opening.handoff)
+            XCTAssertFalse(opening.showsOpening)
+        }
+    }
+
+    private func withOpeningHost(exercise: (AppOpeningModel) async throws -> Void) async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("M05-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = CollectionStoragePaths(applicationSupportURL: directory,
+            collectionStorageDirectoryURL: directory.appendingPathComponent("CollectionStorage"),
+            structuredStoreURL: directory.appendingPathComponent("CollectionStorage/Collection.store"),
+            portfolioStoreURL: directory.appendingPathComponent("CollectionStorage/Portfolio.store"))
+        let manifest = CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let bootstrap = CollectionStorageBootstrap(dependencies: CollectionStorageBootstrapDependencies(
+            paths: paths, manifestStore: manifest, accountAvailability: { .noAccount },
+            claimAnchor: { _ in XCTFail("Local opening must not claim a cloud anchor"); return .temporarilyUnavailable },
+            makeContainer: { _ in container },
+            readinessSource: FixedCloudRestorationReadinessSource(result: .readyEmpty),
+            structuredStoreFilePresent: { false }, structuredStoreBaseFilePresent: { false },
+            localHasUserData: { false },
+            storeFileIdentity: { try manifest.writeStoreFileIdentity("opening-fixture"); return "opening-fixture" },
+            readStoreFileIdentity: { try manifest.readStoreFileIdentity() }, adoptLegacyStore: { nil },
+            storageGeneration: CollectionStorageGeneration()))
+        await bootstrap.start()
+        guard case .ready = bootstrap.state else { return XCTFail("Expected isolated local storage") }
+        let opening = AppOpeningModel()
+        let mounted = expectation(description: "Opening content mounted")
+        let controller = UIHostingController(rootView: AppOpeningContainer(bootstrap: bootstrap, opening: opening) {
+            Button("Collection ready") { }
+                .onAppear { mounted.fulfill() }
+        })
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.frame = window.bounds
+        controller.view.layoutIfNeeded()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await fulfillment(of: [mounted], timeout: 2)
+        // Let the initial phase/session observers settle before publishing readiness.
+        await Task.yield()
+        try await exercise(opening)
+    }
+
     func testCaptionsDistinguishCopiesFromEmptyOrUnknownCollection() {
         XCTAssertEqual(AppOpeningPhase.opening.caption, "Opening your collection…")
         XCTAssertEqual(AppOpeningPhase.restoringFromCloud.caption, "Restoring collection from iCloud…")

@@ -12,13 +12,11 @@ enum AppPalette {
     static let ink = Color(red: 43 / 255, green: 37 / 255, blue: 133 / 255)
 }
 
-/// Presentation time starts only after the local result exists. Keep the
-/// lock readable, then release it without imposing a minimum loading screen.
+/// Reveal content as soon as the local result exists; settle the opening
+/// artwork afterward without delaying interaction.
 private enum OpeningMotion {
     static let lockResponse = 0.34
     static let captionDelay: Duration = .milliseconds(180)
-    static let readyHold: Duration = .milliseconds(720)
-    static let quickReadyHold: Duration = .milliseconds(420)
     static let revealDuration = 0.48
     static let settleDuration: Duration = .milliseconds(620)
 }
@@ -183,8 +181,6 @@ struct AppOpeningContainer<Content: View>: View {
             guard !opening.handoff else { return }
             let fast = opening.usesFastPath
             do {
-                try await Task.sleep(for: reduceMotion ? .milliseconds(120)
-                                     : fast ? OpeningMotion.quickReadyHold : OpeningMotion.readyHold)
                 try Task.checkCancellation()
                 opening.beginHandoff(fast: fast)
                 try await Task.sleep(for: reduceMotion ? .milliseconds(300) : OpeningMotion.settleDuration)
