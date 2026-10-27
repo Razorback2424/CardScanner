@@ -15,6 +15,7 @@ struct RemovalUndoBanner: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let name: String
+    var isRestoring = false
     let onUndo: () -> Void
     let onDismiss: () -> Void
 
@@ -56,10 +57,16 @@ struct RemovalUndoBanner: View {
     }
 
     private var undoButton: some View {
-        Button("Undo", action: onUndo)
+        Button(action: onUndo) {
+            if isRestoring {
+                ProgressView().accessibilityLabel("Restoring \(name)")
+            } else {
+                Text("Undo")
+            }
+        }
             .font(.subheadline.weight(.semibold))
             .frame(minHeight: 44)
-            .accessibilityLabel("Undo removal of \(name)")
+            .accessibilityLabel(isRestoring ? "Restoring \(name)" : "Undo removal of \(name)")
     }
 
     private var dismissButton: some View {

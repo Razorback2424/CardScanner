@@ -154,9 +154,11 @@ struct PortfolioView: View {
     @State private var contributorContext: PortfolioContributorContext?
     @State private var detailsDestination: PortfolioDetailsDestination?
     @State private var pendingRemoval: RemovedCardSnapshot?
+    @State private var restoringRemovalID: UUID?
     @State private var removalErrorMessage: String?
     @State private var isShowingQuantityRepairConfirmation = false
     @State private var quantityRepairError: String?
+    @State private var isRepairingQuantities = false
     @State private var isRebuildingPortfolioEvidence = false
     @State private var historyScrubSelection = PortfolioHistoryScrubSelection()
 
@@ -564,12 +566,18 @@ struct PortfolioView: View {
             .font(.subheadline.weight(.semibold))
 
             if canRepairQuantityDefects {
-                Button("Reconcile with Collection") {
+                Button {
                     isShowingQuantityRepairConfirmation = true
+                } label: {
+                    HStack {
+                        if isRepairingQuantities { ProgressView().accessibilityLabel("Reconciling quantities") }
+                        Text("Reconcile with Collection")
+                    }
                 }
                 .font(.subheadline.weight(.semibold))
                 .buttonStyle(.borderedProminent)
                 .tint(PortfolioPalette.attention)
+                .disabled(isRepairingQuantities)
                 .accessibilityHint("Records append-only quantity corrections without changing collection contents")
                 .confirmationDialog(
                     "Reconcile with Collection",
@@ -619,21 +627,28 @@ struct PortfolioView: View {
     }
 
     private func repairQuantityMismatches() {
+        guard !isRepairingQuantities else { return }
         let defects = portfolio.summary?.defects ?? portfolio.integrityDefects
         guard !defects.isEmpty else { return }
-        do {
-            try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore.repairQuantityMismatches(defects, in: context)
-            }
-            Task { @MainActor in
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isRepairingQuantities = true
+        Task { @MainActor in
+            defer { isRepairingQuantities = false }
+            do {
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                try await writer.repairQuantities(defects, shouldContinue: shouldContinue)
+                guard generation.isCurrent(token) else { return }
                 await Task.yield()
+                guard generation.isCurrent(token) else { return }
                 portfolio.recompute(context: modelContext, bypassPriceRefreshGate: true)
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
             }
-        } catch {
-            quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
         }
     }
 
@@ -756,16 +771,27 @@ struct PortfolioView: View {
     }
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
-        do {
-            try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).restore(removed)
+        guard restoringRemovalID == nil, pendingRemoval?.id == removed.id else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        restoringRemovalID = removed.id
+        Task { @MainActor in
+            defer { restoringRemovalID = nil }
+            do {
+                let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.restore(snapshot: removed, shouldContinue: shouldContinue)
+                }
+                // Another removal can replace the banner while this write waits.
+                guard generation.isCurrent(token), pendingRemoval?.id == removed.id else { return }
+                pendingRemoval = nil
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token), pendingRemoval?.id == removed.id else { return }
+                removalErrorMessage = error.localizedDescription
             }
-            pendingRemoval = nil
-        } catch {
-            removalErrorMessage = error.localizedDescription
         }
     }
 
@@ -779,9 +805,11 @@ struct PortfolioView: View {
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
         RemovalUndoBanner(
             name: removed.name,
+            isRestoring: restoringRemovalID == removed.id,
             onUndo: { undoRemoval(removed) },
             onDismiss: { pendingRemoval = nil }
         )
+        .disabled(restoringRemovalID != nil)
     }
 
     private func todayContext(_ attribution: PortfolioClose.Attribution) -> PortfolioContributorContext {

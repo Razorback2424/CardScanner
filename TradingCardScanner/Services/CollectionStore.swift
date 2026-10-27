@@ -558,6 +558,139 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         )
     }
 
+    func addCatalog(
+        _ details: CatalogCardDetails, resolved: ResolvedVariant, pokemonPrintRun: PokemonPrintRun?,
+        shouldContinue: StorageGenerationContinuation
+    ) throws -> (mutation: CollectionMutation, storageID: String, catalogLookup: PriceLookup, priceSaved: Bool) {
+        let (mutation, storageID) = try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            let store = CollectionStore(context: context)
+            let mutation = try store.add(details.card, resolved: resolved, pokemonPrintRun: pokemonPrintRun,
+                identityResolution: .catalogSelected, setReleaseOrder: details.set.releaseOrder,
+                matchCatalogAliases: true, savesChanges: false)
+            let key = mutation.collectionKey
+            var descriptor = FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key })
+            descriptor.fetchLimit = 1
+            guard let row = try context.fetch(descriptor).first else {
+                throw CollectionStoreError.missingDestinationRow(key)
+            }
+            let storageID = row.priceStorageID
+            try saveModelContext(context)
+            return (mutation, storageID)
+        }
+        let treatments = MagicTreatmentKeyCodec.storedIDs(from: details.card.magicTreatments(for: resolved.variant))
+        let lookup = CardPricing.price(for: details.card, variant: resolved.variant,
+            magicTreatments: details.card.magicTreatments(for: resolved.variant),
+            pokemonPrintRun: pokemonPrintRun, at: details.retrievedAt)
+        // Ownership has committed. A later price failure must return the
+        // durable receipt, never throw into a retry of the acquisition.
+        let priceSaved = (try? storeCatalogPrice(lookup, game: details.card.game, printingID: storageID,
+            variantID: resolved.variant?.id, at: details.retrievedAt, treatments: treatments,
+            shouldContinue: shouldContinue)) ?? false
+        return (mutation, storageID, lookup, priceSaved)
+    }
+
+    func undoCatalog(_ mutation: CollectionMutation, shouldContinue: StorageGenerationContinuation) throws {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            try CollectionStore(context: context).undo(mutation)
+        }
+    }
+
+    func storeCatalogPrice(
+        _ lookup: PriceLookup, game: CardGame, printingID: String, variantID: String?,
+        at fetchedAt: Date = .now, treatments: [String] = [], marketVariantID: String? = nil,
+        shouldContinue: StorageGenerationContinuation
+    ) throws -> Bool {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            guard lookup.hasObservation else { return true }
+            // Already inside the fresh serialized checkpoint; this store saves
+            // directly rather than recursively acquiring the ownership lock.
+            let prices = PriceStore(context: context)
+            // Match PriceStore's checkpoint replay: quote provenance is in
+            // lookup.fetchedAt, while clock-skew checks use the actual write time.
+            let writeDate: Date
+            if case .price = lookup { writeDate = .now }
+            else { writeDate = fetchedAt }
+            guard prices.store(lookup, game: game, printingID: printingID, variantID: variantID,
+                marketVariantID: marketVariantID, at: writeDate, treatmentIDs: treatments) else {
+                context.rollback()
+                return false
+            }
+            return prices.save()
+        }
+    }
+
+    func addGradedSelection(
+        underlying card: IdentifiedCard, variant: GradedVariant, certificationNumber: String?,
+        setReleaseOrder: Int?, pokemonPrintRun: PokemonPrintRun?,
+        shouldContinue: StorageGenerationContinuation
+    ) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            return try CollectionStore(context: context).addGraded(underlying: card, variant: variant,
+                certificationNumber: certificationNumber, setReleaseOrder: setReleaseOrder,
+                pokemonPrintRun: pokemonPrintRun)
+        }
+    }
+
+    func addSealedSelection(_ product: SealedProductSummary, game: CardGame,
+                            shouldContinue: StorageGenerationContinuation) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            return try CollectionStore(context: context).addSealed(product, game: game)
+        }
+    }
+
+    func repairQuantities(_ defects: [LedgerIntegrityDefect],
+                          shouldContinue: StorageGenerationContinuation) throws {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            try CollectionStore.repairQuantityMismatches(defects, in: context)
+        }
+    }
+
+    func backfillPokemonReleaseOrder(_ sets: [CatalogSet],
+                                     shouldContinue: StorageGenerationContinuation) throws {
+        let setByProviderID = sets.reduce(into: [String: CatalogSet]()) { result, set in
+            result[set.providerID] = result[set.providerID] ?? set
+        }
+        func set(for providerID: String) -> CatalogSet? {
+            let components = providerID.split(separator: "-")
+            guard components.count > 1 else { return nil }
+            for end in stride(from: components.count - 1, through: 1, by: -1) {
+                if let set = setByProviderID[components[..<end].joined(separator: "-")] { return set }
+            }
+            return nil
+        }
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            let pokemonRawValue = CardGame.pokemon.rawValue
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.game == pokemonRawValue }))
+            for card in cards {
+                guard let set = set(for: card.catalogProviderID ?? card.providerID) else { continue }
+                if card.pokemonPrintRunRaw != nil,
+                   !PokemonMasterSetDefinition.hasSeparatePrintRuns(setProviderID: set.providerID) {
+                    let oldPriceKey = card.priceKey
+                    card.pokemonPrintRunRaw = nil
+                    try PriceIdentityLineageMigration.migrate(from: oldPriceKey, to: card.priceKey,
+                        game: card.cardGame, printingID: card.priceStorageID, variantID: card.variantID,
+                        treatmentIDs: card.priceTreatmentIDs, in: context)
+                }
+                if card.setReleaseOrder != set.sortRank { card.setReleaseOrder = set.sortRank }
+            }
+            if context.hasChanges { try context.save() }
+        }
+    }
+
     func add(_ candidate: CollectionCommitCandidate) throws -> CollectionMutation {
         let persistenceID = PerformanceSignpost.makeID()
         let signpostState = PerformanceSignpost.beginInterval(
@@ -1437,6 +1570,172 @@ actor CollectionDetailQuantityReader: BackgroundModelActor {
             forAnyKey: key,
             magicTreatmentIDsRaw: magicTreatmentIDsRaw
         )
+    }
+}
+
+/// Detail actions use the same fresh-context ownership transaction as scanner
+/// writes, on a dedicated executor. Only immutable inputs and receipts cross it.
+@ModelActor
+actor CollectionDetailWriter: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    private func perform<T>(
+        shouldContinue: StorageGenerationContinuation,
+        _ body: (ModelContext) throws -> T
+    ) throws -> T {
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            return try body(context)
+        }
+    }
+
+    /// Preparation and file ownership stay on this executor. Once the mapping
+    /// commits, a canceled UI task must not delete its now-referenced file.
+    func saveArtwork(data: Data, collectionKey: String,
+                     shouldContinue: StorageGenerationContinuation) throws -> String? {
+        try Task.checkCancellation()
+        guard shouldContinue() else { throw CancellationError() }
+        guard let filename = CollectionArtworkStore.save(data) else { return nil }
+        do {
+            try setArtwork(filename: filename, collectionKey: collectionKey, shouldContinue: shouldContinue)
+            return filename
+        } catch {
+            CollectionArtworkStore.remove(filename: filename)
+            throw error
+        }
+    }
+
+    func removeArtwork(collectionKey: String, shouldContinue: StorageGenerationContinuation) throws {
+        try setArtwork(filename: nil, collectionKey: collectionKey, shouldContinue: shouldContinue)
+    }
+
+    private func setArtwork(filename: String?, collectionKey: String,
+                            shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { context in
+            let key = collectionKey
+            var descriptor = FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key })
+            descriptor.fetchLimit = 1
+            guard let liveCard = try context.fetch(descriptor).first else {
+                throw CollectionStoreError.missingDestinationRow(collectionKey)
+            }
+            let store = CollectionStore(context: context)
+            let oldFilename = CollectionArtworkStore.filename(for: collectionKey,
+                legacyFilename: liveCard.userArtworkFilename, in: context)
+            let permitsSyncedWrite = store.permitsSyncedMetadataWrite(for: liveCard)
+            try CollectionArtworkStore.set(filename: filename, for: collectionKey, in: context,
+                suppressLegacyFallback: filename == nil && !permitsSyncedWrite)
+            if permitsSyncedWrite { liveCard.userArtworkFilename = nil }
+            try store.validatePendingGameWrites()
+            try context.save()
+            CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
+        }
+    }
+
+    func correctFinish(collectionKey: String, treatments: [String], activityID: UUID,
+                       quantity: Int, variant: PhysicalVariant,
+                       shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { context in
+            let mutation = try CollectionStore(context: context).recordVariantCorrection(forCollectionKey: collectionKey,
+                magicTreatmentIDsRaw: treatments, to: .init(variant: variant, resolution: .userConfirmed),
+                activityID: activityID, quantity: quantity)
+            // Read-through identity repair can dirty this fresh context even
+            // when the finish is already current. A no-op has nothing to save.
+            if mutation == nil { context.rollback() }
+        }
+    }
+
+    func updateMarketplaceLink(_ url: String, collectionKey: String, game: CardGame,
+                               providerID: String, treatments: [String],
+                               shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { context in
+            let key = collectionKey
+            var descriptor = FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key })
+            descriptor.fetchLimit = 1
+            guard game == .magic, treatments.isEmpty,
+                  MagicTreatmentKeyCodec.collectionTreatmentIDs(from: collectionKey).isEmpty,
+                  let liveCard = try context.fetch(descriptor).first,
+                  liveCard.tcgplayerURL == nil, liveCard.cardGame == game,
+                  (liveCard.catalogProviderID ?? liveCard.providerID) == providerID,
+                  liveCard.magicTreatmentIDsRaw == treatments else { return }
+            liveCard.tcgplayerURL = url
+            try CollectionStore(context: context).validatePendingGameWrites()
+            try context.save()
+        }
+    }
+
+    func setQuantity(
+        _ quantity: Int, collectionKey: String, treatments: [String], expectedCurrent: Int,
+        shouldContinue: StorageGenerationContinuation
+    ) throws -> Int {
+        try perform(shouldContinue: shouldContinue) { context in
+            return try CollectionStore(context: context).setQuantity(quantity,
+                forCollectionKey: collectionKey, magicTreatmentIDsRaw: treatments, expectedCurrent: expectedCurrent)
+        }
+    }
+
+    func remove(
+        collectionKey: String, treatments: [String], expectedCurrent: Int,
+        shouldContinue: StorageGenerationContinuation
+    ) throws -> RemovedCardSnapshot {
+        try perform(shouldContinue: shouldContinue) { context in
+            return try CollectionStore(context: context).remove(collectionKey: collectionKey,
+                magicTreatmentIDsRaw: treatments, expectedCurrent: expectedCurrent)
+        }
+    }
+}
+
+/// History and removal-banner writes retain a fresh serialized transaction on
+/// the established background executor. Models stay inside; receipts are values.
+@ModelActor
+actor CollectionActivityWriter: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    private func perform<T>(
+        shouldContinue: StorageGenerationContinuation,
+        _ body: (CollectionStore) throws -> T
+    ) throws -> T {
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            return try body(CollectionStore(context: context))
+        }
+    }
+
+    func backfill(shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { try $0.backfillExistingCollectionIfNeeded() }
+    }
+
+    func remove(activityID: UUID, quantity: Int, shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { _ = try $0.remove(activityID: activityID, quantity: quantity) }
+    }
+
+    func restore(activityID: UUID, shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { try $0.restore(activityID: activityID) }
+    }
+
+    func restore(snapshot: RemovedCardSnapshot, shouldContinue: StorageGenerationContinuation) throws {
+        try perform(shouldContinue: shouldContinue) { try $0.restore(snapshot) }
+    }
+
+    func correct(
+        collectionKey: String, treatments: [String], activityID: UUID, quantity: Int,
+        variant: PhysicalVariant, shouldContinue: StorageGenerationContinuation
+    ) throws -> (PriceFallbackCardInput, String, CardGame)? {
+        try perform(shouldContinue: shouldContinue) { store in
+            guard let mutation = try store.recordVariantCorrection(forCollectionKey: collectionKey,
+                magicTreatmentIDsRaw: treatments, to: .init(variant: variant, resolution: .userConfirmed),
+                activityID: activityID, quantity: quantity),
+                let card = store.card(forKey: mutation.collectionKey) else { return nil }
+            return (PriceFallbackCardInput(card: card, variant: card.variant, pokemonPrintRun: card.pokemonPrintRun),
+                card.priceKey, card.cardGame)
+        }
     }
 }
 
@@ -3538,14 +3837,16 @@ struct CollectionStore {
             let magicTreatmentQualifiers = card.variantEvidence.catalogVariants.count == 1
                 ? card.magicTreatmentQualifiers(for: card.variantEvidence.catalogVariants[0])
                 : [:]
-            let key = CollectedCard.scannedGradedCollectionKey(
+            let keyBase = CollectedCard.scannedGradedCollectionKey(
                 game: card.game,
                 underlyingPrintingID: card.providerID,
                 company: company,
                 grade: grade,
                 certificationNumber: certificationNumber,
-                pokemonPrintRun: pokemonPrintRun,
-                magicTreatments: magicTreatments
+                pokemonPrintRun: pokemonPrintRun
+            )
+            var key = MagicTreatmentKeyCodec.appendCollectionSuffix(
+                to: keyBase, treatments: magicTreatments
             )
             let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
 
@@ -3585,16 +3886,12 @@ struct CollectionStore {
             }
 
             if certificationNumber == nil,
-               let existing = try certlessGradedCard(
-                   forKey: key,
-                   legacyKey: CollectedCard.scannedGradedCollectionKey(
-                       game: card.game,
-                       underlyingPrintingID: card.providerID,
-                       company: company,
-                       grade: grade,
-                       certificationNumber: nil,
-                       magicTreatments: magicTreatments
-                   ),
+               let existing = try certlessScannedGradedCard(
+                   game: card.game,
+                   underlyingProviderID: card.providerID,
+                   company: company,
+                   grade: grade,
+                   variantID: resolved.variant?.id,
                    pokemonPrintRun: pokemonPrintRun,
                    treatmentIDs: treatmentIDs
                ) {
@@ -3602,13 +3899,6 @@ struct CollectionStore {
                 existing.dateAdded = .now
                 if existing.magicTreatmentQualifiersJSON == nil {
                     existing.magicTreatmentQualifiers = magicTreatmentQualifiers
-                }
-                if existing.variantID == nil, resolved.variant != nil {
-                    try updateGradedVariantIdentity(
-                        on: existing,
-                        to: resolved.variant,
-                        resolution: resolved.resolution
-                    )
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 let operationID = UUID()
@@ -3634,6 +3924,17 @@ struct CollectionStore {
                     activityID: activity.id,
                     didInsert: false,
                     ledgerOperationIDs: [operationID]
+                )
+            }
+
+            // Corrections keep ownership keys stable. An incompatible finish
+            // may therefore occupy the old key; give this holding its own key
+            // without rekeying the existing row or guessing its past quantity.
+            if certificationNumber == nil,
+               try uniqueCard(forAnyKey: key, magicTreatmentIDsRaw: treatmentIDs) != nil {
+                key = MagicTreatmentKeyCodec.appendCollectionSuffix(
+                    to: "\(keyBase):holding:\(UUID().uuidString)",
+                    treatments: magicTreatments
                 )
             }
 
@@ -4546,7 +4847,8 @@ struct CollectionStore {
 
     func remove(
         collectionKey: String,
-        magicTreatmentIDsRaw: [String] = []
+        magicTreatmentIDsRaw: [String] = [],
+        expectedCurrent: Int? = nil
     ) throws -> RemovedCardSnapshot {
         do {
             guard let row = try self.card(
@@ -4556,6 +4858,9 @@ struct CollectionStore {
                 throw CollectionStoreError.missingDestinationRow(collectionKey)
             }
             let quantity = row.quantity
+            if let expectedCurrent, quantity != expectedCurrent {
+                throw CollectionStoreError.staleQuantity
+            }
             var snapshot = RemovedCardSnapshot(card: row)
             try requireMaintainableGame(row.cardGame)
             let operationID = UUID()
@@ -4779,6 +5084,41 @@ struct CollectionStore {
         let rows = try cards(forKey: key)
         guard rows.count > 1 else { return rows.first }
         return try mergeCollectionRows(rows, canonicalKey: key)
+    }
+
+    /// Scanned ownership keys predate finish identity and stay stable during
+    /// corrections. Aggregate by the current physical facts, including unknown
+    /// finish, rather than assuming that a matching key still means that finish.
+    private func certlessScannedGradedCard(
+        game: CardGame,
+        underlyingProviderID: String,
+        company: GradingCompany,
+        grade: CardGrade,
+        variantID: String?,
+        pokemonPrintRun: PokemonPrintRun?,
+        treatmentIDs: [String]
+    ) throws -> CollectedCard? {
+        let prefix = CollectedCard.scannedGradedCollectionKey(
+            game: game, underlyingPrintingID: underlyingProviderID,
+            company: company, grade: grade, certificationNumber: nil
+        )
+        let gradedKind = CollectionItemKind.gradedCard.rawValue
+        let expectedTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: treatmentIDs))
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>(
+            predicate: #Predicate {
+                $0.itemKindRaw == gradedKind && $0.certificationNumber == nil
+                    && $0.collectionKey.starts(with: prefix)
+            },
+            sortBy: [SortDescriptor(\CollectedCard.collectionKey)]
+        ))
+        guard let existing = rows.first(where: {
+            $0.cardGame == game && $0.gradingCompany == company
+                && $0.gradeRaw == grade.value && $0.gradeLabel == grade.label
+                && $0.gradingQualifier == grade.qualifier
+                && $0.variantID == variantID && $0.pokemonPrintRun == pokemonPrintRun
+                && Set(MagicTreatmentKeyCodec.canonicalIDs(from: $0.magicTreatmentIDsRaw)) == expectedTreatments
+        }) else { return nil }
+        return try uniqueCard(forAnyKey: existing.collectionKey, magicTreatmentIDsRaw: treatmentIDs)
     }
 
     /// Old certless keys did not encode the run. Only an explicit matching
@@ -5723,7 +6063,7 @@ actor CollectionDeletionModelActor: BackgroundModelActor {
 /// Lives beside `CollectionStore` because restoring is an ownership change, not
 /// a view concern: it has to invert a ledger event, and only the store knows
 /// how.
-struct RemovedCardSnapshot: Identifiable, Codable {
+struct RemovedCardSnapshot: Identifiable, Codable, Sendable {
     var id = UUID()
     /// The ledger operation that recorded the disposal, so restoring can invert
     /// exactly that rather than recording a fresh acquisition. `nil` only for a

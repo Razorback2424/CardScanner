@@ -183,6 +183,7 @@ private struct CollectionCardDetailContent: View {
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
     @State private var quantityState = CollectionDetailQuantityState()
+    @State private var isOwnershipWritePending = false
     @State private var selectedPriceDate: Date?
     @State private var marketHistory: [JustTCGHistoryPoint] = []
     @State private var marketHistoryError: String?
@@ -341,7 +342,12 @@ private struct CollectionCardDetailContent: View {
         // printed card content in the full-bleed hero.
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                artworkMenu
+                HStack {
+                    if isOwnershipWritePending {
+                        ProgressView().tint(.white).accessibilityLabel("Saving collection change")
+                    }
+                    artworkMenu
+                }
             }
         }
         // The detail destination is a focused surface. Leaving the collection
@@ -413,6 +419,7 @@ private struct CollectionCardDetailContent: View {
             Button("Remove", role: .destructive) {
                 removeCard()
             }
+            .disabled(isOwnershipWritePending)
             Button("Cancel", role: .cancel) {}
         } message: {
             Text(removalMessage)
@@ -461,6 +468,7 @@ private struct CollectionCardDetailContent: View {
         }
         .accessibilityLabel("Card actions")
         .accessibilityHint("Open collection history, manage artwork, or remove this card.")
+        .disabled(isOwnershipWritePending)
     }
 
     /// The printed card's corner. Shared with `CardFinishOverlay` so the sheen
@@ -765,6 +773,7 @@ private struct CollectionCardDetailContent: View {
                             .font(.subheadline.weight(.semibold))
                     }
                     .accessibilityLabel("Fix graded card finish")
+                    .disabled(isOwnershipWritePending)
                 }
                 Text("The slab stays the same card; this only corrects its printed finish.")
                     .font(.caption)
@@ -836,43 +845,27 @@ private struct CollectionCardDetailContent: View {
         _ variant: PhysicalVariant,
         activity: CollectionActivity
     ) {
-        guard variant != card.variant else { return }
-        let corrected = ResolvedVariant(variant: variant, resolution: .userConfirmed)
+        guard !isOwnershipWritePending, variant != card.variant else { return }
         let collectionKey = card.collectionKey
         let treatments = card.magicTreatmentIDsRaw
         let activityID = activity.id
         let quantity = min(activity.remainingQuantity, card.quantity)
         let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isOwnershipWritePending = true
         Task { @MainActor in
+            defer { isOwnershipWritePending = false }
             do {
-                let persist = {
-                    try CollectionWriteSerializer.perform(
-                        container: container,
-                        timeout: .mainThread
-                    ) { context in
-                        _ = try CollectionStore(context: context).recordVariantCorrection(
-                            forCollectionKey: collectionKey,
-                            magicTreatmentIDsRaw: treatments,
-                            to: corrected,
-                            activityID: activityID,
-                            quantity: quantity
-                        )
-                    }
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.correctFinish(collectionKey: collectionKey, treatments: treatments,
+                        activityID: activityID, quantity: quantity, variant: variant, shouldContinue: shouldContinue)
                 }
-                if PriceIdentityWritePreflight.requiresGradedVariantIdentityRewrite(
-                    container: container,
-                    collectionKey: collectionKey,
-                    toVariantID: variant.id
-                ) {
-                    try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                        try persist()
-                    }
-                } else {
-                    try await CollectionExclusiveWrites.retryingIfRequired {
-                        try persist()
-                    }
-                }
+            } catch is CancellationError {
             } catch {
+                guard generation.isCurrent(token) else { return }
                 errorMessage = error.localizedDescription
             }
         }
@@ -982,6 +975,7 @@ private struct CollectionCardDetailContent: View {
             quantity: displayedQuantity,
             holdingTotal: holdingTotal,
             allowsQuantityIncrease: card.allowsQuantityAggregation,
+            isUpdating: isOwnershipWritePending,
             onDecrease: { updateQuantity(displayedQuantity - 1) },
             onIncrease: { updateQuantity(displayedQuantity + 1) }
         ) {
@@ -1297,8 +1291,13 @@ private struct CollectionCardDetailContent: View {
         requestID: Int,
         collectionKey: String
     ) async {
+        guard !isOwnershipWritePending else { return }
         let container = modelContext.container
-        let oldFilename = localArtworkFilename
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isOwnershipWritePending = true
+        defer { isOwnershipWritePending = false }
         let loadedData: Data?
         do {
             loadedData = try await item.loadTransferable(type: Data.self)
@@ -1306,57 +1305,30 @@ private struct CollectionCardDetailContent: View {
             if requestID == artworkGeneration { selectedArtwork = nil }
             return
         } catch {
-            guard requestID == artworkGeneration, !Task.isCancelled else { return }
+            guard requestID == artworkGeneration, !Task.isCancelled, generation.isCurrent(token) else { return }
             selectedArtwork = nil
             errorMessage = "The photo couldn't be loaded."
             return
         }
-        guard requestID == artworkGeneration, !Task.isCancelled else { return }
+        guard requestID == artworkGeneration, !Task.isCancelled, generation.isCurrent(token) else { return }
         guard let data = loadedData else {
             selectedArtwork = nil
             errorMessage = "The photo couldn't be loaded."
             return
         }
-        guard let filename = CollectionArtworkStore.save(data) else {
-            // Clear the picker binding on a rejected/undecodable asset so the
-            // user can choose the same photo again after correcting the issue.
-            selectedArtwork = nil
-            errorMessage = "The photo couldn't be prepared."
-            return
-        }
-        guard requestID == artworkGeneration, !Task.isCancelled else {
-            CollectionArtworkStore.remove(filename: filename)
-            return
-        }
         do {
-            try CollectionWriteSerializer.perform(
-                container: container,
-                timeout: .mainThread
-            ) { context in
-                let key = collectionKey
-                var descriptor = FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate { $0.collectionKey == key }
-                )
-                descriptor.fetchLimit = 1
-                guard let liveCard = try context.fetch(descriptor).first else {
-                    throw CollectionStoreError.missingDestinationRow(collectionKey)
-                }
-                try CollectionArtworkStore.set(filename: filename, for: collectionKey, in: context)
-                // Kept as a migration bridge for stores written before local
-                // artwork ownership existed. New writes keep this nil.
-                if CollectionStore(context: context).permitsSyncedMetadataWrite(for: liveCard) {
-                    liveCard.userArtworkFilename = nil
-                }
-                try CollectionStore(context: context).validatePendingGameWrites()
-                try context.save()
-                CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+            let filename = try await writer.saveArtwork(data: data, collectionKey: collectionKey,
+                shouldContinue: shouldContinue)
+            guard requestID == artworkGeneration, !Task.isCancelled, generation.isCurrent(token) else { return }
+            selectedArtwork = nil
+            if filename == nil {
+                errorMessage = "The photo couldn't be prepared."
             }
-            if requestID == artworkGeneration {
-                selectedArtwork = nil
-            }
+        } catch is CancellationError {
+            if requestID == artworkGeneration { selectedArtwork = nil }
         } catch {
-            CollectionArtworkStore.remove(filename: filename)
-            if requestID == artworkGeneration, !Task.isCancelled {
+            if requestID == artworkGeneration, !Task.isCancelled, generation.isCurrent(token) {
                 errorMessage = error.localizedDescription
                 selectedArtwork = nil
             }
@@ -1364,34 +1336,26 @@ private struct CollectionCardDetailContent: View {
     }
 
     private func removeUserArtwork() {
+        guard !isOwnershipWritePending else { return }
         artworkGeneration &+= 1
+        pendingArtwork = nil
+        selectedArtwork = nil
         let container = modelContext.container
         let collectionKey = card.collectionKey
-        let oldFilename = localArtworkFilename
-        do {
-            try CollectionWriteSerializer.perform(
-                container: container,
-                timeout: .mainThread
-            ) { context in
-                let key = collectionKey
-                var descriptor = FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate { $0.collectionKey == key }
-                )
-                descriptor.fetchLimit = 1
-                guard let liveCard = try context.fetch(descriptor).first else {
-                    throw CollectionStoreError.missingDestinationRow(collectionKey)
-                }
-                try CollectionArtworkStore.set(filename: nil, for: collectionKey, in: context,
-                    suppressLegacyFallback: !CollectionStore(context: context).permitsSyncedMetadataWrite(for: liveCard))
-                if CollectionStore(context: context).permitsSyncedMetadataWrite(for: liveCard) {
-                    liveCard.userArtworkFilename = nil
-                }
-                try CollectionStore(context: context).validatePendingGameWrites()
-                try context.save()
-                CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isOwnershipWritePending = true
+        Task { @MainActor in
+            defer { isOwnershipWritePending = false }
+            do {
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                try await writer.removeArtwork(collectionKey: collectionKey, shouldContinue: shouldContinue)
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                errorMessage = error.localizedDescription
             }
-        } catch {
-            errorMessage = error.localizedDescription
         }
     }
 
@@ -1444,77 +1408,47 @@ private struct CollectionCardDetailContent: View {
     }
 
     private func updateQuantity(_ newQuantity: Int) {
-        guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
+        guard !isOwnershipWritePending,
+              (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
         let input = quantityInput
         let observedQuantity = quantityState.expectedQuantity(for: input)
-        guard let expectedCurrent = quantityState.savedQuantity(for: input) else {
-            Task { @MainActor in
-                await refreshDisplayedQuantity(for: input)
-                guard quantityInput == input else { return }
-                guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
-                    errorMessage = "The current quantity could not be loaded. Try again in a moment."
-                    return
-                }
-                do {
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isOwnershipWritePending = true
+        Task { @MainActor in
+            defer { isOwnershipWritePending = false }
+            do {
+                let expectedCurrent: Int
+                if let saved = quantityState.savedQuantity(for: input) {
+                    expectedCurrent = saved
+                } else {
+                    await refreshDisplayedQuantity(for: input)
+                    guard generation.isCurrent(token), quantityInput == input else { return }
+                    guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
+                        errorMessage = "The current quantity could not be loaded. Try again in a moment."
+                        return
+                    }
                     try CollectionDetailQuantityState.validateIntent(observed: observedQuantity, refreshed: refreshedQuantity)
-                } catch {
-                    errorMessage = error.localizedDescription
-                    return
+                    expectedCurrent = refreshedQuantity
                 }
-                persistQuantity(newQuantity, expectedCurrent: refreshedQuantity, input: input)
-            }
-            return
-        }
-        persistQuantity(newQuantity, expectedCurrent: expectedCurrent, input: input)
-    }
-
-    private func persistQuantity(
-        _ newQuantity: Int,
-        expectedCurrent: Int,
-        input: CollectionDetailQuantityState.Input
-    ) {
-        let collectionKey = input.collectionKey
-        let treatments = input.treatments
-        let persist = {
-            try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).setQuantity(
-                    newQuantity,
-                    forCollectionKey: collectionKey,
-                    magicTreatmentIDsRaw: treatments,
-                    expectedCurrent: expectedCurrent
-                )
-            }
-        }
-        do {
-            let savedQuantity = try persist()
-            quantityState.update(savedQuantity, for: input)
-        } catch CollectionStoreError.priceIdentityExclusivityRequired {
-            // The serialized write found an identity rewrite that appeared
-            // after the optimistic preflight. Retry under the refresh gate.
-            Task { @MainActor in
-                do {
-                    let savedQuantity = try await CollectionExclusiveWrites.retryingIfRequired {
-                        try persist()
-                    }
-                    guard quantityInput == input else { return }
-                    quantityState.update(savedQuantity, for: input)
-                } catch {
-                    if case CollectionStoreError.staleQuantity = error {
-                        await refreshDisplayedQuantity(for: quantityInput)
-                    }
-                    errorMessage = error.localizedDescription
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                let savedQuantity = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.setQuantity(newQuantity, collectionKey: input.collectionKey,
+                        treatments: input.treatments, expectedCurrent: expectedCurrent, shouldContinue: shouldContinue)
                 }
-            }
-        } catch {
-            if case CollectionStoreError.staleQuantity = error {
-                Task { @MainActor in
-                    await refreshDisplayedQuantity(for: quantityInput)
+                guard generation.isCurrent(token), quantityInput == input else { return }
+                quantityState.update(savedQuantity, for: input)
+            } catch is CancellationError {
+                // A canceled or retired-storage action must not publish success.
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                if case CollectionStoreError.staleQuantity = error {
+                    await refreshDisplayedQuantity(for: input)
                 }
+                errorMessage = error.localizedDescription
             }
-            errorMessage = error.localizedDescription
         }
     }
 
@@ -1522,22 +1456,33 @@ private struct CollectionCardDetailContent: View {
         // Deleting the row from here is what made removals invisible to
         // history. Ownership changes go through the store, which is the only
         // thing that knows the ledger has to hear about them.
-        let collectionKey = card.collectionKey
-        let treatments = card.magicTreatmentIDsRaw
-        do {
-            let snapshot = try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).remove(
-                    collectionKey: collectionKey,
-                    magicTreatmentIDsRaw: treatments
-                )
+        guard !isOwnershipWritePending else { return }
+        let input = quantityInput
+        let expectedCurrent = quantityState.expectedQuantity(for: input)
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isOwnershipWritePending = true
+        Task { @MainActor in
+            defer { isOwnershipWritePending = false }
+            do {
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                let snapshot = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.remove(collectionKey: input.collectionKey, treatments: input.treatments,
+                        expectedCurrent: expectedCurrent, shouldContinue: shouldContinue)
+                }
+                guard generation.isCurrent(token) else { return }
+                onRemoved(snapshot)
+                dismiss()
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                if case CollectionStoreError.staleQuantity = error {
+                    await refreshDisplayedQuantity(for: input)
+                }
+                errorMessage = error.localizedDescription
             }
-            onRemoved(snapshot)
-            dismiss()
-        } catch {
-            errorMessage = error.localizedDescription
         }
     }
 
@@ -1557,6 +1502,9 @@ private struct CollectionCardDetailContent: View {
     @MainActor
     private func loadMarketplaceLinkIfNeeded() async {
         let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
         let collectionKey = card.collectionKey
         let game = card.cardGame
         let treatments = card.magicTreatmentIDsRaw
@@ -1573,26 +1521,9 @@ private struct CollectionCardDetailContent: View {
               let url = resolved.purchaseURIs?.tcgplayer else {
             return
         }
-        try? CollectionWriteSerializer.perform(
-            container: container,
-            timeout: .mainThread
-        ) { context in
-            let key = collectionKey
-            var descriptor = FetchDescriptor<CollectedCard>(
-                predicate: #Predicate { $0.collectionKey == key }
-            )
-            descriptor.fetchLimit = 1
-            guard let liveCard = try context.fetch(descriptor).first,
-                  liveCard.tcgplayerURL == nil,
-                  liveCard.cardGame == game,
-                  (liveCard.catalogProviderID ?? liveCard.providerID) == providerID,
-                  liveCard.magicTreatmentIDsRaw == treatments else {
-                return
-            }
-            liveCard.tcgplayerURL = url.absoluteString
-            try CollectionStore(context: context).validatePendingGameWrites()
-            try context.save()
-        }
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+        try? await writer.updateMarketplaceLink(url.absoluteString, collectionKey: collectionKey,
+            game: game, providerID: providerID, treatments: treatments, shouldContinue: shouldContinue)
     }
 }
 
@@ -1907,6 +1838,7 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
     let quantity: Int
     let holdingTotal: String?
     let allowsQuantityIncrease: Bool
+    let isUpdating: Bool
     let onDecrease: () -> Void
     let onIncrease: () -> Void
     private let details: Details
@@ -1915,6 +1847,7 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
         quantity: Int,
         holdingTotal: String?,
         allowsQuantityIncrease: Bool,
+        isUpdating: Bool,
         onDecrease: @escaping () -> Void,
         onIncrease: @escaping () -> Void,
         @ViewBuilder details: () -> Details
@@ -1922,6 +1855,7 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
         self.quantity = quantity
         self.holdingTotal = holdingTotal
         self.allowsQuantityIncrease = allowsQuantityIncrease
+        self.isUpdating = isUpdating
         self.onDecrease = onDecrease
         self.onIncrease = onIncrease
         self.details = details()
@@ -1932,8 +1866,14 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
             HStack(spacing: 12) {
                 Text("Owned")
                     .font(.system(size: 17))
+                if isUpdating {
+                    ProgressView()
+                        .controlSize(.small)
+                        .accessibilityLabel("Saving collection change")
+                }
                 Spacer(minLength: 12)
                 quantityControl
+                    .disabled(isUpdating)
             }
             .padding(.horizontal, 14)
             .frame(minHeight: 60)

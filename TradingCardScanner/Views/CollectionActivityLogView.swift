@@ -21,6 +21,10 @@ struct CollectionActivityLogReadState {
     private(set) var errorMessage: String?
     var permitsActions: Bool { snapshot != nil && errorMessage == nil }
 
+    mutating func recordFailure(_ error: Error) {
+        errorMessage = error.localizedDescription
+    }
+
     mutating func reload(
         activities: () throws -> [CollectionActivity],
         cards: () throws -> [CollectedCard],
@@ -59,6 +63,11 @@ struct CollectionActivityLogView: View {
     @State private var selectedKind: CollectionActivityKind?
     @State private var pendingRemovalID: UUID?
     @State private var errorMessage: String?
+    @State private var reloadRetry: UInt = 0
+    @State private var isLoadingHistory = false
+    @State private var isActionPending = false
+
+    private var permitsActions: Bool { readState.permitsActions && !isLoadingHistory && !isActionPending }
 
     private typealias ActivityIndex = CollectionActivityLogReadState.Index
     private var index: ActivityIndex? { readState.snapshot?.index }
@@ -87,9 +96,9 @@ struct CollectionActivityLogView: View {
                                 } label: {
                                     activityRow(activity)
                                 }
-                                .disabled(!readState.permitsActions)
+                                .disabled(!permitsActions)
                                 activityActions(for: activity, using: index)
-                                    .disabled(!readState.permitsActions)
+                                    .disabled(!permitsActions)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 if canRemove(activity, using: index) {
@@ -111,6 +120,7 @@ struct CollectionActivityLogView: View {
                                 activityLimit += Self.activityPageSize
                                 reload()
                             }
+                            .disabled(isLoadingHistory || isActionPending)
                             .frame(maxWidth: .infinity)
                         }
                     }
@@ -119,7 +129,7 @@ struct CollectionActivityLogView: View {
                 VStack {
                     ContentUnavailableView("Couldn't Load History", systemImage: "exclamationmark.triangle",
                                            description: Text(error))
-                    Button("Retry") { reloadSnapshot() }
+                    Button("Retry") { reload() }
                         .buttonStyle(.borderedProminent)
                         .padding(.bottom)
                 }
@@ -137,7 +147,7 @@ struct CollectionActivityLogView: View {
                     Text("Showing previously loaded \(snapshot.kind?.label.lowercased() ?? "all") history. Actions are paused until a successful retry.")
                         .font(.footnote)
                     Text(error).font(.caption).foregroundStyle(.secondary)
-                    Button("Retry") { reloadSnapshot() }.buttonStyle(.bordered)
+                    Button("Retry") { reload() }.buttonStyle(.bordered)
                 }
                 .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -145,6 +155,11 @@ struct CollectionActivityLogView: View {
             }
         }
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if isActionPending || isLoadingHistory {
+                    ProgressView().accessibilityLabel(isActionPending ? "Saving history change" : "Loading history")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 kindFilter
             }
@@ -157,12 +172,13 @@ struct CollectionActivityLogView: View {
             Button("Remove", role: .destructive) {
                 if let pendingRemoval { remove(pendingRemoval) }
             }
+            .disabled(!permitsActions)
             Button("Cancel", role: .cancel) { pendingRemovalID = nil }
         } message: {
             Text("Only the copies claimed by this history entry will be removed.")
         }
-        .task(id: revisionStore.revision) {
-            reload()
+        .task(id: [revisionStore.revision, reloadRetry]) {
+            await loadHistory()
         }
         .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
@@ -195,22 +211,37 @@ struct CollectionActivityLogView: View {
     }
 
     private func reload() {
-        try? CollectionWriteSerializer.perform(
-            container: modelContext.container,
-            timeout: .mainThread
-        ) { context in
-            try CollectionStore(context: context).backfillExistingCollectionIfNeeded()
-        }
-        scheduleReloadAfterWrite()
+        isLoadingHistory = true
+        reloadRetry &+= 1
     }
 
-    private func scheduleReloadAfterWrite() {
-        Task { @MainActor in
+    private func loadHistory() async {
+        let requestID = [revisionStore.revision, reloadRetry]
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isLoadingHistory = true
+        defer {
+            if requestID == [revisionStore.revision, reloadRetry] { isLoadingHistory = false }
+        }
+        do {
+            let writer = await CollectionActivityWriter.makeBackground(modelContainer: modelContext.container)
+            try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.backfill(shouldContinue: shouldContinue)
+            }
             // Sibling-context saves merge asynchronously. Read the SwiftUI
             // context after that merge turn instead of immediately observing
             // its pre-write snapshot.
             await Task.yield()
+            guard !Task.isCancelled, generation.isCurrent(token),
+                  requestID == [revisionStore.revision, reloadRetry] else { return }
             reloadSnapshot()
+        } catch is CancellationError {
+        } catch {
+            guard !Task.isCancelled, generation.isCurrent(token),
+                  requestID == [revisionStore.revision, reloadRetry] else { return }
+            readState.recordFailure(error)
+            pendingRemovalID = nil
         }
     }
 
@@ -240,7 +271,7 @@ struct CollectionActivityLogView: View {
     private func selectKind(_ kind: CollectionActivityKind?) {
         selectedKind = kind
         activityLimit = Self.activityPageSize
-        reloadSnapshot()
+        reload()
     }
 
     private var kindFilter: some View {
@@ -381,7 +412,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func canCorrect(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
-        readState.permitsActions && activity.kind.hasQuantityClaim
+        permitsActions && activity.kind.hasQuantityClaim
             && activity.signedQuantity > 0
             && activity.itemKind == .rawCard
             && activity.remainingQuantity > 0
@@ -396,7 +427,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func canRemove(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
-        readState.permitsActions && activity.kind.hasQuantityClaim
+        permitsActions && activity.kind.hasQuantityClaim
             && activity.signedQuantity > 0
             && activity.remainingQuantity > 0
             && CollectionStore.hasValidLineage(
@@ -409,7 +440,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func canRestore(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
-        guard readState.permitsActions, activity.kind == .removed,
+        guard permitsActions, activity.kind == .removed,
               activity.remainingQuantity > 0,
               activity.removalSnapshotData != nil,
               Date.now.timeIntervalSince(activity.occurredAt) <= CollectionActivity.restoreWindow,
@@ -504,33 +535,46 @@ struct CollectionActivityLogView: View {
     }
 
     private func remove(_ activity: CollectionActivity) {
+        guard permitsActions else { return }
         pendingRemovalID = nil
         let activityID = activity.id
-        do {
-            _ = try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).remove(activityID: activityID)
-            }
-            reload()
-        } catch {
-            errorMessage = error.localizedDescription
+        let quantity = activity.remainingQuantity
+        performHistoryAction { writer, shouldContinue in
+            try await writer.remove(activityID: activityID, quantity: quantity, shouldContinue: shouldContinue)
         }
     }
 
     private func restore(_ activity: CollectionActivity) {
+        guard permitsActions else { return }
         let activityID = activity.id
-        do {
-            try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).restore(activityID: activityID)
+        performHistoryAction { writer, shouldContinue in
+            try await writer.restore(activityID: activityID, shouldContinue: shouldContinue)
+        }
+    }
+
+    private func performHistoryAction(
+        _ operation: @escaping @MainActor (CollectionActivityWriter, StorageGenerationContinuation) async throws -> Void
+    ) {
+        guard !isActionPending else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isActionPending = true
+        Task { @MainActor in
+            defer { isActionPending = false }
+            do {
+                let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await operation(writer, shouldContinue)
+                }
+                guard generation.isCurrent(token) else { return }
+                reload()
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                errorMessage = error.localizedDescription
             }
-            reload()
-        } catch {
-            errorMessage = error.localizedDescription
         }
     }
 
@@ -561,6 +605,7 @@ struct CollectionActivityEditor: View {
     @State private var variantID: String?
     @State private var errorMessage: String?
     @State private var fallbackQuoteTask: Task<Void, Never>?
+    @State private var isSaving = false
 
     init(activity: CollectionActivity) {
         self.activity = activity
@@ -604,7 +649,7 @@ struct CollectionActivityEditor: View {
                 } footer: {
                     Text("Compare the physical card’s set, number, stamp and foil pattern before saving. A finish correction keeps the printed card identity and applies to the copies claimed by this entry.")
                 }
-                .disabled(!canCorrect)
+                .disabled(!canCorrect || isSaving)
             } else {
                 Section {
                     Text("This history entry records a completed collection action. It cannot be corrected again.")
@@ -617,7 +662,10 @@ struct CollectionActivityEditor: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") { save() }
-                    .disabled(!canSave)
+                    .disabled(!canSave || isSaving)
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                if isSaving { ProgressView().accessibilityLabel("Saving history correction") }
             }
         }
         .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
@@ -677,6 +725,7 @@ struct CollectionActivityEditor: View {
     }
 
     private func save() {
+        guard !isSaving, canSave else { return }
         guard let variantID else {
             errorMessage = "The collection entry is no longer available."
             return
@@ -686,40 +735,31 @@ struct CollectionActivityEditor: View {
         let treatmentIDs = activity.magicTreatmentIDsRaw
         let activityID = activity.id
         let quantity = activity.remainingQuantity
-
-        do {
-            let result = try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context -> (PriceFallbackCardInput, String, CardGame)? in
-                let store = CollectionStore(context: context)
-                guard let mutation = try store.recordVariantCorrection(
-                    forCollectionKey: collectionKey,
-                    magicTreatmentIDsRaw: treatmentIDs,
-                    to: ResolvedVariant(variant: variant, resolution: .userConfirmed),
-                    activityID: activityID,
-                    quantity: quantity
-                ), let correctedCard = store.card(forKey: mutation.collectionKey) else {
-                    return nil
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isSaving = true
+        Task { @MainActor in
+            defer { isSaving = false }
+            do {
+                let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+                let result = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.correct(collectionKey: collectionKey, treatments: treatmentIDs,
+                        activityID: activityID, quantity: quantity, variant: variant, shouldContinue: shouldContinue)
                 }
-                return (
-                    PriceFallbackCardInput(
-                        card: correctedCard,
-                        variant: correctedCard.variant,
-                        pokemonPrintRun: correctedCard.pokemonPrintRun
-                    ),
-                    correctedCard.priceKey,
-                    correctedCard.cardGame
-                )
+                guard generation.isCurrent(token) else { return }
+                guard let (input, priceKey, game) = result else {
+                    errorMessage = "This entry could not be corrected."
+                    return
+                }
+                queueFallbackPrice(input: input, priceKey: priceKey, game: game)
+                dismiss()
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                errorMessage = error.localizedDescription
             }
-            guard let (input, priceKey, game) = result else {
-                errorMessage = "This entry could not be corrected."
-                return
-            }
-            queueFallbackPrice(input: input, priceKey: priceKey, game: game)
-            dismiss()
-        } catch {
-            errorMessage = error.localizedDescription
         }
     }
 

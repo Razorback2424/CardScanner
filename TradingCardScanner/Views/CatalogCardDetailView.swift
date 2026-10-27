@@ -28,6 +28,7 @@ struct CatalogCardDetailView: View {
     @State private var finishOptions: [PhysicalVariant] = []
     @State private var showsFinishChoice = false
     @State private var pendingMutation: CollectionMutation?
+    @State private var isWritePending = false
     @State private var undoTask: Task<Void, Never>?
     /// Kept separate from `error`, which replaces the whole page with a load
     /// failure. A failed add must not blank the card the user is looking at.
@@ -185,10 +186,13 @@ struct CatalogCardDetailView: View {
                 .disabled(details.collectionWriteUnavailableReason != nil)
             } else {
                 Button { prepareAdd(details.card) } label: {
-                    Label(
-                        summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add Raw Copy",
-                        systemImage: "plus.circle.fill"
-                    )
+                    HStack {
+                        if isWritePending { ProgressView().accessibilityLabel("Saving collection change") }
+                        Label(
+                            summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add Raw Copy",
+                            systemImage: "plus.circle.fill"
+                        )
+                    }
                         .frame(maxWidth: .infinity, minHeight: 50)
                 }
                 .buttonStyle(.borderedProminent)
@@ -204,7 +208,7 @@ struct CatalogCardDetailView: View {
                 } message: {
                     Text("Add the physical version you own.")
                 }
-                .disabled(!catalog.gameRegistry.supports(summary.game, .collectionWrite)
+                .disabled(isWritePending || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
                     || details.collectionWriteUnavailableReason != nil)
 
                 // A slab is a distinct object with a grade the user chooses.
@@ -213,7 +217,7 @@ struct CatalogCardDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 50)
                 }
                 .buttonStyle(.bordered)
-                .disabled(!catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]))
+                .disabled(isWritePending || !catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]))
             }
         }
         .padding(20)
@@ -410,6 +414,7 @@ struct CatalogCardDetailView: View {
     }
 
     private func prepareAdd(_ card: IdentifiedCard) {
+        guard !isWritePending else { return }
         guard catalog.gameRegistry.supports(card.game, .collectionWrite) else {
             addFailure = "Collection saving is not available for this game yet."
             return
@@ -433,94 +438,46 @@ struct CatalogCardDetailView: View {
     }
 
     private func commit(_ resolved: ResolvedVariant) {
+        guard !isWritePending else { return }
         guard catalog.gameRegistry.supports(summary.game, .collectionWrite) else {
             addFailure = "Collection saving is not available for this game yet."
             return
         }
         guard let details else { return }
-        let mutation: CollectionMutation
-        let storageID: String
-        do {
-            (mutation, storageID) = try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                let mutation = try CollectionStore(context: context).add(
-                    details.card,
-                    resolved: resolved,
-                    pokemonPrintRun: summary.pokemonPrintRun,
-                    identityResolution: .catalogSelected,
-                    setReleaseOrder: details.set.releaseOrder,
-                    matchCatalogAliases: true
-                )
-                let collectionKey = mutation.collectionKey
-                var descriptor = FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate { $0.collectionKey == collectionKey }
-                )
-                descriptor.fetchLimit = 1
-                guard let savedRow = try context.fetch(descriptor).first else {
-                    throw CollectionStoreError.missingDestinationRow(collectionKey)
+        let container = modelContext.container
+        let printRun = summary.pokemonPrintRun
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isWritePending = true
+        Task { @MainActor in
+            defer { isWritePending = false }
+            do {
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                let receipt = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: printRun,
+                        shouldContinue: shouldContinue)
                 }
-                return (mutation, savedRow.priceStorageID)
+                guard generation.isCurrent(token) else { return }
+                if !receipt.priceSaved {
+                    addAlertTitle = "Added with price warning"
+                    addFailure = "The card was added, but its price could not be saved. It will remain available for a later refresh."
+                }
+                queueFallbackPrice(for: details.card, variant: resolved.variant, pokemonPrintRun: printRun,
+                    printingID: receipt.storageID, catalogLookup: receipt.catalogLookup,
+                    writer: writer, shouldContinue: shouldContinue)
+                pendingMutation = receipt.mutation
+                undoTask?.cancel()
+                undoTask = Task { @MainActor in
+                    try? await Task.sleep(for: .seconds(6))
+                    if !Task.isCancelled, pendingMutation == receipt.mutation { pendingMutation = nil }
+                }
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                addAlertTitle = "Couldn't add card"
+                addFailure = error.localizedDescription
             }
-        } catch {
-            // Everything below stages price and artwork metadata for a row that
-            // does not exist. Returning silently made the button a no-op the
-            // user had no way to distinguish from a successful add.
-            addAlertTitle = "Couldn't add card"
-            addFailure = error.localizedDescription
-            return
-        }
-        // A rejected quote can stage a failure marker before `store` returns
-        // false. Isolate that write so its rollback cannot discard unrelated
-        // edits in the view's shared context.
-        let priceContext = ModelContext(modelContext.container)
-        priceContext.autosaveEnabled = false
-        let prices = PriceStore(context: priceContext, checkpointsInFreshContext: true)
-        let catalogLookup = CardPricing.price(
-            for: details.card,
-            variant: resolved.variant,
-            magicTreatments: details.card.magicTreatments(for: resolved.variant),
-            pokemonPrintRun: summary.pokemonPrintRun,
-            at: details.retrievedAt
-        )
-        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
-            from: details.card.magicTreatments(for: resolved.variant)
-        )
-        let didStagePrice = !catalogLookup.hasObservation || prices.store(
-                catalogLookup,
-                game: details.card.game,
-                printingID: storageID,
-                variantID: resolved.variant?.id,
-                at: details.retrievedAt,
-                treatmentIDs: treatmentIDs
-            )
-        let priceSaved: Bool
-        if !didStagePrice {
-            priceContext.rollback()
-            priceSaved = false
-        } else if catalogLookup.hasObservation {
-            priceSaved = prices.save()
-        } else {
-            priceSaved = true
-        }
-        if !priceSaved {
-            addAlertTitle = "Added with price warning"
-            addFailure = "The card was added, but its price could not be saved. It will remain available for a later refresh."
-        }
-        queueFallbackPrice(
-            for: details.card,
-            variant: resolved.variant,
-            pokemonPrintRun: summary.pokemonPrintRun,
-            printingID: storageID,
-            catalogLookup: catalogLookup,
-            prices: prices
-        )
-        pendingMutation = mutation
-        undoTask?.cancel()
-        undoTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(6))
-            if !Task.isCancelled { pendingMutation = nil }
         }
     }
 
@@ -530,7 +487,8 @@ struct CatalogCardDetailView: View {
         pokemonPrintRun: PokemonPrintRun?,
         printingID: String,
         catalogLookup: PriceLookup,
-        prices: PriceStore
+        writer: ScannerCollectionWriter,
+        shouldContinue: @escaping StorageGenerationContinuation
     ) {
         if let service = runtimes?.makePriceQuoteService(), service.supportsStoredPrintingRefresh(for: card.game) {
             let key = PriceRecord.key(game: card.game, printingID: printingID, variantID: variant?.id)
@@ -539,10 +497,8 @@ struct CatalogCardDetailView: View {
                 defer { fallbackQuoteTasks[key] = nil }
                 guard let quote = try? await service.refresh(card: card, variant: variant, pokemonPrintRun: nil),
                       !Task.isCancelled else { return }
-                let context = ModelContext(modelContext.container)
-                context.autosaveEnabled = false
-                let store = PriceStore(context: context, checkpointsInFreshContext: true)
-                if store.store(quote, game: card.game, printingID: printingID, variantID: variant?.id) { _ = store.save() }
+                _ = try? await writer.storeCatalogPrice(quote, game: card.game, printingID: printingID,
+                    variantID: variant?.id, shouldContinue: shouldContinue)
             }
             return
         }
@@ -564,10 +520,7 @@ struct CatalogCardDetailView: View {
         )
         guard fallbackQuoteTasks[key] == nil else { return }
 
-        let fallbackContext = ModelContext(prices.context.container)
-        let priceReadContext = ModelContext(prices.context.container)
-        priceReadContext.autosaveEnabled = false
-        let fallbackPrices = PriceStore(context: priceReadContext, checkpointsInFreshContext: true)
+        let fallbackContext = ModelContext(writer.modelContainer)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         fallbackQuoteTasks[key] = Task { @MainActor in
             defer { fallbackQuoteTasks[key] = nil }
@@ -586,15 +539,15 @@ struct CatalogCardDetailView: View {
                 )
                 let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
-                fallbackPrices.store(
+                _ = try? await writer.storeCatalogPrice(
                     quote,
                     game: card.game,
                     printingID: printingID,
                     variantID: variant?.id,
+                    treatments: treatmentIDs,
                     marketVariantID: marketVariantID,
-                    treatmentIDs: treatmentIDs
+                    shouldContinue: shouldContinue
                 )
-                _ = fallbackPrices.save()
             case .failed:
                 break
             }
@@ -611,23 +564,13 @@ struct CatalogCardDetailView: View {
         HStack {
             Label("Added to Collection", systemImage: "checkmark.circle.fill")
             Spacer()
+            if isWritePending { ProgressView().accessibilityLabel("Saving collection change") }
             Button("Undo") {
-                undoTask?.cancel()
-                do {
-                    try CollectionWriteSerializer.perform(
-                        container: modelContext.container,
-                        timeout: .mainThread
-                    ) { context in
-                        try CollectionStore(context: context).undo(mutation)
-                    }
-                    pendingMutation = nil
-                } catch {
-                    addAlertTitle = "Couldn't undo card"
-                    addFailure = "The local collection change could not be undone. \(error.localizedDescription)"
-                }
+                undoCatalogMutation(mutation)
             }
             .fontWeight(.semibold)
             .frame(minHeight: 44)
+            .disabled(isWritePending)
         }
         .padding(.leading, 16)
         .padding(.trailing, 10)
@@ -635,6 +578,32 @@ struct CatalogCardDetailView: View {
         .shadow(color: .black.opacity(0.14), radius: 10, y: 4)
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
+    }
+
+    private func undoCatalogMutation(_ mutation: CollectionMutation) {
+        guard !isWritePending, pendingMutation == mutation else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        undoTask?.cancel()
+        isWritePending = true
+        Task { @MainActor in
+            defer { isWritePending = false }
+            do {
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.undoCatalog(mutation, shouldContinue: shouldContinue)
+                }
+                guard generation.isCurrent(token), pendingMutation == mutation else { return }
+                pendingMutation = nil
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token), pendingMutation == mutation else { return }
+                addAlertTitle = "Couldn't undo card"
+                addFailure = "The local collection change could not be undone. \(error.localizedDescription)"
+            }
+        }
     }
 
     private func load() async {

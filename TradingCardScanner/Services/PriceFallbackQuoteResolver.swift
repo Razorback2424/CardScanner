@@ -50,7 +50,7 @@ struct PriceFallbackCardInput: Sendable {
     let lookupCandidates: [JustTCGBatchLookup]
     let exactPhysicalProductID: String?
 
-    @MainActor
+    /// Read the model only on the executor that owns its context.
     init(
         card: CollectedCard,
         variant: PhysicalVariant?,

@@ -600,7 +600,9 @@ private struct SettingsContentView: View {
                 let gameRegistry = runtimes?.registry ?? .standard
                 guard storageShouldContinue(), stopFlag.shouldContinue else { return }
                 let result = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                    let exclusiveToken = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+                    let exclusiveToken = try await CollectionWriteSerializer.beginExclusiveInBackground {
+                        storageShouldContinue() && stopFlag.shouldContinue
+                    }
                     defer { CollectionWriteSerializer.endExclusive(exclusiveToken) }
                     return try await CollectionCSV.applyIsolated(
                         plan,
@@ -714,7 +716,7 @@ private struct SettingsContentView: View {
             do {
                 let actor = await CollectionDeletionModelActor.makeBackground(modelContainer: container)
                 let didDelete = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                    let exclusiveToken = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+                    let exclusiveToken = try await CollectionWriteSerializer.beginExclusiveInBackground(shouldContinue: shouldContinue)
                     defer { CollectionWriteSerializer.endExclusive(exclusiveToken) }
                     return try await actor.deleteAll(
                         shouldContinue: shouldContinue,

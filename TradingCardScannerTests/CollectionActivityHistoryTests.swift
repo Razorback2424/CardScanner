@@ -1,10 +1,1407 @@
 import SwiftData
 import XCTest
+import UIKit
 @testable import TradingCardScanner
+
+private extension ScannerCollectionWriter {
+    func completionExclusiveProbe(token: UUID) throws {
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait, exclusiveToken: token) { _ in
+            XCTAssertFalse(Thread.isMainThread)
+            try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
+        }
+    }
+}
+
+private final class CatalogPricePhaseFence: @unchecked Sendable {
+    private let lock = NSLock()
+    private var checks = 0
+
+    func permitsOwnershipOnly() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        checks += 1
+        return checks == 1
+    }
+}
+
+private extension CollectionActivityWriter {
+    func historyAuthorizationProbe() throws {
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { _ in
+            XCTAssertFalse(Thread.isMainThread)
+            try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
+        }
+    }
+}
+
+private extension CollectionDetailWriter {
+    func detailExecutionProbe() throws -> Bool {
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { _ in Thread.isMainThread }
+    }
+
+    func detailAuthorizationProbe() throws {
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { _ in
+            try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
+        }
+    }
+}
 
 @MainActor
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
+
+    func testRemainingBackgroundOwnershipPathsKeepMainActorResponsive() async throws {
+        for action in ["sealedAdd", "sealedUndo", "browseBackfill", "quantityRepair", "exclusiveEntry"] {
+            let context = try makeDetailMetadataContext()
+            let container = context.container
+            let store = CollectionStore(context: context)
+            let raw = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let product = remainingSealedProduct()
+            var sealed: CollectionMutation?
+            if action == "sealedUndo" { sealed = try store.addSealed(product, game: .pokemon) }
+            if action == "quantityRepair" {
+                let row = try XCTUnwrap(store.card(forKey: raw.collectionKey))
+                row.quantity = 2
+                try context.save()
+            }
+            let defects = [LedgerIntegrityDefect(reason: .quantityMismatch, collectionKey: raw.collectionKey, detail: "ledger 1, collection 2")]
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let locked = expectation(description: "Remaining background contention: \(action)")
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 2) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            switch action {
+            case "sealedAdd": _ = try await writer.addSealedSelection(product, game: .pokemon, shouldContinue: { true })
+            case "sealedUndo": try await writer.undoCatalog(XCTUnwrap(sealed), shouldContinue: { true })
+            case "quantityRepair": try await writer.repairQuantities(defects, shouldContinue: { true })
+            case "exclusiveEntry":
+                let token = try await CollectionWriteSerializer.beginExclusiveInBackground { true }
+                CollectionWriteSerializer.endExclusive(token)
+            default:
+                try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try await writer.backfillPokemonReleaseOrder(remainingReleaseSets(), shouldContinue: { true })
+                }
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(heartbeatRanWhileLocked, action)
+            let fresh = ModelContext(container)
+            let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+            let expectedQuantity = action == "sealedAdd" || action == "quantityRepair" ? 2 : 1
+            XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, expectedQuantity)
+            XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, expectedQuantity)
+            if action == "browseBackfill" { XCTAssertEqual(rows.first?.setReleaseOrder, 77) }
+            if action == "sealedAdd" {
+                let box = try XCTUnwrap(rows.first { $0.itemKind == .sealedProduct })
+                XCTAssertEqual(box.justTCGVariantID, product.variantID)
+                XCTAssertEqual(PriceStore(context: fresh).record(forKey: box.priceKey)?.effectiveUnitMarketPriceUSD, 25)
+            }
+            XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty, action)
+        }
+    }
+
+    func testRemainingBackfillRetainsIdentityGatePriceAndOwnershipLineage() async throws {
+        let context = try makeDetailMetadataContext()
+        let added = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed), pokemonPrintRun: .firstEdition)
+        let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: added.collectionKey))
+        let oldPriceKey = row.priceKey
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(NormalizedPrice(unitMarketPriceUSD: 9, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: .now)), game: .pokemon,
+            printingID: row.priceStorageID, variantID: row.variantID))
+        XCTAssertTrue(prices.save())
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+            try await writer.backfillPokemonReleaseOrder(remainingReleaseSets(), shouldContinue: { true })
+        }
+        let fresh = ModelContext(context.container)
+        let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertNil(saved.pokemonPrintRun)
+        XCTAssertEqual(saved.setReleaseOrder, 77)
+        XCTAssertEqual(saved.collectionKey, added.collectionKey)
+        XCTAssertEqual(saved.quantity, 1)
+        XCTAssertNotEqual(saved.priceKey, oldPriceKey)
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD, 9)
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.priceStorageKey, saved.priceKey)
+    }
+
+    func testRemainingQuantityRepairRejectsMixedAndRepeatedDefects() async throws {
+        let context = try makeDetailMetadataContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let row = try XCTUnwrap(store.card(forKey: added.collectionKey))
+        row.quantity = 2
+        try context.save()
+        let valid = LedgerIntegrityDefect(reason: .quantityMismatch, collectionKey: added.collectionKey, detail: "ledger 1, collection 2")
+        let invalid = LedgerIntegrityDefect(reason: .unreadableStore, collectionKey: added.collectionKey, detail: "fixture")
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        do { try await writer.repairQuantities([valid, invalid], shouldContinue: { true }); XCTFail("Mixed defect sets cannot be repaired") }
+        catch { XCTAssertTrue(error is CollectionStoreError) }
+        XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        try await writer.repairQuantities([valid], shouldContinue: { true })
+        do { try await writer.repairQuantities([valid], shouldContinue: { true }); XCTFail("A stale repair must not append twice") }
+        catch { XCTAssertTrue(error is CollectionStoreError) }
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [2])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 2)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 2)
+    }
+
+    func testRemainingSealedPromotionKeepsTaskBoundAuthorizationAndExactUndo() async throws {
+        let context = try makeDetailMetadataContext()
+        let product = remainingSealedProduct()
+        let first = try CollectionStore(context: context).addSealed(product, game: .pokemon)
+        let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: first.collectionKey))
+        row.justTCGVariantID = nil
+        try context.save()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        var attempts = 0
+        let receipt = try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            return try await writer.addSealedSelection(product, game: .pokemon, shouldContinue: { true })
+        }
+        XCTAssertEqual(attempts, 2)
+        try await writer.undoCatalog(receipt, shouldContinue: { true })
+        do { try await writer.undoCatalog(receipt, shouldContinue: { true }); XCTFail("Repeated sealed Undo must fail") }
+        catch { XCTAssertTrue(error is CollectionStoreError) }
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 3)
+    }
+
+    func testRemainingExclusiveAcquisitionPreservesBarrierAndTaskPermit() async throws {
+        let context = try makeDetailMetadataContext()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+            let token = try await CollectionWriteSerializer.beginExclusiveInBackground { true }
+            defer { CollectionWriteSerializer.endExclusive(token) }
+            try await writer.completionExclusiveProbe(token: token)
+            XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: context.container, timeout: .wait) { _ in })
+        }
+    }
+
+    func testRemainingQueuedWritesRejectCancellationAndRetiredStorageWithoutLeakingExclusiveToken() async throws {
+        for action in ["sealedAdd", "sealedUndo", "browseBackfill", "quantityRepair", "exclusiveEntry"] {
+            for cancel in [false, true] {
+                let context = try makeDetailMetadataContext()
+                let container = context.container
+                let mutation = try CollectionStore(context: context).addSealed(remainingSealedProduct(), game: .pokemon)
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                let generation = CollectionStorageGeneration()
+                generation.installReady(storeID: UUID())
+                let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+                let locked = expectation(description: "Invalidated remaining write: \(action)")
+                let release = DispatchSemaphore(value: 0)
+                let holder = Task.detached {
+                    try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                        locked.fulfill()
+                        return release.wait(timeout: .now() + 3) == .success
+                    }
+                }
+                await fulfillment(of: [locked], timeout: 3)
+                let product = remainingSealedProduct()
+                let sets = remainingReleaseSets()
+                let defects = [LedgerIntegrityDefect(reason: .quantityMismatch, collectionKey: mutation.collectionKey, detail: "fixture")]
+                let write = Task {
+                    switch action {
+                    case "sealedAdd": _ = try await writer.addSealedSelection(product, game: .pokemon, shouldContinue: shouldContinue)
+                    case "sealedUndo": try await writer.undoCatalog(mutation, shouldContinue: shouldContinue)
+                    case "browseBackfill": try await writer.backfillPokemonReleaseOrder(sets, shouldContinue: shouldContinue)
+                    case "quantityRepair": try await writer.repairQuantities(defects, shouldContinue: shouldContinue)
+                    default:
+                        let token = try await CollectionWriteSerializer.beginExclusiveInBackground(shouldContinue: shouldContinue)
+                        CollectionWriteSerializer.endExclusive(token)
+                    }
+                }
+                await Task.yield()
+                if cancel { write.cancel() } else { generation.suspend() }
+                release.signal()
+                do { try await write.value; XCTFail("Invalidated \(action) must not commit") }
+                catch is CancellationError { }
+                let released = try await holder.value
+                XCTAssertTrue(released)
+                let nextToken = try await CollectionWriteSerializer.beginExclusiveInBackground { true }
+                CollectionWriteSerializer.endExclusive(nextToken)
+                let fresh = ModelContext(container)
+                XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+            }
+        }
+    }
+
+    private func remainingSealedProduct() -> SealedProductSummary {
+        SealedProductSummary(id: "remaining-sealed", name: "Fixture box", setName: "Fixture",
+            variantID: "remaining-sealed-market", marketPriceUSD: 25, updatedAt: nil, imageURL: nil)
+    }
+
+    private func remainingReleaseSets() -> [CatalogSet] {
+        [CatalogSet(catalogID: .init(game: .pokemon, providerID: "sv08.5"), name: "Fixture",
+            code: "PRE", logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 77)]
+    }
+
+    func testRemainingSynchronousOwnershipPathsBlockMainActorUnderContention() async throws {
+        for action in ["sealedAdd", "sealedUndo", "browseBackfill", "quantityRepair", "exclusiveEntry"] {
+            let context = try makeDetailMetadataContext()
+            let container = context.container
+            let store = CollectionStore(context: context)
+            let card = try identifiedCard()
+            let added = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let product = SealedProductSummary(id: "remaining-sealed", name: "Fixture box", setName: "Fixture",
+                variantID: "remaining-sealed-market", marketPriceUSD: 25, updatedAt: nil, imageURL: nil)
+            var sealed: CollectionMutation?
+            if action == "sealedUndo" { sealed = try store.addSealed(product, game: .pokemon) }
+            if action == "quantityRepair" {
+                let row = try XCTUnwrap(store.card(forKey: added.collectionKey))
+                row.quantity = 2
+                try context.save()
+            }
+            let defect = LedgerIntegrityDefect(reason: .quantityMismatch, collectionKey: added.collectionKey, detail: "ledger 1, collection 2")
+            let locked = expectation(description: "Remaining ownership contention: \(action)")
+            let beginWait = DispatchSemaphore(value: 0)
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                    return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            beginWait.signal()
+            let started = Date.now
+            if action == "exclusiveEntry" {
+                let token = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+                CollectionWriteSerializer.endExclusive(token)
+            } else {
+                try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { fresh in
+                    switch action {
+                    case "sealedAdd": _ = try CollectionStore(context: fresh).addSealed(product, game: .pokemon)
+                    case "sealedUndo": try CollectionStore(context: fresh).undo(XCTUnwrap(sealed))
+                    case "quantityRepair": try CollectionStore.repairQuantityMismatches([defect], in: fresh)
+                    default:
+                        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+                        for row in rows where row.cardGame == .pokemon { row.setReleaseOrder = 77 }
+                        try fresh.save()
+                    }
+                    XCTAssertTrue(Thread.isMainThread)
+                }
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertFalse(heartbeatRanWhileLocked)
+            print("M04 remaining \(action): heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+        }
+    }
+
+    func testBackgroundCatalogAcquisitionAddPriceAndUndoKeepMainActorResponsive() async throws {
+        for action in ["add", "undo", "catalogPrice"] {
+            let context = try makeDetailMetadataContext()
+            let details = rawCatalogDetails(withPrice: true)
+            let resolved = ResolvedVariant(variant: .holo, resolution: .userConfirmed)
+            let container = context.container
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            XCTAssertTrue(writer.modelExecutor is BackgroundSerialModelExecutor)
+            var initial: CollectionMutation?
+            if action != "add" {
+                initial = try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: nil, shouldContinue: { true }).mutation
+            }
+            let locked = expectation(description: "Background catalog \(action)")
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 2) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            if action == "add" {
+                let receipt = try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: nil, shouldContinue: { true })
+                XCTAssertTrue(receipt.priceSaved)
+                XCTAssertEqual(receipt.storageID, details.card.providerID)
+            } else if action == "undo" {
+                try await writer.undoCatalog(XCTUnwrap(initial), shouldContinue: { true })
+            } else {
+                let saved = try await writer.storeCatalogPrice(.price(NormalizedPrice(unitMarketPriceUSD: 20,
+                    currencyCode: "USD", source: .justTCG, sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: .now)),
+                    game: .pokemon, printingID: details.card.providerID, variantID: PhysicalVariant.holo.id,
+                    shouldContinue: { true })
+                XCTAssertTrue(saved)
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(heartbeatRanWhileLocked, action)
+            let fresh = ModelContext(container)
+            let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.map(\.quantity), action == "undo" ? [] : [1])
+            if let row = rows.first {
+                XCTAssertEqual(row.identityResolutionRaw, IdentityResolution.catalogSelected.rawValue)
+                XCTAssertEqual(row.setReleaseOrder, details.set.releaseOrder)
+                XCTAssertEqual(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD,
+                    action == "catalogPrice" ? 20 : 12.34)
+            }
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(events.count, action == "undo" ? 2 : 1)
+            XCTAssertTrue(CollectionActivity.integrityDefects(
+                activities: try fresh.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+        }
+    }
+
+    func testCatalogAcquisitionRollsBackFailedSaveAndUndoRemovesOnlyItsOwnCopy() async throws {
+        let context = try makeDetailMetadataContext()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let details = rawCatalogDetails()
+        let resolved = ResolvedVariant(variant: .holo, resolution: .userConfirmed)
+        enum SaveFailure: Error { case injected }
+        await writer.setSaveOverrideForTesting { throw SaveFailure.injected }
+        do {
+            _ = try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: nil, shouldContinue: { true })
+            XCTFail("A failed final save must not publish an acquisition")
+        } catch SaveFailure.injected { }
+        let failed = ModelContext(context.container)
+        XCTAssertEqual(try failed.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        XCTAssertEqual(try failed.fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+        XCTAssertEqual(try failed.fetchCount(FetchDescriptor<CollectionActivity>()), 0)
+        let first = try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: nil, shouldContinue: { true })
+        let second = try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: nil, shouldContinue: { true })
+        XCTAssertNotEqual(first.mutation.activityID, second.mutation.activityID)
+        try await writer.undoCatalog(first.mutation, shouldContinue: { true })
+        do { try await writer.undoCatalog(first.mutation, shouldContinue: { true }); XCTFail("Repeated undo must be refused") }
+        catch { XCTAssertTrue(error is CollectionStoreError) }
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 3)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 3)
+    }
+
+    func testCatalogAcquisitionRetainsEditionAndRejectsInvalidQuoteWithoutLosingCopy() async throws {
+        let context = try makeDetailMetadataContext()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let details = rawCatalogDetails()
+        let receipt = try await writer.addCatalog(details, resolved: .init(variant: .holo, resolution: .userConfirmed),
+            pokemonPrintRun: .firstEdition, shouldContinue: { true })
+        XCTAssertFalse(receipt.catalogLookup.hasObservation)
+        XCTAssertTrue(receipt.priceSaved, "No observation is an honest unpriced acquisition")
+        let rejected = try await writer.storeCatalogPrice(.price(NormalizedPrice(unitMarketPriceUSD: -1,
+            currencyCode: "USD", source: .justTCG, sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: .now)),
+            game: .pokemon, printingID: receipt.storageID, variantID: PhysicalVariant.holo.id, shouldContinue: { true })
+        XCTAssertFalse(rejected)
+        let fresh = ModelContext(context.container)
+        let row = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.pokemonPrintRun, .firstEdition)
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(row.collectionKey, receipt.mutation.collectionKey)
+        XCTAssertEqual(row.priceStorageID, receipt.storageID)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceRecord>()), 0)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), 0)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+    }
+
+    func testCatalogAcquisitionUsesImportedAliasAndReturnsItsStoredPriceIdentity() async throws {
+        let context = try makeDetailMetadataContext()
+        let details = rawCatalogDetails(withPrice: true)
+        let imported = makeCollectedCard()
+        imported.collectionKey = "csv:catalog-fixture#holo"
+        imported.providerID = "csv:catalog-fixture"
+        imported.catalogProviderID = details.card.providerID
+        imported.variantID = PhysicalVariant.holo.id
+        imported.variantLabel = PhysicalVariant.holo.label
+        context.insert(imported)
+        try context.save()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let receipt = try await CollectionExclusiveWrites.retryingIfRequired {
+            try await writer.addCatalog(details, resolved: .init(variant: .holo, resolution: .userConfirmed),
+                pokemonPrintRun: nil, shouldContinue: { true })
+        }
+        XCTAssertFalse(receipt.mutation.didInsert)
+        XCTAssertEqual(receipt.mutation.collectionKey, imported.collectionKey)
+        let fresh = ModelContext(context.container)
+        let row = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectedCard>()), 1)
+        XCTAssertEqual(row.quantity, 2)
+        XCTAssertEqual(receipt.storageID, row.priceStorageID)
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD, 12.34)
+        try await writer.undoCatalog(receipt.mutation, shouldContinue: { true })
+        XCTAssertEqual(try ModelContext(context.container).fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+    }
+
+    func testQueuedCatalogAcquisitionWritesRejectCancellationAndRetiredStorage() async throws {
+        for action in ["add", "undo", "catalogPrice"] {
+            for cancel in [false, true] {
+                let context = try makeDetailMetadataContext()
+                let details = rawCatalogDetails()
+                let container = context.container
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                let receipt = try await writer.addCatalog(details, resolved: .init(variant: .holo, resolution: .userConfirmed),
+                    pokemonPrintRun: nil, shouldContinue: { true })
+                let generation = CollectionStorageGeneration()
+                generation.installReady(storeID: UUID())
+                let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+                let locked = expectation(description: "Invalidated catalog \(action)")
+                let release = DispatchSemaphore(value: 0)
+                let holder = Task.detached {
+                    try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                        locked.fulfill()
+                        return release.wait(timeout: .now() + 3) == .success
+                    }
+                }
+                await fulfillment(of: [locked], timeout: 3)
+                let write = Task {
+                    switch action {
+                    case "add": _ = try await writer.addCatalog(details, resolved: .init(variant: .holo, resolution: .userConfirmed),
+                        pokemonPrintRun: nil, shouldContinue: shouldContinue)
+                    case "undo": try await writer.undoCatalog(receipt.mutation, shouldContinue: shouldContinue)
+                    default: _ = try await writer.storeCatalogPrice(.price(NormalizedPrice(unitMarketPriceUSD: 20,
+                        currencyCode: "USD", source: .justTCG, sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: .now)),
+                        game: .pokemon, printingID: receipt.storageID, variantID: PhysicalVariant.holo.id,
+                        shouldContinue: shouldContinue)
+                    }
+                }
+                await Task.yield()
+                if cancel { write.cancel() } else { generation.suspend() }
+                release.signal()
+                do { try await write.value; XCTFail("Invalidated catalog \(action) must not commit") }
+                catch is CancellationError { }
+                let released = try await holder.value
+                XCTAssertTrue(released)
+                let fresh = ModelContext(container)
+                XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceRecord>()), 0)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), 0)
+            }
+        }
+    }
+
+    func testCatalogPriceFailureAfterCommitReturnsDurableReceiptWithoutRetry() async throws {
+        let context = try makeDetailMetadataContext()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let fence = CatalogPricePhaseFence()
+        var attempts = 0
+        let receipt = try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            return try await writer.addCatalog(rawCatalogDetails(withPrice: true),
+                resolved: .init(variant: .holo, resolution: .userConfirmed), pokemonPrintRun: nil,
+                shouldContinue: { fence.permitsOwnershipOnly() })
+        }
+        XCTAssertEqual(attempts, 1)
+        XCTAssertFalse(receipt.priceSaved)
+        XCTAssertTrue(receipt.catalogLookup.hasObservation)
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), 0)
+        try await writer.undoCatalog(receipt.mutation, shouldContinue: { true })
+        XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<CollectedCard>()), 0)
+    }
+
+    func testCatalogPricePersistenceKeepsNewerQuoteAndOriginalProvenance() async throws {
+        let context = try makeDetailMetadataContext()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
+        let fetchedAt = Date.now.addingTimeInterval(-60)
+        let oldFetchedAt = fetchedAt.addingTimeInterval(-7_200)
+        let newer = NormalizedPrice(unitMarketPriceUSD: 20, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: fetchedAt)
+        let older = NormalizedPrice(unitMarketPriceUSD: 10, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: oldFetchedAt)
+        let newerSaved = try await writer.storeCatalogPrice(.price(newer), game: .pokemon, printingID: "fixture",
+            variantID: PhysicalVariant.holo.id, at: fetchedAt, shouldContinue: { true })
+        XCTAssertTrue(newerSaved)
+        let olderSaved = try await writer.storeCatalogPrice(.price(older), game: .pokemon, printingID: "fixture",
+            variantID: PhysicalVariant.holo.id, at: oldFetchedAt, shouldContinue: { true })
+        XCTAssertTrue(olderSaved)
+        let fresh = ModelContext(context.container)
+        let key = PriceRecord.key(game: .pokemon, printingID: "fixture", variantID: PhysicalVariant.holo.id)
+        let record = try XCTUnwrap(PriceStore(context: fresh).record(forKey: key))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 20)
+        XCTAssertEqual(record.fetchedAt, fetchedAt)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), 1)
+    }
+
+    private func rawCatalogDetails(withPrice: Bool = false) -> CatalogCardDetails {
+        CatalogCardDetails(card: celebrationCard(variant: .holo, withPrice: withPrice),
+            set: CatalogSet(catalogID: .init(game: .pokemon, providerID: "30th"), name: "Fixture",
+                code: "30TH", logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 77))
+    }
+
+    func testSynchronousCatalogAcquisitionWritesBlockMainActorUnderContention() async throws {
+        for action in ["add", "undo", "catalogPrice"] {
+            let context = try makeDetailMetadataContext()
+            let card = try identifiedCard()
+            let resolved = ResolvedVariant(variant: .normal, resolution: .userConfirmed)
+            var mutation: CollectionMutation?
+            if action == "undo" { mutation = try CollectionStore(context: context).add(card, resolved: resolved) }
+            let priceContext = ModelContext(context.container)
+            let prices = PriceStore(context: priceContext, checkpointsInFreshContext: true)
+            if action == "catalogPrice" {
+                XCTAssertTrue(prices.store(.price(NormalizedPrice(unitMarketPriceUSD: 12, currencyCode: "USD",
+                    source: .justTCG, sourceVariantID: "fixture", sourceUpdatedAt: nil, fetchedAt: .now)), game: card.game,
+                    printingID: card.providerID, variantID: PhysicalVariant.normal.id))
+            }
+            let container = context.container
+            let locked = expectation(description: "Catalog contention: \(action)")
+            let beginWait = DispatchSemaphore(value: 0)
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                    return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            beginWait.signal()
+            let started = Date.now
+            if action == "catalogPrice" {
+                XCTAssertTrue(prices.save())
+            } else {
+                try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { fresh in
+                    if let mutation { try CollectionStore(context: fresh).undo(mutation) }
+                    else {
+                        _ = try CollectionStore(context: fresh).add(card, resolved: resolved,
+                            identityResolution: .catalogSelected, matchCatalogAliases: true)
+                    }
+                    XCTAssertTrue(Thread.isMainThread)
+                }
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertFalse(heartbeatRanWhileLocked)
+            print("M04 catalog \(action): heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+        }
+    }
+
+    func testBackgroundDetailMetadataWritesKeepMainActorResponsive() async throws {
+        for action in ["artwork", "catalogArtwork", "finish", "marketplace"] {
+            let context = try makeDetailMetadataContext()
+            let store = CollectionStore(context: context)
+            let mutation = try store.addScannedGraded(underlying: identifiedCard(), company: .psa,
+                grade: .init(value: "10"), certificationNumber: nil,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let key = mutation.collectionKey
+            let id = try XCTUnwrap(mutation.activityID)
+            let imageData = try detailArtworkData()
+            if action == "catalogArtwork" {
+                let filename = try XCTUnwrap(CollectionArtworkStore.save(imageData))
+                try CollectionArtworkStore.set(filename: filename, for: key, in: context)
+                try context.save()
+            }
+            if action == "marketplace" {
+                let row = makeCollectedCard()
+                row.collectionKey = "magic:detail-metadata"
+                row.game = CardGame.magic.rawValue
+                context.insert(row)
+                try context.save()
+            }
+            let container = context.container
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+            XCTAssertTrue(writer.modelExecutor is BackgroundSerialModelExecutor)
+            let onMain = try await writer.detailExecutionProbe()
+            XCTAssertFalse(onMain)
+            let locked = expectation(description: "Background detail metadata: \(action)")
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 2) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            var savedFilename: String?
+            switch action {
+            case "artwork":
+                savedFilename = try await writer.saveArtwork(data: imageData, collectionKey: key, shouldContinue: { true })
+                XCTAssertNotNil(savedFilename)
+            case "catalogArtwork":
+                try await writer.removeArtwork(collectionKey: key, shouldContinue: { true })
+            case "finish":
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.correctFinish(collectionKey: key, treatments: [], activityID: id,
+                        quantity: 1, variant: .reverse, shouldContinue: { true })
+                }
+            default:
+                try await writer.updateMarketplaceLink("https://www.tcgplayer.com/product/1",
+                    collectionKey: "magic:detail-metadata", game: .magic, providerID: "sv08.5-074",
+                    treatments: [], shouldContinue: { true })
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(heartbeatRanWhileLocked, action)
+            let fresh = ModelContext(container)
+            let row = try XCTUnwrap(CollectionStore(context: fresh).card(forKey: key))
+            if action == "artwork" {
+                XCTAssertEqual(CollectionArtworkStore.filename(for: key, legacyFilename: nil, in: fresh), savedFilename)
+                XCTAssertNotNil(CollectionArtworkStore.image(filename: savedFilename))
+                CollectionArtworkStore.remove(filename: savedFilename)
+            } else if action == "catalogArtwork" {
+                XCTAssertNil(CollectionArtworkStore.filename(for: key, legacyFilename: nil, in: fresh))
+            } else if action == "finish" {
+                XCTAssertEqual(row.variant, .reverse)
+            } else {
+                XCTAssertEqual(CollectionStore(context: fresh).card(forKey: "magic:detail-metadata")?.tcgplayerURL,
+                    "https://www.tcgplayer.com/product/1")
+            }
+            XCTAssertEqual(row.quantity, 1)
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(events.count, 1, "A graded finish correction preserves quantity events")
+            XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectionActivity>()).filter { $0.kind == .corrected }.count,
+                action == "finish" ? 1 : 0)
+            XCTAssertTrue(CollectionActivity.integrityDefects(
+                activities: try fresh.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+        }
+    }
+
+    func testDetailArtworkPreservesSharedFilesAndRetainedGameLegacySuppression() async throws {
+        let context = try makeDetailMetadataContext()
+        let row = makeCollectedCard()
+        context.insert(row)
+        let data = try detailArtworkData()
+        let oldFilename = try XCTUnwrap(CollectionArtworkStore.save(data))
+        defer { CollectionArtworkStore.remove(filename: oldFilename) }
+        try CollectionArtworkStore.set(filename: oldFilename, for: row.collectionKey, in: context)
+        try CollectionArtworkStore.set(filename: oldFilename, for: "sibling", in: context)
+        try context.save()
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        let prepared = try await writer.saveArtwork(data: data,
+            collectionKey: row.collectionKey, shouldContinue: { true })
+        let newFilename = try XCTUnwrap(prepared)
+        defer { CollectionArtworkStore.remove(filename: newFilename) }
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: oldFilename), "A sibling still owns the old image")
+        try await writer.removeArtwork(collectionKey: row.collectionKey, shouldContinue: { true })
+        XCTAssertNil(CollectionArtworkStore.image(filename: newFilename), "The committed unreferenced image is removed")
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: oldFilename))
+
+        let retainedContext = try makeDetailMetadataContext()
+        let retained = makeCollectedCard()
+        retained.game = "future-retained-game"
+        retained.userArtworkFilename = oldFilename
+        retainedContext.insert(retained)
+        try retainedContext.save()
+        let retainedWriter = await CollectionDetailWriter.makeBackground(modelContainer: retainedContext.container)
+        try await retainedWriter.removeArtwork(collectionKey: retained.collectionKey, shouldContinue: { true })
+        let fresh = ModelContext(retainedContext.container)
+        let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(saved.userArtworkFilename, oldFilename, "Retained-game synced metadata stays untouched")
+        XCTAssertNil(CollectionArtworkStore.filename(for: retained.collectionKey, legacyFilename: saved.userArtworkFilename, in: fresh))
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<LocalArtworkOverride>()).map(\.filename), [""])
+    }
+
+    func testDetailMetadataRejectsStaleInputsAndFailedArtworkDoesNotLeakFiles() async throws {
+        let context = try makeDetailMetadataContext()
+        let row = makeCollectedCard()
+        row.game = CardGame.magic.rawValue
+        context.insert(row)
+        try context.save()
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        for (providerID, treatments) in [("stale-provider", [String]()), (row.providerID, ["treatment"])] {
+            try await writer.updateMarketplaceLink("https://www.tcgplayer.com/product/1", collectionKey: row.collectionKey,
+                game: .magic, providerID: providerID, treatments: treatments, shouldContinue: { true })
+        }
+        XCTAssertNil(try ModelContext(context.container).fetch(FetchDescriptor<CollectedCard>()).first?.tcgplayerURL)
+        row.tcgplayerURL = "https://www.tcgplayer.com/product/2"
+        try context.save()
+        try await writer.updateMarketplaceLink("https://www.tcgplayer.com/product/1", collectionKey: row.collectionKey,
+            game: .magic, providerID: row.providerID, treatments: [], shouldContinue: { true })
+        XCTAssertEqual(try ModelContext(context.container).fetch(FetchDescriptor<CollectedCard>()).first?.tcgplayerURL,
+            "https://www.tcgplayer.com/product/2")
+        let before = CollectionArtworkStore.agedFilenames(olderThan: .distantFuture)
+        let invalid = try await writer.saveArtwork(data: Data(), collectionKey: row.collectionKey, shouldContinue: { true })
+        XCTAssertNil(invalid)
+        do {
+            _ = try await writer.saveArtwork(data: detailArtworkData(), collectionKey: "missing", shouldContinue: { true })
+            XCTFail("Missing destination must not gain an artwork mapping")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .missingDestinationRow("missing")) }
+        XCTAssertEqual(CollectionArtworkStore.agedFilenames(olderThan: .distantFuture), before)
+        XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<LocalArtworkOverride>()), 0)
+    }
+
+    func testDetailFinishCorrectionKeepsTaskAuthorizationAndRejectsStaleClaim() async throws {
+        let context = try makeDetailMetadataContext()
+        let mutation = try CollectionStore(context: context).addScannedGraded(underlying: identifiedCard(),
+            company: .psa, grade: .init(value: "10"), certificationNumber: nil,
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let id = try XCTUnwrap(mutation.activityID)
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        do {
+            try await writer.correctFinish(collectionKey: mutation.collectionKey, treatments: [], activityID: id,
+                quantity: 2, variant: .reverse, shouldContinue: { true })
+            XCTFail("A stale quantity claim cannot be corrected")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .insufficientQuantity(mutation.collectionKey)) }
+        XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        var attempts = 0
+        try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            try await writer.correctFinish(collectionKey: mutation.collectionKey, treatments: [], activityID: id,
+                quantity: 1, variant: .reverse, shouldContinue: { true })
+        }
+        XCTAssertEqual(attempts, 2, "The real graded correction must retain task-bound authorization across the actor hop")
+        try await writer.correctFinish(collectionKey: mutation.collectionKey, treatments: [], activityID: id,
+            quantity: 1, variant: .reverse, shouldContinue: { true })
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).first?.variant, .reverse)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1, "Repeating the same finish adds no quantity event")
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectionActivity>()).filter { $0.kind == .corrected }.count, 1)
+    }
+
+    func testQueuedDetailMetadataWritesRejectCancellationAndRetiredStorage() async throws {
+        for action in ["artwork", "catalogArtwork", "finish", "marketplace"] {
+            for cancel in [false, true] {
+                let context = try makeDetailMetadataContext()
+                let row = makeCollectedCard()
+                row.game = CardGame.magic.rawValue
+                row.userArtworkFilename = "legacy.png"
+                context.insert(row)
+                try context.save()
+                let key = row.collectionKey
+                let providerID = row.providerID
+                let container = context.container
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                let generation = CollectionStorageGeneration()
+                generation.installReady(storeID: UUID())
+                let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+                let locked = expectation(description: "Invalidated detail \(action)")
+                let release = DispatchSemaphore(value: 0)
+                let holder = Task.detached {
+                    try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                        locked.fulfill()
+                        return release.wait(timeout: .now() + 3) == .success
+                    }
+                }
+                await fulfillment(of: [locked], timeout: 3)
+                let data = try detailArtworkData()
+                let filesBefore = CollectionArtworkStore.agedFilenames(olderThan: .distantFuture)
+                let write = Task {
+                    switch action {
+                    case "artwork": _ = try await writer.saveArtwork(data: data, collectionKey: key, shouldContinue: shouldContinue)
+                    case "catalogArtwork": try await writer.removeArtwork(collectionKey: key, shouldContinue: shouldContinue)
+                    case "finish": try await writer.correctFinish(collectionKey: key, treatments: [], activityID: UUID(),
+                        quantity: 1, variant: .reverse, shouldContinue: shouldContinue)
+                    default: try await writer.updateMarketplaceLink("https://www.tcgplayer.com/product/1",
+                        collectionKey: key, game: .magic, providerID: providerID, treatments: [], shouldContinue: shouldContinue)
+                    }
+                }
+                await Task.yield()
+                if cancel { write.cancel() } else { generation.suspend() }
+                release.signal()
+                do { try await write.value; XCTFail("Invalidated \(action) must not commit") }
+                catch is CancellationError { }
+                let released = try await holder.value
+                XCTAssertTrue(released)
+                let fresh = ModelContext(container)
+                let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+                XCTAssertEqual(saved.userArtworkFilename, "legacy.png")
+                XCTAssertNil(saved.tcgplayerURL)
+                XCTAssertEqual(saved.variant, .normal)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<LocalArtworkOverride>()), 0)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+                XCTAssertEqual(CollectionArtworkStore.agedFilenames(olderThan: .distantFuture), filesBefore)
+            }
+        }
+    }
+
+    private func makeDetailMetadataContext() throws -> ModelContext {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        self.container = container
+        return container.mainContext
+    }
+
+    private func detailArtworkData() throws -> Data {
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 100)).image { renderer in
+            UIColor.systemBlue.setFill()
+            renderer.fill(CGRect(x: 0, y: 0, width: 80, height: 100))
+        }
+        return try XCTUnwrap(image.pngData())
+    }
+
+    func testSynchronousDetailMetadataWritesBlockMainActorUnderContention() async throws {
+        for action in ["artwork", "catalogArtwork", "finish", "marketplace"] {
+            let context = try makeContext()
+            let mutation = try CollectionStore(context: context).add(identifiedCard(),
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let key = mutation.collectionKey
+            let activityID = try XCTUnwrap(mutation.activityID)
+            let container = context.container
+            let locked = expectation(description: "Detail metadata contention: \(action)")
+            let beginWait = DispatchSemaphore(value: 0)
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                    return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            beginWait.signal()
+            let started = Date.now
+            let wroteOnMain = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { fresh in
+                let store = CollectionStore(context: fresh)
+                if action == "finish" {
+                    _ = try store.recordVariantCorrection(forCollectionKey: key,
+                        to: .init(variant: .reverse, resolution: .userConfirmed), activityID: activityID, quantity: 1)
+                } else {
+                    let row = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+                    if action == "marketplace" {
+                        row.tcgplayerURL = "https://www.tcgplayer.com/product/1"
+                    } else {
+                        try CollectionArtworkStore.set(filename: action == "artwork" ? "fixture.png" : nil,
+                            for: key, in: fresh)
+                        if store.permitsSyncedMetadataWrite(for: row) { row.userArtworkFilename = nil }
+                    }
+                    try store.validatePendingGameWrites()
+                    try fresh.save()
+                }
+                return Thread.isMainThread
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(wroteOnMain)
+            XCTAssertFalse(heartbeatRanWhileLocked)
+            print("M04 detail \(action): mainThread=\(wroteOnMain), heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+        }
+    }
+
+    func testSynchronousUndoBannerRestoreBlocksMainActorUnderContention() async throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let mutation = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let snapshot = try store.remove(collectionKey: mutation.collectionKey)
+        let container = context.container
+        let locked = expectation(description: "Ownership lock ahead of banner undo")
+        let beginWait = DispatchSemaphore(value: 0)
+        let heartbeat = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        DispatchQueue.main.async { heartbeat.signal() }
+        beginWait.signal()
+        let started = Date.now
+        let wroteOnMain = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { fresh in
+            try CollectionStore(context: fresh).restore(snapshot)
+            return Thread.isMainThread
+        }
+        let heartbeatRanWhileLocked = try await holder.value
+        XCTAssertTrue(wroteOnMain)
+        XCTAssertFalse(heartbeatRanWhileLocked)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        print("M04 banner undo: mainThread=\(wroteOnMain), heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+    }
+
+    func testBackgroundUndoBannerRestoreKeepsMainActorResponsiveAndUsesStoredSnapshot() async throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let mutation = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        var snapshot = try store.remove(collectionKey: mutation.collectionKey)
+        // The durable removal, rather than a stale UI copy, remains authoritative.
+        snapshot.variant = .reverse
+        let container = context.container
+        let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+        let locked = expectation(description: "Contention ahead of background banner undo")
+        let heartbeat = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                return heartbeat.wait(timeout: .now() + 2) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        DispatchQueue.main.async { heartbeat.signal() }
+        try await writer.restore(snapshot: snapshot, shouldContinue: { true })
+        let heartbeatRanWhileLocked = try await holder.value
+        XCTAssertTrue(heartbeatRanWhileLocked)
+        do {
+            try await writer.restore(snapshot: snapshot, shouldContinue: { true })
+            XCTFail("The banner must not restore the same removal twice")
+        } catch { XCTAssertTrue(error is CollectionStoreError) }
+        let fresh = ModelContext(container)
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.quantity), [1])
+        XCTAssertEqual(rows.first?.variant, .normal)
+        XCTAssertEqual(events.count, 3)
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[mutation.collectionKey], 1)
+        XCTAssertEqual(activities.filter { $0.kind == .restored }.count, 1)
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+    }
+
+    func testBackgroundUndoBannerRestoreRejectsReacquiredAndExpiredRemovals() async throws {
+        for expired in [false, true] {
+            let context = try makeContext()
+            let store = CollectionStore(context: context)
+            let card = try identifiedCard()
+            let mutation = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let snapshot = try store.remove(collectionKey: mutation.collectionKey)
+            if expired {
+                let removal = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .removed })
+                removal.occurredAt = Date(timeIntervalSinceNow: -CollectionActivity.restoreWindow - 1)
+                try context.save()
+            } else {
+                _ = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+            }
+            let writer = await CollectionActivityWriter.makeBackground(modelContainer: context.container)
+            do {
+                try await writer.restore(snapshot: snapshot, shouldContinue: { true })
+                XCTFail("Stale banner restore must be refused")
+            } catch {
+                guard case .restoreConflict = error as? CollectionStoreError else {
+                    return XCTFail("Unexpected restore refusal: \(error)")
+                }
+            }
+            let fresh = ModelContext(context.container)
+            XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), expired ? [] : [1])
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), expired ? 2 : 3)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), expired ? 2 : 3)
+        }
+    }
+
+    func testQueuedUndoBannerRestoreRejectsCancellationAndRetiredStorage() async throws {
+        for cancel in [false, true] {
+            let context = try makeContext()
+            let store = CollectionStore(context: context)
+            let mutation = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let snapshot = try store.remove(collectionKey: mutation.collectionKey)
+            let container = context.container
+            let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+            let generation = CollectionStorageGeneration()
+            generation.installReady(storeID: UUID())
+            let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+            let locked = expectation(description: "Ownership lock ahead of invalidated banner undo")
+            let release = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return release.wait(timeout: .now() + 3) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            let write = Task { try await writer.restore(snapshot: snapshot, shouldContinue: shouldContinue) }
+            await Task.yield()
+            if cancel { write.cancel() } else { generation.suspend() }
+            release.signal()
+            do { try await write.value; XCTFail("Invalidated undo must not commit") }
+            catch is CancellationError { }
+            let released = try await holder.value
+            XCTAssertTrue(released)
+            let fresh = ModelContext(container)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 2)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 2)
+        }
+    }
+
+    func testBackgroundHistoryWritesKeepMainActorResponsiveAndLedgerConsistent() async throws {
+        for action in ["backfill", "remove", "restore", "correct"] {
+            let context = try makeContext()
+            let store = CollectionStore(context: context)
+            let mutation = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let acquisitionID = try XCTUnwrap(mutation.activityID)
+            var removalID: UUID?
+            if action == "restore" {
+                _ = try store.remove(activityID: acquisitionID)
+                removalID = try context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .removed }?.id
+            }
+            let container = context.container
+            let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+            XCTAssertTrue(writer.modelExecutor is BackgroundSerialModelExecutor)
+            let locked = expectation(description: "Background history contention: \(action)")
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 2) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            var correctedPriceKey: String?
+            switch action {
+            case "backfill":
+                try await writer.backfill(shouldContinue: { true })
+                try await writer.backfill(shouldContinue: { true })
+            case "remove":
+                try await writer.remove(activityID: acquisitionID, quantity: 1, shouldContinue: { true })
+            case "restore":
+                try await writer.restore(activityID: XCTUnwrap(removalID), shouldContinue: { true })
+            default:
+                let result = try await writer.correct(collectionKey: mutation.collectionKey, treatments: [],
+                    activityID: acquisitionID, quantity: 1, variant: .reverse, shouldContinue: { true })
+                let receipt = try XCTUnwrap(result)
+                XCTAssertEqual(receipt.0.variant, .reverse)
+                XCTAssertEqual(receipt.0.printingID, receipt.0.catalogID)
+                XCTAssertEqual(receipt.2, .pokemon)
+                correctedPriceKey = receipt.1
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(heartbeatRanWhileLocked, action)
+            let fresh = ModelContext(container)
+            let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+            XCTAssertEqual(events.count, action == "backfill" ? 1 : (action == "remove" ? 2 : 3), action)
+            XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, action == "remove" ? 0 : 1, action)
+            XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, action == "remove" ? 0 : 1, action)
+            XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty, action)
+            if let correctedPriceKey { XCTAssertEqual(rows.first?.priceKey, correctedPriceKey) }
+            if action == "backfill" { XCTAssertEqual(activities.count, 1) }
+        }
+    }
+
+    func testBackgroundHistoryRejectsStaleRemovalAndRepeatedRestoreOrCorrection() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let id = try XCTUnwrap(mutation.activityID)
+        let writer = await CollectionActivityWriter.makeBackground(modelContainer: context.container)
+        do {
+            try await writer.remove(activityID: id, quantity: 2, shouldContinue: { true })
+            XCTFail("A changed claim must be reviewed")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .activityAlreadyResolved(id)) }
+        try await writer.remove(activityID: id, quantity: 1, shouldContinue: { true })
+        do {
+            try await writer.remove(activityID: id, quantity: 1, shouldContinue: { true })
+            XCTFail("A repeated removal must not commit")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .activityAlreadyResolved(id)) }
+        let fresh = ModelContext(context.container)
+        let removalID = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .removed }?.id)
+        try await writer.restore(activityID: removalID, shouldContinue: { true })
+        do {
+            try await writer.restore(activityID: removalID, shouldContinue: { true })
+            XCTFail("A repeated restore must not commit")
+        } catch {
+            // The store can reject the resolved claim before or after its
+            // existing-position preflight. Both refuse a second restoration.
+            let failure = error as? CollectionStoreError
+            XCTAssertTrue(failure == .activityAlreadyResolved(removalID)
+                || failure == .restoreConflict("\(mutation.collectionKey) was acquired again"))
+        }
+        XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>()), 3)
+        let restored = ModelContext(context.container)
+        let restoredClaim = try XCTUnwrap(restored.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .restored })
+        let key = restoredClaim.collectionKey
+        let corrected = try await writer.correct(collectionKey: key, treatments: [], activityID: restoredClaim.id,
+            quantity: 1, variant: .reverse, shouldContinue: { true })
+        XCTAssertNotNil(corrected)
+        let before = try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>())
+        do {
+            _ = try await writer.correct(collectionKey: key, treatments: [], activityID: restoredClaim.id,
+                quantity: 1, variant: .reverse, shouldContinue: { true })
+        } catch { /* Stale source identity is an honest failure, never another correction. */ }
+        XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>()), before)
+    }
+
+    func testBackgroundHistoryRejectsCanceledAndRetiredStorageWithoutMutation() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let id = try XCTUnwrap(mutation.activityID)
+        let writer = await CollectionActivityWriter.makeBackground(modelContainer: context.container)
+        for action in ["backfill", "remove", "restore", "correct"] {
+            do {
+                switch action {
+                case "backfill": try await writer.backfill(shouldContinue: { false })
+                case "remove": try await writer.remove(activityID: id, quantity: 1, shouldContinue: { false })
+                case "restore": try await writer.restore(activityID: id, shouldContinue: { false })
+                default:
+                    _ = try await writer.correct(collectionKey: mutation.collectionKey, treatments: [],
+                        activityID: id, quantity: 1, variant: .reverse, shouldContinue: { false })
+                }
+                XCTFail("Retired storage must reject \(action)")
+            } catch is CancellationError { }
+        }
+        let canceled = Task { try await writer.backfill(shouldContinue: { true }) }
+        canceled.cancel()
+        do { try await canceled.value; XCTFail("Canceled work must not commit") }
+        catch is CancellationError { }
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+    }
+
+    func testBackgroundHistoryKeepsTaskBoundAuthorizationAndLoadFailureState() async throws {
+        let context = try makeContext()
+        let writer = await CollectionActivityWriter.makeBackground(modelContainer: context.container)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        var attempts = 0
+        try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            try await writer.historyAuthorizationProbe()
+        }
+        XCTAssertEqual(attempts, 2)
+        var state = CollectionActivityLogReadState()
+        state.reload(activities: { [] }, cards: { [] }, inventoryEvents: { [] }, kind: nil, limit: 300)
+        XCTAssertTrue(state.permitsActions)
+        state.recordFailure(CollectionStoreError.collectionBusy)
+        XCTAssertFalse(state.permitsActions)
+        XCTAssertNotNil(state.snapshot)
+        state.reload(activities: { [] }, cards: { [] }, inventoryEvents: { [] }, kind: nil, limit: 300)
+        XCTAssertTrue(state.permitsActions)
+    }
+
+    func testQueuedHistoryWriteRechecksStorageGenerationAfterLockWait() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let id = try XCTUnwrap(mutation.activityID)
+        let container = context.container
+        let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+        let locked = expectation(description: "Ownership transaction ahead of retired history action")
+        let release = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                return release.wait(timeout: .now() + 3) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        let write = Task {
+            try await writer.remove(activityID: id, quantity: 1, shouldContinue: shouldContinue)
+        }
+        await Task.yield()
+        generation.suspend()
+        release.signal()
+        do { try await write.value; XCTFail("The queued write belongs to retired storage") }
+        catch is CancellationError { }
+        let released = try await holder.value
+        XCTAssertTrue(released)
+        let fresh = ModelContext(container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+    }
+
+    func testSynchronousHistoryWritesBlockMainActorUnderContention() async throws {
+        for action in ["backfill", "remove", "restore", "correct"] {
+            let context = try makeContext()
+            let store = CollectionStore(context: context)
+            let mutation = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let acquisitionID = try XCTUnwrap(mutation.activityID)
+            var removalID: UUID?
+            if action == "restore" {
+                _ = try store.remove(activityID: acquisitionID)
+                removalID = try context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .removed }?.id
+            }
+            let container = context.container
+            let locked = expectation(description: "History contention: \(action)")
+            let beginWait = DispatchSemaphore(value: 0)
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                    return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            beginWait.signal()
+            let started = Date.now
+            let wroteOnMain = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { fresh in
+                let store = CollectionStore(context: fresh)
+                switch action {
+                case "backfill": try store.backfillExistingCollectionIfNeeded()
+                case "remove": _ = try store.remove(activityID: acquisitionID)
+                case "restore": try store.restore(activityID: XCTUnwrap(removalID))
+                default:
+                    _ = try store.recordVariantCorrection(forCollectionKey: mutation.collectionKey,
+                        to: .init(variant: .reverse, resolution: .userConfirmed), activityID: acquisitionID, quantity: 1)
+                }
+                return Thread.isMainThread
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(wroteOnMain)
+            XCTAssertFalse(heartbeatRanWhileLocked)
+            print("M04 history \(action): mainThread=\(wroteOnMain), heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+        }
+    }
+
+    func testSynchronousDetailQuantityWriteBlocksMainActorUnderContention() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let container = context.container
+        let locked = expectation(description: "Ownership lock held off-main")
+        let beginWait = DispatchSemaphore(value: 0)
+        let heartbeat = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        DispatchQueue.main.async { heartbeat.signal() }
+        beginWait.signal()
+        let started = Date.now
+        // This is the synchronous serializer/store sequence used by detail's
+        // persistQuantity before M04. An @MainActor Task cannot move it off-main.
+        let wroteOnMain = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) {
+            _ = try CollectionStore(context: $0).setQuantity(2,
+                forCollectionKey: mutation.collectionKey, expectedCurrent: 1)
+            return Thread.isMainThread
+        }
+        let heartbeatRanWhileLocked = try await holder.value
+        XCTAssertTrue(wroteOnMain)
+        XCTAssertFalse(heartbeatRanWhileLocked, "The queued main-actor heartbeat could not release the lock")
+        print("M04 synchronous detail write: mainThread=\(wroteOnMain), heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+    }
+
+    func testBackgroundDetailWritesKeepMainActorResponsiveAndPreserveRemovalUndo() async throws {
+        for removing in [false, true] {
+            let context = try makeContext()
+            let mutation = try CollectionStore(context: context).add(identifiedCard(),
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let container = context.container
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+            XCTAssertTrue(writer.modelExecutor is BackgroundSerialModelExecutor)
+            let isMain = try await writer.detailExecutionProbe()
+            XCTAssertFalse(isMain)
+            let locked = expectation(description: "Ownership lock held off-main")
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 2) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            var removed: RemovedCardSnapshot?
+            if removing {
+                removed = try await writer.remove(collectionKey: mutation.collectionKey, treatments: [],
+                    expectedCurrent: 1, shouldContinue: { true })
+            } else {
+                let saved = try await writer.setQuantity(2, collectionKey: mutation.collectionKey,
+                    treatments: [], expectedCurrent: 1, shouldContinue: { true })
+                XCTAssertEqual(saved, 2)
+            }
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(heartbeatRanWhileLocked, "Main-thread work must release contention while the write awaits")
+            let fresh = ModelContext(container)
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(events.count, 2, "Exactly one ownership mutation follows the acquisition")
+            XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, removing ? 0 : 2)
+            if let removed {
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) {
+                    try CollectionStore(context: $0).restore(removed)
+                }
+                let restored = ModelContext(container)
+                XCTAssertEqual(try restored.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+                XCTAssertEqual(try restored.fetch(FetchDescriptor<InventoryEvent>()).reduce(0) { $0 + $1.deltaQuantity }, 1)
+            }
+        }
+    }
+
+    func testBackgroundDetailWritesRejectStaleAndRepeatedActionsWithoutExtraEvents() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        _ = try await writer.setQuantity(2, collectionKey: mutation.collectionKey, treatments: [],
+            expectedCurrent: 1, shouldContinue: { true })
+        do {
+            _ = try await writer.setQuantity(3, collectionKey: mutation.collectionKey, treatments: [],
+                expectedCurrent: 1, shouldContinue: { true })
+            XCTFail("A stale quantity intent must fail")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .staleQuantity) }
+        do {
+            _ = try await writer.remove(collectionKey: mutation.collectionKey, treatments: [],
+                expectedCurrent: 1, shouldContinue: { true })
+            XCTFail("A queued removal must not delete newly added copies")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .staleQuantity) }
+        let removal = try await writer.remove(collectionKey: mutation.collectionKey, treatments: [],
+            expectedCurrent: 2, shouldContinue: { true })
+        XCTAssertEqual(removal.quantity, 2)
+        do {
+            _ = try await writer.remove(collectionKey: mutation.collectionKey, treatments: [],
+                expectedCurrent: 2, shouldContinue: { true })
+            XCTFail("A repeated removal must fail")
+        } catch { XCTAssertEqual(error as? CollectionStoreError, .missingDestinationRow(mutation.collectionKey)) }
+        let fresh = ModelContext(context.container)
+        XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 3)
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 0)
+    }
+
+    func testBackgroundDetailWritesRejectCanceledOrRetiredStorageWork() async throws {
+        let context = try makeContext()
+        let mutation = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        for removing in [false, true] {
+            do {
+                if removing {
+                    _ = try await writer.remove(collectionKey: mutation.collectionKey, treatments: [],
+                        expectedCurrent: 1, shouldContinue: { false })
+                } else {
+                    _ = try await writer.setQuantity(2, collectionKey: mutation.collectionKey, treatments: [],
+                        expectedCurrent: 1, shouldContinue: { false })
+                }
+                XCTFail("Retired storage must not receive queued work")
+            } catch is CancellationError { }
+        }
+        let canceled = Task { @MainActor in
+            try await writer.setQuantity(2, collectionKey: mutation.collectionKey, treatments: [],
+                expectedCurrent: 1, shouldContinue: { true })
+        }
+        canceled.cancel()
+        do { _ = try await canceled.value; XCTFail("Canceled write must not commit") }
+        catch is CancellationError { }
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+    }
+
+    func testBackgroundDetailWriterKeepsTaskBoundIdentityAuthorization() async throws {
+        let context = try makeContext()
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        var attempts = 0
+        try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            try await writer.detailAuthorizationProbe()
+        }
+        XCTAssertEqual(attempts, 2, "The actor hop must retain the retrying task's identity permit")
+    }
 
     func testMissingReceiptRejectsStaleTapAndAbsoluteEditWithoutNegativeLedgerDelta() async throws {
         for target in [2, 9] { // plus and an absolute edit retain their original CAS intent
@@ -1614,7 +3011,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
             CollectionActivity.self,
             InventoryEvent.self,
             PriceObservation.self,
-            PriceCheckDay.self
+            PriceCheckDay.self,
+            LocalArtworkOverride.self
         ])
         let container = try ModelContainer(
             for: schema,

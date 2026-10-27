@@ -502,63 +502,16 @@ struct BrowseView: View {
         ) < Self.pokemonReleaseOrderBackfillVersion else { return }
         guard let sets = model.sets[.pokemon], !sets.isEmpty else { return }
 
-        // Resolve the longest set prefix without scanning every catalog set for
-        // each owned row. Provider card ids are set-id/card-id, so walking the
-        // candidate prefixes from longest to shortest preserves the old
-        // longest-prefix rule while keeping the lookup bounded by the id's
-        // number of components.
-        let setByProviderID = sets.reduce(into: [String: CatalogSet]()) { result, set in
-            result[set.providerID] = result[set.providerID] ?? set
-        }
-
-        func set(for providerID: String) -> CatalogSet? {
-            let components = providerID.split(separator: "-")
-            guard components.count > 1 else { return nil }
-            for end in stride(from: components.count - 1, through: 1, by: -1) {
-                let prefix = components[..<end].joined(separator: "-")
-                if let set = setByProviderID[prefix] { return set }
-            }
-            return nil
-        }
-
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
         do {
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
             try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                try CollectionWriteSerializer.perform(
-                    container: modelContext.container,
-                    timeout: .mainThread
-                ) { context in
-                    let pokemonRawValue = CardGame.pokemon.rawValue
-                    let ownedCards = try context.fetch(
-                        FetchDescriptor<CollectedCard>(
-                            predicate: #Predicate { $0.game == pokemonRawValue }
-                        )
-                    )
-                    for card in ownedCards {
-                        let providerID = card.catalogProviderID ?? card.providerID
-                        guard let set = set(for: providerID) else { continue }
-                        if card.pokemonPrintRunRaw != nil,
-                           !PokemonMasterSetDefinition.hasSeparatePrintRuns(
-                                setProviderID: set.providerID
-                           ) {
-                            let oldPriceKey = card.priceKey
-                            card.pokemonPrintRunRaw = nil
-                            try PriceIdentityLineageMigration.migrate(
-                                from: oldPriceKey,
-                                to: card.priceKey,
-                                game: card.cardGame,
-                                printingID: card.priceStorageID,
-                                variantID: card.variantID,
-                                treatmentIDs: card.priceTreatmentIDs,
-                                in: context
-                            )
-                        }
-                        if card.setReleaseOrder != set.sortRank {
-                            card.setReleaseOrder = set.sortRank
-                        }
-                    }
-                    if context.hasChanges { try context.save() }
-                }
+                try await writer.backfillPokemonReleaseOrder(sets, shouldContinue: shouldContinue)
             }
+            guard !Task.isCancelled, generation.isCurrent(token) else { return }
             UserDefaults.standard.set(
                 Self.pokemonReleaseOrderBackfillVersion,
                 forKey: Self.pokemonReleaseOrderBackfillVersionKey

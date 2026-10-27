@@ -233,6 +233,7 @@ struct GradedSlabConfirmationView: View {
                 TextField("Certification number (optional)", text: $certificationNumber)
                     .keyboardType(.numbersAndPunctuation)
                     .autocorrectionDisabled()
+                    .disabled(isAdding)
             } footer: {
                 Text("A slab with a certificate number is tracked as its own copy rather than stacking with identical grades.")
             }
@@ -241,9 +242,11 @@ struct GradedSlabConfirmationView: View {
                 Button {
                     guard !isAdding else { return }
                     isAdding = true
-                    Task { await add() }
                 } label: {
-                    Label(isAdding ? "Adding…" : "Add Slab", systemImage: "plus.circle.fill")
+                    HStack {
+                        if isAdding { ProgressView().accessibilityLabel("Adding slab") }
+                        Label(isAdding ? "Adding…" : "Add Slab", systemImage: "plus.circle.fill")
+                    }
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
@@ -254,6 +257,10 @@ struct GradedSlabConfirmationView: View {
         }
         .navigationTitle(variant.displayName)
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: isAdding) {
+            guard isAdding else { return }
+            await add()
+        }
         .alert(
             "Couldn't add this slab",
             isPresented: Binding(
@@ -273,48 +280,27 @@ struct GradedSlabConfirmationView: View {
         defer { isAdding = false }
         let trimmed = certificationNumber.trimmingCharacters(in: .whitespacesAndNewlines)
         let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
         do {
             // `onAdded` dismisses the picker and is the only confirmation there
             // is. Returning silently on a throw left the sheet sitting there
             // looking untouched, with the slab not in the collection.
-            let persist = {
-                try CollectionWriteSerializer.perform(
-                    container: container,
-                    timeout: .mainThread
-                ) { context in
-                    _ = try CollectionStore(context: context).addGraded(
-                        underlying: card,
-                        variant: variant,
-                        certificationNumber: trimmed.isEmpty ? nil : trimmed,
-                        setReleaseOrder: setReleaseOrder,
-                        pokemonPrintRun: pokemonPrintRun
-                    )
-                }
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            _ = try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.addGradedSelection(underlying: card, variant: variant,
+                    certificationNumber: trimmed.isEmpty ? nil : trimmed, setReleaseOrder: setReleaseOrder,
+                    pokemonPrintRun: pokemonPrintRun, shouldContinue: shouldContinue)
             }
-            let needsIdentityGate = PriceIdentityWritePreflight.requiresGradedPromotion(
-                container: container,
-                game: card.game,
-                providerID: card.providerID,
-                grade: variant.grade,
-                company: variant.company,
-                certificationNumber: trimmed.isEmpty ? nil : trimmed,
-                treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
-                    from: card.unambiguousMagicTreatments
-                )
-            )
-            if needsIdentityGate {
-                try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                    try persist()
-                }
-            } else {
-                try await CollectionExclusiveWrites.retryingIfRequired {
-                    try persist()
-                }
-            }
+        } catch is CancellationError {
+            return
         } catch {
+            guard !Task.isCancelled, generation.isCurrent(token) else { return }
             addFailure = error.localizedDescription
             return
         }
+        guard !Task.isCancelled, generation.isCurrent(token) else { return }
         onAdded(variant.displayName)
     }
 }

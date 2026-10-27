@@ -210,6 +210,7 @@ struct CollectionView: View {
     @State private var isShowingFilters = false
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
+    @State private var restoringRemovalID: UUID?
     @State private var removalErrorMessage: String?
     /// View-owned cache for the part of a snapshot that cannot change when the
     /// user edits search, filters, or sort. The cache is deliberately a plain
@@ -727,16 +728,27 @@ struct CollectionView: View {
     }
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
-        do {
-            try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).restore(removed)
+        guard restoringRemovalID == nil, pendingRemoval?.id == removed.id else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        restoringRemovalID = removed.id
+        Task { @MainActor in
+            defer { restoringRemovalID = nil }
+            do {
+                let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.restore(snapshot: removed, shouldContinue: shouldContinue)
+                }
+                // Another removal can replace the banner while this write waits.
+                guard generation.isCurrent(token), pendingRemoval?.id == removed.id else { return }
+                pendingRemoval = nil
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token), pendingRemoval?.id == removed.id else { return }
+                removalErrorMessage = error.localizedDescription
             }
-            pendingRemoval = nil
-        } catch {
-            removalErrorMessage = error.localizedDescription
         }
     }
 
@@ -750,9 +762,11 @@ struct CollectionView: View {
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
         RemovalUndoBanner(
             name: removed.name,
+            isRestoring: restoringRemovalID == removed.id,
             onUndo: { undoRemoval(removed) },
             onDismiss: { pendingRemoval = nil }
         )
+        .disabled(restoringRemovalID != nil)
     }
 
     @ViewBuilder

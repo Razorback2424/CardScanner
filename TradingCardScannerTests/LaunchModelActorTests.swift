@@ -44,6 +44,8 @@ final class LaunchModelActorTests: XCTestCase {
         try await assertBackground(await PriceRefreshModelActor.makeBackground(modelContainer: container))
         try await assertBackground(await ScannerCollectionWriter.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionDetailQuantityReader.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionDetailWriter.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionActivityWriter.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionDeletionModelActor.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionCSVExportActor.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionCSVImportActor.makeBackground(modelContainer: container))

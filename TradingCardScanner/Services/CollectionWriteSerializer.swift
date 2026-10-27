@@ -130,6 +130,25 @@ enum CollectionWriteSerializer {
         return token
     }
 
+    /// Only lock acquisition leaves the caller's task. The authorized write
+    /// still runs in that task, with the returned exclusive token.
+    static func beginExclusiveInBackground(shouldContinue: @Sendable () -> Bool) async throws -> UUID {
+        let token: UUID = try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do { continuation.resume(returning: try beginExclusive(timeout: .wait)) }
+                catch { continuation.resume(throwing: error) }
+            }
+        }
+        do {
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            return token
+        } catch {
+            endExclusive(token)
+            throw error
+        }
+    }
+
     static func endExclusive(_ token: UUID) {
         ownershipLock.lock()
         defer { ownershipLock.unlock() }

@@ -878,6 +878,7 @@ struct SealedProductDetailView: View {
     @State private var addFailure: String?
     @State private var addAlertTitle = "Couldn't add to collection"
     @State private var isAdding = false
+    @State private var isUndoing = false
 
     private var ownedQuantity: Int {
         (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
@@ -937,21 +938,25 @@ struct SealedProductDetailView: View {
                         .font(.footnote).foregroundStyle(.secondary)
                 }
                 Button {
-                    guard canSave, !isAdding else { return }
+                    guard canSave, !isAdding, !isUndoing else { return }
                     isAdding = true
-                    Task { await add() }
                 } label: {
-                    Label(isAdding ? "Adding…" : "Add to Collection", systemImage: "plus.circle.fill")
+                    HStack {
+                        if isAdding { ProgressView().accessibilityLabel("Adding sealed product") }
+                        Label(isAdding ? "Adding…" : "Add to Collection", systemImage: "plus.circle.fill")
+                    }
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(!canSave || pendingMutation != nil || isAdding)
+                .disabled(!canSave || pendingMutation != nil || isAdding || isUndoing)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
         }
         .navigationTitle("Sealed Product")
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: isAdding) { if isAdding { await add() } }
+        .task(id: isUndoing) { if isUndoing { await undo() } }
         .safeAreaInset(edge: .bottom) {
             if pendingMutation != nil {
                 undoBanner.contentWidthLimit(.standard)
@@ -977,8 +982,15 @@ struct SealedProductDetailView: View {
                 .font(.subheadline)
                 .lineLimit(1)
             Spacer()
-            Button("Undo") { undo() }
+            if isUndoing { ProgressView().accessibilityLabel("Undoing addition") }
+            Button("Undo") {
+                guard !isAdding, !isUndoing else { return }
+                undoTask?.cancel()
+                isUndoing = true
+            }
                 .font(.subheadline.weight(.semibold))
+                .frame(minHeight: 44)
+                .disabled(isAdding || isUndoing)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -994,59 +1006,54 @@ struct SealedProductDetailView: View {
         defer { isAdding = false }
         guard canSave else { return }
         let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
         do {
             // The undo affordance is the only thing that says this worked, and
             // it is gated on a non-nil mutation — so swallowing the error made a
             // failed add indistinguishable from never having tapped the button.
             // A sealed box is not something to lose silently.
-            let needsIdentityGate = PriceIdentityWritePreflight.requiresSealedPromotion(
-                container: container,
-                game: game,
-                productUUID: product.id,
-                variantUUID: product.variantID ?? product.id,
-                marketVariantID: product.variantID
-            )
-            let persist: () throws -> CollectionMutation = {
-                try CollectionWriteSerializer.perform(
-                    container: container,
-                    timeout: .mainThread
-                ) { context in
-                    try CollectionStore(context: context).addSealed(product, game: game)
-                }
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.addSealedSelection(product, game: game, shouldContinue: shouldContinue)
             }
-            if needsIdentityGate {
-                pendingMutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                    try persist()
-                }
-            } else {
-                pendingMutation = try await CollectionExclusiveWrites.retryingIfRequired {
-                    try persist()
-                }
-            }
+            guard !Task.isCancelled, generation.isCurrent(token) else { return }
+            pendingMutation = mutation
+        } catch is CancellationError {
+            return
         } catch {
+            guard !Task.isCancelled, generation.isCurrent(token) else { return }
             addAlertTitle = "Couldn't add to collection"
             addFailure = error.localizedDescription
             return
         }
         undoTask?.cancel()
+        let mutation = pendingMutation
         undoTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(6))
-            if !Task.isCancelled { pendingMutation = nil }
+            if !Task.isCancelled, pendingMutation == mutation { pendingMutation = nil }
         }
     }
 
-    private func undo() {
+    private func undo() async {
+        defer { isUndoing = false }
         undoTask?.cancel()
-        guard let pendingMutation else { return }
+        guard let mutation = pendingMutation else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
         do {
-            try CollectionWriteSerializer.perform(
-                container: modelContext.container,
-                timeout: .mainThread
-            ) { context in
-                try CollectionStore(context: context).undo(pendingMutation)
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.undoCatalog(mutation, shouldContinue: shouldContinue)
             }
+            guard !Task.isCancelled, generation.isCurrent(token), pendingMutation == mutation else { return }
             self.pendingMutation = nil
+        } catch is CancellationError {
         } catch {
+            guard !Task.isCancelled, generation.isCurrent(token), pendingMutation == mutation else { return }
             addAlertTitle = "Couldn't undo addition"
             addFailure = "The local collection change could not be undone. \(error.localizedDescription)"
         }

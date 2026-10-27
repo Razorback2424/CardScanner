@@ -6,6 +6,430 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testSynchronousGradedPickerAcquisitionBlocksMainActorUnderContention() async throws {
+        let container = try makePickerContainer()
+        let card = try identifiedPokemonCard()
+        let variant = pickerVariant()
+        let locked = expectation(description: "Ownership lock ahead of graded picker")
+        let beginWait = DispatchSemaphore(value: 0)
+        let heartbeat = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                guard beginWait.wait(timeout: .now() + 3) == .success else { return false }
+                return heartbeat.wait(timeout: .now() + .milliseconds(500)) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        DispatchQueue.main.async { heartbeat.signal() }
+        beginWait.signal()
+        let started = Date.now
+        let wroteOnMain = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { context in
+            _ = try CollectionStore(context: context).addGraded(underlying: card,
+                variant: variant, certificationNumber: "PICKER-BASELINE")
+            return Thread.isMainThread
+        }
+        let heartbeatRanWhileLocked = try await holder.value
+        XCTAssertTrue(wroteOnMain)
+        XCTAssertFalse(heartbeatRanWhileLocked)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        print("M04 graded picker: mainThread=\(wroteOnMain), heartbeatDuringLock=\(heartbeatRanWhileLocked), elapsedMs=\(Date.now.timeIntervalSince(started) * 1000)")
+    }
+
+    func testBackgroundGradedPickerStaysResponsiveAndSavesSelectedIdentityAndPrice() async throws {
+        for amount: Double? in [50, nil] {
+            let container = try makePickerContainer()
+            let card = try identifiedPokemonCard()
+            _ = try CollectionStore(context: container.mainContext).add(card,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let selected = pickerVariant(amount: amount, printing: "1st Edition Holofoil")
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            XCTAssertTrue(writer.modelExecutor is BackgroundSerialModelExecutor)
+            let locked = expectation(description: "Ownership contention ahead of background graded add")
+            let heartbeat = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 2) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            DispatchQueue.main.async { heartbeat.signal() }
+            let receipt = try await writer.addGradedSelection(underlying: card, variant: selected,
+                certificationNumber: "PICKER-CERT", setReleaseOrder: 123, pokemonPrintRun: .firstEdition,
+                shouldContinue: { true })
+            let heartbeatRanWhileLocked = try await holder.value
+            XCTAssertTrue(heartbeatRanWhileLocked)
+            let fresh = ModelContext(container)
+            let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+            let slab = try XCTUnwrap(rows.first { $0.itemKind == .gradedCard })
+            XCTAssertEqual(rows.count, 2, "The raw copy stays separate")
+            XCTAssertEqual(slab.collectionKey, receipt.collectionKey)
+            XCTAssertEqual(slab.quantity, 1)
+            XCTAssertEqual(slab.certificationNumber, "PICKER-CERT")
+            XCTAssertEqual(slab.pokemonPrintRun, .firstEdition)
+            XCTAssertEqual(slab.setReleaseOrder, 123)
+            XCTAssertEqual(slab.justTCGVariantID, selected.id)
+            XCTAssertEqual(slab.justTCGCardID, selected.cardID)
+            XCTAssertEqual(slab.gradingCompany, .psa)
+            XCTAssertEqual(slab.gradeRaw, "10")
+            XCTAssertEqual(slab.identityResolution, .catalogSelected)
+            // Explicit listing selection remains priced even when no physical
+            // finish was separately recorded; automatic M02 binding is stricter.
+            XCTAssertNil(slab.variant)
+            XCTAssertEqual(PriceStore(context: fresh).record(forKey: slab.priceKey)?.effectiveUnitMarketPriceUSD, amount)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), amount == nil ? 0 : 1)
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+            XCTAssertEqual(events.count, 2)
+            XCTAssertEqual(activities.first { $0.id == receipt.activityID }?.source, .gradedCatalog)
+            XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+        }
+    }
+
+    func testGradedPickerPreservesDuplicateCertificateAndCertlessCopyRules() async throws {
+        for certificate: String? in ["PICKER-CERT", nil] {
+            let container = try makePickerContainer()
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let card = try identifiedPokemonCard()
+            let selected = pickerVariant()
+            let first = try await writer.addGradedSelection(underlying: card, variant: selected,
+                certificationNumber: certificate, setReleaseOrder: nil, pokemonPrintRun: nil, shouldContinue: { true })
+            let second = try await writer.addGradedSelection(underlying: card, variant: selected,
+                certificationNumber: certificate, setReleaseOrder: nil, pokemonPrintRun: nil, shouldContinue: { true })
+            XCTAssertEqual(first.collectionKey, second.collectionKey)
+            XCTAssertEqual(second.wasDuplicate, certificate != nil)
+            if certificate != nil {
+                do {
+                    _ = try await writer.addGradedSelection(underlying: card, variant: pickerVariant(id: "conflicting-market", amount: 999),
+                        certificationNumber: certificate, setReleaseOrder: nil, pokemonPrintRun: nil, shouldContinue: { true })
+                    XCTFail("A certificate cannot change its bound listing")
+                } catch { XCTAssertTrue(error is CollectionStoreError) }
+            } else {
+                XCTAssertNotEqual(first.activityID, second.activityID, "Two intentional certless acquisitions stay undoable separately")
+            }
+            let fresh = ModelContext(container)
+            let slab = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(slab.quantity, certificate == nil ? 2 : 1)
+            XCTAssertEqual(slab.justTCGVariantID, selected.id)
+            XCTAssertEqual(PriceStore(context: fresh).record(forKey: slab.priceKey)?.effectiveUnitMarketPriceUSD, 50)
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+            XCTAssertEqual(events.count, certificate == nil ? 2 : 1)
+            XCTAssertEqual(activities.count, certificate == nil ? 2 : 1)
+            XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+        }
+    }
+
+    func testGradedPickerPromotionRetainsTaskAuthorizationAndExistingLineage() async throws {
+        let container = try makePickerContainer()
+        let card = try identifiedPokemonCard()
+        let original = try CollectionStore(context: container.mainContext).addScannedGraded(underlying: card,
+            company: .psa, grade: .init(value: "10"), certificationNumber: "PICKER-PROMOTION",
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+        var attempts = 0
+        let receipt = try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            return try await writer.addGradedSelection(underlying: card, variant: pickerVariant(printing: "Normal"),
+                certificationNumber: "PICKER-PROMOTION", setReleaseOrder: nil, pokemonPrintRun: nil, shouldContinue: { true })
+        }
+        XCTAssertEqual(attempts, 2)
+        XCTAssertTrue(receipt.wasDuplicate)
+        XCTAssertNotEqual(receipt.collectionKey, original.collectionKey)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        let slab = try XCTUnwrap(rows.first)
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(slab.quantity, 1)
+        XCTAssertEqual(slab.variant, .normal)
+        XCTAssertEqual(slab.justTCGVariantID, "picker-market")
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.collectionKey, slab.collectionKey)
+        XCTAssertEqual(events.first?.priceStorageKey, slab.priceKey)
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+    }
+
+    func testQueuedGradedPickerAcquisitionRejectsCancellationAndRetiredStorage() async throws {
+        for cancel in [false, true] {
+            let container = try makePickerContainer()
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let card = try identifiedPokemonCard()
+            let variant = pickerVariant()
+            let generation = CollectionStorageGeneration()
+            generation.installReady(storeID: UUID())
+            let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+            let locked = expectation(description: "Ownership lock ahead of invalidated graded acquisition")
+            let release = DispatchSemaphore(value: 0)
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return release.wait(timeout: .now() + 3) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            let write = Task {
+                try await writer.addGradedSelection(underlying: card, variant: variant,
+                    certificationNumber: "PICKER-CANCELED", setReleaseOrder: nil, pokemonPrintRun: nil,
+                    shouldContinue: shouldContinue)
+            }
+            await Task.yield()
+            if cancel { write.cancel() } else { generation.suspend() }
+            release.signal()
+            do { _ = try await write.value; XCTFail("Invalidated graded acquisition must not commit") }
+            catch is CancellationError { }
+            let released = try await holder.value
+            XCTAssertTrue(released)
+            let fresh = ModelContext(container)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 0)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceRecord>()), 0)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), 0)
+        }
+    }
+
+    private func makePickerContainer() throws -> ModelContainer {
+        try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+    }
+
+    private func pickerVariant(id: String = "picker-market", amount: Double? = 50,
+                               printing: String? = "Holofoil") -> GradedVariant {
+        GradedVariant(id: id, cardID: "picker-card", company: .psa, grade: .init(value: "10"),
+            printing: printing, marketPriceUSD: amount, updatedAt: nil)
+    }
+
+    func testUnknownFinishCannotBindOrStoreGradedQuote() async throws {
+        for (finish, printing): (PhysicalVariant?, String?) in [(nil, "Holofoil"), (nil, nil), (.normal, nil), (.normal, "Holofoil")] {
+            let container = try ProductionRowFixtures.makeContainer()
+            let mutation = try CollectionStore(context: container.mainContext).addScannedGraded(
+                underlying: ProductionRowFixtures.pokemonCard(), company: .psa,
+                grade: .init(value: "10"), certificationNumber: nil,
+                resolved: .init(variant: finish, resolution: .userConfirmed))
+            let receipt = try await ScannerCollectionWriter(modelContainer: container).bindScannedGraded(
+                collectionKey: mutation.collectionKey,
+                variant: GradedVariant(id: "sole-holo", company: .psa, grade: .init(value: "10"),
+                    printing: printing, marketPriceUSD: 123, updatedAt: nil))
+            XCTAssertNil(receipt)
+            let fresh = ModelContext(container)
+            let row = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertNil(row.justTCGVariantID)
+            XCTAssertNil(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD)
+        }
+    }
+
+    func testCertlessScannedFinishesDoNotMerge() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: container.mainContext)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let normal = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        let reverse = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed))
+        let repeatedNormal = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+
+        XCTAssertNotEqual(normal.collectionKey, reverse.collectionKey)
+        XCTAssertEqual(normal.collectionKey, repeatedNormal.collectionKey)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(rows.first { $0.variant == .normal }?.quantity, 2)
+        XCTAssertEqual(rows.first { $0.variant == .reverse }?.quantity, 1)
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[normal.collectionKey], 2)
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[reverse.collectionKey], 1)
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try fresh.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+    }
+
+    func testCertlessScansPreserveLegacyAndUnknownFinishes() throws {
+        let card = try ProductionRowFixtures.pokemonCard()
+        let pairs: [(PhysicalVariant?, PhysicalVariant?)] = [(nil, .normal), (.normal, nil), (.reverse, .normal)]
+        for (storedFinish, incomingFinish) in pairs {
+            let container = try ProductionRowFixtures.makeContainer()
+            let store = CollectionStore(context: container.mainContext)
+            let legacy = try store.addScannedGraded(underlying: card, company: .psa,
+                grade: CardGrade(value: "10"), certificationNumber: nil,
+                resolved: ResolvedVariant(variant: storedFinish, resolution: .userConfirmed))
+            let legacyKey = CollectedCard.scannedGradedCollectionKey(game: .pokemon,
+                underlyingPrintingID: card.providerID, company: .psa,
+                grade: CardGrade(value: "10"), certificationNumber: nil)
+            XCTAssertEqual(legacy.collectionKey, legacyKey)
+            let incoming = try store.addScannedGraded(underlying: card, company: .psa,
+                grade: CardGrade(value: "10"), certificationNumber: nil,
+                resolved: ResolvedVariant(variant: incomingFinish, resolution: .userConfirmed))
+            let repeated = try store.addScannedGraded(underlying: card, company: .psa,
+                grade: CardGrade(value: "10"), certificationNumber: nil,
+                resolved: ResolvedVariant(variant: incomingFinish, resolution: .userConfirmed))
+            XCTAssertNotEqual(incoming.collectionKey, legacyKey)
+            XCTAssertEqual(incoming.collectionKey, repeated.collectionKey)
+            XCTAssertEqual(store.card(forKey: legacyKey)?.variant, storedFinish)
+            XCTAssertEqual(store.card(forKey: legacyKey)?.quantity, 1)
+            XCTAssertEqual(store.card(forKey: incoming.collectionKey)?.variant, incomingFinish)
+            XCTAssertEqual(store.card(forKey: incoming.collectionKey)?.quantity, 2)
+            XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 2)
+        }
+    }
+
+    func testCorrectedCertlessScansMatchStoredFinishWithoutRekeying() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: container.mainContext)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let original = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        let originalRow = try XCTUnwrap(store.card(forKey: original.collectionKey))
+        _ = try store.recordVariantCorrection(for: originalRow,
+            to: ResolvedVariant(variant: .holo, resolution: .userConfirmed),
+            activityID: XCTUnwrap(original.activityID), quantity: 1)
+        let normal = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        let repeatedHolo = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .holo, resolution: .userConfirmed))
+        XCTAssertEqual(original.collectionKey, repeatedHolo.collectionKey)
+        XCTAssertNotEqual(normal.collectionKey, original.collectionKey)
+        let normalRow = try XCTUnwrap(store.card(forKey: normal.collectionKey))
+        _ = try store.recordVariantCorrection(for: normalRow,
+            to: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
+            activityID: XCTUnwrap(normal.activityID), quantity: 1)
+        let newNormal = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        XCTAssertEqual(Set([original.collectionKey, normal.collectionKey, newNormal.collectionKey]).count, 3)
+        XCTAssertEqual(originalRow.variant, .holo)
+        XCTAssertEqual(normalRow.variant, .reverse)
+        try store.undo(repeatedHolo)
+        try store.undo(newNormal)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(rows.compactMap(\.variant)), [.holo, .reverse])
+        XCTAssertTrue(rows.allSatisfy { $0.quantity == 1 })
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try fresh.fetch(FetchDescriptor<CollectionActivity>()),
+            events: try fresh.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+    }
+
+    func testCertlessMagicNonfoilAndFoilScansStaySeparate() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: container.mainContext)
+        let data = Data("""
+        {"id":"3f0a1f52-0000-4000-8000-000000000001","name":"Llanowar Elves",
+         "set":"ecl","set_name":"Eclipse","collector_number":"218","lang":"en",
+         "digital":false,"frame":"2015","rarity":"common","finishes":["nonfoil","foil"]}
+        """.utf8)
+        let card = IdentifiedCard.magic(try JSONDecoder().decode(ScryfallCard.self, from: data))
+        var mutations: [CollectionMutation] = []
+        for finish in [PhysicalVariant.nonfoil, .foil, .foil] {
+            mutations.append(try store.addScannedGraded(underlying: card, company: .bgs,
+                grade: CardGrade(value: "9.5"), certificationNumber: nil,
+                resolved: ResolvedVariant(variant: finish, resolution: .userConfirmed)))
+        }
+        XCTAssertNotEqual(mutations[0].collectionKey, mutations[1].collectionKey)
+        XCTAssertEqual(mutations[1].collectionKey, mutations[2].collectionKey)
+        let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(rows.first { $0.variant == .nonfoil }?.quantity, 1)
+        XCTAssertEqual(rows.first { $0.variant == .foil }?.quantity, 2)
+    }
+
+    func testSeparatedScannedFinishesKeepBindingCertificationAndRestore() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let card = try ProductionRowFixtures.pokemonCard()
+        let grade = CardGrade(value: "10")
+        let store = CollectionStore(context: container.mainContext)
+        let normal = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: grade, certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        let reverse = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: grade, certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed))
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        for (mutation, marketID, printing, amount) in [
+            (normal, "normal-market", "Normal", 10.0),
+            (reverse, "reverse-market", "Reverse Holofoil", 30.0)
+        ] {
+            let receipt = try await writer.bindScannedGraded(collectionKey: mutation.collectionKey,
+                variant: GradedVariant(id: marketID, company: .psa, grade: grade,
+                    printing: printing, marketPriceUSD: amount, updatedAt: nil))
+            XCTAssertNotNil(receipt)
+        }
+        let fresh = ModelContext(container)
+        let freshStore = CollectionStore(context: fresh)
+        let repeated = try freshStore.addScannedGraded(underlying: card, company: .psa,
+            grade: grade, certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed))
+        XCTAssertEqual(repeated.collectionKey, reverse.collectionKey)
+        XCTAssertEqual(freshStore.card(forKey: reverse.collectionKey)?.justTCGVariantID, "reverse-market")
+        try freshStore.undo(repeated)
+        let certified = try XCTUnwrap(freshStore.recordGradedCertificationRefinement(
+            underlying: card, previous: reverse, company: .psa, grade: grade,
+            certificationNumber: "FINISH-REFINEMENT"))
+        let certifiedRow = try XCTUnwrap(freshStore.card(forKey: certified.collectionKey))
+        XCTAssertEqual(certifiedRow.variant, .reverse)
+        XCTAssertEqual(certifiedRow.certificationNumber, "FINISH-REFINEMENT")
+        let removed = try freshStore.remove(certifiedRow)
+        try freshStore.restore(removed)
+        let verify = ModelContext(container)
+        let rows = try verify.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(Set(rows.compactMap(\.variant)), [.normal, .reverse])
+        for row in rows {
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(PriceStore(context: verify).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD,
+                row.variant == .normal ? 10 : 30)
+        }
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try verify.fetch(FetchDescriptor<CollectionActivity>()),
+            events: try verify.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+    }
+
+    func testSeparatedScannedFinishesSurviveStoreReopenAndCSVRoundTrip() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let keys = try autoreleasepool {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let store = CollectionStore(context: container.mainContext)
+            return try [PhysicalVariant.normal, .reverse].map { finish in
+                try store.addScannedGraded(underlying: card, company: .psa,
+                    grade: CardGrade(value: "10"), certificationNumber: nil,
+                    resolved: ResolvedVariant(variant: finish, resolution: .userConfirmed)).collectionKey
+            }
+        }
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(rows.map(\.collectionKey)), Set(keys))
+        XCTAssertEqual(Set(rows.compactMap(\.variant)), [.normal, .reverse])
+        let plan = try CollectionCSV.parse(Data(CollectionCSV.export(rows).text.utf8))
+        let target = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let imported = try CollectionCSV.apply(plan, to: target.mainContext)
+        XCTAssertTrue(imported.failedRows.isEmpty)
+        let store = CollectionStore(context: target.mainContext)
+        let repeated = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed))
+        XCTAssertEqual(repeated.collectionKey, keys[1])
+        XCTAssertEqual(store.card(forKey: keys[0])?.quantity, 1)
+        XCTAssertEqual(store.card(forKey: keys[1])?.quantity, 2)
+        XCTAssertEqual(try target.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 2)
+    }
+
     func testCertifiedRescanValidatesFinalFinishAndEditionBeforeReturningDuplicate() throws {
         for unknownFinish in [false, true] {
             for compatible in [false, true] {
@@ -173,11 +597,13 @@ final class CollectionItemKindTests: XCTestCase {
         let grade = CardGrade(value: "10")
         let first = try store.addScannedGraded(
             underlying: card, company: .psa, grade: grade, certificationNumber: nil,
-            pokemonPrintRun: .firstEdition
+            pokemonPrintRun: .firstEdition,
+            resolved: .init(variant: .holo, resolution: .userConfirmed)
         )
         let unlimited = try store.addScannedGraded(
             underlying: card, company: .psa, grade: grade, certificationNumber: nil,
-            pokemonPrintRun: .unlimited
+            pokemonPrintRun: .unlimited,
+            resolved: .init(variant: .holo, resolution: .userConfirmed)
         )
         XCTAssertNotEqual(first.collectionKey, unlimited.collectionKey)
         XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).count, 2)
