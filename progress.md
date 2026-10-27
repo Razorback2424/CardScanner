@@ -1,4 +1,4 @@
-# 2026-10-27 — Review follow-ups after M01–M06 (unverified)
+# 2026-10-27 — PR #5 focused verification of review follow-ups
 
 Source review of `019ca6f`..`c091381` found three follow-ups. After M01, a
 certless scanned slab never rewrites an existing holding's finish (exact match
@@ -8,12 +8,79 @@ cancelling an active price refresh for an ordinary insert. The preflight now
 flags only an unknown-finish refinement, and unbound certless scans skip it;
 the in-write retry remains authoritative. History's loading flag no longer
 sticks when storage is not ready, and the now-unused sealed promotion
-preflight is removed. One focused regression added.
+preflight is removed. The original store-level regression is retained.
 
-Prepared in a Linux session without Xcode: **no build or native test run**.
-Requires the narrowest `xcodebuild` selection (CollectionItemKindTests,
-CollectionActivityHistoryTests, ScannerViewModelTests) before merge. No device,
-provider, CloudKit or release acceptance claimed.
+Verified branch `claude/review-followups-2026-10-27`, tested base
+`7a72ff8f499aa29da27fbe68686f5f29a3e8ae6a`, plus the verification (then uncommitted)
+patch SHA-256 `31bf929e4809a4e419526ae4fb1d28a1f547f15fbb8798004cc72377b49e9748`.
+Started from clean `main` at `c0913819c5450f8da1a8a6adc1bfda8573df2633`;
+GitHub PR head matched the requested reviewed head before checkout. No unrelated
+work was changed; no commit, push or merge was performed during verification.
+
+Two new refresh regressions directly call both changed ScannerCollectionWriter
+preflight overloads for unbound certless scans and raw conversions, each with
+an existing unknown or different finish. With ownership enforcement enabled,
+preflight is false and the write succeeds in one attempt without an identity
+permit. Both holdings retain distinct keys/finishes, one copy each, no vendor or
+certificate binding, correct ledger quantities and valid activity lineage; raw
+conversion leaves no raw copy. The shared refresh controller remains in flight
+through each write and its paused stub fetch completes once without replay or
+preemption. The refresh uses a separate in-memory fixture store; this is not an
+end-to-end scanner UI or live-provider cancellation claim. Existing bound/
+certified repair and stale-preflight retry coverage was reused.
+
+Extracted only the History loading/token wrapper into its existing read-state
+type, retaining the view's read/error handling. Two new regressions prove a
+missing token clears loading before work runs, and an obsolete cancelled request
+cannot clear a newer active request's loading flag; the newer request clears its
+own flag. This tests the same wrapper used by the view, without a view-model
+refactor or rendered UI acceptance.
+
+Final Debug iPhone 17 / iOS 27.0 Simulator result: **251 passed, zero failed,
+zero skipped** (43 CollectionItemKind, 76 CollectionActivityHistory, 126
+ScannerViewModel, 6 selected PriceRefreshLifecycle). Finalized xcresult summary
+has no runtime warnings or test failures. Unchanged test-target compiler
+warnings and App Intents metadata notices remain. The first invocation was
+interrupted (exit 75) after the new fixture seeded outside the required
+serializer and asserted. After that fixture correction, the same selection
+passed, but its synthetic refresh row logged a missing-ledger diagnostic.
+Seeding that row through the production acquisition path removed the diagnostic;
+the final complete selection passed again (exit 0). These were related fixture
+corrections only; all three invocations reused the same SSD build and selection.
+
+External SSD evidence root:
+`/Volumes/Keller Family Photos/CodexBuildArtifacts/TradingCardScannerM01/PR5-20261027/`.
+`accepted-focused.xcresult`, `accepted-focused.log`, `accepted-summary.json`,
+`accepted-tested.patch`, its SHA-256 file and `verification-command.sh` preserve
+the final evidence; earlier logs/results/patches are retained separately.
+The exact test invocation in that script was:
+
+```sh
+pr5_root='/Volumes/Keller Family Photos/CodexBuildArtifacts/TradingCardScannerM01'
+pr5_run="$pr5_root/PR5-20261027"
+TMPDIR="$pr5_run/tmp" xcodebuild test \
+  -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -configuration Debug \
+  -destination 'platform=iOS Simulator,id=A23ECC25-0B75-4735-B26F-491044CDAF28' \
+  -derivedDataPath "$pr5_root/DerivedData" \
+  -parallel-testing-enabled NO -collect-test-diagnostics never \
+  -test-timeouts-enabled YES -maximum-test-execution-time-allowance 120 \
+  -resultBundlePath "$pr5_run/accepted-focused.xcresult" \
+  -only-testing:TradingCardScannerTests/CollectionItemKindTests \
+  -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests \
+  -only-testing:TradingCardScannerTests/ScannerViewModelTests \
+  -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests/testStaleIdentityPreflightRetriesOnceInsideAuthorizedGate \
+  -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests/testAddGradedUsesPermitForUnboundSlabIdentityRewrite \
+  -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests/testAddScannedGradedUsesPermitForVariantIdentityRewrite \
+  -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests/testAddSealedUsesPermitForUnboundIdentityPromotion \
+  -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests/testUnboundCertlessScanPreflightPreservesActiveRefreshAndOwnership \
+  -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests/testCertlessRawConversionPreflightPreservesActiveRefreshAndOwnership \
+  > "$pr5_run/accepted-focused.log" 2>&1
+```
+
+Also inspected the finalized bundle with `xcrun xcresulttool get test-results
+summary --path <evidence-root>/accepted-focused.xcresult` and ran
+`git diff --check`. Simulator/stub and focused-suite evidence only: no physical
+device, provider, CloudKit, full-app audit, archive or release acceptance.
 
 # 2026-10-27 — M06 collection owned-game filter choices
 

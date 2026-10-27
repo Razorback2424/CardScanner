@@ -49,6 +49,123 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testUnboundCertlessScanPreflightPreservesActiveRefreshAndOwnership() async throws {
+        try await assertCertlessPreflightPreservesRefresh(convertingRaw: false)
+    }
+
+    func testCertlessRawConversionPreflightPreservesActiveRefreshAndOwnership() async throws {
+        try await assertCertlessPreflightPreservesRefresh(convertingRaw: true)
+    }
+
+    private func assertCertlessPreflightPreservesRefresh(convertingRaw: Bool) async throws {
+        let wasEnforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        let controller = PriceRefreshController.shared
+        defer {
+            controller.setPokemonFetchOverrideForTesting(nil)
+            controller.dismissSummary()
+            CollectionWriteSerializer.enforcesOwnershipRule = wasEnforced
+        }
+        for storedFinish: PhysicalVariant? in [nil, .normal] {
+            let container = try makeContainer(withCard: false)
+            let refreshContainer = try makeContainer(withCard: false)
+            try CollectionWriteSerializer.perform(container: refreshContainer, timeout: .wait) { context in
+                _ = try CollectionStore(context: context).add(
+                    .pokemon(Self.card(id: "lifecycle-card"), setCode: "LIF"),
+                    resolved: .init(variant: .normal, resolution: .userConfirmed))
+            }
+            let card = try ProductionRowFixtures.pokemonCard()
+            let resolved = ResolvedVariant(variant: .reverse, resolution: .userConfirmed)
+            let slab = GradedSlabEvidence(company: .psa, grade: .init(value: "10"),
+                certificationNumber: nil, labelCardText: [])
+            let identifier = ScanIdentifier.pokemon(setCode: "PRE", cardNumber: "074", printedTotal: 131,
+                setDefinition: PokemonSetDefinition(printedCode: "PRE", tcgdexSetID: "sv08.5",
+                    officialCount: 131, releaseIndex: 0))
+            let (seed, rawMutation) = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                let store = CollectionStore(context: context)
+                let seed = try store.addScannedGraded(
+                    underlying: card, company: slab.company, grade: slab.grade, certificationNumber: nil,
+                    resolved: .init(variant: storedFinish, resolution: .userConfirmed))
+                let raw = convertingRaw ? try store.add(card, resolved: resolved) : nil
+                return (seed, raw)
+            }
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let gate = PriceRefreshTestGate()
+            let attempts = PriceRefreshAttemptCounter()
+            controller.setPokemonFetchOverrideForTesting { printing in
+                _ = await attempts.next()
+                await withTaskCancellationHandler {
+                    await gate.pauseUntilReleased()
+                } onCancel: {
+                    Task { await gate.release() }
+                }
+                try Task.checkCancellation()
+                return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+            }
+            let active = Task { await controller.refresh(Self.request, container: refreshContainer) }
+            await gate.waitUntilStarted()
+            var writeAttempts = 0
+            let mutation: CollectionMutation
+            do {
+                if let rawMutation {
+                    let scan = RecentScan(subject: ScanSubject(identifier: identifier), card: card,
+                        resolved: resolved, options: [.normal, .reverse], mutation: rawMutation)
+                    let requiresGate = await writer.requiresPriceIdentityExclusivity(forRawConversion: scan, evidence: slab)
+                    XCTAssertFalse(requiresGate)
+                    mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                        writeAttempts += 1
+                        return try await writer.convertRawScanToGraded(scan, evidence: slab)
+                    }
+                } else {
+                    let candidate = CollectionCommitCandidate(resolvedScan: ResolvedScan(
+                        request: ScanRequest(subject: ScanSubject(identifier: identifier, slab: slab),
+                            purpose: .collection, generation: 0), card: card, resolved: resolved,
+                        pokemonPrintRun: nil, options: [.normal, .reverse], gradedOutcome: .unavailable))
+                    let requiresGate = await writer.requiresPriceIdentityExclusivity(for: candidate)
+                    XCTAssertFalse(requiresGate)
+                    mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                        writeAttempts += 1
+                        return try await writer.add(candidate)
+                    }
+                }
+            } catch {
+                await gate.release()
+                _ = await active.value
+                throw error
+            }
+            XCTAssertEqual(writeAttempts, 1, "Ordinary acquisitions must not retry under the identity gate")
+            XCTAssertTrue(controller.isPassInFlight, "The paused refresh remains active through the write")
+            let attemptsBeforeRelease = await attempts.value()
+            XCTAssertEqual(attemptsBeforeRelease, 1)
+            await gate.release()
+            let refreshResult = await active.value
+            XCTAssertTrue(refreshResult.didRun)
+            XCTAssertFalse(refreshResult.wasPreempted)
+            let finalAttempts = await attempts.value()
+            XCTAssertEqual(finalAttempts, 1, "The active provider request must not be cancelled and replayed")
+
+            let fresh = ModelContext(container)
+            let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+            let slabs = rows.filter { $0.itemKind == .gradedCard }
+            XCTAssertEqual(slabs.count, 2)
+            XCTAssertNotEqual(seed.collectionKey, mutation.collectionKey)
+            XCTAssertEqual(slabs.first { $0.collectionKey == seed.collectionKey }?.variant, storedFinish)
+            XCTAssertEqual(slabs.first { $0.collectionKey == seed.collectionKey }?.quantity, 1)
+            XCTAssertEqual(slabs.first { $0.collectionKey == mutation.collectionKey }?.variant, .reverse)
+            XCTAssertEqual(slabs.first { $0.collectionKey == mutation.collectionKey }?.quantity, 1)
+            XCTAssertTrue(slabs.allSatisfy { $0.justTCGVariantID == nil && $0.certificationNumber == nil })
+            XCTAssertEqual(rows.count, 2)
+            XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, 2)
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            let quantities = InventoryLedger.quantities(from: events)
+            XCTAssertEqual(quantities[seed.collectionKey], 1)
+            XCTAssertEqual(quantities[mutation.collectionKey], 1)
+            if let rawMutation { XCTAssertEqual(quantities[rawMutation.collectionKey, default: 0], 0) }
+            XCTAssertTrue(CollectionActivity.integrityDefects(
+                activities: try fresh.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+        }
+    }
+
     func testManualIntentSurvivesAutomaticJoinAndPendingCoalescing() async throws {
         let container = try makeContainer(withCard: true)
         try insertRecentlyPricedRawCard(in: container)
