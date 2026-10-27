@@ -845,6 +845,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// pending candidates/proofs, but keeps committed session history.
     var onCameraInterruption: (() -> Void)?
     var onCameraInterruptionEnded: (() -> Void)?
+    /// Frames are still arriving, but OCR has stayed paused for at least
+    /// `pausedWhileLiveReportInterval`. Every resume is event-driven, so this
+    /// lets the view model re-check its gates if one of those events was lost.
+    var onRecognitionPausedWhileLive: (() -> Void)?
     /// The same printing has been sitting in the band since it was consumed.
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
@@ -889,6 +893,8 @@ final class CardScanner: NSObject, ObservableObject {
     /// clock is compensated on resume because no OCR observations were produced
     /// during this interval.
     private var recognitionPausedAt: CFAbsoluteTime?
+    private var lastPausedWhileLiveReportAt: CFAbsoluteTime?
+    private static let pausedWhileLiveReportInterval: CFAbsoluteTime = 3
     private var videoInput: AVCaptureDeviceInput?
     private var interruptionObserver: NSObjectProtocol?
     private var interruptionEndedObserver: NSObjectProtocol?
@@ -1319,6 +1325,7 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.async { [weak self] in
             guard let self else { return }
             self.recognitionPausedAt = nil
+            self.lastPausedWhileLiveReportAt = nil
             self.isPaused = false
             self.resetObservationState()
         }
@@ -1355,6 +1362,20 @@ final class CardScanner: NSObject, ObservableObject {
                 self.resetConfirmationWindow()
             }
             self.isPaused = false
+            self.lastPausedWhileLiveReportAt = nil
+        }
+    }
+
+    /// Runs for each delivered frame while OCR is paused. A paused scanner that
+    /// is still receiving frames is either waiting on a visible user decision
+    /// or stuck behind a gate whose closing event never arrived; only the view
+    /// model can tell which, so report periodically and let it decide.
+    private func notePausedFrame(at now: CFAbsoluteTime) {
+        guard isPaused, let pausedAt = recognitionPausedAt,
+              now - (lastPausedWhileLiveReportAt ?? pausedAt) >= Self.pausedWhileLiveReportInterval else { return }
+        lastPausedWhileLiveReportAt = now
+        DispatchQueue.main.async { [weak self] in
+            self?.onRecognitionPausedWhileLive?()
         }
     }
 
@@ -3091,6 +3112,12 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.sync { isPaused }
     }
 
+    /// Delivers the paused-frame bookkeeping of one camera frame at `now`
+    /// without a sample buffer.
+    func receivePausedFrameForTesting(at now: CFAbsoluteTime) {
+        visionQueue.sync { notePausedFrame(at: now) }
+    }
+
     // Exercise the production ownership boundary without requiring a camera or
     // asking Vision to track a synthetic image. Weak references in tests verify
     // that replacement/lifecycle cleanup releases the old sequence and request.
@@ -3753,6 +3780,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         )
         let rotationAngle = rotation.currentAngle
         let orientation = CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle)
+        notePausedFrame(at: now)
 
         // OCR owns a simultaneous due frame. Tracking is still allowed on
         // non-OCR frames, including while OCR is paused for a user choice.

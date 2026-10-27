@@ -1667,6 +1667,14 @@ final class ScannerViewModel: ObservableObject {
     private var presentedPriceCheckSubject: ScanSubject?
     private var scanGeneration = 0
     private var recognitionEligibility = ScannerRecognitionEligibility()
+    /// Mirrors whether the scanner screen is asking SwiftUI for one of its own
+    /// sheets. A presentation block with no requested sheet lost its dismissal
+    /// callback and is safe to clear.
+    private var isScannerSheetRequested = false
+    private var isApplicationActive: @MainActor () -> Bool = {
+        UIApplication.shared.applicationState == .active
+    }
+    private static let logger = Logger(subsystem: "com.seankeller.CardScanner", category: "Scanner")
     /// Changes whenever the visible scanner surface crosses a lifecycle or
     /// presentation boundary. It prevents a callback queued before a sheet or
     /// tab transition from being accepted after that transition.
@@ -1921,6 +1929,11 @@ final class ScannerViewModel: ObservableObject {
             Task { @MainActor in
                 self?.recognitionEligibility.isCameraInterrupted = false
                 self?.resumeRecognitionIfPossible()
+            }
+        }
+        scanner.onRecognitionPausedWhileLive = { [weak self] in
+            Task { @MainActor in
+                self?.recoverRecognitionIfStalled()
             }
         }
 
@@ -4114,6 +4127,12 @@ final class ScannerViewModel: ObservableObject {
             identificationTask = nil
         }
     }
+
+    func setApplicationActiveForTesting(_ isActive: Bool) {
+        isApplicationActive = { isActive }
+    }
+
+    var allowsRecognitionForTesting: Bool { recognitionEligibility.allowsRecognition }
 #endif
 
     private func finishIdentificationRequest(_ requestID: UUID) {
@@ -6051,12 +6070,64 @@ final class ScannerViewModel: ObservableObject {
     /// pending. Dismissing either sheet must not restart OCR behind that question.
     private func resumeRecognitionIfPossible() {
         guard recognitionEligibility.allowsRecognition,
-              priceCheckResult == nil else { return }
+              priceCheckResult == nil,
+              writeCoordinator?.activeExclusiveOperation == nil else { return }
+        // Recovery can bypass Settings' dismissal callback, which normally
+        // restores this interval. Every resume must restore it before OCR runs.
+        beginScannerBulkWriteIfNeeded()
         guard pendingChoice == nil,
               pendingPrintRunChoice == nil,
               pendingIdentityChoice == nil,
               pendingDuplicateConfirmation == nil else { return }
         scanner.resumeRecognition()
+    }
+
+    func setScannerSheetRequested(_ requested: Bool) {
+        isScannerSheetRequested = requested
+    }
+
+    /// The scanner reports frames arriving while OCR stays paused. Every gate
+    /// below is normally cleared by its own event (a sheet's dismissal, the
+    /// camera's interruption-ended notice, a scene-phase change); if that event
+    /// is lost, the camera keeps running but nothing is ever read again. Live
+    /// frames in an active app prove the scene and camera gates are stale, and
+    /// a presentation block with no requested sheet is stale too. A pause that
+    /// a visible decision or an in-flight Price Check explains is left alone.
+    private func recoverRecognitionIfStalled() {
+        guard isScannerSessionActive,
+              recognitionEligibility.isScannerVisible,
+              isApplicationActive(),
+              writeCoordinator?.activeExclusiveOperation == nil,
+              priceCheckResult == nil,
+              pendingChoice == nil,
+              pendingPrintRunChoice == nil,
+              pendingIdentityChoice == nil,
+              pendingDuplicateConfirmation == nil,
+              !(purpose == .priceCheck && (isProcessingIdentification || !identificationQueue.isEmpty)),
+              !(recognitionEligibility.isBlockedByPresentation && isScannerSheetRequested) else { return }
+
+        var staleGates: [String] = []
+        if !recognitionEligibility.isSceneActive {
+            recognitionEligibility.isSceneActive = true
+            staleGates.append("sceneInactive")
+        }
+        if recognitionEligibility.isCameraInterrupted {
+            recognitionEligibility.isCameraInterrupted = false
+            staleGates.append("cameraInterrupted")
+        }
+        if recognitionEligibility.isBlockedByPresentation {
+            recognitionEligibility.isBlockedByPresentation = false
+            staleGates.append("presentation")
+        }
+        if staleGates.isEmpty {
+            staleGates.append("scannerPause")
+        } else {
+            updateScannerConfirmationContext()
+        }
+        let gates = staleGates.joined(separator: ",")
+        Self.logger.error("Scanner recognition recovered from a stalled pause: gates=\(gates, privacy: .public)")
+        diagnostic("recognitionStallRecovered:\(gates)")
+        resumeRecognitionIfPossible()
     }
 
     private func isCurrent(_ request: ScanRequest) -> Bool {

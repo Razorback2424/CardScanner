@@ -274,6 +274,9 @@ struct ScannerView: View {
 #endif
         }
         .onDisappear { model.viewDisappeared() }
+        .onChange(of: isSheetRequested, initial: true) { _, requested in
+            model.setScannerSheetRequested(requested)
+        }
         .onChange(of: scenePhase) { _, phase in
             model.scenePhaseChanged(
                 isActive: phase == .active,
@@ -331,6 +334,11 @@ struct ScannerView: View {
             ScanSessionReviewSheet()
         }
         .toolbar(isScanChoicePending ? .hidden : .visible, for: .tabBar)
+    }
+
+    /// Price Check's result sheet is owned by the view model and excluded here.
+    private var isSheetRequested: Bool {
+        isShowingSettings || reviewing != nil || isShowingUnresolved || isShowingSessionReview
     }
 
     /// Keep the existing focused choice flow until the current scan is resolved.

@@ -3791,6 +3791,141 @@ final class ScannerViewModelTests: XCTestCase {
         }
     }
 
+    func testPausedScannerReportsLiveFramesPeriodicallyUntilResumed() async {
+        let scanner = CardScanner()
+        var reports = 0
+        scanner.onRecognitionPausedWhileLive = { reports += 1 }
+
+        scanner.receivePausedFrameForTesting(at: 100)
+        scanner.pauseRecognition(at: 100)
+        scanner.receivePausedFrameForTesting(at: 102.9)
+        scanner.receivePausedFrameForTesting(at: 103)
+        scanner.receivePausedFrameForTesting(at: 105)
+        scanner.receivePausedFrameForTesting(at: 106)
+        await settle()
+        XCTAssertEqual(reports, 2, "One report per interval while frames keep arriving paused.")
+
+        scanner.resumeRecognition(at: 107)
+        scanner.receivePausedFrameForTesting(at: 120)
+        await settle()
+        XCTAssertEqual(reports, 2, "A running scanner never reports a stall.")
+    }
+
+    func testLostSheetDismissalRecoversWhenFramesKeepArriving() async throws {
+        let model = try makeModel(variants: [.normal])
+        model.setApplicationActiveForTesting(true)
+        model.pauseForPresentation()
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting)
+
+        model.scanner.onRecognitionPausedWhileLive?()
+        let resumed = await waitUntil { model.allowsRecognitionForTesting }
+        XCTAssertTrue(resumed)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+        XCTAssertTrue(model.diagnosticEventsForTesting.contains("recognitionStallRecovered:presentation"))
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed, "A recovered scanner must accept the next card.")
+    }
+
+    func testRequestedSheetKeepsRecognitionPausedWhenFramesArrive() async throws {
+        let model = try makeModel(variants: [.normal])
+        model.setApplicationActiveForTesting(true)
+        model.setScannerSheetRequested(true)
+        model.pauseForPresentation()
+
+        model.scanner.onRecognitionPausedWhileLive?()
+        await settle()
+        XCTAssertFalse(model.allowsRecognitionForTesting)
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting)
+    }
+
+    func testLostSettingsDismissalRestoresScannerBulkWriteInterval() async throws {
+        let coordinator = DerivedStateWriteCoordinator()
+        let model = try makeModel(variants: [.normal], writeCoordinator: coordinator)
+        model.setApplicationActiveForTesting(true)
+        model.setScannerSheetRequested(true)
+        model.pauseForSettingsPresentation()
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting)
+
+        // The binding cleared, but SwiftUI never delivered onDismiss.
+        model.setScannerSheetRequested(false)
+        model.scanner.onRecognitionPausedWhileLive?()
+        let resumed = await waitUntil { model.allowsRecognitionForTesting }
+        XCTAssertTrue(resumed)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        XCTAssertNil(coordinator.beginCollectionDelete(), "Recovered scanning still owns the write interval.")
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+
+        // A late dismissal must not acquire a second interval that leaks at end.
+        model.resumeAfterSettingsPresentation()
+        model.endSession()
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+    }
+
+    func testSettingsRecoveryWaitsForExclusiveCollectionOperation() async throws {
+        let coordinator = DerivedStateWriteCoordinator()
+        let model = try makeModel(variants: [.normal], writeCoordinator: coordinator)
+        model.setApplicationActiveForTesting(true)
+        model.pauseForSettingsPresentation()
+        let token = try XCTUnwrap(coordinator.beginCSVImport(totalEntries: 1))
+
+        model.scanner.onRecognitionPausedWhileLive?()
+        await settle()
+        XCTAssertFalse(model.allowsRecognitionForTesting)
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting)
+
+        coordinator.endCSVImport(token: token)
+        XCTAssertFalse(coordinator.isBulkWriteInFlight, "Recovery must not acquire an interval during the import.")
+        model.scanner.onRecognitionPausedWhileLive?()
+        let resumed = await waitUntil { model.allowsRecognitionForTesting }
+        XCTAssertTrue(resumed)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        model.endSession()
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+    }
+
+    func testLostInterruptionEndRecoversWhenFramesKeepArriving() async throws {
+        let model = try makeModel(variants: [.normal])
+        model.setApplicationActiveForTesting(true)
+        model.scanner.onCameraInterruption?()
+        let interrupted = await waitUntil { !model.allowsRecognitionForTesting }
+        XCTAssertTrue(interrupted)
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting)
+
+        model.scanner.onRecognitionPausedWhileLive?()
+        let resumed = await waitUntil { model.allowsRecognitionForTesting }
+        XCTAssertTrue(resumed)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+        XCTAssertTrue(model.diagnosticEventsForTesting.contains("recognitionStallRecovered:cameraInterrupted"))
+    }
+
+    func testLiveFramesDoNotOverrideAVisibleChoiceOrAnInactiveApp() async throws {
+        let model = try makeModel(variants: [.normal, .holo])
+        model.setApplicationActiveForTesting(true)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let appeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(appeared)
+        model.scanner.onRecognitionPausedWhileLive?()
+        await settle()
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting, "A visible finish question owns the pause.")
+
+        model.dismissChoice()
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+        model.setApplicationActiveForTesting(false)
+        model.scenePhaseChanged(isActive: false, isBackgrounded: false)
+        model.scanner.onRecognitionPausedWhileLive?()
+        await settle()
+        XCTAssertFalse(model.allowsRecognitionForTesting)
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting, "A system overlay owns the pause.")
+    }
+
     func testInactiveOverlayPreservesPendingChoiceButBackgroundInvalidatesIt() async throws {
         let model = try makeModel(variants: [.normal, .holo])
         let encounterID = UUID()
