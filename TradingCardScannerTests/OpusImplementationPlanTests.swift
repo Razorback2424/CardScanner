@@ -21,6 +21,65 @@ private func centeringDiagnosticDirectory(_ name: String) throws -> URL {
 
 @MainActor
 final class OpusImplementationPlanTests: XCTestCase {
+    func testM07OrdinaryGradedFinishesHaveNoCorrectionOptions() {
+        for (game, printingID, finishes): (CardGame, String, [PhysicalVariant?]) in [
+            (.pokemon, "sv03-001", [nil, .normal, .reverse]),
+            (.magic, "m07-printing", [nil, .nonfoil, .foil, .etched])
+        ] {
+            for finish in finishes {
+                let row = m07GradedRow(game: game, printingID: printingID, finish: finish)
+                XCTAssertTrue(CollectionCardDetailView.gradedVariantCorrectionOptions(for: row).isEmpty,
+                    "An unknown or current-only finish must not offer a no-op correction: \(game), \(String(describing: finish))")
+                XCTAssertEqual(row.variant, finish, "Computing action availability must retain the saved finish")
+                XCTAssertEqual(CollectionCardDetailView.gradedVariantOptions(for: row), finish.map { [$0] } ?? [])
+            }
+        }
+    }
+
+    func testM07GradedCorrectionRetainsReviewedAlternativesWithoutCurrentFinish() {
+        let reverse = m07GradedRow(game: .pokemon, printingID: "sv08.5-074", finish: .reverse)
+        XCTAssertEqual(Set(CollectionCardDetailView.gradedVariantCorrectionOptions(for: reverse)), [.pokeBall, .masterBall])
+
+        let stamped = m07GradedRow(game: .pokemon, printingID: "swsh6-57", finish: .normal)
+        let stampedOptions = CollectionCardDetailView.gradedVariantCorrectionOptions(for: stamped)
+        XCTAssertFalse(stampedOptions.isEmpty)
+        XCTAssertEqual(Set(stampedOptions), Set(PokemonStampedReleaseCatalog.entries(providerID: "swsh6-57").map(\.variant)))
+
+        // Reviewed exact-printing evidence can supply real choices even when
+        // the saved finish is unknown; do not disable all unknown slabs.
+        let unknown = m07GradedRow(game: .pokemon, printingID: "xya-92a", finish: nil)
+        XCTAssertEqual(Set(CollectionCardDetailView.gradedVariantCorrectionOptions(for: unknown)), [.normal, .holo])
+        let known = m07GradedRow(game: .pokemon, printingID: "xya-92a", finish: .normal)
+        XCTAssertEqual(CollectionCardDetailView.gradedVariantCorrectionOptions(for: known), [.holo])
+    }
+
+    func testM07ReviewedSingletonAndPrintRunDoNotInventFinishChoices() {
+        let singleton = m07GradedRow(game: .pokemon, printingID: "xya-24a", finish: .holo)
+        XCTAssertTrue(CollectionCardDetailView.gradedVariantCorrectionOptions(for: singleton).isEmpty)
+        let unknown = m07GradedRow(game: .pokemon, printingID: "xya-24a", finish: nil)
+        XCTAssertEqual(CollectionCardDetailView.gradedVariantCorrectionOptions(for: unknown), [.holo])
+
+        for finish in [PhysicalVariant.holo, .firstEdition] {
+            let vintage = m07GradedRow(game: .pokemon, printingID: "base1-001", finish: finish)
+            vintage.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+            XCTAssertTrue(CollectionCardDetailView.gradedVariantCorrectionOptions(for: vintage).isEmpty)
+            XCTAssertEqual(vintage.pokemonPrintRun, .firstEdition)
+            XCTAssertEqual(vintage.variant, finish)
+        }
+    }
+
+    private func m07GradedRow(game: CardGame, printingID: String, finish: PhysicalVariant?) -> CollectedCard {
+        let row = CollectedCard(collectionKey: "graded:\(printingID)", game: game,
+            providerID: "graded:\(printingID)", name: "M07 fixture", setName: "Fixture set", setCode: "M07",
+            cardNumber: printingID.split(separator: "-").last.map(String.init) ?? "1", rarity: nil,
+            imageURL: nil, thumbnailURL: nil, variant: finish, variantResolution: .userConfirmed)
+        row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        row.catalogProviderID = printingID
+        row.gradingCompanyRaw = GradingCompany.psa.rawValue
+        row.gradeRaw = "10"
+        return row
+    }
+
     func testRM001GradedCSVWithoutCatalogProviderIDCanRenderVariantOptions() throws {
         let gradedKey = CollectedCard.scannedGradedCollectionKey(
             game: .pokemon,

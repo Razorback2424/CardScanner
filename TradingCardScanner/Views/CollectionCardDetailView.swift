@@ -121,6 +121,10 @@ struct CollectionCardDetailView: View {
     static func gradedVariantOptions(for card: CollectedCard) -> [PhysicalVariant] {
         CollectionCardDetailContent.gradedVariantOptions(for: card)
     }
+
+    static func gradedVariantCorrectionOptions(for card: CollectedCard) -> [PhysicalVariant] {
+        CollectionCardDetailContent.gradedVariantCorrectionOptions(for: card)
+    }
 }
 
 /// The query is recreated from the live key, including a rekey of an already
@@ -746,6 +750,7 @@ private struct CollectionCardDetailContent: View {
     @ViewBuilder
     private var gradedVariantCorrectionBlock: some View {
         if let activity = latestGradedAcquisition {
+            let options = gradedVariantCorrectionOptions
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .firstTextBaseline) {
                     VStack(alignment: .leading, spacing: 2) {
@@ -756,28 +761,26 @@ private struct CollectionCardDetailContent: View {
                             .foregroundStyle(.secondary)
                     }
                     Spacer(minLength: 8)
-                    Menu {
-                        ForEach(gradedVariantOptions) { option in
-                            Button {
-                                correctGradedVariant(option, activity: activity)
-                            } label: {
-                                if option == card.variant {
-                                    Label(option.label, systemImage: "checkmark")
-                                } else {
-                                    Text(option.label)
+                    if !options.isEmpty {
+                        Menu {
+                            ForEach(options) { option in
+                                Button(option.label) {
+                                    correctGradedVariant(option, activity: activity)
                                 }
                             }
+                        } label: {
+                            Label("Fix finish", systemImage: "pencil")
+                                .font(.subheadline.weight(.semibold))
                         }
-                    } label: {
-                        Label("Fix finish", systemImage: "pencil")
-                            .font(.subheadline.weight(.semibold))
+                        .accessibilityLabel("Fix graded card finish")
+                        .disabled(isOwnershipWritePending)
                     }
-                    .accessibilityLabel("Fix graded card finish")
-                    .disabled(isOwnershipWritePending)
                 }
-                Text("The slab stays the same card; this only corrects its printed finish.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if !options.isEmpty {
+                    Text("The slab stays the same card; this only corrects its printed finish.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.vertical, 2)
         }
@@ -833,12 +836,16 @@ private struct CollectionCardDetailContent: View {
         VariantResolver.options(for: gradedVariantEvidence(for: card))
     }
 
-    private var gradedVariantOptions: [PhysicalVariant] {
+    static func gradedVariantCorrectionOptions(for card: CollectedCard) -> [PhysicalVariant] {
+        gradedVariantOptions(for: card).filter { $0.id != card.variantID }
+    }
+
+    private var gradedVariantCorrectionOptions: [PhysicalVariant] {
         // The persisted row is the only catalog finish fact available to this
         // offline detail surface. Do not widen it to the UI's global selectable
         // list, and do not re-add 1st Edition after it has been removed from the
         // finish axis above.
-        return Self.gradedVariantOptions(for: card)
+        return Self.gradedVariantCorrectionOptions(for: card)
     }
 
     private func correctGradedVariant(
