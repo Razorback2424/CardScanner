@@ -796,7 +796,12 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: candidate.card.unambiguousMagicTreatments
         )
-        if PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+        let isBound: Bool
+        if case .bound? = candidate.gradedOutcome { isBound = true } else { isBound = false }
+        // An unbound certless scan never rewrites an existing holding's
+        // identity; it merges an exact match or inserts a separate holding.
+        if slab.certificationNumber != nil || isBound,
+           PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
             container: modelContainer,
             game: candidate.card.game,
             providerID: candidate.card.providerID,
@@ -807,8 +812,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             treatmentIDs: treatmentIDs,
             toVariantID: candidate.resolved.variant?.id
         ) { return true }
-        guard let outcome = candidate.gradedOutcome,
-              case .bound = outcome else { return false }
+        guard isBound else { return false }
         return PriceIdentityWritePreflight.requiresGradedPromotion(
             container: modelContainer,
             game: candidate.card.game,
@@ -825,7 +829,9 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         forRawConversion scan: RecentScan,
         evidence: GradedSlabEvidence
     ) -> Bool {
-        PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+        // Conversion uses the unbound scanned path; see above.
+        guard evidence.certificationNumber != nil else { return false }
+        return PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
             container: modelContainer,
             game: scan.card.game,
             providerID: scan.card.providerID,
@@ -1260,7 +1266,9 @@ enum PriceIdentityWritePreflight {
                 }
             )
         ) else { return true }
-        return rows.contains { matchesIdentity($0) && $0.variantID != toVariantID }
+        // A certless merge refines only an unknown finish. A known different
+        // finish becomes its own holding and rewrites no price identity.
+        return rows.contains { matchesIdentity($0) && $0.variantID == nil && toVariantID != nil }
     }
 
     static func requiresGradedVariantIdentityRewrite(
@@ -1283,37 +1291,6 @@ enum PriceIdentityWritePreflight {
         ) else { return true }
         return rows.contains {
             $0.itemKind == .gradedCard && $0.variantID != toVariantID
-        }
-    }
-
-    static func requiresSealedPromotion(
-        container: ModelContainer,
-        game: CardGame,
-        productUUID: String,
-        variantUUID: String,
-        marketVariantID: String?
-    ) -> Bool {
-        guard marketVariantID != nil else { return false }
-        let context = ModelContext(container)
-        let key = CollectedCard.sealedCollectionKey(
-            game: game,
-            productUUID: productUUID,
-            variantUUID: variantUUID
-        )
-        let directKeys = Array(
-            Set([key] + MagicTreatmentKeyCodec.legacyCollectionKeys(for: key))
-        )
-        let canonicalPrefix = key + "#treatment="
-        guard let rows = try? context.fetch(
-            FetchDescriptor<CollectedCard>(
-                predicate: #Predicate {
-                    directKeys.contains($0.collectionKey)
-                        || $0.collectionKey.starts(with: canonicalPrefix)
-                }
-            )
-        ) else { return true }
-        return rows.contains {
-            $0.itemKind == .sealedProduct && $0.justTCGVariantID == nil
         }
     }
 }

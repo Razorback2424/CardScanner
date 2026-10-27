@@ -1,3 +1,20 @@
+# 2026-10-27 — Review follow-ups after M01–M06 (unverified)
+
+Source review of `019ca6f`..`c091381` found three follow-ups. After M01, a
+certless scanned slab never rewrites an existing holding's finish (exact match
+or new holding), but the scanner/raw-conversion preflight still requested the
+price-identity gate whenever a same-grade certless row had a different finish,
+cancelling an active price refresh for an ordinary insert. The preflight now
+flags only an unknown-finish refinement, and unbound certless scans skip it;
+the in-write retry remains authoritative. History's loading flag no longer
+sticks when storage is not ready, and the now-unused sealed promotion
+preflight is removed. One focused regression added.
+
+Prepared in a Linux session without Xcode: **no build or native test run**.
+Requires the narrowest `xcodebuild` selection (CollectionItemKindTests,
+CollectionActivityHistoryTests, ScannerViewModelTests) before merge. No device,
+provider, CloudKit or release acceptance claimed.
+
 # 2026-10-27 — M06 collection owned-game filter choices
 
 Three native regressions reproduced the Game picker offering only Pokémon and

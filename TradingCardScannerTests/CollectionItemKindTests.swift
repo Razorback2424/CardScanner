@@ -698,6 +698,27 @@ final class CollectionItemKindTests: XCTestCase {
         }
     }
 
+    func testCertlessPreflightIgnoresKnownDifferentFinishHolding() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: container.mainContext)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let normal = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        // A known different finish becomes its own holding, so no identity
+        // rewrite (and no refresh-cancelling gate) is needed.
+        XCTAssertFalse(PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+            container: container, game: .pokemon, providerID: card.providerID,
+            grade: CardGrade(value: "10"), company: .psa, certificationNumber: nil,
+            treatmentIDs: [], toVariantID: PhysicalVariant.reverse.id))
+        let reverse = try store.addScannedGraded(underlying: card, company: .psa,
+            grade: CardGrade(value: "10"), certificationNumber: nil,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed))
+        XCTAssertNotEqual(reverse.collectionKey, normal.collectionKey)
+        XCTAssertEqual(store.card(forKey: normal.collectionKey)?.variant, .normal)
+        XCTAssertEqual(store.card(forKey: normal.collectionKey)?.quantity, 1)
+    }
+
     private var container: ModelContainer?
 
     override func tearDown() {

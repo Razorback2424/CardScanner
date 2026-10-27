@@ -217,13 +217,15 @@ struct CollectionActivityLogView: View {
 
     private func loadHistory() async {
         let requestID = [revisionStore.revision, reloadRetry]
-        let generation = CollectionStorageGeneration.shared
-        guard let token = generation.currentToken() else { return }
-        let shouldContinue = generation.continuation(for: token)
         isLoadingHistory = true
+        // Clear the flag on every exit, including retired storage; `reload()`
+        // sets it before this task starts.
         defer {
             if requestID == [revisionStore.revision, reloadRetry] { isLoadingHistory = false }
         }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
         do {
             let writer = await CollectionActivityWriter.makeBackground(modelContainer: modelContext.container)
             try await CollectionExclusiveWrites.retryingIfRequired {
