@@ -33,7 +33,14 @@ final class CollectorToolsStore: ObservableObject {
     @Published private(set) var isLoadingProduct = false
     @Published private(set) var isBusy = false
     @Published private(set) var message: String?
+#if LOCAL_COLLECTOR_TOOLS
+    /// ProfileLocal is a release-optimized, locally signed build without the
+    /// production iCloud entitlement. Enable paid UI for owner device testing;
+    /// this condition is absent from every production configuration.
+    var isOwned: Bool { true }
+#else
     var isOwned: Bool { ownership == .owned }
+#endif
     var canUseCentering: Bool { isOwned }
     func canPreparePhotos(cardCount: Int) -> Bool { cardCount == 1 || isOwned }
 
