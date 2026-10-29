@@ -4736,6 +4736,22 @@ historical.
   were verified from the build log. Evidence is under
   `/Volumes/T7/CodexBuild/InternalArtifactMigration-20261029/MasterSetReview/`.
 
+### 2026-10-29 — Repeatable hang inspection plan
+
+- Reviewed clean `main` at `fe7ac88`, existing signposts, optimized profiling
+  scheme/dSYM settings and prior device traces. Confirmed installed Instruments
+  templates through `xctrace`; the initial sandboxed inventory failed on an
+  Instruments cache permission, then the approved read-only retry succeeded.
+- Added the [inspection protocol](docs/plans/hang-inspection-plan.md): eight
+  ordered scenarios, focused capture instructions, source/stack attribution,
+  sanitized finding records and comparable before/after completion criteria.
+  Start with the unresolved initial-layout and background-snapshot stalls.
+- Linked the workflow from the documentation map, audit and release follow-ups;
+  existing issue authorities and device/release gates remain in place.
+- Documentation only: no application instrumentation, runtime capture or fix;
+  no build/test or new responsiveness acceptance claimed. Local Markdown link
+  targets across all five changed documents and `git diff --check` pass.
+
 ### 2026-10-29 — Centering rotates only the photo
 
 - Moved manual rotation from the shared photo/guide layer onto the photo;
@@ -4756,3 +4772,29 @@ historical.
 - Evidence remains on the external SSD under
   `/Volumes/T7/CodexBuild/CenteringRotation-20261029/`;
   [current checklist](references/centering_guided_success_checklist.md).
+
+### 2026-10-29 — Simpler listing photo controls and optional sides
+
+- Replaced each side's three source buttons with one native Add / Replace menu;
+  camera, Photos and Files remain available. Added visible per-side removal that
+  invalidates pending loads and generated exports while keeping original photos.
+- Single-card generation is now an explicit action. Either attached side creates
+  five photos; with both attached, choose Both sides, Front only or Back only.
+  Side-only exports preserve 01–05 / 06–10 numbering and all export actions use
+  the actual photo count. Batch pairing remains unchanged.
+- Focused Debug Simulator run: **38 passed, 1 skipped, 0 failures** across export,
+  crop and Collector Tools tests. The existing interrupted-purchase case skipped
+  because local StoreKit supplied entitlement early; sandbox acceptance is open.
+  Added tests for each side's filenames, pixels, dimensions and ZIP contents,
+  plus empty-source rejection. Final UI build and `git diff --check` pass.
+- Verified source menu presentation, Photos cancel preserving the attachment,
+  removal/empty-state disabling, front-only output/export options, back-only
+  output with both inputs attached, and clearing front while back stays ready.
+  Inspected light/dark and maximum Dynamic Type; fixed mid-word label wrapping
+  using vertical accessibility rows and a scope menu. Final dark preview passes;
+  restored Simulator light appearance / standard text size afterward.
+- [Acceptance checklist](references/listing_photos_success_checklist.md) records
+  the scoped HIG review and manual camera/save/share/VoiceOver limitations.
+  Build/test/screenshot evidence remains on the external SSD under
+  `/Volumes/T7/CodexBuild/ListingPhotos-20261029/`. No physical-device or release
+  readiness claim; pre-existing user changes were preserved.

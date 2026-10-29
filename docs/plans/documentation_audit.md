@@ -8,6 +8,14 @@ history.
 
 ## Current authority boundary — updated 2026-10-29
 
+**Hang inspection protocol — 2026-10-29, `fe7ac88`:** the
+[inspection plan](hang-inspection-plan.md) defines a repeatable Instruments
+workflow, source attribution and post-fix verification, starting with initial
+Collection layout and background snapshots from the existing Browse evidence.
+It owns the workflow only; existing refinement findings and release follow-ups
+remain authoritative. No new runtime capture, fix or acceptance accompanies
+this documentation change.
+
 **Centering rotation correction — 2026-10-29:** the owner confirms that only the
 photo rotates; measurement guides remain fixed. Earlier shared-rotation
 expectations in the guided-centering checklist and render tests are superseded.

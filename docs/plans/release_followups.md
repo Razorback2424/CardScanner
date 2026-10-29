@@ -26,6 +26,11 @@ the residual runtime, device, provider, and scale evidence.
 
 ## Release validation
 
+The [hang inspection protocol](hang-inspection-plan.md) defines the repeatable
+capture, source-attribution and fix-verification workflow for responsiveness
+work, including RF-1/RF-2. It does not close these gates; current device evidence
+and measured completion remain required.
+
 ### RF-1 — Collection cold-launch first paint
 
 **Status:** measurement pending; no persistence change justified yet.
