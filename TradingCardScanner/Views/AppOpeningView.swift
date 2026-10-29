@@ -53,6 +53,11 @@ final class AppOpeningModel: ObservableObject {
     private var appearedAt: ContinuousClock.Instant?
     private var sessionID: ObjectIdentifier?
 
+    /// How long a mounted collection waits for its first portfolio summary
+    /// before the opening reveals it anyway. A fast replay keeps the copy-count
+    /// caption; a slow one reveals Portfolio's own calculating state.
+    static let portfolioRevealBudget: Duration = .milliseconds(350)
+
     func portfolioDidLoad(copies: Int?) {
         guard portfolioReady == nil else { return }
         portfolioReady = .some(copies)
@@ -182,6 +187,7 @@ struct AppOpeningContainer<Content: View>: View {
             let fast = opening.usesFastPath
             do {
                 try Task.checkCancellation()
+                PerformanceSignpost.emitEvent("Launch.handoff", fast ? "fast" : "settled")
                 opening.beginHandoff(fast: fast)
                 try await Task.sleep(for: reduceMotion ? .milliseconds(300) : OpeningMotion.settleDuration)
                 opening.finishHandoff()
@@ -396,15 +402,26 @@ struct AppOpeningReadinessReporter: View {
     @EnvironmentObject private var opening: AppOpeningModel
     let skipsPortfolio: Bool
     let holdsOpening: Bool
+    var revealBudget: Duration = AppOpeningModel.portfolioRevealBudget
+    @State private var budgetElapsed = false
 
     private var ready: Bool {
-        !holdsOpening && (skipsPortfolio || portfolio.summary != nil || !portfolio.integrityDefects.isEmpty)
+        !holdsOpening && (skipsPortfolio || portfolio.summary != nil || !portfolio.integrityDefects.isEmpty
+            || budgetElapsed)
     }
 
     var body: some View {
         Color.clear
             .onChange(of: ready, initial: true) { _, ready in
-                if ready { opening.portfolioDidLoad(copies: skipsPortfolio ? nil : portfolio.summary?.copyCount) }
+                guard ready else { return }
+                // Past the budget without a summary, the caption has no count.
+                opening.portfolioDidLoad(copies: skipsPortfolio ? nil : portfolio.summary?.copyCount)
+            }
+            .task {
+                PerformanceSignpost.emitEvent("Launch.contentMounted", "")
+                try? await Task.sleep(for: revealBudget)
+                guard !Task.isCancelled else { return }
+                budgetElapsed = true
             }
     }
 }

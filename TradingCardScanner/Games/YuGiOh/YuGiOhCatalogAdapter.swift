@@ -29,6 +29,9 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
     let catalog: YuGiOhCatalog
     var game: CardGame { .yuGiOh }
     var generation: String { catalog.generation }
+    /// The bundled catalog is registered at launch without being decoded.
+    /// Decode it off the main thread before the scanner needs a lookup.
+    func prewarm() async { await catalog.warm() }
     private func code(for identifier: ScanIdentifier) throws -> String {
         guard identifier.game == game, identifier.namespace == "printed-set-code", identifier.fields.count == 1,
               identifier.fields[0].key == "code", YuGiOhCatalog.validCode(identifier.fields[0].value),

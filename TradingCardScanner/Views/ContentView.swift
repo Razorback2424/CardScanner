@@ -263,13 +263,16 @@ struct ContentView: View {
             guard let storageToken = storageGeneration.currentToken() else { return }
             _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
             await refresh.preemptBackgroundPass()
+            let magicInterval = PerformanceSignpost.beginInterval("Launch.magicLocal", id: PerformanceSignpost.makeID(), "")
             _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
                 in: modelContext,
                 storageToken: storageToken,
                 shouldContinue: storageGeneration.continuation(for: storageToken)
             )
+            PerformanceSignpost.endInterval("Launch.magicLocal", magicInterval, "")
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
+            await installDeferredPriceAuthorities(storageToken: storageToken)
         }
 #else
         .task {
@@ -278,13 +281,16 @@ struct ContentView: View {
             guard let storageToken = storageGeneration.currentToken() else { return }
             _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
             await refresh.preemptBackgroundPass()
+            let magicInterval = PerformanceSignpost.beginInterval("Launch.magicLocal", id: PerformanceSignpost.makeID(), "")
             _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
                 in: modelContext,
                 storageToken: storageToken,
                 shouldContinue: storageGeneration.continuation(for: storageToken)
             )
+            PerformanceSignpost.endInterval("Launch.magicLocal", magicInterval, "")
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
+            await installDeferredPriceAuthorities(storageToken: storageToken)
         }
 #endif
         .task {
@@ -349,13 +355,7 @@ struct ContentView: View {
             )
         )
         .task { await recomputeAtDayRollover() }
-        .task(id: scenePhase) {
-            if scenePhase == .active {
-                await browseCatalog.prepareCatalog()
-            } else {
-                await browseCatalog.suspendCatalogRefresh()
-            }
-        }
+        .background(BrowseCatalogPreparation(catalog: browseCatalog))
         .task(id: fallbackAvailabilityTaskID) {
             guard scenePhase == .active, hasStartedPortfolio else { return }
             // This value only controls settings/status affordances. Let the
@@ -552,15 +552,19 @@ struct ContentView: View {
     }
 
     /// The launch history backfill must finish before portfolio replay begins.
-    /// Wait on a utility task so a long ownership write cannot block the main
+    /// Wait on a detached task so a long ownership write cannot block the main
     /// thread, and report persistent store failures instead of silently
     /// skipping this one-time migration.
     @MainActor
     private func backfillExistingCollectionAtLaunch() async {
         let container = modelContext.container
         runtimes?.configureCollectionAuthority(for: container)
+        // Portfolio startup waits on this check, so it is launch-critical work
+        // rather than background maintenance.
+        let interval = PerformanceSignpost.beginInterval("Launch.backfill", id: PerformanceSignpost.makeID(), "")
+        defer { PerformanceSignpost.endInterval("Launch.backfill", interval, "") }
         do {
-            try await Task.detached(priority: .utility) {
+            try await Task.detached(priority: .userInitiated) {
                 try CollectionWriteSerializer.perform(
                     container: container,
                     timeout: .wait
@@ -571,6 +575,31 @@ struct ContentView: View {
         } catch {
             Self.logger.error(
                 "Launch collection-history backfill failed: \(error.localizedDescription, privacy: .private)"
+            )
+        }
+    }
+
+    /// Launch binding leaves static catalog price withdrawal to this point so
+    /// the collection opens sooner. Apply it now, and recompute if it withdrew
+    /// a price the first summary could have counted. A lazily registered
+    /// catalog is decoded here, off the main thread, only when the collection
+    /// holds managed prices for that game.
+    @MainActor
+    private func installDeferredPriceAuthorities(storageToken: StorageGenerationToken) async {
+        guard let runtimes, !runtimes.deferredPriceAuthorities.isEmpty else { return }
+        let shouldContinue = CollectionStorageGeneration.shared.continuation(for: storageToken)
+        do {
+            let withdrew = try await runtimes.installDeferredPriceAuthorities(
+                container: modelContext.container,
+                shouldContinue: shouldContinue
+            )
+            guard withdrew, !Task.isCancelled, shouldContinue() else { return }
+            portfolio.recompute(context: modelContext)
+        } catch is CancellationError {
+            return
+        } catch {
+            Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap").error(
+                "Deferred catalog price withdrawal failed: \(error.localizedDescription, privacy: .private)"
             )
         }
     }
@@ -632,6 +661,37 @@ struct ContentView: View {
         }
     }
 #endif
+}
+
+/// Prepares the browse catalogs once the opening has handed off, so their
+/// decoding does not compete with the launch path. Content cannot be touched
+/// before the handoff, and a fallback releases preparation if it never comes.
+/// Only this small view observes the opening model.
+private struct BrowseCatalogPreparation: View {
+    @EnvironmentObject private var opening: AppOpeningModel
+    @Environment(\.scenePhase) private var scenePhase
+    let catalog: BrowseCatalog
+    @State private var released = false
+
+    var body: some View {
+        Color.clear
+            .onChange(of: opening.handoff, initial: true) { _, handoff in
+                if handoff { released = true }
+            }
+            .task {
+                try? await Task.sleep(for: .seconds(2))
+                guard !Task.isCancelled else { return }
+                released = true
+            }
+            .task(id: "\(scenePhase)-\(released)") {
+                if scenePhase == .active {
+                    guard released else { return }
+                    await catalog.prepareCatalog()
+                } else {
+                    await catalog.suspendCatalogRefresh()
+                }
+            }
+    }
 }
 
 /// Legacy input-observer implementation removed in favour of the single

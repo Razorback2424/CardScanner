@@ -256,11 +256,15 @@ enum MagicTreatmentMigration {
             report.fail("Could not read Magic migration candidates: \(error)")
             return report
         }
-        let catalog = MagicTreatmentCatalogStore.bundledDefault
         var evidenceByExactID: [String: ExactEvidence] = [:]
         var failedExactIDs: Set<String> = []
 
         if let fetchBatch {
+            // Only the network phase reads the compact catalog here. The local
+            // phase runs on the main actor at every launch, and decoding the
+            // bundled catalog before the pending-row guard below would charge
+            // that cost even when nothing needs migrating.
+            let catalog = MagicTreatmentCatalogStore.bundledDefault
             let maximumBatchSize = 75
             for batchStart in stride(from: 0, to: remoteExactIDs.count, by: maximumBatchSize) {
                 guard isCurrent(), !Task.isCancelled else { return report }

@@ -7,6 +7,9 @@ struct YuGiOhGameRuntime: Sendable {
     static let descriptor = CardGameDescriptor(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 4, capabilities: [])
     let catalog: YuGiOhCatalog
     var coordinator: YuGiOhCatalogCoordinator? = nil
+    /// Capabilities already established for this exact catalog, so building
+    /// the runtime does not read a lazily loaded catalog's data.
+    var knownCapabilities: CardGameCapabilities? = nil
     static func capabilities(for catalog: YuGiOhCatalog) -> CardGameCapabilities {
         guard !catalog.printingByID.isEmpty else { return [] }
         let adapter = YuGiOhCatalogAdapter(catalog: catalog)
@@ -17,16 +20,34 @@ struct YuGiOhGameRuntime: Sendable {
         return supported ? [.scan, .browse, .pricing, .collectionWrite] : [.browse]
     }
     var runtime: CardGameRuntime {
-        guard !catalog.printingByID.isEmpty else {
+        let capabilities = knownCapabilities ?? Self.capabilities(for: catalog)
+        guard !capabilities.isEmpty else {
             return .init(descriptor: Self.descriptor, variantPolicy: YuGiOhVariantPolicy(), requiresLaunchActivation: false)
         }
-        let capabilities = Self.capabilities(for: catalog)
         return .init(descriptor: .init(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 4,
                 capabilities: capabilities),
             variantPolicy: YuGiOhVariantPolicy(), pricing: YuGiOhPriceAdapter(catalog: catalog, coordinator: coordinator),
             recognizer: YuGiOhRecognitionAdapter(catalog: catalog), catalog: YuGiOhCatalogAdapter(catalog: catalog),
             browse: YuGiOhBrowseAdapter(catalog: catalog), importer: YuGiOhImportAdapter(catalog: catalog),
             priceAuthority: YuGiOhPriceAdapter.priceAuthority(catalog), activationSource: coordinator, requiresLaunchActivation: false)
+    }
+}
+
+extension YuGiOhBundledLaunch {
+    /// The bundled-mode runtime for a normal launch. A cache hit registers the
+    /// shared handle without decoding it. A miss decodes and validates the seed
+    /// now, exactly as launches always did, and records the facts for the next
+    /// launch of this build.
+    static func runtime(defaults: UserDefaults = .standard) throws -> CardGameRuntime {
+        let handle = YuGiOhCatalog.bundledHandle
+        if let manifest = cachedManifest(defaults: defaults), manifest.generation == handle.generation {
+            return YuGiOhGameRuntime(catalog: handle,
+                knownCapabilities: CardGameCapabilities(rawValue: manifest.capabilities)).runtime
+        }
+        let catalog = try handle.loaded()
+        let capabilities = YuGiOhGameRuntime.capabilities(for: catalog)
+        store(generation: catalog.generation, capabilities: capabilities, defaults: defaults)
+        return YuGiOhGameRuntime(catalog: catalog, knownCapabilities: capabilities).runtime
     }
 }
 

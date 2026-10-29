@@ -1,12 +1,51 @@
 import Foundation
 import SwiftData
 
+/// Computes a value at most once, on first read, for every copy that shares
+/// it. Readers that arrive while it is being computed wait for that result.
+final class LoadOnce<Value: Sendable>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value: Value?
+    private var make: (@Sendable () -> Value)?
+
+    init(_ make: @escaping @Sendable () -> Value) { self.make = make }
+    init(value: Value) { self.value = value }
+
+    var isLoaded: Bool { lock.withLock { value != nil } }
+
+    func get() -> Value {
+        lock.lock()
+        defer { lock.unlock() }
+        if let value { return value }
+        let made = make!()
+        value = made
+        make = nil
+        return made
+    }
+}
+
 /// An adapter's exact market mappings, indexed by the existing persisted price key.
 /// Absence withdraws managed-provider quotes, never user-entered prices.
 struct GameCatalogPriceAuthority: Sendable {
     let game: CardGame
     let managedSources: Set<PriceSource>
-    let identityByPriceKey: [String: String]
+    private let identities: LoadOnce<[String: String]>
+    /// A deferred authority builds this on first read, so binding a game at
+    /// launch does not decode the catalog the mappings come from.
+    var identityByPriceKey: [String: String] { identities.get() }
+
+    init(game: CardGame, managedSources: Set<PriceSource>, identityByPriceKey: [String: String]) {
+        self.game = game
+        self.managedSources = managedSources
+        identities = LoadOnce(value: identityByPriceKey)
+    }
+
+    init(game: CardGame, managedSources: Set<PriceSource>,
+         deferredIdentities: @escaping @Sendable () -> [String: String]) {
+        self.game = game
+        self.managedSources = managedSources
+        identities = LoadOnce(deferredIdentities)
+    }
 
     func install(in container: ModelContainer, at date: Date = .now) throws {
         try install(in: container, at: date, beforeSave: nil)
@@ -31,10 +70,26 @@ struct GameCatalogPriceAuthority: Sendable {
     /// publication. Never release it between these two authority changes.
     fileprivate func install(in context: ModelContext, at date: Date = .now,
                              beforeSave: ((ModelContext) throws -> Void)? = nil) throws {
+            try withdraw(in: context, at: date)
+            if context.hasChanges {
+                try beforeSave?(context)
+                try context.save()
+            }
+    }
+
+    /// Marks managed prices this authority no longer vouches for, without
+    /// saving, so several authorities can share one transaction.
+    fileprivate func withdraw(in context: ModelContext, at date: Date) throws {
             precondition(CollectionWriteSerializer.isHeldByCurrentThread)
             let gameID = game.rawValue
             let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.game == gameID }))
+                .filter { record in record.source.map { managedSources.contains($0) } == true && !record.isInvalidated }
             let quotes = try context.fetch(FetchDescriptor<ReferenceQuote>(predicate: #Predicate { $0.game == gameID }))
+                .filter { quote in quote.source.map { managedSources.contains($0) } == true && quote.invalidatedAt == nil }
+            // Nothing managed to check: leave a deferred authority unbuilt, so a
+            // game the collection has no prices for is never decoded for this.
+            guard !records.isEmpty || !quotes.isEmpty else { return }
+            let identityByPriceKey = self.identityByPriceKey
             let log = PriceObservationLog(context: context)
             for record in records {
                 guard let source = record.source, managedSources.contains(source), !record.isInvalidated,
@@ -48,10 +103,6 @@ struct GameCatalogPriceAuthority: Sendable {
                 guard let source = quote.source, managedSources.contains(source), quote.invalidatedAt == nil,
                       identityByPriceKey[quote.key] == nil || quote.catalogPriceIdentity != identityByPriceKey[quote.key] else { continue }
                 quote.invalidatedAt = max(date, quote.retrievedAt ?? .distantPast)
-            }
-            if context.hasChanges {
-                try beforeSave?(context)
-                try context.save()
             }
     }
 }
@@ -80,6 +131,32 @@ actor CatalogPriceAuthorityInstaller: BackgroundModelActor {
                 try Task.checkCancellation()
                 guard shouldContinue() else { throw CancellationError() }
             })
+        }
+    }
+
+    /// Installs launch-deferred authorities in one serialized transaction and
+    /// reports whether any managed price was withdrawn.
+    func install(_ authorities: [GameCatalogPriceAuthority],
+                 shouldContinue: @escaping StorageGenerationContinuation) throws -> Bool {
+        try Task.checkCancellation()
+        guard !authorities.isEmpty else { return false }
+        let games = authorities.map(\.game.rawValue).joined(separator: ",")
+        let interval = PerformanceSignpost.beginInterval(
+            "Catalog.priceAuthorityInstall", id: PerformanceSignpost.makeID(), games
+        )
+        defer { PerformanceSignpost.endInterval("Catalog.priceAuthorityInstall", interval, games) }
+        return try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            let date = Date.now
+            for authority in authorities {
+                try authority.withdraw(in: context, at: date)
+            }
+            guard context.hasChanges else { return false }
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            try context.save()
+            return true
         }
     }
 }

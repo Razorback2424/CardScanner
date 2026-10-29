@@ -86,6 +86,65 @@ final class LaunchModelActorTests: XCTestCase {
         XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
     }
 
+    func testDeferredPriceAuthoritiesWithdrawAfterBindingInOneTransaction() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        for (id, source) in [("managed", PriceSource.tcgCSV), ("imported", .importedCSV)] {
+            let record = PriceRecord(key: id, game: .yuGiOh, printingID: id, variantID: "yugiohUnlimited")
+            record.sourceRaw = source.rawValue
+            record.unitMarketPriceUSD = 12
+            record.fetchedAt = .now
+            container.mainContext.insert(record)
+        }
+        try container.mainContext.save()
+        let built = BuildFlag()
+        let module = CardGameRuntime(
+            descriptor: CardGameDescriptor(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 4, capabilities: [.browse]),
+            variantPolicy: YuGiOhVariantPolicy(),
+            priceAuthority: GameCatalogPriceAuthority(game: .yuGiOh, managedSources: [.tcgCSV],
+                                                      deferredIdentities: { built.mark(); return [:] }),
+            requiresLaunchActivation: false
+        )
+        let bound = try await CardGameRuntimeContainer(runtimes: [module])
+            .bound(to: container, configurePricing: false, deferringPriceAuthorityInstall: true)
+        XCTAssertEqual(bound.deferredPriceAuthorities.map(\.game), [.yuGiOh])
+        XCTAssertNotNil(bound.runtime(for: .yuGiOh))
+        XCTAssertFalse(built.value, "Binding must not build a deferred authority")
+        XCTAssertNil(try ModelContext(container).fetch(FetchDescriptor<PriceRecord>())
+            .first { $0.key == "managed" }?.invalidatedAt, "Binding must leave withdrawal to the deferred install")
+
+        do {
+            _ = try await bound.installDeferredPriceAuthorities(container: container, shouldContinue: { false })
+            XCTFail("Obsolete storage may not be mutated")
+        } catch is CancellationError {}
+
+        let withdrew = try await bound.installDeferredPriceAuthorities(container: container, shouldContinue: { true })
+        XCTAssertTrue(withdrew)
+        XCTAssertTrue(built.value)
+        let records = try ModelContext(container).fetch(FetchDescriptor<PriceRecord>())
+        XCTAssertNotNil(records.first { $0.key == "managed" }?.invalidatedAt)
+        XCTAssertNil(records.first { $0.key == "imported" }?.invalidatedAt)
+        let repeated = try await bound.installDeferredPriceAuthorities(container: container, shouldContinue: { true })
+        XCTAssertFalse(repeated, "Nothing is left to withdraw")
+    }
+
+    func testDeferredAuthorityIsNotBuiltWhenNoManagedPriceExists() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let record = PriceRecord(key: "imported", game: .yuGiOh, printingID: "imported", variantID: "yugiohUnlimited")
+        record.sourceRaw = PriceSource.importedCSV.rawValue
+        record.unitMarketPriceUSD = 12
+        container.mainContext.insert(record)
+        try container.mainContext.save()
+        let built = BuildFlag()
+        let authority = GameCatalogPriceAuthority(game: .yuGiOh, managedSources: [.tcgCSV],
+                                                  deferredIdentities: { built.mark(); return [:] })
+        let installer = await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container)
+        let withdrew = try await installer.install([authority], shouldContinue: { true })
+        XCTAssertFalse(withdrew)
+        XCTAssertFalse(built.value, "A game with no managed prices must not decode its catalog for withdrawal")
+    }
+
     private func assertWorkers(configuration: ModelConfiguration) async throws {
         let container = try ModelContainer(
             for: CollectionStorageModelSchema.full,
@@ -128,6 +187,13 @@ final class LaunchModelActorTests: XCTestCase {
         XCTAssertEqual(probe.names, ["Launch Fixture"], file: file, line: line)
         XCTAssertFalse(probe.isMainThread, "\(T.self) uses the UI thread", file: file, line: line)
     }
+}
+
+private final class BuildFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var built = false
+    var value: Bool { lock.withLock { built } }
+    func mark() { lock.withLock { built = true } }
 }
 
 private extension ModelActor {

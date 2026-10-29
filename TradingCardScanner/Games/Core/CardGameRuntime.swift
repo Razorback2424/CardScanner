@@ -79,13 +79,17 @@ struct CardGameRuntimeContainer: Sendable {
     let registry: CardGameRegistry
     /// Configured modules that failed preparation, distinct from disabled games.
     let unavailableGames: [CardGameDescriptor]
+    /// Static price authorities that `bound(to:deferringPriceAuthorityInstall:)`
+    /// left for `installDeferredPriceAuthorities` to apply after launch.
+    let deferredPriceAuthorities: [GameCatalogPriceAuthority]
     private let legacyBindings: LegacyCatalogBindings
     private let pricingAdapters: GamePriceAdapterRegistry
     private let catalogAdapters: GameCatalogAdapterRegistry
     private let recognitionAdapters: GameRecognitionRegistry
 
     init(runtimes: [CardGameRuntime], unavailableGames: [CardGameDescriptor] = [],
-         capabilityState: GameCatalogCapabilityState? = nil) throws {
+         capabilityState: GameCatalogCapabilityState? = nil,
+         deferredPriceAuthorities: [GameCatalogPriceAuthority] = []) throws {
         var values: [CardGame: CardGameRuntime] = [:]
         for runtime in runtimes {
             let game = runtime.descriptor.game
@@ -116,6 +120,7 @@ struct CardGameRuntimeContainer: Sendable {
             throw RegistrationError.duplicateLegacyBinding
         }
         self.runtimes = values
+        self.deferredPriceAuthorities = deferredPriceAuthorities
         self.unavailableGames = unavailableGames.filter { values[$0.game] == nil }
             .sorted { $0.sortOrder < $1.sortOrder }
         self.pricingAdapters = try GamePriceAdapterRegistry(adapters: runtimes.compactMap(\.pricing))
@@ -133,11 +138,19 @@ struct CardGameRuntimeContainer: Sendable {
     func runtime(for game: CardGame) -> CardGameRuntime? { runtimes[game] }
 
     /// Bind once per authoritative storage session, before constructing consumers.
+    ///
+    /// With `deferringPriceAuthorityInstall`, static price-authority withdrawal
+    /// is left out of binding so launch does not wait on it; the caller must
+    /// then run `installDeferredPriceAuthorities` and recompute derived values
+    /// if it withdrew anything.
     @MainActor
     func bound(to container: ModelContainer,
                recovering previous: Self? = nil,
                configurePricing: Bool = true,
+               deferringPriceAuthorityInstall: Bool = false,
                isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) async throws -> Self {
+        let interval = PerformanceSignpost.beginInterval("Launch.bind", id: PerformanceSignpost.makeID(), "")
+        defer { PerformanceSignpost.endInterval("Launch.bind", interval, "") }
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
         let storageGeneration = CollectionStorageGeneration.shared
         let token = storageGeneration.activeSession()?.container === container
@@ -146,6 +159,7 @@ struct CardGameRuntimeContainer: Sendable {
         if previous == nil { configureCollectionAuthority(for: container, configurePricing: false) }
         var modules: [CardGameRuntime] = []
         var unavailable = unavailableGames
+        var deferred: [GameCatalogPriceAuthority] = []
         let capabilities = previous?.registry.capabilityState ?? GameCatalogCapabilityState()
         for runtime in runtimes.values {
             // Existing consumers retain their authorities on a retry. Only an
@@ -158,6 +172,8 @@ struct CardGameRuntimeContainer: Sendable {
             do {
                 if let source {
                     guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
+                } else if let authority = runtime.priceAuthority, deferringPriceAuthorityInstall {
+                    deferred.append(authority)
                 } else if let authority = runtime.priceAuthority {
                     let installer = await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container)
                     try await installer.install(authority, shouldContinue: shouldContinue)
@@ -184,12 +200,22 @@ struct CardGameRuntimeContainer: Sendable {
                 legacyCatalogBindings: runtime.legacyCatalogBindings))
         }
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
-        let bound = try Self(runtimes: modules, unavailableGames: unavailable, capabilityState: capabilities)
+        let bound = try Self(runtimes: modules, unavailableGames: unavailable, capabilityState: capabilities,
+                             deferredPriceAuthorities: deferred)
         if let previous, previous.registry.games(supporting: []) == bound.registry.games(supporting: []) {
             return previous
         }
         bound.configureCollectionAuthority(for: container, configurePricing: configurePricing)
         return bound
+    }
+
+    /// Applies the withdrawals binding deferred, in one serialized transaction.
+    /// Returns whether any managed price was withdrawn.
+    func installDeferredPriceAuthorities(container: ModelContainer,
+                                         shouldContinue: @escaping StorageGenerationContinuation) async throws -> Bool {
+        guard !deferredPriceAuthorities.isEmpty else { return false }
+        let installer = await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container)
+        return try await installer.install(deferredPriceAuthorities, shouldContinue: shouldContinue)
     }
 
     /// Keep listening to omitted modules so a later verified release can
@@ -292,29 +318,68 @@ struct CardGameRuntimeContainer: Sendable {
         return adapters
     }
 
+    @MainActor private static var earlyPreparation: Task<CardGameRuntimeContainer, Never>?
+
+    /// Starts default registration while the process launches, before the
+    /// first frame schedules the launch task that consumes it.
+    @MainActor
+    static func startPreparingAppDefaults() {
+        guard earlyPreparation == nil else { return }
+        earlyPreparation = Task { await preparedAppDefaults() }
+    }
+
+    /// Consumes the early preparation once. Every other caller prepares afresh,
+    /// so a retry re-reads configuration and the bundled seeds.
+    @MainActor
+    static func takePreparedAppDefaults() async -> Self {
+        guard let early = earlyPreparation else { return await preparedAppDefaults() }
+        earlyPreparation = nil
+        return await early.value
+    }
+
     /// Compile-time registration occurs once for the app session.
     static func preparedAppDefaults() async -> Self {
-        await Task.detached(priority: .userInitiated) { appDefaults() }.value
+        // Decode the independent bundled seeds side by side. `appDefaults()`
+        // then finds each ready, or waits only for the one it needs next.
+        Task.detached(priority: .userInitiated) { _ = LorcanaDiscoveryCatalog.bundledMarket }
+        if YuGiOhCatalogBootstrap.requestsDelivery() || YuGiOhBundledLaunch.cachedManifest() == nil {
+            Task.detached(priority: .userInitiated) { _ = try? YuGiOhCatalog.bundledHandle.loaded() }
+        }
+        return await Task.detached(priority: .userInitiated) { appDefaults() }.value
+    }
+
+    private static func measured<T>(_ game: CardGame, _ body: () throws -> T) rethrows -> T {
+        let interval = PerformanceSignpost.beginInterval(
+            "Launch.catalogPrepare", id: PerformanceSignpost.makeID(), "game=\(game.rawValue)"
+        )
+        defer { PerformanceSignpost.endInterval("Launch.catalogPrepare", interval, "game=\(game.rawValue)") }
+        return try body()
     }
 
     static func appDefaults() -> Self {
-        var modules = [PokemonGameRuntime().runtime, MagicGameRuntime().runtime]
+        var modules = measured(.pokemon) { [PokemonGameRuntime().runtime] }
+        modules.append(measured(.magic) { MagicGameRuntime().runtime })
         var unavailable: [CardGameDescriptor] = []
         do {
-            modules.append(try LorcanaDiscoveryCatalog.bundledMarket.get().runtime)
+            modules.append(try measured(.lorcana) { try LorcanaDiscoveryCatalog.bundledMarket.get().runtime })
         } catch {
             Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
                 .error("Lorcana discovery seed rejected; existing games remain available")
             unavailable.append(LorcanaDiscoveryCatalog.descriptor)
         }
         do {
-            let catalog = try YuGiOhCatalog.bundled.get()
-            let runtime: CardGameRuntime
-            do { runtime = try YuGiOhCatalogBootstrap.configuredRuntime(bundled: catalog) ?? catalog.runtime }
-            catch {
-                Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
-                    .error("Yu-Gi-Oh approved delivery configuration rejected; retaining bundled catalog")
-                runtime = catalog.runtime
+            let runtime = try measured(.yuGiOh) { () throws -> CardGameRuntime in
+                // Approved delivery binds the decoded seed and keeps the eager
+                // path. Otherwise a normal launch registers the bundled catalog
+                // without decoding it; see `YuGiOhBundledLaunch`.
+                guard YuGiOhCatalogBootstrap.requestsDelivery() else { return try YuGiOhBundledLaunch.runtime() }
+                let catalog = try YuGiOhCatalog.bundled.get()
+                do { return try YuGiOhCatalogBootstrap.configuredRuntime(bundled: catalog) ?? catalog.runtime }
+                catch {
+                    Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                        .error("Yu-Gi-Oh approved delivery configuration rejected; retaining bundled catalog")
+                    return catalog.runtime
+                }
             }
             if runtime.descriptor.capabilities.isEmpty {
                 unavailable.append(YuGiOhGameRuntime.descriptor)
@@ -368,6 +433,8 @@ struct CardGameRuntimeContainer: Sendable {
 
     @MainActor
     func makeScannerModel() -> ScannerViewModel {
+        let interval = PerformanceSignpost.beginInterval("Launch.scannerModel", id: PerformanceSignpost.makeID(), "")
+        defer { PerformanceSignpost.endInterval("Launch.scannerModel", interval, "") }
         let scanner = CardScanner()
         scanner.useAdditionalRecognitionAdapters(recognitionAdapters)
         var reviewRecovery: UnresolvedScanStore?

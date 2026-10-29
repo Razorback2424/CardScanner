@@ -45,6 +45,16 @@ using the existing collection projection signposts.
 - If it is materially slower, evaluate persisting the last
   `CollectionProjectionSnapshot` and replacing it when the actor read completes.
 
+Launch-path changes on branch `claude/launch-speed` (implemented, not yet
+built or measured): the Yu-Gi-Oh! bundled catalog is registered from a per-build
+cache and decoded on first use; static catalog price withdrawal runs after the
+portfolio starts; browse catalog preparation waits for the opening handoff; and
+the opening reveals after at most `AppOpeningModel.portfolioRevealBudget`
+(350 ms) once content mounts, without a copy count if the portfolio is still
+calculating. Record both the first launch after install (cache miss) and a
+repeat launch, with the `Launch.*` signposts listed for H01 in the
+[hang inspection plan](hang-inspection-plan.md).
+
 ### RF-2 — Scanner tracking at 8 Hz
 
 **Status:** hardware validation pending; simulator cannot retire this item.

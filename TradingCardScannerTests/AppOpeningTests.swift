@@ -97,6 +97,45 @@ final class AppOpeningTests: XCTestCase {
         try await exercise(opening)
     }
 
+    func testRevealBudgetReportsReadyWithoutCountWhilePortfolioIsStillComputing() async throws {
+        let opening = AppOpeningModel()
+        let portfolio = PortfolioEngine()
+        let ready = expectation(description: "Budget releases the opening")
+        let observation = opening.$portfolioReady.filter { $0 != nil }.prefix(1).sink { _ in ready.fulfill() }
+        defer { observation.cancel() }
+        let window = host(AppOpeningReadinessReporter(portfolio: portfolio, skipsPortfolio: false,
+                                                      holdsOpening: false, revealBudget: .milliseconds(50))
+            .environmentObject(opening))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await fulfillment(of: [ready], timeout: 2)
+        XCTAssertNil(portfolio.summary, "The fixture portfolio never computes")
+        XCTAssertNil(opening.portfolioReady!, "A budget release has no copy count to report")
+    }
+
+    func testRevealBudgetDoesNotOverrideStartupHold() async throws {
+        let opening = AppOpeningModel()
+        let window = host(AppOpeningReadinessReporter(portfolio: PortfolioEngine(), skipsPortfolio: false,
+                                                      holdsOpening: true, revealBudget: .milliseconds(20))
+            .environmentObject(opening))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(300))
+        XCTAssertTrue(opening.portfolioReady == nil)
+    }
+
+    func testDefaultRevealBudgetStaysShort() {
+        XCTAssertLessThanOrEqual(AppOpeningModel.portfolioRevealBudget, .milliseconds(400))
+    }
+
+    private func host<V: View>(_ view: V) -> UIWindow {
+        let controller = UIHostingController(rootView: view)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.frame = window.bounds
+        controller.view.layoutIfNeeded()
+        return window
+    }
+
     func testCaptionsDistinguishCopiesFromEmptyOrUnknownCollection() {
         XCTAssertEqual(AppOpeningPhase.opening.caption, "Opening your collection…")
         XCTAssertEqual(AppOpeningPhase.restoringFromCloud.caption, "Restoring collection from iCloud…")

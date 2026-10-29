@@ -15,6 +15,9 @@ struct TradingCardScannerApp: App {
     init() {
         CollectionWriteSerializer.enforcesOwnershipRule =
             ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil
+        // Catalog registration is the slower half of launch preparation; start
+        // it now rather than when the first frame schedules the launch task.
+        CardGameRuntimeContainer.startPreparingAppDefaults()
     }
 
     // Compatibility name for existing portfolio/status call sites. The
@@ -65,8 +68,10 @@ struct TradingCardScannerApp: App {
                     return
                 }
 #endif
-                async let prepared = CardGameRuntimeContainer.preparedAppDefaults()
+                async let prepared = CardGameRuntimeContainer.takePreparedAppDefaults()
+                let storageInterval = PerformanceSignpost.beginInterval("Launch.storageStart", id: PerformanceSignpost.makeID(), "")
                 await storageBootstrap.start()
+                PerformanceSignpost.endInterval("Launch.storageStart", storageInterval, "")
                 let runtimes = await prepared
                 guard !Task.isCancelled else { return }
                 self.runtimes = runtimes
@@ -146,12 +151,18 @@ private struct CollectionSessionContent: View {
                         CollectionStorageGeneration.shared.activeSession()?.container === container
                     })
                 } else {
-                    bound = try await candidate.bound(to: container, recovering: services?.runtimes, isCurrent: {
+                    // The first binding defers static price withdrawal to ContentView's
+                    // launch task, so opening the collection does not wait on it.
+                    bound = try await candidate.bound(to: container, recovering: services?.runtimes,
+                                                      deferringPriceAuthorityInstall: services == nil, isCurrent: {
                         CollectionStorageGeneration.shared.activeSession()?.container === container
                     })
                 }
 #else
-                bound = try await candidate.bound(to: container, recovering: services?.runtimes, isCurrent: {
+                // The first binding defers static price withdrawal to ContentView's
+                // launch task, so opening the collection does not wait on it.
+                bound = try await candidate.bound(to: container, recovering: services?.runtimes,
+                                                  deferringPriceAuthorityInstall: services == nil, isCurrent: {
                     CollectionStorageGeneration.shared.activeSession()?.container === container
                 })
 #endif

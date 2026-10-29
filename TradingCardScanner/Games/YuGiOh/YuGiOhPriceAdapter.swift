@@ -57,7 +57,12 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
     static func mappingIdentity(_ p: YuGiOhCatalog.Printing, _ edition: YuGiOhEdition) -> String {
         "tcgcsv:2:\(p.set.groupID):\(p.productID):\(edition.tcgplayerSubtype)"
     }
+    /// Deferred so binding Yu-Gi-Oh at launch does not decode a lazily loaded
+    /// bundled catalog; the mappings are built once, on first read.
     static func priceAuthority(_ catalog: YuGiOhCatalog) -> GameCatalogPriceAuthority {
+        .init(game: .yuGiOh, managedSources: [.tcgCSV], deferredIdentities: { identities(catalog) })
+    }
+    private static func identities(_ catalog: YuGiOhCatalog) -> [String: String] {
         var identities: [String: String] = [:]
         let adapter = YuGiOhCatalogAdapter(catalog: catalog)
         for family in catalog.printingsByCode.values {
@@ -68,7 +73,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
                 }
             }
         }
-        return .init(game: .yuGiOh, managedSources: [.tcgCSV], identityByPriceKey: identities)
+        return identities
     }
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup {
         try await refreshStoredPrinting(printingID, variant: variant, minimumFetchedAt: nil)

@@ -5,40 +5,53 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
     let catalog: YuGiOhCatalog
     var game: CardGame { .yuGiOh }
     var generation: String { catalog.generation }
-    private let setsByID: [CatalogSetID: CatalogSet]
-    private let cardsBySetID: [CatalogSetID: [CatalogCardSummary]]
-    private let searchTextByID: [String: String]
     private let pageSize = 60
+    /// Grouping and search text cover every printing, so they are built on
+    /// first browse rather than when Yu-Gi-Oh is registered at launch.
+    private let index: LoadOnce<Index>
+    private var setsByID: [CatalogSetID: CatalogSet] { index.get().setsByID }
+    private var cardsBySetID: [CatalogSetID: [CatalogCardSummary]] { index.get().cardsBySetID }
+    private var searchTextByID: [String: String] { index.get().searchTextByID }
+
+    private struct Index: Sendable {
+        let setsByID: [CatalogSetID: CatalogSet]
+        let cardsBySetID: [CatalogSetID: [CatalogCardSummary]]
+        let searchTextByID: [String: String]
+
+        init(catalog: YuGiOhCatalog) {
+            var grouped: [CatalogSetID: [YuGiOhCatalog.Printing]] = [:]
+            for p in catalog.printingByID.values {
+                grouped[CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:\(p.set.groupID)"), default: []].append(p)
+            }
+            var sets: [CatalogSetID: CatalogSet] = [:], cards: [CatalogSetID: [CatalogCardSummary]] = [:], texts: [String: String] = [:]
+            for (id, members) in grouped {
+                let ordered = members.sorted {
+                    if $0.code != $1.code { return $0.code < $1.code }
+                    if $0.rarity != $1.rarity { return $0.rarity < $1.rarity }
+                    return $0.idString < $1.idString
+                }
+                let setInfo = ordered[0].set
+                var set = CatalogSet(catalogID: id, name: setInfo.name, code: setInfo.abbreviation,
+                    logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: setInfo.releaseDate, sortRank: 0,
+                    physicalPrintingIDs: Set(ordered.map { $0.idString }))
+                let summaries = ordered.map { p in
+                    let summary = CatalogCardSummary(game: .yuGiOh, providerID: p.idString, setID: id,
+                        setName: p.set.name, setCode: p.set.abbreviation, name: p.productName, collectorNumber: p.code,
+                        thumbnailURL: p.thumbnailURL, imageURL: p.imageURL, catalogGeneration: catalog.generation)
+                    texts[summary.id] = CardNameSearch.normalize([p.card.name, p.productName, p.code, p.rarity, p.artLabel ?? "", p.set.name].joined(separator: " "))
+                    return summary
+                }
+                var seen: Set<URL> = []
+                set.artworkFallbackURLs = Array(summaries.compactMap(\.thumbnailURL).filter { seen.insert($0).inserted }.prefix(3))
+                sets[id] = set; cards[id] = summaries
+            }
+            setsByID = sets; cardsBySetID = cards; searchTextByID = texts
+        }
+    }
 
     init(catalog: YuGiOhCatalog) {
         self.catalog = catalog
-        var grouped: [CatalogSetID: [YuGiOhCatalog.Printing]] = [:]
-        for p in catalog.printingByID.values {
-            grouped[CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:\(p.set.groupID)"), default: []].append(p)
-        }
-        var sets: [CatalogSetID: CatalogSet] = [:], cards: [CatalogSetID: [CatalogCardSummary]] = [:], texts: [String: String] = [:]
-        for (id, members) in grouped {
-            let ordered = members.sorted {
-                if $0.code != $1.code { return $0.code < $1.code }
-                if $0.rarity != $1.rarity { return $0.rarity < $1.rarity }
-                return $0.idString < $1.idString
-            }
-            let setInfo = ordered[0].set
-            var set = CatalogSet(catalogID: id, name: setInfo.name, code: setInfo.abbreviation,
-                logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: setInfo.releaseDate, sortRank: 0,
-                physicalPrintingIDs: Set(ordered.map { $0.idString }))
-            let summaries = ordered.map { p in
-                let summary = CatalogCardSummary(game: .yuGiOh, providerID: p.idString, setID: id,
-                    setName: p.set.name, setCode: p.set.abbreviation, name: p.productName, collectorNumber: p.code,
-                    thumbnailURL: p.thumbnailURL, imageURL: p.imageURL, catalogGeneration: catalog.generation)
-                texts[summary.id] = CardNameSearch.normalize([p.card.name, p.productName, p.code, p.rarity, p.artLabel ?? "", p.set.name].joined(separator: " "))
-                return summary
-            }
-            var seen: Set<URL> = []
-            set.artworkFallbackURLs = Array(summaries.compactMap(\.thumbnailURL).filter { seen.insert($0).inserted }.prefix(3))
-            sets[id] = set; cards[id] = summaries
-        }
-        setsByID = sets; cardsBySetID = cards; searchTextByID = texts
+        index = LoadOnce { Index(catalog: catalog) }
     }
     func sets() async throws -> [CatalogSet] {
         setsByID.values.sorted { left, right in

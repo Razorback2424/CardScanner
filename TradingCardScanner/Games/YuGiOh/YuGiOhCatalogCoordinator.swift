@@ -164,6 +164,17 @@ enum YuGiOhCatalogBootstrap {
     /// No endpoint or key is supplied by default. Production must explicitly
     /// provide dedicated owner pins and opt into approved authority. Acceptance
     /// launches retain the bundle even in a configured debug build.
+    /// Whether `configuredRuntime` would build an approved-delivery runtime or
+    /// reject its configuration, as opposed to returning nil. Delivery binds
+    /// the decoded bundled seed, so launch keeps the eager path for it.
+    static func requestsDelivery(bundle: Bundle = .main) -> Bool {
+        #if DEBUG && LOCAL_ONLY_SIGNING
+        if YuGiOhAcceptanceLaunch.enabled { return false }
+        #endif
+        guard let mode = bundle.object(forInfoDictionaryKey: "YUGIOH_CATALOG_ROLLOUT_MODE") as? String else { return false }
+        return !mode.isEmpty && mode != "disabled"
+    }
+
     static func configuredRuntime(bundled: YuGiOhCatalog, bundle: Bundle = .main) throws -> CardGameRuntime? {
         #if DEBUG && LOCAL_ONLY_SIGNING
         if YuGiOhAcceptanceLaunch.enabled { return nil }

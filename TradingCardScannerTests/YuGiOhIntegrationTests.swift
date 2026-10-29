@@ -2153,6 +2153,75 @@ final class YuGiOhCatalogTests: XCTestCase {
         }
         XCTAssertFalse(defaults.unavailableGames.contains { $0.game == .yuGiOh })
     }
+    func testCodeMatcherAgreesWithOriginalPatternForBundledAndEdgeCodes() throws {
+        func original(_ code: String) -> Bool {
+            if ["IOC-SE1", "IOC-SE2", "IOC-SE3", "IOC-SE4"].contains(code) { return true }
+            return code.range(of: "^[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})$", options: .regularExpression) != nil
+        }
+        let url = try XCTUnwrap(YuGiOhBundledLaunch.seedURL())
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let codes = try XCTUnwrap(object["printings"] as? [[String: Any]]).compactMap { $0["c"] as? String }
+        XCTAssertFalse(codes.isEmpty)
+        let edges = ["", "-", "A-001", "AB-001", "ABCD-001", "ABCDE-001", "AB-00", "AB-0001", "AB-E00", "AB-EN00",
+                     "AB-EX001", "AB-ENE01", "AB-E0A1", "ab-001", "AB_001", "AB-001-", "AB--001", "ÄB-001",
+                     "AB-\u{0661}\u{0662}\u{0663}", "IOC-SE5", "IOC-SE1"]
+        for code in codes + edges {
+            XCTAssertEqual(YuGiOhCatalog.validCode(code), original(code), code)
+        }
+    }
+    func testBundledLaunchCacheRegistersWithoutDecodingAndMatchesEagerRuntime() async throws {
+        let suite = "YuGiOhBundledLaunchTests-\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        XCTAssertNil(YuGiOhBundledLaunch.cachedManifest(defaults: defaults))
+        // A miss takes the eager, validated path and records this build's facts.
+        let eager = try YuGiOhBundledLaunch.runtime(defaults: defaults)
+        let manifest = try XCTUnwrap(YuGiOhBundledLaunch.cachedManifest(defaults: defaults))
+        let bundled = try YuGiOhCatalog.bundled.get()
+        XCTAssertTrue(YuGiOhCatalog.bundledHandle.isLoaded, "bundled and bundledHandle share one decoded copy")
+        XCTAssertEqual(manifest.generation, bundled.generation)
+        XCTAssertEqual(CardGameCapabilities(rawValue: manifest.capabilities), eager.descriptor.capabilities)
+
+        let lazy = YuGiOhCatalog(knownGeneration: manifest.generation) { try YuGiOhBundledLaunch.loadSeed() }
+        let runtime = YuGiOhGameRuntime(catalog: lazy,
+            knownCapabilities: CardGameCapabilities(rawValue: manifest.capabilities)).runtime
+        XCTAssertEqual(runtime.descriptor.capabilities, eager.descriptor.capabilities)
+        XCTAssertEqual(runtime.catalog?.generation, bundled.generation)
+        XCTAssertEqual(runtime.browse?.generation, bundled.generation)
+        XCTAssertNotNil(runtime.priceAuthority)
+        XCTAssertFalse(lazy.isLoaded, "Registering a cached catalog must not decode it")
+
+        let sets = try await XCTUnwrap(runtime.browse).sets()
+        XCTAssertTrue(lazy.isLoaded)
+        XCTAssertEqual(sets.count, Set(bundled.printingByID.values.map(\.set.groupID)).count)
+        let copy = lazy
+        XCTAssertEqual(copy.printingByID.count, bundled.printingByID.count)
+        XCTAssertEqual(runtime.priceAuthority?.identityByPriceKey,
+                       YuGiOhPriceAdapter.priceAuthority(bundled).identityByPriceKey)
+    }
+    func testBundledLaunchCacheMissesForAnotherBuildAndClears() throws {
+        let suite = "YuGiOhBundledLaunchTests-\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let other = YuGiOhBundledLaunch.Manifest(buildKey: "another-build", generation: "yugioh-en-other",
+                                                 capabilities: CardGameCapabilities.browse.rawValue)
+        defaults.set(try JSONEncoder().encode(other), forKey: YuGiOhBundledLaunch.defaultsKey)
+        XCTAssertNil(YuGiOhBundledLaunch.cachedManifest(defaults: defaults))
+        YuGiOhBundledLaunch.store(generation: "yugioh-en-current", capabilities: [.browse], defaults: defaults)
+        XCTAssertEqual(YuGiOhBundledLaunch.cachedManifest(defaults: defaults)?.generation, "yugioh-en-current")
+        YuGiOhBundledLaunch.clear(defaults: defaults)
+        XCTAssertNil(YuGiOhBundledLaunch.cachedManifest(defaults: defaults))
+        YuGiOhBundledLaunch.store(generation: "yugioh-en-current", capabilities: [], defaults: defaults)
+        XCTAssertNil(YuGiOhBundledLaunch.cachedManifest(defaults: defaults), "An unusable catalog is never cached")
+    }
+    func testFailedDeferredLoadFailsClosed() {
+        let failing = YuGiOhCatalog(knownGeneration: "yugioh-en-cached") { throw YuGiOhCatalog.LoadError.invalidSchema }
+        XCTAssertEqual(failing.generation, "yugioh-en-cached")
+        XCTAssertTrue(failing.printingByID.isEmpty)
+        XCTAssertTrue(failing.printingsByCode.isEmpty)
+        XCTAssertThrowsError(try failing.loaded())
+        XCTAssertThrowsError(try YuGiOhCatalogAdapter(catalog: failing).resolution(forPrintingID: UUID()))
+    }
 }
 
 private struct SupplementalFixtureAdapter: GameRecognitionAdapter {
