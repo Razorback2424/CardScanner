@@ -73,14 +73,25 @@ private actor OnePiecePriceRequestGate {
     let firstRequest = OnePieceLookupGate()
     private(set) var productCalls = 0
     private(set) var priceCalls = 0
+    private let olderCapture: Date
+    private let freshCapture: Date
+
+    init(watermark: Date) {
+        olderCapture = watermark.addingTimeInterval(-1)
+        freshCapture = watermark.addingTimeInterval(1)
+    }
+
     func response(_ request: URLRequest) async -> Data {
         if request.url!.lastPathComponent == "products" {
             productCalls += 1
+            let capturedAt = productCalls == 1 ? olderCapture : freshCapture
             if productCalls == 1 { await firstRequest.pause() }
-            return Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"categoryId":68,"groupId":3188,"name":"Shanks","extendedData":[{"name":"Number","value":"OP01-120"}]}]}"#.utf8)
+            return MarketMirrorFixture.stamped(Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"categoryId":68,"groupId":3188,"name":"Shanks","extendedData":[{"name":"Number","value":"OP01-120"}]}]}"#.utf8), capturedAt: capturedAt)
         }
         priceCalls += 1
-        return Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Foil","marketPrice":8.16}]}"#.utf8)
+        // The fresh cohort finishes while the older products request is held.
+        // Feed age belongs to its server capture, regardless of delivery order.
+        return MarketMirrorFixture.stamped(Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Foil","marketPrice":8.16}]}"#.utf8), capturedAt: priceCalls == 1 ? freshCapture : olderCapture)
     }
 }
 
@@ -1457,7 +1468,9 @@ final class OnePieceIntegrationTests: XCTestCase {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [OnePiecePriceTestProtocol.self]
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceConcurrentPrice-\(UUID())")
-        let gate = OnePiecePriceRequestGate()
+        // Both server captures stay in the past and straddle this withdrawal.
+        let watermark = Date.now.addingTimeInterval(-60)
+        let gate = OnePiecePriceRequestGate(watermark: watermark)
         OnePiecePriceTestProtocol.asyncHandler = { await gate.response($0) }
         defer {
             OnePiecePriceTestProtocol.asyncHandler = nil
@@ -1467,7 +1480,6 @@ final class OnePieceIntegrationTests: XCTestCase {
         let old = Task { try await source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation") }
         defer { old.cancel(); Task { await gate.firstRequest.resume() } }
         await gate.firstRequest.waitForStart()
-        let watermark = Date.now
         let completed = expectation(description: "Fresh cohort finishes before the old request")
         let freshRequests = Task {
             async let first = source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation", minimumFetchedAt: watermark)
