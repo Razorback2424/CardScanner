@@ -19,6 +19,7 @@ struct CollectorToolsPhotoArchive: Transferable {
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(exportedContentType: .zip) { archive in
             let url = try await archive.authorizedURL(using: .shared)
+            EbayListingPhotoExport.retainForShare(url)
             return SentTransferredFile(url)
         }
     }
@@ -26,6 +27,17 @@ struct CollectorToolsPhotoArchive: Transferable {
     private enum AccessError: LocalizedError {
         case purchaseRequired
         var errorDescription: String? { "Collector Tools is required to export multiple cards." }
+    }
+}
+
+private struct ListingPhotoShareFile: Transferable {
+    let url: URL
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .jpeg) { photo in
+            EbayListingPhotoExport.retainForShare(photo.url)
+            return SentTransferredFile(photo.url)
+        }
     }
 }
 
@@ -85,6 +97,7 @@ struct EbayListingPhotosView: View {
     }
 
     @State private var mode: Mode = .single
+    @State private var isWorkflowActive = false
     @State private var frontPickerItem: PhotosPickerItem?
     @State private var backPickerItem: PhotosPickerItem?
     @State private var frontData: Data?
@@ -94,6 +107,7 @@ struct EbayListingPhotosView: View {
     @State private var frontLoadGeneration = 0
     @State private var backLoadGeneration = 0
     @State private var isPreparingSingle = false
+    @State private var singleProcessingTask: Task<Void, Never>?
     @State private var singleOutput: EbayListingPhotoExport.Output?
     @State private var singleOutputDirectory: URL?
     @State private var errorMessage: String?
@@ -114,6 +128,31 @@ struct EbayListingPhotosView: View {
     @State private var savingPhotoDirectory: URL?
     @State private var saveConfirmation: String?
     @State private var inspectedPhoto: InspectedPhoto?
+
+    init() {
+#if DEBUG
+        // Exercise file ownership and full-screen inspection without opening
+        // a person's photo library. This route uses only generated pixels.
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_route"),
+           arguments.indices.contains(index + 1), arguments[index + 1] == "ListingPhotos" {
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            func fixture(_ color: UIColor) -> Data? {
+                UIGraphicsImageRenderer(size: CGSize(width: 900, height: 1260), format: format).image { context in
+                    color.setFill()
+                    context.fill(CGRect(x: 0, y: 0, width: 900, height: 1260))
+                    UIColor.black.setStroke()
+                    context.stroke(CGRect(x: 30, y: 30, width: 840, height: 1200))
+                    ("Synthetic listing fixture" as NSString).draw(at: CGPoint(x: 80, y: 80),
+                        withAttributes: [.font: UIFont.systemFont(ofSize: 32), .foregroundColor: UIColor.black])
+                }.jpegData(compressionQuality: 0.9)
+            }
+            _frontData = State(initialValue: fixture(.systemTeal))
+            _backData = State(initialValue: fixture(.systemPurple))
+        }
+#endif
+    }
 
     var body: some View {
         ScrollView {
@@ -144,11 +183,13 @@ struct EbayListingPhotosView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         if let singleArchiveURL {
-                            ShareLink(item: singleArchiveURL) {
+                            ShareLink(item: CollectorToolsPhotoArchive(url: singleArchiveURL, cardCount: 1),
+                                      preview: SharePreview("Listing photos", icon: Image(systemName: "doc.zipper"))) {
                                 Label("Export ZIP", systemImage: "doc.zipper")
                             }
                         }
-                        ShareLink(items: singleOutput.urls) {
+                        ShareLink(items: singleOutput.urls.map { ListingPhotoShareFile(url: $0) },
+                                  preview: { _ in SharePreview("Listing photo", icon: Image(systemName: "photo")) }) {
                             Label("Export 10 Photos Individually", systemImage: "photo.on.rectangle")
                         }
                         Button("Export 10 Photos to Photos App", systemImage: "square.and.arrow.down") {
@@ -191,12 +232,12 @@ struct EbayListingPhotosView: View {
         .onChange(of: batchPickerItems) { _, _ in
             updateBatchPairs()
         }
-        .task(id: singleGeneration) {
-            await prepareSingle(
-                generation: singleGeneration,
-                frontData: frontData,
-                backData: backData
-            )
+        .onAppear {
+            isWorkflowActive = true
+            if singleOutput == nil, !isPreparingSingle { beginPreparingSingle() }
+        }
+        .onChange(of: singleGeneration) { _, _ in
+            if isWorkflowActive { beginPreparingSingle() }
         }
         .task(id: batchPreviewGeneration) {
             await loadBatchPreviews(generation: batchPreviewGeneration)
@@ -213,13 +254,18 @@ struct EbayListingPhotosView: View {
             )
         }
         .onDisappear {
+            // Full-screen inspection/capture temporarily hides this screen;
+            // their files and selections still belong to the active workflow.
+            guard cameraSide == nil, inspectedPhoto == nil, !isShowingOffer else { return }
+            isWorkflowActive = false
             frontLoadGeneration &+= 1
             backLoadGeneration &+= 1
             singleGeneration &+= 1
-            batchSelectionGeneration &+= 1
             batchPreviewGeneration &+= 1
-            batchProcessingTask?.cancel()
-            batchProcessingTask = nil
+            singleProcessingTask?.cancel()
+            singleProcessingTask = nil
+            isPreparingSingle = false
+            cancelBatch()
             removeSingleArtifacts()
             removeBatchArtifacts()
         }
@@ -518,12 +564,22 @@ struct EbayListingPhotosView: View {
         singleGeneration &+= 1
     }
 
+    private func beginPreparingSingle() {
+        singleProcessingTask?.cancel()
+        let generation = singleGeneration
+        let front = frontData, back = backData
+        singleProcessingTask = Task {
+            await prepareSingle(generation: generation, frontData: front, backData: back)
+        }
+    }
+
     private func prepareSingle(
         generation: Int,
         frontData: Data?,
         backData: Data?
     ) async {
-        guard let frontData, let backData else { return }
+        guard !Task.isCancelled, generation == singleGeneration,
+              singleOutput == nil, let frontData, let backData else { return }
         isPreparingSingle = true
         do {
             let output = try await EbayListingPhotoExport.makeListingPhotos(

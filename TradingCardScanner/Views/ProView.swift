@@ -41,9 +41,8 @@ struct ProView: View {
             arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil
         }
         _path = State(
-            initialValue: route?.hasPrefix("Centering") == true
-                ? [.centering]
-                : []
+            initialValue: route == "ListingPhotos" ? [.ebayPhotos]
+                : route?.hasPrefix("Centering") == true ? [.centering] : []
         )
 #else
         _path = State(initialValue: [])

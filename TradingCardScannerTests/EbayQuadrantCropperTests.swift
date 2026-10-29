@@ -7,6 +7,26 @@ import UniformTypeIdentifiers
 @testable import TradingCardScanner
 
 final class EbayQuadrantCropperTests: XCTestCase {
+    func testHandedOffPhotoAndArchiveSurviveWorkflowCleanup() throws {
+        for archive in [false, true] {
+            let directory = try EbayListingPhotoExport.makeBatchDirectory()
+            let run = EbayListingPhotoExport.container(of: directory)
+            defer { try? FileManager.default.removeItem(at: run) }
+            let file = archive ? run.appendingPathComponent("photos.zip") : directory.appendingPathComponent("01.jpg")
+            try Data("shared artifact".utf8).write(to: file)
+            EbayListingPhotoExport.retainForShare(file)
+            EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: file.path),
+                "Delayed share readers still own this file after the screen exits")
+
+            let unshared = try EbayListingPhotoExport.makeBatchDirectory()
+            let unsharedRun = EbayListingPhotoExport.container(of: unshared)
+            EbayListingPhotoExport.removeRunContainer(forContentDirectory: unshared)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: unsharedRun.path),
+                "Retaining one share must not retain unrelated cancelled or superseded runs")
+        }
+    }
+
     /// The crop geometry preserves the Python tool's truncation instead of
     /// rounding each dimension up.
     func testCropRectsTruncateLikeTheOriginalTool() throws {

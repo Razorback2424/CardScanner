@@ -8,6 +8,27 @@ import UniformTypeIdentifiers
 /// Decoding and pixel work stay inside a detached task so the main actor only
 /// receives URLs, metadata, and already-rendered grid previews.
 enum EbayListingPhotoExport {
+    private static let shareLock = NSLock()
+    private static var sharedRunContainers: Set<URL> = []
+
+    /// A share extension can read after its source screen has disappeared.
+    /// Keep handed-off runs for this process; the next launch's sweep retires them.
+    static func retainForShare(_ file: URL) {
+        let file = file.standardizedFileURL
+        for name in ["EbayListingPhotos", "EbayListingPhotoBatches"] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(name, isDirectory: true)
+                .standardizedFileURL
+            guard file.path.hasPrefix(root.path + "/") else { continue }
+            let relative = file.path.dropFirst(root.path.count + 1)
+            guard let runID = relative.split(separator: "/").first,
+                  UUID(uuidString: String(runID)) != nil else { return }
+            shareLock.lock()
+            sharedRunContainers.insert(root.appendingPathComponent(String(runID), isDirectory: true))
+            shareLock.unlock()
+            return
+        }
+    }
+
     static let maximumJPEGByteCount = 12_000_000
     static let previewMaximumPixelDimension = 320
     /// The folder name every archive expands to. `NSFileCoordinator`'s
@@ -320,6 +341,12 @@ enum EbayListingPhotoExport {
 
     static func removeRun(at directory: URL?) {
         guard let directory else { return }
+        shareLock.lock()
+        defer { shareLock.unlock() }
+        let path = directory.standardizedFileURL.path
+        guard !sharedRunContainers.contains(where: {
+            path == $0.path || path.hasPrefix($0.path + "/")
+        }) else { return }
         do {
             try FileManager.default.removeItem(at: directory)
         } catch {

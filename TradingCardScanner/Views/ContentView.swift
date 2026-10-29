@@ -88,7 +88,7 @@ struct ContentView: View {
         case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
-        case "Centering", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation": initialTab = .pro
+        case "ListingPhotos", "Centering", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation": initialTab = .pro
         default: initialTab = .portfolio
         }
         _selectedTab = State(initialValue: initialTab)
@@ -340,6 +340,7 @@ struct ContentView: View {
             await updateFallbackAvailability()
         }
         .onChange(of: scenePhase) { _, phase in
+            PerformanceSignpost.emitEvent("App.scenePhase", "phase=\(String(describing: phase))")
             if phase == .background {
                 BackgroundPriceRefresh.schedule()
                 return
