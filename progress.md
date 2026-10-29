@@ -4562,6 +4562,28 @@ historical.
 - Device-build DerivedData is under the external SSD's
   `CardScannerBuilds/CommitAndInstall-20261024/` directory.
 
+### 2026-10-28 — Yu-Gi-Oh! market history implementation
+
+- Added active-catalog product/edition mapping to the existing JustTCG history
+  service; both detail screens now allow Yu-Gi-Oh! charts. Current valuation
+  quotes retain their snapshot provenance and dates.
+- Final focused simulator selection passed **149 tests, zero failures/skips**,
+  including six new history regressions, existing vendor/game contracts and
+  chart/render tests. Collection/catalog requests share the same edition cache;
+  stale vendor handles and catalog withdrawal cannot redirect it.
+- Inspected synthetic chart, missing-key recovery and unavailable-history
+  presentation on Simulator; final chart capture uses the isolated QA device.
+  See the [history checklist](references/yugioh_history_success_checklist.md).
+  Results/screenshots are external under `CodexBuild/YuGiOhHistory-20261028/`.
+- HIG source/individual-capture review passes; repeated full-shell visual
+  acceptance remains a risk because some QA captures lose static header glyphs.
+  Complete individual captures and the limitation are recorded in the checklist.
+  Current plans/map/audit distinguish the new history
+  provider from valuation freshness; added local links, shell syntax and
+  `git diff --check` pass.
+- Build/test products use the external SSD. No live-provider, physical-device,
+  deployment or release acceptance is claimed.
+
 ### 2026-10-25 — Seamless card market-history loading
 
 - Collection and catalog detail now distinguish initial loading, unavailable

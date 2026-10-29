@@ -1,5 +1,16 @@
 # Yu-Gi-Oh! implementation and verification
 
+**Market history implementation — 2026-10-28, working-tree patch:** catalog
+and collection details now request JustTCG history using the active catalog's
+exact TCGplayer product and supported edition. English, USD, Near Mint listings
+must match uniquely. Stored vendor handles cannot override current authority;
+withdrawn editions hide cached history and invalidate in-flight responses.
+History is independent of the bundled valuation quote and does not activate
+hosted delivery or live quote refresh. See the
+[history acceptance checklist](../../references/yugioh_history_success_checklist.md)
+and [progress entry](../../progress.md#2026-10-28--yu-gi-oh-market-history-implementation)
+for current simulator evidence and provider-verification limits.
+
 **Automatic scanning update — 2026-10-22, base `1ac6750`:** shared resolution
 and final-save policy now separate verified printing families from exhaustive
 edition coverage. Release-driven evidence admits 260 families across MP24,
@@ -182,7 +193,9 @@ manual freshness watermarks cannot turn an old bundle into a live refresh.
 Missing historical market quotes report provider unavailable, including ordinary
 nil-watermark refreshes, so they cannot create a current successful check or
 coverage stamp. Prior prices remain intact. No alternate edition or listing
-fallback is used and no history provider was added. Scanner, Browse, detail and
+fallback is used for valuation quotes. JustTCG now supplies a separate
+product/edition history series when credentials and provider coverage permit.
+Scanner, Browse, detail and
 portfolio disclose the bundled capture date and lack of live refresh.
 
 Unsupported scanner siblings remain visible with disabled actions and reasons.

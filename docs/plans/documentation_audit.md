@@ -8,6 +8,15 @@ history.
 
 ## Current authority boundary — updated 2026-10-28
 
+**Yu-Gi-Oh! market history — 2026-10-28, working-tree patch:**
+the [implementation plan](yugioh_code_implementation.md) now distinguishes bundled
+valuation quotes from JustTCG history. Earlier claims that this game has no
+history provider are superseded by this integration; snapshot freshness and
+hosted-delivery limitations still apply. Current verification belongs to the
+[history checklist](../../references/yugioh_history_success_checklist.md) and
+[progress entry](../../progress.md#2026-10-28--yu-gi-oh-market-history-implementation).
+Authenticated provider coverage and physical-device acceptance remain open.
+
 **Comprehensive-review follow-up — working-tree implementation:**
 the [current progress entry](../../progress.md#2026-10-28--refinement-review-implementation)
 records eight implemented code findings and the explicitly deferred privacy/support
