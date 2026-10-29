@@ -64,6 +64,7 @@ enum EbayListingPhotoExport {
         case byteBudgetExceeded(name: String, byteCount: Int)
         case emptyBatch
         case missingSource
+        case invalidOrder
 
         var errorDescription: String? {
             switch self {
@@ -79,6 +80,8 @@ enum EbayListingPhotoExport {
                 return "No card in the batch produced listing photos."
             case .missingSource:
                 return "Add a front or back photo to generate listing photos."
+            case .invalidOrder:
+                return "The photo order is incomplete. Generate the photos again."
             }
         }
     }
@@ -164,6 +167,53 @@ enum EbayListingPhotoExport {
             try await worker.value
         } onCancel: {
             worker.cancel()
+        }
+    }
+
+    /// Lightweight source-screen previews use the same ratios and corner order
+    /// as the export, without writing JPEGs or decoding camera-sized pixels.
+    static func makeStylePreviews(data: Data, isBack: Bool) async throws -> [UIImage] {
+        let worker = Task.detached(priority: .userInitiated) {
+            let preview = try inputPreviewSynchronously(data: data, maximumPixelDimension: 640)
+            guard let image = preview.cgImage else { throw Error.decodeFailed(side: isBack ? "back" : "front") }
+            let rects = try EbayQuadrantCropper.cropRects(imageWidth: image.width, imageHeight: image.height,
+                                                        ratio: isBack ? EbayQuadrantCropper.backRatio : EbayQuadrantCropper.frontRatio)
+            return [preview] + (try EbayQuadrantCropper.Quadrant.allCases.map {
+                UIImage(cgImage: try EbayQuadrantCropper.crop(image, to: rects[$0]!))
+            })
+        }
+        return try await withTaskCancellationHandler { try await worker.value } onCancel: { worker.cancel() }
+    }
+
+    /// Copy into a fresh run so a share extension may keep reading the previous
+    /// files. Renumbering is lossless and leaves the original run untouched if a
+    /// copy fails or the user leaves the workflow before it finishes.
+    static func reorderedCopy(of output: Output, order: [Int]) async throws -> Output {
+        guard !order.isEmpty, order.count == output.urls.count, Set(order) == Set(output.urls.indices),
+              output.previews.count == order.count, output.pixelDimensions.count == order.count else {
+            throw Error.invalidOrder
+        }
+        let directory = try await RunDirectoryStore.shared.beginRun()
+        do {
+            let worker = Task.detached(priority: .userInitiated) {
+                let firstNumber = output.urls.count == 5 && output.urls.allSatisfy { $0.lastPathComponent.contains("Back") } ? 6 : 1
+                var urls: [URL] = []
+                var reduced: [String] = []
+                for (position, index) in order.enumerated() {
+                    try Task.checkCancellation()
+                    let name = String(format: "%02d-", firstNumber + position) + output.urls[index].lastPathComponent.dropFirst(3)
+                    let url = directory.appendingPathComponent(name)
+                    try FileManager.default.copyItem(at: output.urls[index], to: url)
+                    urls.append(url)
+                    if output.reducedQualityNames.contains(output.urls[index].lastPathComponent) { reduced.append(name) }
+                }
+                return Output(urls: urls, previews: order.map { output.previews[$0] },
+                              pixelDimensions: order.map { output.pixelDimensions[$0] }, reducedQualityNames: reduced)
+            }
+            return try await withTaskCancellationHandler { try await worker.value } onCancel: { worker.cancel() }
+        } catch {
+            removeRun(at: container(of: directory))
+            throw error
         }
     }
 

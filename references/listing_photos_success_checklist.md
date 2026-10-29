@@ -1,57 +1,89 @@
-# Listing photo controls acceptance
+# Listing Photos redesign acceptance
 
-Target screen: eBay Listing Photos, single card.
-Route: `ListingPhotos`; synthetic states `empty`, `front`, `back`, `generated`.
+Status: implementation and scoped Simulator verification complete — 2026-10-29.
+
+Target: Listing Photos, single-card empty, ready and review/export states.
+Route: `ListingPhotos`; synthetic states `empty`, `front`, `back`,
+`collection` (metadata fixture), and `generated`.
 Device: iPhone 17 / iOS 27 Simulator.
-Evidence: `/Volumes/T7/CodexBuild/ListingPhotos-20261029/`.
+Build and capture evidence: `/Volumes/T7/CodexBuild/ListingPhotosRedesign-20261029/`.
+
+The supplied HTML is a design reference, including its three state layouts.
+Native navigation is retained for the existing Pro destination instead of drawing
+a simulated sheet, grabber or status bar. Colors follow system appearance.
+Collection has one device-local saved artwork photo per card; its picker adds that
+photo as the front and explains this limitation. It never substitutes catalog
+artwork for a photo of the user's card. Photos saves to the library, so its button
+is named “Photos” rather than promising an album.
 
 ## Visual and interaction checks
 
-- [x] Each side has one Add / Replace menu with camera, Photos and Files options.
-- [x] Attached photos have a visible remove action; clearing one leaves the other usable.
-- [x] Empty state explains optional sides and disables generation.
-- [x] Front-only and back-only states offer five-photo generation.
-- [x] Both attached sides expose Both sides / Front only / Back only selection.
-- [x] Five-photo output exposes export actions with the correct count.
-- [x] Light/dark appearance, large text, safe areas and navigation remain usable.
-- [x] Final screenshot inspected after the last code change.
+- [x] Empty state has two dashed source tiles, Collection entry and disabled CTA.
+- [x] Ready state shows both source images, inclusion checks and corner previews.
+- [x] Review state separates source editing from selected-photo preview and two side grids.
+- [x] Selecting a thumbnail changes the large preview; tapping it retains full-size inspection.
+- [x] Generation and export remain pinned above the safe area; content scrolls.
+- [x] Final light/dark and maximum Dynamic Type source/results captures inspected.
+  Accessibility sizes stack tiles/buttons and keep primary labels inside padded
+  capsules; decorative source symbols stay within their fixed badges.
+- [x] Source menus, removal, styles/scope and Collection empty state verified.
+  Removing the back after choosing Back only restores front-only generation and
+  front preview numbering. Expanding the Styles sheet exposes all scope choices.
+- [x] Files/share cancellation and reordering verified in the rendered app.
+  Make Cover Photo moves the back to upload position 1 and updates the preview,
+  both side grids and filenames. Full-size inspection still opens after Files
+  cancellation. The share sheet contains 10 images; dismissing it keeps results.
 
 ## Regression checks
 
-- [x] Front-only and back-only export tests check five files, preview/dimension counts,
-  native full-photo bytes, correct crop dimensions and side-specific ZIP contents.
-- [x] Empty-source requests fail before creating a temporary run.
-- [x] Existing pair, file ownership, cancellation and crop tests pass.
+- [x] Final run: all 31 photo export/crop tests pass with no failures or skips,
+  including preview ratios, lossless
+  reordering across sides, original-file survival, numbered ZIP entries,
+  back-only replacement numbering, and invalid-order rejection.
+- [x] Wider focused run: 40 passed, one StoreKit test skipped and one failed.
+  The unchanged purchase/reconstruction/restore test failed its immediate
+  entitlement assertions at lines 196–197, then passed when rerun alone.
+  This does not establish live purchase or sandbox readiness.
+- [x] Final build/test compilation and `git diff --check` pass.
 
-Verification is limited to synthetic Simulator data. Actual camera capture,
-photo-library saves, physical-device sharing and VoiceOver remain manual checks.
+The first large-text capture caught startup; the settled capture exposed an
+oversized checkmark and cramped Generate label. Both were corrected and the
+source/results recaptured. Use `UI_CAPTURE_DELAY_SECONDS=20` with the existing
+screenshot script to allow this checkout's startup work to settle. Simulator
+appearance and content size were restored to light / large after verification.
 
-## UI / UX review
+The existing batch pipeline, single-card free access and paid batch ownership
+checks remain in place. Reordering writes a fresh run without re-encoding pixels;
+old files remain safe for an in-flight share. The old archive is allowed to
+finish before its source run is retired.
 
-Verdict: **PASS** for the inspected screen and interactions. The three original
-issues were competing source controls, no attachment removal, and a silent
-requirement for both sides. The focused fixes are in `EbayListingPhotosView` and
-`EbayListingPhotoExport`.
+## HIG gate
 
-- Platform patterns — **PASS**: native menus, pickers and existing navigation.
-- Clarity / cognitive load — **PASS**: one source menu per side, optional-side copy,
-  visible removal and an explicit generation action with the expected photo count.
-- Typography — **PASS**: accessibility sizes use vertical source rows and a menu
-  for generation scope; maximum Dynamic Type no longer splits short labels.
-- Accessibility baseline — **PASS** for inspected layout/source: named actions,
-  44-point source/removal targets, text plus status symbols, no custom motion or material.
-- Interaction cost — **PASS**: related source choices take two taps as requested;
-  generation is one tap after choosing its scope. This is outside Now/autoscheduler.
-- App Review design — **PASS** for this scoped change; release readiness is not assessed.
+Verdict: **PASS** for implemented patterns and inspected layouts.
+Top issues addressed: competing source actions,
+source/result content competing on one screen, and dark teal text contrast.
 
-Generation is now deliberate instead of automatic, adding one tap to the old
-two-source path so users can choose which side to process. Side-only output keeps
-01–05 / 06–10 filenames and exports only those five photos, allowing replacement
-of the matching half of an existing set.
+- Platform patterns — **PASS**: system navigation, source menus, segmented picker,
+  sheets, Photos picker and native Files export.
+- Clarity — **PASS**: one primary action per state; photo count, cover and upload
+  numbers describe the actual generated files.
+- Typography — **PASS**: semantic fonts, stacked source tiles and export buttons
+  at accessibility sizes; inspected at maximum Dynamic Type.
+- Accessibility — **PASS** in source: labeled photo buttons and selection,
+  alternative move actions, system materials and no added animation. Dark text
+  uses a lighter teal; solid primary buttons keep white text on the darker teal.
+- Interaction cost — **PASS**: generation and each export action take one tap;
+  source removal remains in the source menu and long-press menu.
+- App Review design — **PASS** for this feature's navigation and honest copy.
 
-Focused Debug Simulator tests: **38 passed, 1 skipped, 0 failures**. The skipped
-StoreKit interrupted-purchase scenario reports an existing sandbox follow-up.
-The final UI build succeeds. The first capture targeted the startup screen;
-subsequent route captures allow 20 seconds for existing startup work to settle.
-Small screenshot staging uses system temporary storage because Simulator cannot
-write directly to the removable volume; build outputs and evidence use the T7.
+Minimal fixes are scoped to source/result layout, labels, contrast and Dynamic
+Type in `EbayListingPhotosView`; lightweight previews and lossless order copies
+are in `EbayListingPhotoExport`. No remaining scoped gate failure was identified.
+
+Reference: [Apple accessibility guidance](https://developer.apple.com/design/human-interface-guidelines/accessibility).
+No physical-device, camera, live photo-library, provider, CloudKit, archive or
+release readiness claim. VoiceOver behavior, populated Collection selection,
+the drag gesture itself, photo-library saves and physical-device exports remain
+manual checks; reordering was exercised through the equivalent context-menu
+action. Earlier controls-only evidence is recorded in the 2026-10-29
+entry in [progress](../progress.md).

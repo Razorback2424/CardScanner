@@ -312,6 +312,56 @@ private final class ListingFrontCheckpoint: @unchecked Sendable {
 }
 
 final class EbayListingPhotoExportTests: XCTestCase {
+    func testReorderRenumbersLosslesslyAndLeavesPreviousShareFilesIntact() async throws {
+        let data = try XCTUnwrap(sourceFixture().jpegData(compressionQuality: 0.95))
+        let output = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data)
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: output.contentDirectory) }
+        let order = [5, 0, 9, 1, 2, 3, 4, 6, 7, 8]
+        let reordered = try await EbayListingPhotoExport.reorderedCopy(of: output, order: order)
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: reordered.contentDirectory) }
+        XCTAssertNotEqual(output.contentDirectory, reordered.contentDirectory)
+        for (position, original) in order.enumerated() {
+            let expectedName = String(format: "%02d-", position + 1) + output.urls[original].lastPathComponent.dropFirst(3)
+            XCTAssertEqual(reordered.urls[position].lastPathComponent, expectedName)
+            XCTAssertEqual(try Data(contentsOf: reordered.urls[position]), try Data(contentsOf: output.urls[original]))
+            XCTAssertEqual(reordered.pixelDimensions[position], output.pixelDimensions[original])
+            XCTAssertEqual(reordered.previews[position].size, output.previews[original].size)
+        }
+        let zip = try await EbayListingPhotoExport.makeArchive(at: try XCTUnwrap(reordered.contentDirectory))
+        let bytes = try Data(contentsOf: zip)
+        for url in reordered.urls { XCTAssertNotNil(bytes.range(of: Data(url.lastPathComponent.utf8))) }
+    }
+
+    func testReorderingBackOnlyKeepsReplacementNumbersAndRejectsInvalidOrders() async throws {
+        let data = try XCTUnwrap(sourceFixture().jpegData(compressionQuality: 0.95))
+        let output = try await EbayListingPhotoExport.makeListingPhotos(frontData: nil, backData: data)
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: output.contentDirectory) }
+        let reordered = try await EbayListingPhotoExport.reorderedCopy(of: output, order: [4, 3, 2, 1, 0])
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: reordered.contentDirectory) }
+        XCTAssertEqual(reordered.urls.map { String($0.lastPathComponent.prefix(2)) }, ["06", "07", "08", "09", "10"])
+        for order in [[0, 0, 1, 2, 3], [0, 1], [-1, 0, 1, 2, 3], [1, 2, 3, 4, 5]] {
+            do {
+                _ = try await EbayListingPhotoExport.reorderedCopy(of: output, order: order)
+                XCTFail("An invalid permutation must not create an export")
+            } catch EbayListingPhotoExport.Error.invalidOrder { }
+        }
+        XCTAssertTrue(output.urls.allSatisfy { FileManager.default.fileExists(atPath: $0.path) })
+    }
+
+    func testStylePreviewsMatchExportRatiosAndCornerOrder() async throws {
+        let data = try XCTUnwrap(sourceFixture().jpegData(compressionQuality: 0.95))
+        for isBack in [false, true] {
+            let styles = try await EbayListingPhotoExport.makeStylePreviews(data: data, isBack: isBack)
+            XCTAssertEqual(styles.count, 5)
+            let ratio = isBack ? EbayQuadrantCropper.backRatio : EbayQuadrantCropper.frontRatio
+            let expected = try EbayQuadrantCropper.cropRects(imageWidth: 100, imageHeight: 140, ratio: ratio)
+            XCTAssertEqual(styles.first?.size, CGSize(width: 100, height: 140))
+            for (index, quadrant) in EbayQuadrantCropper.Quadrant.allCases.enumerated() {
+                XCTAssertEqual(styles[index + 1].size, try XCTUnwrap(expected[quadrant]).size)
+            }
+        }
+    }
+
     func testStoredArchivePreservesBytesNamesAndChecksumsAcrossChunks() async throws {
         let directory = try EbayListingPhotoExport.makeBatchDirectory()
         defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory) }

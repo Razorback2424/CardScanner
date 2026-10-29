@@ -1,4 +1,5 @@
 import PhotosUI
+import SwiftData
 import CoreTransferable
 import SwiftUI
 import UIKit
@@ -42,6 +43,8 @@ private struct ListingPhotoShareFile: Transferable {
 }
 
 struct EbayListingPhotosView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ObservedObject private var collectorTools = CollectorToolsStore.shared
     @State private var isShowingOffer = false
@@ -150,6 +153,20 @@ struct EbayListingPhotosView: View {
     @State private var savingPhotoDirectory: URL?
     @State private var saveConfirmation: String?
     @State private var inspectedPhoto: InspectedPhoto?
+    @State private var isReviewingOutput = false
+    @State private var selectedOutputIndex = 0
+    @State private var isUpdatingOrder = false
+    @State private var frontStyles: [UIImage] = []
+    @State private var backStyles: [UIImage] = []
+    @State private var isShowingCollection = false
+    @State private var collectionTitle: String?
+    @State private var collectionSubtitle: String?
+    @State private var isShowingStyles = false
+    @State private var filesExport: ListingFilesExport?
+    private let listingButtonAccent = Color(red: 0.043, green: 0.478, blue: 0.514)
+    private var listingAccent: Color {
+        colorScheme == .dark ? Color(red: 0.247, green: 0.761, blue: 0.796) : listingButtonAccent
+    }
 
     init() {
 #if DEBUG
@@ -172,6 +189,10 @@ struct EbayListingPhotosView: View {
             }
             let stateIndex = arguments.firstIndex(of: "-ui_debug_state")
             let state = stateIndex.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+            if state == "collection" {
+                _collectionTitle = State(initialValue: "Sample Card")
+                _collectionSubtitle = State(initialValue: "Sample Set · 041/198 · Holo Rare")
+            }
             if state != "empty" && state != "back" {
                 _frontData = State(initialValue: fixture(.systemTeal))
             }
@@ -185,51 +206,103 @@ struct EbayListingPhotosView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Single-card photos are free. Batch processing is included with Collector Tools.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Picker("Workflow", selection: $mode) {
-                    ForEach(Mode.allCases) { mode in
-                        Text(mode.title).tag(mode)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                if mode == .single {
-                    singleContent
+                if isReviewingOutput, let singleOutput {
+                    outputGrid(singleOutput)
                 } else {
-                    batchContent
+                    Picker("Workflow", selection: $mode) {
+                        ForEach(Mode.allCases) { mode in
+                            Text(mode.title).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .disabled(isPreparingSingle || isPreparingBatch)
+                    if mode == .single {
+                        singleContent
+                    } else {
+                        batchContent
+                    }
                 }
             }
             .padding(16)
             .contentWidthLimit(.standard)
         }
-        .navigationTitle("eBay Listing Photos")
+        .background(Color(uiColor: .secondarySystemBackground))
+        .tint(listingAccent)
+        .navigationTitle(isReviewingOutput ? "\(singleOutput?.urls.count ?? 0) Photos" : "Listing Photos")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(isReviewingOutput)
+        .toolbar(.hidden, for: .tabBar)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if mode == .single { singleActionBar }
+        }
         .sheet(isPresented: $isShowingOffer) { CollectorToolsOfferView() }
+        .sheet(isPresented: $isShowingCollection) {
+            ListingCollectionPicker { title, subtitle, data in
+                startOverSingle()
+                collectionTitle = title
+                collectionSubtitle = subtitle
+                receiveCameraCapture(data, for: .front)
+            }
+        }
+        .sheet(isPresented: $isShowingStyles) {
+            NavigationStack {
+                List {
+                    Section("Five photos per side") {
+                        Label("Full view", systemImage: "rectangle.portrait")
+                        Label("Top left corner", systemImage: "arrow.up.left")
+                        Label("Top right corner", systemImage: "arrow.up.right")
+                        Label("Bottom right corner", systemImage: "arrow.down.right")
+                        Label("Bottom left corner", systemImage: "arrow.down.left")
+                    }
+                    if frontData != nil && backData != nil {
+                        Section("Include") { scopePicker.pickerStyle(.inline) }
+                    }
+                }
+                .navigationTitle("Photo Styles")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar { ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { isShowingStyles = false }
+                } }
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(item: $filesExport) { export in
+            ListingFilesExporter(urls: export.urls) { saved in
+                if saved { saveConfirmation = "Saved listing photos to Files." }
+            }
+        }
         .toolbar {
-            if mode == .single, let singleOutput, !singleOutput.urls.isEmpty {
+            if isReviewingOutput {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        isReviewingOutput = false
+                    } label: { Label("Source photos", systemImage: "chevron.left") }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Back to source photos")
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            } else if mode == .single {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        if let singleArchiveURL {
+                        if let singleArchiveURL, let singleOutput {
                             ShareLink(item: CollectorToolsPhotoArchive(url: singleArchiveURL, cardCount: 1),
                                       preview: SharePreview("Listing photos", icon: Image(systemName: "doc.zipper"))) {
                                 Label("Export ZIP", systemImage: "doc.zipper")
                             }
+                            Button("Review \(singleOutput.urls.count) Photos", systemImage: "photo.on.rectangle") {
+                                isReviewingOutput = true
+                            }
                         }
-                        ShareLink(items: singleOutput.urls.map { ListingPhotoShareFile(url: $0) },
-                                  preview: { _ in SharePreview("Listing photo", icon: Image(systemName: "photo")) }) {
-                            Label("Export \(singleOutput.urls.count) Photos Individually", systemImage: "photo.on.rectangle")
-                        }
-                        Button("Save \(singleOutput.urls.count) Photos to Photos App", systemImage: "square.and.arrow.down") {
-                            saveSingleOutputToPhotos()
-                        }
-                        .disabled(isSavingToPhotos)
+                        Button("Use a card from Collection", systemImage: "rectangle.stack") { isShowingCollection = true }
+                        Button("Photo Styles", systemImage: "slider.horizontal.3") { isShowingStyles = true }
+                        Button("Start Over", systemImage: "arrow.counterclockwise", action: startOverSingle)
                     } label: {
-                        Label("Export", systemImage: "square.and.arrow.up")
+                        Label("Photo options", systemImage: "ellipsis")
                     }
                     .labelStyle(.iconOnly)
-                    .accessibilityLabel("Export listing photos")
+                    .disabled(isPreparingSingle || frontIsLoading || backIsLoading)
                 }
             }
             if mode == .batch, let batchArchiveURL,
@@ -268,6 +341,24 @@ struct EbayListingPhotosView: View {
 #endif
         }
         .onChange(of: generationScope) { _, _ in invalidateSingleOutput() }
+        .task(id: frontData) {
+            frontStyles = []
+            guard let frontData else { return }
+            do {
+                let previews = try await EbayListingPhotoExport.makeStylePreviews(data: frontData, isBack: false)
+                guard !Task.isCancelled else { return }
+                frontStyles = previews
+            } catch { if !Task.isCancelled { errorMessage = error.localizedDescription } }
+        }
+        .task(id: backData) {
+            backStyles = []
+            guard let backData else { return }
+            do {
+                let previews = try await EbayListingPhotoExport.makeStylePreviews(data: backData, isBack: true)
+                guard !Task.isCancelled else { return }
+                backStyles = previews
+            } catch { if !Task.isCancelled { errorMessage = error.localizedDescription } }
+        }
         .photosPicker(
             isPresented: $isShowingPhotoPicker,
             selection: photoPickerSide == .front ? $frontPickerItem : $backPickerItem,
@@ -313,7 +404,8 @@ struct EbayListingPhotosView: View {
             // Full-screen inspection/capture temporarily hides this screen;
             // their files and selections still belong to the active workflow.
             guard cameraSide == nil, inspectedPhoto == nil,
-                  !isShowingOffer, !isShowingFileImporter, !isShowingPhotoPicker else { return }
+                  !isShowingOffer, !isShowingFileImporter, !isShowingPhotoPicker,
+                  !isShowingCollection, !isShowingStyles, filesExport == nil else { return }
             isWorkflowActive = false
             frontLoadGeneration &+= 1
             backLoadGeneration &+= 1
@@ -331,65 +423,159 @@ struct EbayListingPhotosView: View {
     @ViewBuilder
     private var singleContent: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Source photos")
-                .font(.headline)
-            Text("Add either side for 5 photos, or both for 10.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            singleSlot(side: .front, isReady: frontData != nil)
-            singleSlot(side: .back, isReady: backData != nil)
-
-            if frontData != nil && backData != nil {
-                if dynamicTypeSize.isAccessibilitySize {
-                    scopePicker.pickerStyle(.menu)
-                } else {
-                    scopePicker.pickerStyle(.segmented)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(collectionTitle ?? (frontData == nil && backData == nil ? "Add your card" : "Your card"))
+                    .font(.title2.bold())
+                Text(collectionSubtitle ?? "Front, back, or both. Each side makes 5 photos.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            let layout = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(spacing: 16)) : AnyLayout(HStackLayout(alignment: .top, spacing: 14))
+            layout {
+                singleSlot(side: .front, isReady: frontData != nil)
+                singleSlot(side: .back, isReady: backData != nil)
+            }
+            if frontData != nil || backData != nil {
+                Text("Tap a photo to replace it. Touch and hold for more.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                stylePreviewStrip
+            }
+            if frontData == nil && backData == nil {
+                Button { isShowingCollection = true } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "rectangle.stack.fill")
+                            .foregroundStyle(listingAccent)
+                            .frame(width: 36, height: 36)
+                            .background(listingAccent.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Use a card from Collection").font(.body.weight(.medium))
+                            Text("Reuses a photo saved on this device").font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 0)
+                        Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                    }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(uiColor: .tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 14))
                 }
-            }
-
-            if isPreparingSingle {
-                ProgressView("Preparing listing photos…")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            } else {
-                Button(generationTitle, systemImage: "wand.and.stars", action: beginPreparingSingle)
-                    .buttonStyle(.borderedProminent)
-                    .disabled((frontData == nil && backData == nil) || frontIsLoading || backIsLoading)
-                    .accessibilityIdentifier("listingPhotos.generate")
-            }
-
-            if frontData != nil && backData != nil && generationScope != .both {
-                Text("Generates only the selected side. Original filenames are kept so you can replace that side’s five photos.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            if let singleOutput {
-                outputGrid(singleOutput)
-                Button("Start Over", systemImage: "arrow.counterclockwise", action: startOverSingle)
-                    .buttonStyle(.bordered)
-            }
-
-            if isSavingToPhotos {
-                ProgressView("Saving to Photos…")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            if let saveConfirmation {
-                Text(saveConfirmation)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                .buttonStyle(.plain)
+                .disabled(isPreparingSingle || frontIsLoading || backIsLoading)
             }
         }
-
         if let errorMessage {
             Text(errorMessage)
                 .font(.footnote)
                 .foregroundStyle(.red)
         }
+    }
 
-        Text("Saving to Photos discards filenames. Files or AirDrop preserve the numbered upload order.")
-            .font(.footnote)
-            .foregroundStyle(.secondary)
+    private var expectedPhotoCount: Int {
+        let both = frontData != nil && backData != nil
+        return (frontData != nil && (!both || generationScope != .back) ? 5 : 0)
+            + (backData != nil && (!both || generationScope != .front) ? 5 : 0)
+    }
+
+    private var stylePreviewStrip: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            let headingLayout = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4)) : AnyLayout(HStackLayout())
+            headingLayout {
+                Text("\(expectedPhotoCount) photos, in upload order").font(.subheadline.weight(.semibold))
+                if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+                Button("Styles") { isShowingStyles = true }.font(.subheadline).frame(minHeight: 44)
+            }
+            Text("Full view plus all four corners, for each side.")
+                .font(.caption).foregroundStyle(.secondary)
+            let both = frontData != nil && backData != nil
+            let previews = (both && generationScope == .back ? [] : frontStyles)
+                + (both && generationScope == .front ? [] : backStyles)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(previews.indices, id: \.self) { index in
+                        ListingPhotoThumbnail(image: previews[index], number: index + (frontData == nil || (both && generationScope == .back) ? 6 : 1))
+                            .frame(width: 56, height: 56)
+                    }
+                }
+                .padding(.vertical, 8)
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(expectedPhotoCount) photos: full view, top left, top right, bottom right and bottom left for each included side")
+        }
+    }
+
+    private var singleActionBar: some View {
+        VStack(spacing: 10) {
+            if isReviewingOutput, let output = singleOutput {
+                Button {
+                    output.urls.forEach(EbayListingPhotoExport.retainForShare)
+                    filesExport = ListingFilesExport(urls: output.urls)
+                } label: {
+                    HStack(spacing: 8) {
+                        if !dynamicTypeSize.isAccessibilitySize { Image(systemName: "folder") }
+                        Text("Save to Files").multilineTextAlignment(.center)
+                    }
+                        .padding(.horizontal, 20).padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, minHeight: 54)
+                        .foregroundStyle(.white).background(listingButtonAccent, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Keeps the numbered filenames in upload order")
+                .disabled(isUpdatingOrder)
+                let layout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
+                layout {
+                    Button(action: saveSingleOutputToPhotos) {
+                        Label(isSavingToPhotos ? "Saving…" : "Photos", systemImage: "photo")
+                            .frame(maxWidth: .infinity, minHeight: 38)
+                            .foregroundStyle(listingAccent)
+                    }
+                    .disabled(isSavingToPhotos || isUpdatingOrder)
+                    ShareLink(items: output.urls.map { ListingPhotoShareFile(url: $0) },
+                              preview: { _ in SharePreview("Listing photo", icon: Image(systemName: "photo")) }) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                            .frame(maxWidth: .infinity, minHeight: 38)
+                            .foregroundStyle(listingAccent)
+                    }
+                    .disabled(isUpdatingOrder)
+                }
+                .buttonStyle(.bordered).buttonBorderShape(.capsule)
+                if isUpdatingOrder { ProgressView("Updating upload order…") }
+                if let saveConfirmation { Text(saveConfirmation).font(.caption).foregroundStyle(.secondary) }
+                if let errorMessage { Text(errorMessage).font(.caption).foregroundStyle(.red) }
+            } else {
+                if frontData == nil && backData == nil {
+                    Text("Add at least one side to continue.").font(.caption).foregroundStyle(.secondary)
+                }
+                Button {
+                    if singleOutput != nil { isReviewingOutput = true } else { beginPreparingSingle() }
+                } label: {
+                    HStack(spacing: 8) {
+                        if isPreparingSingle { ProgressView().tint(.white) }
+                        else if !dynamicTypeSize.isAccessibilitySize {
+                            Image(systemName: singleOutput == nil ? "wand.and.stars" : "photo.on.rectangle")
+                        }
+                        Text(isPreparingSingle ? "Preparing Photos…" : singleOutput == nil ? generationTitle : "Review \(singleOutput?.urls.count ?? 0) Photos")
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.horizontal, 20).padding(.vertical, 8)
+                    .frame(maxWidth: .infinity, minHeight: 54)
+                    .foregroundStyle(.white)
+                    .background(listingButtonAccent, in: Capsule())
+                    .opacity((frontData == nil && backData == nil) || frontIsLoading || backIsLoading ? 0.35 : 1)
+                }
+                .buttonStyle(.plain)
+                .disabled((frontData == nil && backData == nil) || frontIsLoading || backIsLoading || isPreparingSingle)
+                .accessibilityIdentifier("listingPhotos.generate")
+            }
+        }
+        .font(.body.weight(.semibold))
+        .padding(.horizontal, 16).padding(.vertical, 12)
+        .contentWidthLimit(.standard)
+        .frame(maxWidth: .infinity)
+        .background(.bar)
     }
 
     private var scopePicker: some View {
@@ -497,57 +683,67 @@ struct EbayListingPhotosView: View {
 
     private func singleSlot(side: Side, isReady: Bool) -> some View {
         let isLoading = side == .front ? frontIsLoading : backIsLoading
-        let rowLayout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
-            : AnyLayout(HStackLayout())
-
-        return VStack(alignment: .leading, spacing: 10) {
-            rowLayout {
-                Label(side.title, systemImage: side.systemImage)
-                    .font(.headline)
-                if !dynamicTypeSize.isAccessibilitySize { Spacer() }
-                Label(
-                    isLoading ? "Loading…" : (isReady ? "Ready" : "Optional"),
-                    systemImage: isReady ? "checkmark.circle.fill" : "circle"
-                )
-                .font(.subheadline)
-                .foregroundStyle(isReady ? .green : .secondary)
-            }
-
-            rowLayout {
-                Menu {
-                    sourceButtons(side: side)
-                } label: {
-                    if dynamicTypeSize.isAccessibilitySize {
-                        Text(isReady ? "Replace…" : "Add…")
-                            .frame(minHeight: 44)
-                    } else {
-                        Label(isReady ? "Replace…" : "Add…", systemImage: isReady ? "arrow.triangle.2.circlepath" : "plus")
-                            .frame(minHeight: 44)
-                    }
-                }
-                .buttonStyle(.bordered)
-                .accessibilityLabel("\(isReady ? "Replace" : "Add") \(side.title.lowercased()) photo")
-                .accessibilityIdentifier("listingPhotos.\(side.rawValue).add")
-
-                if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+        let preview = (side == .front ? frontStyles : backStyles).first
+        return VStack(spacing: 8) {
+            Menu {
+                sourceButtons(side: side)
                 if isReady || isLoading {
-                    Button(role: .destructive) {
-                        clearSinglePhoto(side: side)
-                    } label: {
-                        Image(systemName: "trash")
-                            .frame(minWidth: 44, minHeight: 44)
+                    Button("Remove Photo", systemImage: "trash", role: .destructive) { clearSinglePhoto(side: side) }
+                        .accessibilityIdentifier("listingPhotos.\(side.rawValue).remove")
+                }
+            } label: {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(uiColor: .tertiarySystemBackground))
+                    if let preview {
+                        Image(uiImage: preview).resizable().scaledToFit().padding(4)
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "checkmark").font(.system(size: 12, weight: .bold)).foregroundStyle(.white)
+                                    .frame(width: 26, height: 26).background(listingButtonAccent, in: Circle())
+                            }
+                            Spacer()
+                        }.padding(8)
+                    } else if isReady, !isLoading, errorMessage != nil {
+                        Label("Preview unavailable", systemImage: "exclamationmark.triangle")
+                            .font(.caption).padding()
+                    } else if isLoading || isReady {
+                        ProgressView("Loading…").font(.caption)
+                    } else {
+                        VStack(spacing: 10) {
+                            Image(systemName: "plus").font(.system(size: 24))
+                                .foregroundStyle(.white).frame(width: 48, height: 48)
+                                .background(listingButtonAccent, in: Circle())
+                            Text("Add \(side.title)").font(.subheadline.weight(.semibold))
+                            Text("Camera or Photos").font(.caption).foregroundStyle(.secondary)
+                        }.padding(8)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Remove \(side.title.lowercased()) photo")
-                    .accessibilityHint("Clears this attachment. Your original photo is kept.")
-                    .accessibilityIdentifier("listingPhotos.\(side.rawValue).remove")
+                }
+                .aspectRatio(5.0 / 7.0, contentMode: .fit)
+                .overlay {
+                    if !isReady {
+                        RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(.secondary.opacity(0.5), style: StrokeStyle(lineWidth: 1.5, dash: [6, 5]))
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .buttonStyle(.plain)
+            .disabled(isPreparingSingle)
+            .accessibilityLabel("\(isReady ? "Replace" : "Add") \(side.title.lowercased()) photo")
+            .accessibilityIdentifier("listingPhotos.\(side.rawValue).add")
+            .contextMenu {
+                sourceButtons(side: side)
+                if isReady || isLoading {
+                    Button("Remove Photo", systemImage: "trash", role: .destructive) { clearSinglePhoto(side: side) }
                 }
             }
+            Text(side.title).font(.subheadline.weight(.semibold))
+                .foregroundStyle(isReady ? .primary : .secondary)
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
+        .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 280 : .infinity)
+        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
@@ -567,57 +763,131 @@ struct EbayListingPhotosView: View {
     }
 
     private func outputGrid(_ output: EbayListingPhotoExport.Output) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Listing order")
-                .font(.headline)
-
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 140), spacing: 12)],
-                spacing: 16
-            ) {
-                ForEach(output.urls.indices, id: \.self) { index in
-                    Button {
-                        inspectedPhoto = InspectedPhoto(
-                            id: index,
-                            url: output.urls[index],
-                            dimensions: output.pixelDimensions[index]
-                        )
-                    } label: {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Image(uiImage: output.previews[index])
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 180)
-                                .background(Color.black.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .overlay(alignment: .bottomTrailing) {
-                                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                                        .font(.caption2.weight(.semibold))
-                                        .foregroundStyle(.white)
-                                        .padding(5)
-                                        .background(.black.opacity(0.55), in: Circle())
-                                        .padding(6)
+        VStack(alignment: .leading, spacing: 16) {
+            if output.urls.indices.contains(selectedOutputIndex) {
+                Button {
+                    inspectedPhoto = InspectedPhoto(id: selectedOutputIndex, url: output.urls[selectedOutputIndex],
+                                                    dimensions: output.pixelDimensions[selectedOutputIndex])
+                } label: {
+                    Image(uiImage: output.previews[selectedOutputIndex]).resizable().scaledToFit()
+                        .frame(maxWidth: .infinity).frame(height: 250).padding(8)
+                        .background(Color(uiColor: .tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+                        .overlay(alignment: .bottomLeading) {
+                            Text("\(selectedOutputIndex + 1) of \(output.urls.count)\(selectedOutputIndex == 0 ? " · Cover photo" : "")")
+                                .font(.caption.weight(.semibold)).foregroundStyle(.white)
+                                .padding(.horizontal, 12).padding(.vertical, 7)
+                                .background(.black.opacity(0.7), in: Capsule()).padding(12)
+                        }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Photo \(selectedOutputIndex + 1), \(photoDescription(output.urls[selectedOutputIndex]))")
+                .accessibilityHint("Opens full-size review with zoom")
+                .accessibilityIdentifier("listingPhotos.selectedPhoto")
+            }
+            ForEach(Side.allCases) { side in
+                let indices = output.urls.indices.filter { output.urls[$0].lastPathComponent.contains(side.title) }
+                if !indices.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(side.title).font(.subheadline.weight(.semibold))
+                            Spacer()
+                            Text(uploadPositions(indices))
+                                .font(.caption).foregroundStyle(.secondary)
+                                .accessibilityLabel("Upload positions \(indices.map { String($0 + 1) }.joined(separator: ", "))")
+                        }
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8),
+                                                 count: dynamicTypeSize.isAccessibilitySize ? 3 : 5), spacing: 8) {
+                            ForEach(indices, id: \.self) { index in
+                                Button { selectedOutputIndex = index } label: {
+                                    ListingPhotoThumbnail(image: output.previews[index], number: index + 1)
+                                        .aspectRatio(1, contentMode: .fit)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .strokeBorder(selectedOutputIndex == index ? listingAccent : .clear, lineWidth: 3)
+                                        }
                                 }
-
-                            Text(output.urls[index].deletingPathExtension().lastPathComponent)
-                                .font(.caption.weight(.semibold))
-                                .lineLimit(1)
-                            let dimensions = output.pixelDimensions[index]
-                            Text("\(dimensions.width) × \(dimensions.height)")
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(.secondary)
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Photo \(index + 1), \(photoDescription(output.urls[index]))")
+                                .accessibilityAddTraits(selectedOutputIndex == index ? .isSelected : [])
+                                .accessibilityIdentifier("listingPhotos.output.\(index)")
+                                .draggable(String(index))
+                                .dropDestination(for: String.self) { items, _ in
+                                    guard let value = items.first, let source = Int(value) else { return false }
+                                    moveOutput(from: source, to: index)
+                                    return true
+                                }
+                                .contextMenu {
+                                    if index > 0 {
+                                        Button("Make Cover Photo", systemImage: "star") { moveOutput(from: index, to: 0) }
+                                        Button("Move Earlier", systemImage: "arrow.left") { moveOutput(from: index, to: index - 1) }
+                                    }
+                                    if index + 1 < output.urls.count {
+                                        Button("Move Later", systemImage: "arrow.right") { moveOutput(from: index, to: index + 1) }
+                                    }
+                                }
+                                .accessibilityAction(named: "Move earlier") { moveOutput(from: index, to: max(0, index - 1)) }
+                                .accessibilityAction(named: "Move later") { moveOutput(from: index, to: min(output.urls.count - 1, index + 1)) }
+                                .disabled(isUpdatingOrder || isSavingToPhotos)
+                            }
                         }
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityHint("Opens this photo for full-size review")
                 }
             }
-
+            Text("Numbered in eBay upload order. Drag to reorder.")
+                .font(.caption).foregroundStyle(.secondary).frame(maxWidth: .infinity)
             if !output.reducedQualityNames.isEmpty {
-                Text("JPEG quality was reduced to stay within eBay's 12 MB image limit for: \(output.reducedQualityNames.joined(separator: ", ")).")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Text("JPEG quality was reduced to fit the image size limit: \(output.reducedQualityNames.joined(separator: ", ")).")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func photoDescription(_ url: URL) -> String {
+        url.deletingPathExtension().lastPathComponent.dropFirst(3)
+            .replacingOccurrences(of: "-TL", with: " top left corner")
+            .replacingOccurrences(of: "-TR", with: " top right corner")
+            .replacingOccurrences(of: "-BR", with: " bottom right corner")
+            .replacingOccurrences(of: "-BL", with: " bottom left corner")
+    }
+
+    private func uploadPositions(_ indices: [Int]) -> String {
+        guard let first = indices.first, let last = indices.last else { return "" }
+        if last - first + 1 == indices.count { return "Photos \(first + 1)–\(last + 1)" }
+        return "Photos " + indices.map { String($0 + 1) }.joined(separator: ", ")
+    }
+
+    private func moveOutput(from source: Int, to destination: Int) {
+        guard let output = singleOutput, output.urls.indices.contains(source),
+              output.urls.indices.contains(destination), source != destination,
+              !isUpdatingOrder, !isSavingToPhotos else { return }
+        var order = Array(output.urls.indices)
+        order.insert(order.remove(at: source), at: destination)
+        let generation = singleGeneration
+        isUpdatingOrder = true
+        let previousTask = singleProcessingTask
+        singleProcessingTask = Task {
+            // The archive still reads the old run. Let it finish before copying
+            // and retiring that run; cancelling it would delete the source files.
+            await previousTask?.value
+            guard !Task.isCancelled, generation == singleGeneration else { return }
+            do {
+                let reordered = try await EbayListingPhotoExport.reorderedCopy(of: output, order: order)
+                guard !Task.isCancelled, generation == singleGeneration else {
+                    EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: reordered.contentDirectory)
+                    return
+                }
+                singleOutput = reordered
+                singleOutputDirectory = reordered.contentDirectory
+                selectedOutputIndex = destination
+                singleArchiveURL = nil
+                isUpdatingOrder = false
+                saveConfirmation = nil
+                EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: output.contentDirectory)
+                await buildSingleArchive(generation: generation, directory: reordered.contentDirectory)
+            } catch {
+                guard generation == singleGeneration else { return }
+                isUpdatingOrder = false
+                errorMessage = error.localizedDescription
             }
         }
     }
@@ -751,6 +1021,8 @@ struct EbayListingPhotosView: View {
             }
             singleOutput = output
             singleOutputDirectory = output.contentDirectory
+            selectedOutputIndex = 0
+            isReviewingOutput = true
             isPreparingSingle = false
             await buildSingleArchive(generation: generation, directory: output.contentDirectory)
         } catch is CancellationError {
@@ -812,6 +1084,8 @@ struct EbayListingPhotosView: View {
     }
 
     private func startOverSingle() {
+        collectionTitle = nil
+        collectionSubtitle = nil
         singleProcessingTask?.cancel()
         frontLoadGeneration &+= 1
         backLoadGeneration &+= 1
@@ -830,6 +1104,8 @@ struct EbayListingPhotosView: View {
     }
 
     private func removeSingleArtifacts() {
+        isReviewingOutput = false
+        isUpdatingOrder = false
         // The inspector reads a file inside the container about to be deleted.
         inspectedPhoto = nil
         if singleOutputDirectory != savingPhotoDirectory {
@@ -1107,6 +1383,127 @@ struct EbayListingPhotosView: View {
         }
         used.insert(candidate)
         return candidate
+    }
+}
+
+private struct ListingPhotoThumbnail: View {
+    let image: UIImage
+    let number: Int
+
+    var body: some View {
+        Image(uiImage: image).resizable().scaledToFit()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(uiColor: .tertiarySystemBackground))
+            .overlay(alignment: .bottomLeading) {
+                Text("\(number)").font(.caption2.bold()).foregroundStyle(.white)
+                    .padding(.horizontal, 5).padding(.vertical, 2)
+                    .background(.black.opacity(0.75), in: Capsule()).padding(4)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+private struct ListingFilesExport: Identifiable {
+    let id = UUID()
+    let urls: [URL]
+}
+
+/// Native Files export copies the JPEGs with their numbered names intact.
+private struct ListingFilesExporter: UIViewControllerRepresentable {
+    let urls: [URL]
+    let onCompletion: (Bool) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(onCompletion: onCompletion) }
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let picker = UIDocumentPickerViewController(forExporting: urls, asCopy: true)
+        picker.delegate = context.coordinator
+        return picker
+    }
+    func updateUIViewController(_ controller: UIDocumentPickerViewController, context: Context) {}
+    final class Coordinator: NSObject, UIDocumentPickerDelegate {
+        let onCompletion: (Bool) -> Void
+        init(onCompletion: @escaping (Bool) -> Void) { self.onCompletion = onCompletion }
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) { onCompletion(true) }
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) { onCompletion(false) }
+    }
+}
+
+private struct ListingCollectionPicker: View {
+    @Environment(\.dismiss) private var dismiss
+    @Query(sort: \CollectedCard.dateAdded, order: .reverse) private var cards: [CollectedCard]
+    @Query(sort: \LocalArtworkOverride.updatedAt, order: .reverse) private var artwork: [LocalArtworkOverride]
+    @State private var search = ""
+    @State private var loadingKey: String?
+    @State private var selectionTask: Task<Void, Never>?
+    @State private var errorMessage: String?
+    let onSelect: (String, String, Data) -> Void
+
+    private var filenames: [String: String] {
+        Dictionary(artwork.map { ($0.collectionKey, $0.filename) }, uniquingKeysWith: { first, _ in first })
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Text("Choose a card with a photo saved on this device. This adds its saved photo as the front; you can replace it or add a back.")
+                        .font(.subheadline).foregroundStyle(.secondary)
+                }
+                let localFiles = filenames
+                let eligible = cards.filter {
+                    !(localFiles[$0.collectionKey] ?? $0.userArtworkFilename ?? "").isEmpty
+                        && (search.isEmpty || $0.name.localizedCaseInsensitiveContains(search)
+                            || $0.setName.localizedCaseInsensitiveContains(search))
+                }
+                if eligible.isEmpty {
+                    ContentUnavailableView("No Saved Card Photos", systemImage: "rectangle.stack",
+                        description: Text("Add a photo to a card in Collection, or use Camera, Photos or Files in Listing Photos."))
+                }
+                ForEach(eligible) { card in
+                    Button {
+                        select(card, filename: localFiles[card.collectionKey] ?? card.userArtworkFilename)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(card.name).foregroundStyle(.primary)
+                                Text([card.setName, card.cardNumber, card.variantLabel].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · "))
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            if loadingKey == card.collectionKey { ProgressView() }
+                            else { Image(systemName: "plus.circle").accessibilityHidden(true) }
+                        }.frame(minHeight: 44)
+                    }
+                    .disabled(loadingKey != nil)
+                }
+                if let errorMessage { Text(errorMessage).foregroundStyle(.red) }
+            }
+            .searchable(text: $search, prompt: "Find a saved card photo")
+            .navigationTitle("Use from Collection")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
+        }
+        .onDisappear { selectionTask?.cancel() }
+    }
+
+    private func select(_ card: CollectedCard, filename: String?) {
+        loadingKey = card.collectionKey
+        errorMessage = nil
+        let title = card.name
+        let subtitle = [card.setName, card.cardNumber, card.variantLabel].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+        selectionTask = Task {
+            let data = await Task.detached(priority: .userInitiated) {
+                CollectionArtworkStore.image(filename: filename)?.jpegData(compressionQuality: 0.95)
+            }.value
+            guard !Task.isCancelled else { return }
+            loadingKey = nil
+            guard let data else {
+                errorMessage = "This photo is unavailable on this device. Choose another card or add a photo."
+                return
+            }
+            onSelect(title, subtitle, data)
+            dismiss()
+        }
     }
 }
 

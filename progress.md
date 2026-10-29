@@ -4798,3 +4798,25 @@ historical.
   Build/test/screenshot evidence remains on the external SSD under
   `/Volumes/T7/CodexBuild/ListingPhotos-20261029/`. No physical-device or release
   readiness claim; pre-existing user changes were preserved.
+
+### 2026-10-29 — Listing Photos mock-up implementation
+
+- Reviewed the supplied HTML's empty, ready and results states as design input.
+  Implemented side-by-side source tiles, source thumbnails and corner previews,
+  a pinned Generate action, and a separate photo review/export state.
+- Added native Files export, source selection from device-local Collection
+  artwork, and lossless reorder copies with numbered filenames. Collection
+  currently retains one saved photo per card, so the UI says this explicitly.
+- Final Simulator build and 31 photo export/crop tests pass without failures or
+  skips, including three new preview/reorder cases. The wider run had 40 passed,
+  1 skipped and 1 failed; the unchanged local StoreKit entitlement test then
+  passed in isolation. No live-purchase or device claim.
+- Inspected empty, ready and results states, light/dark appearance and maximum
+  Dynamic Type. Fixed decorative badge overflow, primary button padding and
+  dark secondary-action contrast found during the screenshot loop. Verified
+  source removal, scope selection, Collection empty state, thumbnail selection,
+  Make Cover Photo, Files/share cancellation and full-size inspection.
+- [Current acceptance checklist](references/listing_photos_success_checklist.md)
+  records HIG results and remaining manual checks. Evidence is under
+  `/Volumes/T7/CodexBuild/ListingPhotosRedesign-20261029/`; Simulator settings
+  were restored. No physical-device or release-readiness claim.
