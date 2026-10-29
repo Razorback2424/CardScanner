@@ -1,5 +1,17 @@
 # Guided centering repair
 
+**Rotation correction — 2026-10-29, base `f306918` plus working-tree patch:**
+manual rotation now applies only to the photo, leaving the red/cyan measurement
+guides fixed on screen and in the shared export. Zoom/pan still move both layers
+together. Updated pixel regression expectations supersede the earlier shared
+rotation contract; helper text now reads “Rotates photo only.” The focused
+`CenteringExportTests` run passes all 28 cases with zero failures/skips. An initial
+run used reversed expected signs for the photo stripe's rendered slope; the
+corrected test verifies opposite slopes and their magnitudes in both directions.
+Evidence is retained externally under `CodexBuild/CenteringRotation-20261029/`.
+The [current checklist](../../references/centering_guided_success_checklist.md)
+records Simulator visual acceptance separately from historical evidence.
+
 **Latest timing follow-up — 2026-10-14:** the previously failing REQ-022 case
 passes in the current Lorcana working tree after exact native scalar/median
 optimization. Final full-target results: 2,188 passed, zero failed, 12 skipped;

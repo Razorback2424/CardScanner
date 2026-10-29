@@ -4735,3 +4735,24 @@ historical.
   package/compiler caches, logs and results externally; compiler cache paths
   were verified from the build log. Evidence is under
   `/Volumes/T7/CodexBuild/InternalArtifactMigration-20261029/MasterSetReview/`.
+
+### 2026-10-29 — Centering rotates only the photo
+
+- Moved manual rotation from the shared photo/guide layer onto the photo;
+  exports also leave the guide geometry fixed. Zoom/pan continue moving both
+  layers together. Updated the helper text to “Rotates photo only.”
+- Corrected earlier render tests and checklist expectations that required
+  shared rotation. The documentation audit explicitly supersedes that contract.
+- Focused normal Debug Simulator run: **28 passed, zero failures/skips**.
+  Tests cover fixed rendered guides, opposite photo rotations, export and
+  zoom/pan geometry. The first run's two assertions expected reversed photo
+  slope signs; corrected assertions pass. Its runner lingered after reporting
+  results and was terminated after the successful rerun completed.
+- Inspected the final seven-degree iPhone 17 Simulator screenshot: photo tilted,
+  red/cyan guides fixed, controls/title/safe areas legible. Used the existing
+  local Collector Tools build flag for the visual check after the normal
+  Simulator correctly presented its unowned gate. Final local build, links and
+  `git diff --check` pass. No physical-device or live-purchase verification.
+- Evidence remains on the external SSD under
+  `/Volumes/T7/CodexBuild/CenteringRotation-20261029/`;
+  [current checklist](references/centering_guided_success_checklist.md).

@@ -8,6 +8,12 @@ history.
 
 ## Current authority boundary — updated 2026-10-29
 
+**Centering rotation correction — 2026-10-29:** the owner confirms that only the
+photo rotates; measurement guides remain fixed. Earlier shared-rotation
+expectations in the guided-centering checklist and render tests are superseded.
+Zoom/pan continue moving both layers together. The
+[repair ledger](../audits/centering-guided-repair.md) records current verification.
+
 **Cross-game feature completeness — 2026-10-29, base `b03a74f`:**
 the [dated capability review](../audits/feature-completeness-review-2026-10-29.md)
 adds a per-game source/data matrix instead of treating shared pricing/history
