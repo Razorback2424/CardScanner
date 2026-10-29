@@ -139,6 +139,10 @@ struct CardGameRuntimeContainer: Sendable {
                configurePricing: Bool = true,
                isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) async throws -> Self {
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
+        let storageGeneration = CollectionStorageGeneration.shared
+        let token = storageGeneration.activeSession()?.container === container
+            ? storageGeneration.currentToken() : nil
+        let shouldContinue: StorageGenerationContinuation = token.map { storageGeneration.continuation(for: $0) } ?? { true }
         if previous == nil { configureCollectionAuthority(for: container, configurePricing: false) }
         var modules: [CardGameRuntime] = []
         var unavailable = unavailableGames
@@ -154,7 +158,14 @@ struct CardGameRuntimeContainer: Sendable {
             do {
                 if let source {
                     guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
-                } else { try runtime.priceAuthority?.install(in: container) }
+                } else if let authority = runtime.priceAuthority {
+                    let installer = await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container)
+                    try await installer.install(authority, shouldContinue: shouldContinue)
+                    try Task.checkCancellation()
+                    guard isCurrent() else { throw CancellationError() }
+                }
+            } catch is CancellationError {
+                throw CancellationError()
             } catch {
                 guard isCurrent(), !runtime.requiresLaunchActivation else { throw error }
                 Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")

@@ -21,6 +21,71 @@ final class LaunchModelActorTests: XCTestCase {
         ))
     }
 
+    func testCatalogAuthorityWithdrawalKeepsMainActorResponsiveAndPreservesUnmanagedPrices() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        for (id, source) in [("managed", PriceSource.tcgCSV), ("imported", .importedCSV)] {
+            let record = PriceRecord(key: id, game: .onePiece, printingID: id, variantID: "foil")
+            record.sourceRaw = source.rawValue
+            record.unitMarketPriceUSD = 12
+            record.fetchedAt = .now
+            container.mainContext.insert(record)
+            let quote = ReferenceQuote(key: id, game: .onePiece, printingID: id, variantID: "foil")
+            quote.sourceRaw = source.rawValue
+            quote.amount = 12
+            container.mainContext.insert(quote)
+        }
+        try container.mainContext.save()
+        let installer = await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container)
+        let locked = expectation(description: "Serialized write held")
+        let heartbeat = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                return heartbeat.wait(timeout: .now() + 2) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        DispatchQueue.main.async { heartbeat.signal() }
+        try await installer.install(.init(game: .onePiece, managedSources: [.tcgCSV], identityByPriceKey: [:]),
+                                    shouldContinue: { true })
+        let responsive = try await holder.value
+        XCTAssertTrue(responsive, "Authority installation must not block the main queue waiting for a writer")
+        let fresh = ModelContext(container)
+        let records = try fresh.fetch(FetchDescriptor<PriceRecord>())
+        let quotes = try fresh.fetch(FetchDescriptor<ReferenceQuote>())
+        XCTAssertNotNil(records.first { $0.key == "managed" }?.invalidatedAt)
+        XCTAssertNotNil(quotes.first { $0.key == "managed" }?.invalidatedAt)
+        XCTAssertNil(records.first { $0.key == "imported" }?.invalidatedAt)
+        XCTAssertNil(quotes.first { $0.key == "imported" }?.invalidatedAt)
+        XCTAssertEqual(records.first { $0.key == "imported" }?.unitMarketPriceUSD, 12)
+    }
+
+    func testCatalogAuthorityInstallerRejectsObsoleteStorageAndCancelledTask() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let record = PriceRecord(key: "managed", game: .onePiece, printingID: "managed", variantID: "foil")
+        record.sourceRaw = PriceSource.tcgCSV.rawValue
+        record.unitMarketPriceUSD = 12
+        container.mainContext.insert(record)
+        try container.mainContext.save()
+        let installer = await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container)
+        let authority = GameCatalogPriceAuthority(game: .onePiece, managedSources: [.tcgCSV], identityByPriceKey: [:])
+        do {
+            try await installer.install(authority, shouldContinue: { false })
+            XCTFail("Obsolete storage may not be mutated")
+        } catch is CancellationError {}
+        let cancelled = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            try await installer.install(authority, shouldContinue: { true })
+        }
+        do { try await cancelled.value; XCTFail("Cancelled installation must fail") }
+        catch is CancellationError {}
+        let fresh = ModelContext(container)
+        XCTAssertNil(try fresh.fetch(FetchDescriptor<PriceRecord>()).first?.invalidatedAt)
+        XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
     private func assertWorkers(configuration: ModelConfiguration) async throws {
         let container = try ModelContainer(
             for: CollectionStorageModelSchema.full,
@@ -51,6 +116,7 @@ final class LaunchModelActorTests: XCTestCase {
         try await assertBackground(await CollectionCSVImportActor.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionStoreDigestActor.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionCatalogNormalizationInputActor.makeBackground(modelContainer: container))
+        try await assertBackground(await CatalogPriceAuthorityInstaller.makeBackground(modelContainer: container))
     }
 
     private func assertBackground<T: ModelActor>(

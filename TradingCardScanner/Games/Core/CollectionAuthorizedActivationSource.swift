@@ -56,6 +56,34 @@ struct GameCatalogPriceAuthority: Sendable {
     }
 }
 
+/// Static catalog launch binding uses the same serialized withdrawal as live
+/// activation, but performs its store reads/saves on the established background
+/// executor. No context or live model leaves the worker.
+@ModelActor
+actor CatalogPriceAuthorityInstaller: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    func install(_ authority: GameCatalogPriceAuthority,
+                 shouldContinue: @escaping StorageGenerationContinuation) throws {
+        try Task.checkCancellation()
+        let interval = PerformanceSignpost.beginInterval(
+            "Catalog.priceAuthorityInstall", id: PerformanceSignpost.makeID(), authority.game.rawValue
+        )
+        defer { PerformanceSignpost.endInterval("Catalog.priceAuthorityInstall", interval, authority.game.rawValue) }
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            try authority.install(in: context, beforeSave: { _ in
+                try Task.checkCancellation()
+                guard shouldContinue() else { throw CancellationError() }
+            })
+        }
+    }
+}
+
 /// Every consumer shares one container-bound publication boundary. SwiftData
 /// withdrawal and collection validation authority are installed before yield.
 @MainActor
