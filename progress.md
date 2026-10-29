@@ -1,3 +1,99 @@
+# 2026-10-29 — Daily price delivery implementation (in progress)
+
+Removed app requests to upstream TCGCSV across the shared product source and
+Pokémon service. Default transports use the configured app-owned HTTPS feed,
+block redirects/upstream URLs, and require a consistent daily build and original
+server capture date. Missing, future, mixed and 24-hour-old metadata cannot
+create current observations. Existing cached/saved values retain their dates.
+Added the YGO daily source with dated bundle recovery for offline acquisition;
+fresh null lanes and identity/cancellation errors cannot borrow another edition.
+
+Prepared a scoped static publisher and full-site restoration contract using the
+existing hosting path. The YGO candidate job reuses its exact raw capture, with
+start/end build markers; other groups are fetched once per build. Sixteen Python
+publisher/restoration cases passed, hosting cache validation passed, and YAML and
+shell syntax checks passed. Initial native checks proved endpoint denial and
+provenance preservation; the two-class run had 62 passes, six expected opt-in
+skips and one outdated malformed-feed error expectation. That expectation is now
+aligned with the new provider-rejection contract and its focused rerun passed.
+Final native selections are still running. Logs/results now resolve to external
+SSDs through the verified build-storage links.
+
+The production feed endpoint remains empty. Uncached feed-backed prices in this
+intermediate build require approved publication/readback and activation before
+release. No deployment, workflow dispatch, credentials, signing or production
+catalog activation occurred. See the [finding ledger](docs/audits/feature-completeness-review-2026-10-29.md)
+for the exact scope and remaining gates. Graded support and other catalog/release
+gaps remain open.
+
+# 2026-10-29 — External build storage verification
+
+Paused implementation at the owner's instruction and checked build/test/cache
+locations before continuing. Verified 39,737 files / 12,983,327,216 bytes during
+the content-hashed relocation of XcodeBuildMCP workspaces, Node tooling caches,
+Python caches and Swift generated sources. Existing/concurrent moves of the
+default Xcode DerivedData, archives, products, IDE cache and repository artifacts
+were rechecked. All 16 inspected artifact/cache paths resolve onto T7 or Keller
+Family Photos, both reported as external solid-state volumes. Compatibility
+symlinks retain tool paths; DerivedData, compiler module caches and SourcePackages
+remain external. The relocation report is outside the repository at
+`/Volumes/Keller Family Photos/CodexBuilds/TradingCardScannerMVP_fixed_v4/InternalBuildStorage-20261029/relocation-report.json`.
+Updated generated-path ignore rules so external links cannot be staged as source.
+Source files and concurrent Browse changes were preserved. Apple-managed simulator
+runtime installation is separate from these build/cache locations.
+
+# 2026-10-29 — Feature completeness remediation (in progress)
+
+Repaired normal-runtime Lorcana raw history by resolving the discovery wrapper's
+reviewed physical registry. Three focused native tests passed, including catalog
+and collection requests sharing the exact listing cache, unsupported finishes,
+withdrawal, and existing remapping/in-flight checks. The research-runtime test
+remains a separate control. Magic now retains expired validated modern metadata
+for provider outages without renewing its price age; all 22 content-kind tests
+pass, including reopened 90-day-old data, unseen-card refusal and identity
+rejection. Initial offline failures were corrected and the whole focused class
+rerun. README now states the first-use/token/historical offline boundaries.
+
+Pricing Settings now explains the actual JustTCG features, the gap-filling
+toggle and key recovery. Storage Settings explains CSV's recovery limits.
+Standard and accessibility-size Settings captures were inspected, including
+scrolling and final captures. The isolated Debug/local routes wait for view
+appearance; initial fixed-delay captures had shown startup. Saved-key rendering
+and save/remove interaction remain unverified because secure-field automation
+did not change the input. No credential was saved. See
+[the checklist](references/pricing_settings_success_checklist.md).
+
+The final broader run passed 54 tests with six explicit opt-in/workspace skips;
+the separate actual `YuGiOhMarketHistoryTests` class passed all six tests.
+An earlier selection naming its source file instead of class discovered none
+of those cases and is not counted. History now applies the same exact raw
+English/USD/condition/printing uniqueness filter to Lorcana/One Piece/YGO;
+the normal Lorcana fixture rejects earlier foreign and graded rows. Logs,
+xcresults and screenshots are on the external SSD. Provider
+access, graded expansion, data coverage and owner-controlled distribution gates
+remain open; no deployment, purchase, credential change or release certification
+is implied. See the [finding ledger](docs/audits/feature-completeness-review-2026-10-29.md).
+
+# 2026-10-29 — Cross-game feature completeness review
+
+Completed a source/data capability pass against clean base `b03a74f`; the
+[dated matrix and findings](docs/audits/feature-completeness-review-2026-10-29.md)
+separate a newly identified normal-app Lorcana raw-history mapping defect and
+TCGCSV device-access, Magic offline, graded-action and
+provider-setup issues from previously recorded Lorcana/One Piece/release gaps.
+Recomputed the Lorcana payload: 3,582 discovery rows, 1,749 physical records in
+sets 1–8, 1,460 discovery rows in sets 9–14 and 3,364 physical mapping lanes.
+Seven read-only data/configuration assertions passed. A temporary native
+characterization and existing control both passed, reproducing that normal
+Lorcana registration loses a reviewed raw-history mapping while the research
+runtime resolves it. The normal service throws `noListing` before HTTP; the
+passes characterize the defect, not feature acceptance. Evidence and the
+reproduction patch are retained on the external SSD. The temporary test was
+removed afterward; no application/test source, credentials, collection data,
+publication, device or release settings remain changed. No live pricing
+coverage is claimed. Updated the document
+map/audit so the capability gaps remain visible across later reviews.
+
 # 2026-10-28 — Refinement review implementation
 
 Validated and implemented the eight code findings from the comprehensive review:
@@ -4609,3 +4705,33 @@ historical.
 - Build products, final test bundle, screenshots and checklist are external under
   `CodexBuilds/MarketHistory-20261025/`. No physical-device install, live-provider
   verification or release-readiness claim. Existing documentation edits preserved.
+
+### 2026-10-29 — Pokémon collector-tier definitions and external build storage
+
+- Researched Master / Grand Master conventions and recorded the explicit English,
+  set/run-scoped contract in
+  [the collector criteria review](docs/research/pokemon-master-set-definitions-2026-10-29.md).
+  Renamed the displayed tiers while preserving saved `standard` / `expanded` values.
+- Master now includes confirmed booster ball/Energy/Team Rocket patterns and
+  EX-era stamped reverses. Removed reviewed rarity/reverse descriptor duplicates,
+  excluded 151's phantom plain-holo product aliases and Prismatic non-holo Lugia
+  from Master, preserved existing ownership aliases and the distinct metal Mew.
+  Directory/detail counts share the corrected read-time projection; original
+  source resources, fingerprints and holdings are not rewritten.
+- Representative Master checks: 151 **360**, Prismatic **447**, Celebrations **25**,
+  Classic Collection **25**, Destined Rivals **415**, Brilliant Stars **310**.
+  Both 30th builder fixtures retain one Holofoil scope and no duplicate tier option.
+  Separately numbered promos, subsets, energies and vintage runs remain separately
+  tracked; cataloged Grand Master totals are not exhaustive promo certification.
+- Final simulator build/test selection: **122 passed, zero failures, zero skips**
+  (84 checklist, 36 ownership/collection, two offline-upgrade cases), including
+  all 157 bundled manifest/checklist denominators. Documentation links and
+  `git diff --check` pass. HIG source review passes; no new screenshot/device or
+  release-readiness claim.
+- Moved **12.56 GiB** of generated internal XcodeBuildMCP output, DerivedData,
+  archives/products, Xcode/Clang caches and repository artifacts to the T7 with
+  verified inventories and compatibility symlinks. Research temporary inputs
+  moved too. Final build commands explicitly route host temporary files,
+  package/compiler caches, logs and results externally; compiler cache paths
+  were verified from the build log. Evidence is under
+  `/Volumes/T7/CodexBuild/InternalArtifactMigration-20261029/MasterSetReview/`.

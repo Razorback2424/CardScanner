@@ -1,12 +1,26 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-28
+**Audit date:** 2026-10-02; review evidence updated 2026-10-29
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-28
+## Current authority boundary — updated 2026-10-29
+
+**Cross-game feature completeness — 2026-10-29, base `b03a74f`:**
+the [dated capability review](../audits/feature-completeness-review-2026-10-29.md)
+adds a per-game source/data matrix instead of treating shared pricing/history
+code as feature parity. It identifies a normal-registration Lorcana raw-history
+defect missed by the research-runtime tests. It also flags TCGCSV device requests against provider
+guidance, the Magic offline claim, unexplained graded-action restrictions and
+incomplete pricing-key explanations. The documented device-local pricing
+architecture in the Browse plan is not evidence that direct TCGCSV device access
+is permitted; FC01 supersedes that inference. Earlier Lorcana later-set, One Piece
+distribution, backup and legal-page limitations are explicitly reconfirmed,
+not presented as new defects or silently retired. Seven read-only data/config
+assertions pass; focused Lorcana characterization is recorded in the report.
+There is no new physical-device or live-price acceptance.
 
 **Yu-Gi-Oh! market history — 2026-10-28, working-tree patch:**
 the [implementation plan](yugioh_code_implementation.md) now distinguishes bundled
@@ -1528,3 +1542,14 @@ to `progress.md`. When evidence is hardware- or provider-dependent, update
 [`release_followups.md`](release_followups.md) instead of weakening a checklist
 claim. A green simulator suite closes regressions; it does not close a physical
 camera or live-network gate.
+
+### 2026-10-29 collector-tier terminology reconciliation
+
+The [Master / Grand Master review](../research/pokemon-master-set-definitions-2026-10-29.md)
+supersedes earlier descriptions that assigned pack Poké Ball/Master Ball parallels
+to Expanded. Master now includes confirmed booster parallels; Grand Master adds
+cataloged promotional/product variants. `standard` / `expanded` remain storage
+keys only. The C-19 directory/detail denominator requirement remains applicable;
+older dated counts retain their historical meaning. Grand Master is explicitly
+limited to listed catalog variants, with separately numbered promos, subsets,
+energies and vintage print runs tracked separately rather than claimed complete.

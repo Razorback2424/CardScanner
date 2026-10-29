@@ -2,6 +2,10 @@
 
 **Status:** current navigation map — 2026-10-15
 
+The [Pokémon Master / Grand Master criteria review](research/pokemon-master-set-definitions-2026-10-29.md)
+records collector conventions, corrected pack-parallel membership, representative
+set counts, and the remaining limits of cataloged promo coverage.
+
 The [systematic set pricing audit](research/set-pricing-audit.md) records the
 2026-10-24 full directory census, 61 additional lookup repairs, installed
 mapping checks, Magic product/etched samples and whole reviewed Pokémon subset
@@ -65,6 +69,7 @@ chronological notes.
 
 | Concern | Current authority |
 | --- | --- |
+| Cross-game feature completeness and missing capabilities | [`audits/feature-completeness-review-2026-10-29.md`](audits/feature-completeness-review-2026-10-29.md) — capability matrix; normal-app Lorcana raw-history mapping defect, direct TCGCSV device-access mismatch, offline/setup expectations and graded-action gaps. Reconfirms earlier Lorcana/One Piece/release deferrals separately. Live provider coverage remains unverified. |
 | Consolidated production refinement findings | [`audits/production-refinement-master-review-2026-10-26.md`](audits/production-refinement-master-review-2026-10-26.md) — reconciles both reviews against `028b135`; M01–M06's reviewed scope is locally repaired with scoped evidence (M01's unrelated pre-existing failure remains recorded). M04 UI ownership verification: 615 passed, zero failed, one opt-in benchmark skipped. M05 opening/storage/launch: 68 passed, zero failed, one physical-device test skipped. M06 derives Game choices from all owned identities without enabling capabilities: three focused and all 124 expanded collection tests pass. Broader service boundaries, device/interaction/accessibility limits and later open findings remain explicit. No release acceptance claimed. |
 | Launch commercial rationale and remaining batch-photo gaps | [`plans/CARDSCANNER_LAUNCH_MONETIZATION.md`](plans/CARDSCANNER_LAUNCH_MONETIZATION.md) — owner-approved free core/free single output and $9.99 one-time Collector Tools unlock for batch photos and guided centering; local StoreKit implementation exists, production product/release gates remain open. First genuine purchase target: November 2, 2026, Colorado time, without guarantee. |
 | Bulk intake differentiation study | [`plans/bulk-intake-differentiation-plan.md`](plans/bulk-intake-differentiation-plan.md) — owner-approved stages; metrics first, then a required device baseline before behavior changes. Formal study protocol remains pending. |
