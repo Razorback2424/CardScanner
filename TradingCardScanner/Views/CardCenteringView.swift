@@ -893,7 +893,7 @@ private struct GuidedCardCenteringView: View {
                 Button("Reset") { model.resetRotation() }
                     .disabled(model.rotationDegrees == 0)
                 Spacer()
-                Text("Rotates photo and guides")
+                Text("Rotates photo only")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -1089,6 +1089,8 @@ struct CardCenteringImage: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: proxy.size.width, height: proxy.size.height)
+                    // Rotation straightens the photo beneath the fixed measuring guides.
+                    .rotationEffect(.degrees(rotationDegrees))
 
                 guidePath(
                     measurement.geometryOuterQuad,
@@ -1101,7 +1103,6 @@ struct CardCenteringImage: View {
                 }
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
-            .rotationEffect(.degrees(rotationDegrees))
         }
         .aspectRatio(CGFloat(measurement.imageWidth) / CGFloat(measurement.imageHeight), contentMode: .fit)
         .background(Color.black)

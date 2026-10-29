@@ -4,6 +4,48 @@ import XCTest
 
 @MainActor
 final class CardFinishMotionSourceTests: XCTestCase {
+    func testStartupAndUnusedChannelsDoNotCreateMotionSampler() {
+        var creationCount = 0
+        let source = CardFinishMotionSource(makeSampler: {
+            creationCount += 1
+            return TestMotionSampler()
+        })
+
+        _ = source.channel(for: .passive)
+        _ = source.channel(for: .detail)
+        XCTAssertEqual(source.activeRegistrationCount, 0)
+        XCTAssertEqual(creationCount, 0)
+    }
+
+    func testReduceMotionDefersSamplerUntilAnEligibleRegistration() {
+        let sampler = TestMotionSampler()
+        var creationCount = 0
+        var reduceMotionEnabled = true
+        let source = CardFinishMotionSource(
+            makeSampler: {
+                creationCount += 1
+                return sampler
+            },
+            reduceMotionEnabled: { reduceMotionEnabled }
+        )
+        let owner = TestRegistrationOwner()
+        let suppressed = source.register(.passive, owner: owner)
+        source.unregister(suppressed)
+        XCTAssertEqual(creationCount, 0)
+
+        reduceMotionEnabled = false
+        let active = source.register(.detail, owner: owner)
+        XCTAssertEqual(creationCount, 1)
+        XCTAssertFalse(sampler.isStopped)
+        source.unregister(active)
+        XCTAssertTrue(sampler.isStopped)
+
+        let restarted = source.register(.passive, owner: owner)
+        XCTAssertEqual(creationCount, 1)
+        XCTAssertFalse(sampler.isStopped)
+        source.unregister(restarted)
+    }
+
     func testCollectionAndDetailUseIndependentDeliveryRates() {
         let sampler = TestMotionSampler()
         var now = 0.0

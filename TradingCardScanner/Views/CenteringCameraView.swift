@@ -40,7 +40,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 
     nonisolated private let sessionQueue = DispatchQueue(label: "cards.centering.camera")
     nonisolated private let photoOutput = AVCapturePhotoOutput()
-    nonisolated private let motionManager = CMMotionManager()
+    private var motionManager: CMMotionManager?
     nonisolated private let configuration: CenteringCameraConfiguration
     nonisolated(unsafe) private var isConfigured = false
     /// Set once the session has committed, because `activeFormat` is not
@@ -87,7 +87,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 
     func stop() {
         captureLifecycleID = UUID()
-        motionManager.stopDeviceMotionUpdates()
+        motionManager?.stopDeviceMotionUpdates()
         sessionQueue.async { [weak self] in
             guard let self else { return }
             self.requestedStartID = nil
@@ -252,6 +252,10 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     private func startLevelUpdates() {
+        // A camera controller can be constructed before its camera is shown.
+        // Only initialize Core Motion when the level indicator is requested.
+        let motionManager = self.motionManager ?? CMMotionManager()
+        self.motionManager = motionManager
         guard motionManager.isDeviceMotionAvailable else { return }
         motionManager.deviceMotionUpdateInterval = 1 / 30
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, _ in

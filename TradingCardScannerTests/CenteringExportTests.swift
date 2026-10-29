@@ -307,7 +307,7 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertFalse(name.contains("/"))
     }
 
-    func testExportGuidesRotateWithThePhoto() throws {
+    func testExportGuidesStayFixedWhenThePhotoRotates() throws {
         let value = measurement(
             width: 100,
             height: 140,
@@ -355,11 +355,12 @@ final class CenteringExportTests: XCTestCase {
         let lower = guideCenters(at: 940)
         XCTAssertGreaterThanOrEqual(upper.count, 2)
         XCTAssertGreaterThanOrEqual(lower.count, 2)
-        XCTAssertGreaterThan(
+        XCTAssertLessThanOrEqual(
             abs(upper[0] - lower[0]),
-            40,
-            "the left guide stayed vertical instead of sharing the photo transform"
+            1,
+            "photo rotation must leave the left guide fixed"
         )
+        XCTAssertEqual(try XCTUnwrap(upper.last), try XCTUnwrap(lower.last), accuracy: 1)
     }
 
     func testExportGuidesFollowDetectedQuadEdgesInsteadOfItsBoundingBox() throws {
@@ -606,7 +607,7 @@ final class CenteringExportTests: XCTestCase {
     }
 
     @MainActor
-    func testOnScreenGuidesRotateWithInjectedGeometry() throws {
+    func testOnScreenPhotoRotatesBeneathFixedGuides() throws {
         let value = CardCenteringMeasurement(
             imageWidth: 100,
             imageHeight: 140,
@@ -621,10 +622,17 @@ final class CenteringExportTests: XCTestCase {
             innerReference: .none
         )
 
-        func redSlope(rotation: Double) throws -> Double {
+        let stripedPhoto = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 140)).image { context in
+            UIColor.darkGray.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 100, height: 140))
+            UIColor.green.setFill()
+            context.fill(CGRect(x: 48, y: 0, width: 4, height: 140))
+        }
+
+        func slope(rotation: Double, photoStripe: Bool = false) throws -> Double {
             let rendered = ImageRenderer(
                 content: CardCenteringImage(
-                    image: photo(width: value.imageWidth, height: value.imageHeight),
+                    image: stripedPhoto,
                     measurement: value,
                     rotationDegrees: rotation,
                     onFrameChange: { _ in }
@@ -648,24 +656,32 @@ final class CenteringExportTests: XCTestCase {
             for y in 100..<(cgImage.height - 100) {
                 let xs = (0..<cgImage.width).compactMap { x -> Double? in
                     let offset = (y * cgImage.width + x) * 4
-                    let isRed = bytes[offset] > 150
+                    let matches = photoStripe
+                        ? bytes[offset] < 100 && bytes[offset + 1] > 150 && bytes[offset + 2] < 100
+                        : bytes[offset] > 150
                         && bytes[offset + 1] < 130
                         && bytes[offset + 2] < 130
-                    return isRed ? Double(x) : nil
+                    return matches ? Double(x) : nil
                 }
-                guard !xs.isEmpty else { continue }
-                samples.append((xs.reduce(0, +) / Double(xs.count), Double(y)))
+                guard let leftmost = xs.first else { continue }
+                samples.append((leftmost, Double(y)))
             }
+            XCTAssertGreaterThan(samples.count, 100)
             let meanX = samples.map { $0.x }.reduce(0, +) / Double(samples.count)
             let meanY = samples.map { $0.y }.reduce(0, +) / Double(samples.count)
             let denominator = samples.reduce(0) { $0 + pow($1.y - meanY, 2) }
             return samples.reduce(0) { $0 + ($1.y - meanY) * ($1.x - meanX) } / denominator
         }
 
-        let unrotatedSlope = try redSlope(rotation: 0)
-        let rotatedSlope = try redSlope(rotation: 7)
-        XCTAssertLessThan(abs(unrotatedSlope), 0.03)
-        XCTAssertGreaterThan(abs(rotatedSlope), 0.05)
+        for rotation in [-7.0, 0, 7] {
+            XCTAssertLessThan(abs(try slope(rotation: rotation)), 0.01)
+        }
+        XCTAssertLessThan(abs(try slope(rotation: 0, photoStripe: true)), 0.01)
+        let clockwise = try slope(rotation: 7, photoStripe: true)
+        let counterclockwise = try slope(rotation: -7, photoStripe: true)
+        XCTAssertGreaterThan(abs(clockwise), 0.1)
+        XCTAssertGreaterThan(abs(counterclockwise), 0.1)
+        XCTAssertEqual(clockwise, -counterclockwise, accuracy: 0.01)
     }
 
     @MainActor
@@ -705,9 +721,8 @@ final class CenteringExportTests: XCTestCase {
                         for fraction in [0.25, 0.5, 0.75] {
                             let x = origin.x + (start.x + (end.x - start.x) * fraction) * fit - size.width / 2
                             let y = origin.y + (start.y + (end.y - start.y) * fraction) * fit - size.height / 2
-                            let radians = rotation * .pi / 180
-                            let target = CGPoint(x: (size.width / 2 + zoom * (cos(radians) * x - sin(radians) * y) + pan.width) * screenScale,
-                                                 y: (size.height / 2 + zoom * (sin(radians) * x + cos(radians) * y) + pan.height) * screenScale)
+                            let target = CGPoint(x: (size.width / 2 + zoom * x + pan.width) * screenScale,
+                                                 y: (size.height / 2 + zoom * y + pan.height) * screenScale)
                             guard target.x > 4, target.y > 4, target.x < CGFloat(cg.width - 4), target.y < CGFloat(cg.height - 4) else { continue }
                             var nearest = Double.infinity
                             for py in (Int(target.y) - 3)...(Int(target.y) + 3) {

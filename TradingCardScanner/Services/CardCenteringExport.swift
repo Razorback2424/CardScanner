@@ -105,7 +105,6 @@ enum CardCenteringExport {
                 measurement: measurement,
                 in: sourceRect,
                 unit: unit,
-                rotationDegrees: rotationDegrees,
                 context: context.cgContext
             )
 
@@ -122,10 +121,8 @@ enum CardCenteringExport {
         measurement: CardCenteringMeasurement,
         in rect: CGRect,
         unit: CGFloat,
-        rotationDegrees: Double,
         context: CGContext
     ) {
-        let radians = CGFloat(rotationDegrees * .pi / 180)
         let lineWidth = max(2, unit * 3)
 
         func trace(_ quad: CardCenteringQuad) {
@@ -149,9 +146,7 @@ enum CardCenteringExport {
         // close together on a badly cut card — which is exactly the case the
         // user is most likely to be exporting.
         context.saveGState()
-        context.translateBy(x: rect.midX, y: rect.midY)
-        context.rotate(by: radians)
-        context.translateBy(x: -rect.midX, y: -rect.midY)
+        // Match the review screen: only the photo rotates beneath the guides.
         var guides: [(CardCenteringQuad, UIColor)] = [
             (measurement.geometryOuterQuad, Palette.outer)
         ]

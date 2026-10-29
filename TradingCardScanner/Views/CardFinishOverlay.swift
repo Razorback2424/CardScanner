@@ -261,7 +261,8 @@ final class CardFinishMotionSource: ObservableObject {
         }
     }
 
-    private let sampler: CardFinishMotionSampler
+    private var sampler: CardFinishMotionSampler?
+    private let makeSampler: () -> CardFinishMotionSampler
     private let now: () -> TimeInterval
     private let reduceMotionEnabled: @MainActor () -> Bool
     private let collectionChannel = CardFinishMotionChannel(usage: .passive)
@@ -281,10 +282,12 @@ final class CardFinishMotionSource: ObservableObject {
 
     init(
         sampler: CardFinishMotionSampler? = nil,
+        makeSampler: (() -> CardFinishMotionSampler)? = nil,
         now: @escaping () -> TimeInterval = { CACurrentMediaTime() },
         reduceMotionEnabled: @escaping @MainActor () -> Bool = { UIAccessibility.isReduceMotionEnabled }
     ) {
-        self.sampler = sampler ?? CardFinishCoreMotionSampler()
+        self.sampler = sampler
+        self.makeSampler = makeSampler ?? { CardFinishCoreMotionSampler() }
         self.now = now
         self.reduceMotionEnabled = reduceMotionEnabled
         reduceMotionObserver = NotificationCenter.default.addObserver(
@@ -397,8 +400,21 @@ final class CardFinishMotionSource: ObservableObject {
     private func updateMotion() {
         _ = pruneDeadRegistrations()
         guard !reduceMotionEnabled(),
-              !registrations.isEmpty,
-              sampler.isDeviceMotionAvailable else {
+              !registrations.isEmpty else {
+            stopDeviceMotion()
+            return
+        }
+
+        // Creating CMMotionManager can read system motion preferences. Keep
+        // app/environment initialization and Reduce Motion paths sensor-free.
+        let sampler: CardFinishMotionSampler
+        if let existing = self.sampler {
+            sampler = existing
+        } else {
+            sampler = makeSampler()
+            self.sampler = sampler
+        }
+        guard sampler.isDeviceMotionAvailable else {
             stopDeviceMotion()
             return
         }
@@ -473,7 +489,7 @@ final class CardFinishMotionSource: ObservableObject {
 
     private func stopDeviceMotion() {
         guard currentFrequency != nil || !registrations.isEmpty else { return }
-        sampler.stop()
+        sampler?.stop()
         currentFrequency = nil
         reference = nil
         currentTilt = .zero
