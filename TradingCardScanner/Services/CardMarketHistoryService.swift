@@ -88,6 +88,10 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
             catalog = runtime.catalog
             result.authorityRevision = catalog?.generation
         }
+        // The normal Lorcana runtime wraps its reviewed physical registry with
+        // discovery/sealed content. Both registrations have the same authority.
+        let lorcanaCatalog = (catalog as? LorcanaCatalogAdapter)
+            ?? (catalog as? LorcanaDiscoveryCatalog).map { LorcanaCatalogAdapter(registry: $0.registry) }
         if let catalog = catalog as? OnePieceCatalogAdapter,
            let printing = catalog.registry.printingByID[id], printing.status == .verified {
             let mappings = printing.marketMappings.filter {
@@ -98,7 +102,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
                 result.exactProductID = mappings[0].productID
                 result.providerPrinting = mappings[0].providerVariantID
             }
-        } else if let catalog = catalog as? LorcanaCatalogAdapter,
+        } else if let catalog = lorcanaCatalog,
                   (try? catalog.resolution(forPrintingID: id)) != nil {
             let mappings = (catalog.registry.physicalCatalog?.printingByID[id]?.marketMappings ?? []).filter {
                 $0.hasValidMarketLane && $0.finish.rawValue == variantID
@@ -388,28 +392,20 @@ actor CardMarketHistoryService {
             ("priceHistoryDuration", "1y")
         ], lane: .interactive)
         if case let .tcgplayerID(productID) = lookup, let printing = request.providerPrinting {
-            if request.game == .yuGiOh {
-                // A shared product can return every edition, condition and
-                // language. Never borrow another listing or pick an arbitrary
-                // first match when the response is ambiguous.
-                let cards = response.data.filter { $0.tcgplayerId == productID }
-                guard cards.count == 1 else { throw HistoryError.noListing }
-                let variants = (cards[0].variants ?? []).filter {
-                    $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
-                        && $0.printing?.caseInsensitiveCompare(printing) == .orderedSame
-                        && ($0.language == nil || ["english", "en"].contains($0.language?.lowercased() ?? ""))
-                        && ($0.currency == nil || $0.currency?.uppercased() == "USD")
-                        && ($0.type == nil || $0.type?.lowercased() == "raw")
-                }
-                guard variants.count == 1 else { throw HistoryError.noListing }
-                return (Self.points(from: variants[0]), productID)
+            // Every reviewed product can return multiple editions, languages
+            // and conditions. Apply the same exact raw USD lane contract to
+            // all catalog-backed games; response order is never authority.
+            let cards = response.data.filter { $0.tcgplayerId == productID }
+            guard cards.count == 1 else { throw HistoryError.noListing }
+            let variants = (cards[0].variants ?? []).filter {
+                $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+                    && $0.printing?.caseInsensitiveCompare(printing) == .orderedSame
+                    && ($0.language == nil || ["english", "en"].contains($0.language?.lowercased() ?? ""))
+                    && ($0.currency == nil || $0.currency?.uppercased() == "USD")
+                    && ($0.type == nil || $0.type?.lowercased() == "raw")
             }
-            guard let card = response.data.first(where: { $0.tcgplayerId == productID }),
-                  let variant = card.variants?.first(where: {
-               $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
-                   && $0.printing?.caseInsensitiveCompare(printing) == .orderedSame
-                  }) else { throw HistoryError.noListing }
-            return (Self.points(from: variant), Self.productID(of: card))
+            guard variants.count == 1 else { throw HistoryError.noListing }
+            return (Self.points(from: variants[0]), productID)
         }
         guard case let .matched(card, variant) = JustTCGRefreshCoordinator.exactListing(
             lookup: lookup, owners: [target], response: response

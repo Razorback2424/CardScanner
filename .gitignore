@@ -2,14 +2,14 @@
 .DS_Store
 
 # Xcode user state and local build products
-DerivedData/
+DerivedData
 .codex_build/
 .codex_build_device/
 .codex_build_test_device/
 .codex_build_*/
 .codex_ui_build/
 .codex_build_pricing/
-artifacts/
+artifacts
 *.zip
 *.xcuserstate
 xcuserdata/
@@ -24,7 +24,7 @@ xcuserdata/
 TestFixtures/TradingCards/HEIC/
 
 # Swift Package Manager
-.build/
+.build
 
 # Generated catalog publisher output
 publisher/site/
@@ -33,7 +33,7 @@ publisher/reports/*.json
 
 
 # Local Python tooling caches
-__pycache__/
+__pycache__
 
 # Signing and provisioning artifacts
 *.p12

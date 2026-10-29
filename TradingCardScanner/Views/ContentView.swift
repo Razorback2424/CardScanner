@@ -97,6 +97,16 @@ struct ContentView: View {
 #endif
     }
 
+#if DEBUG && LOCAL_ONLY_SIGNING
+    private func markSettingsReviewReady() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_ready_path"),
+              arguments.indices.contains(index + 1) else { return }
+        try? Data(#"{"settingsReviewReady":true}"#.utf8)
+            .write(to: URL(fileURLWithPath: arguments[index + 1]), options: .atomic)
+    }
+#endif
+
     var body: some View {
         TabView(selection: $selectedTab) {
             PortfolioView(
@@ -171,6 +181,20 @@ struct ContentView: View {
 #if DEBUG
         .overlay {
 #if LOCAL_ONLY_SIGNING
+            if debugRoute == "PricingSettingsReview" {
+                NavigationStack {
+                    Form { PriceFallbackSettingsSection() }
+                        .navigationTitle("Pricing Settings")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+                .environment(\.dynamicTypeSize, ProcessInfo.processInfo.arguments.contains("large-text") ? .accessibility2 : .large)
+                .onAppear { markSettingsReviewReady() }
+            }
+            if debugRoute == "StorageSettingsReview" {
+                NavigationStack { PrivacyAndSupportSettingsView() }
+                    .environment(\.dynamicTypeSize, ProcessInfo.processInfo.arguments.contains("large-text") ? .accessibility2 : .large)
+                    .onAppear { markSettingsReviewReady() }
+            }
             if debugRoute == "YuGiOhHistoryReview" {
                 YuGiOhHistoryDebugView()
             }

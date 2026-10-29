@@ -597,7 +597,7 @@ private final class YuGiOhPricingProtocol: URLProtocol {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
-            let data = try Self.handler!(request)
+            let data = MarketMirrorFixture.stamped(try Self.handler!(request))
             client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
         } catch { client?.urlProtocol(self, didFailWithError: error) }
@@ -607,6 +607,79 @@ private final class YuGiOhPricingProtocol: URLProtocol {
 
 @MainActor
 final class YuGiOhPricingTests: XCTestCase {
+    func testDailyMirrorPricesAnUnpricedSeedEditionAndKeepsOfflineSnapshotDates() async throws {
+        var object = YuGiOhFixture.object()
+        var rows = object["printings"] as! [[String: Any]]
+        rows[0]["m"] = [["e": "yugioh1stEdition", "t": "providerMarket", "q": 7,
+                          "h": String(repeating: "a", count: 64), "s": "2026-10-20T20:05:18Z", "st": "providerSnapshot"]]
+        object["printings"] = rows
+        let catalog = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        let printing = try XCTUnwrap(catalog.printingByID.values.first)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); YuGiOhPricingProtocol.handler = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [YuGiOhPricingProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let source = YuGiOhDailyPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL,
+            session: session, cacheDirectory: root))
+        let adapter = YuGiOhPriceAdapter(catalog: catalog, source: source)
+        var amount: Double? = 42
+        YuGiOhPricingProtocol.handler = { request in
+            XCTAssertEqual(request.url?.host, MarketMirrorFixture.baseURL.host)
+            if request.url?.lastPathComponent == "products" {
+                return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [[
+                    "productId": printing.productID, "categoryId": 2, "groupId": printing.set.groupID,
+                    "name": printing.productName, "extendedData": [["name": "Number", "value": printing.code]]]]])
+            }
+            return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [
+                ["productId": printing.productID, "subTypeName": "1st Edition", "marketPrice": 999],
+                ["productId": printing.productID, "subTypeName": "Unlimited", "marketPrice": amount.map { $0 as Any } ?? NSNull()]]])
+        }
+        guard case let .price(fresh) = try await adapter.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited)
+        else { return XCTFail("A missing seed quote must be discoverable from the daily mirror") }
+        XCTAssertEqual(fresh.unitMarketPriceUSD, 42)
+        XCTAssertEqual(fresh.catalogIdentity, YuGiOhPriceAdapter.mappingIdentity(printing, .unlimited))
+        XCTAssertEqual(fresh.sourceVariantID, "tcgplayer:\(printing.productID):Unlimited")
+        XCTAssertNil(fresh.sourceUpdatedAt)
+        amount = nil
+        let absent = try await adapter.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited, minimumFetchedAt: .now)
+        XCTAssertEqual(absent, .unavailable(.tcgCSV), "A fresh null lane cannot borrow another edition or an older bundle")
+
+        let offline = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhDailyPriceSource(transport:
+            .init(baseURL: nil, session: session, cacheDirectory: root.appendingPathComponent("offline"))))
+        let historical = try await YuGiOhBundledPriceSource().quote(printing: printing, edition: .first,
+            generation: catalog.generation, minimumFetchedAt: nil)
+        let offlinePrice = try await offline.refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
+        guard case var .price(expected) = historical else { return XCTFail("Expected a dated bundle quote") }
+        expected.catalogIdentity = YuGiOhPriceAdapter.mappingIdentity(printing, .first)
+        XCTAssertEqual(offlinePrice, .price(expected))
+        do {
+            _ = try await offline.refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition, minimumFetchedAt: .now)
+            XCTFail("An old bundle cannot fulfill a current-check watermark")
+        } catch PriceQuoteError.providerUnavailable {}
+
+        for mode in ["identity", "cancelled"] {
+            let strict = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhDailyPriceSource(transport:
+                .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: root.appendingPathComponent(mode))))
+            YuGiOhPricingProtocol.handler = { request in
+                if mode == "cancelled" { throw URLError(.cancelled) }
+                if request.url?.lastPathComponent == "products" {
+                    return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [[
+                        "productId": printing.productID, "categoryId": 2, "groupId": printing.set.groupID,
+                        "name": "A different product", "extendedData": [["name": "Number", "value": printing.code]]]]])
+                }
+                return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [[
+                    "productId": printing.productID, "subTypeName": "1st Edition", "marketPrice": 99]]])
+            }
+            do {
+                _ = try await strict.refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
+                XCTFail("Identity rejection and cancellation cannot return the old bundle")
+            } catch PriceQuoteError.identityMismatch { XCTAssertEqual(mode, "identity") }
+            catch is CancellationError { XCTAssertEqual(mode, "cancelled") }
+        }
+    }
+
     @MainActor
     func testPricingNoticeDescribesActiveSourceAndNeverFallsBackFromUnavailableAuthority() async throws {
         let bundled = try YuGiOhFixture.catalog()
@@ -624,11 +697,11 @@ final class YuGiOhPricingTests: XCTestCase {
         XCTAssertEqual(unavailable, YuGiOhCatalog.unavailablePricingNotice)
         await source.install(bundled)
         let bundleText = await YuGiOhCatalog.activePricingNotice(in: runtimes)
-        XCTAssertEqual(bundleText, bundled.historicalPricingNotice)
+        XCTAssertEqual(bundleText, bundled.currentPricingNotice)
         XCTAssertTrue(bundleText.contains("a bundled snapshot"))
         await source.install(approved)
         let approvedText = await YuGiOhCatalog.activePricingNotice(in: runtimes)
-        XCTAssertEqual(approvedText, approved.historicalPricingNotice)
+        XCTAssertEqual(approvedText, approved.currentPricingNotice)
         XCTAssertTrue(approvedText.contains("a verified periodic snapshot"))
         XCTAssertFalse(approvedText.contains("bundled"))
         XCTAssertNotEqual(bundleText, approvedText)
@@ -708,7 +781,7 @@ final class YuGiOhPricingTests: XCTestCase {
             let rows: [[String: Any]] = mode == 0 ? [["productId": 1, "subTypeName": "1st Edition", "marketPrice": 99]] : [target]
             return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": rows])
         }
-        let transport = TCGCSVProductPriceSource(session: URLSession(configuration: config), cacheDirectory: root)
+        let transport = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config), cacheDirectory: root)
         var watermark: Date? = nil
         for next in 0...2 {
             mode = next

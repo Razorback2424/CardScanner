@@ -2,6 +2,23 @@ import Foundation
 import SwiftData
 @testable import TradingCardScanner
 
+/// The fixture server emits the same provenance envelope as the daily publisher.
+/// Explicit metadata, including deliberately malformed metadata, is preserved.
+enum MarketMirrorFixture {
+    static let baseURL = URL(string: "https://pricing.example")!
+    static func stamped(_ data: Data, capturedAt: Date = .now,
+                        build: String = "2026-01-01T00:00:00Z") -> Data {
+        guard var object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
+              object["success"] as? Bool == true,
+              object["sourceBuild"] == nil, object["sourceFetchedAt"] == nil else { return data }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        object["sourceBuild"] = build
+        object["sourceFetchedAt"] = formatter.string(from: capturedAt)
+        return (try? JSONSerialization.data(withJSONObject: object)) ?? data
+    }
+}
+
 enum ProductionRowFixtureError: Error {
     case missingRow(String)
 }

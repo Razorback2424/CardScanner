@@ -22,9 +22,34 @@ struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
             sourceUpdatedAt: m.st == "providerSnapshot" ? date : nil, fetchedAt: date))
     }
 }
+
+/// Current quotes use the same server-ingested daily feeds as other reviewed
+/// games. Offline initial valuation may reuse the bundle, with its original date.
+struct YuGiOhDailyPriceSource: YuGiOhMarketPriceSource {
+    var transport: TCGCSVProductPriceSource = .shared
+    func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
+               minimumFetchedAt: Date?) async throws -> PriceLookup {
+        do {
+            return try await transport.quote(category: 2, group: printing.set.groupID,
+                productID: printing.productID, name: printing.productName, number: printing.code,
+                lane: edition.tcgplayerSubtype, generation: generation, minimumFetchedAt: minimumFetchedAt)
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
+        } catch PriceQuoteError.identityMismatch {
+            throw PriceQuoteError.identityMismatch
+        } catch {
+            try Task.checkCancellation()
+            return try await YuGiOhBundledPriceSource().quote(printing: printing, edition: edition,
+                generation: generation, minimumFetchedAt: minimumFetchedAt)
+        }
+    }
+}
+
 struct YuGiOhPriceAdapter: GamePriceAdapter {
     let catalog: YuGiOhCatalog
-    var source: any YuGiOhMarketPriceSource = YuGiOhBundledPriceSource()
+    var source: any YuGiOhMarketPriceSource = YuGiOhDailyPriceSource()
     var coordinator: YuGiOhCatalogCoordinator? = nil
     var game: CardGame { .yuGiOh }
     var allowsProviderFallback: Bool { false }

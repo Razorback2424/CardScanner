@@ -9,13 +9,19 @@ extension YuGiOhEdition {
 extension YuGiOhCatalog {
     var runtime: CardGameRuntime { YuGiOhGameRuntime(catalog: self).runtime }
 
+    var currentPricingNotice: String {
+        guard TCGCSVPriceMirror.baseURL != nil else { return historicalPricingNotice }
+        let source = publicationRevision == nil ? "a bundled snapshot" : "a verified periodic snapshot"
+        return "Yu-Gi-Oh! price checks use the latest daily market feed. Offline values may use \(source) captured \(capturedAt.formatted(date: .abbreviated, time: .omitted)). Prices keep their capture dates."
+    }
+
     static func activePricingNotice(in runtimes: CardGameRuntimeContainer?) async -> String {
         guard let runtime = runtimes?.runtime(for: .yuGiOh) else { return unavailablePricingNotice }
         let adapter: (any GameCatalogAdapter)?
         if let source = runtime.activationSource {
             adapter = await source.currentSnapshot()?.catalog
         } else { adapter = runtime.catalog }
-        return (adapter as? YuGiOhCatalogAdapter)?.catalog.historicalPricingNotice ?? unavailablePricingNotice
+        return (adapter as? YuGiOhCatalogAdapter)?.catalog.currentPricingNotice ?? unavailablePricingNotice
     }
 }
 

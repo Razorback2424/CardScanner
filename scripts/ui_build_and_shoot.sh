@@ -49,6 +49,11 @@ if [[ "$ROUTE" == Centering* ]]; then
   MARKER_PATH="$CONTAINER_PATH/Documents/centering-ui-ready.json"
   MARKER_PATTERN='presentedImageFrame'
   MARKER_ARTIFACT='centering-geometry.json'
+elif [[ "$ROUTE" == "PricingSettingsReview" || "$ROUTE" == "StorageSettingsReview" ]]; then
+  CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
+  MARKER_PATH="$CONTAINER_PATH/Documents/settings-ui-ready.json"
+  MARKER_PATTERN='settingsReviewReady'
+  MARKER_ARTIFACT='settings-ready.json'
 elif [[ "$ROUTE" == "YuGiOhHistoryReview" || ( "$ROUTE" == "CardDetail" && "$STATE" == price-chart* ) ]]; then
   CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
   MARKER_PATH="$CONTAINER_PATH/Documents/card-price-history-ui-ready.json"

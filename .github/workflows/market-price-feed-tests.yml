@@ -1,0 +1,30 @@
+name: Market price feed contracts
+on:
+  pull_request:
+    paths:
+      - "scripts/market_price_feeds.py"
+      - "scripts/tests/test_market_price_feeds.py"
+      - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/tests/test_catalog_hosting_restore.py"
+      - ".github/workflows/yugioh-catalog.yml"
+      - ".github/workflows/market-price-feed-tests.yml"
+      - "firebase.json"
+  push:
+    paths:
+      - "scripts/market_price_feeds.py"
+      - "scripts/tests/test_market_price_feeds.py"
+      - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/tests/test_catalog_hosting_restore.py"
+      - ".github/workflows/yugioh-catalog.yml"
+      - ".github/workflows/market-price-feed-tests.yml"
+      - "firebase.json"
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_feeds.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_restore.py'
+      - run: bash scripts/verify_pokemon_catalog_hosting_config.sh

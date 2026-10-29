@@ -237,3 +237,7 @@ if [ -f "$yugioh_active_path" ]; then
   fi
   restore_namespace "$yugioh_active_path" "yugioh/v1" "" "$yugioh_keys" "yugioh-catalog-publisher" catalog.json
 fi
+
+# Hosting deploys replace the complete site. Preserve independently published
+# daily prices too; an unreadable/corrupt existing namespace blocks preparation.
+python3 scripts/market_price_feeds.py restore --site-root "$site_root" --origin "$origin"

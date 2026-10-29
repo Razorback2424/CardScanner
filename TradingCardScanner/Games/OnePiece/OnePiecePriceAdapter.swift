@@ -10,10 +10,11 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
     static let shared = OnePieceTCGCSVPriceSource(transport: .shared)
     private let transport: TCGCSVProductPriceSource
     private init(transport: TCGCSVProductPriceSource) { self.transport = transport }
-    init(session: URLSession = .shared,
+    init(baseURL: URL? = TCGCSVPriceMirror.baseURL,
+         session: URLSession = TCGCSVPriceMirror.session,
          cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("OnePieceTCGCSV-v2")) {
-        transport = TCGCSVProductPriceSource(session: session, cacheDirectory: cacheDirectory)
+        transport = TCGCSVProductPriceSource(baseURL: baseURL, session: session, cacheDirectory: cacheDirectory)
     }
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String? = nil,
                minimumFetchedAt: Date? = nil) async throws -> PriceLookup {

@@ -1,5 +1,58 @@
 import Foundation
 
+/// Devices consume the app's server-ingested feeds. Upstream TCGCSV is only
+/// contacted by the daily publisher, never by a user-facing app or a redirect.
+enum TCGCSVPriceMirror {
+    static var baseURL: URL? {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: "TCGCSV_PRICE_BASE_URL") as? String,
+              let url = URL(string: value), isPermitted(url),
+              ["catalog.scan-stash.com", "scanstash-catalog-prod.web.app"].contains(url.host?.lowercased() ?? ""),
+              url.path == "/market-prices/v1" else { return nil }
+        return url
+    }
+
+    static func isPermitted(_ url: URL) -> Bool {
+        guard url.scheme == "https", let host = url.host?.lowercased(),
+              !host.isEmpty, host != "tcgcsv.com", !host.hasSuffix(".tcgcsv.com"),
+              url.user == nil, url.password == nil, url.query == nil, url.fragment == nil,
+              url.port == nil || url.port == 443 else { return false }
+        return true
+    }
+
+    private final class NoRedirects: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+        func urlSession(_ session: URLSession, task: URLSessionTask,
+                        willPerformHTTPRedirection response: HTTPURLResponse,
+                        newRequest request: URLRequest,
+                        completionHandler: @escaping (URLRequest?) -> Void) {
+            completionHandler(nil)
+        }
+    }
+    static let session = URLSession(configuration: .ephemeral, delegate: NoRedirects(), delegateQueue: nil)
+
+    /// The server's original capture time survives CDN fetches and app relaunch.
+    /// Matching daily-build markers prevent independently cached files mixing.
+    static func captureDate(products: Data, prices: Data, expectedBuild: String? = nil,
+                            now: Date = .now) throws -> Date {
+        struct Metadata: Decodable { let sourceBuild: String; let sourceFetchedAt: String }
+        func date(_ string: String) -> Date? {
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            return formatter.date(from: string) ?? ISO8601DateFormatter().date(from: string)
+        }
+        guard let product = try? JSONDecoder().decode(Metadata.self, from: products),
+              let price = try? JSONDecoder().decode(Metadata.self, from: prices),
+              product.sourceBuild == price.sourceBuild,
+              expectedBuild.map({ $0 == price.sourceBuild }) ?? true,
+              let build = date(price.sourceBuild), let captured = date(price.sourceFetchedAt),
+              let productCaptured = date(product.sourceFetchedAt),
+              build <= captured, build <= productCaptured,
+              captured <= now, productCaptured <= now,
+              now.timeIntervalSince(captured) < 86_400,
+              now.timeIntervalSince(productCaptured) < 86_400 else { throw PriceQuoteError.providerUnavailable }
+        return captured
+    }
+}
+
 /// Product-level USD market observations. No condition-specific SKU is claimed.
 actor TCGCSVProductPriceSource {
     static let shared = TCGCSVProductPriceSource()
@@ -22,6 +75,7 @@ actor TCGCSVProductPriceSource {
         var catalogGeneration: String? = nil
     }
     private let session: URLSession
+    private let baseURL: URL?
     private let cacheDirectory: URL
     private struct GroupKey: Hashable { let category: Int; let group: Int }
     private struct CacheKey: Hashable {
@@ -37,10 +91,11 @@ actor TCGCSVProductPriceSource {
     private var pending: [CacheKey: Task<Snapshot, Error>] = [:]
     private var failures: [CacheKey: Date] = [:]
     private var nextRequestAt = Date.distantPast
-    init(session: URLSession = .shared,
+    init(baseURL: URL? = TCGCSVPriceMirror.baseURL,
+         session: URLSession = TCGCSVPriceMirror.session,
          cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("TCGCSVProductPrices-v1")) {
-        self.session = session; self.cacheDirectory = cacheDirectory
+        self.session = session; self.baseURL = baseURL; self.cacheDirectory = cacheDirectory
     }
 
     func quote(category: Int, group: Int, productID: Int, name: String, number: String?,
@@ -88,11 +143,11 @@ actor TCGCSVProductPriceSource {
             throw PriceQuoteError.providerUnavailable
         }
         let task = Task {
-            let fetchedAt = Date.now
-            let products = try JSONDecoder().decode(Response<Product>.self,
-                from: await self.fetch(group: group, resource: "products"))
-            let prices = try JSONDecoder().decode(Response<Price>.self,
-                from: await self.fetch(group: group, resource: "prices"))
+            let productsData = try await self.fetch(group: group, resource: "products")
+            let pricesData = try await self.fetch(group: group, resource: "prices")
+            let fetchedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData)
+            let products = try JSONDecoder().decode(Response<Product>.self, from: productsData)
+            let prices = try JSONDecoder().decode(Response<Price>.self, from: pricesData)
             guard products.success, products.errors.isEmpty, prices.success, prices.errors.isEmpty,
                   products.totalItems.map({ $0 == products.results.count }) ?? true,
                   prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
@@ -143,14 +198,15 @@ actor TCGCSVProductPriceSource {
     }
 
     private func fetch(group: GroupKey, resource: String) async throws -> Data {
+        guard let baseURL, TCGCSVPriceMirror.isPermitted(baseURL) else { throw PriceQuoteError.providerUnavailable }
         let start = max(nextRequestAt, .now)
         nextRequestAt = start.addingTimeInterval(0.1)
         if start.timeIntervalSinceNow > 0 { try await Task.sleep(for: .seconds(start.timeIntervalSinceNow)) }
-        var request = URLRequest(url: URL(string: "https://tcgcsv.com/tcgplayer/\(group.category)/\(group.group)/\(resource)")!)
+        var request = URLRequest(url: baseURL.appendingPathComponent("tcgplayer/\(group.category)/\(group.group)/\(resource)"))
         request.timeoutInterval = 15
         request.setValue("ScanStash/1.0 (iOS; daily product market pricing)", forHTTPHeaderField: "User-Agent")
         let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse, http.statusCode == 200,
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200, http.url == request.url,
               data.count <= 8 * 1_024 * 1_024 else { throw PriceQuoteError.providerUnavailable }
         return data
     }

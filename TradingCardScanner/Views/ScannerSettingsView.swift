@@ -826,10 +826,10 @@ struct PriceFallbackSettingsSection: View {
 
     var body: some View {
         Section {
-            Toggle("Use price fallback", isOn: $usesPriceFallback)
+            Toggle("Fill gaps in catalog prices", isOn: $usesPriceFallback)
                 .disabled(!hasVendorKey)
 
-            SecureField("API key", text: $vendorKeyEntry)
+            SecureField("JustTCG API key", text: $vendorKeyEntry)
                 .textContentType(.password)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
@@ -849,11 +849,16 @@ struct PriceFallbackSettingsSection: View {
                     .foregroundStyle(vendorKeyMessageIsError ? .red : .secondary)
             }
         } header: {
-            Text("Price Fallback")
+            Text("JustTCG Pricing")
         } footer: {
-            Text(hasVendorKey
-                 ? "A key is saved in your keychain. Free-tier safety limits vendor traffic to 95 requests per UTC day; automatic price work stops at 75 to reserve 20 for sealed products and other direct actions."
-                 : "Optional. Adds prices for cards TCGdex and Scryfall don't cover, such as Japanese sets, promos, tokens and art cards.")
+            VStack(alignment: .leading, spacing: 8) {
+                Text("A JustTCG key is required to load market price history, graded listings and provider-backed sealed prices. Listing coverage varies. Saved prices and cached history remain available without a key.")
+                Text("Fill gaps adds JustTCG prices when the catalog has no supported price. Turning it off does not disable history, graded or sealed lookups.")
+                Text(hasVendorKey
+                     ? "Your key is saved in Keychain. Requests share a daily allowance: at most 95 per UTC day, with automatic work stopping at 75 to reserve 20 for direct actions. Remove and save a replacement key here if access changes."
+                     : "Save your own key here to enable these features. Your key stays in Keychain; it is not included in collection exports.")
+                Link("JustTCG account and API access", destination: URL(string: "https://justtcg.com")!)
+            }
         }
 
         Section {

@@ -34,7 +34,7 @@ private final class LorcanaPricingProtocol: URLProtocol {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
-            let data = try Self.handler!(request)
+            let data = MarketMirrorFixture.stamped(try Self.handler!(request))
             client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200,
                 httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
@@ -53,7 +53,7 @@ final class LorcanaPricingTests: XCTestCase {
         defer { LorcanaPricingProtocol.handler = nil; try? FileManager.default.removeItem(at: root) }
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [LorcanaPricingProtocol.self]
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: URLSession(configuration: configuration), cacheDirectory: root))
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: configuration), cacheDirectory: root))
         let adapter = LorcanaPriceAdapter(registry: catalog.registry, source: source)
         var groups = Set<Int>()
         for code in ["1", "2", "3", "4"] {
@@ -179,7 +179,7 @@ final class LorcanaPricingTests: XCTestCase {
             }
             return try Data(contentsOf: workspace.appendingPathComponent("feeds/\(group)-\(url.lastPathComponent).json"))
         }
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: cache))
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: cache))
         struct Feed: Decodable { let results: [Price] }
         struct Price: Decodable { let productId: Int; let subTypeName: String; let marketPrice: Double? }
         var feeds: [Int: [Price]] = [:]
@@ -363,6 +363,79 @@ final class LorcanaPricingTests: XCTestCase {
         let normal = await CardMarketHistoryRequest(card: card, variant: .normal, printRun: nil)
             .resolvingMarketMapping(in: runtimes)
         XCTAssertTrue(normal.lookups.isEmpty, "An unmapped finish must not borrow the foil product")
+    }
+
+    func testNormalRuntimeHistoryUsesReviewedMappingForCatalogAndCollectionAndRejectsWithdrawal() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
+        let printing = try XCTUnwrap(physical.manifest.physicalPrintings.first { !($0.marketMappings ?? []).isEmpty })
+        let mapping = try XCTUnwrap(printing.marketMappings?.first)
+        let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: printing.id).card
+        let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
+        let request = CardMarketHistoryRequest(card: card, variant: mapping.finish.variant, printRun: nil)
+        let resolved = await request.resolvingMarketMapping(in: runtimes)
+        XCTAssertEqual(resolved.lookups, [.tcgplayerID(String(mapping.productID))])
+        XCTAssertEqual(resolved.providerPrinting, mapping.providerVariantID)
+        let owned = CollectedCard(card: card,
+            resolved: .init(variant: mapping.finish.variant, resolution: .userConfirmed))
+        let collectionRequest = CardMarketHistoryRequest(card: owned)
+        let collectionMapping = await collectionRequest.resolvingMarketMapping(in: runtimes)
+        XCTAssertEqual(collectionMapping.historyIdentity, resolved.historyIdentity)
+
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: root.lastPathComponent))
+        defer {
+            LorcanaPricingProtocol.handler = nil
+            try? FileManager.default.removeItem(at: root)
+            defaults.removePersistentDomain(forName: root.lastPathComponent)
+        }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://history.invalid")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture"), root: root)
+        var calls = 0
+        LorcanaPricingProtocol.handler = { request in
+            calls += 1
+            let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems
+            XCTAssertEqual(query?.first { $0.name == "tcgplayerId" }?.value, String(mapping.productID))
+            return Data("""
+                {"data":[{"tcgplayerId":"\(mapping.productID)","variants":[
+                  {"printing":"\(mapping.providerVariantID)","condition":"Near Mint","language":"Japanese","priceHistory":[{"p":999,"t":1700000000}]},
+                  {"printing":"\(mapping.providerVariantID)","condition":"Near Mint","type":"graded","priceHistory":[{"p":888,"t":1700000000}]},
+                  {"printing":"\(mapping.providerVariantID)","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}
+                ]}]}
+                """.utf8)
+        }
+        let points = try await service.history(for: request, runtimes: runtimes)
+        XCTAssertEqual(points.map(\.p), [12])
+        let ownedPoints = try await service.history(for: collectionRequest, runtimes: runtimes)
+        XCTAssertEqual(ownedPoints, points)
+        XCTAssertEqual(calls, 1, "Catalog and collection share only the exact physical listing's cache")
+
+        let unsupported = CardMarketHistoryRequest(card: card, variant: .reverse, printRun: nil)
+        do { _ = try await service.history(for: unsupported, runtimes: runtimes); XCTFail("Unmapped finish fetched") }
+        catch { XCTAssertTrue(error is CardMarketHistoryService.HistoryError) }
+
+        // Keep the same physical UUID and finish, but withdraw the reviewed lane
+        // in the normal wrapper. Previously cached history must disappear.
+        var manifest = try JSONSerialization.jsonObject(with: JSONEncoder().encode(physical.manifest)) as! [String: Any]
+        var printings = manifest["physicalPrintings"] as! [[String: Any]]
+        for index in printings.indices { printings[index]["marketMappings"] = [] }
+        manifest["physicalPrintings"] = printings
+        let withdrawnManifest = try JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self,
+            from: JSONSerialization.data(withJSONObject: manifest))
+        let sourceURL = try XCTUnwrap(Bundle.main.url(forResource: "discovery", withExtension: "json", subdirectory: "LorcanaCatalogSeed"))
+        let withdrawn = try LorcanaDiscoveryCatalog(data: Data(contentsOf: sourceURL), reviewedManifest: withdrawnManifest)
+        let withdrawnRuntimes = try CardGameRuntimeContainer(runtimes: [withdrawn.runtime])
+        let cached = await service.cached(collectionRequest, runtimes: withdrawnRuntimes)
+        XCTAssertTrue(cached.isEmpty)
+        do { _ = try await service.history(for: request, runtimes: withdrawnRuntimes); XCTFail("Withdrawn mapping fetched") }
+        catch { XCTAssertTrue(error is CardMarketHistoryService.HistoryError) }
+        XCTAssertEqual(calls, 1)
     }
 
     private let now = Date.now
@@ -695,11 +768,11 @@ final class LorcanaPricingTests: XCTestCase {
                 ? #"{"success":true,"errors":[],"results":[{"productId":510153,"categoryId":71,"groupId":22937,"name":"Fixture Elsa","extendedData":[{"name":"Number","value":"207/204"}]}]}"#
                 : #"{"success":true,"errors":[],"results":[{"productId":510153,"subTypeName":"Normal","marketPrice":9000},{"productId":510153,"subTypeName":"Holofoil","marketPrice":8.16}]}"#).utf8)
         }
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: URLSession(configuration: config), cacheDirectory: root))
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config), cacheDirectory: root))
         guard case let .price(price) = try await source.quote(mapping: mapping(), generation: "fixture", minimumFetchedAt: nil) else { return XCTFail() }
         XCTAssertEqual(price.unitMarketPriceUSD, 8.16); XCTAssertNil(price.sourceUpdatedAt)
         LorcanaPricingProtocol.handler = { _ in XCTFail("Relaunch must use the retained receipt"); return Data() }
-        let relaunched = LorcanaTCGCSVPriceSource(transport: .init(session: URLSession(configuration: config), cacheDirectory: root))
+        let relaunched = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config), cacheDirectory: root))
         let cached = try await relaunched.quote(mapping: mapping(), generation: "fixture", minimumFetchedAt: nil)
         XCTAssertEqual(cached, .price(price))
         do { _ = try await source.quote(mapping: mapping(product: 99), generation: "fixture", minimumFetchedAt: nil); XCTFail() }
@@ -727,7 +800,7 @@ final class LorcanaPricingTests: XCTestCase {
                 if mode == "duplicate" { rows.append(lane) }
                 return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": rows])
             }
-            let source = LorcanaTCGCSVPriceSource(transport: .init(session: URLSession(configuration: config),
+            let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config),
                 cacheDirectory: root.appendingPathComponent(mode)))
             do {
                 let quote = try await source.quote(mapping: cold, generation: "fixture", minimumFetchedAt: nil)
@@ -847,7 +920,7 @@ final class LorcanaPricingTests: XCTestCase {
             LorcanaPricingProtocol.handler = { request in
                 request.url!.lastPathComponent == "products" ? badProducts : badPrices
             }
-            let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: directory))
+            let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: directory))
             do {
                 _ = try await source.quote(mapping: mapping(), generation: "cache-validation", minimumFetchedAt: nil)
                 XCTFail("Invalid feed must be rejected: \(mode)")
@@ -855,7 +928,7 @@ final class LorcanaPricingTests: XCTestCase {
             LorcanaPricingProtocol.handler = { request in
                 request.url!.lastPathComponent == "products" ? goodProducts : goodPrices
             }
-            let reopened = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: directory))
+            let reopened = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: directory))
             do {
                 guard case let .price(recovered) = try await reopened.quote(mapping: mapping(), generation: "cache-validation", minimumFetchedAt: nil) else { XCTFail(); continue }
                 XCTAssertEqual(recovered.unitMarketPriceUSD, 8.16)
@@ -866,7 +939,7 @@ final class LorcanaPricingTests: XCTestCase {
             let legacy = try JSONSerialization.data(withJSONObject: ["products": products, "prices": prices,
                 "fetchedAt": Date.now.timeIntervalSinceReferenceDate, "catalogGeneration": "cache-validation"])
             try legacy.write(to: directory.appendingPathComponent("71-22937.json"), options: .atomic)
-            let upgraded = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: directory))
+            let upgraded = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: directory))
             do {
                 guard case let .price(recovered) = try await upgraded.quote(mapping: mapping(), generation: "cache-validation", minimumFetchedAt: nil) else { XCTFail(); continue }
                 XCTAssertEqual(recovered.unitMarketPriceUSD, 8.16)
@@ -886,11 +959,11 @@ final class LorcanaPricingTests: XCTestCase {
                 ? #"{"success":true,"errors":[],"results":[{"productId":510153,"categoryId":71,"groupId":22937,"name":"Fixture Elsa","extendedData":[{"name":"Number","value":"207/204"}]}]}"#
                 : #"{"success":true,"errors":[],"results":[{"productId":510153,"subTypeName":"Normal","marketPrice":0},{"productId":510153,"subTypeName":"Holofoil","marketPrice":null}]}"#).utf8)
         }
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: root))
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: root))
         let absent = try await source.quote(mapping: mapping(), generation: "valid", minimumFetchedAt: nil)
         XCTAssertEqual(absent, .unavailable(.tcgCSV))
         LorcanaPricingProtocol.handler = { _ in XCTFail("Valid null/zero feed must remain reusable"); throw URLError(.notConnectedToInternet) }
-        let reopened = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: root))
+        let reopened = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: root))
         guard case let .price(zero) = try await reopened.quote(mapping: mapping(finish: .normal), generation: "valid", minimumFetchedAt: nil) else { return XCTFail() }
         XCTAssertEqual(zero.unitMarketPriceUSD, 0)
         let cachedAbsent = try await reopened.quote(mapping: mapping(), generation: "valid", minimumFetchedAt: nil)
@@ -995,7 +1068,7 @@ final class LorcanaPricingTests: XCTestCase {
         for code in [URLError.Code.notConnectedToInternet, .networkConnectionLost, .timedOut, .cancelled] {
             let session = URLSession(configuration: config)
             defer { session.invalidateAndCancel() }
-            let source = LorcanaTCGCSVPriceSource(transport: .init(session: session,
+            let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session,
                 cacheDirectory: root.appendingPathComponent(String(code.rawValue))))
             LorcanaPricingProtocol.handler = { _ in throw URLError(code) }
             do {
@@ -1022,10 +1095,10 @@ final class LorcanaPricingTests: XCTestCase {
         config.protocolClasses = [LorcanaPricingProtocol.self]
         let session = URLSession(configuration: config)
         defer { session.invalidateAndCancel() }
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: root))
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL, session: session, cacheDirectory: root))
         LorcanaPricingProtocol.handler = { _ in Data("not a valid feed".utf8) }
         do { _ = try await source.quote(mapping: mapping(), generation: "recovery", minimumFetchedAt: nil); XCTFail() }
-        catch is DecodingError {}
+        catch PriceQuoteError.providerUnavailable {}
         LorcanaPricingProtocol.handler = { _ in XCTFail("Rejected feed retains its cooldown"); return Data() }
         do { _ = try await source.quote(mapping: mapping(), generation: "recovery", minimumFetchedAt: nil); XCTFail() }
         catch PriceQuoteError.providerUnavailable {}
@@ -1191,7 +1264,7 @@ final class LorcanaPricingTests: XCTestCase {
             .filter { !($0.marketMappings ?? []).isEmpty }.sorted { $0.id.uuidString < $1.id.uuidString }
         let session = URLSession(configuration: .ephemeral)
         defer { session.invalidateAndCancel() }
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session,
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: TCGCSVPriceMirror.baseURL, session: session,
             cacheDirectory: root.appendingPathComponent("feed")))
         let bound = try await runtimes(catalog.registry, source: source).bound(to: container())
         let service = bound.makePriceQuoteService()
@@ -1272,7 +1345,7 @@ final class LorcanaPricingTests: XCTestCase {
         let registry = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.pricingManifest())
         let standard = try XCTUnwrap(registry.physicalCatalog?.manifest.physicalPrintings.first { $0.identity.size == .standard })
         let oversized = try XCTUnwrap(registry.physicalCatalog?.manifest.physicalPrintings.first { $0.identity.size == .oversized })
-        let source = LorcanaTCGCSVPriceSource(transport: .init(session: URLSession(configuration: .ephemeral),
+        let source = LorcanaTCGCSVPriceSource(transport: .init(baseURL: TCGCSVPriceMirror.baseURL, session: URLSession(configuration: .ephemeral),
                                                             cacheDirectory: root.appendingPathComponent("feed")))
         let host = try container(url: root.appendingPathComponent("collection.store"))
         let bound = try await runtimes(registry, source: source).bound(to: host)
@@ -1340,7 +1413,7 @@ final class LorcanaPricingTests: XCTestCase {
         LorcanaPricingProtocol.handler = { _ in XCTFail("Relaunch must retain the live receipt without network"); throw URLError(.notConnectedToInternet) }
         defer { LorcanaPricingProtocol.handler = nil }
         let offline = LorcanaPriceAdapter(registry: registry, source: LorcanaTCGCSVPriceSource(transport:
-            .init(session: URLSession(configuration: offlineConfig), cacheDirectory: root.appendingPathComponent("feed"))))
+            .init(baseURL: TCGCSVPriceMirror.baseURL, session: URLSession(configuration: offlineConfig), cacheDirectory: root.appendingPathComponent("feed"))))
         let cached = try await offline.refreshStoredPrinting(base.providerID, variant: .foil)
         XCTAssertEqual(cached, foil)
 

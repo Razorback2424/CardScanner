@@ -75,7 +75,7 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
         return .init(card: resolved.card, set: set, retrievedAt: resolved.retrievedAt,
             collectionWriteUnavailableReason: reason,
             catalogNotice: (p.canonicalLinkStatus == "unresolved" ? "Canonical card linkage is unresolved. " : "")
-                + "Confirm the release, rarity, artwork and edition on your copy. Images are representative marketplace images. Edition support is provider evidence; other editions may exist. " + catalog.historicalPricingNotice)
+                + "Confirm the release, rarity, artwork and edition on your copy. Images are representative marketplace images. Edition support is provider evidence; other editions may exist. " + catalog.currentPricingNotice)
     }
     private struct Cursor: Codable { let generation: String; let scope: String; let offset: Int }
     private func page(_ rows: [CatalogCardSummary], cursor: String?, scope: String) throws -> CatalogPage<CatalogCardSummary> {

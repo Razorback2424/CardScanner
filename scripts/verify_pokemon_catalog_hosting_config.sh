@@ -39,4 +39,13 @@ jq -e '
                ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
 ' firebase.json >/dev/null
 
-echo "Firebase Hosting production target, dot-file ignore, and six catalog cache classes are valid"
+jq -e '
+  .hosting | map(select(.target == "production"))[0].headers
+  | (map(select(.source == "/market-prices/v1/**" and
+       ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=300")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/market-prices/v1/tcgplayer/**" and
+       ([.headers[]? | select(.key == "Content-Type" and .value == "application/json; charset=utf-8")] | length) == 1)) | length == 1)
+' firebase.json >/dev/null
+
+echo "Firebase Hosting production target, catalog caches and daily price feed rules are valid"

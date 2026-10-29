@@ -60,6 +60,7 @@ private final class OnePiecePriceTestProtocol: URLProtocol {
         send(data)
     }
     private func send(_ data: Data) {
+        let data = MarketMirrorFixture.stamped(data)
         client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200,
             httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: data)
@@ -114,7 +115,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         defer { OnePiecePriceTestProtocol.handler = nil; try? FileManager.default.removeItem(at: root) }
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [OnePiecePriceTestProtocol.self]
-        let source = OnePieceTCGCSVPriceSource(session: URLSession(configuration: configuration), cacheDirectory: root)
+        let source = OnePieceTCGCSVPriceSource(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: configuration), cacheDirectory: root)
         let adapter = OnePiecePriceAdapter(registry: catalog.registry, source: source)
         var groups = Set<Int>()
         for number in ["OP01-120", "OP05-119", "ST01-012", "EB01-001"] {
@@ -1393,12 +1394,12 @@ final class OnePieceIntegrationTests: XCTestCase {
                 : #"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Normal","marketPrice":9000},{"productId":454664,"subTypeName":"Foil","marketPrice":8.16}]}"#
             return Data(json.utf8)
         }
-        let source = OnePieceTCGCSVPriceSource(session: URLSession(configuration: config), cacheDirectory: directory)
+        let source = OnePieceTCGCSVPriceSource(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config), cacheDirectory: directory)
         guard case let .price(price) = try await source.quote(mapping: mapping, number: "OP01-120") else { return XCTFail() }
         XCTAssertEqual(price.unitMarketPriceUSD, 8.16)
         let validResponse = OnePiecePriceTestProtocol.handler
         OnePiecePriceTestProtocol.handler = { _ in Data("invalid network response".utf8) }
-        let relaunched = OnePieceTCGCSVPriceSource(session: URLSession(configuration: config), cacheDirectory: directory)
+        let relaunched = OnePieceTCGCSVPriceSource(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config), cacheDirectory: directory)
         guard case let .price(cached) = try await relaunched.quote(mapping: mapping, number: "OP01-120") else { return XCTFail() }
         XCTAssertEqual(cached, price)
         do { _ = try await source.quote(mapping: mapping, number: "OP01-001"); XCTFail() }
@@ -1462,7 +1463,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             OnePiecePriceTestProtocol.asyncHandler = nil
             try? FileManager.default.removeItem(at: directory)
         }
-        let source = OnePieceTCGCSVPriceSource(session: URLSession(configuration: config), cacheDirectory: directory)
+        let source = OnePieceTCGCSVPriceSource(baseURL: MarketMirrorFixture.baseURL, session: URLSession(configuration: config), cacheDirectory: directory)
         let old = Task { try await source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation") }
         defer { old.cancel(); Task { await gate.firstRequest.resume() } }
         await gate.firstRequest.waitForStart()

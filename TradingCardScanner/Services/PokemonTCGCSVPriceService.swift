@@ -27,12 +27,12 @@ protocol PokemonTCGCSVPriceSource: Sendable {
     func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot
 }
 
-/// One device-local, daily download shared by Browse, scanning and collection refresh.
-/// It never participates in card recognition or publishes prices to ScanStash servers.
+/// A daily server-ingested snapshot shared by Browse, scanning and collection
+/// refresh. Devices never request the upstream provider directly.
 actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     static let shared = PokemonTCGCSVPriceService()
     private let session: URLSession
-    private let baseURL: URL
+    private let baseURL: URL?
     private let cacheDirectory: URL
     private let now: @Sendable () -> Date
     private let spacing: TimeInterval
@@ -44,8 +44,8 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     private var nextRequestAt = Date.distantPast
 
     init(
-        session: URLSession = .shared,
-        baseURL: URL = URL(string: "https://tcgcsv.com")!,
+        session: URLSession = TCGCSVPriceMirror.session,
+        baseURL: URL? = TCGCSVPriceMirror.baseURL,
         cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("TCGCSV-v1", isDirectory: true),
         now: @escaping @Sendable () -> Date = { .now },
@@ -135,10 +135,13 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         } else {
             let productsData = try await fetch("tcgplayer/3/\(groupID)/products")
             let pricesData = try await fetch("tcgplayer/3/\(groupID)/prices")
+            let capturedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData,
+                expectedBuild: feedBuild, now: now())
             result = try Self.decodeSnapshot(
                 products: productsData, prices: pricesData, setID: setID,
-                feedBuild: feedBuild, fetchedAt: now()
+                feedBuild: feedBuild, fetchedAt: capturedAt
             )
+            result.validatedAt = now()
         }
         // A cache write failure must not hide an otherwise valid current quote.
         if let data = try? JSONEncoder().encode(result) {
@@ -172,6 +175,7 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     }
 
     private func fetch(_ path: String) async throws -> Data {
+        guard let baseURL, TCGCSVPriceMirror.isPermitted(baseURL) else { throw PokemonTCGCSVError.invalidResponse }
         let requestAt = max(nextRequestAt, Date.now)
         nextRequestAt = requestAt.addingTimeInterval(spacing)
         let delay = requestAt.timeIntervalSinceNow
@@ -181,7 +185,8 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.setValue("ScanStash/1.0 (iOS; daily set pricing)", forHTTPHeaderField: "User-Agent")
         let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+        guard let http = response as? HTTPURLResponse, http.url == request.url,
+              http.statusCode == 200, data.count <= 8 * 1_024 * 1_024 else {
             throw PokemonTCGCSVError.invalidResponse
         }
         return data

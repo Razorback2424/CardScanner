@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -18,7 +19,7 @@ class CatalogHostingRestoreTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         (self.root / "scripts").mkdir()
         source = Path(__file__).resolve().parents[1]
-        for name in ("restore_catalog_hosting_site.sh", "one_piece_pinned_keys.py"):
+        for name in ("restore_catalog_hosting_site.sh", "one_piece_pinned_keys.py", "market_price_feeds.py"):
             shutil.copy(source / name, self.root / "scripts" / name)
         (self.root / "Config").mkdir()
         key = base64.b64encode(bytes(range(32))).decode()
@@ -55,6 +56,16 @@ if a[0]=='export-parent': pathlib.Path(a[a.index('--output')+1]).write_text(revi
 print(revision)
 """)
         self.environment["YUGIOH_CATALOG_PUBLISHER"] = str(self.root / "bin/yugioh-catalog-publisher")
+        # Price-feed bytes/validation are exercised by test_market_price_feeds.
+        # This harness checks the existing full-site publishers invoke it and
+        # propagate its failure, without making a production network request.
+        self.tool("python3", f"""#!{sys.executable}
+import os, pathlib, subprocess, sys
+if len(sys.argv)>1 and sys.argv[1].endswith('market_price_feeds.py'):
+    pathlib.Path(os.environ['RUNNER_TEMP'], 'price-restore-called').write_text('called')
+    sys.exit(1 if os.environ.get('PRICE_RESTORE_FAIL') else 0)
+sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
+""")
 
     def tearDown(self):
         self.temp.cleanup()
@@ -80,6 +91,13 @@ print(revision)
             self.assertEqual((self.root / f"publisher/site/one-piece/v1/releases/{revision}/catalog-release.json").read_text(), str(revision))
         self.assertEqual((self.root / "publisher/site/one-piece/v1/current.json").read_text(), "2")
         self.assertEqual(self.restore().returncode, 0, "Repeated restoration must be idempotent")
+        self.assertTrue((self.root / "price-restore-called").exists())
+
+    def test_price_namespace_restore_failure_blocks_complete_site_deployment(self):
+        self.environment["PRICE_RESTORE_FAIL"] = "1"
+        result = self.restore()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue((self.root / "price-restore-called").exists())
 
     def test_absent_one_piece_is_allowed_before_first_publication(self):
         self.environment["POINTER_STATUS"] = "404"

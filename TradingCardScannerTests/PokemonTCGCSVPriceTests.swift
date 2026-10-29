@@ -4,6 +4,47 @@ import XCTest
 @testable import TradingCardScanner
 
 final class PokemonTCGCSVPriceTests: XCTestCase {
+    func testMirrorProvenancePreservesCaptureTimeAndRejectsMissingMixedStaleOrFutureMetadata() throws {
+        let now = Date(timeIntervalSince1970: floor(Date.now.timeIntervalSince1970))
+        let captured = now.addingTimeInterval(-3_600)
+        let raw = Data(#"{"success":true,"errors":[],"results":[]}"#.utf8)
+        let stamped = MarketMirrorFixture.stamped(raw, capturedAt: captured)
+        let resolved = try TCGCSVPriceMirror.captureDate(products: stamped, prices: stamped, now: now)
+        XCTAssertEqual(resolved.timeIntervalSince1970, captured.timeIntervalSince1970, accuracy: 0.001)
+        XCTAssertThrowsError(try TCGCSVPriceMirror.captureDate(products: raw, prices: stamped, now: now))
+        let mixed = MarketMirrorFixture.stamped(raw, capturedAt: captured, build: "2026-02-01T00:00:00Z")
+        XCTAssertThrowsError(try TCGCSVPriceMirror.captureDate(products: mixed, prices: stamped, now: now))
+        XCTAssertThrowsError(try TCGCSVPriceMirror.captureDate(products: stamped, prices: stamped,
+            expectedBuild: "2026-02-01T00:00:00Z", now: now))
+        for date in [now.addingTimeInterval(60), now.addingTimeInterval(-86_400)] {
+            let invalid = MarketMirrorFixture.stamped(raw, capturedAt: date)
+            XCTAssertThrowsError(try TCGCSVPriceMirror.captureDate(products: invalid, prices: invalid, now: now))
+        }
+    }
+
+    func testUpstreamAndUnconfiguredEndpointsNeverReachTheNetwork() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); TCGCSVTestURLProtocol.server = nil }
+        let server = TCGCSVTestServer(routes: [:], now: .now)
+        TCGCSVTestURLProtocol.server = server
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        for base in [nil, URL(string: "https://tcgcsv.com"), URL(string: "https://www.tcgcsv.com")] as [URL?] {
+            let source = TCGCSVProductPriceSource(baseURL: base, session: session, cacheDirectory: root)
+            do {
+                _ = try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture", number: "1",
+                    lane: "Normal", generation: "fixture", minimumFetchedAt: nil)
+                XCTFail("Invalid mirror reached pricing")
+            } catch {}
+            let pokemon = PokemonTCGCSVPriceService(session: session, baseURL: base, cacheDirectory: root)
+            do { _ = try await pokemon.snapshot(setID: "30th"); XCTFail("Invalid mirror reached Pokemon pricing") }
+            catch {}
+        }
+        XCTAssertTrue(server.requests.isEmpty)
+    }
+
     private func sourceData(_ name: String) throws -> Data {
         try Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: name, withExtension: "json")))
     }
@@ -809,7 +850,10 @@ private final class TCGCSVTestServer: @unchecked Sendable {
     func response(_ request: URLRequest) -> (Int, Data) {
         lock.withLock {
             recorded.append(request)
-            return shouldFail ? (503, Data()) : (200, routes[request.url!.path] ?? Data())
+            let build = routes["/last-updated.txt"].flatMap { String(data: $0, encoding: .utf8) }?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            return shouldFail ? (503, Data()) : (200,
+                MarketMirrorFixture.stamped(routes[request.url!.path] ?? Data(), capturedAt: clock, build: build))
         }
     }
 }
