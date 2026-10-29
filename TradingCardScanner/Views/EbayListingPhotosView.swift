@@ -80,7 +80,7 @@ struct EbayListingPhotosView: View {
         }
     }
 
-    private enum GenerationScope: String, CaseIterable, Identifiable {
+    fileprivate enum GenerationScope: String, CaseIterable, Identifiable {
         case both = "Both sides"
         case front = "Front only"
         case back = "Back only"
@@ -111,6 +111,13 @@ struct EbayListingPhotosView: View {
     private struct BatchProgress: Equatable {
         let current: Int
         let total: Int
+    }
+
+    /// Preview identity must be cheap to compare when unrelated UI state changes.
+    /// Completion changes isLoading, so a finished import starts its own preview.
+    private struct PreviewRequest: Equatable {
+        let generation: Int
+        let isLoading: Bool
     }
 
     @State private var mode: Mode = .single
@@ -189,6 +196,7 @@ struct EbayListingPhotosView: View {
             }
             let stateIndex = arguments.firstIndex(of: "-ui_debug_state")
             let state = stateIndex.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+            if state == "styles" { _isShowingStyles = State(initialValue: true) }
             if state == "collection" {
                 _collectionTitle = State(initialValue: "Sample Card")
                 _collectionSubtitle = State(initialValue: "Sample Set · 041/198 · Holo Rare")
@@ -245,26 +253,13 @@ struct EbayListingPhotosView: View {
             }
         }
         .sheet(isPresented: $isShowingStyles) {
-            NavigationStack {
-                List {
-                    Section("Five photos per side") {
-                        Label("Full view", systemImage: "rectangle.portrait")
-                        Label("Top left corner", systemImage: "arrow.up.left")
-                        Label("Top right corner", systemImage: "arrow.up.right")
-                        Label("Bottom right corner", systemImage: "arrow.down.right")
-                        Label("Bottom left corner", systemImage: "arrow.down.left")
-                    }
-                    if frontData != nil && backData != nil {
-                        Section("Include") { scopePicker.pickerStyle(.inline) }
-                    }
-                }
-                .navigationTitle("Photo Styles")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar { ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { isShowingStyles = false }
-                } }
+            ListingPhotoStylesSheet(scope: generationScope, hasFront: frontData != nil,
+                                    hasBack: backData != nil, frontPreviews: frontStyles,
+                                    backPreviews: backStyles, accent: listingAccent) { scope in
+                // Commit once, after dismissal, rather than invalidate the
+                // source screen and generated files on every sheet selection.
+                if generationScope != scope { generationScope = scope }
             }
-            .presentationDetents([.medium, .large])
         }
         .sheet(item: $filesExport) { export in
             ListingFilesExporter(urls: export.urls) { saved in
@@ -341,18 +336,18 @@ struct EbayListingPhotosView: View {
 #endif
         }
         .onChange(of: generationScope) { _, _ in invalidateSingleOutput() }
-        .task(id: frontData) {
+        .task(id: PreviewRequest(generation: frontLoadGeneration, isLoading: frontIsLoading)) {
             frontStyles = []
-            guard let frontData else { return }
+            guard !frontIsLoading, let frontData else { return }
             do {
                 let previews = try await EbayListingPhotoExport.makeStylePreviews(data: frontData, isBack: false)
                 guard !Task.isCancelled else { return }
                 frontStyles = previews
             } catch { if !Task.isCancelled { errorMessage = error.localizedDescription } }
         }
-        .task(id: backData) {
+        .task(id: PreviewRequest(generation: backLoadGeneration, isLoading: backIsLoading)) {
             backStyles = []
-            guard let backData else { return }
+            guard !backIsLoading, let backData else { return }
             do {
                 let previews = try await EbayListingPhotoExport.makeStylePreviews(data: backData, isBack: true)
                 guard !Task.isCancelled else { return }
@@ -578,15 +573,6 @@ struct EbayListingPhotosView: View {
         .background(.bar)
     }
 
-    private var scopePicker: some View {
-        Picker("Photos to generate", selection: $generationScope) {
-            ForEach(GenerationScope.allCases) { scope in
-                Text(scope.rawValue).tag(scope)
-            }
-        }
-        .disabled(isPreparingSingle)
-    }
-
     @ViewBuilder
     private var batchContent: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -769,8 +755,8 @@ struct EbayListingPhotosView: View {
                     inspectedPhoto = InspectedPhoto(id: selectedOutputIndex, url: output.urls[selectedOutputIndex],
                                                     dimensions: output.pixelDimensions[selectedOutputIndex])
                 } label: {
-                    Image(uiImage: output.previews[selectedOutputIndex]).resizable().scaledToFit()
-                        .frame(maxWidth: .infinity).frame(height: 250).padding(8)
+                    ListingPhotoReviewImage(image: output.previews[selectedOutputIndex], identity: output.urls[selectedOutputIndex])
+                        .padding(8)
                         .background(Color(uiColor: .tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
                         .overlay(alignment: .bottomLeading) {
                             Text("\(selectedOutputIndex + 1) of \(output.urls.count)\(selectedOutputIndex == 0 ? " · Cover photo" : "")")
@@ -1383,6 +1369,157 @@ struct EbayListingPhotosView: View {
         }
         used.insert(candidate)
         return candidate
+    }
+}
+
+private struct ListingPhotoReviewImage: View {
+    let image: UIImage
+    let identity: URL
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        ZStack {
+            Image(uiImage: image).resizable().scaledToFit()
+                .id(identity).transition(.opacity)
+        }
+        .frame(maxWidth: .infinity).frame(height: 250)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: identity)
+    }
+}
+
+/// Selection and its short animations stay local to the sheet. The parent only
+/// receives the final choice when the sheet disappears.
+private struct ListingPhotoStylesSheet: View {
+    typealias Scope = EbayListingPhotosView.GenerationScope
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var selection: Scope
+    let hasFront: Bool
+    let hasBack: Bool
+    let frontPreviews: [UIImage]
+    let backPreviews: [UIImage]
+    let accent: Color
+    let onApply: (Scope) -> Void
+
+    private static let styles: [(title: String, symbol: String)] = [
+        ("Full view", "rectangle.portrait"),
+        ("Top left corner", "arrow.up.left"),
+        ("Top right corner", "arrow.up.right"),
+        ("Bottom right corner", "arrow.down.right"),
+        ("Bottom left corner", "arrow.down.left")
+    ]
+
+    init(scope: Scope, hasFront: Bool, hasBack: Bool, frontPreviews: [UIImage],
+         backPreviews: [UIImage], accent: Color, onApply: @escaping (Scope) -> Void) {
+        _selection = State(initialValue: scope)
+        self.hasFront = hasFront
+        self.hasBack = hasBack
+        self.frontPreviews = frontPreviews
+        self.backPreviews = backPreviews
+        self.accent = accent
+        self.onApply = onApply
+    }
+
+    private var photoCount: Int { hasFront && hasBack ? (selection == .both ? 10 : 5) : (hasFront || hasBack ? 5 : 0) }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    if hasFront && hasBack {
+                        ForEach(Scope.allCases) { scope in
+                            scopeRow(scope)
+                        }
+                    } else {
+                        Label(hasFront ? "Front only" : hasBack ? "Back only" : "Add a source photo first",
+                              systemImage: hasFront || hasBack ? "checkmark.circle.fill" : "photo.badge.plus")
+                            .frame(minHeight: 44)
+                    }
+                } header: {
+                    Text("Include")
+                } footer: {
+                    Text(photoCount == 0 ? "Add a front or back photo to generate listing photos."
+                         : "\(photoCount) photos in upload order.")
+                        .contentTransition(.opacity)
+                }
+
+                Section {
+                    ForEach(Self.styles.indices, id: \.self) { index in
+                        HStack(spacing: 12) {
+                            if dynamicTypeSize.isAccessibilitySize || (frontPreviews.isEmpty && backPreviews.isEmpty) {
+                                Image(systemName: Self.styles[index].symbol)
+                                    .font(.system(size: 20)).foregroundStyle(accent)
+                                    .frame(width: 28).accessibilityHidden(true)
+                            } else {
+                                HStack(spacing: 4) {
+                                    if frontPreviews.indices.contains(index) {
+                                        preview(frontPreviews[index], included: !hasBack || selection != .back)
+                                    }
+                                    if backPreviews.indices.contains(index) {
+                                        preview(backPreviews[index], included: !hasFront || selection != .front)
+                                    }
+                                }
+                                .frame(width: hasFront && hasBack ? 76 : 36)
+                                .accessibilityHidden(true)
+                            }
+                            Text(Self.styles[index].title).frame(maxWidth: .infinity, alignment: .leading)
+                            Text("\(index + 1)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
+                        }
+                        .frame(minHeight: 48)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("\(index + 1). \(Self.styles[index].title)")
+                    }
+                } header: {
+                    Text("Five photos per side")
+                } footer: {
+                    Text("One full view and four corner close-ups for each included side.")
+                }
+            }
+            .navigationTitle("Photo Styles")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+        .tint(accent)
+        .presentationDetents([.large])
+        .onDisappear {
+            if hasFront && hasBack { onApply(selection) }
+        }
+    }
+
+    private func scopeRow(_ scope: Scope) -> some View {
+        Button { selection = scope } label: {
+            HStack(spacing: 12) {
+                let layout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4)) : AnyLayout(HStackLayout())
+                layout {
+                    Text(scope.rawValue).foregroundStyle(.primary)
+                    if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+                    Text(scope == .both ? "10 photos" : "5 photos").font(.subheadline).foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 22)).foregroundStyle(accent)
+                    .opacity(selection == scope ? 1 : 0)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: selection == scope)
+                    .accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(scope.rawValue), \(scope == .both ? 10 : 5) photos")
+        .accessibilityAddTraits(selection == scope ? .isSelected : [])
+        .accessibilityIdentifier("listingPhotos.styles.\(scope.id)")
+    }
+
+    private func preview(_ image: UIImage, included: Bool) -> some View {
+        Image(uiImage: image).resizable().scaledToFit().frame(width: 36, height: 48)
+            .background(Color(uiColor: .tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 5))
+            .opacity(included ? 1 : 0.15)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: included)
     }
 }
 
