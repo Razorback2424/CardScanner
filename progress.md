@@ -1,3 +1,229 @@
+# 2026-10-28 — Refinement review implementation
+
+Validated and implemented the eight code findings from the comprehensive review:
+edition pseudo-finishes cannot be newly saved by finish correction; unknown
+finishes retain truthful labels; the first revision baseline reconciles same-count
+ownership edits; shared market-history fetches cancel when their last consumer
+leaves; saved Pokémon/Magic slabs reload exact catalog finish alternatives;
+listing-photo tasks/files survive temporary inspection and reset correctly on
+exit; Browse directories publish independently with stale-response guards; and
+Portfolio period controls scale and reflow with 44-point minimum targets.
+
+Regression source covers identity/ledger preservation, model/projection labels,
+same-count launch edits, history consumers and quota, exact slab alternatives,
+shared-file lifetime, independent directory publication, cancellation and retries.
+A DEBUG-only `ListingPhotos` route generates its own pixels for private-media-free
+inspection. Existing source changes and untracked files were preserved.
+
+Implementation is complete. The final signed Debug selection ran 472 cases:
+470 passed, one failed and one skipped. All nine new regressions passed. The
+existing StoreKit purchase test failed with the simulator's "No transactions in
+response" error, then passed in isolation using the same compiled test products.
+The existing interrupted-purchase case skipped under its SDK/runtime guard; the
+combined run is not represented as fully green. Debug compilation passed, and the
+optimized ReleaseLocal simulator build's native log ended with `BUILD SUCCEEDED`
+after the plugin's five-minute response timeout. Both build products and result
+bundles use `/Volumes/T7/CodexBuild/TradingCardScanner-Refinement/` (plugin-managed
+test product copies/logs also live in its standard workspace).
+
+Inspected Portfolio period controls at normal and largest accessibility text
+sizes: the latter uses two columns with readable labels. The synthetic listing
+fixture opened its full-screen inspector and returned to ten prepared outputs
+with Export still available. Automatic approval review blocked photo-picker
+inspection because it could expose unrelated personal media; the generated-only
+route supplied the safe alternative. A 326-file source/project hash snapshot
+matched before and after final verification. Documentation links and diff
+whitespace checks passed. This is scoped simulator evidence, not a full suite,
+physical-device, live-provider, archive or release certification.
+
+The owner explicitly kept privacy/support publication and URL configuration
+deferred. Device latency, real camera/Photos/AirDrop behavior and release gates
+remain separate acceptance work. Shared photo exports are retained for the process
+and retired by the next process's existing temporary-directory sweep; initial
+store reconciliation deliberately adds one launch read/replay to protect accuracy.
+
+# 2026-10-28 — Classic artwork repair installed and verified on the iPhone
+
+After the owner handled Keychain signing, the normal optimized device build
+completed successfully and was installed in place on the unlocked iPhone.
+Source hashes match the 12-test artwork patch. Normal-launch Device Hub
+observations confirmed Classic artwork for Charizard, Lugia (via local search)
+and neighboring cards, with progress/finish rows present. No uninstall, seed,
+collection edit or cache reset was performed. Keyboard capture/mirroring were
+released. Full-size detail/global-search rendering and all 30 cards on the
+phone were not individually checked; the endpoint check covers all 60 URLs.
+
+The installed binary also includes the 15-test focus cleanup. Its unmirrored
+snapshot comparison remains pending; no full hang-free acceptance claim.
+See the [updated artwork report](docs/audits/classic-collection-artwork-repair-2026-10-28.md).
+
+# 2026-10-28 — Classic Collection artwork recovery
+
+Investigated the owner's blank Classic Browse artwork. TCGdex returned
+`image: null` for Charizard/Lugia; checked Scrydex image paths returned HTTP 403.
+The shared card-artwork source now appends existing reviewed exact TCGplayer
+product images for Pokémon / `30th-c`, preserving original URLs first. Browse
+tiles, global card search and catalog detail supply exact card/set identities;
+names or repeated printed numbers never select a product. Unknown IDs and
+wrong-game/wrong-set contexts remain excluded. No identity, finish, price,
+ownership, scanner, schema or cache-policy change; no data/cache reset.
+
+All 60 thumbnail/full-size endpoints for the 30 reviewed cards returned
+HTTP 200/image MIME. Charizard and Lugia were visually checked for the 30th
+anniversary artwork. Optimized native verification passed **12 tests**, zero
+failures/skips and no finalized runtime warnings. The normal device build
+compiled through linking but is waiting on a protected macOS Keychain signing
+prompt. The owner was asked to handle it; installation and phone rendering
+remain pending. The older signing build was interrupted so this binary also
+contains the already tested search-focus cleanup; its snapshot comparison
+remains open. No commit, push or release acceptance.
+
+See the [artwork recovery report](docs/audits/classic-collection-artwork-repair-2026-10-28.md).
+Build/test results, public artwork samples and endpoint/source hashes remain
+outside the repository on T7.
+
+# 2026-10-28 — Browse keyboard/layout repair and direct typing evidence
+
+Removed unused full-screen viewport observation on iOS 18+ while preserving
+the iOS 17 pagination fallback. Reserved the native search clear target so
+first/last-character edits do not resize the input. Installed that optimized
+layout patch in place. The owner typed directly on the phone with mirroring
+off and reported smooth behavior. The 73.92-second trace captured 29 off-main
+projections at 0.205–0.856 ms (median 0.244 ms), with no detected typing hang.
+It still captured 478.61 ms initial app/Collection layout and 451.16 ms
+background snapshot stalls; no first-entry marker was exported in this run.
+
+Added native focus cleanup on resign-active before background snapshotting,
+preserving the query. Final optimized verification passed 15 tests, zero
+failures/skips and no finalized runtime warnings, including a new hosted
+input-width/focus/query-retention regression. The device rebuild compiled
+through linking but is waiting on a macOS Keychain signing prompt. The protected
+security window cannot be automated; the owner was asked to handle it and unlock
+the iPhone. Focus-cleanup installation and snapshot comparison remain pending;
+full hang-free acceptance remains open. No collection/cache reset was used.
+
+See the [focused remediation evidence](docs/audits/browse-performance-repair-2026-10-28.md#keyboard-and-snapshot-remediation--2026-10-28).
+Raw traces, hashes and build/test results remain on T7 outside the repository.
+No commit, push or release acceptance.
+
+# 2026-10-28 — Browse repair installed and profiled on the physical iPhone
+
+Built normal signed ReleaseLocal (`-O`, whole-module, no DEBUG fixture flags)
+and updated ScanStash in place on iPhone 15 Pro Max / iOS 27.0.1. Source hashes
+match the previously tested repair; app/dSYM UUIDs match. Application source
+remained unchanged. No collection reset, uninstall or cache-clear command was
+performed. All 616 existing cache and 174 Application Support entries survived the
+installation. Ordinary use then added/evicted artwork and HTTP cache entries
+under unchanged policies; all Application Support entries remained present.
+
+The 160.51-second physical trace covered Collection → Browse → Pokémon → Sets
+→ Destined Rivals, initial empty query, incremental/rapid typing, clearing and
+Back/reopen. First-usable markers were **131.00 / 120.63 ms**; ten nonempty
+typing projections were **0.236–0.843 ms**, median **0.334 ms**, all off-main.
+Rendered results/progress/finish rows and clearing/reopening were checked.
+Normal launch additionally confirmed a final nonmatching character produces
+the empty result, then clearing restores the full set. App remains open there.
+
+Hangs detected **two microhangs**: **260.16 ms** in keyboard setup before the
+set opened, and **334.45 ms** in snapshot/SwiftUI layout after rapid typing.
+Neither overlaps entry or query-worker intervals. Matching-symbol CPU evidence
+does not isolate automation from ordinary UIKit/render costs; full hang-free
+acceptance remains open. A 120-second follow-up captured another **132.15 ms**
+entry and no hangs but no card typing because Device Hub did not expose the
+software keyboard. It is not accepted as a clean typing run. Instruments attach
+lookup failed; launch-under-recording worked. No pre-patch device speedup claim.
+
+Detailed scoped evidence and limits are in the
+[Browse report](docs/audits/browse-performance-repair-2026-10-28.md#physical-device-follow-up--2026-10-28).
+Raw trace/metadata/build artifacts remain on T7 under
+`CodexBuild/TradingCardScanner-BrowseDeviceEvidence/`, outside the repository.
+No commit, push, merge or release acceptance.
+
+# 2026-10-28 — Focused Browse entry and local-search performance repair
+
+Started on `main` at the supplied baseline `e92db19`; preserved existing
+documentation edits. Set presentation now prepares normalized text, number keys
+and grouping identities once per changed snapshot, filters retained ordering on
+an actor and rejects obsolete/canceled publications. Search remains immediate.
+Directory fallback uses prepared ownership buckets; completion prepares each
+available game without waiting for unrelated catalogs and invalidates stale
+ownership/tier/catalog results. Provider pacing/concurrency, image loading,
+price batching, writers, persistence schema and catalog authority are retained.
+
+Optimized iPhone 17 / iOS 27.0 hosted fixtures: Destined Rivals first empty-query
+projection **4.49 → 2.54 ms**, typing median **1.73 → 0.246 ms**. Twelve requests
+now use one preparation/ascending sort and ten projections. The frozen original
+directory fallback took **5.71 seconds** for 2,000 synthetic rows / 60 sets
+(120,000 row visits); prepared lookup took **0.46 ms**, after a **105 ms** complete
+ownership-index build on the existing background projection boundary in production.
+These are fixture costs, not physical-device/frame-delivery speedup claims.
+
+Final native verification: **37 focused + 5 existing shared-ownership cases
+passed**, zero failures/skips; both finalized summaries have no runtime warnings.
+Includes hosted navigation/scroll/pagination/reappearance, stale results, same-count
+catalog replacement, ownership/tier/price changes, finish grouping, exact cross-game
+membership and a delayed/failed unrelated directory. Plain ReleaseLocal could not
+compile the existing DEBUG-only test seams; accepted runs retain ReleaseLocal `-O`
+optimization with those seams enabled. The baseline MCP response timed out, but
+its completed passing result was recovered. Final verification used direct
+xcodebuild logging on the T7 SSD. `git diff --check` and changed-document link
+checks pass. Full evidence and remaining limits are in the
+[Browse repair report](docs/audits/browse-performance-repair-2026-10-28.md).
+
+The discoverable physical iPhone required unlocking, so no device install/trace
+or hang acceptance is claimed. History projection, the M08 first-baseline
+same-count gap and other profiling candidates remain separate. No commit,
+push, merge, publication or whole-app/release acceptance.
+
+# 2026-10-27 — M07 first slice: usable graded finish correction actions
+
+Fix finish now appears only when the existing resolver supplies a different
+valid finish ID. The Printed finish label and saved value (including Not
+determined) remain visible for the same eligible acquisitions. The menu excludes
+the current finish, and its explanatory copy appears only with the action.
+Existing reviewed pattern/stamped/printing alternatives, pending-write guard,
+accessibility label and correction writer remain. No global finish list,
+catalog fetch, state/model refactor or persistence policy change was added.
+
+Three new regressions cover ordinary Pokémon/Magic known/unknown finishes,
+reviewed singleton/multiple alternatives, pattern/stamped supplements and the
+separate print-run axis. The bounded Debug iPhone 17 / iOS 27.0 Simulator
+selection passed **124 tests, zero failures/skips**: three new M07 tests, two
+existing supplemental-options tests, all 43 CollectionItemKind and all 76
+CollectionActivityHistory tests. Existing correction/binding/quantity/Undo and
+authorization regressions are reused. The finalized summary has no runtime
+warnings or test failures. Visibility and retained finish text are source-checked;
+these native tests exercise the exact option helper used by the view.
+
+Tested source/test revision: `e92db193be32024304de5cf24cdc8017b69ed3f6`.
+Work began on clean `54af5ec`; after interruption the same implementation/tests
+were already committed in `e92db19`, with a clean worktree. That commit was
+preserved; this resumed pass made no commit or push. Its patch from `54af5ec`
+matches `final-tested.patch` SHA-256
+`0ad5ae96318eb9cf79bb6c63ab2445a6459973ea82ebfcc0cdc40cae7358a9c0`.
+The first build failed before tests because the outer detail facade did not
+yet forward the new helper; corrected before the next build. The next run
+compiled and began tests, then was interrupted without a finalized bundle.
+The final `xcodebuild test-without-building` reused that build and the same
+bounded selection, with serial execution and a 120-second per-test limit;
+exit 0. No incomplete run is counted as passing evidence.
+
+External SSD evidence:
+`/Volumes/Keller Family Photos/CodexBuildArtifacts/TradingCardScannerM01/M07-first-slice/`.
+`resumed-focused.log` contains the exact invocation and per-case results;
+`resumed-focused.xcresult`, `resumed-summary.json` and `final-tested.patch` retain
+the accepted evidence. The same root's earlier `focused` and `final-focused`
+artifacts preserve the build failure and interrupted run. Derived data remains
+in the sibling `DerivedData` directory; temporary run data stays on the SSD.
+
+Updated the [master report](docs/audits/production-refinement-master-review-2026-10-26.md#m07-graded-finish-correction-often-offers-no-correction)
+and documentation audit. Source HIG gate: PASS, no source issues identified;
+native controls/system text remain, no prompt/tap added, and misleading no-op
+actions removed. Broader catalog-backed alternative discovery is deferred.
+Rendered phone/tablet, Dynamic Type/VoiceOver, physical-device, live-provider,
+CloudKit, full-suite, archive and release acceptance remain unverified.
+M08 and later findings are unchanged.
+
 # 2026-10-27 — PR #5 focused verification of review follow-ups
 
 Source review of `019ca6f`..`c091381` found three follow-ups. After M01, a

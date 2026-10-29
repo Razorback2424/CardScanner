@@ -1,6 +1,14 @@
 # Production refinement master review
 
-**Status:** current consolidated findings; M01–M03 locally repaired on 2026-10-26. M04's reviewed UI ownership write paths, M05's opening hold and M06's owned-game filter choices are locally repaired through 2026-10-27; scoped verification and remaining runtime acceptance are recorded below. Broader synchronous service boundaries are explicitly retained, not certified as nonblocking. M07 and later findings are unchanged backlog items.
+**2026-10-28 follow-up:** the later comprehensive-review implementation is recorded
+in the [current progress entry](../../progress.md#2026-10-28--refinement-review-implementation).
+It includes catalog-backed slab finish discovery and first-baseline reconciliation,
+superseding the corresponding open implementation labels in the earlier checkpoint
+below. Scoped final simulator verification and its StoreKit failure/rerun are
+recorded there; the owner kept privacy/support publication deferred. The following consolidation and
+its test counts remain the earlier checkpoint, not evidence for the new patch.
+
+**Status:** current consolidated findings; M01–M03 locally repaired on 2026-10-26. M04's reviewed UI ownership write paths, M05's opening hold and M06's owned-game filter choices are locally repaired through 2026-10-27; scoped verification and remaining runtime acceptance are recorded below. M07's action-availability first slice is implemented and locally regression-verified on 2026-10-27; catalog-backed alternative discovery and rendered acceptance remain open. Broader synchronous service boundaries are explicitly retained, not certified as nonblocking. M08 and later findings are unchanged backlog items.
 
 **Reviewed:** 2026-10-26, commit `028b1356863687e1b4b4ce86f6a5f42794afb1c9`, initially clean working tree.
 
@@ -30,7 +38,7 @@ Reconciliation re-read the disputed paths and their callers, including notificat
 | M04 | P2 | UI ownership actions synchronously wait and write on the main thread | Reviewed UI ownership scope locally repaired; final expanded run: 615 passed, zero failed, one opt-in benchmark skipped; device/rendered acceptance remains |
 | M05 | P2 opportunity | Ready app remains blocked by the opening hold | Locally repaired; hosted regression reproduces old delay and verifies immediate handoff; accessibility/device acceptance remains |
 | M06 | P2 | Collection Game filter uses incomplete static capabilities | Locally repaired; choices follow full owned snapshot, including retained games; three focused and all 124 expanded tests pass |
-| M07 | P2 | Graded “Fix finish” often cannot offer a correction | Source validated; remove misleading actions, then support valid alternatives |
+| M07 | P2 | Graded “Fix finish” often cannot offer a correction | Action-availability first slice verified: 124 passed; broader catalog-backed alternatives and rendered acceptance remain open |
 | M08 | P2, narrow trigger | First revision baseline checks row count rather than ownership contents | Source gap validated; reproduce the same-count launch sequence first |
 | M09 | Verify first | Listing-photo output lifetime is tied to view disappearance | Cleanup validated; presentation/navigation consequences conditional |
 | M10 | Release configuration | Privacy/support URLs are empty in checked-in Release settings | Source validated; known owner-deferred release item |
@@ -353,17 +361,25 @@ Evidence is on the external SSD under `CodexBuildArtifacts/TradingCardScannerM01
 
 ### M07 Graded finish correction often offers no correction
 
-**Where:** [Fix finish menu](../../TradingCardScanner/Views/CollectionCardDetailView.swift#L747) and [gradedVariantEvidence/options](../../TradingCardScanner/Views/CollectionCardDetailView.swift#L817).
+**Status:** first slice implemented in `e92db193be32024304de5cf24cdc8017b69ed3f6` and verified locally on 2026-10-27. This closes misleading action availability only; broader catalog-backed correction is deferred.
 
-The menu appears when an eligible acquisition exists, while its catalog evidence contains only the currently persisted finish. Without supplemental variant knowledge, options are either the current finish alone or empty. Selecting the current finish immediately returns. The interface promises a repair that cannot be performed, including some “Not determined” cases.
+**Where:** [Fix finish menu](../../TradingCardScanner/Views/CollectionCardDetailView.swift#L751) and [gradedVariantCorrectionOptions](../../TradingCardScanner/Views/CollectionCardDetailView.swift#L839).
+
+**Original behavior:** the menu appeared when an eligible acquisition existed, while its catalog evidence often contained only the currently persisted finish. Without supplemental variant knowledge, options were the current finish alone or empty. Selecting the current finish immediately returned. The interface promised a repair that could not be performed, including some “Not determined” cases.
 
 **Impact and confidence:** misleading recovery UI; high confidence. This is distinct from M02's incorrect automatic pricing, but it also limits recovery from uncertain identity.
 
-**Smallest remedy and benefit:** hide the action when no different valid option exists. If actual correction is required, obtain alternatives through the existing catalog adapter and preserve the ownership correction path. Never substitute a global selectable-finish list. Every offered action should produce a valid result.
+**First slice implemented:** filter the existing resolver options by persisted finish ID, omit the menu when no different option remains, and retain the Printed finish label/value, including Not determined. The action-specific explanatory copy appears only with a usable action. Eligible-acquisition and pending-write guards, native Menu, accessibility label and correction writer are retained. Reviewed Pokémon patterns, stamped releases and exact-printing alternatives remain available. No global finish list, catalog request, persistence change, new state or view-model refactor was added.
 
-**Risk and complexity:** low risk and reduced complexity for hiding unusable actions; medium risk and a small increase for catalog-backed correction.
+**Risk and complexity:** low-risk presentation/option filtering; one small helper through the existing detail facade replaces the no-op current-finish menu branch. Broader catalog-backed correction remains medium risk and is not part of this slice.
 
-**Verification:** test ordinary Magic and Pokémon, known/unknown finishes, singleton and ambiguous catalog evidence, print runs, and supplemented sets. Verify correction history, binding invalidation, quantity, and undo when a real correction is offered.
+**Native verification:** Debug iPhone 17 / iOS 27.0 Simulator: **124 passed, zero failed, zero skipped** (43 CollectionItemKind, 76 CollectionActivityHistory, five selected OpusImplementationPlan cases). The three new M07 regressions exercise ordinary Pokémon/Magic known and unknown finishes; reviewed singleton/multiple choices; Poké Ball/Master Ball and stamped supplements; and preservation of the print-run axis. The other two selected cases preserve existing underlying-printing routing and stamped-release coverage. Existing suites cover correction history, stale claims, identity-gate authorization, binding invalidation, quantities and Undo. Tests validate the exact option helper used by the view; hiding the menu while retaining finish text is source-checked, not rendered interaction acceptance.
+
+The first build failed before test execution because the new helper lacked the outer detail facade's forwarding method; that seam was completed. The next build ran tests but was interrupted and left no finalized result bundle. After resumption, the same source/test patch was present in `e92db19`; the final `test-without-building` selection reused those SSD build products and exited 0. Evidence is under `CodexBuildArtifacts/TradingCardScannerM01/M07-first-slice/`: `resumed-focused.xcresult` / `.log`, `resumed-summary.json`, and `final-tested.patch` (SHA-256 `0ad5ae96318eb9cf79bb6c63ab2445a6459973ea82ebfcc0cdc40cae7358a9c0`). Earlier build/interrupted artifacts remain separate.
+
+**HIG source gate:** verdict **PASS**; top issues: none identified in source; minimal fix list: the action guard above. Platform patterns retain the native Menu; clarity removes a no-op repair while retaining finish information; typography uses unchanged system styles; accessibility retains the existing label and controls when applicable; interaction adds no prompt or tap; no new App Review design risk identified. All six categories pass in source. Phone/tablet, Dynamic Type and VoiceOver rendering remain unverified.
+
+**Remaining M07 scope:** obtain additional valid alternatives through the existing catalog adapter when a real correction workflow is required, without inventing finishes; separately verify rendered action availability and correction interaction. No physical-device, live-provider, CloudKit, full-suite, archive or release gate is closed. M08 and later findings are unchanged.
 
 ### M08 First revision baseline can accept an older same-count projection
 
@@ -571,19 +587,19 @@ The foundation is appropriate for refinement. Conservative recognition, durable 
 
 ### Highest value before release
 
-M01–M06 are locally repaired within the scope, verification and historical-data limits above. M04 still needs ordinary device latency and rendered interaction acceptance; M05 needs device/accessibility transition acceptance; M06 needs rendered picker/inspector acceptance. M07 remains bounded functional/polish work. Reproduce M08/M09 and V01 before implementing their conditional remedies. Keep M10 in its existing owner-controlled publication process.
+M01–M06 are locally repaired within the scope, verification and historical-data limits above. M04 still needs ordinary device latency and rendered interaction acceptance; M05 needs device/accessibility transition acceptance; M06 needs rendered picker/inspector acceptance. M07's action-availability first slice is verified; broader catalog-backed alternatives and rendered acceptance remain. Reproduce M08/M09 and V01 before implementing their conditional remedies. Keep M10 in its existing owner-controlled publication process.
 
 ### Responsiveness and polish
 
-M04's demonstrated UI ownership blocking, M05's programmed opening hold and M06's missing game choices have been repaired locally; ordinary device latency still needs measurement. M07 remains a functional UI inconsistency. P01/P02/P03/P04/P06 are worthwhile measurements, not guaranteed bottlenecks. Listing-photo and banner consequences need rendering. Avoid optimizing theoretical operation counts while missing actual slow interactions.
+M04's demonstrated UI ownership blocking, M05's programmed opening hold and M06's missing game choices have been repaired locally; ordinary device latency still needs measurement. M07 now hides unusable correction actions; broader correction availability remains deferred. P01/P02/P03/P04/P06 are worthwhile measurements, not guaranteed bottlenecks. Listing-photo and banner consequences need rendering. Avoid optimizing theoretical operation counts while missing actual slow interactions.
 
 ### Complexity that can be removed
 
-Opening timing is simplified under M05; M06 removes the collection filter's dependence on an unrelated capability decision. Removing unusable actions remains an opportunity. If measured, simplify one duplicate persistence read, task-start sequence, or CSV rollback accelerator at a time. Do not remove freshness, identity, ledger, or mapping validation merely because it repeats across concurrency boundaries.
+Opening timing is simplified under M05; M06 removes the collection filter's dependence on an unrelated capability decision. M07 removes the unusable correction action when no different valid finish exists. If measured, simplify one duplicate persistence read, task-start sequence, or CSV rollback accelerator at a time. Do not remove freshness, identity, ledger, or mapping validation merely because it repeats across concurrency boundaries.
 
 ### Correctness and reliability
 
-M01–M03 are the strongest correctness findings. M08 identifies a narrower reconciliation gap. M06's verified filtering inconsistency is locally repaired; M07 remains. M09 remains conditional. Neither review established a reproducible crash, leak, deadlock, or live-provider failure. No source-only result certifies release readiness.
+M01–M03 are the strongest correctness findings. M08 identifies a narrower reconciliation gap. M06's verified filtering inconsistency and M07's misleading action availability are locally repaired; broader M07 alternative discovery remains. M09 remains conditional. Neither review established a reproducible crash, leak, deadlock, or live-provider failure. No source-only result certifies release readiness.
 
 ### Preserve unless new evidence warrants change
 
@@ -599,7 +615,7 @@ M01–M03 are the strongest correctness findings. M08 identifies a narrower reco
 
 ## Conservative remediation roadmap
 
-Each row is independently reviewable and testable. Slices 1–4, slice 6 and slice 9's reviewed UI ownership scope have been locally implemented at the owner's request, with scoped evidence above. Runtime acceptance and broader service limitations remain explicit. Other slices remain proposals, not implementation or acceptance claims.
+Each row is independently reviewable and testable. Slices 1–4, slice 6 and slice 9's reviewed UI ownership scope have been locally implemented at the owner's request, with scoped evidence above. Slice 5's action-availability first slice is now implemented; its broader catalog-backed alternatives remain deferred. Runtime acceptance and broader service limitations remain explicit. Other slices remain proposals, not implementation or acceptance claims.
 
 | Slice | Scope | Acceptance boundary |
 | --- | --- | --- |
@@ -607,7 +623,7 @@ Each row is independently reviewable and testable. Slices 1–4, slice 6 and sli
 | 2 | M02 finish certainty at every automatic graded binding path — locally implemented | Six focused regressions and all 318 expanded tests pass; unknown stays saved/unpriced, confirmed/proven singleton binds correctly, exact existing listings refresh |
 | 3 | M03 deterministic supported CSV price inputs — locally implemented | Four focused regressions pass; expanded 469 passed, zero failed, one opt-in benchmark skipped; valid USD retained, ambiguous/foreign prices excluded from new observations and ledger valuation |
 | 4 | M06 owned-game filter choices — locally implemented | Three focused and all 124 expanded tests pass for mixed/retained games, selection/clearing, query counts, detail-filter resets and existing collection behavior; rendered phone/tablet acceptance remains |
-| 5 | M07 usable finish correction UI | Every offered correction has a valid alternative; actual correction preserves lineage and undo |
+| 5 | M07 action-availability first slice — implemented; broader catalog alternatives deferred | Three new option regressions and all 124 selected cases pass; menu requires a different valid finish, finish information remains; rendered acceptance remains |
 | 6 | M05 readiness handoff — locally implemented | Nine focused opening tests pass; expanded 68 passed, zero failed, one physical-device test skipped. Hosted fast/slow handoff begins within 100 ms; reveal completion, phase reset and recovery retained. Release-device interaction and rendered accessibility acceptance remain |
 | 7 | M08 deterministic reproduction, then bounded reconciliation | Same-count pre-baseline edits visible; added launch work measured |
 | 8 | M09/V01 separate presentation reproductions | Change only reproduced photo-lifetime or banner-layout failures; verify phone/tablet and cleanup |

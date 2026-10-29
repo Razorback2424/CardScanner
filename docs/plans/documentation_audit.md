@@ -1,12 +1,77 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-27
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-28
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-27
+## Current authority boundary — updated 2026-10-28
+
+**Comprehensive-review follow-up — working-tree implementation:**
+the [current progress entry](../../progress.md#2026-10-28--refinement-review-implementation)
+records eight implemented code findings and the explicitly deferred privacy/support
+publication step. It supersedes older open implementation labels for catalog-backed
+slab finish alternatives and first-revision reconciliation in the master review.
+Its final signed simulator selection recorded 470 passed, one failed and one
+skipped; the failed existing StoreKit purchase case passed in isolation using the
+same compiled products. The new finding regressions and ReleaseLocal simulator
+compilation passed, with UI evidence and limits recorded in that entry. Earlier
+test counts do not certify this patch. Device/provider/release acceptance remains
+separate.
+
+**Classic Collection artwork recovery — 2026-10-28, working-tree patch:**
+the [focused artwork report](../audits/classic-collection-artwork-repair-2026-10-28.md)
+records missing primary images and HTTP 403 from checked secondary paths.
+Browse cards/search/detail now retain existing sources and append exact reviewed
+Classic product images. All 60 thumbnail/full-size endpoints responded with
+HTTP 200/image MIME; Charizard/Lugia artwork was inspected. The optimized native
+selection passed **12 tests**, zero failures/skips and no runtime warnings.
+After the owner handled Keychain signing, the optimized build was installed
+in place on the physical iPhone. Classic grid artwork was verified for Charizard,
+Lugia and neighboring cards; broader detail/global-search render acceptance
+is not claimed. No collection/cache
+reset, identity/price/scanner change or release acceptance accompanies this fix.
+
+**Focused Browse performance repair verified — 2026-10-28, `e92db19` plus working-tree patch:**
+the [Browse repair report](../audits/browse-performance-repair-2026-10-28.md)
+records cached immutable set presentation on an actor, latest-request publication,
+prepared directory ownership fallback and completion for available games without
+waiting for unrelated providers. The optimized hosted fixture's original-rule
+directory fallback took 5.71 seconds for 2,000 rows / 60 sets; prepared lookup
+took 0.46 ms after a 105 ms ownership-index build. Destined Rivals projection
+measured 4.49 → 2.54 ms on first empty query and 1.73 → 0.246 ms typing median.
+These are fixture measurements, not a device speedup or first-frame claim.
+Final focused/shared verification: **42 passed, zero failures/skips**, with no
+finalized runtime warnings. A subsequent signed ReleaseLocal build was installed
+in place on the unlocked iPhone 15 Pro Max. First-usable entry markers measured
+121–132 ms; nonempty typing projections measured 0.236–0.843 ms off-main.
+The primary trace also captured 260 ms keyboard setup and 334 ms snapshot/layout
+microhangs, so full device hang acceptance remains open. A repeat-entry capture
+had no hangs but no card typing. A later layout patch removes unused viewport
+state updates on iOS 18+ and stabilizes the search input's width. Direct on-phone
+typing felt smooth; 29 projections took 0.205–0.856 ms off-main without a typing
+hang. That trace still captured 479 ms initial layout and 451 ms background
+snapshot stalls. Additional search-focus cleanup passed 15 optimized native
+tests, including width/focus/query retention, and is now installed in the signed
+artwork-repair binary. The unmirrored snapshot comparison remains pending. No
+collection reset/cache-clear command was used; existing cache turnover continued
+under its unchanged limits. History projection, M08's same-count first baseline
+and other profiling candidates remain outside this slice; no whole-app,
+provider, CloudKit or release gate is closed.
+
+**M07 action-availability first slice verified — 2026-10-27, `e92db19`:**
+the [master report's M07 evidence](../audits/production-refinement-master-review-2026-10-26.md#m07-graded-finish-correction-often-offers-no-correction)
+supersedes the source-only action-availability finding. Fix finish now requires
+an existing resolver option with a different finish ID; the printed-finish
+information remains visible. Three new option regressions, two existing
+supplement tests and both item-kind/history suites passed: **124 passed, zero
+failed/skipped**, with no finalized runtime warnings. The resumed run reused
+the existing SSD build after an interrupted test run; the implementation was
+already present in `e92db19` when work resumed. Broader catalog-backed alternatives
+remain deferred. Menu visibility/text retention is source-checked; rendered
+phone/tablet, Dynamic Type and VoiceOver acceptance remains unverified. No
+provider, CloudKit, full-suite or release gate closed; M08 and later unchanged.
 
 **M06 collection owned-game choices repaired locally — 2026-10-27, `028b135` plus working-tree changes:**
 the [master report's M06 evidence](../audits/production-refinement-master-review-2026-10-26.md#m06-collection-game-filter-omits-owned-games)
