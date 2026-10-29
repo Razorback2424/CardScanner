@@ -70,6 +70,11 @@ private struct MarketHistoryLoadID: Hashable {
     let retry: Int
 }
 
+private struct GradedFinishLoadID: Hashable {
+    let summary: CatalogCardSummary?
+    let retry: Int
+}
+
 struct CardDetailMovementDisplay: Equatable {
     enum Direction: Equatable {
         case positive
@@ -122,8 +127,8 @@ struct CollectionCardDetailView: View {
         CollectionCardDetailContent.gradedVariantOptions(for: card)
     }
 
-    static func gradedVariantCorrectionOptions(for card: CollectedCard) -> [PhysicalVariant] {
-        CollectionCardDetailContent.gradedVariantCorrectionOptions(for: card)
+    static func gradedVariantCorrectionOptions(for card: CollectedCard, catalogCard: IdentifiedCard? = nil) -> [PhysicalVariant] {
+        CollectionCardDetailContent.gradedVariantCorrectionOptions(for: card, catalogCard: catalogCard)
     }
 }
 
@@ -194,6 +199,10 @@ private struct CollectionCardDetailContent: View {
     @State private var isLoadingMarketHistory = true
     @State private var marketHistoryIdentity: [String]?
     @State private var marketHistoryRetry = 0
+    @State private var gradedCatalogCard: IdentifiedCard?
+    @State private var isLoadingGradedFinishes = false
+    @State private var gradedFinishLoadFailed = false
+    @State private var gradedFinishRetry = 0
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
 #endif
@@ -321,6 +330,9 @@ private struct CollectionCardDetailContent: View {
         .environment(\.colorScheme, .dark)
         .task(id: MarketHistoryLoadID(request: marketHistoryRequest, retry: marketHistoryRetry)) {
             await loadMarketHistory()
+        }
+        .task(id: GradedFinishLoadID(summary: gradedFinishSummary, retry: gradedFinishRetry)) {
+            await loadGradedFinishes()
         }
         .task(id: runtimes?.runtime(for: card.cardGame)?.catalog?.generation) {
             guard marketHistoryRequest.requiresCatalogMapping else { return }
@@ -781,6 +793,13 @@ private struct CollectionCardDetailContent: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                if isLoadingGradedFinishes {
+                    ProgressView("Loading finish choices…")
+                        .font(.caption)
+                } else if gradedFinishLoadFailed {
+                    Button("Retry finish choices") { gradedFinishRetry += 1 }
+                        .font(.subheadline)
+                }
             }
             .padding(.vertical, 2)
         }
@@ -817,16 +836,19 @@ private struct CollectionCardDetailContent: View {
     /// The finish evidence for an already-owned slab. The catalog id is the
     /// only reliable source for set routing because graded rows persist their
     /// collection namespace in `providerID`.
-    static func gradedVariantEvidence(for card: CollectedCard) -> VariantEvidence {
+    static func gradedVariantEvidence(for card: CollectedCard, catalogCard: IdentifiedCard? = nil) -> VariantEvidence {
         let printingID = card.underlyingPrintingID ?? card.providerID
-        var evidence = VariantEvidence(
+        let exactCatalogCard = catalogCard.flatMap {
+            $0.game == card.cardGame && $0.providerID == printingID ? $0 : nil
+        }
+        var evidence = exactCatalogCard?.variantEvidence ?? VariantEvidence(
             game: card.cardGame,
             setID: printingID.split(separator: "-", maxSplits: 1)
                 .first.map(String.init) ?? printingID,
             cardNumber: card.cardNumber,
             catalogVariants: card.variant.map { [$0] } ?? []
         )
-        if card.pokemonPrintRun != nil {
+        if card.cardGame == .pokemon {
             evidence = evidence.excludingFirstEditionPseudoFinish()
         }
         return evidence
@@ -836,16 +858,44 @@ private struct CollectionCardDetailContent: View {
         VariantResolver.options(for: gradedVariantEvidence(for: card))
     }
 
-    static func gradedVariantCorrectionOptions(for card: CollectedCard) -> [PhysicalVariant] {
-        gradedVariantOptions(for: card).filter { $0.id != card.variantID }
+    static func gradedVariantCorrectionOptions(for card: CollectedCard, catalogCard: IdentifiedCard? = nil) -> [PhysicalVariant] {
+        VariantResolver.options(for: gradedVariantEvidence(for: card, catalogCard: catalogCard))
+            .filter { $0.id != card.variantID }
     }
 
     private var gradedVariantCorrectionOptions: [PhysicalVariant] {
-        // The persisted row is the only catalog finish fact available to this
-        // offline detail surface. Do not widen it to the UI's global selectable
-        // list, and do not re-add 1st Edition after it has been removed from the
-        // finish axis above.
-        return Self.gradedVariantCorrectionOptions(for: card)
+        Self.gradedVariantCorrectionOptions(for: card, catalogCard: gradedCatalogCard)
+    }
+
+    private var gradedFinishSummary: CatalogCardSummary? {
+        guard card.itemKind == .gradedCard, let printingID = card.underlyingPrintingID,
+              card.cardGame == .pokemon || card.cardGame == .magic else { return nil }
+        let setID = card.cardGame == .pokemon
+            ? printingID.split(separator: "-", maxSplits: 1).first.map(String.init) ?? printingID
+            : card.setCode.lowercased()
+        return CatalogCardSummary(game: card.cardGame, providerID: printingID,
+            setID: CatalogSetID(game: card.cardGame, providerID: setID, pokemonPrintRun: card.pokemonPrintRun),
+            setName: card.setName, setCode: card.setCode, name: card.name,
+            collectorNumber: card.cardNumber, thumbnailURL: nil, imageURL: nil,
+            catalogGeneration: runtimes?.runtime(for: card.cardGame)?.browse?.generation)
+    }
+
+    private func loadGradedFinishes() async {
+        gradedCatalogCard = nil
+        isLoadingGradedFinishes = false
+        gradedFinishLoadFailed = false
+        guard let summary = gradedFinishSummary else { return }
+        isLoadingGradedFinishes = true
+        defer { if !Task.isCancelled { isLoadingGradedFinishes = false } }
+        let catalog = runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        do {
+            let details = try await catalog.details(for: summary)
+            guard !Task.isCancelled, summary == gradedFinishSummary else { return }
+            gradedCatalogCard = details.card
+        } catch {
+            guard !Task.isCancelled, summary == gradedFinishSummary else { return }
+            gradedFinishLoadFailed = true
+        }
     }
 
     private func correctGradedVariant(

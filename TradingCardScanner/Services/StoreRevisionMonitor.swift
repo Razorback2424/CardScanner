@@ -457,18 +457,15 @@ struct StoreRevisionMonitor: View {
         applyGeneration = generation
 
         guard let previousFingerprint else {
+            // Launch snapshots can predate a write deferred by the scanner's
+            // bulk interval. Equal row counts do not prove equal ownership,
+            // prices, or metadata, so reconcile once before accepting a baseline.
+            await projectionStore.rebuild(container: modelContext.container)
+            await priceSnapshot.rebuild(container: modelContext.container)
+            await portfolio.recomputeAndWait(context: modelContext)
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled,
+                  applyGeneration == generation else { return }
             self.previousFingerprint = fingerprint
-            // A fast first scan can commit during the initial scanner bulk
-            // interval, after the launch projection but before this baseline.
-            // Reconcile that ownership change instead of accepting a stale
-            // empty grid as the baseline until the next save or relaunch.
-            let projectedCount = projectionStore.snapshot?.physicalRowCountsByKey.values.reduce(0, +)
-            if let projectedCount, projectedCount != fingerprint.cardCount {
-                await projectionStore.rebuild(container: modelContext.container)
-                await priceSnapshot.rebuild(container: modelContext.container)
-                await portfolio.recomputeAndWait(context: modelContext)
-                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
-            }
             let currentPendingFingerprint = StoreRevisionFingerprinting
                 .pendingMagicMigrationFingerprint(fingerprint.pendingMagicMigrationKeys)
             let priorPendingFingerprint = UserDefaults.standard.string(

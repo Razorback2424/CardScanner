@@ -650,6 +650,11 @@ struct CollectionActivityEditor: View {
             if activity.kind.hasQuantityClaim, activity.itemKind == .rawCard {
                 Section {
                     Picker("Finish", selection: $variantID) {
+                        if !correctionOptions.contains(where: { $0.id == activity.variantID }) {
+                            Text(activity.variantLabel ?? "Unknown finish")
+                                .tag(activity.variantID)
+                                .disabled(true)
+                        }
                         ForEach(correctionOptions) { variant in
                             Text(
                                 activity.magicTreatmentEvidence.displayLabel(with: variant)
@@ -692,7 +697,7 @@ struct CollectionActivityEditor: View {
     private var canSave: Bool {
         canCorrect
             && variantID != activity.variantID
-            && gameRegistry.variantPolicy(for: activity.game)?.selectableVariants.contains(where: { $0.id == variantID }) == true
+            && correctionOptions.contains(where: { $0.id == variantID })
     }
 
     private var canCorrect: Bool {
@@ -711,15 +716,18 @@ struct CollectionActivityEditor: View {
     private var gameRegistry: CardGameRegistry { gameRuntimes?.registry ?? .standard }
 
     private var correctionOptions: [PhysicalVariant] {
+        let options: [PhysicalVariant]
         if let card = collectionCard, card.cardGame == .pokemon,
            let reviewed = PokemonVariantRules.reviewedVariants(cardID: card.catalogProviderID ?? card.providerID) {
             // Retain the current value for review; selecting a replacement is
             // an explicit physical-card confirmation, never an automatic remap.
-            return reviewed + [card.variant].compactMap { variant in
+            options = reviewed + [card.variant].compactMap { variant in
                 variant.flatMap { reviewed.contains($0) ? nil : $0 }
             }
+        } else {
+            options = gameRegistry.variantPolicy(for: activity.game)?.selectableVariants ?? []
         }
-        return gameRegistry.variantPolicy(for: activity.game)?.selectableVariants ?? []
+        return options.filter { activity.game != .pokemon || $0.id != PhysicalVariant.firstEdition.id }
     }
 
     private var errorBinding: Binding<Bool> {

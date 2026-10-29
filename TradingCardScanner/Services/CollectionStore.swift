@@ -1983,6 +1983,11 @@ struct CollectionStore {
     }
 
     private func requireSupportedVariantCorrection(for card: CollectedCard, to variant: PhysicalVariant?) throws {
+        // Pokémon edition belongs to the print run, never to a new finish
+        // correction. Keep legacy values readable without creating more of them.
+        guard card.cardGame != .pokemon || variant?.id != PhysicalVariant.firstEdition.id else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
         let authority = CollectionStoreSessionRegistry.shared.variantCorrectionAuthority(
             for: card.cardGame, container: context.container
         )

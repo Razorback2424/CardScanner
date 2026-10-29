@@ -21,6 +21,34 @@ private func centeringDiagnosticDirectory(_ name: String) throws -> URL {
 
 @MainActor
 final class OpusImplementationPlanTests: XCTestCase {
+    func testSavedSlabRecoversOnlyItsExactCatalogFinishChoices() throws {
+        let payload = """
+        {"id":"sv03-001","localId":"001","name":"Fixture",
+         "set":{"id":"sv03","name":"Fixture set","cardCount":{"total":100,"official":100}},
+         "variants":{"normal":true,"reverse":true,"holo":false,"firstEdition":true}}
+        """
+        let catalogCard = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self,
+            from: Data(payload.utf8)), setCode: "OBF")
+        let unknown = m07GradedRow(game: .pokemon, printingID: "sv03-001", finish: nil)
+        XCTAssertEqual(Set(CollectionCardDetailView.gradedVariantCorrectionOptions(for: unknown,
+            catalogCard: catalogCard)), [.normal, .reverse])
+        let normal = m07GradedRow(game: .pokemon, printingID: "sv03-001", finish: .normal)
+        XCTAssertEqual(CollectionCardDetailView.gradedVariantCorrectionOptions(for: normal,
+            catalogCard: catalogCard), [.reverse])
+        let differentPrinting = m07GradedRow(game: .pokemon, printingID: "sv03-002", finish: nil)
+        XCTAssertTrue(CollectionCardDetailView.gradedVariantCorrectionOptions(for: differentPrinting,
+            catalogCard: catalogCard).isEmpty)
+        XCTAssertNil(unknown.variant, "Loading alternatives must not choose a finish or mutate ownership")
+
+        let magic = try IdentifiedCard(game: .magic, physicalPrintingID: "m07-printing", canonicalCardID: "m07-card",
+            language: "en", name: "Fixture", setName: "Fixture set", setCode: "M07", cardNumber: "1",
+            printedIdentifier: "M07 1", variantEvidence: .init(game: .magic, setID: "m07", cardNumber: "1",
+                catalogVariants: [.nonfoil, .foil, .etched]))
+        let magicRow = m07GradedRow(game: .magic, printingID: "m07-printing", finish: .foil)
+        XCTAssertEqual(Set(CollectionCardDetailView.gradedVariantCorrectionOptions(for: magicRow,
+            catalogCard: magic)), [.nonfoil, .etched])
+    }
+
     func testM07OrdinaryGradedFinishesHaveNoCorrectionOptions() {
         for (game, printingID, finishes): (CardGame, String, [PhysicalVariant?]) in [
             (.pokemon, "sv03-001", [nil, .normal, .reverse]),

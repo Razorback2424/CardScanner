@@ -1912,6 +1912,44 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
     }
 
+    func testFinishCorrectionRejectsEditionWithoutChangingIdentityOrLedger() throws {
+        let printRuns: [PokemonPrintRun?] = [nil, .unlimited, .firstEdition]
+        for printRun in printRuns {
+            let context = try makeContext()
+            let store = CollectionStore(context: context)
+            let payload = """
+            {"id":"base1-1","localId":"1","name":"Alakazam",
+             "set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},
+             "variants":{"normal":true,"holo":true,"reverse":false,"firstEdition":true}}
+            """
+            let vintage = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self,
+                from: Data(payload.utf8)), setCode: "BS")
+            let added = try store.add(vintage,
+                resolved: .init(variant: .normal, resolution: .userConfirmed),
+                pokemonPrintRun: printRun)
+            let row = try XCTUnwrap(store.card(forKey: added.collectionKey))
+            XCTAssertEqual(row.pokemonPrintRun, printRun)
+            let priceKey = row.priceKey
+            for edition in [PhysicalVariant.firstEdition,
+                            .init(id: PhysicalVariant.firstEdition.id, label: "Legacy edition label")] {
+                XCTAssertThrowsError(try store.recordVariantCorrection(for: row,
+                    to: .init(variant: edition, resolution: .userConfirmed),
+                    activityID: XCTUnwrap(added.activityID), quantity: 1))
+            }
+
+            let saved = try XCTUnwrap(store.card(forKey: added.collectionKey))
+            XCTAssertEqual(saved.variant, .normal)
+            XCTAssertEqual(saved.pokemonPrintRun, printRun)
+            XCTAssertEqual(saved.priceKey, priceKey)
+            XCTAssertEqual(saved.quantity, 1)
+            let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            XCTAssertEqual(events.count, 1)
+            XCTAssertEqual(activities.count, 1)
+            XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+        }
+    }
+
     func testCorrectionMergeKeepsIndependentlyBoundDestination() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)

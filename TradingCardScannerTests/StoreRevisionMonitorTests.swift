@@ -6,6 +6,48 @@ import XCTest
 
 @MainActor
 final class StoreRevisionMonitorTests: XCTestCase {
+    func testFirstObservationReconcilesSameCountOwnershipChanges() async throws {
+        for replacement in [false, true] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            let original = monitorCard(game: .lorcana)
+            context.insert(original)
+            try context.save()
+            let projection = CollectionProjectionStore()
+            await projection.rebuild(container: container)
+            XCTAssertEqual(projection.snapshot?.rows.first?.quantity, 1)
+            let writes = DerivedStateWriteCoordinator()
+            writes.beginBulkWrite()
+            let signal = PriceRefreshCompletionSignal(), refresh = PriceRefreshController()
+            refresh.registerCompletionSignal(signal)
+            let window = host(container: container, refresh: refresh, signal: signal,
+                writes: writes, scene: MonitorScene(), projection: projection)
+            defer { window.isHidden = true; window.rootViewController = nil }
+            let saved: CollectedCard
+            if replacement {
+                context.delete(original)
+                saved = monitorCard(game: .yuGiOh)
+                saved.collectionKey = "replacement-card#normal"
+                context.insert(saved)
+            } else {
+                saved = original
+                saved.quantity = 2
+            }
+            try context.save()
+            let expectedKey = saved.collectionKey
+            let expectedQuantity = saved.quantity
+            writes.endBulkWrite()
+            for _ in 0..<100 {
+                if projection.snapshot?.rows.first?.id == expectedKey,
+                   projection.snapshot?.rows.first?.quantity == expectedQuantity { break }
+                try await Task.sleep(for: .milliseconds(50))
+            }
+            XCTAssertEqual(projection.snapshot?.rows.map(\.id), [expectedKey])
+            XCTAssertEqual(projection.snapshot?.rows.first?.quantity, expectedQuantity)
+        }
+    }
+
     func testFirstObservationReconcilesACollectionSavedAfterLaunchProjection() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
