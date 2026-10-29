@@ -3,6 +3,86 @@ import XCTest
 
 @MainActor
 final class BrowsePresentationTests: XCTestCase {
+    func testClassicCollectionFallbackAgreesWithChecklistAndSeparatesParent() {
+        let parent = ownershipSet("30th", name: "30th Celebration", code: "30C", total: 128)
+        let classic = ownershipSet("30th-c", name: "30th Celebration Classic Collection", code: "30C", total: 30)
+        let classicCards = (3...7).map { ownershipCard(set: classic, number: $0) }
+        let parentCards = (10...26).map { ownershipCard(set: parent, number: $0) }
+        classicCards[0].quantity = 8
+        let owned = CatalogOwnershipIndex(classicCards + parentCards)
+
+        XCTAssertEqual(owned.directoryProgress(for: classic), .init(owned: 5, total: 30))
+        XCTAssertEqual(owned.directoryProgress(for: parent), .init(owned: 17, total: 128))
+        XCTAssertEqual(owned.ownedRowCounts(for: [parent, classic]), [parent.id: 17, classic.id: 5])
+        let slots = (1...30).map { number in
+            CatalogCardSummary(game: .pokemon, providerID: "30th-c-\(String(format: "%03d", number))",
+                setID: classic.catalogID, setName: classic.name, setCode: classic.code,
+                name: "Card", collectorNumber: String(format: "%03d", number),
+                thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo, isSoleSlotForCard: true)
+        }
+        XCTAssertEqual(owned.progress(for: slots), .init(owned: 5, total: 30, unit: "variations"))
+        // A main-set card with the same number must not fill a missing classic slot.
+        let overlapping = CatalogOwnershipIndex([ownershipCard(set: parent, number: 1)])
+        XCTAssertFalse(overlapping.owns(slots[0]))
+    }
+
+    func testSharedCodesNeverCombineDifferentPokemonSets() {
+        // Shared codes found in the bundled checklist and current publisher input.
+        let pairs = [("30th", "30th-c", "30C"), ("cel25", "cel25cc", "CEL"),
+            ("ex7", "pl2", "RR"), ("swsh10", "swsh10tg", "ASR"),
+            ("swsh4.5", "swsh4.5sv", "SHF"), ("swsh9", "swsh9tg", "BRS")]
+        for (leftID, rightID, code) in pairs {
+            let left = ownershipSet(leftID, name: leftID, code: code)
+            let right = ownershipSet(rightID, name: rightID, code: code)
+            let owned = CatalogOwnershipIndex([ownershipCard(set: left, number: 1),
+                ownershipCard(set: right, number: 2)])
+            XCTAssertEqual(owned.directoryProgress(for: left).owned, 1, leftID)
+            XCTAssertEqual(owned.directoryProgress(for: right).owned, 1, rightID)
+            XCTAssertEqual(owned.ownedRowCounts(for: [left, right]), [left.id: 1, right.id: 1])
+        }
+    }
+
+    func testLegacyFallbackRequiresNameAndReconciledAliasTakesPrecedence() {
+        let parent = ownershipSet("30th", name: "30th Celebration", code: "30C")
+        let classic = ownershipSet("30th-c", name: "30th Celebration Classic Collection", code: "30C")
+        let legacy = ownershipCard(set: classic, number: 1)
+        legacy.providerID = "import-001"
+        let alias = ownershipCard(set: parent, number: 2)
+        alias.catalogProviderID = "30th-c-002"
+        // Retain stale parent display metadata to prove catalog identity wins.
+        let owned = CatalogOwnershipIndex([legacy, alias])
+        XCTAssertEqual(owned.directoryProgress(for: classic).owned, 2)
+        XCTAssertEqual(owned.directoryProgress(for: parent).owned, 0)
+        XCTAssertEqual(owned.ownedRowCounts(for: [parent, classic]), [classic.id: 2])
+    }
+
+    func testLegacyPrintRunFallbackAcceptsDirectoryDisplaySuffix() {
+        let base = ownershipSet("base1", name: "Base Set", code: "BS", total: 102)
+        let legacy = ownershipCard(set: base, number: 1)
+        legacy.providerID = "import-001"
+        legacy.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+        let first = CatalogSet(catalogID: .init(game: .pokemon, providerID: "base1",
+            pokemonPrintRun: .firstEdition), name: "Base Set — 1st Edition", code: "BS",
+            logoURL: nil, symbolURL: nil, cardCount: 102, releaseDate: nil, sortRank: 0)
+        let owned = CatalogOwnershipIndex([legacy])
+        XCTAssertEqual(owned.directoryProgress(for: first).owned, 1)
+        XCTAssertEqual(owned.directoryProgress(for: base).owned, 0)
+        XCTAssertEqual(owned.ownedRowCounts(for: [base, first]), [first.id: 1])
+    }
+
+    private func ownershipSet(_ id: String, name: String, code: String, total: Int = 30) -> CatalogSet {
+        .init(catalogID: .init(game: .pokemon, providerID: id), name: name, code: code,
+            logoURL: nil, symbolURL: nil, cardCount: total, releaseDate: nil, sortRank: 0)
+    }
+
+    private func ownershipCard(set: CatalogSet, number: Int) -> CollectedCard {
+        let printed = String(format: "%03d", number)
+        return CollectedCard(collectionKey: "\(set.providerID)-\(printed)", game: .pokemon,
+            providerID: "\(set.providerID)-\(printed)", name: "Card", setName: set.name,
+            setCode: set.code, cardNumber: printed, rarity: nil, imageURL: nil,
+            thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+    }
+
     func testDirectoryFallbackMatchesLegacyRulesWithOnePreparedOwnershipPass() throws {
         let sets = (0..<60).map { index in
             CatalogSet(catalogID: .init(game: .pokemon, providerID: "fixture-\(index)"),

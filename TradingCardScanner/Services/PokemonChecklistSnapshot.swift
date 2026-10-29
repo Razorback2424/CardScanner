@@ -18,12 +18,12 @@ enum PokemonChecklistReviewedProjection {
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var emitted = Set<String>()
-        return cards.flatMap { base -> [CatalogCardSummary] in
+        let reviewed = cards.flatMap { base -> [CatalogCardSummary] in
             guard base.game == .pokemon, setIDs.contains(base.setID.providerID),
                   base.pokemonPrintRun == nil,
                   let variants = PokemonVariantRules.reviewedVariants(cardID: base.providerID) else { return [base] }
             guard emitted.insert(base.providerID).inserted else { return [] }
-            return PokemonMasterSetDefinition.requiredSlots(for: variants).map { slot in
+            return PokemonMasterSetDefinition.requiredSlots(for: variants, setProviderID: base.setID.providerID).map { slot in
                 var value = cards.first {
                     $0.providerID == base.providerID && $0.setID == base.setID
                         && $0.masterSetVariant == slot.variant
@@ -34,10 +34,10 @@ enum PokemonChecklistReviewedProjection {
                 return value
             }
         }
+        return PokemonMasterSetDefinition.checklist(reviewed)
     }
 
     static func entry(_ entry: PokemonChecklistSnapshotEntry, cards: [CatalogCardSummary]) -> PokemonChecklistSnapshotEntry {
-        guard setIDs.contains(entry.providerID), entry.set.pokemonPrintRun == nil else { return entry }
         let old = entry.set
         let set = CatalogSet(catalogID: old.catalogID, name: old.name, code: old.code,
             logoURL: old.logoURL, symbolURL: old.symbolURL, cardCount: cards.count,
@@ -418,7 +418,8 @@ enum PokemonMasterSetChecklistBuilder {
                         return value
                     }
                 }
-            let summaries = PokemonReviewedEnergyCatalog.addingSummaries(primarySummaries, set: set)
+            let summaries = PokemonMasterSetDefinition.checklist(
+                PokemonReviewedEnergyCatalog.addingSummaries(primarySummaries, set: set))
             return BuiltSet(
                 set: withArtworkFallbacks(set, from: summaries),
                 cards: summaries,
@@ -775,6 +776,7 @@ actor PokemonChecklistStore {
     private var bundledManifestCache: PokemonChecklistSnapshotManifest?
     private var didLoadBundledManifest = false
     private var bundledValidEntriesCache: [PokemonChecklistSnapshotEntry]?
+    private var projectedEntryCache: [String: (source: PokemonChecklistSnapshotEntry, projected: PokemonChecklistSnapshotEntry)] = [:]
 
     // These caches are deliberately per set. The production catalog only needs
     // the set currently being displayed, while the legacy snapshot methods
@@ -854,17 +856,21 @@ actor PokemonChecklistStore {
     }
 
     /// Returns only manifest entries and verifies that the referenced resource
-    /// exists. Only the narrowly repaired sets are decoded for corrected counts,
-    /// so Browse and scanning need not materialise the entire Pokémon corpus.
+    /// exists. Old manifests need corrected tier counts once per entry revision;
+    /// retain only that small metadata result, not the complete card corpus.
     func mergedEntries() -> [PokemonChecklistSnapshotEntry] {
         installMemoryWarningObserverIfNeeded()
         return mergeEntries(
             bundled: bundledValidEntries(),
             downloaded: downloadedValidEntries()
         ).map { entry in
-            guard PokemonChecklistReviewedProjection.setIDs.contains(entry.providerID),
-                  let cards = mergedChecklist(for: entry.set.catalogID) else { return entry }
-            return PokemonChecklistReviewedProjection.entry(entry, cards: cards)
+            guard PokemonChecklistReviewedProjection.setIDs.contains(entry.providerID)
+                    || entry.standardSlotCount != entry.expandedSlotCount else { return entry }
+            if let cached = projectedEntryCache[entry.set.id], cached.source == entry { return cached.projected }
+            guard let cards = mergedChecklist(for: entry.set.catalogID) else { return entry }
+            let projected = PokemonChecklistReviewedProjection.entry(entry, cards: cards)
+            projectedEntryCache[entry.set.id] = (entry, projected)
+            return projected
         }
     }
 
@@ -1433,6 +1439,7 @@ actor PokemonChecklistStore {
         }
         downloadedSnapshotCache = nil
         downloadedManifestCache = publishable.manifest
+        projectedEntryCache.removeAll()
         didLoadDownloadedManifest = true
         downloadedValidEntriesCache = nil
         for entry in snapshot.manifest.entries {

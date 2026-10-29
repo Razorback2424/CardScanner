@@ -294,7 +294,8 @@ final class PricingTests: XCTestCase {
             let repaired = try XCTUnwrap(loaded)
             for id in ids {
                 let rows = repaired.filter { $0.providerID == id }
-                let expected = PokemonMasterSetDefinition.requiredSlots(for: try XCTUnwrap(PokemonVariantRules.reviewedVariants(cardID: id)))
+                let expected = PokemonMasterSetDefinition.requiredSlots(
+                    for: try XCTUnwrap(PokemonVariantRules.reviewedVariants(cardID: id)), setProviderID: entry.providerID)
                 XCTAssertEqual(rows.compactMap(\.masterSetVariant), expected.map(\.variant))
                 XCTAssertEqual(rows.map(\.isExpandedMasterSetVariant), expected.map(\.isExpanded))
                 XCTAssertTrue(rows.allSatisfy { !$0.isSoleSlotForCard })

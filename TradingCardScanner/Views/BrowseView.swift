@@ -2344,10 +2344,11 @@ struct CatalogSetCardsView: View {
     /// Magic sets showed completion in the set list and then nothing at all on
     /// the set screen. Same header, without the Pokémon-only tier control.
     private var completionHeader: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        let title = set.game == .pokemon ? "\(masterSetTier.label) Set Progress" : "Set Progress"
+        return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(set.game == .pokemon ? "Master Set Progress" : "Set Progress")
+                    Text(title)
                         .font(.headline)
                     Text(setProgress.label)
                         .font(.title2.bold())
@@ -2364,10 +2365,12 @@ struct CatalogSetCardsView: View {
 
             ProgressView(value: setProgress.fraction ?? 0)
                 .tint(.green)
-                .accessibilityLabel(set.game == .pokemon ? "Master set progress" : "Set progress")
+                .accessibilityLabel(title)
                 .accessibilityValue(setProgress.label)
 
-            if set.game == .pokemon {
+            // Grand Master is only a choice when it adds slots to this set's checklist.
+            // Use the full loaded checklist so search and ownership filters cannot hide the choice.
+            if set.game == .pokemon, cards.contains(where: \.isExpandedMasterSetVariant) {
                 Picker("Master set definition", selection: $masterSetTier) {
                     ForEach(PokemonMasterSetTier.allCases) { tier in
                         Text(tier.label).tag(tier)

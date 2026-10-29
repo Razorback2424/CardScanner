@@ -5528,7 +5528,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(cancelledCardRequestCount, 0)
     }
 
-    func testBuilderPreservesStandardAndExpandedVariantSlots() throws {
+    func testBuilderIncludesBoosterBallParallelsInMaster() throws {
         let provider = try decode(TCGdexSetCatalog.self, from: """
         {
           "id":"sv08.5","name":"Prismatic Evolutions",
@@ -5557,9 +5557,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             ).first
         )
 
-        XCTAssertEqual(built.cards.filter { !$0.isExpandedMasterSetVariant }.count, 2)
-        XCTAssertEqual(built.cards.filter(\.isExpandedMasterSetVariant).count, 2)
-        XCTAssertEqual(built.standardSlotCount, 2)
+        XCTAssertEqual(built.cards.filter { !$0.isExpandedMasterSetVariant }.count, 4)
+        XCTAssertEqual(built.cards.filter(\.isExpandedMasterSetVariant).count, 0)
+        XCTAssertEqual(built.standardSlotCount, 4)
         XCTAssertEqual(built.expandedSlotCount, 4)
         XCTAssertEqual(Set(built.cards.compactMap { $0.masterSetVariant?.id }), Set([
             PhysicalVariant.normal.id,
@@ -5567,6 +5567,113 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             PhysicalVariant.pokemonFoilPattern("pokeball").id,
             PhysicalVariant.pokemonFoilPattern("masterball").id
         ]))
+    }
+
+    func testCollectorTierLabelsPreserveSavedPreferences() {
+        XCTAssertEqual(PokemonMasterSetTier(rawValue: "standard")?.label, "Master")
+        XCTAssertEqual(PokemonMasterSetTier(rawValue: "expanded")?.label, "Grand Master")
+    }
+
+    func testBundledCollectorScopeExamplesIncludePackParallelsAndExcludePromos() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root, bundle: .main)
+        let entries = await store.mergedEntries()
+        // These are the app's cataloged English scopes, not claims of exhaustive
+        // Grand Master promo coverage. See the researched collector contract.
+        let examples: [(String, Int, Int)] = [
+            ("sv03.5", 360, 378), ("sv08.5", 447, 472),
+            ("cel25", 25, 25), ("cel25cc", 25, 25),
+            ("sv10", 415, 436), ("swsh9", 310, 315)
+        ]
+        for (id, masterCount, grandCount) in examples {
+            let entry = try XCTUnwrap(entries.first { $0.providerID == id })
+            let loaded = await store.mergedChecklist(for: entry.set.catalogID)
+            let cards = try XCTUnwrap(loaded)
+            let master = cards.filter { !$0.isExpandedMasterSetVariant }
+            XCTAssertEqual(master.count, masterCount, id)
+            XCTAssertEqual(cards.count, grandCount, id)
+            XCTAssertEqual(entry.standardSlotCount, masterCount, id)
+            XCTAssertEqual(entry.expandedSlotCount, grandCount, id)
+            XCTAssertEqual(PokemonChecklistReviewedProjection.cards(cards), cards, "Projection must be idempotent: \(id)")
+            XCTAssertFalse(master.contains { $0.masterSetVariant.map(PokemonCatalogStampVariant.isStamped) == true }, id)
+            if id == "sv08.5" {
+                XCTAssertEqual(master.filter { $0.masterSetVariant == .pokeBall }.count, 100)
+                XCTAssertEqual(master.filter { $0.masterSetVariant == .masterBall }.count, 67)
+                XCTAssertFalse(master.contains { $0.providerID == "sv08.5-093" && $0.masterSetVariant == .masterBall },
+                               "Trainer cards do not get an invented Master Ball parallel")
+                XCTAssertTrue(cards.contains { $0.providerID == "sv08.5-082" && $0.masterSetVariant == .normal && $0.isExpandedMasterSetVariant })
+                XCTAssertFalse(master.contains { $0.providerID == "sv08.5-082" && $0.masterSetVariant == .normal })
+                XCTAssertEqual(master.filter { $0.providerID == "sv08.5-180" }.count, 1, "A gold rare is one numbered pack card")
+            }
+            if id == "sv03.5" {
+                XCTAssertTrue(master.contains { $0.collectorNumber == "207" }, "Secret rares remain in Master")
+                XCTAssertFalse(cards.contains { ["sv03.5-004", "sv03.5-005"].contains($0.providerID) && $0.masterSetVariant == .holo })
+                XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant?.id == "cosmos" && $0.isExpandedMasterSetVariant })
+                XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-205" && $0.masterSetVariant?.id == "gold" && $0.isExpandedMasterSetVariant },
+                              "The UPC metal Mew is distinct from the pack Mew")
+            }
+        }
+        let again = await store.mergedEntries()
+        XCTAssertEqual(again, entries, "Repeated directory reads retain the corrected counts")
+    }
+
+    func testReviewedNamedPackPatternsDoNotAdmitStampedOrUnknownVariants() {
+        for setID in ["ex5", "ex6", "me02.5"] {
+            XCTAssertTrue(PokemonMasterSetDefinition.isPackVariant(.pokemonFoilPattern("energy"), setProviderID: setID))
+        }
+        XCTAssertTrue(PokemonMasterSetDefinition.isPackVariant(.pokemonFoilPattern("team-rocket"), setProviderID: "me02.5"))
+        XCTAssertTrue(PokemonMasterSetDefinition.isPackVariant(.pokemonFoilPattern("tinsel"), setProviderID: "sv10.5b"))
+        XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(.pokemonFoilPattern("energy"), setProviderID: "unknown"))
+        XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(.pokemonFoilPattern("cosmos"), setProviderID: "sv03.5"))
+        let prizePack = PokemonCatalogStampVariant.make(base: .pokeBall, stamps: ["professor-program"])!
+        XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(prizePack, setProviderID: "sv08.5"))
+        let exReverse = PokemonCatalogStampVariant.make(base: .normal, stamps: ["set-logo"])!
+        XCTAssertTrue(PokemonMasterSetDefinition.isPackVariant(exReverse, setProviderID: "ex12"),
+                      "EX-era set-logo reverses are pack cards")
+        XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(exReverse, setProviderID: "sv10"),
+                       "A modern prerelease set-logo promo is not a pack card")
+        let staff = PokemonCatalogStampVariant.make(base: .holo, stamps: ["set-logo", "staff"])!
+        XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(staff, setProviderID: "ex12"))
+    }
+
+    func test30thReviewedHoloSlotsDoNotCreateTwoIdenticalTierOptions() throws {
+        for id in ["30th", "30th-c"] {
+            let cardID = id + "-001"
+            let provider = try decode(TCGdexSetCatalog.self, from: """
+            {"id":"\(id)","name":"30th Celebration","cards":[{"id":"\(cardID)","localId":"001","name":"Card"}],
+             "cardCount":{"total":1,"official":1}}
+            """)
+            let detail = try decode(TCGdexCard.self, from: """
+            {"id":"\(cardID)","localId":"001","name":"Card",
+             "set":{"id":"\(id)","name":"30th Celebration","cardCount":{"total":1,"official":1}},
+             "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":false,"wPromo":false}}
+            """)
+            let built = try XCTUnwrap(PokemonMasterSetChecklistBuilder.build(providerSet: provider,
+                baseSet: sampleSet(id: id, name: "30th Celebration"), cardDetails: [cardID: detail]).first)
+            XCTAssertEqual(built.cards.compactMap(\.masterSetVariant), [.holo])
+            XCTAssertEqual(built.standardSlotCount, built.expandedSlotCount)
+            XCTAssertFalse(built.cards.contains(where: \.isExpandedMasterSetVariant))
+        }
+    }
+
+    func testRarityFinishAliasPreservesOwnershipWithoutCountingMetalAsPackHolo() {
+        let set = sampleSet(id: "sv08.5", name: "Prismatic Evolutions")
+        let summary = CatalogCardSummary(game: .pokemon, providerID: "sv08.5-176", setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Iron Leaves ex", collectorNumber: "176",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        let gold = completionCard(number: "176", variant: .pokemonFoilPattern("gold"))
+        gold.providerID = summary.providerID
+        gold.setCode = set.code
+        XCTAssertTrue(CatalogOwnershipIndex([gold]).owns(summary))
+        var mew = CatalogCardSummary(game: .pokemon, providerID: "sv03.5-205", setID: .init(game: .pokemon, providerID: "sv03.5"),
+            setName: "151", setCode: set.code, name: "Mew ex", collectorNumber: "205",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        gold.providerID = mew.providerID
+        gold.cardNumber = "205"
+        XCTAssertFalse(CatalogOwnershipIndex([gold]).owns(mew), "Metal Mew cannot fill the pack holo slot")
+        mew.masterSetVariant = .pokemonFoilPattern("gold")
+        XCTAssertTrue(CatalogOwnershipIndex([gold]).owns(mew))
     }
 
     func testSnapshotEntryDecodesLegacyManifestWithoutSlotCounts() throws {

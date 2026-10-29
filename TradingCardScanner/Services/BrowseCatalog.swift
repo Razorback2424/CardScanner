@@ -3214,8 +3214,8 @@ enum PokemonMasterSetDefinition {
 
     /// The required physical slots for one numbered card. Edition is carried
     /// separately by the virtual set, so the legacy first-edition pseudo-finish
-    /// never becomes a second slot. Named parallel patterns are marked as the
-    /// expanded tier; the standard tier remains normal, holo and reverse.
+    /// never becomes a second slot. Master includes booster-pack parallels;
+    /// Grand Master adds cataloged promotional/product-exclusive printings.
     static func requiredVariants(
         for card: TCGdexCard
     ) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
@@ -3232,19 +3232,85 @@ enum PokemonMasterSetDefinition {
             variants = [.normal]
         }
 
-        return requiredSlots(for: variants)
+        return requiredSlots(for: variants, setProviderID: card.set.id)
     }
 
-    static func requiredSlots(for variants: [PhysicalVariant]) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
+    static func requiredSlots(for variants: [PhysicalVariant], setProviderID: String? = nil) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
         var seen = Set<String>()
         let slots = variants.filter { seen.insert($0.id).inserted }
         return slots.map { variant in
-            let isStandard = [
-                PhysicalVariant.normal.id,
-                PhysicalVariant.holo.id,
-                PhysicalVariant.reverse.id
-            ].contains(variant.id)
-            return (variant, !isStandard, slots.count == 1)
+            return (variant, !isPackVariant(variant, setProviderID: setProviderID), slots.count == 1)
+        }
+    }
+
+    /// A finish name alone cannot establish pack provenance for arbitrary new
+    /// patterns. Unknown patterns stay in Grand Master until reviewed. Stamped
+    /// versions have their own IDs and never inherit their base finish's scope.
+    static func isPackVariant(_ variant: PhysicalVariant, setProviderID: String? = nil) -> Bool {
+        if isPackReversePattern(variant, setProviderID: setProviderID) { return true }
+        switch variant.id {
+        case "normal", "holo", "reverse", "pokeBall", "masterBall",
+             "duskBall", "friendBall", "quickBall", "loveBall": return true
+        case "energy": return ["ex5", "ex6", "me02.5"].contains(setProviderID?.lowercased() ?? "")
+        case "team-rocket": return setProviderID?.lowercased() == "me02.5"
+        case "tinsel": return ["sv10.5b", "sv10.5w", "sve"].contains(setProviderID?.lowercased() ?? "")
+        default: return false
+        }
+    }
+
+    static func isPackReversePattern(_ variant: PhysicalVariant, setProviderID: String?) -> Bool {
+        let setID = setProviderID?.lowercased() ?? ""
+        if variant.id == "energy", ["ex5", "ex6"].contains(setID) { return true }
+        guard (7...16).contains(Int(setID.replacingOccurrences(of: "ex", with: "")) ?? 0),
+              setID.hasPrefix("ex"), let stamp = PokemonCatalogStampVariant.decode(variant.id) else { return false }
+        return stamp.stamps == ["set-logo"] && stamp.subtype == nil
+    }
+
+    /// Gold/rainbow often describe the already-numbered holo rare rather than
+    /// a second object. The 151 Mew gold object also represents the UPC metal
+    /// card and must remain separate. Collection IDs are never rewritten.
+    static func rarityFinishAliasesHolo(_ variantID: String?, cardID: String) -> Bool {
+        let setID = cardID.split(separator: "-").first.map(String.init) ?? ""
+        return rarityFinishAliasSetIDs.contains(setID)
+            && ["gold", "rainbow"].contains(variantID ?? "") && cardID != "sv03.5-205"
+    }
+
+    private static let rarityFinishAliasSetIDs: Set<String> = [
+        "me02", "me04", "sv03.5", "sv05", "sv06", "sv06.5", "sv07", "sv08", "sv08.5", "sv09", "sv10",
+        "swsh2", "swsh3", "swsh4", "swsh4.5", "swsh5", "swsh6", "swsh7", "swsh8", "swsh9",
+        "swsh10", "swsh10.5", "swsh10tg", "swsh11", "swsh11tg", "swsh12", "swsh12tg"
+    ]
+
+    static func checklist(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        let groups = Dictionary(grouping: cards, by: { $0.providerID })
+        return cards.compactMap { original in
+            guard original.game == .pokemon, let variant = original.masterSetVariant else { return original }
+            let siblings = groups[original.providerID] ?? []
+            if variant == .reverse, siblings.contains(where: {
+                $0.masterSetVariant.map { isPackReversePattern($0, setProviderID: original.setID.providerID) } == true
+            }) { return nil }
+            // Reviewed provider booleans duplicate the product-only Cosmos
+            // printing as a plain holo on these two common/uncommon cards.
+            if ["sv03.5-004", "sv03.5-005"].contains(original.providerID), variant == .holo {
+                return nil
+            }
+            if rarityFinishAliasesHolo(variant.id, cardID: original.providerID),
+               siblings.contains(where: { $0.masterSetVariant == .holo }) { return nil }
+            var card = original
+            card.isExpandedMasterSetVariant = !(isPackVariant(variant, setProviderID: card.setID.providerID)
+                || rarityFinishAliasesHolo(variant.id, cardID: card.providerID))
+            // This non-holo Lugia is a stamped product printing, not a pack ex.
+            if card.providerID == "sv08.5-082", variant == .normal { card.isExpandedMasterSetVariant = true }
+            let retained = siblings.filter {
+                let rarityAlias = rarityFinishAliasesHolo($0.masterSetVariant?.id, cardID: original.providerID)
+                    && siblings.contains(where: { $0.masterSetVariant == .holo })
+                let reverseAlias = $0.masterSetVariant == .reverse && siblings.contains(where: {
+                    $0.masterSetVariant.map { isPackReversePattern($0, setProviderID: original.setID.providerID) } == true
+                })
+                return !rarityAlias && !reverseAlias
+            }
+            card.isSoleSlotForCard = retained.count == 1
+            return card
         }
     }
 

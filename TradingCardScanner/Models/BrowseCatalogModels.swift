@@ -1203,6 +1203,7 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
         let game: CardGame
         let value: String
         let printRun: PokemonPrintRun?
+        var setName: String? = nil
     }
     private var byNumber: [String: [CatalogOwnershipCardSnapshot]] = [:]
     private var byProviderID: [String: [CatalogOwnershipCardSnapshot]] = [:]
@@ -1241,13 +1242,18 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
                         ? [nil, .firstEdition, .shadowless, .unlimited] : [nil]
                     for run in runs where Self.pokemonPrintRunMatches(card, required: run) {
                         let codeKey = DirectoryKey(game: card.game,
-                            value: Self.normalized(card.setCode), printRun: run)
-                        directoryNumbersByCode[codeKey, default: []].insert(number)
+                            value: Self.normalized(card.setCode), printRun: run,
+                            setName: card.game == .pokemon ? Self.pokemonSetName(card.setName, run: run) : nil)
+                        // A display code can be shared by a parent and subset.
+                        // Only unidentified legacy rows need the code/name fallback.
+                        if card.game != .pokemon || Self.knownPokemonSetID(card) == nil {
+                            directoryNumbersByCode[codeKey, default: []].insert(number)
+                        }
                         if card.game == .pokemon {
                             let provider = (card.catalogProviderID ?? card.providerID).lowercased()
-                            // Match the existing hasPrefix(setID + "-") rule,
-                            // including provider IDs with more than one hyphen.
-                            for end in provider.indices where provider[end] == "-" {
+                            // The final separator bounds the local card ID;
+                            // 30th-c-001 belongs to 30th-c, never to 30th.
+                            if let end = provider.lastIndex(of: "-") {
                                 let key = DirectoryKey(game: card.game,
                                     value: String(provider[..<end]), printRun: run)
                                 directoryNumbersByProviderPrefix[key, default: []].insert(number)
@@ -1293,7 +1299,8 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
             return .init(owned: owned.count, total: ids.count, unit: "printings")
         }
         let codeKey = DirectoryKey(game: set.game, value: Self.normalized(set.code),
-            printRun: set.game == .pokemon ? set.pokemonPrintRun : nil)
+            printRun: set.game == .pokemon ? set.pokemonPrintRun : nil,
+            setName: set.game == .pokemon ? Self.pokemonSetName(set.name, run: set.pokemonPrintRun) : nil)
         var ownedNumbers = directoryNumbersByCode[codeKey] ?? []
         if set.game == .pokemon {
             let providerKey = DirectoryKey(game: set.game, value: set.providerID.lowercased(), printRun: set.pokemonPrintRun)
@@ -1344,18 +1351,17 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
             var matchingSetIDs: Set<String> = []
             for set in setsByCode[Self.normalizedKey(row.setCode)] ?? [] {
                 guard row.game == set.game,
-                      Self.pokemonPrintRunMatches(row, required: set.pokemonPrintRun) else {
+                      Self.pokemonPrintRunMatches(row, required: set.pokemonPrintRun),
+                      row.game != .pokemon || (Self.knownPokemonSetID(row) == nil
+                        && Self.pokemonSetName(row.setName, run: set.pokemonPrintRun)
+                            == Self.pokemonSetName(set.name, run: set.pokemonPrintRun)) else {
                     continue
                 }
                 matchingSetIDs.insert(set.id)
             }
 
             if row.game == .pokemon {
-                var providerIDs = Set([row.providerID])
-                if let catalogProviderID = row.catalogProviderID {
-                    providerIDs.insert(catalogProviderID)
-                }
-                for providerID in providerIDs {
+                for providerID in [row.catalogProviderID ?? row.providerID] {
                     for prefix in Self.providerSetPrefixes(Self.normalizedKey(providerID)) {
                         for set in pokemonSetsByProviderPrefix[prefix] ?? [] {
                             guard Self.pokemonPrintRunMatches(row, required: set.pokemonPrintRun) else {
@@ -1405,16 +1411,30 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
               card.quantity > 0,
               pokemonPrintRunMatches(card, required: summary.pokemonPrintRun) else { return false }
         let targetNumber = SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
+        if card.game == .pokemon, let setID = knownPokemonSetID(card),
+           setID != summary.setID.providerID.lowercased() { return false }
         let identityMatches = card.providerID.caseInsensitiveCompare(summary.providerID) == .orderedSame
             || card.catalogProviderID?.caseInsensitiveCompare(summary.providerID) == .orderedSame
             || (summary.catalogGeneration == nil && SetCompletionCalculator.canonicalNumber(card.cardNumber) == targetNumber
-                && (normalized(card.setCode) == normalized(summary.setCode)
-                    || normalized(card.setName) == normalized(summary.setName)))
+                && (card.game == .pokemon
+                    ? normalized(card.setCode) == normalized(summary.setCode)
+                        && pokemonSetName(card.setName, run: summary.pokemonPrintRun)
+                            == pokemonSetName(summary.setName, run: summary.pokemonPrintRun)
+                    : normalized(card.setCode) == normalized(summary.setCode)
+                        || normalized(card.setName) == normalized(summary.setName)))
         guard identityMatches else { return false }
         let required = Set(MagicTreatmentKeyCodec.canonicalIDs(from: summary.magicTreatmentIDsRaw))
         guard treatmentIDs(for: card) == required || required.isEmpty else { return false }
         guard let variant = summary.masterSetVariant else { return true }
         if card.variantID == nil && summary.isSoleSlotForCard { return true }
+        if card.variantID == PhysicalVariant.reverse.id,
+           PokemonMasterSetDefinition.isPackReversePattern(variant, setProviderID: summary.setID.providerID) { return true }
+        if variant == .holo,
+           PokemonMasterSetDefinition.rarityFinishAliasesHolo(card.variantID, cardID: summary.providerID) {
+            return true
+        }
+        if ["sv03.5-004", "sv03.5-005"].contains(summary.providerID),
+           variant.id == "cosmos", card.variantID == PhysicalVariant.holo.id { return true }
         return masterVariantID(card.variantID) == masterVariantID(variant.id)
     }
 
@@ -1468,11 +1488,27 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     }
 
     private static func providerSetPrefixes(_ providerID: String) -> [String] {
-        let components = providerID.split(separator: "-", omittingEmptySubsequences: true)
-        guard components.count > 1 else { return [] }
-        return (1..<components.count).map { end in
-            components[..<end].joined(separator: "-")
+        guard let end = providerID.lastIndex(of: "-") else { return [] }
+        return [String(providerID[..<end])]
+    }
+
+    private static func pokemonSetName(_ name: String, run: PokemonPrintRun?) -> String {
+        let value = normalized(name)
+        guard let run else { return value }
+        let suffix = normalized(" — " + run.label)
+        return value.hasSuffix(suffix) ? String(value.dropLast(suffix.count)) : value
+    }
+
+    /// Prefer a reconciled catalog identity. Legacy/import IDs remain eligible
+    /// for a code AND name match when their provider set is not recognized.
+    private static func knownPokemonSetID(_ card: CatalogOwnershipCardSnapshot) -> String? {
+        let providerID = (card.catalogProviderID ?? card.providerID).lowercased()
+        guard let setID = providerSetPrefixes(providerID).first else { return nil }
+        if card.catalogProviderID != nil
+            || PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: setID) != nil {
+            return setID
         }
+        return nil
     }
 }
 
@@ -1510,18 +1546,24 @@ enum CatalogOwnershipFilter: String, CaseIterable, Identifiable, Sendable {
 }
 
 enum PokemonMasterSetTier: String, CaseIterable, Identifiable, Sendable {
+    // Persisted AppStorage values remain stable when the collector labels change.
     case standard
     case expanded
 
     var id: String { rawValue }
-    var label: String { rawValue.capitalized }
+    var label: String {
+        switch self {
+        case .standard: return "Master"
+        case .expanded: return "Grand Master"
+        }
+    }
 
     var explanation: String {
         switch self {
         case .standard:
-            return "Numbered cards, holos, reverse holos, and secret rares pulled from packs."
+            return "Every numbered card and secret rare, plus all catalog-confirmed booster-pack parallels, including Poké Ball and Master Ball finishes."
         case .expanded:
-            return "Standard plus catalog-confirmed Poké Ball, Master Ball, and other pack parallels."
+            return "Master plus cataloged stamps, promotional finishes, and product-exclusive variants. Only the English printings listed here count; separately numbered promos and other print runs are tracked separately."
         }
     }
 }
