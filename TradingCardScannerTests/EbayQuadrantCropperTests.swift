@@ -312,6 +312,67 @@ private final class ListingFrontCheckpoint: @unchecked Sendable {
 }
 
 final class EbayListingPhotoExportTests: XCTestCase {
+    func testStoredArchivePreservesBytesNamesAndChecksumsAcrossChunks() async throws {
+        let directory = try EbayListingPhotoExport.makeBatchDirectory()
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory) }
+        let folder = directory.appendingPathComponent(".Card-é", isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let photo = Data((0..<2_100_013).map { UInt8(truncatingIfNeeded: $0) })
+        try photo.write(to: folder.appendingPathComponent("01.jpg"))
+        try Data().write(to: folder.appendingPathComponent("02.jpg"))
+        let archive = try await EbayListingPhotoExport.makeArchive(at: directory)
+        let bytes = try Data(contentsOf: archive)
+        func number(_ offset: Int, _ width: Int) -> Int {
+            (0..<width).reduce(0) { $0 | (Int(bytes[offset + $1]) << ($1 * 8)) }
+        }
+        // Read through the central directory, as an independent ZIP reader does.
+        let end = bytes.count - 22
+        XCTAssertEqual(number(end, 4), 0x06054b50)
+        XCTAssertEqual(number(end + 10, 2), 2)
+        var cursor = number(end + 16, 4)
+        for (index, expected) in [photo, Data()].enumerated() {
+            XCTAssertEqual(number(cursor, 4), 0x02014b50)
+            XCTAssertEqual(number(cursor + 10, 2), 0, "JPEGs must be stored without recompression")
+            XCTAssertEqual(number(cursor + 8, 2), 0x0808, "UTF-8 names and streaming descriptor")
+            let nameLength = number(cursor + 28, 2)
+            let name = String(decoding: bytes[(cursor + 46)..<(cursor + 46 + nameLength)], as: UTF8.self)
+            XCTAssertEqual(name, "eBay Listing Photos/.Card-é/0\(index + 1).jpg")
+            XCTAssertEqual(number(cursor + 24, 4), expected.count)
+            let local = number(cursor + 42, 4)
+            XCTAssertEqual(number(local, 4), 0x04034b50)
+            let start = local + 30 + number(local + 26, 2) + number(local + 28, 2)
+            XCTAssertEqual(bytes.subdata(in: start..<(start + expected.count)), expected)
+            let descriptor = start + expected.count
+            XCTAssertEqual(number(descriptor, 4), 0x08074b50)
+            XCTAssertEqual(number(descriptor + 4, 4), number(cursor + 16, 4))
+            // CRC32 independently calculated from the original bytes (IEEE polynomial).
+            var crc = UInt32.max
+            for byte in expected {
+                crc ^= UInt32(byte)
+                for _ in 0..<8 { crc = (crc >> 1) ^ ((crc & 1) == 0 ? 0 : 0xedb88320) }
+            }
+            XCTAssertEqual(number(cursor + 16, 4), Int(crc ^ UInt32.max))
+            cursor += 46 + nameLength + number(cursor + 30, 2) + number(cursor + 32, 2)
+        }
+        XCTAssertEqual(cursor, end)
+    }
+
+    func testCancelledArchiveDoesNotLeavePartialZIP() async throws {
+        let directory = try EbayListingPhotoExport.makeBatchDirectory()
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory) }
+        try Data("photo".utf8).write(to: directory.appendingPathComponent("01.jpg"))
+        let destination = EbayListingPhotoExport.container(of: directory).appendingPathComponent("cancelled.zip")
+        let worker = Task.detached {
+            withUnsafeCurrentTask { $0?.cancel() }
+            try ListingPhotoZIPWriter.write(directory: directory, to: destination)
+        }
+        do {
+            try await worker.value
+            XCTFail("Expected cancellation")
+        } catch is CancellationError { }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: destination.path))
+    }
+
     @MainActor
     func testSupersededArchiveSuccessAndFailureCleanOnlyTheirOwnRun() async throws {
         for (fails, cancels) in [(false, false), (true, false), (false, true), (true, true)] {

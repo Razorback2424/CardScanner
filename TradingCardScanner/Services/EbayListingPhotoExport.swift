@@ -3,6 +3,7 @@ import Foundation
 import ImageIO
 import UIKit
 import UniformTypeIdentifiers
+import zlib
 
 /// Builds the ten native-resolution JPEGs used for one eBay card listing.
 /// Decoding and pixel work stay inside a detached task so the main actor only
@@ -31,10 +32,7 @@ enum EbayListingPhotoExport {
 
     static let maximumJPEGByteCount = 12_000_000
     static let previewMaximumPixelDimension = 320
-    /// The folder name every archive expands to. `NSFileCoordinator`'s
-    /// `.forUploading` zips the directory it is handed and names the archive's
-    /// single root entry after it, so this name — not a UUID — is what the
-    /// person who opens the ZIP sees.
+    /// The readable root folder preserved inside every ZIP.
     static let archiveRootName = "eBay Listing Photos"
     /// The inspector's decode ceiling on the long edge. Roughly twice the pixel
     /// density of the largest iPhone screen, so a fitted image is already
@@ -221,8 +219,8 @@ enum EbayListingPhotoExport {
         }
     }
 
-    /// Coordinates a directory read using Foundation's uploading intent, then
-    /// keeps the generated zip in the same temporary batch root for sharing.
+    /// JPEGs are already compressed. Stream them directly into a stored ZIP;
+    /// upload coordination recompressed them and copied the entire result.
     private static func makeArchiveSynchronously(at contentDirectory: URL) throws -> URL {
         let children: [URL]
         do {
@@ -246,29 +244,12 @@ enum EbayListingPhotoExport {
             throw Error.writeFailed(name: "the previous batch archive (\(error.localizedDescription))")
         }
 
-        var coordinationError: NSError?
-        var copyError: Swift.Error?
-        let coordinator = NSFileCoordinator()
-        coordinator.coordinate(
-            readingItemAt: contentDirectory,
-            options: .forUploading,
-            error: &coordinationError
-        ) { uploadingURL in
-            do {
-                try FileManager.default.copyItem(at: uploadingURL, to: archiveURL)
-            } catch {
-                copyError = error
-            }
-        }
-
-        if let coordinationError {
-            throw Error.writeFailed(name: "the batch archive (\(coordinationError.localizedDescription))")
-        }
-        if let copyError {
-            throw Error.writeFailed(name: "the batch archive (\(copyError.localizedDescription))")
-        }
-        guard FileManager.default.fileExists(atPath: archiveURL.path) else {
-            throw Error.writeFailed(name: "the batch archive")
+        do {
+            try ListingPhotoZIPWriter.write(directory: contentDirectory, to: archiveURL)
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            throw Error.writeFailed(name: "the batch archive (\(error.localizedDescription))")
         }
         return archiveURL
     }
@@ -287,12 +268,13 @@ enum EbayListingPhotoExport {
         do { result = .success(try await archive(directory)) }
         catch { result = .failure(error) }
         guard !Task.isCancelled, isCurrent() else {
-            removeRunContainer(forContentDirectory: directory)
+            await Task.detached { removeRunContainer(forContentDirectory: directory) }.value
             return
         }
         if case .failure = result {
-            removeRunContainer(forContentDirectory: directory)
+            await Task.detached { removeRunContainer(forContentDirectory: directory) }.value
         }
+        guard !Task.isCancelled, isCurrent() else { return }
         publish(result)
     }
 
@@ -310,9 +292,8 @@ enum EbayListingPhotoExport {
         }
     }
 
-    /// Zips the batch off the main actor. Compressing and copying a multi-card
-    /// batch of native-resolution JPEGs is a multi-second operation; running it
-    /// on the main actor froze the progress view until it finished.
+    /// Streams the batch off the main actor and propagates cancellation to the
+    /// writer, which removes incomplete archives before returning.
     static func makeArchive(at contentDirectory: URL) async throws -> URL {
         let worker = Task.detached(priority: .userInitiated) {
             try makeArchiveSynchronously(at: contentDirectory)
@@ -342,13 +323,19 @@ enum EbayListingPhotoExport {
     static func removeRun(at directory: URL?) {
         guard let directory else { return }
         shareLock.lock()
-        defer { shareLock.unlock() }
         let path = directory.standardizedFileURL.path
         guard !sharedRunContainers.contains(where: {
             path == $0.path || path.hasPrefix($0.path + "/")
-        }) else { return }
+        }) else { shareLock.unlock(); return }
+        // Retire the path while holding the ownership lock, but never hold the
+        // lock during recursive deletion: a share callback may need it on UI.
+        let retired = directory.deletingLastPathComponent()
+            .appendingPathComponent(".retired-\(UUID().uuidString)")
+        do { try FileManager.default.moveItem(at: directory, to: retired) }
+        catch { shareLock.unlock(); return }
+        shareLock.unlock()
         do {
-            try FileManager.default.removeItem(at: directory)
+            try FileManager.default.removeItem(at: retired)
         } catch {
             // Temporary cleanup is best effort. Processing errors are never
             // swallowed; this path only runs after a result is superseded or
@@ -366,6 +353,17 @@ enum EbayListingPhotoExport {
     static func removeRunContainer(forContentDirectory contentDirectory: URL?) {
         guard let contentDirectory else { return }
         removeRun(at: container(of: contentDirectory))
+    }
+
+    /// UI invalidation relinquishes ownership immediately; disk cleanup must
+    /// not stall navigation or the next export.
+    static func discardRunInBackground(at directory: URL?) {
+        Task.detached(priority: .utility) { removeRun(at: directory) }
+    }
+
+    static func discardRunContainerInBackground(forContentDirectory directory: URL?) {
+        guard let directory else { return }
+        discardRunInBackground(at: container(of: directory))
     }
 
     private enum Side: Equatable, Sendable {
@@ -723,5 +721,132 @@ enum EbayListingPhotoExport {
                 throw EbayListingPhotoExport.Error.writeFailed(name: "the temporary listing-photo directory")
             }
         }
+    }
+}
+
+/// ZIP method 0 (stored), with UTF-8 names, CRC32 and ZIP64 directory offsets.
+/// Only one 1 MiB chunk of photo data is resident at a time. Files are app-owned
+/// JPEGs (at most 12 MB each); ZIP64 lets the complete batch exceed 4 GB.
+enum ListingPhotoZIPWriter {
+    private struct Entry {
+        let name: Data
+        let size: UInt32
+        let crc: UInt32
+        let offset: UInt64
+    }
+
+    static func write(directory: URL, to destination: URL) throws {
+        let directory = directory.resolvingSymlinksInPath()
+        let manager = FileManager.default
+        var enumerationError: Swift.Error?
+        guard let enumerator = manager.enumerator(
+            at: directory, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
+            errorHandler: { _, error in enumerationError = error; return false }
+        ) else { throw CocoaError(.fileReadUnknown) }
+        // Enumerate before creating the destination, which lives outside this tree.
+        var files: [URL] = []
+        for case let url as URL in enumerator {
+            try Task.checkCancellation()
+            let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+            guard values.isSymbolicLink != true else { throw CocoaError(.fileReadUnsupportedScheme) }
+            if values.isRegularFile == true { files.append(url) }
+        }
+        if let enumerationError { throw enumerationError }
+        guard !files.isEmpty else { throw EbayListingPhotoExport.Error.emptyBatch }
+        files.sort { $0.path < $1.path }
+        guard manager.createFile(atPath: destination.path, contents: nil) else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        var complete = false
+        defer { if !complete { try? manager.removeItem(at: destination) } }
+        let output = try FileHandle(forWritingTo: destination)
+        defer { try? output.close() }
+        var entries: [Entry] = []
+        let base = directory.deletingLastPathComponent().path + "/"
+        for url in files {
+            try Task.checkCancellation()
+            let path = url.resolvingSymlinksInPath().path
+            guard path.hasPrefix(base) else { throw CocoaError(.fileReadInvalidFileName) }
+            let name = Data(path.dropFirst(base.count).utf8)
+            guard name.count <= Int(UInt16.max) else { throw CocoaError(.fileWriteInvalidFileName) }
+            let offset = try output.offset()
+            // Data descriptor supplies CRC and sizes after streaming the bytes.
+            try output.write(contentsOf: record([
+                (0x04034b50, 4), (20, 2), (0x0808, 2), (0, 2),
+                (0, 2), (0x21, 2), (0, 4), (0, 4), (0, 4),
+                (UInt64(name.count), 2), (0, 2)
+            ]) + name)
+            let input = try FileHandle(forReadingFrom: url)
+            var crc: uLong = 0
+            var size: UInt64 = 0
+            do {
+                defer { try? input.close() }
+                while true {
+                    let finished = try autoreleasepool {
+                        try Task.checkCancellation()
+                        let chunk = try input.read(upToCount: 1_048_576) ?? Data()
+                        if chunk.isEmpty { return true }
+                        size += UInt64(chunk.count)
+                        guard size < UInt64(UInt32.max) else {
+                            throw CocoaError(.fileWriteUnknown, userInfo: [
+                                NSLocalizedDescriptionKey: "A listing photo exceeds the ZIP per-file size limit."
+                            ])
+                        }
+                        crc = chunk.withUnsafeBytes { bytes in
+                            crc32(crc, bytes.bindMemory(to: Bytef.self).baseAddress, uInt(chunk.count))
+                        }
+                        try output.write(contentsOf: chunk)
+                        return false
+                    }
+                    if finished { break }
+                }
+            }
+            try output.write(contentsOf: record([
+                (0x08074b50, 4), (UInt64(crc), 4), (size, 4), (size, 4)
+            ]))
+            entries.append(Entry(name: name, size: UInt32(size), crc: UInt32(crc), offset: offset))
+        }
+        let directoryOffset = try output.offset()
+        for entry in entries {
+            try Task.checkCancellation()
+            let needsZIP64 = entry.offset >= UInt64(UInt32.max)
+            let extra = needsZIP64 ? record([(1, 2), (8, 2), (entry.offset, 8)]) : Data()
+            try output.write(contentsOf: record([
+                (0x02014b50, 4), (45, 2), (needsZIP64 ? 45 : 20, 2),
+                (0x0808, 2), (0, 2), (0, 2), (0x21, 2),
+                (UInt64(entry.crc), 4), (UInt64(entry.size), 4), (UInt64(entry.size), 4),
+                (UInt64(entry.name.count), 2), (UInt64(extra.count), 2),
+                (0, 2), (0, 2), (0, 2), (0, 4),
+                (min(entry.offset, UInt64(UInt32.max)), 4)
+            ]) + entry.name + extra)
+        }
+        let endOffset = try output.offset()
+        let directorySize = endOffset - directoryOffset
+        let count = UInt64(entries.count)
+        if directoryOffset >= UInt64(UInt32.max) || directorySize >= UInt64(UInt32.max)
+            || count >= UInt64(UInt16.max) {
+            try output.write(contentsOf: record([
+                (0x06064b50, 4), (44, 8), (45, 2), (45, 2), (0, 4), (0, 4),
+                (count, 8), (count, 8), (directorySize, 8), (directoryOffset, 8),
+                (0x07064b50, 4), (0, 4), (endOffset, 8), (1, 4)
+            ]))
+        }
+        try output.write(contentsOf: record([
+            (0x06054b50, 4), (0, 2), (0, 2),
+            (min(count, UInt64(UInt16.max)), 2), (min(count, UInt64(UInt16.max)), 2),
+            (min(directorySize, UInt64(UInt32.max)), 4),
+            (min(directoryOffset, UInt64(UInt32.max)), 4), (0, 2)
+        ]))
+        try Task.checkCancellation()
+        try output.close()
+        complete = true
+    }
+
+    private static func record(_ fields: [(UInt64, Int)]) -> Data {
+        var data = Data()
+        for (value, width) in fields {
+            for byte in 0..<width { data.append(UInt8(truncatingIfNeeded: value >> (byte * 8))) }
+        }
+        return data
     }
 }

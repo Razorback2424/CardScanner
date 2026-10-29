@@ -76,10 +76,15 @@ struct EbayListingPhotosView: View {
         }
     }
 
+    fileprivate enum PhotoSource {
+        case photo(PhotosPickerItem)
+        case file(URL)
+    }
+
     fileprivate struct BatchPair: Identifiable {
         let id = UUID()
-        var front: PhotosPickerItem
-        var back: PhotosPickerItem
+        var front: PhotoSource
+        var back: PhotoSource
         var frontPreview: UIImage?
         var backPreview: UIImage?
         var folderName: String
@@ -103,6 +108,8 @@ struct EbayListingPhotosView: View {
     @State private var frontData: Data?
     @State private var backData: Data?
     @State private var cameraSide: Side?
+    @State private var isShowingFileImporter = false
+    @State private var fileImportSide: Side?
     @State private var singleGeneration = 0
     @State private var frontLoadGeneration = 0
     @State private var backLoadGeneration = 0
@@ -113,6 +120,7 @@ struct EbayListingPhotosView: View {
     @State private var errorMessage: String?
 
     @State private var batchPickerItems: [PhotosPickerItem] = []
+    @State private var batchSourceCount = 0
     @State private var batchPairs: [BatchPair] = []
     @State private var batchSelectionGeneration = 0
     @State private var batchPreviewGeneration = 0
@@ -221,16 +229,13 @@ struct EbayListingPhotosView: View {
             guard let item else { return }
             beginLoading(side: .front)
             let requestID = frontLoadGeneration
-            Task { await loadSinglePhoto(item, side: .front, requestID: requestID) }
+            Task { await loadSinglePhoto(.photo(item), side: .front, requestID: requestID) }
         }
         .onChange(of: backPickerItem) { _, item in
             guard let item else { return }
             beginLoading(side: .back)
             let requestID = backLoadGeneration
-            Task { await loadSinglePhoto(item, side: .back, requestID: requestID) }
-        }
-        .onChange(of: batchPickerItems) { _, _ in
-            updateBatchPairs()
+            Task { await loadSinglePhoto(.photo(item), side: .back, requestID: requestID) }
         }
         .onAppear {
             isWorkflowActive = true
@@ -247,6 +252,28 @@ struct EbayListingPhotosView: View {
                 receiveCameraCapture(data, for: side)
             }
         }
+        .fileImporter(
+            isPresented: $isShowingFileImporter,
+            allowedContentTypes: [.image],
+            allowsMultipleSelection: fileImportSide == nil
+        ) { result in
+            switch result {
+            case let .success(urls):
+                if let side = fileImportSide, let url = urls.first {
+                    beginLoading(side: side)
+                    let requestID = loadGeneration(for: side)
+                    Task { await loadSinglePhoto(.file(url), side: side, requestID: requestID) }
+                } else if fileImportSide == nil {
+                    updateBatchPairs(sources: urls.map(PhotoSource.file))
+                }
+            case let .failure(error):
+                if fileImportSide == nil {
+                    batchErrorMessage = error.localizedDescription
+                } else {
+                    errorMessage = error.localizedDescription
+                }
+            }
+        }
         .fullScreenCover(item: $inspectedPhoto) { photo in
             ListingPhotoInspectorView(
                 url: photo.url,
@@ -256,7 +283,8 @@ struct EbayListingPhotosView: View {
         .onDisappear {
             // Full-screen inspection/capture temporarily hides this screen;
             // their files and selections still belong to the active workflow.
-            guard cameraSide == nil, inspectedPhoto == nil, !isShowingOffer else { return }
+            guard cameraSide == nil, inspectedPhoto == nil,
+                  !isShowingOffer, !isShowingFileImporter else { return }
             isWorkflowActive = false
             frontLoadGeneration &+= 1
             backLoadGeneration &+= 1
@@ -318,13 +346,13 @@ struct EbayListingPhotosView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-
-                if let errorMessage {
-                    Text(errorMessage)
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                }
             }
+        }
+
+        if let errorMessage {
+            Text(errorMessage)
+                .font(.footnote)
+                .foregroundStyle(.red)
         }
 
         Text("Saving to Photos discards filenames. Files or AirDrop preserve the numbered upload order.")
@@ -342,7 +370,13 @@ struct EbayListingPhotosView: View {
                     .foregroundStyle(.secondary)
             }
             PhotosPicker(
-                selection: $batchPickerItems,
+                selection: Binding(
+                    get: { batchPickerItems },
+                    set: { items in
+                        batchPickerItems = items
+                        updateBatchPairs(sources: items.map(PhotoSource.photo))
+                    }
+                ),
                 maxSelectionCount: nil,
                 selectionBehavior: .ordered,
                 matching: .images
@@ -354,11 +388,18 @@ struct EbayListingPhotosView: View {
             // already written. Cancel is the deliberate way out.
             .disabled(isPreparingBatch)
 
-            Text("Photos are paired in selection order, front then back. Review each pair before processing.")
+            Button("Choose Files", systemImage: "folder") {
+                fileImportSide = nil
+                isShowingFileImporter = true
+            }
+            .buttonStyle(.bordered)
+            .disabled(isPreparingBatch)
+
+            Text("Images are paired in picker order, front then back. Review each pair and swap sides if needed before processing.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            if batchPickerItems.count % 2 == 1 {
+            if batchSourceCount % 2 == 1 {
                 Text("Choose one more photo: a batch needs an even number of images.")
                     .font(.footnote)
                     .foregroundStyle(.red)
@@ -391,11 +432,6 @@ struct EbayListingPhotosView: View {
                     .buttonStyle(.borderedProminent)
                 }
 
-                if let batchErrorMessage {
-                    Text(batchErrorMessage)
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                }
                 if !batchFailures.isEmpty {
                     Text("Skipped pairs:\n\(batchFailures.joined(separator: "\n"))")
                         .font(.footnote)
@@ -408,6 +444,12 @@ struct EbayListingPhotosView: View {
                     Button("Start Over", systemImage: "arrow.counterclockwise", action: startOverBatch)
                         .buttonStyle(.bordered)
                 }
+            }
+
+            if let batchErrorMessage {
+                Text(batchErrorMessage)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
             }
         }
     }
@@ -430,12 +472,10 @@ struct EbayListingPhotosView: View {
                 .foregroundStyle(isReady ? .green : .secondary)
             }
 
-            HStack(spacing: 10) {
-                Button("Take Photo", systemImage: "camera") {
-                    cameraSide = side
-                }
-                PhotosPicker(selection: pickerBinding, matching: .images) {
-                    Label("Choose Photo", systemImage: "photo.on.rectangle")
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 10) { sourceButtons(side: side, pickerBinding: pickerBinding) }
+                VStack(alignment: .leading, spacing: 10) {
+                    sourceButtons(side: side, pickerBinding: pickerBinding)
                 }
             }
             .buttonStyle(.bordered)
@@ -443,6 +483,21 @@ struct EbayListingPhotosView: View {
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    @ViewBuilder
+    private func sourceButtons(side: Side, pickerBinding: Binding<PhotosPickerItem?>) -> some View {
+        Button("Take Photo", systemImage: "camera") {
+            cameraSide = side
+        }
+        PhotosPicker(selection: pickerBinding, matching: .images) {
+            Label("Choose Photo", systemImage: "photo.on.rectangle")
+        }
+        Button("Choose File", systemImage: "folder") {
+            fileImportSide = side
+            isShowingFileImporter = true
+        }
+        .accessibilityHint("Selects an image file for the \(side.title.lowercased()) of the card")
     }
 
     private func outputGrid(_ output: EbayListingPhotoExport.Output) -> some View {
@@ -518,14 +573,12 @@ struct EbayListingPhotosView: View {
     }
 
     private func loadSinglePhoto(
-        _ item: PhotosPickerItem,
+        _ source: PhotoSource,
         side: Side,
         requestID: Int
     ) async {
         do {
-            guard let data = try await item.loadTransferable(type: Data.self) else {
-                throw EbayListingPhotoExport.Error.decodeFailed(side: side.title.lowercased())
-            }
+            let data = try await data(from: source, side: side.title.lowercased())
             guard !Task.isCancelled, requestID == loadGeneration(for: side) else { return }
             switch side {
             case .front: frontData = data; frontPickerItem = nil
@@ -587,7 +640,7 @@ struct EbayListingPhotosView: View {
                 backData: backData
             )
             guard !Task.isCancelled, generation == singleGeneration else {
-                EbayListingPhotoExport.removeRunContainer(forContentDirectory: output.contentDirectory)
+                EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: output.contentDirectory)
                 return
             }
             singleOutput = output
@@ -614,7 +667,7 @@ struct EbayListingPhotosView: View {
             // The archive worker is not cancellation-aware and finishes even
             // when this run was superseded, so re-check before publishing it.
             guard !Task.isCancelled, generation == singleGeneration else {
-                EbayListingPhotoExport.removeRun(at: archive)
+                EbayListingPhotoExport.discardRunInBackground(at: archive)
                 return
             }
             singleArchiveURL = archive
@@ -638,7 +691,7 @@ struct EbayListingPhotosView: View {
                 isSavingToPhotos = false
                 savingPhotoDirectory = nil
                 if singleOutputDirectory != directory {
-                    EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+                    EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: directory)
                 }
             }
             do {
@@ -670,7 +723,7 @@ struct EbayListingPhotosView: View {
         // The inspector reads a file inside the container about to be deleted.
         inspectedPhoto = nil
         if singleOutputDirectory != savingPhotoDirectory {
-            EbayListingPhotoExport.removeRunContainer(forContentDirectory: singleOutputDirectory)
+            EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: singleOutputDirectory)
         }
         singleOutputDirectory = nil
         singleOutput = nil
@@ -678,7 +731,7 @@ struct EbayListingPhotosView: View {
         singleArchiveURL = nil
     }
 
-    private func updateBatchPairs() {
+    private func updateBatchPairs(sources: [PhotoSource]) {
         batchSelectionGeneration &+= 1
         batchPreviewGeneration &+= 1
         batchProcessingTask?.cancel()
@@ -689,18 +742,19 @@ struct EbayListingPhotosView: View {
         batchErrorMessage = nil
         removeBatchArtifacts()
         batchPairs = []
+        batchSourceCount = sources.count
 
-        guard !batchPickerItems.isEmpty else { return }
-        guard batchPickerItems.count.isMultiple(of: 2) else {
+        guard !sources.isEmpty else { return }
+        guard sources.count.isMultiple(of: 2) else {
             batchErrorMessage = "Choose an even number of photos so every front has a back."
             return
         }
 
-        for index in stride(from: 0, to: batchPickerItems.count, by: 2) {
+        for index in stride(from: 0, to: sources.count, by: 2) {
             batchPairs.append(
                 BatchPair(
-                    front: batchPickerItems[index],
-                    back: batchPickerItems[index + 1],
+                    front: sources[index],
+                    back: sources[index + 1],
                     folderName: String(format: "Card-%02d", index / 2 + 1)
                 )
             )
@@ -732,11 +786,22 @@ struct EbayListingPhotosView: View {
         }
     }
 
-    private func data(from item: PhotosPickerItem, side: String) async throws -> Data {
-        guard let data = try await item.loadTransferable(type: Data.self) else {
-            throw EbayListingPhotoExport.Error.decodeFailed(side: side)
+    private func data(from source: PhotoSource, side: String) async throws -> Data {
+        switch source {
+        case let .photo(item):
+            guard let data = try await item.loadTransferable(type: Data.self) else {
+                throw EbayListingPhotoExport.Error.decodeFailed(side: side)
+            }
+            return data
+        case let .file(url):
+            return try await Task.detached(priority: .userInitiated) {
+                let hasAccess = url.startAccessingSecurityScopedResource()
+                defer {
+                    if hasAccess { url.stopAccessingSecurityScopedResource() }
+                }
+                return try Data(contentsOf: url, options: .mappedIfSafe)
+            }.value
         }
-        return data
     }
 
     private func startBatch() {
@@ -773,7 +838,13 @@ struct EbayListingPhotosView: View {
 
         let directory: URL
         do {
-            directory = try EbayListingPhotoExport.makeBatchDirectory()
+            directory = try await Task.detached(priority: .userInitiated) {
+                try EbayListingPhotoExport.makeBatchDirectory()
+            }.value
+            guard !Task.isCancelled, generation == batchSelectionGeneration else {
+                EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: directory)
+                return
+            }
             batchDirectory = directory
         } catch {
             isPreparingBatch = false
@@ -787,7 +858,7 @@ struct EbayListingPhotosView: View {
 
         for index in batchPairs.indices {
             guard !Task.isCancelled, generation == batchSelectionGeneration else {
-                EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+                EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: directory)
                 if generation == batchSelectionGeneration {
                     isPreparingBatch = false
                     batchProgress = nil
@@ -818,20 +889,20 @@ struct EbayListingPhotosView: View {
                 successfulCount += 1
             } catch is CancellationError {
                 if let completedOutput {
-                    EbayListingPhotoExport.removeRunContainer(forContentDirectory: completedOutput.contentDirectory)
+                    EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: completedOutput.contentDirectory)
                 }
-                EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+                EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: directory)
                 return
             } catch {
                 if let completedOutput {
-                    EbayListingPhotoExport.removeRunContainer(forContentDirectory: completedOutput.contentDirectory)
+                    EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: completedOutput.contentDirectory)
                 }
                 failures.append("Card \(index + 1): \(error.localizedDescription)")
             }
         }
 
         guard generation == batchSelectionGeneration, !Task.isCancelled else {
-            EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+            EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: directory)
             return
         }
         batchFailures = failures
@@ -839,7 +910,7 @@ struct EbayListingPhotosView: View {
             isPreparingBatch = false
             batchProgress = nil
             batchErrorMessage = EbayListingPhotoExport.Error.emptyBatch.localizedDescription
-            EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+            EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: directory)
             batchDirectory = nil
             return
         }
@@ -890,6 +961,7 @@ struct EbayListingPhotosView: View {
         batchSelectionGeneration &+= 1
         batchPreviewGeneration &+= 1
         batchPickerItems = []
+        batchSourceCount = 0
         batchPairs = []
         batchFailures = []
         batchErrorMessage = nil
@@ -901,7 +973,7 @@ struct EbayListingPhotosView: View {
     }
 
     private func removeBatchArtifacts() {
-        EbayListingPhotoExport.removeRunContainer(forContentDirectory: batchDirectory)
+        EbayListingPhotoExport.discardRunContainerInBackground(forContentDirectory: batchDirectory)
         batchDirectory = nil
         batchArchiveURL = nil
     }
