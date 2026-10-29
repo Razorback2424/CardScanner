@@ -41,6 +41,7 @@ final class BrowseViewModel: ObservableObject {
     private var searchTask: Task<Void, Never>?
     private var searchResultsRefreshTask: Task<Void, Never>?
     private var generation = UUID()
+    private var setLoadIDs: [CardGame: UUID] = [:]
     private var sealedModelCancellable: AnyCancellable? = nil
 
     init(
@@ -158,13 +159,36 @@ final class BrowseViewModel: ObservableObject {
         }.joined(separator: "|")
     }
 
+    var availableCompletionSets: [CatalogSet] {
+        gameRegistry.games(supporting: .browse).flatMap { sets[$0] ?? [] }
+    }
+
     func loadSets() async {
-        for game in gameRegistry.games(supporting: .browse) where sets[game] == nil {
-            do {
-                sets[game] = try await catalog.sets(for: game)
-                setErrors[game] = nil
-            } catch {
-                setErrors[game] = error.localizedDescription
+        await loadSetDirectories(gameRegistry.games(supporting: .browse).filter { sets[$0] == nil })
+    }
+
+    private func loadSetDirectories(_ games: [CardGame]) async {
+        let requests = games.map { game in
+            let id = UUID()
+            setLoadIDs[game] = id
+            setErrors[game] = nil
+            return (game, id)
+        }
+        await withTaskGroup(of: (CardGame, UUID, [CatalogSet]?, String?).self) { group in
+            for (game, id) in requests {
+                group.addTask { [catalog] in
+                    let interval = PerformanceSignpost.beginInterval("Browse.directory", id: PerformanceSignpost.makeID(), game.rawValue)
+                    defer { PerformanceSignpost.endInterval("Browse.directory", interval, game.rawValue) }
+                    do { return (game, id, try await catalog.sets(for: game), nil) }
+                    catch is CancellationError { return (game, id, nil, nil) }
+                    catch { return (game, id, nil, error.localizedDescription) }
+                }
+            }
+            for await (game, id, directory, error) in group {
+                guard !Task.isCancelled else { group.cancelAll(); return }
+                guard setLoadIDs[game] == id else { continue }
+                if let directory { sets[game] = directory }
+                setErrors[game] = error
             }
         }
     }
@@ -175,19 +199,10 @@ final class BrowseViewModel: ObservableObject {
             guard !Task.isCancelled else { return }
             let affectedGames = gameRegistry.games(supporting: .browse).filter { update.affects(game: $0) }
             guard !affectedGames.isEmpty else { continue }
-            var refreshed = sets
-            for game in affectedGames {
-                do {
-                    refreshed[game] = try await catalog.sets(for: game)
-                    setErrors[game] = nil
-                } catch {
-                    setErrors[game] = error.localizedDescription
-                }
-            }
+            await loadSetDirectories(affectedGames)
             guard !Task.isCancelled else { return }
-            sets = refreshed
             catalogRevision += 1
-            let available = Set(refreshed.values.flatMap { $0.map(\.catalogID) })
+            let available = Set(sets.values.flatMap { $0.map(\.catalogID) })
             let retainedSelection = selectedSets.intersection(available)
             if retainedSelection != selectedSets {
                 selectedSets = retainedSelection
@@ -203,9 +218,7 @@ final class BrowseViewModel: ObservableObject {
     }
 
     func retrySets(_ game: CardGame) async {
-        setErrors[game] = nil
-        do { sets[game] = try await catalog.sets(for: game) }
-        catch { setErrors[game] = error.localizedDescription }
+        await loadSetDirectories([game])
     }
 
     func loadMore(_ game: CardGame) async {
@@ -481,7 +494,7 @@ struct BrowseView: View {
             requestSetCompletionRebuild()
         }
         .onChange(of: model.catalogRevision) { _, _ in
-            requestSetCompletionRebuild()
+            requestSetCompletionRebuild(invalidateCatalog: true)
         }
         .onChange(of: masterSetTier) { _, _ in
             requestSetCompletionRebuild()
@@ -589,22 +602,12 @@ struct BrowseView: View {
         projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
     }
 
-    private func requestSetCompletionRebuild() {
-        let games = model.gameRegistry.games(supporting: .browse)
-        // Do not replace a reusable full-directory build with each partial
-        // directory as the initial games arrive on a new Browse entry.
-        guard games.allSatisfy({ model.sets[$0] != nil || model.setErrors[$0] != nil }) else { return }
-        let sets = games.flatMap { model.sets[$0] ?? [] }
-        guard !sets.isEmpty else { return }
-        let currentOwnership = ownership
-        let tier = masterSetTier
-        Task {
-            await setCompletionStore.rebuild(
-                sets: sets,
-                ownership: currentOwnership,
-                tier: tier
-            )
-        }
+    private func requestSetCompletionRebuild(invalidateCatalog: Bool = false) {
+        // Each returned directory is complete for that game. Prepare it now;
+        // an unrelated provider can remain unavailable or pending indefinitely.
+        setCompletionStore.requestRebuild(sets: model.availableCompletionSets, ownership: ownership,
+            tier: masterSetTier, invalidateCatalog: invalidateCatalog,
+            ownershipRevision: projectionStore.revision)
     }
 
     @ViewBuilder
@@ -620,10 +623,10 @@ struct BrowseView: View {
                             NavigationLink(value: set) {
                                 CatalogSetTile(
                                     set: set,
-                                    completion: setCompletionStore.index?.completion(
+                                    completion: setCompletionStore.currentIndex(ownershipRevision: projectionStore.revision)?.completion(
                                         for: set,
                                         tier: masterSetTier
-                                    ) ?? ownership.progress(for: set),
+                                    ) ?? ownership.directoryProgress(for: set),
                                     layout: .rail,
                                     showsNewBadge: releaseRail.showsNewBadges,
                                     catalog: model.catalog
@@ -939,7 +942,9 @@ private struct CatalogSearchResultRow: View {
                 thumbnailURL: summary.thumbnailURL,
                 imageURL: summary.imageURL,
                 prefersFullSize: false,
-                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized
+                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized,
+                providerID: summary.providerID,
+                providerSetID: summary.setID.providerID
             )
         case .sealed:
             return nil
@@ -1081,7 +1086,7 @@ enum CatalogSetOrdering {
             return sets
                 .map {
                     let completion = completions?.completion(for: $0, tier: tier)
-                        ?? ownership.progress(for: $0)
+                        ?? ownership.directoryProgress(for: $0)
                     return (set: $0, fraction: completion.fraction ?? -1)
                 }
                 .sorted {
@@ -1232,12 +1237,15 @@ private struct CatalogSearchField: View {
                 .submitLabel(.done)
                 .onSubmit { isFocused = false }
                 .accessibilityLabel(prompt)
-            if !text.isEmpty {
-                Button("Clear search", systemImage: "xmark.circle.fill") { text = "" }
-                    .labelStyle(.iconOnly)
-                    .foregroundStyle(.secondary)
-                    .frame(minWidth: 44, minHeight: 44)
-            }
+            // Reserve the clear target while empty so the first/last character
+            // doesn't resize the native text input during keyboard layout.
+            Button("Clear search", systemImage: "xmark.circle.fill") { text = "" }
+                .labelStyle(.iconOnly)
+                .foregroundStyle(.secondary)
+                .frame(minWidth: 44, minHeight: 44)
+                .opacity(text.isEmpty ? 0 : 1)
+                .disabled(text.isEmpty)
+                .accessibilityHidden(text.isEmpty)
         }
         .padding(.horizontal, 14)
         .frame(minHeight: 48)
@@ -1246,6 +1254,15 @@ private struct CatalogSearchField: View {
         .padding(.top, 8)
         .padding(.bottom, 10)
         .background(Color(uiColor: .systemBackground))
+        .onChange(of: isFocused) { _, focused in
+            PerformanceSignpost.emitEvent("Browse.searchFocus", "focused=\(focused)")
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            // End the input session before UIKit prepares the background scene
+            // snapshot. Keep the query, but don't carry a live search keyboard
+            // through the snapshot's trait/layout overrides.
+            if isFocused { isFocused = false }
+        }
         .onDisappear { isFocused = false }
     }
 }
@@ -1364,6 +1381,24 @@ private struct CatalogPaginationFooter: View {
     }
 }
 
+/// The rectangle is needed only by the iOS 17 pagination fallback. On newer
+/// systems scroll visibility drives pagination directly; observing geometry
+/// there would invalidate the entire card screen for every keyboard frame.
+private struct CatalogPaginationViewport: ViewModifier {
+    @Binding var viewport: CGRect
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content
+        } else {
+            content.onGeometryChange(for: CGRect.self) { proxy in
+                proxy.frame(in: .global)
+            } action: { viewport = $0 }
+        }
+    }
+}
+
 struct CatalogGameCardsView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let game: CardGame
@@ -1421,9 +1456,7 @@ struct CatalogGameCardsView: View {
                 }
             }
         }
-        .onGeometryChange(for: CGRect.self) { proxy in
-            proxy.frame(in: .global)
-        } action: { viewport = $0 }
+        .modifier(CatalogPaginationViewport(viewport: $viewport))
         .task(id: "\(contentRevision)-\(isActive)-\(hasSearchText)") {
             if isActive, cards.isEmpty { await retryDefault() }
         }
@@ -1750,7 +1783,7 @@ private struct CatalogSetListView: View {
                 || CardNameSearch.normalize($0.name).contains(query)
                 || CardNameSearch.normalize($0.code).contains(query)
             let matchesFilter = filter.includes(
-                $0, ownership: owned, completions: setCompletionStore.index, tier: masterSetTier
+                $0, ownership: owned, completions: setCompletionStore.currentIndex(ownershipRevision: projectionStore.revision), tier: masterSetTier
             )
             return matchesSearch && matchesFilter
         }
@@ -1758,7 +1791,7 @@ private struct CatalogSetListView: View {
             filtered,
             by: sort,
             ownership: owned,
-            completions: setCompletionStore.index,
+            completions: setCompletionStore.currentIndex(ownershipRevision: projectionStore.revision),
             tier: masterSetTier
         )
     }
@@ -1790,7 +1823,7 @@ private struct CatalogSetListView: View {
                             columns: columns,
                             catalog: catalog,
                             owned: owned,
-                            completions: setCompletionStore.index,
+                            completions: setCompletionStore.currentIndex(ownershipRevision: projectionStore.revision),
                             tier: masterSetTier
                         )
                     }
@@ -1800,7 +1833,7 @@ private struct CatalogSetListView: View {
                         columns: columns,
                         catalog: catalog,
                         owned: owned,
-                        completions: setCompletionStore.index,
+                        completions: setCompletionStore.currentIndex(ownershipRevision: projectionStore.revision),
                         tier: masterSetTier
                     )
                 }
@@ -1880,7 +1913,7 @@ extension CatalogSetListFilter {
             return true
         case .started:
             return (completions?.completion(for: set, tier: tier)
-                ?? ownership.progress(for: set)).owned > 0
+                ?? ownership.directoryProgress(for: set)).owned > 0
         }
     }
 }
@@ -1984,7 +2017,7 @@ private struct CatalogSetGrid: View {
                     CatalogSetTile(
                         set: set,
                         completion: completions?.completion(for: set, tier: tier)
-                            ?? owned.progress(for: set),
+                            ?? owned.directoryProgress(for: set),
                         catalog: catalog
                     )
                 }
@@ -2017,7 +2050,9 @@ struct CatalogSetCardsView: View {
     @State private var missingMappingPriceSlotIDs: Set<String> = []
     @State private var priceLoadState = CatalogPriceLoadState()
     @State private var contentGeneration = UUID()
-    @State private var visibleGroups: [CatalogCardDisplayGroup] = []
+    @StateObject private var presentation = CatalogSetPresentationStore()
+    @State private var entryInterval: OSSignpostIntervalState?
+    private var visibleGroups: [CatalogCardDisplayGroup] { presentation.groups }
     @State private var setProgress = SetCompletion(owned: 0, total: nil)
     @State private var priceLoadTask: Task<Void, Never>?
     @State private var isVisible = false
@@ -2033,20 +2068,12 @@ struct CatalogSetCardsView: View {
         self.catalog = catalog
     }
 
-    private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
-        CatalogSetQuery.apply(
-            masterSetSlots,
-            search: search,
-            sort: sort,
-            ownership: ownership,
-            owned: owned,
-            prices: prices
-        )
-    }
-
     private func refreshVisibleGroups() {
+        guard isVisible else { return }
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        visibleGroups = CatalogCardDisplayGrouping.groups(for: visibleCards(owned: owned))
+        presentation.update(.init(setID: set.catalogID, contentGeneration: contentGeneration,
+            cards: cards, search: search, sort: sort, ownership: ownership,
+            ownershipRevision: projectionStore.revision, tier: masterSetTier, prices: prices), owned: owned)
     }
 
     private var masterSetSlots: [CatalogCardSummary] {
@@ -2059,7 +2086,8 @@ struct CatalogSetCardsView: View {
         return CatalogSetCompletionInputs(
             set: set, slots: masterSetSlots, isFullyLoaded: isFullyLoaded,
             ownershipRevision: projectionStore.revision,
-            completions: set.game == .pokemon && isFullyLoaded ? nil : setCompletionStore.index,
+            completions: set.game == .pokemon && isFullyLoaded ? nil
+                : setCompletionStore.currentIndex(ownershipRevision: projectionStore.revision),
             tier: masterSetTier
         )
     }
@@ -2070,7 +2098,7 @@ struct CatalogSetCardsView: View {
             // Only the card grid needs lazy layout. Keep the header's identity
             // and origin stable when a short loading state becomes a long grid.
             VStack {
-                if cards.isEmpty && isLoading {
+                if (cards.isEmpty && isLoading) || (visibleGroups.isEmpty && presentation.isProjecting) {
                     VStack(spacing: 12) {
                         ProgressView()
                         Text("Loading cards…")
@@ -2118,9 +2146,7 @@ struct CatalogSetCardsView: View {
                 }
             }
         }
-        .onGeometryChange(for: CGRect.self) { proxy in
-            proxy.frame(in: .global)
-        } action: { viewport = $0 }
+        .modifier(CatalogPaginationViewport(viewport: $viewport))
         .navigationTitle(set.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
@@ -2168,6 +2194,9 @@ struct CatalogSetCardsView: View {
         }
         .onAppear {
             isVisible = true
+            entryInterval = PerformanceSignpost.beginInterval("Browse.firstUsable",
+                id: PerformanceSignpost.makeID(), "state=pending")
+            if !visibleGroups.isEmpty { endEntryInterval(displayed: true) }
             refreshVisibleGroups()
             if !priceLoadState.hasLoadedPrices, !cards.isEmpty, sort.needsPrices || shouldPrefetchPrices {
                 startPriceLoading(
@@ -2180,6 +2209,8 @@ struct CatalogSetCardsView: View {
         }
         .onDisappear {
             isVisible = false
+            presentation.cancel()
+            endEntryInterval()
             if isLoading {
                 contentGeneration = UUID()
                 isLoading = false
@@ -2191,11 +2222,17 @@ struct CatalogSetCardsView: View {
             priceReloadAfterCurrentLoad = false
         }
         .onChange(of: cards) { _, _ in refreshVisibleGroups() }
+        .onChange(of: visibleGroups) { _, groups in
+            if !groups.isEmpty { endEntryInterval(displayed: true) }
+        }
         .onChange(of: completionInputs, initial: true) { _, inputs in
             let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
             setProgress = inputs.progress(ownership: owned)
         }
-        .onChange(of: search) { _, _ in refreshVisibleGroups() }
+        .onChange(of: search) { _, _ in
+            PerformanceSignpost.emitEvent("Browse.typing", "queryLength=\(search.count)")
+            refreshVisibleGroups()
+        }
         .onChange(of: ownership) { _, _ in refreshVisibleGroups() }
         .onChange(of: masterSetTier) { _, _ in refreshVisibleGroups() }
         .onChange(of: prices) { _, _ in
@@ -2220,6 +2257,13 @@ struct CatalogSetCardsView: View {
                 await requestReload()
             }
         }
+    }
+
+    private func endEntryInterval(displayed: Bool = false) {
+        guard let entryInterval else { return }
+        PerformanceSignpost.endInterval("Browse.firstUsable", entryInterval,
+            displayed ? "state=displayed" : "state=cancelled")
+        self.entryInterval = nil
     }
 
     private var pricedSlotCount: Int {
@@ -2351,6 +2395,7 @@ struct CatalogSetCardsView: View {
         let pagesToLoad = reset && preservingLoadedPages ? max(1, loadedPageCount) : 1
         let requestID = UUID()
         contentGeneration = requestID
+        presentation.cancel()
         // A page load changes the card set even before its response arrives.
         // Invalidate any sort request for the previous set so its result cannot
         // strand the new page in a loading state or mark it fully priced.
@@ -2406,6 +2451,8 @@ struct CatalogSetCardsView: View {
             loadedPageCount = reset ? pagesLoaded : loadedPageCount + pagesLoaded
             if reset { paginationRevision += 1 }
             cursor = page.nextCursor
+            PerformanceSignpost.emitEvent("Browse.cardsPublished", "cards=\(cards.count) complete=\(cursor == nil)")
+            refreshVisibleGroups()
             if sort.needsPrices {
                 startPriceLoading(
                     for: requestID,
@@ -2426,6 +2473,7 @@ struct CatalogSetCardsView: View {
                 cards = []
                 cursor = nil
                 loadedPageCount = 0
+                refreshVisibleGroups()
             }
             self.error = error.localizedDescription
         }
@@ -2671,7 +2719,9 @@ private struct CatalogCardDisplayGroupTile: View {
                 game: preferred.game,
                 setCode: preferred.setCode,
                 collectorNumber: preferred.collectorNumber,
-                limitlessArtworkAuthorized: preferred.limitlessArtworkAuthorized
+                limitlessArtworkAuthorized: preferred.limitlessArtworkAuthorized,
+                providerID: preferred.providerID,
+                providerSetID: preferred.setID.providerID
             )
                 .overlay(alignment: .topTrailing) {
                     if owned.owns(preferred) {
@@ -2847,6 +2897,8 @@ struct CatalogArtworkView: View {
     var setCode: String? = nil
     var collectorNumber: String? = nil
     var limitlessArtworkAuthorized: Bool? = nil
+    var providerID: String? = nil
+    var providerSetID: String? = nil
 
     private var artworkSource: CatalogCardArtworkSource {
         CatalogCardArtworkSource(
@@ -2856,7 +2908,9 @@ struct CatalogArtworkView: View {
             thumbnailURL: thumbnailURL,
             imageURL: imageURL,
             prefersFullSize: prefersFullSize,
-            limitlessArtworkAuthorized: limitlessArtworkAuthorized
+            limitlessArtworkAuthorized: limitlessArtworkAuthorized,
+            providerID: providerID,
+            providerSetID: providerSetID
         )
     }
 

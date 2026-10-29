@@ -118,7 +118,7 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     /// The badge shown on the tile. Falls back to the raw finish label so a row
     /// written before item kinds existed still reads correctly.
     var displayKindLabel: String {
-        itemKindLabel ?? variantLabel ?? PhysicalVariant.normal.label
+        itemKindLabel ?? variantLabel ?? "Unknown finish"
     }
 
     /// Whether the artwork has a finish that can carry the shared specular

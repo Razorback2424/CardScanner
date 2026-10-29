@@ -76,7 +76,7 @@ struct CollectionFinishStatus: Equatable {
         }
 
         guard showDefaultFinish else { return nil }
-        return Self(kind: .plain, label: row.variant?.label ?? "Nonfoil")
+        return Self(kind: .plain, label: row.variant?.label ?? "Unknown finish")
     }
 }
 

@@ -230,6 +230,8 @@
 		A0010052 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010052 /* BrowseView.swift */; };
 		A00100C3 /* ArtworkFallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C3 /* ArtworkFallbacks.swift */; };
 		A00100C4 /* CatalogSetCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C4 /* CatalogSetCompletion.swift */; };
+		ABC10001 /* CatalogSetPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC10001 /* CatalogSetPresentation.swift */; };
+		ABC10002 /* BrowsePresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC10002 /* BrowsePresentationTests.swift */; };
 		A00100C2 /* CatalogSetTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C2 /* CatalogSetTile.swift */; };
 		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
 		A0010154 /* BrowsePriceHistoryChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010154 /* BrowsePriceHistoryChart.swift */; };
@@ -593,6 +595,8 @@
 		B0010052 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		B00100C3 /* ArtworkFallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkFallbacks.swift; sourceTree = "<group>"; };
 		B00100C4 /* CatalogSetCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetCompletion.swift; sourceTree = "<group>"; };
+		BBC10001 /* CatalogSetPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetPresentation.swift; sourceTree = "<group>"; };
+		BBC10002 /* BrowsePresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePresentationTests.swift; sourceTree = "<group>"; };
 		B00100C2 /* CatalogSetTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetTile.swift; sourceTree = "<group>"; };
 		B0010053 /* CatalogCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogCardDetailView.swift; sourceTree = "<group>"; };
 		B0010154 /* BrowsePriceHistoryChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryChart.swift; sourceTree = "<group>"; };
@@ -901,6 +905,7 @@
 				B0010152 /* BrowsePriceObservationDayResolver.swift */,
 				B0010153 /* ScryfallDatasetStampCache.swift */,
 				B00100C4 /* CatalogSetCompletion.swift */,
+				BBC10001 /* CatalogSetPresentation.swift */,
 				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B00100C3 /* ArtworkFallbacks.swift */,
 				B00100E3 /* MagicTreatmentCatalog.swift */,
@@ -1119,6 +1124,7 @@
 				B0020113 /* EbayQuadrantCropperTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
+				BBC10002 /* BrowsePresentationTests.swift */,
 				B0090303 /* PokemonTCGCSVPriceTests.swift */,
 				B0090304 /* TCGCSV30th.json */,
 				B00904E1 /* mee-primary.json */,
@@ -1544,6 +1550,7 @@
 				A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */,
 				A0010153 /* ScryfallDatasetStampCache.swift in Sources */,
 				A00100C4 /* CatalogSetCompletion.swift in Sources */,
+				ABC10001 /* CatalogSetPresentation.swift in Sources */,
 				A0010052 /* BrowseView.swift in Sources */,
 				A00100C3 /* ArtworkFallbacks.swift in Sources */,
 				A00100C2 /* CatalogSetTile.swift in Sources */,
@@ -1621,6 +1628,7 @@
 				A0020113 /* EbayQuadrantCropperTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
+				ABC10002 /* BrowsePresentationTests.swift in Sources */,
 				A0090303 /* PokemonTCGCSVPriceTests.swift in Sources */,
 				A0020150 /* BrowsePriceHistoryTests.swift in Sources */,
 				A0020151 /* SwiftDataConcurrencyCharacterizationTests.swift in Sources */,

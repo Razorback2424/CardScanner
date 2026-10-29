@@ -268,7 +268,7 @@ final class CollectedCard {
     var itemKindLabel: String {
         switch itemKind {
         case .rawCard:
-            return variantLabel ?? PhysicalVariant.normal.label
+            return variantLabel ?? "Unknown finish"
         case .gradedCard:
             guard let gradingCompany, let cardGrade else { return "Graded" }
             return cardGrade.display(company: gradingCompany)

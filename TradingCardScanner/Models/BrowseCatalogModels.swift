@@ -451,19 +451,22 @@ enum CatalogCardDisplayGrouping {
         PhysicalVariant.loveBall.id
     ]
 
-    static func groups(for summaries: [CatalogCardSummary]) -> [CatalogCardDisplayGroup] {
+    static func groups(
+        for summaries: [CatalogCardSummary],
+        preparedIdentities: [CatalogCardDisplayIdentity]? = nil
+    ) -> [CatalogCardDisplayGroup] {
         var groups: [CatalogCardDisplayGroup] = []
         var indexByIdentity: [CatalogCardDisplayIdentity: Int] = [:]
 
-        for summary in summaries {
-            let number = SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
-                ?? summary.collectorNumber.lowercased()
-            var identity = CatalogCardDisplayIdentity(
+        for (offset, summary) in summaries.enumerated() {
+            var identity = preparedIdentities?[offset] ?? CatalogCardDisplayIdentity(
                 game: summary.game,
                 setID: summary.setID,
                 providerID: summary.providerID,
-                collectorNumber: number
+                collectorNumber: SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
+                    ?? summary.collectorNumber.lowercased()
             )
+            let number = identity.collectorNumber
 
             // Magic treatments are exact printings. Keep every Magic summary a
             // singleton, while still disambiguating an unexpectedly duplicated
@@ -1030,6 +1033,11 @@ struct CatalogSetCompletionIndex: Equatable, Sendable {
         guard self.tier == tier else { return nil }
         return completions[set.id]
     }
+
+    func merging(_ other: CatalogSetCompletionIndex) -> CatalogSetCompletionIndex {
+        precondition(tier == other.tier)
+        return .init(completions: completions.merging(other.completions) { _, new in new }, tier: tier)
+    }
 }
 
 enum CatalogSetCompletionPresentation {
@@ -1043,7 +1051,7 @@ enum CatalogSetCompletionPresentation {
     ) -> SetCompletion {
         if set.game == .pokemon, isFullyLoaded { return ownership.progress(for: slots) }
         return completions?.completion(for: set, tier: tier)
-            ?? (set.game == .pokemon ? ownership.progress(for: slots) : ownership.progress(for: set))
+            ?? (set.game == .pokemon ? ownership.progress(for: slots) : ownership.directoryProgress(for: set))
     }
 }
 
@@ -1191,12 +1199,19 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
 /// Ownership answers are value data. The index can be built on a model actor
 /// and passed to every browse route without retaining SwiftData model objects.
 struct CatalogOwnershipIndex: Equatable, Sendable {
+    private struct DirectoryKey: Hashable, Sendable {
+        let game: CardGame
+        let value: String
+        let printRun: PokemonPrintRun?
+    }
     private var byNumber: [String: [CatalogOwnershipCardSnapshot]] = [:]
     private var byProviderID: [String: [CatalogOwnershipCardSnapshot]] = [:]
     private var bySealedProduct: [String: Int] = [:]
     private var ownedSetCodes: Set<String> = []
     private var ownedProviderIDs: Set<String> = []
     private var completionRows: [CatalogOwnershipCardSnapshot] = []
+    private var directoryNumbersByCode: [DirectoryKey: Set<String>] = [:]
+    private var directoryNumbersByProviderPrefix: [DirectoryKey: Set<String>] = [:]
 
     init(_ cards: [CollectedCard]) {
         self.init(rows: cards.map(CatalogOwnershipCardSnapshot.init))
@@ -1221,6 +1236,25 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
             }
             if let number = SetCompletionCalculator.canonicalNumber(card.cardNumber) {
                 byNumber[number, default: []].append(card)
+                if !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID) {
+                    let runs: [PokemonPrintRun?] = card.game == .pokemon
+                        ? [nil, .firstEdition, .shadowless, .unlimited] : [nil]
+                    for run in runs where Self.pokemonPrintRunMatches(card, required: run) {
+                        let codeKey = DirectoryKey(game: card.game,
+                            value: Self.normalized(card.setCode), printRun: run)
+                        directoryNumbersByCode[codeKey, default: []].insert(number)
+                        if card.game == .pokemon {
+                            let provider = (card.catalogProviderID ?? card.providerID).lowercased()
+                            // Match the existing hasPrefix(setID + "-") rule,
+                            // including provider IDs with more than one hyphen.
+                            for end in provider.indices where provider[end] == "-" {
+                                let key = DirectoryKey(game: card.game,
+                                    value: String(provider[..<end]), printRun: run)
+                                directoryNumbersByProviderPrefix[key, default: []].insert(number)
+                            }
+                        }
+                    }
+                }
             }
             var providerIDs = [card.providerID.lowercased()]
             if let catalogID = card.catalogProviderID?.lowercased(),
@@ -1243,6 +1277,13 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     }
 
     func progress(for set: CatalogSet) -> SetCompletion {
+        directoryProgress(for: set)
+    }
+
+    /// Collector-number fallback prepared with the ownership snapshot. Views,
+    /// Started and Most Complete never walk the collection while an exact
+    /// checklist index is loading. This is deliberately not variation progress.
+    func directoryProgress(for set: CatalogSet) -> SetCompletion {
         if let ids = set.physicalPrintingIDs {
             let owned = ids.filter { id in
                 (byProviderID[id.lowercased()] ?? []).contains {
@@ -1251,19 +1292,13 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
             }
             return .init(owned: owned.count, total: ids.count, unit: "printings")
         }
-        let ownedNumbers = Set(byNumber.values.flatMap { $0 }.compactMap { card -> String? in
-            guard card.game == set.game,
-                  card.itemKind.countsTowardSetCompletion,
-                  !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID),
-                  Self.pokemonPrintRunMatches(card, required: set.pokemonPrintRun) else { return nil }
-            let code = Self.normalized(card.setCode)
-            if code == Self.normalized(set.code) { return SetCompletionCalculator.canonicalNumber(card.cardNumber) }
-            guard set.game == .pokemon else { return nil }
-            let provider = (card.catalogProviderID ?? card.providerID).lowercased()
-            return provider.hasPrefix(set.providerID.lowercased() + "-")
-                ? SetCompletionCalculator.canonicalNumber(card.cardNumber)
-                : nil
-        })
+        let codeKey = DirectoryKey(game: set.game, value: Self.normalized(set.code),
+            printRun: set.game == .pokemon ? set.pokemonPrintRun : nil)
+        var ownedNumbers = directoryNumbersByCode[codeKey] ?? []
+        if set.game == .pokemon {
+            let providerKey = DirectoryKey(game: set.game, value: set.providerID.lowercased(), printRun: set.pokemonPrintRun)
+            ownedNumbers.formUnion(directoryNumbersByProviderPrefix[providerKey] ?? [])
+        }
         return SetCompletion(owned: ownedNumbers.count, total: set.cardCount, unit: "cards")
     }
 

@@ -558,6 +558,29 @@ final class CollectionQueryTests: XCTestCase {
 
     // MARK: - Collection tile status
 
+    @MainActor
+    func testCollectionModelDoesNotLabelAnUnknownFinishAsNormal() {
+        let card = CollectedCard(collectionKey: "unknown", game: .pokemon, providerID: "fixture-1",
+            name: "Fixture", setName: "Fixture", setCode: "FIX", cardNumber: "1", rarity: nil,
+            imageURL: nil, thumbnailURL: nil, variant: nil, variantResolution: .catalogSilent)
+        XCTAssertEqual(card.itemKindLabel, "Unknown finish")
+        card.variantID = PhysicalVariant.normal.id
+        card.variantLabel = PhysicalVariant.normal.label
+        XCTAssertEqual(card.itemKindLabel, PhysicalVariant.normal.label)
+    }
+
+    func testUnknownFinishIsNotPresentedAsNormalOrNonfoil() {
+        for game in [CardGame.pokemon, .magic] {
+            let unknown = row(id: "unknown", game: game, variant: nil, price: nil)
+            XCTAssertEqual(unknown.displayKindLabel, "Unknown finish")
+            XCTAssertEqual(CollectionFinishStatus.resolve(row: unknown),
+                CollectionFinishStatus(kind: .plain, label: "Unknown finish"))
+            XCTAssertNil(CollectionFinishStatus.resolve(row: unknown, showDefaultFinish: false))
+        }
+        let nonfoil = row(id: "nonfoil", game: .magic, variant: .nonfoil, price: nil)
+        XCTAssertEqual(CollectionFinishStatus.resolve(row: nonfoil)?.label, PhysicalVariant.nonfoil.label)
+    }
+
     func testCollectionStatusPrioritizesSlabsAndSealedProducts() {
         var graded = row(
             id: "graded",

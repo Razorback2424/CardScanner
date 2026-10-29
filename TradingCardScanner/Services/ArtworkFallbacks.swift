@@ -220,7 +220,8 @@ struct CatalogSetArtwork: Codable, Sendable {
 }
 
 /// The provider order for a card artwork request. TCGdex remains authoritative
-/// when present; the derived Limitless URL is always the last remote candidate.
+/// when present; reviewed Classic product artwork can recover missing/failed
+/// provider images. The derived Limitless URL remains the last candidate.
 struct CatalogCardArtworkSource: Equatable, Sendable {
     let primaryURL: URL?
     let fallbacks: [URL]
@@ -232,7 +233,9 @@ struct CatalogCardArtworkSource: Equatable, Sendable {
         thumbnailURL: URL?,
         imageURL: URL?,
         prefersFullSize: Bool,
-        limitlessArtworkAuthorized: Bool? = nil
+        limitlessArtworkAuthorized: Bool? = nil,
+        providerID: String? = nil,
+        providerSetID: String? = nil
     ) {
         let providerURLs = prefersFullSize
             ? [imageURL, thumbnailURL]
@@ -250,7 +253,20 @@ struct CatalogCardArtworkSource: Equatable, Sendable {
             }
             return prefersFullSize ? limitless.full : limitless.small
         }()
-        let urls = Self.uniqueURLs(providerURLs + [derivedURL])
+        let reviewedURLs: [URL?]
+        if game == .pokemon, providerSetID == "30th-c",
+           let providerID, let product = PokemonTCGCSVMapping.byCardID[providerID],
+           product.setID == providerSetID {
+            // Classic's catalog sequence is NOT its reprinted collector number.
+            // Reuse the reviewed exact product join, never infer an old printing
+            // or a product from the name/number. This grants no scan authority.
+            let thumbnail = URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(product.productID)_400w.jpg")
+            let full = URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(product.productID)_in_1000x1000.jpg")
+            reviewedURLs = prefersFullSize ? [full, thumbnail] : [thumbnail, full]
+        } else {
+            reviewedURLs = []
+        }
+        let urls = Self.uniqueURLs(providerURLs + reviewedURLs + [derivedURL])
         primaryURL = urls.first
         fallbacks = Array(urls.dropFirst())
     }

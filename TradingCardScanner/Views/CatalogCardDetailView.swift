@@ -107,7 +107,9 @@ struct CatalogCardDetailView: View {
                 game: summary.game,
                 setCode: summary.setCode,
                 collectorNumber: summary.collectorNumber,
-                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized
+                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized,
+                providerID: summary.providerID,
+                providerSetID: summary.setID.providerID
             )
                 .frame(maxHeight: 470)
 

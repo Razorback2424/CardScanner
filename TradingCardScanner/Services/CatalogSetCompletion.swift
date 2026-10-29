@@ -21,7 +21,7 @@ actor CatalogSetCompletionBuilder {
         let tier: PokemonMasterSetTier
         let entries: [PokemonChecklistSnapshotEntry]
     }
-    private var lastBuild: (inputs: BuildInputs, index: CatalogSetCompletionIndex)?
+    private var lastBuilds: [CardGame: (inputs: BuildInputs, index: CatalogSetCompletionIndex)] = [:]
 
     init(
         checklistStore: any CatalogSetCompletionChecklistStore = PokemonChecklistStore.shared
@@ -35,10 +35,25 @@ actor CatalogSetCompletionBuilder {
         tier: PokemonMasterSetTier
     ) async -> CatalogSetCompletionIndex {
         let entries = await checklistStore.mergedEntries()
+        var index = CatalogSetCompletionIndex(completions: [:], tier: tier)
+        // A later directory arrival reuses each already prepared game. Missing
+        // games are absent from the index, never represented as an empty game.
+        for game in Set(sets.map(\.game)).sorted(by: { $0.rawValue < $1.rawValue }) {
+            let partial = await buildGame(game, sets: sets.filter { $0.game == game },
+                ownership: ownership, tier: tier, entries: game == .pokemon ? entries : [])
+            index = index.merging(partial)
+        }
+        return index
+    }
+
+    private func buildGame(
+        _ game: CardGame, sets: [CatalogSet], ownership: CatalogOwnershipIndex,
+        tier: PokemonMasterSetTier, entries: [PokemonChecklistSnapshotEntry]
+    ) async -> CatalogSetCompletionIndex {
         // The manifest fingerprints also catch checklist changes while Browse
         // was closed, even when the directory and collection are unchanged.
         let inputs = BuildInputs(sets: sets, ownership: ownership, tier: tier, entries: entries)
-        if let lastBuild, lastBuild.inputs == inputs { return lastBuild.index }
+        if let lastBuild = lastBuilds[game], lastBuild.inputs == inputs { return lastBuild.index }
         let interval = PerformanceSignpost.signposter.beginInterval("CatalogSetCompletion.build")
         defer { PerformanceSignpost.signposter.endInterval("CatalogSetCompletion.build", interval) }
         let entriesBySetID = entries.reduce(into: [String: PokemonChecklistSnapshotEntry]()) {
@@ -148,7 +163,7 @@ actor CatalogSetCompletionBuilder {
 
         let index = CatalogSetCompletionIndex(completions: completions, tier: tier)
         // A transient unavailable checklist must be retried on the next request.
-        lastBuild = allChecklistsLoaded ? (inputs, index) : nil
+        lastBuilds[game] = allChecklistsLoaded ? (inputs, index) : nil
         return index
     }
 
@@ -176,9 +191,15 @@ final class CatalogSetCompletionStore: ObservableObject {
     private var requestedSets: [CatalogSet] = []
     private var requestedOwnership = CatalogOwnershipIndex(rows: [])
     private var requestedTier: PokemonMasterSetTier = .standard
+    private var requestedOwnershipRevision: UInt = 0
+    private var indexOwnershipRevision: UInt?
 
     init(builder: CatalogSetCompletionBuilder = CatalogSetCompletionBuilder()) {
         self.builder = builder
+    }
+
+    func currentIndex(ownershipRevision: UInt) -> CatalogSetCompletionIndex? {
+        indexOwnershipRevision == ownershipRevision ? index : nil
     }
 
     func rebuild(
@@ -186,14 +207,27 @@ final class CatalogSetCompletionStore: ObservableObject {
         ownership: CatalogOwnershipIndex,
         tier: PokemonMasterSetTier
     ) async {
+        await requestRebuild(sets: sets, ownership: ownership, tier: tier).value
+    }
+
+    /// Synchronous invalidation ensures rendering cannot use the previous
+    /// owner's/tier's/definition's index during a pending asynchronous rebuild.
+    @discardableResult
+    func requestRebuild(
+        sets: [CatalogSet], ownership: CatalogOwnershipIndex, tier: PokemonMasterSetTier,
+        invalidateCatalog: Bool = false, ownershipRevision: UInt = 0
+    ) -> Task<Void, Never> {
+        if index != nil, invalidateCatalog || requestedSets != sets
+            || requestedOwnership != ownership || requestedTier != tier
+            || requestedOwnershipRevision != ownershipRevision {
+            index = nil
+        }
         requestedSets = sets
         requestedOwnership = ownership
         requestedTier = tier
+        requestedOwnershipRevision = ownershipRevision
         rebuildRequested = true
-        guard rebuildTask == nil else {
-            await rebuildTask?.value
-            return
-        }
+        if let rebuildTask { return rebuildTask }
 
         let task = Task { @MainActor [weak self] in
             guard let self else { return }
@@ -204,6 +238,7 @@ final class CatalogSetCompletionStore: ObservableObject {
                 let sets = self.requestedSets
                 let ownership = self.requestedOwnership
                 let tier = self.requestedTier
+                let ownershipRevision = self.requestedOwnershipRevision
                 let candidate = await self.builder.build(
                     sets: sets,
                     ownership: ownership,
@@ -211,10 +246,12 @@ final class CatalogSetCompletionStore: ObservableObject {
                 )
                 guard !Task.isCancelled else { return }
                 guard !self.rebuildRequested else { continue }
+                self.indexOwnershipRevision = ownershipRevision
                 if self.index != candidate { self.index = candidate }
+                PerformanceSignpost.emitEvent("Browse.completionReady", "sets=\(sets.count)")
             }
         }
         rebuildTask = task
-        await task.value
+        return task
     }
 }
