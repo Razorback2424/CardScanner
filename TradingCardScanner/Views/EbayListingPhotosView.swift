@@ -42,6 +42,7 @@ private struct ListingPhotoShareFile: Transferable {
 }
 
 struct EbayListingPhotosView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ObservedObject private var collectorTools = CollectorToolsStore.shared
     @State private var isShowingOffer = false
     private enum Mode: String, CaseIterable, Identifiable {
@@ -76,6 +77,14 @@ struct EbayListingPhotosView: View {
         }
     }
 
+    private enum GenerationScope: String, CaseIterable, Identifiable {
+        case both = "Both sides"
+        case front = "Front only"
+        case back = "Back only"
+
+        var id: Self { self }
+    }
+
     fileprivate enum PhotoSource {
         case photo(PhotosPickerItem)
         case file(URL)
@@ -107,6 +116,11 @@ struct EbayListingPhotosView: View {
     @State private var backPickerItem: PhotosPickerItem?
     @State private var frontData: Data?
     @State private var backData: Data?
+    @State private var generationScope: GenerationScope = .both
+    @State private var frontIsLoading = false
+    @State private var backIsLoading = false
+    @State private var photoPickerSide: Side = .front
+    @State private var isShowingPhotoPicker = false
     @State private var cameraSide: Side?
     @State private var isShowingFileImporter = false
     @State private var fileImportSide: Side?
@@ -156,8 +170,14 @@ struct EbayListingPhotosView: View {
                         withAttributes: [.font: UIFont.systemFont(ofSize: 32), .foregroundColor: UIColor.black])
                 }.jpegData(compressionQuality: 0.9)
             }
-            _frontData = State(initialValue: fixture(.systemTeal))
-            _backData = State(initialValue: fixture(.systemPurple))
+            let stateIndex = arguments.firstIndex(of: "-ui_debug_state")
+            let state = stateIndex.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+            if state != "empty" && state != "back" {
+                _frontData = State(initialValue: fixture(.systemTeal))
+            }
+            if state != "empty" && state != "front" {
+                _backData = State(initialValue: fixture(.systemPurple))
+            }
         }
 #endif
     }
@@ -165,8 +185,9 @@ struct EbayListingPhotosView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Single-card photos are free. Collector Tools unlocks unlimited batches and guided centering with annotated output in one purchase.")
+                Text("Single-card photos are free. Batch processing is included with Collector Tools.")
                     .font(.subheadline)
+                    .foregroundStyle(.secondary)
                 Picker("Workflow", selection: $mode) {
                     ForEach(Mode.allCases) { mode in
                         Text(mode.title).tag(mode)
@@ -187,7 +208,7 @@ struct EbayListingPhotosView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isShowingOffer) { CollectorToolsOfferView() }
         .toolbar {
-            if mode == .single, let singleOutput, singleOutput.urls.count == 10 {
+            if mode == .single, let singleOutput, !singleOutput.urls.isEmpty {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         if let singleArchiveURL {
@@ -198,9 +219,9 @@ struct EbayListingPhotosView: View {
                         }
                         ShareLink(items: singleOutput.urls.map { ListingPhotoShareFile(url: $0) },
                                   preview: { _ in SharePreview("Listing photo", icon: Image(systemName: "photo")) }) {
-                            Label("Export 10 Photos Individually", systemImage: "photo.on.rectangle")
+                            Label("Export \(singleOutput.urls.count) Photos Individually", systemImage: "photo.on.rectangle")
                         }
-                        Button("Export 10 Photos to Photos App", systemImage: "square.and.arrow.down") {
+                        Button("Save \(singleOutput.urls.count) Photos to Photos App", systemImage: "square.and.arrow.down") {
                             saveSingleOutputToPhotos()
                         }
                         .disabled(isSavingToPhotos)
@@ -239,11 +260,19 @@ struct EbayListingPhotosView: View {
         }
         .onAppear {
             isWorkflowActive = true
-            if singleOutput == nil, !isPreparingSingle { beginPreparingSingle() }
+#if DEBUG
+            let arguments = ProcessInfo.processInfo.arguments
+            if arguments.contains("ListingPhotos"), arguments.contains("generated"), singleOutput == nil {
+                beginPreparingSingle()
+            }
+#endif
         }
-        .onChange(of: singleGeneration) { _, _ in
-            if isWorkflowActive { beginPreparingSingle() }
-        }
+        .onChange(of: generationScope) { _, _ in invalidateSingleOutput() }
+        .photosPicker(
+            isPresented: $isShowingPhotoPicker,
+            selection: photoPickerSide == .front ? $frontPickerItem : $backPickerItem,
+            matching: .images
+        )
         .task(id: batchPreviewGeneration) {
             await loadBatchPreviews(generation: batchPreviewGeneration)
         }
@@ -284,7 +313,7 @@ struct EbayListingPhotosView: View {
             // Full-screen inspection/capture temporarily hides this screen;
             // their files and selections still belong to the active workflow.
             guard cameraSide == nil, inspectedPhoto == nil,
-                  !isShowingOffer, !isShowingFileImporter else { return }
+                  !isShowingOffer, !isShowingFileImporter, !isShowingPhotoPicker else { return }
             isWorkflowActive = false
             frontLoadGeneration &+= 1
             backLoadGeneration &+= 1
@@ -301,51 +330,54 @@ struct EbayListingPhotosView: View {
 
     @ViewBuilder
     private var singleContent: some View {
-        let isEmpty = frontData == nil && backData == nil && singleOutput == nil
-        if isEmpty && !isPreparingSingle {
-            ContentUnavailableView {
-                Label("Prepare eBay Listing Photos", systemImage: "photo.stack")
-            } description: {
-                Text("Add a front and back photo to create the ten numbered upload images.")
-            } actions: {
-                VStack(spacing: 12) {
-                    singleSlot(side: .front, isReady: false)
-                    singleSlot(side: .back, isReady: false)
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Source photos")
+                .font(.headline)
+            Text("Add either side for 5 photos, or both for 10.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            singleSlot(side: .front, isReady: frontData != nil)
+            singleSlot(side: .back, isReady: backData != nil)
+
+            if frontData != nil && backData != nil {
+                if dynamicTypeSize.isAccessibilitySize {
+                    scopePicker.pickerStyle(.menu)
+                } else {
+                    scopePicker.pickerStyle(.segmented)
                 }
             }
-            .frame(minHeight: 430)
-        } else {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Source photos")
-                    .font(.headline)
 
-                singleSlot(side: .front, isReady: frontData != nil)
-                singleSlot(side: .back, isReady: backData != nil)
+            if isPreparingSingle {
+                ProgressView("Preparing listing photos…")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Button(generationTitle, systemImage: "wand.and.stars", action: beginPreparingSingle)
+                    .buttonStyle(.borderedProminent)
+                    .disabled((frontData == nil && backData == nil) || frontIsLoading || backIsLoading)
+                    .accessibilityIdentifier("listingPhotos.generate")
+            }
 
-                if isPreparingSingle {
-                    ProgressView("Preparing listing photos…")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else if frontData != nil && backData != nil && singleOutput == nil {
-                    Text("Both sides are ready. Preparing the export…")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
+            if frontData != nil && backData != nil && generationScope != .both {
+                Text("Generates only the selected side. Original filenames are kept so you can replace that side’s five photos.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
-                if let singleOutput {
-                    outputGrid(singleOutput)
-                    Button("Start Over", systemImage: "arrow.counterclockwise", action: startOverSingle)
-                        .buttonStyle(.bordered)
-                }
+            if let singleOutput {
+                outputGrid(singleOutput)
+                Button("Start Over", systemImage: "arrow.counterclockwise", action: startOverSingle)
+                    .buttonStyle(.bordered)
+            }
 
-                if isSavingToPhotos {
-                    ProgressView("Saving to Photos…")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                if let saveConfirmation {
-                    Text(saveConfirmation)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
+            if isSavingToPhotos {
+                ProgressView("Saving to Photos…")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            if let saveConfirmation {
+                Text(saveConfirmation)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
 
@@ -358,6 +390,15 @@ struct EbayListingPhotosView: View {
         Text("Saving to Photos discards filenames. Files or AirDrop preserve the numbered upload order.")
             .font(.footnote)
             .foregroundStyle(.secondary)
+    }
+
+    private var scopePicker: some View {
+        Picker("Photos to generate", selection: $generationScope) {
+            ForEach(GenerationScope.allCases) { scope in
+                Text(scope.rawValue).tag(scope)
+            }
+        }
+        .disabled(isPreparingSingle)
     }
 
     @ViewBuilder
@@ -455,30 +496,54 @@ struct EbayListingPhotosView: View {
     }
 
     private func singleSlot(side: Side, isReady: Bool) -> some View {
-        let pickerBinding: Binding<PhotosPickerItem?> = side == .front
-            ? $frontPickerItem
-            : $backPickerItem
+        let isLoading = side == .front ? frontIsLoading : backIsLoading
+        let rowLayout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+            : AnyLayout(HStackLayout())
 
         return VStack(alignment: .leading, spacing: 10) {
-            HStack {
+            rowLayout {
                 Label(side.title, systemImage: side.systemImage)
                     .font(.headline)
-                Spacer()
+                if !dynamicTypeSize.isAccessibilitySize { Spacer() }
                 Label(
-                    isReady ? "Ready" : "Not added",
+                    isLoading ? "Loading…" : (isReady ? "Ready" : "Optional"),
                     systemImage: isReady ? "checkmark.circle.fill" : "circle"
                 )
                 .font(.subheadline)
                 .foregroundStyle(isReady ? .green : .secondary)
             }
 
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) { sourceButtons(side: side, pickerBinding: pickerBinding) }
-                VStack(alignment: .leading, spacing: 10) {
-                    sourceButtons(side: side, pickerBinding: pickerBinding)
+            rowLayout {
+                Menu {
+                    sourceButtons(side: side)
+                } label: {
+                    if dynamicTypeSize.isAccessibilitySize {
+                        Text(isReady ? "Replace…" : "Add…")
+                            .frame(minHeight: 44)
+                    } else {
+                        Label(isReady ? "Replace…" : "Add…", systemImage: isReady ? "arrow.triangle.2.circlepath" : "plus")
+                            .frame(minHeight: 44)
+                    }
+                }
+                .buttonStyle(.bordered)
+                .accessibilityLabel("\(isReady ? "Replace" : "Add") \(side.title.lowercased()) photo")
+                .accessibilityIdentifier("listingPhotos.\(side.rawValue).add")
+
+                if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+                if isReady || isLoading {
+                    Button(role: .destructive) {
+                        clearSinglePhoto(side: side)
+                    } label: {
+                        Image(systemName: "trash")
+                            .frame(minWidth: 44, minHeight: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Remove \(side.title.lowercased()) photo")
+                    .accessibilityHint("Clears this attachment. Your original photo is kept.")
+                    .accessibilityIdentifier("listingPhotos.\(side.rawValue).remove")
                 }
             }
-            .buttonStyle(.bordered)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -486,12 +551,13 @@ struct EbayListingPhotosView: View {
     }
 
     @ViewBuilder
-    private func sourceButtons(side: Side, pickerBinding: Binding<PhotosPickerItem?>) -> some View {
+    private func sourceButtons(side: Side) -> some View {
         Button("Take Photo", systemImage: "camera") {
             cameraSide = side
         }
-        PhotosPicker(selection: pickerBinding, matching: .images) {
-            Label("Choose Photo", systemImage: "photo.on.rectangle")
+        Button("Choose Photo", systemImage: "photo.on.rectangle") {
+            photoPickerSide = side
+            isShowingPhotoPicker = true
         }
         Button("Choose File", systemImage: "folder") {
             fileImportSide = side
@@ -557,14 +623,36 @@ struct EbayListingPhotosView: View {
     }
 
     private func beginLoading(side: Side) {
+        invalidateSingleOutput()
+        switch side {
+        case .front: frontLoadGeneration &+= 1; frontData = nil; frontIsLoading = true
+        case .back: backLoadGeneration &+= 1; backData = nil; backIsLoading = true
+        }
+    }
+
+    private func invalidateSingleOutput() {
         singleGeneration &+= 1
+        singleProcessingTask?.cancel()
+        singleProcessingTask = nil
         removeSingleArtifacts()
         isPreparingSingle = false
         errorMessage = nil
         saveConfirmation = nil
+    }
+
+    private func clearSinglePhoto(side: Side) {
+        invalidateSingleOutput()
         switch side {
-        case .front: frontLoadGeneration &+= 1; frontData = nil
-        case .back: backLoadGeneration &+= 1; backData = nil
+        case .front:
+            frontLoadGeneration &+= 1
+            frontPickerItem = nil
+            frontData = nil
+            frontIsLoading = false
+        case .back:
+            backLoadGeneration &+= 1
+            backPickerItem = nil
+            backData = nil
+            backIsLoading = false
         }
     }
 
@@ -577,6 +665,14 @@ struct EbayListingPhotosView: View {
         side: Side,
         requestID: Int
     ) async {
+        defer {
+            if requestID == loadGeneration(for: side) {
+                switch side {
+                case .front: frontIsLoading = false
+                case .back: backIsLoading = false
+                }
+            }
+        }
         do {
             let data = try await data(from: source, side: side.title.lowercased())
             guard !Task.isCancelled, requestID == loadGeneration(for: side) else { return }
@@ -605,25 +701,35 @@ struct EbayListingPhotosView: View {
     }
 
     private func receiveCameraCapture(_ data: Data, for side: Side) {
-        singleGeneration &+= 1
-        removeSingleArtifacts()
-        isPreparingSingle = false
-        errorMessage = nil
-        saveConfirmation = nil
+        invalidateSingleOutput()
         switch side {
-        case .front: frontLoadGeneration &+= 1; frontData = data
-        case .back: backLoadGeneration &+= 1; backData = data
+        case .front: frontLoadGeneration &+= 1; frontData = data; frontIsLoading = false
+        case .back: backLoadGeneration &+= 1; backData = data; backIsLoading = false
         }
         singleGeneration &+= 1
     }
 
     private func beginPreparingSingle() {
-        singleProcessingTask?.cancel()
+        guard !frontIsLoading, !backIsLoading, frontData != nil || backData != nil else { return }
+        invalidateSingleOutput()
         let generation = singleGeneration
-        let front = frontData, back = backData
+        let hasBoth = frontData != nil && backData != nil
+        let front = hasBoth && generationScope == .back ? nil : frontData
+        let back = hasBoth && generationScope == .front ? nil : backData
+        isPreparingSingle = true
         singleProcessingTask = Task {
             await prepareSingle(generation: generation, frontData: front, backData: back)
         }
+    }
+
+    private var generationTitle: String {
+        let hasBoth = frontData != nil && backData != nil
+        if hasBoth && generationScope == .both { return "Generate 10 photos" }
+        if (hasBoth && generationScope == .back) || frontData == nil && backData != nil {
+            return "Generate 5 back photos"
+        }
+        if frontData != nil { return "Generate 5 front photos" }
+        return "Generate photos"
     }
 
     private func prepareSingle(
@@ -632,7 +738,7 @@ struct EbayListingPhotosView: View {
         backData: Data?
     ) async {
         guard !Task.isCancelled, generation == singleGeneration,
-              singleOutput == nil, let frontData, let backData else { return }
+              singleOutput == nil, frontData != nil || backData != nil else { return }
         isPreparingSingle = true
         do {
             let output = try await EbayListingPhotoExport.makeListingPhotos(
@@ -657,7 +763,7 @@ struct EbayListingPhotosView: View {
         }
     }
 
-    /// Builds the shareable ZIP for a finished single-card export. The ten
+    /// Builds the shareable ZIP for a finished single-card export. The
     /// loose files stay shareable even if this fails, so a zip failure is
     /// reported without discarding the export.
     private func buildSingleArchive(generation: Int, directory: URL?) async {
@@ -697,7 +803,7 @@ struct EbayListingPhotosView: View {
             do {
                 try await ListingPhotoLibrarySaver.save(urls)
                 guard generation == singleGeneration else { return }
-                saveConfirmation = "Saved 10 photos to Photos in listing order."
+                saveConfirmation = "Saved \(urls.count) photos to Photos in listing order."
             } catch {
                 guard generation == singleGeneration else { return }
                 errorMessage = error.localizedDescription
@@ -706,6 +812,7 @@ struct EbayListingPhotosView: View {
     }
 
     private func startOverSingle() {
+        singleProcessingTask?.cancel()
         frontLoadGeneration &+= 1
         backLoadGeneration &+= 1
         singleGeneration &+= 1
@@ -713,6 +820,9 @@ struct EbayListingPhotosView: View {
         backPickerItem = nil
         frontData = nil
         backData = nil
+        frontIsLoading = false
+        backIsLoading = false
+        generationScope = .both
         errorMessage = nil
         saveConfirmation = nil
         isPreparingSingle = false

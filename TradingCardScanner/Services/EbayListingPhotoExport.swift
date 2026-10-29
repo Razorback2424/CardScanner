@@ -5,7 +5,7 @@ import UIKit
 import UniformTypeIdentifiers
 import zlib
 
-/// Builds the ten native-resolution JPEGs used for one eBay card listing.
+/// Builds five native-resolution JPEGs per supplied side of an eBay card listing.
 /// Decoding and pixel work stay inside a detached task so the main actor only
 /// receives URLs, metadata, and already-rendered grid previews.
 enum EbayListingPhotoExport {
@@ -53,7 +53,7 @@ enum EbayListingPhotoExport {
         let pixelDimensions: [PixelDimensions]
         let reducedQualityNames: [String]
 
-        /// Where the ten files live. Every file in `urls` shares this parent.
+        /// Every file in `urls` shares this parent.
         var contentDirectory: URL? { urls.first?.deletingLastPathComponent() }
     }
 
@@ -63,6 +63,7 @@ enum EbayListingPhotoExport {
         case writeFailed(name: String)
         case byteBudgetExceeded(name: String, byteCount: Int)
         case emptyBatch
+        case missingSource
 
         var errorDescription: String? {
             switch self {
@@ -76,16 +77,19 @@ enum EbayListingPhotoExport {
                 return "\(name) is still \(byteCount) bytes after the allowed JPEG quality steps, above eBay's 12 MB limit."
             case .emptyBatch:
                 return "No card in the batch produced listing photos."
+            case .missingSource:
+                return "Add a front or back photo to generate listing photos."
             }
         }
     }
 
-    /// Decodes one front/back pair, produces ten files in listing order, and
-    /// returns small previews plus Sendable metadata to the caller. File-only
+    /// Produces five files per supplied side in listing order, preserving the
+    /// original numbering (01–05 front, 06–10 back) for side-only replacements.
+    /// Returns small previews plus Sendable metadata to the caller. File-only
     /// batch callers can skip rendering previews from the already-decoded images.
     static func makeListingPhotos(
-        frontData: Data,
-        backData: Data,
+        frontData: Data?,
+        backData: Data?,
         maximumByteCount: Int = maximumJPEGByteCount,
         includePreviews: Bool = true
     ) async throws -> Output {
@@ -113,12 +117,13 @@ enum EbayListingPhotoExport {
 #endif
 
     private static func runListingPhotos(
-        frontData: Data,
-        backData: Data,
+        frontData: Data?,
+        backData: Data?,
         maximumByteCount: Int,
         includePreviews: Bool,
         afterFrontWritten: (@Sendable (URL) throws -> Void)?
     ) async throws -> Output {
+        guard frontData != nil || backData != nil else { throw Error.missingSource }
         let directory = try await RunDirectoryStore.shared.beginRun()
         do {
             let worker = Task.detached(priority: .userInitiated) {
@@ -425,30 +430,36 @@ enum EbayListingPhotoExport {
     }
 
     private static func makeListingPhotosSynchronously(
-        frontData: Data,
-        backData: Data,
+        frontData: Data?,
+        backData: Data?,
         directory: URL,
         maximumByteCount: Int,
         includePreviews: Bool,
         afterFrontWritten: (@Sendable (URL) throws -> Void)?
     ) throws -> Output {
         try checkCancellation()
-        let front = try processSide(
-            data: frontData,
-            side: .front,
-            directory: directory,
-            maximumByteCount: maximumByteCount,
-            includePreviews: includePreviews
-        )
-        try afterFrontWritten?(directory)
+        var front = SideOutput()
+        if let frontData {
+            front = try processSide(
+                data: frontData,
+                side: .front,
+                directory: directory,
+                maximumByteCount: maximumByteCount,
+                includePreviews: includePreviews
+            )
+            try afterFrontWritten?(directory)
+        }
         try checkCancellation()
-        let back = try processSide(
-            data: backData,
-            side: .back,
-            directory: directory,
-            maximumByteCount: maximumByteCount,
-            includePreviews: includePreviews
-        )
+        var back = SideOutput()
+        if let backData {
+            back = try processSide(
+                data: backData,
+                side: .back,
+                directory: directory,
+                maximumByteCount: maximumByteCount,
+                includePreviews: includePreviews
+            )
+        }
         return Output(
             urls: front.urls + back.urls,
             previews: front.previews + back.previews,

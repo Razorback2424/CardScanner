@@ -529,6 +529,43 @@ final class EbayListingPhotoExportTests: XCTestCase {
         }
     }
 
+    func testSideOnlyExportsPreserveNumberingPixelsAndArchiveContents() async throws {
+        let sourceData = try jpegData(for: XCTUnwrap(sourceFixture().cgImage))
+        for frontOnly in [true, false] {
+            let output = try await EbayListingPhotoExport.makeListingPhotos(
+                frontData: frontOnly ? sourceData : nil,
+                backData: frontOnly ? nil : sourceData
+            )
+            defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: output.contentDirectory) }
+            let names = frontOnly
+                ? ["01-Front.jpg", "02-Front-TL.jpg", "03-Front-TR.jpg", "04-Front-BR.jpg", "05-Front-BL.jpg"]
+                : ["06-Back.jpg", "07-Back-TL.jpg", "08-Back-TR.jpg", "09-Back-BR.jpg", "10-Back-BL.jpg"]
+            XCTAssertEqual(output.urls.map(\.lastPathComponent), names)
+            XCTAssertEqual(output.previews.count, 5)
+            XCTAssertEqual(output.pixelDimensions.count, 5)
+            XCTAssertEqual(try Data(contentsOf: output.urls[0]), sourceData)
+            XCTAssertEqual(output.pixelDimensions[1].width, frontOnly ? 60 : 63)
+            XCTAssertEqual(output.pixelDimensions[1].height, frontOnly ? 84 : 88)
+            let directory = try XCTUnwrap(output.contentDirectory)
+            let archive = try await EbayListingPhotoExport.makeArchive(at: directory)
+            let zipBytes = try Data(contentsOf: archive)
+            for name in names {
+                XCTAssertNotNil(zipBytes.range(of: Data(name.utf8)))
+            }
+            let excludedName = frontOnly ? "06-Back.jpg" : "01-Front.jpg"
+            XCTAssertNil(zipBytes.range(of: Data(excludedName.utf8)))
+        }
+    }
+
+    func testExportRequiresAtLeastOneSource() async throws {
+        do {
+            _ = try await EbayListingPhotoExport.makeListingPhotos(frontData: nil, backData: nil)
+            XCTFail("An empty selection must not create an export")
+        } catch EbayListingPhotoExport.Error.missingSource {
+            // Expected: no temporary run or empty archive is created.
+        }
+    }
+
     func testFilesOnlyFailureAndCancellationCleanOnlyTheirPartialRun() async throws {
         let data = try jpegData(for: XCTUnwrap(sourceFixture().cgImage))
         let existing = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data)
