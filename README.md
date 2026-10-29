@@ -53,10 +53,14 @@ games. A later pass almost always resolves it, and a wrong entry costs far more
 than a wait.
 
 Magic's OCR vocabulary *is* its set directory, so a compiled-in snapshot
-(`MagicSetSnapshot`) is installed before the first frame. Magic scanning works on
-first launch and offline; `ScryfallService.fetchSupportedSets()` then replaces it
-in the background without pausing recognition, and a failed refresh costs the
-newest sets rather than the feature.
+(`MagicSetSnapshot`) is installed before the first frame, so footer recognition
+works on first launch and offline. Resolving a previously unseen card still
+requires connectivity. A bounded disk cache retains up to 512 resolved modern
+printings; after 24 hours it attempts a refresh and can reuse validated cached
+identity/finish data when offline, preserving the original price date. Tokens,
+art cards and historical families have separate lookup requirements. Unresolved
+scans remain in Needs Attention for retry. `ScryfallService.fetchSupportedSets()`
+refreshes the set vocabulary in the background without pausing recognition.
 
 `MagicTreatmentSnapshot` is a separate, audit-only snapshot of Scryfall's
 `default_cards` bulk feed. It records every set's collector-number suffix counts

@@ -250,11 +250,24 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
                     collectorNumber: collectorNumber, language: language)) != nil {
                 return .init(.magic(cached.card), retrievedAt: cached.retrievedAt, path: .cacheHit)
             }
-            let card = try await scryfall.fetchCard(setCode: setCode,
-                collectorNumber: collectorNumber, language: language)
-            let retrievedAt = Date.now
-            await resolvedCache?.store(card, for: key, retrievedAt: retrievedAt)
-            return .init(.magic(card), retrievedAt: retrievedAt)
+            do {
+                let card = try await scryfall.fetchCard(setCode: setCode,
+                    collectorNumber: collectorNumber, language: language)
+                let retrievedAt = Date.now
+                await resolvedCache?.store(card, for: key, retrievedAt: retrievedAt)
+                return .init(.magic(card), retrievedAt: retrievedAt)
+            } catch ScryfallError.providerUnavailable {
+                // Identity and finish evidence do not expire with a quote. An
+                // outage may reuse a validated printing with its original price
+                // date. Definitive missing-card and identity errors still fail.
+                guard let cached = await resolvedCache?.entry(for: key, allowStale: true),
+                      (try? scryfall.validate(cached.card, setCode: setCode,
+                          collectorNumber: collectorNumber, language: language)) != nil else {
+                    throw ScryfallError.providerUnavailable
+                }
+                try Task.checkCancellation()
+                return .init(.magic(cached.card), retrievedAt: cached.retrievedAt, path: .cacheHit)
+            }
         }
 
         // A token or art card prints its *parent's* code, so the printed
@@ -351,11 +364,12 @@ actor ResolvedMagicCardCache {
         self.now = now
     }
 
-    func entry(for key: String) async -> Entry? {
+    func entry(for key: String, allowStale: Bool = false) async -> Entry? {
         await load()
         guard let entry = entries[key] else { return nil }
         let age = now().timeIntervalSince(entry.retrievedAt)
-        guard age >= 0, age <= Self.maxAge, Self.isComplete(entry.card) else { entries[key] = nil; return nil }
+        guard age >= 0, Self.isComplete(entry.card) else { entries[key] = nil; return nil }
+        guard allowStale || age <= Self.maxAge else { return nil }
         return entry
     }
 

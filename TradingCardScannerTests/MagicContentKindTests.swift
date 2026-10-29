@@ -72,6 +72,42 @@ final class MagicContentKindTests: XCTestCase {
         await cache.waitForPersistence()
     }
 
+    func testExpiredModernMagicCacheWorksOfflineWithoutRefreshingPriceAgeOrHidingRejection() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("MagicOffline-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root); MagicAdapterTestProtocol.recorder = nil }
+        let recorder = MagicAdapterTestRecorder()
+        recorder.setCardChanges(["id": "00000000-0000-4000-8000-000000000025", "finishes": ["nonfoil", "foil"]])
+        MagicAdapterTestProtocol.recorder = recorder
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MagicAdapterTestProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let source = ScryfallService(breaker: TCGdexCircuitBreaker(), session: session)
+        let cache = ResolvedMagicCardCache(root: root)
+        let identity = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "25", language: "en")
+        guard case let .resolved(first) = try await MagicCatalogAdapter(source: source, resolvedCache: cache).lookup(identity)
+        else { return XCTFail("Initial lookup") }
+        await cache.waitForPersistence()
+        let later = first.retrievedAt.addingTimeInterval(90 * 24 * 60 * 60)
+        let reopened = ResolvedMagicCardCache(root: root, now: { later })
+        let adapter = MagicCatalogAdapter(source: source, resolvedCache: reopened)
+        recorder.setFailure(.notConnectedToInternet)
+        guard case let .resolved(offline) = try await adapter.lookup(identity) else { return XCTFail("Cached offline lookup") }
+        XCTAssertEqual(offline.path, .cacheHit)
+        XCTAssertEqual(offline.retrievedAt.timeIntervalSince1970, first.retrievedAt.timeIntervalSince1970, accuracy: 0.001)
+        XCTAssertEqual(offline.card.providerID, first.card.providerID)
+        do {
+            _ = try await adapter.lookup(.magic(setCode: "TRK", collectorNumber: "26", language: "en"))
+            XCTFail("An unseen offline card must not acquire another printing's identity")
+        } catch {}
+        recorder.setFailure(nil)
+        recorder.setCardChanges(["collector_number": "999", "id": "00000000-0000-4000-8000-000000000025"])
+        let reconnected = MagicCatalogAdapter(
+            source: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session), resolvedCache: reopened)
+        do { _ = try await reconnected.lookup(identity); XCTFail("Provider identity rejection must not fall back to old data") }
+        catch ScryfallError.identityMismatch {}
+    }
+
     func testModernMagicRejectsFutureOversizedAndIncompletePrintingMetadata() async throws {
         let recorder = MagicAdapterTestRecorder()
         MagicAdapterTestProtocol.recorder = recorder
@@ -389,13 +425,16 @@ private final class MagicAdapterTestRecorder: @unchecked Sendable {
     private var captured: [String] = []
     private var wrongLayout = false
     private var cardChanges: [String: Any] = [:]
+    private var failure: URLError.Code?
     var paths: [String] { lock.lock(); defer { lock.unlock() }; return captured }
     func setWrongLayout(_ value: Bool) { lock.lock(); defer { lock.unlock() }; wrongLayout = value }
     func setCardChanges(_ value: [String: Any]) { lock.lock(); defer { lock.unlock() }; cardChanges = value }
+    func setFailure(_ value: URLError.Code?) { lock.lock(); defer { lock.unlock() }; failure = value }
     func data(for request: URLRequest) throws -> Data {
         lock.lock(); defer { lock.unlock() }
         let path = request.url!.path
         captured.append(path)
+        if let failure { throw URLError(failure) }
         let parts = path.split(separator: "/")
         guard parts.count == 4, parts[0] == "cards" else { throw ScryfallError.identityMismatch }
         let code = String(parts[1]), number = String(parts[2])
