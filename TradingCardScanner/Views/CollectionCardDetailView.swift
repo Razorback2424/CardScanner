@@ -295,13 +295,7 @@ private struct CollectionCardDetailContent: View {
                         }
                         valuationSection(model: chartModel)
                             .id("card-price-valuation")
-                        if card.cardGame == .yuGiOh {
-                            Text(YuGiOhCatalog.marketHistoryUnavailableNotice)
-                                .font(.footnote).foregroundStyle(.secondary).padding()
-                                .accessibilityIdentifier("yugioh-history-unavailable")
-                        } else {
-                            priceHistorySection(model: chartModel, movement: movement)
-                        }
+                        priceHistorySection(model: chartModel, movement: movement)
                         marketplaceSection
                         ownershipSection
 
@@ -1081,7 +1075,6 @@ private struct CollectionCardDetailContent: View {
 
     @MainActor
     private func loadMarketHistory() async {
-        guard card.cardGame != .yuGiOh else { return }
         let request = marketHistoryRequest
         isLoadingMarketHistory = true
         marketHistoryError = nil
@@ -2667,6 +2660,15 @@ struct CardMarketHistoryPanel: View {
     private func load() async {
         isLoading = true
         error = nil
+#if DEBUG && LOCAL_ONLY_SIGNING
+        if let state = YuGiOhHistoryDebugView.state, request.game == .yuGiOh {
+            points = state == "chart" ? CardMarketHistoryFixture.points : []
+            error = state == "missing-key" ? JustTCGTransport.TransportError.missingCredentials.localizedDescription : nil
+            isLoading = false
+            CardMarketHistoryFixture.markReady()
+            return
+        }
+#endif
         let resolved = await request.resolvingMarketMapping(in: runtimes)
         guard !Task.isCancelled else { return }
         if loadedIdentity != resolved.historyIdentity {
@@ -2692,6 +2694,54 @@ struct CardMarketHistoryPanel: View {
         }
     }
 }
+
+#if DEBUG && LOCAL_ONLY_SIGNING
+/// Read-only, deterministic presentation fixture for the same catalog panel.
+/// Uses a real bundled identity and synthetic history, with no provider calls.
+struct YuGiOhHistoryDebugView: View {
+    @State private var card: IdentifiedCard?
+    @State private var edition: PhysicalVariant = .yugiohFirstEdition
+
+    static var state: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let route = args.firstIndex(of: "-ui_debug_route"), args.indices.contains(route + 1),
+              args[route + 1] == "YuGiOhHistoryReview",
+              let state = args.firstIndex(of: "-ui_debug_state"), args.indices.contains(state + 1) else { return nil }
+        return args[state + 1]
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Synthetic history · Read-only QA").font(.caption).foregroundStyle(.secondary)
+                    if let card {
+                        Text(card.name).font(.title2.bold())
+                        Text(card.identifier).font(.subheadline)
+                        Picker("History edition", selection: $edition) {
+                            ForEach(card.variantEvidence.catalogVariants) { Text($0.label).tag($0) }
+                        }
+                        CardMarketHistoryPanel(request: .init(card: card, variant: edition, printRun: nil))
+                            .id(edition.id)
+                    }
+                }
+                .padding(.vertical, 20)
+            }
+            .navigationTitle("Yu-Gi-Oh! history")
+            .task {
+                guard let catalog = try? YuGiOhCatalog.bundled.get(),
+                      let p = catalog.printingByID.values.first(where: { $0.productID == 21792 }),
+                      let resolved = try? YuGiOhCatalogAdapter(catalog: catalog).resolutionForExistingHolding(p.id) else { return }
+                edition = p.editions.first?.variant ?? .yugiohFirstEdition
+                card = resolved.card
+            }
+        }
+        .foregroundStyle(.primary)
+        .environment(\.colorScheme, .dark)
+        .preferredColorScheme(.dark)
+    }
+}
+#endif
 
 /// Loading, empty and filtered-out history are distinct states. Existing
 /// samples always remain usable while a refresh runs or fails.
@@ -2746,6 +2796,9 @@ struct MarketHistoryChartContent: View {
             case .failed:
                 VStack(spacing: 4) {
                     Text("Couldn’t load price history").font(.subheadline)
+                    if let error {
+                        Text(error).font(.caption).multilineTextAlignment(.center)
+                    }
                     Button("Retry", action: retry).foregroundStyle(.tint).frame(minHeight: 44)
                 }
                 .frame(maxWidth: .infinity)

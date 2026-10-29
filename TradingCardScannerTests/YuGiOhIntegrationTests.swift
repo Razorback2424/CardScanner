@@ -724,6 +724,225 @@ final class YuGiOhPricingTests: XCTestCase {
 }
 
 @MainActor
+final class YuGiOhMarketHistoryTests: XCTestCase {
+    private func withService(protocolClass: AnyClass = YuGiOhPricingProtocol.self,
+                             _ body: (CardMarketHistoryService, URL) async throws -> Void) async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-history-\(UUID())")
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: root.lastPathComponent))
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [protocolClass]
+        let session = URLSession(configuration: config)
+        defer {
+            session.invalidateAndCancel()
+            YuGiOhPricingProtocol.handler = nil
+            YuGiOhDeliveryGateProtocol.handler = nil
+            defaults.removePersistentDomain(forName: root.lastPathComponent)
+            try? FileManager.default.removeItem(at: root)
+        }
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://yugioh-history.invalid")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings, session: session,
+            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "fixture"), root: root)
+        try await body(service, root)
+    }
+
+    func testHistoryResolvesAllEditionsFromCatalogWithoutRequiringASnapshotPrice() async throws {
+        let catalog = try YuGiOhFixture.catalog(editions: YuGiOhEdition.allCases.map(\.rawValue), priced: [])
+        let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
+        let p = try XCTUnwrap(catalog.printingByID.values.first)
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+        for edition in YuGiOhEdition.allCases {
+            var request = CardMarketHistoryRequest(card: card, variant: edition.variant, printRun: nil)
+            request.exactProductID = "untrusted-stored-product"
+            request.marketVariantID = "untrusted-stored-variant"
+            let resolved = await request.resolvingMarketMapping(in: runtimes)
+            XCTAssertTrue(resolved.requiresCatalogMapping)
+            XCTAssertEqual(resolved.lookups, [.tcgplayerID(String(p.productID))])
+            XCTAssertEqual(resolved.providerPrinting, edition.tcgplayerSubtype)
+            XCTAssertNil(resolved.marketVariantID)
+            let owned = CollectedCard(card: card, resolved: .init(variant: edition.variant, resolution: .userConfirmed))
+            owned.tcgplayerProductID = "stale-product"
+            owned.justTCGVariantID = "stale-variant"
+            let collectionRequest = await CardMarketHistoryRequest(card: owned).resolvingMarketMapping(in: runtimes)
+            XCTAssertEqual(collectionRequest.historyIdentity, resolved.historyIdentity,
+                "Catalog and collection detail must share the same exact-edition cache")
+            XCTAssertEqual(collectionRequest.lookups, resolved.lookups)
+            XCTAssertNil(collectionRequest.marketVariantID)
+            let unavailable = await request.resolvingMarketMapping(in: nil)
+            XCTAssertNil(unavailable.exactProductID)
+            XCTAssertTrue(unavailable.lookups.isEmpty)
+        }
+        for variant: PhysicalVariant? in [nil, .normal] {
+            let unresolved = await CardMarketHistoryRequest(card: card, variant: variant, printRun: nil)
+                .resolvingMarketMapping(in: runtimes)
+            XCTAssertNil(unresolved.exactProductID)
+        }
+    }
+
+    func testEditionHistoriesStaySeparateAndReusePersistedCache() async throws {
+        try await withService { service, root in
+            let catalog = try YuGiOhFixture.catalog(editions: YuGiOhEdition.allCases.map(\.rawValue))
+            let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
+            let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+            var calls = 0
+            YuGiOhPricingProtocol.handler = { request in
+                calls += 1
+                let url = try XCTUnwrap(request.url)
+                XCTAssertEqual(url.path, "/v1/cards")
+                let query = Dictionary(uniqueKeysWithValues: URLComponents(url: url, resolvingAgainstBaseURL: false)!
+                    .queryItems!.map { ($0.name, $0.value ?? "") })
+                XCTAssertEqual(query["tcgplayerId"], String(p.productID))
+                XCTAssertEqual(query["include_price_history"], "true")
+                XCTAssertEqual(query["priceHistoryDuration"], "1y")
+                XCTAssertNil(query["variantId"])
+                return Data("""
+                {"data":[{"tcgplayerId":"\(p.productID)","variants":[
+                  {"printing":"Unlimited","condition":"Near Mint","priceHistory":[{"p":2,"t":1700000000}]},
+                  {"printing":"1st Edition","condition":"Damaged","priceHistory":[{"p":999,"t":1700000000}]},
+                  {"printing":"1st Edition","condition":"Near Mint","language":"Japanese","priceHistory":[{"p":888,"t":1700000000}]},
+                  {"printing":"1st Edition","condition":"Near Mint","language":"English","priceHistory":[{"p":1,"t":1700000000}]},
+                  {"printing":"Limited","condition":"Near Mint","priceHistory":[{"p":3,"t":1700000000}]}
+                ]}]}
+                """.utf8)
+            }
+            for (edition, expected) in [(YuGiOhEdition.first, 1.0), (.unlimited, 2.0), (.limited, 3.0)] {
+                let request = CardMarketHistoryRequest(card: card, variant: edition.variant, printRun: nil)
+                let points = try await service.history(for: request, runtimes: runtimes)
+                XCTAssertEqual(points.map(\.p), [expected])
+                let repeated = try await service.history(for: request, runtimes: runtimes)
+                XCTAssertEqual(repeated, points)
+                let reopened = CardMarketHistoryService(root: root)
+                let saved = await reopened.cached(request, runtimes: runtimes)
+                XCTAssertEqual(saved, points)
+                let offline = try await reopened.history(for: request, runtimes: runtimes)
+                XCTAssertEqual(offline, points)
+            }
+            XCTAssertEqual(calls, 3)
+        }
+    }
+
+    func testWrongAmbiguousAndForeignListingsNeverBecomeHistory() async throws {
+        try await withService { service, _ in
+            let catalog = try YuGiOhFixture.catalog()
+            let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
+            let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+            let request = CardMarketHistoryRequest(card: card, variant: .yugiohFirstEdition, printRun: nil)
+            let exact = #"{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":42,"t":1700000000}]}"#
+            let attacks = [
+                exact.replacingOccurrences(of: "1st Edition", with: "Unlimited"),
+                exact.replacingOccurrences(of: "Near Mint", with: "Lightly Played"),
+                exact.replacingOccurrences(of: "\"condition\"", with: "\"missingCondition\""),
+                exact.replacingOccurrences(of: "\"printing\"", with: "\"language\":\"Japanese\",\"printing\""),
+                exact.replacingOccurrences(of: "\"printing\"", with: "\"currency\":\"EUR\",\"printing\""),
+                exact.replacingOccurrences(of: "\"printing\"", with: "\"type\":\"graded\",\"printing\""),
+                exact + "," + exact
+            ]
+            for (index, variants) in attacks.enumerated() {
+                YuGiOhPricingProtocol.handler = { _ in
+                    Data("{\"data\":[{\"tcgplayerId\":\"\(p.productID)\",\"variants\":[\(variants)]}]}".utf8)
+                }
+                do {
+                    _ = try await service.history(for: request, now: Date.now.addingTimeInterval(Double(index) * 90000), runtimes: runtimes)
+                    XCTFail("Invalid provider listing must not be used: \(index)")
+                } catch CardMarketHistoryService.HistoryError.noListing {}
+                let cached = await service.cached(request, runtimes: runtimes)
+                XCTAssertTrue(cached.isEmpty)
+            }
+            YuGiOhPricingProtocol.handler = { _ in
+                Data("{\"data\":[{\"tcgplayerId\":\"wrong-product\",\"variants\":[\(exact)]}]}".utf8)
+            }
+            do {
+                _ = try await service.history(for: request, now: Date.now.addingTimeInterval(900000), runtimes: runtimes)
+                XCTFail("A different product must not satisfy the catalog mapping")
+            } catch CardMarketHistoryService.HistoryError.noListing {}
+        }
+    }
+
+    func testCatalogWithdrawalHidesCachedHistoryAndCannotUseStoredVendorHandles() async throws {
+        try await withService { service, _ in
+            let catalog = try YuGiOhFixture.catalog()
+            let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+            let source = YuGiOhNoticeSource()
+            await source.install(catalog)
+            let base = catalog.runtime
+            let runtimes = try CardGameRuntimeContainer(runtimes: [.init(descriptor: base.descriptor,
+                variantPolicy: base.variantPolicy, catalog: base.catalog, activationSource: source)])
+            var request = CardMarketHistoryRequest(card: card, variant: .yugiohFirstEdition, printRun: nil)
+            request.marketVariantID = "stale-variant"
+            var calls = 0
+            YuGiOhPricingProtocol.handler = { _ in
+                calls += 1
+                return Data("""
+                {"data":[{"tcgplayerId":"\(p.productID)","variants":[{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}]}]}
+                """.utf8)
+            }
+            let points = try await service.history(for: request, runtimes: runtimes)
+            XCTAssertEqual(points.map(\.p), [12])
+            // The same physical printing is retained, but its first-edition
+            // membership is withdrawn by the newly active catalog.
+            await source.install(try YuGiOhFixture.catalog(editions: [YuGiOhEdition.unlimited.rawValue]))
+            let hidden = await service.cached(request, runtimes: runtimes)
+            XCTAssertTrue(hidden.isEmpty)
+            do {
+                _ = try await service.history(for: request, runtimes: runtimes)
+                XCTFail("Withdrawn edition must fail before requesting a provider")
+            } catch CardMarketHistoryService.HistoryError.noListing {}
+            XCTAssertEqual(calls, 1)
+        }
+    }
+
+    func testMissingCredentialsReportsSettingsRecoveryWithoutMakingARequest() async throws {
+        try await withService { _, root in
+            let catalog = try YuGiOhFixture.catalog()
+            let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
+            let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+            let service = CardMarketHistoryService(transport: .init(apiKeyOverride: ""), root: root)
+            do {
+                _ = try await service.history(for: .init(card: card, variant: .yugiohFirstEdition, printRun: nil), runtimes: runtimes)
+                XCTFail("Missing credentials must not become a missing-listing answer")
+            } catch JustTCGTransport.TransportError.missingCredentials {
+                XCTAssertTrue(JustTCGTransport.TransportError.missingCredentials.localizedDescription.contains("Settings"))
+            }
+        }
+    }
+
+    func testCatalogChangeDuringHistoryRequestCannotPublishOrCacheItsResponse() async throws {
+        try await withService(protocolClass: YuGiOhDeliveryGateProtocol.self) { service, _ in
+            let catalog = try YuGiOhFixture.catalog()
+            let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
+            let source = YuGiOhNoticeSource()
+            await source.install(catalog)
+            let base = catalog.runtime
+            let runtimes = try CardGameRuntimeContainer(runtimes: [.init(descriptor: base.descriptor,
+                variantPolicy: base.variantPolicy, catalog: base.catalog, activationSource: source)])
+            let request = CardMarketHistoryRequest(card: card, variant: .yugiohFirstEdition, printRun: nil)
+            let gate = YuGiOhDeliveryGate()
+            let started = expectation(description: "History response suspended")
+            YuGiOhDeliveryGateProtocol.handler = { request in
+                Task { await gate.enter(request); started.fulfill() }
+            }
+            let pending = Task { try await service.history(for: request, runtimes: runtimes) }
+            await fulfillment(of: [started], timeout: 5)
+            await source.install(try YuGiOhFixture.catalog(editions: [YuGiOhEdition.unlimited.rawValue]))
+            await gate.respond(Data("""
+            {"data":[{"tcgplayerId":"\(p.productID)","variants":[{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}]}]}
+            """.utf8))
+            do { _ = try await pending.value; XCTFail("Obsolete response published") }
+            catch is CancellationError {}
+            await source.install(catalog)
+            let cached = await service.cached(request, runtimes: runtimes)
+            XCTAssertTrue(cached.isEmpty, "An obsolete response must not have been cached")
+        }
+    }
+}
+
+@MainActor
 final class YuGiOhImportTests: XCTestCase {
     func testExactImportContracts() throws {
         let catalog = try YuGiOhFixture.catalog(), adapter = YuGiOhImportAdapter(catalog: catalog)

@@ -245,7 +245,7 @@ actor JustTCGTransport {
 
         var errorDescription: String? {
             switch self {
-            case .missingCredentials: return "No pricing API key is saved."
+            case .missingCredentials: return "No pricing API key is saved. Add your JustTCG key in Settings."
             case .invalidURL: return "The pricing request could not be built."
             case let .badResponse(status): return "The pricing service returned \(status)."
             case .budgetReached: return "Today's pricing request budget is used up."
@@ -408,7 +408,8 @@ actor JustTCGTransport {
         method: String,
         body: Data?
     ) throws -> URLRequest {
-        guard let key = apiKeyOverride ?? PriceVendorCredentials.key else {
+        guard let key = (apiKeyOverride ?? PriceVendorCredentials.key)?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !key.isEmpty else {
             throw TransportError.missingCredentials
         }
         guard var components = URLComponents(

@@ -21,7 +21,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     var authorityRevision: String? = nil
 
     var requiresCatalogMapping: Bool {
-        itemKind == .rawCard && (game == .onePiece || game == .lorcana)
+        itemKind == .rawCard && (game == .onePiece || game == .lorcana || game == .yuGiOh)
     }
 
     var historyIdentity: [String] {
@@ -107,6 +107,17 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
                 result.exactProductID = String(mappings[0].productID)
                 result.providerPrinting = mappings[0].providerVariantID
             }
+        } else if let catalog = catalog as? YuGiOhCatalogAdapter,
+                  printRun == nil, treatments.isEmpty,
+                  let edition = variantID.flatMap(YuGiOhEdition.init(rawValue:)),
+                  let printing = catalog.catalog.printingByID[id],
+                  printing.editions.contains(edition),
+                  (try? catalog.resolutionForExistingHolding(id)) != nil {
+            // Edition membership authorizes the lookup even when the bundled
+            // snapshot has no quote. The exact product already fixes rarity,
+            // artwork and release; the provider printing fixes its edition.
+            result.exactProductID = String(printing.productID)
+            result.providerPrinting = edition.tcgplayerSubtype
         }
         if let productID = result.exactProductID { result.lookups = [.tcgplayerID(productID)] }
         return result
@@ -377,6 +388,22 @@ actor CardMarketHistoryService {
             ("priceHistoryDuration", "1y")
         ], lane: .interactive)
         if case let .tcgplayerID(productID) = lookup, let printing = request.providerPrinting {
+            if request.game == .yuGiOh {
+                // A shared product can return every edition, condition and
+                // language. Never borrow another listing or pick an arbitrary
+                // first match when the response is ambiguous.
+                let cards = response.data.filter { $0.tcgplayerId == productID }
+                guard cards.count == 1 else { throw HistoryError.noListing }
+                let variants = (cards[0].variants ?? []).filter {
+                    $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+                        && $0.printing?.caseInsensitiveCompare(printing) == .orderedSame
+                        && ($0.language == nil || ["english", "en"].contains($0.language?.lowercased() ?? ""))
+                        && ($0.currency == nil || $0.currency?.uppercased() == "USD")
+                        && ($0.type == nil || $0.type?.lowercased() == "raw")
+                }
+                guard variants.count == 1 else { throw HistoryError.noListing }
+                return (Self.points(from: variants[0]), productID)
+            }
             guard let card = response.data.first(where: { $0.tcgplayerId == productID }),
                   let variant = card.variants?.first(where: {
                $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame

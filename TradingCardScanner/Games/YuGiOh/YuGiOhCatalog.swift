@@ -61,14 +61,13 @@ struct YuGiOhCatalog: Sendable {
     var publicationRevision: Int? = nil
     var historicalPricingNotice: String {
         let source = publicationRevision == nil ? "a bundled snapshot" : "a verified periodic snapshot"
-        return "Yu-Gi-Oh! uses \(source) captured \(capturedAt.formatted(date: .abbreviated, time: .omitted)). Prices keep their source dates. Live per-card refresh is unavailable."
+        return "Yu-Gi-Oh! current quotes use \(source) captured \(capturedAt.formatted(date: .abbreviated, time: .omitted)). Prices keep their source dates. Live per-card quote refresh is unavailable."
     }
     static var bundledPricingNotice: String {
         (try? bundled.get().historicalPricingNotice) ?? "Yu-Gi-Oh! live pricing is unavailable."
     }
     static let unavailablePricingNotice = "Yu-Gi-Oh! pricing source is unavailable. Live per-card refresh is unavailable."
 
-    static let marketHistoryUnavailableNotice = "Market price history is unavailable for Yu-Gi-Oh! Quotes are dated snapshots."
     private struct Seed: Decodable {
         let schemaVersion: Int; let generation: String; let capturedAt: String
         let sets: [SetRow]; let cards: [CardRow]; let printings: [PrintingRow]

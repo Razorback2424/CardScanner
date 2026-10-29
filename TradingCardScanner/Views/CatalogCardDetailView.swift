@@ -152,13 +152,7 @@ struct CatalogCardDetailView: View {
             if catalog.gameRegistry.supports(summary.game, .pricing),
                details.collectionWriteUnavailableReason == nil {
                 priceSection(details.card)
-                if summary.game == .yuGiOh {
-                    Text(YuGiOhCatalog.marketHistoryUnavailableNotice)
-                        .font(.footnote).foregroundStyle(.secondary)
-                        .accessibilityIdentifier("yugioh-history-unavailable")
-                } else {
-                    browsePriceHistorySection()
-                }
+                browsePriceHistorySection()
             } else {
                 Text(details.collectionWriteUnavailableReason == nil
                      ? "Pricing unavailable" : "Pricing unavailable for this printing")
@@ -400,7 +394,7 @@ struct CatalogCardDetailView: View {
             let variant = summary.masterSetVariant
                 ?? variants.first(where: { $0.id == historyVariantID }) ?? variants.first
             if summary.masterSetVariant == nil, variants.count > 1 {
-                Picker("History finish", selection: Binding(
+                Picker(summary.game == .yuGiOh ? "History edition" : "History finish", selection: Binding(
                     get: { variant?.id ?? "" }, set: { historyVariantID = $0 }
                 )) {
                     ForEach(variants) { Text($0.label).tag($0.id) }

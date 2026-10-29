@@ -171,6 +171,9 @@ struct ContentView: View {
 #if DEBUG
         .overlay {
 #if LOCAL_ONLY_SIGNING
+            if debugRoute == "YuGiOhHistoryReview" {
+                YuGiOhHistoryDebugView()
+            }
             if debugRoute == "SealedAcceptance" {
                 SealedBrowseAcceptanceView(runtimes: runtimes)
                     .environmentObject(projectionStore)
