@@ -1,3 +1,25 @@
+# 2026-10-29 — Launch-speed branch native verification
+
+Fetched and checked out `claude/launch-speed` at `c557499`, preserving the
+existing listing-photo work. Corrected only the One Piece concurrency fixture's
+server capture timestamps so an older delayed feed cannot masquerade as a newer
+capture. The dedicated iPhone 17 / iOS 27.0 simulator selection passed all 186
+launch/catalog/ownership/migration tests with zero failures/skips/runtime warnings.
+Earlier shared-simulator attempts were superseded because concurrent photo UI
+launches terminated the test host.
+
+The full test target completed with 2,693 passed, six failed and 16 skipped.
+Two StoreKit product-loading failures passed in isolation; interrupted-purchase
+acceptance skipped because local StoreKit granted an entitlement early, leaving
+sandbox follow-up open. Collection-key, graded-grouping and SwiftData
+notification-key assertions still failed. Eight
+full-run warnings concern SwiftUI State/Environment access in unhosted test views.
+The full target remains failed. Release device code compiled with signing
+disabled; normal signing failed on missing iCloud provisioning entitlements.
+Device installation, collection changes and first/repeat launch measurements
+were not performed. See [RF-1](docs/plans/release_followups.md) for the precise
+failures, external evidence location and remaining device workload/signing gates.
+
 # 2026-10-29 — Daily price delivery implementation (in progress)
 
 Removed app requests to upstream TCGCSV across the shared product source and
@@ -4820,3 +4842,22 @@ historical.
   records HIG results and remaining manual checks. Evidence is under
   `/Volumes/T7/CodexBuild/ListingPhotosRedesign-20261029/`; Simulator settings
   were restored. No physical-device or release-readiness claim.
+
+### 2026-10-29 — Photo Styles responsiveness and list usability
+
+- Put side selection first, with 5/10-photo counts and full-row targets. Added
+  actual style thumbnails, removed the duplicate picker heading, and defaulted
+  the sheet to its expanded size. Large text stacks counts and uses compact
+  decorative symbols; long corner labels remain readable while scrolling.
+- Kept selection state inside the sheet and applied only a changed final choice
+  on dismissal. Verified that Front → Both → Done preserves an existing ten-photo
+  export and that Back → Done updates generation to five back photos.
+- Replaced full-image preview-task identifiers with lightweight load-state
+  identifiers. Added localized 150 ms fades for selection feedback and review
+  image changes, with Reduce Motion support. No device frame-rate claim.
+- Final Debug Simulator build and `git diff --check` pass. Light/dark, maximum
+  text and native list scrolling were visually inspected; no export algorithm
+  changes or new implementation-mirroring tests. See the
+  [current checklist](references/listing_photos_success_checklist.md).
+- Used Keller Family Photos for remaining captures after T7 reached about
+  3.6 GiB free: `/Volumes/Keller Family Photos/CodexBuild/ListingPhotoStyles-20261029/`.

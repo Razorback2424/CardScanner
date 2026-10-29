@@ -33,7 +33,8 @@ and measured completion remain required.
 
 ### RF-1 — Collection cold-launch first paint
 
-**Status:** measurement pending; no persistence change justified yet.
+**Status:** targeted simulator checks passed; full-target failures and device
+measurements remain open — 2026-10-29. No persistence change justified yet.
 
 Measure a Release build on a real device with a seeded collection of roughly
 1,500 cards. Record the time from launch to the first real collection grid row,
@@ -45,15 +46,66 @@ using the existing collection projection signposts.
 - If it is materially slower, evaluate persisting the last
   `CollectionProjectionSnapshot` and replacing it when the actor read completes.
 
-Launch-path changes on branch `claude/launch-speed` (implemented, not yet
-built or measured): the Yu-Gi-Oh! bundled catalog is registered from a per-build
-cache and decoded on first use; static catalog price withdrawal runs after the
+Launch-path changes on branch `claude/launch-speed` at `c557499` (implemented;
+native verification below, device timings pending): the Yu-Gi-Oh! bundled
+catalog is registered from a per-build cache and decoded on first use; static
+catalog price withdrawal runs after the
 portfolio starts; browse catalog preparation waits for the opening handoff; and
 the opening reveals after at most `AppOpeningModel.portfolioRevealBudget`
 (350 ms) once content mounts, without a copy count if the portfolio is still
 calculating. Record both the first launch after install (cache miss) and a
 repeat launch, with the `Launch.*` signposts listed for H01 in the
 [hang inspection plan](hang-inspection-plan.md).
+
+**Native verification — 2026-10-29:** Xcode 27.1, dedicated iPhone 17 simulator
+on iOS 27.0. The checkout included the existing listing-photo UI edits and a
+test-only One Piece fixture correction: delayed responses now retain their
+server capture dates on either side of the withdrawal watermark. Production
+launch/transport code was not changed by this verification pass. Earlier shared
+simulator attempts were superseded after concurrent photo UI launches terminated
+the test host.
+
+| Targeted suite | Passed |
+| --- | ---: |
+| `YuGiOhCatalogTests` | 15 |
+| `LaunchModelActorTests` | 6 |
+| `AppOpeningTests` | 12 |
+| `LorcanaOwnershipTests` | 29 |
+| `OnePieceIntegrationTests` | 98 |
+| `MagicTreatmentMigrationTests` | 26 |
+| **Total** | **186; zero failures/skips/runtime warnings** |
+
+The subsequent full `TradingCardScannerTests` target finished with **2,693
+passed, six failed, 16 skipped**. Eight runtime warnings concern reading SwiftUI
+State/Environment outside an installed view in `UncoveredSurfaceTests.swift`.
+The six-case isolated rerun had **two passed, three failed, one skipped**.
+The StoreKit purchase/restore and pending-approval tests passed after failing to
+load a product in the full run. Interrupted-purchase acceptance skipped because
+local StoreKit supplied a verified entitlement before issue resolution; that
+case still requires sandbox follow-up. These three assertions still fail in
+isolation:
+
+- `CollectionKeyTests.testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind`:
+  expected a nil catalog provider ID; actual value is `direct-product`.
+- `JustTCGV2GradedSurfaceTests.testGradedIdentityGroupingAndOwnedFiltersUseExactFields`:
+  the actual grouping key has an additional trailing `none` field.
+- `SwiftDataConcurrencyCharacterizationTests.testDidSaveKeysAndPersistentIdentifierEntityName`:
+  the actual notification keys also include `historyTokens` on this runtime.
+
+The full target remains failed; the isolated StoreKit passes/skip do not
+supersede that result. These assertions were left unchanged.
+
+The device-target **Release build compiled successfully with
+`CODE_SIGNING_ALLOWED=NO`**. Normal signed Release failed because the installed
+provisioning profile lacks the app's iCloud capability/container entitlements.
+No device app was installed or removed, no collection data was changed, and
+neither first-install nor repeat-launch timing was captured. The approximately
+1,500-card device workload/restoration setup still needs confirmation.
+
+Local evidence is retained outside Git on the external SSD at
+`/Volumes/Keller Family Photos/CodexBuilds/TradingCardScanner-launch-speed-20261029/`:
+`targeted-dedicated.xcresult`, `full.xcresult`, `full-failure-rerun.xcresult`,
+`release-build.xcresult` (signing failure), and `release-unsigned.xcresult`.
 
 ### RF-2 — Scanner tracking at 8 Hz
 

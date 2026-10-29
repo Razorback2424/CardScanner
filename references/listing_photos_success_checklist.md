@@ -4,7 +4,7 @@ Status: implementation and scoped Simulator verification complete — 2026-10-29
 
 Target: Listing Photos, single-card empty, ready and review/export states.
 Route: `ListingPhotos`; synthetic states `empty`, `front`, `back`,
-`collection` (metadata fixture), and `generated`.
+`collection` (metadata fixture), `generated`, and `styles` (Photo Styles sheet).
 Device: iPhone 17 / iOS 27 Simulator.
 Build and capture evidence: `/Volumes/T7/CodexBuild/ListingPhotosRedesign-20261029/`.
 
@@ -28,7 +28,7 @@ is named “Photos” rather than promising an album.
   capsules; decorative source symbols stay within their fixed badges.
 - [x] Source menus, removal, styles/scope and Collection empty state verified.
   Removing the back after choosing Back only restores front-only generation and
-  front preview numbering. Expanding the Styles sheet exposes all scope choices.
+  front preview numbering. Styles opens expanded with all side choices first.
 - [x] Files/share cancellation and reordering verified in the rendered app.
   Make Cover Photo moves the back to upload position 1 and updates the preview,
   both side grids and filenames. Full-size inspection still opens after Files
@@ -70,7 +70,8 @@ source/result content competing on one screen, and dark teal text contrast.
 - Typography — **PASS**: semantic fonts, stacked source tiles and export buttons
   at accessibility sizes; inspected at maximum Dynamic Type.
 - Accessibility — **PASS** in source: labeled photo buttons and selection,
-  alternative move actions, system materials and no added animation. Dark text
+  alternative move actions and system materials. Local 150 ms fades for sheet
+  feedback and the review image disable themselves with Reduce Motion. Dark text
   uses a lighter teal; solid primary buttons keep white text on the darker teal.
 - Interaction cost — **PASS**: generation and each export action take one tap;
   source removal remains in the source menu and long-press menu.
@@ -87,3 +88,38 @@ the drag gesture itself, photo-library saves and physical-device exports remain
 manual checks; reordering was exercised through the equivalent context-menu
 action. Earlier controls-only evidence is recorded in the 2026-10-29
 entry in [progress](../progress.md).
+
+## Photo Styles performance and usability follow-up — 2026-10-29
+
+- Moved side selection above the read-only styles, removed the repeated picker
+  heading, added per-choice counts and actual downsampled preview thumbnails.
+  Rows retain stable identities and full-width targets. At accessibility sizes,
+  counts stack under labels and the style illustrations use small fixed symbols.
+- Isolated the draft scope in `ListingPhotoStylesSheet`. Changing Front / Back
+  updates the sheet without canceling exports or rebuilding the source workflow;
+  dismissal applies only a changed final selection. Runtime check: an existing
+  “Review 10 Photos” result survived Front → Both → Done. Back → Done updated the
+  parent to “Generate 5 back photos”.
+- Preview task identity now compares a load revision and loading flag rather
+  than the full image `Data`. Existing request cancellation/stale-result guards
+  and background downsampling remain intact. Image decoding is not performed by
+  the new sheet or its selection animations.
+- Checkmarks, included-preview opacity and the large review image use narrowly
+  scoped 150 ms fades; list geometry and the entire screen are not animated.
+  Reduced Motion is respected in source. No FPS, hitch-count or CPU improvement
+  is claimed without an on-device trace.
+- Final Debug Simulator build passes. Verified normal light/dark rendering,
+  maximum text and scrolled corner labels, selection/dismissal and export
+  preservation. UI automation screen-edge gestures left the route; native
+  in-content dragging confirmed the list scrolls through the final row. The
+  iPhone Simulator settings were restored to light / large.
+- Follow-up captures use
+  `/Volumes/Keller Family Photos/CodexBuild/ListingPhotoStyles-20261029/` after
+  T7 reached approximately 3.6 GiB free. Build products reuse the existing T7
+  cache. The 31-test export/crop result above is prior evidence; these UI-only
+  follow-up edits were verified with a build and rendered interactions.
+
+HIG follow-up verdict: **PASS** for this scope. Platform patterns, clarity,
+typography, accessibility, interaction cost and design consistency pass the
+source/rendered checks. Minimal fixes are limited to `EbayListingPhotosView`;
+device animation profiling and VoiceOver remain manual verification.
