@@ -140,6 +140,7 @@ private struct PortfolioDetailsDestination: Identifiable, Hashable {
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
+    @ScaledMetric(relativeTo: .subheadline) private var periodMinimumWidth: CGFloat = 44
     @ObservedObject var portfolio: PortfolioEngine
     /// Deliberately unobserved. A running refresh publishes progress on a
     /// one-second cadence, and observing it here re-evaluated the hero, the chart, the
@@ -413,43 +414,41 @@ struct PortfolioView: View {
     private var periodControl: some View {
         let activeChange = activeHistoryResult?.accounting?.market ?? .zero
         let ranges = PortfolioHistoryRange.allCases
-        // Chips hug their own text and the gaps between them absorb the slack —
-        // the first sits flush against the leading gutter and the last against
-        // the trailing one. Equal-width slots would centre "ALL" inside a wider
-        // cell and leave a gap after it.
-        return HStack(spacing: 0) {
-            ForEach(Array(ranges.enumerated()), id: \.element) { index, range in
-                let isSelected = range == history.displayedRange
-                Button {
-                    historyRange = range
-                } label: {
-                    Text(range.rawValue)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(
-                            isSelected
-                                ? PortfolioPalette.direction(activeChange)
-                                : .secondary
-                        )
-                        .padding(.horizontal, 13)
-                        .padding(.vertical, 6)
-                        .background(
-                            isSelected
-                                ? PortfolioPalette.directionFill(activeChange)
-                                : .clear,
-                            in: Capsule()
-                        )
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: 0) {
+                ForEach(Array(ranges.enumerated()), id: \.element) { index, range in
+                    periodButton(range, activeChange: activeChange)
+                    if index < ranges.count - 1 { Spacer(minLength: 0) }
                 }
-                .accessibilityLabel(range.accessibilityName)
-                .accessibilityAddTraits(isSelected ? .isSelected : [])
-
-                if index < ranges.count - 1 {
-                    Spacer(minLength: 0)
+            }
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: periodMinimumWidth))], spacing: 4) {
+                ForEach(ranges, id: \.self) { range in
+                    periodButton(range, activeChange: activeChange)
                 }
             }
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .contain)
         .accessibilityHint("Choose the period used for the portfolio summary, chart, and movers.")
+    }
+
+    private func periodButton(_ range: PortfolioHistoryRange, activeChange: Money) -> some View {
+        let isSelected = range == history.displayedRange
+        return Button {
+            historyRange = range
+        } label: {
+            Text(range.rawValue)
+                .font(.subheadline.weight(.semibold))
+                .fixedSize()
+                .foregroundStyle(isSelected ? PortfolioPalette.direction(activeChange) : .secondary)
+                .padding(.horizontal, 13)
+                .padding(.vertical, 6)
+                .background(isSelected ? PortfolioPalette.directionFill(activeChange) : .clear, in: Capsule())
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel(range.accessibilityName)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     /// The valuation, and nothing that depends on a period.
