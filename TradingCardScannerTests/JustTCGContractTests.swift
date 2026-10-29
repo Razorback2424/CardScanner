@@ -159,6 +159,63 @@ final class JustTCGContractTests: XCTestCase {
     }
 
     @MainActor
+    func testHistoryCancelsOnlyWhenItsLastConsumerLeaves() async throws {
+        for keepSecondConsumer in [false, true] {
+            let suite = "HistoryConsumers-\(UUID().uuidString)"
+            let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+            defer { defaults.removePersistentDomain(forName: suite) }
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let config = URLSessionConfiguration.ephemeral
+            config.protocolClasses = [RecordingURLProtocol.self]
+            let pacer = JustTCGPacer()
+            try await pacer.wait(lane: .interactive, minimumInterval: 0)
+            var settings = JustTCGTransport.Configuration()
+            settings.baseURL = URL(string: "https://justtcg.test")!
+            settings.minimumRequestInterval = 0.5
+            let transport = JustTCGTransport(configuration: settings,
+                session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+                pacer: pacer, apiKeyOverride: "fixture-key")
+            let service = CardMarketHistoryService(transport: transport, root: root)
+            let card = CollectedCard(collectionKey: "history-test", game: .magic, providerID: "test-printing",
+                name: "Test", setName: "Test", setCode: "tst", cardNumber: "1",
+                rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil,
+                variantResolution: .userConfirmed)
+            card.justTCGVariantID = "normal-nm"
+            let request = CardMarketHistoryRequest(card: card)
+            RecordingURLProtocol.reset(body: #"{"data":[{"variants":[{"uuid":"normal-nm","printing":"Normal","priceHistory":[{"p":20,"t":1700000000}]}]}]}"#)
+            let first = Task { try await service.history(for: request) }
+            let second = Task { try await service.history(for: request) }
+            try await Task.sleep(for: .milliseconds(50))
+            first.cancel()
+            if !keepSecondConsumer { second.cancel() }
+            switch await first.result {
+            case .success: XCTFail("A cancelled consumer must not publish history")
+            case let .failure(error): XCTAssertTrue(error is CancellationError)
+            }
+            if keepSecondConsumer {
+                let points = try await second.value
+                XCTAssertEqual(points.map(\.p), [20])
+                XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+            } else {
+                switch await second.result {
+                case .success: XCTFail("The last cancelled consumer must not publish history")
+                case let .failure(error): XCTAssertTrue(error is CancellationError)
+                }
+                XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+                let snapshot = await transport.snapshot()
+                XCTAssertEqual(snapshot.usedToday, 0)
+                let cached = await service.cached(request)
+                XCTAssertTrue(cached.isEmpty)
+                // The cancelled task must not remain attached to a new visit.
+                let retried = try await service.history(for: request)
+                XCTAssertEqual(retried.map(\.p), [20])
+                XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+            }
+        }
+    }
+
+    @MainActor
     func testDetailFetchesFullProviderHistoryAndCachesItWithoutOwnershipCutoff() async throws {
         let suite = "MarketHistory-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))

@@ -150,7 +150,12 @@ actor CardMarketHistoryService {
 
     private let transport: JustTCGTransport
     private let root: URL
-    private var pending: [CardMarketHistoryRequest: Task<[JustTCGHistoryPoint], Error>] = [:]
+    private struct PendingHistory {
+        let id: UUID
+        let task: Task<[JustTCGHistoryPoint], Error>
+        var waiterIDs: Set<UUID>
+    }
+    private var pending: [CardMarketHistoryRequest: PendingHistory] = [:]
 
     init(transport: JustTCGTransport = .shared, root: URL? = nil) {
         self.transport = transport
@@ -203,6 +208,7 @@ actor CardMarketHistoryService {
     func history(for input: CardMarketHistoryRequest, now: Date = .now,
                  runtimes: CardGameRuntimeContainer? = nil) async throws -> [JustTCGHistoryPoint] {
         let request = await input.resolvingMarketMapping(in: runtimes)
+        try Task.checkCancellation()
         guard !request.requiresCatalogMapping || request.exactProductID != nil else { throw HistoryError.noListing }
         let old = readCache(request)
         if let old, let missAt = old.noListingAt, now.timeIntervalSince(missAt) < Self.noListingRetryInterval,
@@ -212,13 +218,36 @@ actor CardMarketHistoryService {
         if let old, now.timeIntervalSince(old.fetchedAt) < 6 * 60 * 60 {
             return try await currentResult(old.points, for: request, runtimes: runtimes)
         }
-        if let task = pending[request] {
-            return try await currentResult(task.value, for: request, runtimes: runtimes)
+        let waiterID = UUID()
+        let state: PendingHistory
+        if var existing = pending[request] {
+            existing.waiterIDs.insert(waiterID)
+            pending[request] = existing
+            state = existing
+        } else {
+            state = PendingHistory(id: UUID(), task: Task {
+                try Task.checkCancellation()
+                return try await self.fetchAndCache(request, old: old, now: now, runtimes: runtimes)
+            }, waiterIDs: [waiterID])
+            pending[request] = state
         }
-        let task = Task { try await self.fetchAndCache(request, old: old, now: now, runtimes: runtimes) }
-        pending[request] = task
-        defer { pending[request] = nil }
-        return try await currentResult(task.value, for: request, runtimes: runtimes)
+        defer { releaseWaiter(waiterID, request: request, taskID: state.id) }
+        return try await withTaskCancellationHandler {
+            try await currentResult(state.task.value, for: request, runtimes: runtimes)
+        } onCancel: {
+            Task { await self.releaseWaiter(waiterID, request: request, taskID: state.id) }
+        }
+    }
+
+    private func releaseWaiter(_ waiterID: UUID, request: CardMarketHistoryRequest, taskID: UUID) {
+        guard var state = pending[request], state.id == taskID,
+              state.waiterIDs.remove(waiterID) != nil else { return }
+        if state.waiterIDs.isEmpty {
+            pending[request] = nil
+            state.task.cancel()
+        } else {
+            pending[request] = state
+        }
     }
 
     private func currentResult(_ points: [JustTCGHistoryPoint], for request: CardMarketHistoryRequest,
@@ -235,6 +264,7 @@ actor CardMarketHistoryService {
             received = try await fetch(request)
         } catch HistoryError.noListing {
             guard await request.resolvingMarketMapping(in: runtimes) == request else { throw CancellationError() }
+            try Task.checkCancellation()
             // Keep any saved series; remember only that this exact lookup missed.
             try? writeCache(Cached(requestData: identityData(request), fetchedAt: old?.fetchedAt ?? .distantPast,
                                    points: old?.points ?? [], sourceProductID: old?.sourceProductID,
@@ -242,6 +272,7 @@ actor CardMarketHistoryService {
             throw HistoryError.noListing
         }
         guard await request.resolvingMarketMapping(in: runtimes) == request else { throw CancellationError() }
+        try Task.checkCancellation()
         // A miss-only record carries no history to retain.
         let old = old.flatMap { $0.points.isEmpty ? nil : $0 }
         // Retain previously retrieved provider history as the API's rolling
