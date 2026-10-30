@@ -218,81 +218,12 @@ struct ContentView: View {
             }
         }
 #endif
+        .task {
 #if DEBUG || CARD_FINISH_PERF_HARNESS
-        .task {
-            switch debugRoute {
-            case "CollectionTiles":
-                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
-            case "CollectionTilesLongContent":
-                PortfolioDebugFixtures.seedCollectionFooter4aIfNeeded(in: modelContext)
-            case "SealedArtwork":
-                await seedSealedArtworkQA()
-            case "CardMovement":
-                PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
-                history.range = .oneMonth
-            case "CardDetail":
-                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
-                PortfolioDebugFixtures.seedCardPriceChartIfRequested(in: modelContext)
-                history.range = .oneMonth
-            case "CollectionFinishPerformance":
-                debugCardDetailCollectionKey = PortfolioDebugFixtures.seedCardFinishPerformance(
-                    in: modelContext
-                )
-                history.range = .oneMonth
-            case "TrustCardDetail":
-                debugCardDetailCollectionKey = PortfolioDebugFixtures.seedTrustProvenanceIfNeeded(
-                    in: modelContext,
-                    resolution: PortfolioDebugFixtures.debugResolution()
-                )
-                history.range = .oneMonth
-            case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors":
-                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
-                history.range = .oneWeek
-            case "PortfolioHistory":
-                PortfolioDebugFixtures.seedHistoryIfNeeded(in: modelContext)
-                history.range = .all
-            case "PortfolioAdditions":
-                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
-                PortfolioDebugFixtures.seedAdditionsIfNeeded(in: modelContext)
-                history.range = .oneDay
-            default:
-                break
-            }
-            await backfillExistingCollectionAtLaunch()
-            let storageGeneration = CollectionStorageGeneration.shared
-            guard let storageToken = storageGeneration.currentToken() else { return }
-            _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
-            await refresh.preemptBackgroundPass()
-            let magicInterval = PerformanceSignpost.beginInterval("Launch.magicLocal", id: PerformanceSignpost.makeID(), "")
-            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
-                in: modelContext,
-                storageToken: storageToken,
-                shouldContinue: storageGeneration.continuation(for: storageToken)
-            )
-            PerformanceSignpost.endInterval("Launch.magicLocal", magicInterval, "")
-            portfolio.start(context: modelContext)
-            hasStartedPortfolio = true
-            await installDeferredPriceAuthorities(storageToken: storageToken)
-        }
-#else
-        .task {
-            await backfillExistingCollectionAtLaunch()
-            let storageGeneration = CollectionStorageGeneration.shared
-            guard let storageToken = storageGeneration.currentToken() else { return }
-            _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
-            await refresh.preemptBackgroundPass()
-            let magicInterval = PerformanceSignpost.beginInterval("Launch.magicLocal", id: PerformanceSignpost.makeID(), "")
-            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
-                in: modelContext,
-                storageToken: storageToken,
-                shouldContinue: storageGeneration.continuation(for: storageToken)
-            )
-            PerformanceSignpost.endInterval("Launch.magicLocal", magicInterval, "")
-            portfolio.start(context: modelContext)
-            hasStartedPortfolio = true
-            await installDeferredPriceAuthorities(storageToken: storageToken)
-        }
+            await seedDebugRouteFixtures()
 #endif
+            await runLaunchSequence()
+        }
         .task {
             guard let runtimes else { return }
             await runtimes.observeCollectionCatalogActivations(for: modelContext.container)
@@ -549,6 +480,69 @@ struct ContentView: View {
             guard !Task.isCancelled else { return }
             refresh.dismissTransientSuccessSummary()
         }
+    }
+
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+    @MainActor
+    private func seedDebugRouteFixtures() async {
+        switch debugRoute {
+        case "CollectionTiles":
+            PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+        case "CollectionTilesLongContent":
+            PortfolioDebugFixtures.seedCollectionFooter4aIfNeeded(in: modelContext)
+        case "SealedArtwork":
+            await seedSealedArtworkQA()
+        case "CardMovement":
+            PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
+            history.range = .oneMonth
+        case "CardDetail":
+            PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+            PortfolioDebugFixtures.seedCardPriceChartIfRequested(in: modelContext)
+            history.range = .oneMonth
+        case "CollectionFinishPerformance":
+            debugCardDetailCollectionKey = PortfolioDebugFixtures.seedCardFinishPerformance(
+                in: modelContext
+            )
+            history.range = .oneMonth
+        case "TrustCardDetail":
+            debugCardDetailCollectionKey = PortfolioDebugFixtures.seedTrustProvenanceIfNeeded(
+                in: modelContext,
+                resolution: PortfolioDebugFixtures.debugResolution()
+            )
+            history.range = .oneMonth
+        case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors":
+            PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+            history.range = .oneWeek
+        case "PortfolioHistory":
+            PortfolioDebugFixtures.seedHistoryIfNeeded(in: modelContext)
+            history.range = .all
+        case "PortfolioAdditions":
+            PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+            PortfolioDebugFixtures.seedAdditionsIfNeeded(in: modelContext)
+            history.range = .oneDay
+        default:
+            break
+        }
+    }
+#endif
+
+    @MainActor
+    private func runLaunchSequence() async {
+        await backfillExistingCollectionAtLaunch()
+        let storageGeneration = CollectionStorageGeneration.shared
+        guard let storageToken = storageGeneration.currentToken() else { return }
+        _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
+        await refresh.preemptBackgroundPass()
+        let magicInterval = PerformanceSignpost.beginInterval("Launch.magicLocal", id: PerformanceSignpost.makeID(), "")
+        _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
+            in: modelContext,
+            storageToken: storageToken,
+            shouldContinue: storageGeneration.continuation(for: storageToken)
+        )
+        PerformanceSignpost.endInterval("Launch.magicLocal", magicInterval, "")
+        portfolio.start(context: modelContext)
+        hasStartedPortfolio = true
+        await installDeferredPriceAuthorities(storageToken: storageToken)
     }
 
     /// The launch history backfill must finish before portfolio replay begins.

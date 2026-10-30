@@ -143,6 +143,14 @@ private struct CollectionSessionContent: View {
                 // an explicit retry re-reads configuration and the bundled seed.
                 guard services?.scanner.canReloadCatalogs != false else { return }
                 let candidate = runtimes.unavailableGames.isEmpty ? runtimes : await CardGameRuntimeContainer.preparedAppDefaults()
+                func bindDefault() async throws -> CardGameRuntimeContainer {
+                    // The first binding defers static price withdrawal to ContentView's
+                    // launch task, so opening the collection does not wait on it.
+                    return try await candidate.bound(to: container, recovering: services?.runtimes,
+                                                      deferringPriceAuthorityInstall: services == nil, isCurrent: {
+                        CollectionStorageGeneration.shared.activeSession()?.container === container
+                    })
+                }
                 let bound: CardGameRuntimeContainer
 #if DEBUG && LOCAL_ONLY_SIGNING
                 if LorcanaReviewLaunch.isEnabled() {
@@ -151,20 +159,10 @@ private struct CollectionSessionContent: View {
                         CollectionStorageGeneration.shared.activeSession()?.container === container
                     })
                 } else {
-                    // The first binding defers static price withdrawal to ContentView's
-                    // launch task, so opening the collection does not wait on it.
-                    bound = try await candidate.bound(to: container, recovering: services?.runtimes,
-                                                      deferringPriceAuthorityInstall: services == nil, isCurrent: {
-                        CollectionStorageGeneration.shared.activeSession()?.container === container
-                    })
+                    bound = try await bindDefault()
                 }
 #else
-                // The first binding defers static price withdrawal to ContentView's
-                // launch task, so opening the collection does not wait on it.
-                bound = try await candidate.bound(to: container, recovering: services?.runtimes,
-                                                  deferringPriceAuthorityInstall: services == nil, isCurrent: {
-                    CollectionStorageGeneration.shared.activeSession()?.container === container
-                })
+                bound = try await bindDefault()
 #endif
                 try Task.checkCancellation()
                 guard services?.scanner.canReloadCatalogs != false else { return }
