@@ -46,6 +46,9 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     var lowImageURL: URL? = nil
     var highImageURL: URL? = nil
     var userArtworkFilename: String? = nil
+    /// Resolved catalog identity, including imported rows whose ownership key
+    /// remains synthetic. Artwork must never infer identity from display text.
+    var catalogProviderID: String? = nil
     /// Projection-time keys. Search and collector-number sorting read these
     /// values instead of folding or reparsing the same strings on every body
     /// evaluation and every sort comparison.

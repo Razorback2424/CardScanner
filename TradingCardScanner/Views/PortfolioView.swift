@@ -1461,11 +1461,7 @@ private struct PortfolioArtwork: View {
 
     private var artworkSource: CatalogCardArtworkSource {
         CatalogCardArtworkSource(
-            game: holding.artworkGame,
-            setCode: holding.artworkSetCode,
-            collectorNumber: holding.artworkCollectorNumber,
-            thumbnailURL: holding.artworkFallbackURL,
-            imageURL: holding.artworkURL,
+            portfolioHolding: holding,
             prefersFullSize: true
         )
     }
@@ -2076,7 +2072,8 @@ private struct PortfolioAdditionsView: View {
             price: .unknown,
             lowImageURL: holding?.artworkFallbackURL,
             highImageURL: holding?.artworkURL,
-            userArtworkFilename: holding?.userArtworkFilename
+            userArtworkFilename: holding?.userArtworkFilename,
+            catalogProviderID: holding?.artworkProviderID
         )
     }
 
@@ -2128,6 +2125,7 @@ private struct PortfolioAdditionsView: View {
                     lowImageURL: snapshot?.thumbnailURL.flatMap { URL(string: $0) },
                     highImageURL: snapshot?.imageURL.flatMap { URL(string: $0) },
                     userArtworkFilename: snapshot?.userArtworkFilename,
+                    catalogProviderID: snapshot.map { $0.catalogProviderID ?? $0.providerID },
                     variantResolution: snapshot?.variantResolution
                 )
             }

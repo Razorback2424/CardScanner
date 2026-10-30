@@ -1648,11 +1648,7 @@ struct CollectionCardTile: View {
                 ZStack {
                     CollectionCardArtwork(
                         userArtworkFilename: row.userArtworkFilename,
-                        game: row.game,
-                        setCode: row.setCode,
-                        collectorNumber: row.cardNumber,
-                        thumbnailURL: row.lowImageURL,
-                        fullSizeURL: row.highImageURL,
+                        artworkSource: CatalogCardArtworkSource(collectionRow: row, prefersFullSize: true),
                         placeholderText: artworkReason?.title
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -1928,26 +1924,8 @@ private struct CollectionArtworkGlow: View {
 /// unavailable, which otherwise leaves the grid stuck on a placeholder.
 private struct CollectionCardArtwork: View {
     let userArtworkFilename: String?
-    let game: CardGame
-    let setCode: String
-    let collectorNumber: String
-    let thumbnailURL: URL?
-    let fullSizeURL: URL?
+    let artworkSource: CatalogCardArtworkSource
     let placeholderText: String?
-
-    private var artworkSource: CatalogCardArtworkSource {
-        CatalogCardArtworkSource(
-            game: game,
-            setCode: setCode,
-            collectorNumber: collectorNumber,
-            thumbnailURL: thumbnailURL,
-            imageURL: fullSizeURL,
-            // The collection grid is large enough that the normal-sized asset
-            // should be primary. The thumbnail and then Limitless full image
-            // remain explicit fallbacks.
-            prefersFullSize: true
-        )
-    }
 
     var body: some View {
         if let image = CollectionArtworkStore.image(

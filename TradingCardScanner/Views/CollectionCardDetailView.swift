@@ -1282,11 +1282,7 @@ private struct CollectionCardDetailContent: View {
                     .scaledToFit()
             } else {
                 let source = CatalogCardArtworkSource(
-                    game: card.cardGame,
-                    setCode: card.setCode,
-                    collectorNumber: card.cardNumber,
-                    thumbnailURL: card.lowImageURL,
-                    imageURL: card.highImageURL,
+                    collectedCard: card,
                     prefersFullSize: true
                 )
                 if source.primaryURL != nil {

@@ -220,11 +220,40 @@ struct CatalogSetArtwork: Codable, Sendable {
 }
 
 /// The provider order for a card artwork request. TCGdex remains authoritative
-/// when present; reviewed Classic product artwork can recover missing/failed
+/// when present; reviewed product artwork can recover missing/failed
 /// provider images. The derived Limitless URL remains the last candidate.
 struct CatalogCardArtworkSource: Equatable, Sendable {
     let primaryURL: URL?
     let fallbacks: [URL]
+
+    init(collectionRow row: CollectionRow, prefersFullSize: Bool) {
+        self.init(
+            game: row.game, setCode: row.setCode, collectorNumber: row.cardNumber,
+            thumbnailURL: row.lowImageURL, imageURL: row.highImageURL,
+            prefersFullSize: prefersFullSize, providerID: row.catalogProviderID,
+            providerSetID: row.catalogProviderID.flatMap { PokemonTCGCSVMapping.byCardID[$0]?.setID }
+        )
+    }
+
+    init(collectedCard card: CollectedCard, prefersFullSize: Bool) {
+        let providerID = card.underlyingPrintingID
+        self.init(
+            game: card.cardGame, setCode: card.setCode, collectorNumber: card.cardNumber,
+            thumbnailURL: card.lowImageURL, imageURL: card.highImageURL,
+            prefersFullSize: prefersFullSize, providerID: providerID,
+            providerSetID: providerID.flatMap { PokemonTCGCSVMapping.byCardID[$0]?.setID }
+        )
+    }
+
+    init(portfolioHolding holding: PortfolioHoldingSnapshot, prefersFullSize: Bool) {
+        self.init(
+            game: holding.artworkGame, setCode: holding.artworkSetCode,
+            collectorNumber: holding.artworkCollectorNumber,
+            thumbnailURL: holding.artworkFallbackURL, imageURL: holding.artworkURL,
+            prefersFullSize: prefersFullSize, providerID: holding.artworkProviderID,
+            providerSetID: holding.artworkProviderID.flatMap { PokemonTCGCSVMapping.byCardID[$0]?.setID }
+        )
+    }
 
     init(
         game: CardGame?,
@@ -254,12 +283,13 @@ struct CatalogCardArtworkSource: Equatable, Sendable {
             return prefersFullSize ? limitless.full : limitless.small
         }()
         let reviewedURLs: [URL?]
-        if game == .pokemon, providerSetID == "30th-c",
+        if game == .pokemon,
            let providerID, let product = PokemonTCGCSVMapping.byCardID[providerID],
            product.setID == providerSetID {
             // Classic's catalog sequence is NOT its reprinted collector number.
-            // Reuse the reviewed exact product join, never infer an old printing
-            // or a product from the name/number. This grants no scan authority.
+            // The same reviewed exact product join covers 30th Celebration and
+            // Mega Evolution Energy. Never infer a product from display text.
+            // This grants no scan authority.
             let thumbnail = URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(product.productID)_400w.jpg")
             let full = URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(product.productID)_in_1000x1000.jpg")
             reviewedURLs = prefersFullSize ? [full, thumbnail] : [thumbnail, full]

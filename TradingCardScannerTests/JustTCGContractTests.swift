@@ -25,6 +25,79 @@ private actor EditionPriceProbe {
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    @MainActor
+    func testClassicPikachuHistoryFetchesExactModernProductAndRejectsOtherListings() async throws {
+        let suite = "ClassicHistory-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        let card = CollectedCard(collectionKey: "30th-c-014#holo", game: .pokemon, providerID: "30th-c-014",
+            name: "Pikachu", setName: "30th Classic Collection", setCode: "30C", cardNumber: "58",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+        card.justTCGVariantID = "stale-listing"
+        let request = CardMarketHistoryRequest(card: card)
+        let now = Date.now
+        var legacy = request
+        legacy.exactProductID = nil
+        legacy.providerPrinting = nil
+        legacy.marketVariantID = "stale-listing"
+        legacy.lookups = []
+        RecordingURLProtocol.reset(body: #"{"data":[]}"#)
+        do {
+            _ = try await service.history(for: legacy, now: now)
+            XCTFail("Seed the old lookup's cached miss")
+        } catch CardMarketHistoryService.HistoryError.noListing { }
+        for wrong in [
+            #""printing":"Normal","condition":"Near Mint""#,
+            #""printing":"Holofoil","condition":"Damaged""#,
+            #""printing":"Holofoil","condition":"Near Mint","language":"Japanese""#,
+            #""printing":"Holofoil","condition":"Near Mint","currency":"EUR""#,
+            #""printing":"Holofoil","condition":"Near Mint","type":"graded""#
+        ] {
+            RecordingURLProtocol.reset(body: """
+            {"data":[{"tcgplayerId":"4240","variants":[{"printing":"Holofoil","condition":"Near Mint","priceHistory":[{"p":999,"t":1700000000}]}]},
+            {"tcgplayerId":"716194","variants":[{\(wrong),"priceHistory":[{"p":888,"t":1700000000}]},
+            {"printing":"Holofoil","condition":"Near Mint","language":"English","currency":"USD","type":"raw","priceHistory":[{"p":20.09,"t":1700000000},{"p":21,"t":1700100000}]}]}]}
+            """)
+            let points = try await service.history(for: request, now: now)
+            XCTAssertEqual(points.map(\.p), [20.09, 21])
+            let query = URLComponents(url: try XCTUnwrap(RecordingURLProtocol.recorded().first),
+                resolvingAgainstBaseURL: false)?.queryItems
+            XCTAssertEqual(query?.first(where: { $0.name == "tcgplayerId" })?.value, "716194")
+            XCTAssertNil(query?.first(where: { $0.name == "variantId" }))
+            XCTAssertEqual(query?.first(where: { $0.name == "priceHistoryDuration" })?.value, "1y")
+            try? FileManager.default.removeItem(at: root)
+        }
+        RecordingURLProtocol.reset(body: #"{"data":[{"tcgplayerId":"4240","variants":[{"printing":"Holofoil","condition":"Near Mint","priceHistory":[{"p":999,"t":1700000000}]}]}]}"#)
+        do {
+            _ = try await service.history(for: request)
+            XCTFail("The original Base Set Pikachu must not supply Classic history")
+        } catch CardMarketHistoryService.HistoryError.noListing { }
+
+        // An explicitly saved Unlimited marker must not trigger a name search
+        // when a reviewed stamped product already fixes the modern release.
+        let stamped = try XCTUnwrap(PokemonStampedReleaseCatalog.entries.first)
+        card.providerID = stamped.providerID
+        card.variantID = stamped.variant.id
+        card.pokemonPrintRunRaw = PokemonPrintRun.unlimited.rawValue
+        card.tcgplayerProductID = "original-expansion-product"
+        RecordingURLProtocol.reset(body: """
+        {"data":[{"tcgplayerId":"\(stamped.tcgplayerProductID)","variants":[{"printing":"\(stamped.printing)","condition":"Near Mint","priceHistory":[{"p":1.25,"t":1700000000}]}]}]}
+        """)
+        let stampedPoints = try await service.history(for: .init(card: card))
+        XCTAssertEqual(stampedPoints.map(\.p), [1.25])
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "An exact product needs no search request")
+    }
+
     func testSystematicBundledSetDirectoryConcordance() throws {
         struct Inventory: Decodable {
             struct Group: Decodable { let game, id, name: String }

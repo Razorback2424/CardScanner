@@ -195,6 +195,7 @@ actor CollectionProjectionActor: BackgroundModelActor {
                     lowImageURL: card.lowImageURL,
                     highImageURL: card.highImageURL,
                     userArtworkFilename: artworkFilename,
+                    catalogProviderID: card.underlyingPrintingID,
                     normalizedName: CardNameSearch.normalize(card.name),
                     collectorNumberSortKey: CollectorNumber.key(for: card.cardNumber),
                     variantResolution: card.variantResolution,

@@ -77,6 +77,7 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
     var artworkGame: CardGame? = nil
     var artworkSetCode: String? = nil
     var artworkCollectorNumber: String? = nil
+    var artworkProviderID: String? = nil
 
     var id: String { collectionKey }
 

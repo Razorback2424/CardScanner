@@ -1489,6 +1489,25 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(holding.userArtworkFilename, "custom-artwork.image")
         XCTAssertEqual(holding.artworkURL, URL(string: "https://images.example.test/cards/portfolio-card/high.png"))
         XCTAssertEqual(holding.artworkFallbackURL, URL(string: "https://images.example.test/cards/portfolio-card/low.png"))
+        XCTAssertEqual(holding.artworkProviderID, ownedCard.underlyingPrintingID)
+    }
+
+    func testImportedClassicHoldingRetainsExactArtworkIdentityWithoutPublishedURLs() throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        let ownedCard = card(dateAdded: date)
+        ownedCard.providerID = "csv:misty"
+        ownedCard.catalogProviderID = "30th-c-005"
+        ownedCard.imageURL = nil
+        ownedCard.thumbnailURL = nil
+        context.insert(ownedCard)
+        try context.save()
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context, epoch: date, through: date, timeZone: TimeZone(secondsFromGMT: 0)!)
+        let holding = try XCTUnwrap(computation.holdings.first)
+        XCTAssertEqual(holding.artworkProviderID, "30th-c-005")
+        XCTAssertEqual(CatalogCardArtworkSource(portfolioHolding: holding, prefersFullSize: true)
+            .primaryURL?.absoluteString, "https://tcgplayer-cdn.tcgplayer.com/product/716159_in_1000x1000.jpg")
     }
 
     func testHoldingSnapshotDoesNotRetryAnIdenticalDirectArtworkURL() throws {

@@ -46,7 +46,8 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         catalogID = input.catalogID
         printRun = input.pokemonPrintRun
         treatments = input.treatmentIDs
-        exactProductID = card.tcgplayerProductID
+        exactProductID = input.exactPhysicalProductID ?? card.tcgplayerProductID
+        applyReviewedPokemonMapping()
     }
 
     init(card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?) {
@@ -63,6 +64,31 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         self.printRun = printRun
         treatments = MagicTreatmentKeyCodec.storedIDs(from: card.magicTreatments(for: variant))
         exactProductID = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: printRun).map(String.init)
+        applyReviewedPokemonMapping()
+    }
+
+    /// Reviewed anniversary and Trick or Trade mappings identify the physical
+    /// product and finish. Reprinted numbers and saved handles from an original
+    /// expansion must not override that identity or trigger a name search.
+    private mutating func applyReviewedPokemonMapping() {
+        guard game == .pokemon, itemKind == .rawCard,
+              printRun == nil || printRun == .unlimited, treatments.isEmpty,
+              let catalogID else { return }
+        let productID: String
+        let printing: String
+        if let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
+            .first(where: { $0.variant.id == variantID }) {
+            productID = stamped.tcgplayerProductID
+            printing = stamped.printing
+        } else if variantID == PhysicalVariant.holo.id,
+                  let product = PokemonTCGCSVMapping.byCardID[catalogID] {
+            productID = String(product.productID)
+            printing = "Holofoil"
+        } else { return }
+        exactProductID = productID
+        lookups = [.tcgplayerID(productID)]
+        marketVariantID = nil
+        providerPrinting = printing
     }
 
     /// Newer game modules own their reviewed raw-card marketplace mappings. Resolve
@@ -354,7 +380,7 @@ actor CardMarketHistoryService {
         }
         // Older Pokémon print runs also alter vendor sets/printing names.
         // Resolve the edition before asking for an exact variant's history.
-        if variantID == nil && (lookups.isEmpty || request.printRun != nil) {
+        if variantID == nil && (lookups.isEmpty || (request.printRun != nil && request.providerPrinting == nil)) {
             guard request.game == .pokemon || request.game == .magic else { throw HistoryError.noListing }
             guard PriceVendorCredentials.hasKey else { throw JustTCGTransport.TransportError.missingCredentials }
             var vendorCardID: String?

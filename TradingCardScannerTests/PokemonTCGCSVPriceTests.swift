@@ -4,6 +4,111 @@ import XCTest
 @testable import TradingCardScanner
 
 final class PokemonTCGCSVPriceTests: XCTestCase {
+    func testReviewedArtworkCoversAnniversarySetsAndEnergyWithoutNumberGuessing() {
+        XCTAssertEqual(PokemonTCGCSVMapping.entries.count, 196)
+        for entry in PokemonTCGCSVMapping.entries {
+            let source = CatalogCardArtworkSource(game: .pokemon, setCode: entry.setID,
+                collectorNumber: "unrelated display number", thumbnailURL: nil, imageURL: nil,
+                prefersFullSize: true, limitlessArtworkAuthorized: false,
+                providerID: entry.cardID, providerSetID: entry.setID)
+            XCTAssertEqual(source.primaryURL?.absoluteString,
+                "https://tcgplayer-cdn.tcgplayer.com/product/\(entry.productID)_in_1000x1000.jpg", entry.cardID)
+            XCTAssertEqual(source.fallbacks.count, 1)
+            let conflicting = CatalogCardArtworkSource(game: .pokemon, setCode: entry.setID,
+                collectorNumber: entry.printedNumber, thumbnailURL: nil, imageURL: nil,
+                prefersFullSize: true, limitlessArtworkAuthorized: false,
+                providerID: entry.cardID, providerSetID: "unrelated-set")
+            XCTAssertNil(conflicting.primaryURL)
+        }
+    }
+
+    @MainActor
+    func testStampedHistoryUsesReviewedFinishInsteadOfStoredOriginalProduct() {
+        for entry in PokemonStampedReleaseCatalog.entries {
+            let card = CollectedCard(collectionKey: "\(entry.providerID)#\(entry.variant.id)", game: .pokemon,
+                providerID: entry.providerID, name: "Stamped card", setName: "Original expansion",
+                setCode: "", cardNumber: "1", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                variant: entry.variant, variantResolution: .userConfirmed)
+            card.tcgplayerProductID = "original-expansion-product"
+            card.justTCGVariantID = "original-expansion-listing"
+            card.pokemonPrintRunRaw = PokemonPrintRun.unlimited.rawValue
+            let request = CardMarketHistoryRequest(card: card)
+            XCTAssertEqual(request.exactProductID, entry.tcgplayerProductID)
+            XCTAssertEqual(request.lookups, [.tcgplayerID(entry.tcgplayerProductID)])
+            XCTAssertEqual(request.providerPrinting, entry.printing)
+            XCTAssertNil(request.marketVariantID)
+            XCTAssertEqual(card.tcgplayerProductID, "original-expansion-product", "History never rewrites ownership")
+        }
+    }
+
+    @MainActor
+    func testSavedClassicArtworkSurvivesProjectionAndImportedOwnershipKeys() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let entries = PokemonTCGCSVMapping.entries.filter { $0.setID == "30th-c" }
+        for entry in entries {
+            let card = CollectedCard(collectionKey: "csv:\(entry.cardID)#holo", game: .pokemon,
+                providerID: "csv:\(entry.cardID)", name: entry.productName,
+                setName: "30th Classic Collection", setCode: "30C", cardNumber: entry.printedNumber,
+                rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo,
+                variantResolution: .userConfirmed)
+            card.catalogProviderID = entry.cardID
+            context.insert(card)
+            let detail = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
+            XCTAssertEqual(detail.primaryURL?.absoluteString,
+                "https://tcgplayer-cdn.tcgplayer.com/product/\(entry.productID)_in_1000x1000.jpg")
+        }
+        try context.save()
+        let actor = await CollectionProjectionActor.makeBackground(modelContainer: container)
+        let snapshot = await actor.snapshot()
+        XCTAssertEqual(snapshot.rows.count, 30)
+        for entry in entries {
+            let row = try XCTUnwrap(snapshot.rowsByCollectionKey["csv:\(entry.cardID)#holo"])
+            XCTAssertEqual(row.catalogProviderID, entry.cardID)
+            let grid = CatalogCardArtworkSource(collectionRow: row, prefersFullSize: true)
+            XCTAssertEqual(grid.primaryURL?.absoluteString,
+                "https://tcgplayer-cdn.tcgplayer.com/product/\(entry.productID)_in_1000x1000.jpg")
+        }
+        let saved = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+        saved.catalogProviderID = nil
+        saved.providerID = "30th-c-005"
+        XCTAssertTrue(CatalogCardArtworkSource(collectedCard: saved, prefersFullSize: true)
+            .primaryURL?.absoluteString.contains("716159") == true, "Direct scans need no metadata migration")
+        saved.game = CardGame.magic.rawValue
+        XCTAssertNil(CatalogCardArtworkSource(collectedCard: saved, prefersFullSize: true).primaryURL)
+    }
+
+    @MainActor
+    func testAnniversaryHistoryUsesReviewedProductForSavedAndBrowseCards() throws {
+        for entry in PokemonTCGCSVMapping.entries where entry.setID != "mee" {
+            let card = CollectedCard(collectionKey: "csv:\(entry.cardID)#holo", game: .pokemon,
+                providerID: "csv:\(entry.cardID)", name: entry.productName, setName: "30th Classic Collection",
+                setCode: "30C", cardNumber: entry.printedNumber, rarity: nil, imageURL: nil,
+                thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+            card.catalogProviderID = entry.cardID
+            card.tcgplayerProductID = "wrong-old-product"
+            card.justTCGVariantID = "stale-old-listing"
+            let saved = CardMarketHistoryRequest(card: card)
+            let browse = CardMarketHistoryRequest(card: .pokemon(try Self.card(entry.cardID), setCode: "30C"),
+                variant: .holo, printRun: nil)
+            for request in [saved, browse] {
+                XCTAssertEqual(request.lookups, [.tcgplayerID(String(entry.productID))], entry.cardID)
+                XCTAssertEqual(request.exactProductID, String(entry.productID))
+                XCTAssertEqual(request.providerPrinting, "Holofoil")
+                XCTAssertNil(request.marketVariantID)
+            }
+            card.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+            XCTAssertNil(CardMarketHistoryRequest(card: card).providerPrinting)
+            card.pokemonPrintRunRaw = nil
+            card.variantID = PhysicalVariant.reverse.id
+            XCTAssertNil(CardMarketHistoryRequest(card: card).providerPrinting)
+            card.variantID = PhysicalVariant.holo.id
+            card.game = CardGame.magic.rawValue
+            XCTAssertNil(CardMarketHistoryRequest(card: card).providerPrinting)
+        }
+    }
+
     func testMirrorProvenancePreservesCaptureTimeAndRejectsMissingMixedStaleOrFutureMetadata() throws {
         let now = Date(timeIntervalSince1970: floor(Date.now.timeIntervalSince1970))
         let captured = now.addingTimeInterval(-3_600)

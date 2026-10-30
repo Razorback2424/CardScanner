@@ -154,7 +154,8 @@ enum PortfolioReplaySnapshotBuilder {
                 priceStorageKey: position.priceStorageKey,
                 artworkGame: card.cardGame,
                 artworkSetCode: card.setCode,
-                artworkCollectorNumber: card.cardNumber
+                artworkCollectorNumber: card.cardNumber,
+                artworkProviderID: card.underlyingPrintingID
             )
         }
 
