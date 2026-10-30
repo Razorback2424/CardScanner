@@ -1905,7 +1905,7 @@ final class MagicTreatmentMigrationCoordinator {
     }
 
     /// A new collection row can arrive after the first migration pass,
-    /// including from another CloudKit device. Keep completed reports tied to
+    /// including from another CloudKit device. Keep reports tied to
     /// the collection revision they examined. An active task may finish, but
     /// its result must not be cached if the collection changed while it ran.
     func invalidateCompletedReports() {
@@ -1967,7 +1967,7 @@ final class MagicTreatmentMigrationCoordinator {
                 }
                 return report
             }
-            if let localReport, localReport.isComplete {
+            if let localReport {
                 return localReport
             }
             if let localTask {
@@ -2008,9 +2008,7 @@ final class MagicTreatmentMigrationCoordinator {
                 revisionRetries += 1
                 continue
             }
-            if report.isComplete {
-                localReport = report
-            }
+            localReport = report
             return report
         }
     }
@@ -2048,7 +2046,7 @@ final class MagicTreatmentMigrationCoordinator {
                 context.rollback()
                 return .init()
             }
-            if let networkReport, networkReport.isComplete {
+            if let networkReport {
                 return networkReport
             }
             if let networkTask {
@@ -2075,7 +2073,7 @@ final class MagicTreatmentMigrationCoordinator {
                 context.rollback()
                 return .init()
             }
-            if let networkReport, networkReport.isComplete {
+            if let networkReport {
                 return networkReport
             }
             if let networkTask {
@@ -2120,9 +2118,7 @@ final class MagicTreatmentMigrationCoordinator {
                 revisionRetries += 1
                 continue
             }
-            if report.isComplete {
-                networkReport = report
-            }
+            networkReport = report
             return report
         }
     }
