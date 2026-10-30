@@ -1433,6 +1433,52 @@ final class OnePieceIntegrationTests: XCTestCase {
             "Requests from different catalog generations must not share an in-flight snapshot")
     }
 
+    func testCancelledDailyPriceWaiterPreservesSharedDownloadAndDiskCache() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [OnePiecePriceTestProtocol.self]
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("SharedDailyPrice-\(UUID())")
+        let gate = OnePiecePriceRequestGate(watermark: .now.addingTimeInterval(-5))
+        OnePiecePriceTestProtocol.asyncHandler = { await gate.response($0) }
+        defer {
+            OnePiecePriceTestProtocol.asyncHandler = nil
+            OnePiecePriceTestProtocol.handler = nil
+            try? FileManager.default.removeItem(at: directory)
+            Task { await gate.firstRequest.resume() }
+        }
+        let source = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
+            session: URLSession(configuration: configuration), cacheDirectory: directory)
+        let quote: @Sendable () async throws -> PriceLookup = {
+            try await source.quote(category: 68, group: 3188, productID: 454664, name: "Shanks",
+                number: "OP01-120", lane: "Foil", generation: "shared", minimumFetchedAt: nil)
+        }
+        let cancelled = expectation(description: "Price waiter exits while shared HTTP is still held")
+        let original = Task {
+            do { _ = try await quote(); XCTFail("Cancelled waiter returned a quote") }
+            catch is CancellationError { cancelled.fulfill() }
+            catch { XCTFail("Unexpected error: \(error)") }
+        }
+        await gate.firstRequest.waitForStart()
+        original.cancel()
+        await fulfillment(of: [cancelled], timeout: 1)
+        let remaining = Task { try await quote() }
+        await gate.firstRequest.resume()
+        let result = try await remaining.value
+        await original.value
+        guard case let .price(price) = result else { return XCTFail("Expected the shared price") }
+        XCTAssertEqual(price.unitMarketPriceUSD, 8.16)
+        let productCalls = await gate.productCalls, priceCalls = await gate.priceCalls
+        XCTAssertEqual(productCalls, 1)
+        XCTAssertEqual(priceCalls, 1)
+
+        OnePiecePriceTestProtocol.asyncHandler = nil
+        OnePiecePriceTestProtocol.handler = { _ in Data("Unexpected network request".utf8) }
+        let reopened = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
+            session: URLSession(configuration: configuration), cacheDirectory: directory)
+        let cached = try await reopened.quote(category: 68, group: 3188, productID: 454664, name: "Shanks",
+            number: "OP01-120", lane: "Foil", generation: "shared", minimumFetchedAt: nil)
+        XCTAssertEqual(cached, result)
+    }
+
     func testBoundOnePiecePricingPassesWithdrawalWatermarkToSource() async throws {
         let registry = try registry(withMarketMapping: true)
         let (_, container) = try model(registry: registry)
@@ -3003,6 +3049,96 @@ final class OnePieceIntegrationTests: XCTestCase {
                 XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, 1)
             }
         }
+    }
+
+    func testBusyCatalogPublicationRetriesNewestRevisionForEverySubscriber() async throws {
+        let first = try registry(count: 1)
+        let second = try registry(count: 2, revision: 2)
+        let third = try registry(count: 2, revision: 3)
+        func snapshot(_ registry: OnePieceCatalogRegistry, revision: Int) -> GameCatalogSnapshot {
+            .init(revision: revision, catalog: OnePieceCatalogAdapter(registry: registry),
+                recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
+                variantPolicy: OnePieceVariantPolicy(registry: registry))
+        }
+        let root = failureRoot("BusyPublication")
+        let container = try failureContainer(at: root)
+        try failureRuntimes(first).configureCollectionAuthority(for: container, configurePricing: false)
+        let source = OnePieceSnapshotTestSource(snapshot(first, revision: 1))
+        let publication = CollectionAuthorizedActivationSource(source: source, container: container)
+        let initial = await publication.currentSnapshot()
+        XCTAssertEqual(initial?.revision, 1)
+        let firstStream = await publication.activationSnapshots()
+        let secondStream = await publication.activationSnapshots()
+        var exclusive: UUID? = try CollectionWriteSerializer.beginExclusive()
+        defer { if let exclusive { CollectionWriteSerializer.endExclusive(exclusive) } }
+        var isBusy = true
+        var firstRevisions: [Int] = [], secondRevisions: [Int] = []
+        let premature = expectation(description: "No publication while the writer is exclusive")
+        premature.isInverted = true
+        let delivered = expectation(description: "Both existing subscribers receive the newest revision")
+        delivered.expectedFulfillmentCount = 2
+        let firstObserver = Task { @MainActor in
+            for await snapshot in firstStream {
+                firstRevisions.append(snapshot.revision)
+                if isBusy { premature.fulfill() }
+                if snapshot.revision == 3 { delivered.fulfill() }
+            }
+        }
+        let secondObserver = Task { @MainActor in
+            for await snapshot in secondStream {
+                secondRevisions.append(snapshot.revision)
+                if isBusy { premature.fulfill() }
+                if snapshot.revision == 3 { delivered.fulfill() }
+            }
+        }
+        defer { firstObserver.cancel(); secondObserver.cancel() }
+        await source.update(snapshot(second, revision: 2))
+        await source.update(snapshot(third, revision: 3))
+        await fulfillment(of: [premature], timeout: 0.2)
+        CollectionWriteSerializer.endExclusive(try XCTUnwrap(exclusive))
+        exclusive = nil
+        isBusy = false
+        await fulfillment(of: [delivered], timeout: 2)
+        // Let buffered earlier events drain as well; they must not duplicate
+        // the revision already delivered by a retry.
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(firstRevisions, [3])
+        XCTAssertEqual(secondRevisions, [3])
+        let current = await publication.currentSnapshot()
+        XCTAssertEqual(current?.revision, 3)
+    }
+
+    func testBusyCatalogPublicationDoesNotOutliveItsStorageSession() async throws {
+        let first = try registry(count: 1)
+        let second = try registry(count: 2, revision: 2)
+        func snapshot(_ registry: OnePieceCatalogRegistry, revision: Int) -> GameCatalogSnapshot {
+            .init(revision: revision, catalog: OnePieceCatalogAdapter(registry: registry),
+                recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
+                variantPolicy: OnePieceVariantPolicy(registry: registry))
+        }
+        let container = try failureContainer(at: failureRoot("StaleBusyPublication"))
+        try failureRuntimes(first).configureCollectionAuthority(for: container, configurePricing: false)
+        let state = OnePieceTestSessionState()
+        let source = OnePieceSnapshotTestSource(snapshot(first, revision: 1))
+        let publication = CollectionAuthorizedActivationSource(source: source, container: container,
+            isCurrent: { state.isCurrent })
+        _ = await publication.currentSnapshot()
+        let stream = await publication.activationSnapshots()
+        let unexpected = expectation(description: "Stale session must not publish a pending revision")
+        unexpected.isInverted = true
+        let observer = Task { for await _ in stream { unexpected.fulfill() } }
+        defer { observer.cancel() }
+        var exclusive: UUID? = try CollectionWriteSerializer.beginExclusive()
+        defer { if let exclusive { CollectionWriteSerializer.endExclusive(exclusive) } }
+        await source.update(snapshot(second, revision: 2))
+        try await Task.sleep(for: .milliseconds(150))
+        state.isCurrent = false
+        CollectionWriteSerializer.endExclusive(try XCTUnwrap(exclusive))
+        exclusive = nil
+        await fulfillment(of: [unexpected], timeout: 0.25)
+        let current = await publication.currentSnapshot()
+        XCTAssertNil(current)
+        XCTAssertTrue(CollectionStore.canInstallCatalogAdapter(OnePieceCatalogAdapter(registry: first), revision: 1, for: container))
     }
 
     func testDiskBackedOnePieceWithdrawalFailureRetainsAuthorityUntilRetry() async throws {

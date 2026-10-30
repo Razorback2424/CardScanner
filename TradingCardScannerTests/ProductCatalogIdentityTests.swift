@@ -165,6 +165,62 @@ final class ProductCatalogIdentityTests: XCTestCase {
 
     // MARK: - Set slugs
 
+    func testCancelledDirectoryWaiterLeavesSharedLoadAndCacheIntact() async throws {
+        let provider = ProductSetDirectoryProvider()
+        let counter = DirectoryLoadCounter()
+        let directory = ProductSetDirectory(sets: [(id: "base-set-pokemon", name: "Base Set")])
+        let release = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
+        defer { release.continuation.yield(()); release.continuation.finish() }
+        let started = expectation(description: "Shared directory download started")
+        let cancelled = expectation(description: "Cancelled waiter exits before the download finishes")
+        let original = Task {
+            do {
+                _ = try await provider.directory(for: .pokemon) {
+                    await counter.increment()
+                    started.fulfill()
+                    for await _ in release.stream { break }
+                    return directory
+                }
+                XCTFail("A cancelled waiter must not return a directory")
+            } catch is CancellationError {
+                cancelled.fulfill()
+            } catch { XCTFail("Unexpected error: \(error)") }
+        }
+        await fulfillment(of: [started], timeout: 2)
+        original.cancel()
+        await fulfillment(of: [cancelled], timeout: 1)
+        let remaining = Task {
+            try await provider.directory(for: .pokemon) {
+                await counter.increment()
+                return ProductSetDirectory(sets: [])
+            }
+        }
+        release.continuation.yield(())
+        release.continuation.finish()
+        let value = try await remaining.value
+        await original.value
+        XCTAssertEqual(value.slugs, ["base-set-pokemon"])
+        let cached = try await provider.directory(for: .pokemon) {
+            await counter.increment()
+            return ProductSetDirectory(sets: [])
+        }
+        XCTAssertEqual(cached.slugs, value.slugs)
+        let loads = await counter.count
+        XCTAssertEqual(loads, 1)
+    }
+
+    func testFailedSharedDirectoryLoadCanBeRetried() async throws {
+        let provider = ProductSetDirectoryProvider()
+        do {
+            _ = try await provider.directory(for: .pokemon) { throw URLError(.notConnectedToInternet) }
+            XCTFail("Expected the download failure")
+        } catch let error as URLError { XCTAssertEqual(error.code, .notConnectedToInternet) }
+        let directory = try await provider.directory(for: .pokemon) {
+            ProductSetDirectory(sets: [(id: "base-set-pokemon", name: "Base Set")])
+        }
+        XCTAssertEqual(directory.slugs, ["base-set-pokemon"])
+    }
+
     func testEnglish151SetAliasResolvesThePublishedVendorSlug() {
         let slug = "sv-scarlet-violet-151-pokemon"
         let directory = ProductSetDirectory(sets: [

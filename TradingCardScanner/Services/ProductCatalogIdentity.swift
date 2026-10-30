@@ -321,6 +321,7 @@ actor ProductSetDirectoryProvider {
         now: Date = .now,
         load: @escaping @Sendable () async throws -> ProductSetDirectory
     ) async throws -> ProductSetDirectory {
+        try Task.checkCancellation()
         if let entry = entries[game],
            now >= entry.fetchedAt,
            now.timeIntervalSince(entry.fetchedAt) < ttl {
@@ -328,21 +329,39 @@ actor ProductSetDirectoryProvider {
         }
 
         if let task = inFlight[game] {
-            return try await task.value
+            return try await task.valueForCurrentWaiter()
         }
 
         let task = Task<ProductSetDirectory, Error> {
-            try await load()
+            defer { self.inFlight[game] = nil }
+            let directory = try await load()
+            self.entries[game] = Entry(directory: directory, fetchedAt: now)
+            return directory
         }
         inFlight[game] = task
-        do {
-            let directory = try await task.value
-            inFlight[game] = nil
-            entries[game] = Entry(directory: directory, fetchedAt: now)
-            return directory
-        } catch {
-            inFlight[game] = nil
-            throw error
+        return try await task.valueForCurrentWaiter()
+    }
+}
+
+extension Task where Success: Sendable, Failure == Error {
+    /// Cancellation releases this waiter without cancelling a shared download.
+    /// The download owns its cache publication and in-flight cleanup.
+    func valueForCurrentWaiter() async throws -> Success {
+        try Task<Never, Never>.checkCancellation()
+        let stream = AsyncThrowingStream<Success, Error> { continuation in
+            let observer = Task<Void, Never> {
+                do {
+                    continuation.yield(try await self.value)
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in observer.cancel() }
         }
+        var iterator = stream.makeAsyncIterator()
+        guard let value = try await iterator.next() else { throw _Concurrency.CancellationError() }
+        try Task<Never, Never>.checkCancellation()
+        return value
     }
 }

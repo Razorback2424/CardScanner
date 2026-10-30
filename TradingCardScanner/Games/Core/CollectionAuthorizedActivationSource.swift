@@ -187,7 +187,8 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
         self.capabilities = capabilities
     }
 
-    private func accept(_ snapshot: GameCatalogSnapshot) -> GameCatalogSnapshot? {
+    private func accept(_ snapshot: GameCatalogSnapshot,
+                        timeout: CollectionWriteSerializer.Timeout = .mainThread) throws -> GameCatalogSnapshot? {
         guard isCurrent(), snapshot.catalog.game == game, snapshot.revision >= 0,
               snapshot.priceAuthority == nil || snapshot.priceAuthority?.game == game else { return nil }
         if let accepted {
@@ -197,7 +198,7 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
             }
         }
         do {
-            let installed = try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { context in
+            let installed = try CollectionWriteSerializer.perform(container: container, timeout: timeout) { context in
                 guard CollectionStore.canInstallCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return false }
                 #if DEBUG
                 try snapshot.priceAuthority?.install(in: context, beforeSave: beforeSaveForTesting)
@@ -210,6 +211,7 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
             }
             guard installed else { return nil }
         }
+        catch CollectionStoreError.collectionBusy { throw CollectionStoreError.collectionBusy }
         catch { return nil } // No new authority or UI generation on a failed save.
         accepted = snapshot
         return snapshot
@@ -218,16 +220,35 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
     func currentSnapshot() async -> GameCatalogSnapshot? {
         guard isCurrent() else { return nil }
         guard let snapshot = await source.currentSnapshot() else { return accepted }
-        return accept(snapshot)
+        return try? accept(snapshot)
     }
 
     func activationSnapshots() async -> AsyncStream<GameCatalogSnapshot> {
         let events = await source.activationSnapshots()
         return AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let task = Task { @MainActor [weak self] in
+                var lastYieldedRevision = -1
                 for await snapshot in events {
                     guard !Task.isCancelled, let self else { break }
-                    if let installed = self.accept(snapshot) { continuation.yield(installed) }
+                    var candidate = snapshot
+                    while !Task.isCancelled, self.isCurrent() {
+                        do {
+                            if let installed = try self.accept(candidate, timeout: .immediate),
+                               installed.revision > lastYieldedRevision {
+                                lastYieldedRevision = installed.revision
+                                continuation.yield(installed)
+                            }
+                            break
+                        } catch CollectionStoreError.collectionBusy {
+                            // An import or another ownership write may outlast
+                            // this event. Retain it until publication is possible,
+                            // coalescing to the source's newest durable revision.
+                            do { try await Task.sleep(for: .milliseconds(100)) }
+                            catch { break }
+                            guard !Task.isCancelled, self.isCurrent() else { break }
+                            if let latest = await self.source.currentSnapshot() { candidate = latest }
+                        } catch { break }
+                    }
                 }
                 continuation.finish()
             }

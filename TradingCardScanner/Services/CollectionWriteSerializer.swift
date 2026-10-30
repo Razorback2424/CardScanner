@@ -12,6 +12,8 @@ import SwiftData
 /// fresh-context read/validate/save.
 enum CollectionWriteSerializer {
     enum Timeout: Equatable {
+        /// Publication retries must never wait on the UI thread.
+        case immediate
         /// Main-thread callers wait at most 1.5 seconds before reporting busy.
         case mainThread
         /// Background callers wait for the current ownership write to finish.
@@ -61,6 +63,8 @@ enum CollectionWriteSerializer {
         )
         let acquired: Bool
         switch timeout {
+        case .immediate:
+            acquired = ownershipLock.try()
         case .mainThread:
             acquired = ownershipLock.lock(before: Date.now.addingTimeInterval(1.5))
         case .wait:
@@ -114,6 +118,10 @@ enum CollectionWriteSerializer {
             throw CollectionStoreError.collectionBusy
         }
         switch timeout {
+        case .immediate:
+            guard ownershipLock.try() else {
+                throw CollectionStoreError.collectionBusy
+            }
         case .mainThread:
             guard ownershipLock.lock(before: Date.now.addingTimeInterval(1.5)) else {
                 throw CollectionStoreError.collectionBusy

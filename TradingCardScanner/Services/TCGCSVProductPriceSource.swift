@@ -120,6 +120,7 @@ actor TCGCSVProductPriceSource {
     }
 
     private func snapshot(group: GroupKey, generation: String?, minimumFetchedAt: Date?) async throws -> Snapshot {
+        try Task.checkCancellation()
         // A withdrawal starts a new request cohort. It must not join a fetch
         // that began before its watermark, even within the same generation.
         let key = CacheKey(group: group, generation: generation, minimumFetchedAt: minimumFetchedAt)
@@ -135,52 +136,50 @@ actor TCGCSVProductPriceSource {
            Date.now.timeIntervalSince(cached.fetchedAt) >= 0,
            Date.now.timeIntervalSince(cached.fetchedAt) < 86_400 { return cached }
         if let task = pending[key] {
-            let result = try await task.value
-            if minimumFetchedAt.map({ result.fetchedAt > $0 }) ?? true { return result }
-            throw PriceQuoteError.providerUnavailable
+            return try await task.valueForCurrentWaiter()
         }
         if let failure = failures[key], Date.now.timeIntervalSince(failure) < 900 {
             throw PriceQuoteError.providerUnavailable
         }
-        let task = Task {
-            let productsData = try await self.fetch(group: group, resource: "products")
-            let pricesData = try await self.fetch(group: group, resource: "prices")
-            let fetchedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData)
-            let products = try JSONDecoder().decode(Response<Product>.self, from: productsData)
-            let prices = try JSONDecoder().decode(Response<Price>.self, from: pricesData)
-            guard products.success, products.errors.isEmpty, prices.success, prices.errors.isEmpty,
-                  products.totalItems.map({ $0 == products.results.count }) ?? true,
-                  prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
+        let task = Task<Snapshot, Error> {
+            defer { self.pending[key] = nil }
+            let value: Snapshot
+            do {
+                let productsData = try await self.fetch(group: group, resource: "products")
+                let pricesData = try await self.fetch(group: group, resource: "prices")
+                let fetchedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData)
+                let products = try JSONDecoder().decode(Response<Product>.self, from: productsData)
+                let prices = try JSONDecoder().decode(Response<Price>.self, from: pricesData)
+                guard products.success, products.errors.isEmpty, prices.success, prices.errors.isEmpty,
+                      products.totalItems.map({ $0 == products.results.count }) ?? true,
+                      prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
+                    throw PriceQuoteError.providerUnavailable
+                }
+                value = Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
+                    catalogGeneration: generation)
+                try self.validate(value, group: group)
+                self.failures[key] = nil
+            } catch {
+                // Transport interruption stays retryable; rejected provider
+                // responses retain the existing cooldown.
+                if !(error is CancellationError), !(error is URLError) { self.failures[key] = .now }
+                throw error
+            }
+            guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
                 throw PriceQuoteError.providerUnavailable
             }
-            let snapshot = Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
-                catalogGeneration: generation)
-            try self.validate(snapshot, group: group)
-            return snapshot
+            // A slower, older request must not replace a newer observation.
+            if self.snapshots[group].map({ value.fetchedAt >= $0.fetchedAt }) ?? true {
+                self.snapshots[group] = value
+            }
+            if self.snapshots[group]?.fetchedAt == value.fetchedAt, let bytes = try? JSONEncoder().encode(value) {
+                try? FileManager.default.createDirectory(at: self.cacheDirectory, withIntermediateDirectories: true)
+                try? bytes.write(to: file, options: .atomic)
+            }
+            return value
         }
         pending[key] = task
-        defer { pending[key] = nil }
-        let value: Snapshot
-        do { value = try await task.value; failures[key] = nil }
-        catch {
-            // A transport interruption is not a provider response. Let a later
-            // user refresh retry when connectivity returns; retain the cooldown
-            // for rejected HTTP responses and malformed/failed feed envelopes.
-            if !(error is CancellationError), !(error is URLError) { failures[key] = .now }
-            throw error
-        }
-        guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
-            throw PriceQuoteError.providerUnavailable
-        }
-        // A slower, older request must not replace a newer cached observation.
-        if snapshots[group].map({ value.fetchedAt >= $0.fetchedAt }) ?? true {
-            snapshots[group] = value
-        }
-        if snapshots[group]?.fetchedAt == value.fetchedAt, let bytes = try? JSONEncoder().encode(value) {
-            try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-            try? bytes.write(to: file, options: .atomic)
-        }
-        return value
+        return try await task.valueForCurrentWaiter()
     }
 
     /// Reject invalid group responses before either cache can retain them for
