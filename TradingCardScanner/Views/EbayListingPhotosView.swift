@@ -121,7 +121,6 @@ struct EbayListingPhotosView: View {
     }
 
     @State private var mode: Mode = .single
-    @State private var isWorkflowActive = false
     @State private var frontPickerItem: PhotosPickerItem?
     @State private var backPickerItem: PhotosPickerItem?
     @State private var frontData: Data?
@@ -327,7 +326,6 @@ struct EbayListingPhotosView: View {
             Task { await loadSinglePhoto(.photo(item), side: .back, requestID: requestID) }
         }
         .onAppear {
-            isWorkflowActive = true
 #if DEBUG
             let arguments = ProcessInfo.processInfo.arguments
             if arguments.contains("ListingPhotos"), arguments.contains("generated"), singleOutput == nil {
@@ -401,7 +399,6 @@ struct EbayListingPhotosView: View {
             guard cameraSide == nil, inspectedPhoto == nil,
                   !isShowingOffer, !isShowingFileImporter, !isShowingPhotoPicker,
                   !isShowingCollection, !isShowingStyles, filesExport == nil else { return }
-            isWorkflowActive = false
             frontLoadGeneration &+= 1
             backLoadGeneration &+= 1
             singleGeneration &+= 1
