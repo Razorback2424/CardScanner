@@ -659,6 +659,62 @@ final class ProductFallbackTests: XCTestCase {
 
     // MARK: - Vendor-native rows
 
+    func testAmbiguousNumberedProductsDoNotBindInEitherResponseOrder() async throws {
+        let first = fallbackProduct(id: "red-product", name: "Pikachu (Red Cheeks)", number: "58/102", amount: 10)
+        let second = fallbackProduct(id: "yellow-product", name: "Pikachu (Yellow Cheeks)", number: "58/102", amount: 20)
+        for products in [[first, second], [second, first], [first, first]] {
+            let outcome = try await fallbackQuote(products: products)
+            XCTAssertEqual(outcome, .noProductMatch)
+            XCTAssertNil(outcome.vendorCardID)
+            XCTAssertNil(outcome.vendorVariantID)
+        }
+    }
+
+    func testUniqueNumberedProductStillBindsWithUnrelatedSearchResults() async throws {
+        let matching = fallbackProduct(id: "exact-product", name: "Pikachu", number: "58/102", amount: 10)
+        let unrelated = fallbackProduct(id: "other-product", name: "Pikachu", number: "59/102", amount: 20)
+        let outcome = try await fallbackQuote(products: [unrelated, matching])
+        guard case let .price(price, cardID, variantID) = outcome else { return XCTFail("Expected the unique product") }
+        XCTAssertEqual(price.unitMarketPriceUSD, 10)
+        XCTAssertEqual(cardID, "exact-product")
+        XCTAssertEqual(variantID, "exact-product-normal")
+    }
+
+    private func fallbackProduct(id: String, name: String, number: String, amount: Double) -> [String: Any] {
+        ["id": id, "name": name, "set": "base-set-pokemon", "number": number,
+         "variants": [["condition": "Near Mint", "printing": "Normal", "price": amount,
+                       "currency": "USD", "uuid": id + "-normal"]]]
+    }
+
+    private func fallbackQuote(products: [[String: Any]]) async throws -> ProductPriceOutcome {
+        let suite = "ProductFallbackTests.matching.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        let previousKey = PriceVendorCredentials.key
+        defer {
+            defaults.removePersistentDomain(forName: suite)
+            if let previousKey { try? PriceVendorCredentials.store(previousKey) }
+            else { PriceVendorCredentials.remove() }
+        }
+        try PriceVendorCredentials.store("product-matching-fixture-key")
+        let body = try JSONSerialization.data(withJSONObject: ["data": products])
+        ProductPriceTestURLProtocol.reset(body: String(decoding: body, as: UTF8.self))
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [ProductPriceTestURLProtocol.self]
+        var configuration = ProductPriceService.Configuration()
+        configuration.baseURL = URL(string: "https://justtcg.test/v1")!
+        configuration.minimumRequestInterval = 0
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .pokemon) {
+            ProductSetDirectory(sets: [(id: "base-set-pokemon", name: "Base Set")])
+        }
+        let service = ProductPriceService(configuration: configuration,
+            session: URLSession(configuration: sessionConfiguration), pacer: JustTCGPacer(),
+            budget: ProductFallbackBudget(defaults: defaults), setDirectoryProvider: directory)
+        return await service.quote(for: .init(game: .pokemon, catalogID: "base1-58", name: "Pikachu",
+            setName: "Base Set", cardNumber: "58/102", japaneseSetID: nil, pokemonPrintRun: nil,
+            vendorCardID: nil, magicTreatmentIDsRaw: []), variant: .normal, lane: .interactive)
+    }
+
     /// A sealed box has no TCGdex or Scryfall identity, so it must not be sent
     /// down the catalog pass: that spends a request to learn nothing and then
     /// stamps a price failure that reads as though something went wrong.

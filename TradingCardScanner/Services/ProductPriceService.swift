@@ -244,7 +244,10 @@ actor ProductPriceService {
                         catalog: $0.name
                     )
             }
-            guard let card = numbered.first ?? (unnumbered.count == 1 ? unnumbered[0] : nil) else {
+            // A printed number can still be shared by different marketplace
+            // products. Response order is not evidence for choosing one.
+            let matches = numbered.isEmpty ? unnumbered : numbered
+            guard matches.count == 1, let card = matches.first else {
                 return .noProductMatch
             }
 
