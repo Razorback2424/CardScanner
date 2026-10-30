@@ -408,6 +408,7 @@ struct BrowseView: View {
     private static let pokemonReleaseOrderBackfillVersion = 1
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     @EnvironmentObject private var setCompletionStore: CatalogSetCompletionStore
     let catalog: any BrowseCatalogProviding
@@ -555,7 +556,10 @@ struct BrowseView: View {
             .background(.quaternary.opacity(0.65), in: RoundedRectangle(cornerRadius: 14))
 
             if model.isSearching {
-                HStack {
+                let filtersLayout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                    : AnyLayout(HStackLayout(spacing: 8))
+                filtersLayout {
                     if recoveryGame == nil {
                         Menu {
                             Button("All Games") { model.selectedGame = nil }
@@ -578,9 +582,10 @@ struct BrowseView: View {
                     }
                     .buttonStyle(.bordered)
                     .accessibilityHint("Filters card results only")
-                    Spacer()
+                    if !dynamicTypeSize.isAccessibilitySize { Spacer() }
                 }
                 .font(.subheadline)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }
@@ -754,11 +759,7 @@ struct BrowseView: View {
         private var artworks: [CatalogGameArtwork] {
             var result = ownedRows.prefix(3).enumerated().map { index, row in
                 let artwork = CatalogCardArtworkSource(
-                    game: row.game,
-                    setCode: row.setCode,
-                    collectorNumber: row.cardNumber,
-                    thumbnailURL: row.lowImageURL,
-                    imageURL: row.highImageURL,
+                    collectionRow: row,
                     prefersFullSize: false
                 )
                 return CatalogGameArtwork(
@@ -930,6 +931,7 @@ struct BrowseView: View {
 }
 
 private struct CatalogSearchResultRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let result: CatalogSearchResult
 
     private var cardArtwork: CatalogCardArtworkSource? {
@@ -962,6 +964,11 @@ private struct CatalogSearchResultRow: View {
 
     private var imageFallbacks: [URL] { cardArtwork?.fallbacks ?? [] }
 
+    private var availabilityNotice: String? {
+        guard case let .card(summary) = result else { return nil }
+        return summary.collectionAvailabilityNotice
+    }
+
     private var secondaryText: String {
         switch result {
         case let .card(summary):
@@ -985,7 +992,10 @@ private struct CatalogSearchResultRow: View {
             .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
 
             VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 6) {
+                let badgesLayout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+                    : AnyLayout(HStackLayout(spacing: 6))
+                badgesLayout {
                     CatalogSearchBadge(text: result.kind == .card ? "Card" : "Sealed")
                     CatalogSearchBadge(text: result.game.label)
                 }
@@ -999,6 +1009,12 @@ private struct CatalogSearchResultRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
+
+                if let notice = availabilityNotice {
+                    Text(notice)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Spacer(minLength: 8)
@@ -1013,6 +1029,7 @@ private struct CatalogSearchResultRow: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "\(result.name), \(result.kind == .card ? "Card" : "Sealed"), \(result.game.label), \(secondaryText)"
+                + (availabilityNotice.map { ", \($0)" } ?? "")
         )
     }
 }
@@ -2741,6 +2758,12 @@ private struct CatalogCardDisplayGroupTile: View {
                 .font(.headline)
                 .lineLimit(2)
 
+            if let notice = preferred.collectionAvailabilityNotice {
+                Text(notice)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+            }
+
             if let treatment = preferred.magicTreatmentDisplayLabel {
                 CatalogTreatmentBadge(label: treatment)
             }
@@ -2815,7 +2838,8 @@ private struct CatalogCardDisplayGroupTile: View {
         let price = prices[summary.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
         let variant = summary.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
         let treatment = summary.magicTreatmentDisplayLabel.map { ", \($0) treatment" } ?? ""
-        return "\(summary.name), \(summary.setName), card \(summary.collectorNumber)\(variant)\(treatment)\(price)\(ownedQuantity > 0 ? ", owned quantity \(ownedQuantity)" : ", missing")"
+        let availability = summary.collectionAvailabilityNotice.map { ", \($0)" } ?? ""
+        return "\(summary.name), \(summary.setName), card \(summary.collectorNumber)\(variant)\(treatment)\(price)\(ownedQuantity > 0 ? ", owned quantity \(ownedQuantity)" : ", missing")\(availability)"
     }
 }
 

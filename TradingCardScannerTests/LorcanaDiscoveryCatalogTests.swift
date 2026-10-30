@@ -205,6 +205,37 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         XCTAssertNotNil(runtime.pricing); XCTAssertNotNil(runtime.importer)
     }
 
+    func testBrowseAvailabilityMatchesReviewedAcquisitionAuthority() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let sets = try await catalog.sets()
+        let recent = try XCTUnwrap(sets.first { $0.code == "14" })
+        XCTAssertEqual(recent.collectionAvailabilityNotice, "Browse only")
+        XCTAssertEqual(recent.withSortRank(99).collectionAvailabilityNotice, "Browse only")
+        let recentCards = try await catalog.cards(in: recent, cursor: nil)
+        let recentCard = try XCTUnwrap(recentCards.items.first)
+        XCTAssertEqual(recentCard.collectionAvailabilityNotice, "Browse only")
+        let recentDetail = try await catalog.details(for: recentCard)
+        XCTAssertNotNil(recentDetail.collectionWriteUnavailableReason)
+
+        let firstSet = try XCTUnwrap(sets.first { $0.code == "1" })
+        XCTAssertEqual(firstSet.collectionAvailabilityNotice, "Some cards are browse only")
+        let firstCards = try await catalog.cards(in: firstSet, cursor: nil)
+        let reviewedCard = try XCTUnwrap(firstCards.items.first { $0.collectionAvailabilityNotice == nil })
+        let reviewedDetail = try await catalog.details(for: reviewedCard)
+        XCTAssertNil(reviewedDetail.collectionWriteUnavailableReason)
+
+        let search = try await catalog.search(query: recentCard.name, setIDs: [recent.catalogID], cursor: nil)
+        XCTAssertTrue(search.items.contains { $0.id == recentCard.id && $0.collectionAvailabilityNotice == "Browse only" })
+        let decorated = recentCard.withArtwork(thumbnailURL: nil, imageURL: nil)
+        XCTAssertEqual(decorated.collectionAvailabilityNotice, "Browse only")
+        let encoded = try JSONEncoder().encode(decorated)
+        XCTAssertEqual(try JSONDecoder().decode(CatalogCardSummary.self, from: encoded).collectionAvailabilityNotice, "Browse only")
+        var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        legacy.removeValue(forKey: "collectionAvailabilityNotice")
+        let legacyData = try JSONSerialization.data(withJSONObject: legacy)
+        XCTAssertNil(try JSONDecoder().decode(CatalogCardSummary.self, from: legacyData).collectionAvailabilityNotice)
+    }
+
     func testAllReviewedUnnumberedCardsRequireExactTitlesAndQuestMarkers() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundled.get()
         let recognizer = LorcanaDiscoveryRecognizer(catalog: catalog)

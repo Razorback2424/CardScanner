@@ -230,10 +230,16 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             var set = CatalogSet(catalogID: id, name: name, code: first.setCode,
                 logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: date,
                 sortRank: Int(first.setCode) ?? 0)
+            let browseOnlyCount = ordered.filter { physicalIDs[$0.id] == nil }.count
+            if browseOnlyCount > 0 {
+                set.collectionAvailabilityNotice = browseOnlyCount == ordered.count
+                    ? "Browse only" : "Some cards are browse only"
+            }
             let rows = ordered.map { card in
                 let summary = CatalogCardSummary(game: .lorcana, providerID: physicalIDs[card.id]?.uuidString.lowercased() ?? card.id, setID: id, setName: set.name,
                     setCode: card.setCode, name: card.name, collectorNumber: card.footer?.collectorNumber ?? card.number,
-                    thumbnailURL: card.thumbnailURL, imageURL: card.imageURL, catalogGeneration: catalogGeneration)
+                    thumbnailURL: card.thumbnailURL, imageURL: card.imageURL, catalogGeneration: catalogGeneration,
+                    collectionAvailabilityNotice: physicalIDs[card.id] == nil ? "Browse only" : nil)
                 texts[summary.id] = CardNameSearch.normalize([card.name, card.printedIdentifier, card.setName,
                     card.setCode, card.distribution ?? ""].joined(separator: " "))
                 return summary

@@ -97,6 +97,9 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     var cardArtwork: [String: CatalogCardArtwork]? = nil
     /// Exact physical membership for catalogs with many-to-many product appearances.
     var physicalPrintingIDs: Set<String>? = nil
+    /// Catalog-owned availability copy, shown before entering an unavailable
+    /// acquisition flow. Absent in older cached directories.
+    var collectionAvailabilityNotice: String? = nil
 
     init(
         catalogID: CatalogSetID,
@@ -111,7 +114,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         artworkFallbackURLs: [URL]? = nil,
         limitlessArtworkAuthorized: Bool? = nil,
         cardArtwork: [String: CatalogCardArtwork]? = nil,
-        physicalPrintingIDs: Set<String>? = nil
+        physicalPrintingIDs: Set<String>? = nil,
+        collectionAvailabilityNotice: String? = nil
     ) {
         self.catalogID = catalogID
         self.name = name
@@ -126,6 +130,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
         self.cardArtwork = cardArtwork
         self.physicalPrintingIDs = physicalPrintingIDs
+        self.collectionAvailabilityNotice = collectionAvailabilityNotice
     }
 
     /// Only virtual WotC set rows carry this. The provider set ID remains the
@@ -146,12 +151,13 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
             cardCount: cardCount, releaseDate: releaseDate, sortRank: rank,
             bundledArtworkSourceID: bundledArtworkSourceID, artworkFallbackURLs: artworkFallbackURLs,
             limitlessArtworkAuthorized: limitlessArtworkAuthorized, cardArtwork: cardArtwork,
-            physicalPrintingIDs: physicalPrintingIDs)
+            physicalPrintingIDs: physicalPrintingIDs, collectionAvailabilityNotice: collectionAvailabilityNotice)
     }
 }
 
 struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     var catalogGeneration: String? = nil
+    var collectionAvailabilityNotice: String? = nil
     let game: CardGame
     let providerID: String
     let setID: CatalogSetID
@@ -200,7 +206,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         magicTreatmentIDsRaw: [String] = [],
         magicTreatmentQualifiers: [String: String] = [:],
         limitlessArtworkAuthorized: Bool? = nil,
-        catalogGeneration: String? = nil
+        catalogGeneration: String? = nil,
+        collectionAvailabilityNotice: String? = nil
     ) {
         self.game = game
         self.providerID = providerID
@@ -213,6 +220,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         self.imageURL = imageURL
         self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
         self.catalogGeneration = catalogGeneration
+        self.collectionAvailabilityNotice = collectionAvailabilityNotice
         let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDsRaw)
         self.magicTreatmentIDsRaw = storedTreatmentIDs
         let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
@@ -241,7 +249,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             magicTreatmentIDsRaw: magicTreatmentIDsRaw,
             magicTreatmentQualifiers: magicTreatmentQualifiers,
             limitlessArtworkAuthorized: limitlessArtworkAuthorized,
-            catalogGeneration: catalogGeneration
+            catalogGeneration: catalogGeneration,
+            collectionAvailabilityNotice: collectionAvailabilityNotice
         )
     }
 
@@ -249,6 +258,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         case game, providerID, setID, setName, setCode, name, collectorNumber
         case thumbnailURL, imageURL
         case catalogGeneration
+        case collectionAvailabilityNotice
         case limitlessArtworkAuthorized
         case magicTreatmentIDsRaw, magicTreatmentQualifiers
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
@@ -257,6 +267,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         catalogGeneration = try container.decodeIfPresent(String.self, forKey: .catalogGeneration)
+        collectionAvailabilityNotice = try container.decodeIfPresent(String.self, forKey: .collectionAvailabilityNotice)
         game = try container.decode(CardGame.self, forKey: .game)
         providerID = try container.decode(String.self, forKey: .providerID)
         setID = try container.decode(CatalogSetID.self, forKey: .setID)
@@ -299,6 +310,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(catalogGeneration, forKey: .catalogGeneration)
+        try container.encodeIfPresent(collectionAvailabilityNotice, forKey: .collectionAvailabilityNotice)
         try container.encode(game, forKey: .game)
         try container.encode(providerID, forKey: .providerID)
         try container.encode(setID, forKey: .setID)

@@ -207,13 +207,15 @@ struct CatalogCardDetailView: View {
                 .disabled(isWritePending || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
                     || details.collectionWriteUnavailableReason != nil)
 
-                // A slab is a distinct object with a grade the user chooses.
-                Button { showsGradedPicker = true } label: {
-                    Label("Add Graded Copy", systemImage: "seal")
-                        .frame(maxWidth: .infinity, minHeight: 50)
+                if catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]) {
+                    // A slab is a distinct object with a grade the user chooses.
+                    Button { showsGradedPicker = true } label: {
+                        Label("Add Graded Copy", systemImage: "seal")
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(isWritePending)
                 }
-                .buttonStyle(.bordered)
-                .disabled(isWritePending || !catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]))
             }
         }
         .padding(20)

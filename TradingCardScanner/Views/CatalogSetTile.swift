@@ -90,6 +90,18 @@ struct CatalogSetTile: View {
                     .lineLimit(1)
             }
 
+            if set.collectionAvailabilityNotice != nil || layout == .rail {
+                // A horizontal lazy rail measures its height from the first
+                // visible tiles. Reserve this space before a later notice
+                // appears so it cannot be clipped by that initial height.
+                Text(set.collectionAvailabilityNotice ?? "Some cards are browse only")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .opacity(set.collectionAvailabilityNotice == nil ? 0 : 1)
+                    .accessibilityHidden(set.collectionAvailabilityNotice == nil)
+            }
+
             completionFooter
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -121,7 +133,8 @@ struct CatalogSetTile: View {
         let progress = completion.total.map { "\(owned) of \($0) \(unitPlural) collected" }
             ?? "\(owned) collected"
         let art = (artworkPhase == .failed || artworkSource.candidates.isEmpty) ? ", artwork unavailable" : ""
-        return "\(set.name), \(progress), set code \(set.code)\(art)"
+        let availability = set.collectionAvailabilityNotice.map { ", \($0)" } ?? ""
+        return "\(set.name), \(progress), set code \(set.code)\(art)\(availability)"
     }
 
     private var artworkBox: some View {
