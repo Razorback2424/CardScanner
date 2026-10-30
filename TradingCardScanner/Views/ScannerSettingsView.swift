@@ -896,7 +896,11 @@ struct PriceFallbackSettingsSection: View {
     }
 
     private func removeVendorKey() {
-        PriceVendorCredentials.remove()
+        guard PriceVendorCredentials.remove() else {
+            vendorKeyMessageIsError = true
+            vendorKeyMessage = "The API key could not be removed from Keychain. Please try again."
+            return
+        }
         vendorKeyEntry = ""
         hasVendorKey = false
         usesPriceFallback = false
