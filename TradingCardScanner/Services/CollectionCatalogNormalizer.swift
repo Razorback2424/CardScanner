@@ -69,7 +69,7 @@ fileprivate struct ImportedCatalogNormalizationInputs: Sendable {
 /// human-readable identity into provider metadata without involving pricing.
 @MainActor
 final class CollectionCatalogNormalizer: ObservableObject {
-    typealias ContinuationCheck = @MainActor @Sendable () -> Bool
+    typealias ContinuationCheck = StorageGenerationContinuation
 
     enum Status: Equatable {
         case idle
@@ -203,145 +203,19 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 row.itemKind != .rawCard && row.marketVariantID != marketVariantID
             }
         }
-        func applyResolvedMetadata() throws {
-            try CollectionWriteSerializer.perform(
-                container: container,
-                timeout: .mainThread
-            ) { writeContext in
-                    let store = CollectionStore(context: writeContext, gameRegistry: gameRegistry)
-                    let priceLog = PriceObservationLog(context: writeContext)
-                    for request in requests {
-                        guard shouldContinue?() ?? true else {
-                            throw CancellationError()
-                        }
-                        let snapshots = rowIdentitiesByProviderID[request.identityKey] ?? []
-                        let rowKeys = Array(Set(snapshots.map(\.collectionKey)))
-                        guard !rowKeys.isEmpty else { continue }
-                        let liveRows = try writeContext.fetch(
-                            FetchDescriptor<CollectedCard>(
-                                predicate: #Predicate { rowKeys.contains($0.collectionKey) }
-                            )
-                        )
-                        let snapshotsByKey = Dictionary(
-                            snapshots.map { ($0.collectionKey, $0) },
-                            uniquingKeysWith: { first, _ in first }
-                        )
-                        let rows = liveRows.filter { row in
-                            guard row.cardGame == request.game,
-                                  store.permitsSyncedMetadataWrite(for: row) else { return false }
-                            guard let snapshot = snapshotsByKey[row.collectionKey] else { return false }
-                            return row.priceKey == snapshot.priceKey
-                                && row.providerID == snapshot.providerID
-                                && row.catalogProviderID == snapshot.catalogProviderID
-                                && row.justTCGVariantID == snapshot.marketVariantID
-                        }
-                        if let metadata = matches[request.identityKey] {
-                            for row in rows {
-                                if row.itemKind == .sealedProduct {
-                                    guard row.justTCGCardID == nil || row.justTCGCardID == metadata.justTCGCardID,
-                                          row.justTCGVariantID == nil || row.justTCGVariantID == metadata.justTCGVariantID else { continue }
-                                }
-                                let exactIdentityMatches: Bool
-                                let preserveExistingMetadata: Bool
-                                if let exactCatalogID = row.catalogProviderID {
-                                    exactIdentityMatches = exactCatalogID == metadata.providerID
-                                    preserveExistingMetadata = exactIdentityMatches
-                                } else {
-                                    exactIdentityMatches = row.providerID == metadata.providerID
-                                        || row.providerID.hasPrefix("csv:")
-                                        || (row.itemKind == .sealedProduct
-                                            && row.justTCGCardID == metadata.justTCGCardID
-                                            && row.justTCGCardID != nil
-                                            && row.justTCGVariantID == metadata.justTCGVariantID
-                                            && row.justTCGVariantID != nil)
-                                    preserveExistingMetadata = row.providerID == metadata.providerID
-                                        || (row.itemKind == .sealedProduct && row.justTCGCardID == metadata.justTCGCardID)
-                                }
-                                guard exactIdentityMatches else { continue }
-                                let previousVariantID = row.justTCGVariantID
-                                let previousPriceKey = row.priceKey
-                                if previousVariantID == nil,
-                                   let currentVariantID = metadata.justTCGVariantID {
-                                    let apiVersion = metadata.justTCGAPIVersion
-                                        ?? (row.itemKind == .gradedCard ? "v2" : "v1")
-                                    try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
-                                        for: row,
-                                        toMarketVariantID: currentVariantID,
-                                        apiVersion: apiVersion,
-                                        in: writeContext
-                                    )
-                                }
-                                row.applyCatalogMetadata(
-                                    metadata,
-                                    fillMissingOnly: preserveExistingMetadata
-                                )
-                                let normalizedRow: CollectedCard
-                                if row.itemKind == .sealedProduct,
-                                   let productID = metadata.justTCGCardID,
-                                   let marketVariantID = metadata.justTCGVariantID {
-                                    let canonicalKey = CollectedCard.sealedCollectionKey(
-                                        game: row.cardGame,
-                                        productUUID: productID,
-                                        variantUUID: marketVariantID,
-                                        magicTreatments: row.magicTreatments
-                                    )
-                                    normalizedRow = try store.rekey(
-                                        row,
-                                        to: canonicalKey,
-                                        magicTreatmentIDsRaw: row.magicTreatmentIDsRaw,
-                                        magicTreatmentQualifiers: row.magicTreatmentQualifiers
-                                    )
-                                    normalizedRow.applyCatalogMetadata(
-                                        metadata,
-                                        fillMissingOnly: preserveExistingMetadata
-                                    )
-                                } else {
-                                    normalizedRow = row
-                                }
-                                Self.recordCatalogMetadataCheck(on: normalizedRow, at: now)
-                                if let previousVariantID,
-                                   let currentVariantID = metadata.justTCGVariantID,
-                                   previousVariantID != currentVariantID {
-                                    _ = priceLog.recordInvalidation(
-                                        instrumentKey: previousPriceKey,
-                                        source: .justTCG,
-                                        at: now
-                                    )
-                                }
-                            }
-                        } else {
-                            var version = Self.metadataVersion
-                            if request.itemKind == .sealedProduct {
-                                switch resolution.sealedOutcomes[request.identityKey] {
-                                case .definitiveMiss: version = -Self.metadataVersion
-                                case .transientFailure: break
-                                case .unattempted, nil: continue
-                                }
-                            }
-                            for row in rows {
-                                Self.recordCatalogMetadataCheck(
-                                    on: row,
-                                    at: now,
-                                    version: version
-                                )
-                            }
-                        }
-                    }
-                    if writeContext.hasChanges {
-                        try store.validatePendingGameWrites()
-                        try writeContext.save()
-                    }
-                }
+        func applyResolvedMetadata() async throws {
+            try await inputActor.apply(resolution, inputs: inputs, now: now,
+                gameRegistry: gameRegistry, shouldContinue: shouldContinue)
         }
 
         do {
             if needsIdentityGate {
                 try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                    try applyResolvedMetadata()
+                    try await applyResolvedMetadata()
                 }
             } else {
                 try await CollectionExclusiveWrites.retryingIfRequired {
-                    try applyResolvedMetadata()
+                    try await applyResolvedMetadata()
                 }
             }
             guard shouldContinue?() ?? true else {
@@ -467,6 +341,148 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
     init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
         self.modelContainer = modelContainer
         self.modelExecutor = modelExecutor
+    }
+
+    fileprivate func apply(
+        _ resolution: ImportedCatalogResolution,
+        inputs: ImportedCatalogNormalizationInputs,
+        now: Date,
+        gameRegistry: CardGameRegistry,
+        shouldContinue: StorageGenerationContinuation?
+    ) throws {
+        guard !Task.isCancelled, shouldContinue?() ?? true else { throw CancellationError() }
+        let requests = inputs.requests
+        let rowIdentitiesByProviderID = inputs.rowIdentitiesByProviderID
+        let matches = resolution.matches
+        try CollectionWriteSerializer.perform(
+            container: modelContainer,
+            timeout: .wait
+        ) { writeContext in
+                let store = CollectionStore(context: writeContext, gameRegistry: gameRegistry)
+                let priceLog = PriceObservationLog(context: writeContext)
+                for request in requests {
+                    guard !Task.isCancelled, shouldContinue?() ?? true else {
+                        throw CancellationError()
+                    }
+                    let snapshots = rowIdentitiesByProviderID[request.identityKey] ?? []
+                    let rowKeys = Array(Set(snapshots.map(\.collectionKey)))
+                    guard !rowKeys.isEmpty else { continue }
+                    let liveRows = try writeContext.fetch(
+                        FetchDescriptor<CollectedCard>(
+                            predicate: #Predicate { rowKeys.contains($0.collectionKey) }
+                        )
+                    )
+                    let snapshotsByKey = Dictionary(
+                        snapshots.map { ($0.collectionKey, $0) },
+                        uniquingKeysWith: { first, _ in first }
+                    )
+                    let rows = liveRows.filter { row in
+                        guard row.cardGame == request.game,
+                              store.permitsSyncedMetadataWrite(for: row) else { return false }
+                        guard let snapshot = snapshotsByKey[row.collectionKey] else { return false }
+                        return row.priceKey == snapshot.priceKey
+                            && row.providerID == snapshot.providerID
+                            && row.catalogProviderID == snapshot.catalogProviderID
+                            && row.justTCGVariantID == snapshot.marketVariantID
+                    }
+                    if let metadata = matches[request.identityKey] {
+                        for row in rows {
+                            if row.itemKind == .sealedProduct {
+                                guard row.justTCGCardID == nil || row.justTCGCardID == metadata.justTCGCardID,
+                                      row.justTCGVariantID == nil || row.justTCGVariantID == metadata.justTCGVariantID else { continue }
+                            }
+                            let exactIdentityMatches: Bool
+                            let preserveExistingMetadata: Bool
+                            if let exactCatalogID = row.catalogProviderID {
+                                exactIdentityMatches = exactCatalogID == metadata.providerID
+                                preserveExistingMetadata = exactIdentityMatches
+                            } else {
+                                exactIdentityMatches = row.providerID == metadata.providerID
+                                    || row.providerID.hasPrefix("csv:")
+                                    || (row.itemKind == .sealedProduct
+                                        && row.justTCGCardID == metadata.justTCGCardID
+                                        && row.justTCGCardID != nil
+                                        && row.justTCGVariantID == metadata.justTCGVariantID
+                                        && row.justTCGVariantID != nil)
+                                preserveExistingMetadata = row.providerID == metadata.providerID
+                                    || (row.itemKind == .sealedProduct && row.justTCGCardID == metadata.justTCGCardID)
+                            }
+                            guard exactIdentityMatches else { continue }
+                            let previousVariantID = row.justTCGVariantID
+                            let previousPriceKey = row.priceKey
+                            if previousVariantID == nil,
+                               let currentVariantID = metadata.justTCGVariantID {
+                                let apiVersion = metadata.justTCGAPIVersion
+                                    ?? (row.itemKind == .gradedCard ? "v2" : "v1")
+                                try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                                    for: row,
+                                    toMarketVariantID: currentVariantID,
+                                    apiVersion: apiVersion,
+                                    in: writeContext
+                                )
+                            }
+                            row.applyCatalogMetadata(
+                                metadata,
+                                fillMissingOnly: preserveExistingMetadata
+                            )
+                            let normalizedRow: CollectedCard
+                            if row.itemKind == .sealedProduct,
+                               let productID = metadata.justTCGCardID,
+                               let marketVariantID = metadata.justTCGVariantID {
+                                let canonicalKey = CollectedCard.sealedCollectionKey(
+                                    game: row.cardGame,
+                                    productUUID: productID,
+                                    variantUUID: marketVariantID,
+                                    magicTreatments: row.magicTreatments
+                                )
+                                normalizedRow = try store.rekey(
+                                    row,
+                                    to: canonicalKey,
+                                    magicTreatmentIDsRaw: row.magicTreatmentIDsRaw,
+                                    magicTreatmentQualifiers: row.magicTreatmentQualifiers
+                                )
+                                normalizedRow.applyCatalogMetadata(
+                                    metadata,
+                                    fillMissingOnly: preserveExistingMetadata
+                                )
+                            } else {
+                                normalizedRow = row
+                            }
+                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(on: normalizedRow, at: now)
+                            if let previousVariantID,
+                               let currentVariantID = metadata.justTCGVariantID,
+                               previousVariantID != currentVariantID {
+                                _ = priceLog.recordInvalidation(
+                                    instrumentKey: previousPriceKey,
+                                    source: .justTCG,
+                                    at: now
+                                )
+                            }
+                        }
+                    } else {
+                        var version = CollectionCatalogNormalizer.metadataVersion
+                        if request.itemKind == .sealedProduct {
+                            switch resolution.sealedOutcomes[request.identityKey] {
+                            case .definitiveMiss: version = -CollectionCatalogNormalizer.metadataVersion
+                            case .transientFailure: break
+                            case .unattempted, nil: continue
+                            }
+                        }
+                        for row in rows {
+                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                                on: row,
+                                at: now,
+                                version: version
+                            )
+                        }
+                    }
+                }
+                guard !Task.isCancelled, shouldContinue?() ?? true else { throw CancellationError() }
+                if writeContext.hasChanges {
+                    try store.validatePendingGameWrites()
+                    try writeContext.save()
+                }
+            }
     }
 
     fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry, retryFailedSealed: Bool) -> ImportedCatalogNormalizationInputs {

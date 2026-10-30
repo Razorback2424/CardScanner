@@ -140,6 +140,69 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
 /// have not got any, which is the case these tests protect.
 @MainActor
 final class CatalogNormalizationTests: XCTestCase {
+    func testMetadataApplyKeepsMainActorResponsiveAndRechecksRetiredStorageAfterLockWait() async throws {
+        for retireStorage in [false, true] {
+            let container = try ProductionRowFixtures.makeContainer()
+            self.container = container
+            container.mainContext.insert(importedSealedProduct())
+            try container.mainContext.save()
+            let product = SealedProductSummary(id: "product", name: "Booster Box", setName: "Base Set",
+                variantID: "sealed-variant", marketPriceUSD: 100, updatedAt: nil,
+                imageURL: URL(string: "https://example.test/box.png"))
+            let fixture = SealedNormalizationFixture(product: product)
+            await fixture.pauseNextDirectory()
+            let normalizer = CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource(), justTCG: fixture,
+                sealedCredentialsAvailable: true)
+            let generation = CollectionStorageGeneration()
+            generation.installReady(storeID: UUID())
+            let current = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+            let heartbeat = DispatchSemaphore(value: 0)
+            let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+            CollectionWriteSerializer.enforcesOwnershipRule = true
+            defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+            let task = Task {
+                await normalizer.normalizeImportedCards(in: container, shouldContinue: {
+                    if !Thread.isMainThread {
+                        DispatchQueue.main.async {
+                            if retireStorage { generation.suspend() }
+                            heartbeat.signal()
+                        }
+                    }
+                    return current()
+                })
+            }
+            for _ in 0..<500 {
+                if await fixture.isPaused { break }
+                try await Task.sleep(for: .milliseconds(10))
+            }
+            let paused = await fixture.isPaused
+            guard paused else {
+                task.cancel()
+                await fixture.resumeDirectory()
+                await task.value
+                return XCTFail("Normalization never reached the provider gate")
+            }
+            let locked = expectation(description: "Ownership lock held")
+            let holder = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return heartbeat.wait(timeout: .now() + 1) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+            await fixture.resumeDirectory()
+            await task.value
+            let mainActorRanWhileLocked = try await holder.value
+            XCTAssertTrue(mainActorRanWhileLocked, "Metadata apply must not wait on the main actor")
+            let fresh = ModelContext(container)
+            let row = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(row.catalogProviderID, retireStorage ? nil : product.id)
+            XCTAssertEqual(row.imageURL, retireStorage ? nil : product.imageURL?.absoluteString)
+            XCTAssertEqual(row.catalogMetadataVersion, retireStorage ? 0 : CollectionCatalogNormalizer.metadataVersion)
+        }
+    }
+
     func testMissingSealedCredentialsDoNotStampAnUnattemptedLookup() async throws {
         let container = try ProductionRowFixtures.makeContainer()
         self.container = container

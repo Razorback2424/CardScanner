@@ -637,9 +637,7 @@ private struct SettingsContentView: View {
                     guard storageGeneration.isCurrent(storageToken) else { return }
                     await catalogNormalizer.normalizeImportedCards(
                         in: container,
-                        shouldContinue: {
-                            storageGeneration.isCurrent(storageToken)
-                        }
+                        shouldContinue: storageGeneration.continuation(for: storageToken)
                     )
                 }
                 var details = "Added \(result.importedQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
