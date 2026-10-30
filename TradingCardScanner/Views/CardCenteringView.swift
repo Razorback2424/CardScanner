@@ -63,7 +63,7 @@ final class CardCenteringViewModel: ObservableObject {
     @Published var isAnalyzing = false
     @Published var errorMessage: String?
 
-    private var sourceData: Data?
+    private var hasLoadedSource = false
     private var loadGeneration = 0
     private var analysisGeneration = 0
 
@@ -227,7 +227,7 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     private func acceptImageData(_ data: Data) {
-        sourceData = data
+        hasLoadedSource = true
         selectedPhoto = nil
         analyze(data, rotationDegrees: 0)
     }
@@ -279,7 +279,7 @@ final class CardCenteringViewModel: ObservableObject {
     /// Gives the screenshot route a stable, local image so the centering controls
     /// can be checked without a Photos permission prompt or a camera session.
     func loadDebugFixtureIfNeeded() {
-        guard sourceData == nil else { return }
+        guard !hasLoadedSource else { return }
 
         let arguments = ProcessInfo.processInfo.arguments
         if let index = arguments.firstIndex(of: "-ui_debug_fixture_path"),
