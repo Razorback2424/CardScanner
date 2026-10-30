@@ -461,6 +461,34 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(index.checkedInstruments(on: youngEpoch), ["instrument"])
     }
 
+    func testCoverageReadStartsNearNewestPublishedClose() throws {
+        let context = try makeContext()
+        let zone = TimeZone(secondsFromGMT: 0)!
+        let today = PortfolioCalendar.day(containing: .now, in: zone)
+        let epoch = today.addingTimeInterval(-60 * 86_400)
+        for daysAgo in 0...60 {
+            let day = today.addingTimeInterval(-Double(daysAgo) * 86_400)
+            context.insert(PriceCheckDay(instrumentKey: "instrument", portfolioDay: day,
+                lastSuccessfulCheckAt: day, source: .tcgplayer))
+        }
+        let yesterday = today.addingTimeInterval(-86_400)
+        _ = PortfolioEngine.publish(
+            [replayDay(yesterday, closeValue: 5,
+                coverage: PortfolioCoverage(refreshed: 1, carriedForward: 0, state: .complete))],
+            timeZone: zone,
+            context: context
+        )
+        try context.save()
+
+        let index = PortfolioReplaySnapshotBuilder.coverageIndex(
+            context: context, from: epoch, through: .now, timeZone: zone
+        )
+        XCTAssertEqual(index.windowStart, yesterday.addingTimeInterval(-7 * 86_400))
+        XCTAssertTrue(index.checkedInstruments(on: today.addingTimeInterval(-30 * 86_400)).isEmpty)
+        XCTAssertEqual(index.checkedInstruments(on: today.addingTimeInterval(-2 * 86_400)), ["instrument"])
+        XCTAssertEqual(index.checkedInstruments(on: today), ["instrument"])
+    }
+
     // MARK: - Slice 1 baseline
 
     /// Measures the two whole-table reads the remediation plan's gated slices
@@ -582,6 +610,23 @@ final class PortfolioReconciliationTests: XCTestCase {
         ─────────────────────────────────────────────────────────────
 
         """)
+
+        let yesterday = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-86_400), in: timeZone
+        )
+        _ = PortfolioEngine.publish(
+            [replayDay(yesterday, closeValue: 0,
+                coverage: PortfolioCoverage(refreshed: instrumentCount, carriedForward: 0, state: .complete))],
+            timeZone: timeZone,
+            context: context
+        )
+        try context.save()
+        let recentCoverageDuration = clock.measure {
+            _ = PortfolioReplaySnapshotBuilder.coverageIndex(
+                context: context, from: epochDay, through: today, timeZone: timeZone
+            )
+        }
+        print("coverageIndex (newest close present) \(recentCoverageDuration)")
 
         // The one thing worth asserting: the coverage read really is bounded by
         // the window it is given, so a narrower window in R1 can bound its cost.

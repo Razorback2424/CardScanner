@@ -527,8 +527,9 @@ enum PortfolioReplaySnapshotBuilder {
         )) ?? PortfolioCoverageIndex(checkedByDay: [:])
     }
 
-    /// How far back coverage is recomputed rather than replayed from the
-    /// closes already published.
+    /// Retention and pruning horizon for check-day evidence, and the maximum
+    /// coverage read window. Published closes normally narrow the read to a
+    /// recent recompute margin.
     ///
     /// `PriceCheckDay` gains one row per instrument per checked day and nothing
     /// pruned it, so this read grew with calendar time whether or not the
@@ -539,6 +540,7 @@ enum PortfolioReplaySnapshotBuilder {
     /// its chart can show. `ALL` still renders: `PortfolioDailyClose` stores
     /// each day's coverage counts and is never pruned.
     static let coverageRetentionDays = 400
+    static let coverageRecomputeMarginDays = 7
 
     static func coverageWindowStart(
         endingAt end: Date,
@@ -565,7 +567,17 @@ enum PortfolioReplaySnapshotBuilder {
         // read stops growing once the window fills. A store younger than the
         // window is unaffected: `start` still wins.
         let retentionStart = coverageWindowStart(endingAt: end, timeZone: timeZone)
-        let windowStart = max(start, retentionStart)
+        var windowStart = max(start, retentionStart)
+        // Days through the newest published close keep the coverage that close
+        // records, and every authoritative recompute publishes all missing days,
+        // so only a short recent margin needs recomputing from check-day rows.
+        var newestClose = FetchDescriptor<PortfolioDailyClose>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        newestClose.fetchLimit = 1
+        if let newest = try context.fetch(newestClose).first?.date {
+            let recomputeFrom = PortfolioCalendar.day(
+                containing: newest.addingTimeInterval(-Double(coverageRecomputeMarginDays) * 86_400), in: timeZone)
+            windowStart = min(max(windowStart, recomputeFrom), lastDay)
+        }
         let descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.portfolioDay >= windowStart && $0.portfolioDay <= lastDay }
         )
