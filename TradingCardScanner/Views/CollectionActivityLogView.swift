@@ -4,7 +4,6 @@ import SwiftUI
 @MainActor
 struct CollectionActivityLogReadState {
     struct Index {
-        let cardsByCollectionKey: [String: CollectedCard]
         let quantitiesByCollectionKey: [String: Int]
         let lineage: CollectionStore.LineageIndex
         let eventsByCollectionKey: [String: [InventoryEvent]]
@@ -52,8 +51,7 @@ struct CollectionActivityLogReadState {
             let projection = LogicalCollection.project(cards: fetchedCards) { $0.priceKey }
             let replacement = Snapshot(
                 activities: Array(fetchedActivities.prefix(limit)),
-                index: Index(cardsByCollectionKey: projection.byKey.mapValues(\.representative),
-                             quantitiesByCollectionKey: projection.quantities,
+                index: Index(quantitiesByCollectionKey: projection.quantities,
                              lineage: CollectionStore.LineageIndex(events: fetchedEvents),
                              eventsByCollectionKey: Dictionary(grouping: fetchedEvents, by: \.collectionKey)),
                 hasMoreActivities: fetchedActivities.count > limit,
@@ -323,17 +321,22 @@ struct CollectionActivityLogView: View {
 
     private func activityRow(_ activity: CollectionActivity) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: activity.kind.symbolName)
+            Image(systemName: activity.actionSymbolName)
                 .foregroundStyle(color(for: activity.kind))
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(activity.kind.label)
+                Text(activity.actionLabel)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(color(for: activity.kind))
                 Text(activity.name)
                     .font(.headline)
                     .lineLimit(1)
+                if let summary = activity.transactionSummary {
+                    Text(summary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
                 Text(metadataLine(activity))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -435,7 +438,7 @@ struct CollectionActivityLogView: View {
             && CollectionStore.hasValidLineage(
                 activity.ledgerOperationIDs,
                 for: activity.collectionKey,
-                quantity: activity.claimedQuantity,
+                quantity: activity.remainingQuantity,
                 using: index.lineage
             )
     }
@@ -461,7 +464,6 @@ struct CollectionActivityLogView: View {
               CollectionStore.hasValidRemovalLineage(activity, using: index.lineage)
         else { return false }
 
-        guard card(for: activity, using: index) != nil else { return true }
         return !positionWasReacquired(activity, using: index)
     }
 
@@ -478,6 +480,9 @@ struct CollectionActivityLogView: View {
             if activity.signedQuantity <= 0 { return "This entry does not claim added copies." }
             if activity.remainingQuantity == 0 { return "This entry has already been acted on." }
             if activity.itemKind != .rawCard { return "Only raw card finishes can be corrected." }
+            if activity.remainingQuantity < activity.claimedQuantity {
+                return "Finish correction is unavailable after some copies from this entry have been removed."
+            }
             if activity.variantID == nil { return "This entry has no known finish." }
             if (index.quantitiesByCollectionKey[activity.collectionKey] ?? 0) < activity.remainingQuantity {
                 return "The current collection quantity is too small."
@@ -521,22 +526,13 @@ struct CollectionActivityLogView: View {
         }
     }
 
-    private func card(
-        for activity: CollectionActivity,
-        using index: ActivityIndex
-    ) -> CollectedCard? {
-        index.cardsByCollectionKey[activity.collectionKey]
-    }
-
     /// A surviving row is not automatically a re-acquisition: a per-entry
     /// removal can leave sibling copies in that same quantity row. The disposal
-    /// event and the absence of a later positive event are the proof the store
-    /// uses before allowing that merge.
+    /// history must also be checked when a later acquisition has left no row.
     private func positionWasReacquired(
         _ activity: CollectionActivity,
         using index: ActivityIndex
     ) -> Bool {
-        guard card(for: activity, using: index) != nil else { return false }
         guard let data = activity.removalSnapshotData,
               let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
               let operationID = snapshot.operationID else { return true }
@@ -629,7 +625,7 @@ struct CollectionActivityEditor: View {
     var body: some View {
         Form {
             Section("Recorded") {
-                LabeledContent("Action", value: activity.kind.label)
+                LabeledContent("Action", value: activity.actionLabel)
                 LabeledContent("Source", value: activity.source.label)
                 LabeledContent(
                     "When",
@@ -644,6 +640,24 @@ struct CollectionActivityEditor: View {
                         "Last Corrected",
                         value: correctedAt.formatted(date: .abbreviated, time: .shortened)
                     )
+                }
+            }
+
+            if let disposition = activity.dispositionKind {
+                Section(disposition == .sold ? "Sale" : "Trade") {
+                    if disposition == .sold {
+                        LabeledContent("Total sold for (USD)", value: activity.saleTotal?.formatted() ?? "Not recorded")
+                    }
+                    if let note = activity.dispositionNote, !note.isEmpty {
+                        LabeledContent(disposition == .traded ? "Received / notes" : "Notes") {
+                            Text(note)
+                        }
+                    }
+                    if activity.isResolved {
+                        Text("This removal was restored. The original transaction details are retained for history.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
 
@@ -709,7 +723,7 @@ struct CollectionActivityEditor: View {
             && CollectionStore(context: modelContext).hasValidLineage(
                 activity.ledgerOperationIDs,
                 for: activity.collectionKey,
-                quantity: activity.claimedQuantity
+                quantity: activity.remainingQuantity
             )
     }
 

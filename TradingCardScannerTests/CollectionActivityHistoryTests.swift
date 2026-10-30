@@ -1682,6 +1682,231 @@ final class CollectionActivityHistoryTests: XCTestCase {
         super.tearDown()
     }
 
+    func testZeroQuantityRemovesLastCopyAndCanBeRestoredFromHistory() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        XCTAssertEqual(try store.setQuantity(0, forCollectionKey: added.collectionKey, expectedCurrent: 1), 0)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let removal = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .removed })
+        XCTAssertNil(removal.dispositionKind)
+        XCTAssertEqual(removal.signedQuantity, -1)
+        XCTAssertNotNil(removal.removalSnapshotData)
+        try store.restore(activityID: removal.id)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 1)
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try context.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+    }
+
+    func testZeroQuantityRejectsStaleAndNegativeIntents() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        _ = try store.setQuantity(2, forCollectionKey: added.collectionKey, expectedCurrent: 1)
+        XCTAssertThrowsError(try store.setQuantity(0, forCollectionKey: added.collectionKey, expectedCurrent: 1)) {
+            XCTAssertEqual($0 as? CollectionStoreError, .staleQuantity)
+        }
+        XCTAssertThrowsError(try store.setQuantity(-1, forCollectionKey: added.collectionKey, expectedCurrent: 2))
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [2])
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), 2)
+    }
+
+    func testDispositionPartialSaleAndFullTradePersistAfterLastCopyLeaves() async throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        _ = try store.setQuantity(3, forCollectionKey: added.collectionKey, expectedCurrent: 1)
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        let sale = try await writer.remove(collectionKey: added.collectionKey, treatments: [], expectedCurrent: 3,
+            quantity: 2, disposition: .init(kind: .sold, saleTotal: Money(tenThousandths: 123_400), note: "  Card show  "),
+            shouldContinue: { true })
+        XCTAssertEqual(sale.quantity, 2)
+        var fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        _ = try await writer.remove(collectionKey: added.collectionKey, treatments: [], expectedCurrent: 1,
+            quantity: 1, disposition: .init(kind: .traded, note: "Received a foil Eevee"), shouldContinue: { true })
+        fresh = ModelContext(context.container)
+        XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+        let sold = try XCTUnwrap(activities.first { $0.dispositionKind == .sold })
+        XCTAssertEqual(sold.saleTotal?.tenThousandths, 123_400)
+        XCTAssertEqual(sold.dispositionNote, "Card show")
+        XCTAssertEqual(sold.signedQuantity, -2)
+        XCTAssertEqual(sold.name, "Eevee")
+        let traded = try XCTUnwrap(activities.first { $0.dispositionKind == .traded })
+        XCTAssertNil(traded.saleTotal)
+        XCTAssertEqual(traded.dispositionNote, "Received a foil Eevee")
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 0)
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceRecord>()), 0,
+                       "Personal sale prices must never overwrite market prices")
+    }
+
+    func testDispositionRestoreRetainsSaleDetailsAndBalancesPartialRemoval() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        _ = try store.setQuantity(3, forCollectionKey: added.collectionKey, expectedCurrent: 1)
+        let snapshot = try store.remove(collectionKey: added.collectionKey, expectedCurrent: 3, quantity: 2,
+            disposition: .init(kind: .sold, saleTotal: .zero, note: "Giveaway"))
+        try store.restore(snapshot)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [3])
+        let sale = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.dispositionKind == .sold })
+        XCTAssertTrue(sale.isResolved)
+        XCTAssertEqual(sale.saleTotal, .zero)
+        XCTAssertEqual(sale.dispositionNote, "Giveaway")
+        XCTAssertThrowsError(try store.restore(snapshot))
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).reduce(0) { $0 + $1.deltaQuantity }, 3)
+    }
+
+    func testPartialSaleDoesNotOfferTheRemainingClaimAsCorrectableLineage() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .imported),
+            source: .csvImport, quantity: 10)
+        _ = try store.remove(collectionKey: added.collectionKey, quantity: 2,
+            disposition: .init(kind: .sold, saleTotal: .zero))
+        let acquisition = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>())
+            .first { $0.id == added.activityID })
+        XCTAssertEqual(acquisition.claimedQuantity, 10)
+        XCTAssertEqual(acquisition.remainingQuantity, 8)
+        XCTAssertTrue(store.hasValidLineage(acquisition.ledgerOperationIDs,
+            for: added.collectionKey, quantity: acquisition.claimedQuantity))
+        XCTAssertFalse(store.hasValidLineage(acquisition.ledgerOperationIDs,
+            for: added.collectionKey, quantity: acquisition.remainingQuantity))
+        let row = try XCTUnwrap(store.card(forKey: added.collectionKey))
+        XCTAssertThrowsError(try store.recordVariantCorrection(for: row,
+            to: .init(variant: .reverse, resolution: .userConfirmed),
+            activityID: acquisition.id, quantity: acquisition.remainingQuantity))
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [8])
+        let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.count, 2)
+        XCTAssertEqual(activities.first { $0.dispositionKind == .sold }?.saleTotal, .zero)
+        let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 2)
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+    }
+
+    func testRemovalSnapshotSharesHistoryDeadlineAndOlderJSONStillRestores() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let snapshot = try store.remove(collectionKey: added.collectionKey)
+        let removal = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .removed })
+        XCTAssertEqual(snapshot.removedAt, removal.occurredAt)
+        XCTAssertEqual(snapshot.restoreExpiresAt, removal.occurredAt.addingTimeInterval(CollectionActivity.restoreWindow))
+        let encoded = try JSONEncoder().encode(snapshot)
+        let roundTrip = try JSONDecoder().decode(RemovedCardSnapshot.self, from: encoded)
+        XCTAssertEqual(roundTrip.restoreExpiresAt, snapshot.restoreExpiresAt)
+
+        var legacyJSON = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        legacyJSON.removeValue(forKey: "removedAt")
+        let legacyData = try JSONSerialization.data(withJSONObject: legacyJSON)
+        let legacy = try JSONDecoder().decode(RemovedCardSnapshot.self, from: legacyData)
+        XCTAssertNil(legacy.removedAt)
+        removal.removalSnapshotData = legacyData
+        try context.save()
+        try store.restore(legacy)
+        XCTAssertEqual(store.card(forKey: added.collectionKey)?.quantity, 1)
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try context.fetch(FetchDescriptor<CollectionActivity>()),
+            events: try context.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+    }
+
+    func testLegacyRemovalWithoutLedgerLinkCanStillRestoreAnAbsentRow() throws {
+        let context = try makeContext()
+        let card = makeCollectedCard()
+        let snapshot = RemovedCardSnapshot(card: card)
+        let acquisition = CollectionActivity(card: card, source: .scan)
+        let removal = CollectionActivity(card: card, source: .correction, kind: .removed,
+            deltaQuantity: -1, removalSnapshotData: try JSONEncoder().encode(snapshot))
+        context.insert(acquisition)
+        context.insert(removal)
+        try context.save()
+        let store = CollectionStore(context: context)
+        try store.restore(removal)
+        XCTAssertEqual(store.card(forKey: card.collectionKey)?.quantity, 1)
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try context.fetch(FetchDescriptor<CollectionActivity>()),
+            events: try context.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+    }
+
+    func testDispositionInvalidOrStaleRequestDoesNotRecordTransaction() async throws {
+        let context = try makeContext()
+        let added = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: context.container)
+        for (expected, quantity, details) in [
+            (2, 1, CollectionDisposition(kind: .sold)),
+            (1, 2, CollectionDisposition(kind: .traded)),
+            (1, 0, CollectionDisposition(kind: .sold)),
+            (1, 1, CollectionDisposition(kind: .sold, saleTotal: Money(tenThousandths: -1))),
+            (1, 1, CollectionDisposition(kind: .traded, saleTotal: .zero))
+        ] {
+            do {
+                _ = try await writer.remove(collectionKey: added.collectionKey, treatments: [], expectedCurrent: expected,
+                    quantity: quantity, disposition: details, shouldContinue: { true })
+                XCTFail("Invalid request must fail")
+            } catch { }
+        }
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+    }
+
+    func testDispositionFailedSaveRollsBackQuantityLedgerAndPersonalRecord() throws {
+        let context = try makeContext()
+        let added = try CollectionStore(context: context).add(identifiedCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        enum SaveFailure: Error { case injected }
+        let store = CollectionStore(context: context, beforeSaveForTesting: { _ in throw SaveFailure.injected })
+        XCTAssertThrowsError(try store.remove(collectionKey: added.collectionKey, expectedCurrent: 1,
+            disposition: .init(kind: .sold, saleTotal: Money(tenThousandths: 50_000))))
+        let fresh = ModelContext(context.container)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+    }
+
+    func testDispositionSurvivesDiskStoreReopenWithoutOwnedCard() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("collection.sqlite")
+        do {
+            let context = try makeContext(storeURL: url)
+            let store = CollectionStore(context: context)
+            let added = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+            _ = try store.remove(collectionKey: added.collectionKey, expectedCurrent: 1,
+                disposition: .init(kind: .sold, saleTotal: Money(tenThousandths: 125_000), note: "Local sale"))
+        }
+        container = nil
+        let reopened = try makeContext(storeURL: url)
+        XCTAssertTrue(try reopened.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let sale = try XCTUnwrap(reopened.fetch(FetchDescriptor<CollectionActivity>()).first { $0.dispositionKind == .sold })
+        XCTAssertEqual(sale.saleTotal?.tenThousandths, 125_000)
+        XCTAssertEqual(sale.dispositionNote, "Local sale")
+        XCTAssertEqual(sale.actionLabel, "Sold")
+    }
+
+    func testDispositionAmountParsingIsExactOptionalAndLocaleAware() throws {
+        let us = Locale(identifier: "en_US")
+        let de = Locale(identifier: "de_DE")
+        XCTAssertNil(try CollectionDisposition.parseSaleTotal("  ", locale: us))
+        XCTAssertEqual(try CollectionDisposition.parseSaleTotal("0", locale: us), .zero)
+        XCTAssertEqual(try CollectionDisposition.parseSaleTotal("12.34", locale: us)?.tenThousandths, 123_400)
+        XCTAssertEqual(try CollectionDisposition.parseSaleTotal("12,34", locale: de)?.tenThousandths, 123_400)
+        XCTAssertEqual(try CollectionDisposition.parseSaleTotal(".50", locale: us)?.tenThousandths, 5_000)
+        for text in ["-1", "12abc", "NaN", "12.345", "1,000", ".", "1.2.3", "999999999999999999999"] {
+            XCTAssertThrowsError(try CollectionDisposition.parseSaleTotal(text, locale: us), text)
+        }
+    }
+
     func testFilteredHistoryFindsEntriesBeyondTheUnfilteredPage() throws {
         let context = try makeContext()
         let card = makeCollectedCard()
@@ -2415,6 +2640,40 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(store.card(forKey: snapshot.collectionKey)?.quantity, 1)
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 3)
         XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 3)
+    }
+
+    func testCertifiedRestoreRejectsReacquisitionEvenAfterThatCopyWasRemoved() throws {
+        for restoreNewestFirst in [false, true] {
+            let context = try makeContext()
+            let store = CollectionStore(context: context)
+            let card = try identifiedCard()
+            var removals: [RemovedCardSnapshot] = []
+            for _ in 0..<2 {
+                let added = try store.addScannedGraded(underlying: card, company: .psa,
+                    grade: .init(value: "10"), certificationNumber: "RESTORE-CERT",
+                    resolved: .init(variant: .normal, resolution: .userConfirmed))
+                removals.append(try store.remove(XCTUnwrap(store.card(forKey: added.collectionKey))))
+            }
+            if restoreNewestFirst { try store.restore(removals[1]) }
+            XCTAssertThrowsError(try store.restore(removals[0])) { error in
+                guard case .restoreConflict = error as? CollectionStoreError else {
+                    return XCTFail("Expected reacquisition rejection, got \(error)")
+                }
+            }
+            if !restoreNewestFirst { try store.restore(removals[1]) }
+
+            let fresh = ModelContext(context.container)
+            let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.quantity, 1)
+            XCTAssertEqual(rows.first?.certificationNumber, "RESTORE-CERT")
+            let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+            let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+            XCTAssertEqual(events.count, 5)
+            XCTAssertEqual(InventoryLedger.quantities(from: events)[removals[0].collectionKey], 1)
+            XCTAssertEqual(activities.filter { $0.kind == .restored }.count, 1)
+            XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+        }
     }
 
     func testIndependentRemovalsCanBothBeRestored() throws {

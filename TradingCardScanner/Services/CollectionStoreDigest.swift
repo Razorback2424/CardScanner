@@ -349,6 +349,9 @@ private struct ActivityProjection: Codable {
     var deltaQuantity: Int
     var ledgerOperationIDs: [String]
     var removalSnapshotData: String?
+    var dispositionKindRaw: String?
+    var saleTotalUSDTenThousandths: Int64?
+    var dispositionNote: String?
     var resolvedQuantity: Int
     var correctedAt: Double?
     var backfillAnchorKey: String?
@@ -375,6 +378,9 @@ private struct ActivityProjection: Codable {
         deltaQuantity = activity.deltaQuantity
         ledgerOperationIDs = activity.ledgerOperationIDs.map(\.uuidString)
         removalSnapshotData = activity.removalSnapshotData?.base64EncodedString()
+        dispositionKindRaw = activity.dispositionKindRaw
+        saleTotalUSDTenThousandths = activity.saleTotalUSDTenThousandths
+        dispositionNote = activity.dispositionNote
         resolvedQuantity = activity.resolvedQuantity
         correctedAt = activity.correctedAt?.timeIntervalSinceReferenceDate
         backfillAnchorKey = activity.backfillAnchorCard?.collectionKey

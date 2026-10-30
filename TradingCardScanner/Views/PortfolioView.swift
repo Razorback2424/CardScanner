@@ -801,14 +801,18 @@ struct PortfolioView: View {
         )
     }
 
+    @ViewBuilder
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
-        RemovalUndoBanner(
-            name: removed.name,
-            isRestoring: restoringRemovalID == removed.id,
-            onUndo: { undoRemoval(removed) },
-            onDismiss: { pendingRemoval = nil }
-        )
-        .disabled(restoringRemovalID != nil)
+        if let expiresAt = removed.restoreExpiresAt {
+            RemovalUndoBanner(
+                name: removed.name,
+                expiresAt: expiresAt,
+                isRestoring: restoringRemovalID == removed.id,
+                onUndo: { undoRemoval(removed) },
+                onDismiss: { pendingRemoval = nil }
+            )
+            .disabled(restoringRemovalID != nil)
+        }
     }
 
     private func todayContext(_ attribution: PortfolioClose.Attribution) -> PortfolioContributorContext {

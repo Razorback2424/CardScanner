@@ -336,9 +336,7 @@ struct CollectionView: View {
             }
             await catalogNormalizer.normalizeImportedCards(
                 in: modelContext.container,
-                shouldContinue: {
-                    CollectionStorageGeneration.shared.isCurrent(storageToken)
-                }
+                shouldContinue: CollectionStorageGeneration.shared.continuation(for: storageToken)
             )
         }
         .task(id: searchText) {
@@ -759,14 +757,18 @@ struct CollectionView: View {
         )
     }
 
+    @ViewBuilder
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
-        RemovalUndoBanner(
-            name: removed.name,
-            isRestoring: restoringRemovalID == removed.id,
-            onUndo: { undoRemoval(removed) },
-            onDismiss: { pendingRemoval = nil }
-        )
-        .disabled(restoringRemovalID != nil)
+        if let expiresAt = removed.restoreExpiresAt {
+            RemovalUndoBanner(
+                name: removed.name,
+                expiresAt: expiresAt,
+                isRestoring: restoringRemovalID == removed.id,
+                onUndo: { undoRemoval(removed) },
+                onDismiss: { pendingRemoval = nil }
+            )
+            .disabled(restoringRemovalID != nil)
+        }
     }
 
     @ViewBuilder

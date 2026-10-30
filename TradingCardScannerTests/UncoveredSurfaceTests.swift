@@ -1035,7 +1035,8 @@ final class ViewConstructionSmokeTests: XCTestCase {
             onAdded: { _ in }
         )
         XCTAssertEqual(confirmation.pokemonPrintRun, .firstEdition)
-        _ = RemovalUndoBanner(name: "Test Card", onUndo: {}, onDismiss: {})
+        _ = RemovalUndoBanner(name: "Test Card", expiresAt: Date.now.addingTimeInterval(CollectionActivity.restoreWindow),
+                              onUndo: {}, onDismiss: {})
         _ = PriceFallbackSettingsSection().body
 
         let sealedProduct = SealedProductSummary(

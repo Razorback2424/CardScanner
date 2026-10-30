@@ -56,6 +56,14 @@ final class CloudKitSchemaCompatibilityTests: XCTestCase {
         XCTAssertFalse(String(reflecting: InventoryEvent.self).contains("unique"))
     }
 
+    func testPersonalTransactionFieldsAreOptionalInTheExistingActivityModel() throws {
+        let entity = try XCTUnwrap(Schema([CollectionActivity.self]).entities.first { $0.name == "CollectionActivity" })
+        for name in ["dispositionKindRaw", "saleTotalUSDTenThousandths", "dispositionNote"] {
+            let attribute = try XCTUnwrap(entity.properties.first { $0.name == name } as? Schema.Attribute)
+            XCTAssertTrue(attribute.isOptional, name)
+        }
+    }
+
     func testRawCardConditionIsNotAStoredCollectedCardField() {
         let names = Schema([CollectedCard.self]).entities.flatMap { entity in
             entity.properties.map(\.name)

@@ -1656,11 +1656,13 @@ actor CollectionDetailWriter: BackgroundModelActor {
 
     func remove(
         collectionKey: String, treatments: [String], expectedCurrent: Int,
+        quantity: Int? = nil, disposition: CollectionDisposition? = nil,
         shouldContinue: StorageGenerationContinuation
     ) throws -> RemovedCardSnapshot {
         try perform(shouldContinue: shouldContinue) { context in
             return try CollectionStore(context: context).remove(collectionKey: collectionKey,
-                magicTreatmentIDsRaw: treatments, expectedCurrent: expectedCurrent)
+                magicTreatmentIDsRaw: treatments, expectedCurrent: expectedCurrent,
+                quantity: quantity, disposition: disposition)
         }
     }
 }
@@ -3391,7 +3393,14 @@ struct CollectionStore {
         magicTreatmentIDsRaw: [String] = [],
         expectedCurrent: Int
     ) throws -> Int {
-        guard newQuantity >= 1 else { return expectedCurrent }
+        guard newQuantity >= 0 else {
+            throw CollectionStoreError.quantityOutOfRange("quantity cannot be negative")
+        }
+        if newQuantity == 0 {
+            _ = try remove(collectionKey: collectionKey, magicTreatmentIDsRaw: magicTreatmentIDsRaw,
+                           expectedCurrent: expectedCurrent)
+            return 0
+        }
         guard newQuantity <= CollectionQuantityLimits.maximum else {
             throw CollectionStoreError.quantityOutOfRange(
                 "quantity exceeds \(CollectionQuantityLimits.maximum)"
@@ -4783,6 +4792,8 @@ struct CollectionStore {
             )
 
             var snapshot = RemovedCardSnapshot(card: row, quantity: quantity)
+            let removedAt = Date.now
+            snapshot.removedAt = removedAt
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
@@ -4800,6 +4811,7 @@ struct CollectionStore {
                 kind: .removed,
                 deltaQuantity: -quantity,
                 ledgerOperationIDs: [operationID],
+                occurredAt: removedAt,
                 removalSnapshot: snapshot
             )
             _ = removed
@@ -4830,20 +4842,28 @@ struct CollectionStore {
     func remove(
         collectionKey: String,
         magicTreatmentIDsRaw: [String] = [],
-        expectedCurrent: Int? = nil
+        expectedCurrent: Int? = nil,
+        quantity requestedQuantity: Int? = nil,
+        disposition: CollectionDisposition? = nil
     ) throws -> RemovedCardSnapshot {
         do {
+            let disposition = try disposition?.validated()
             guard let row = try self.card(
                 forAnyKey: collectionKey,
                 magicTreatmentIDsRaw: magicTreatmentIDsRaw
             ) else {
                 throw CollectionStoreError.missingDestinationRow(collectionKey)
             }
-            let quantity = row.quantity
-            if let expectedCurrent, quantity != expectedCurrent {
+            if let expectedCurrent, row.quantity != expectedCurrent {
                 throw CollectionStoreError.staleQuantity
             }
-            var snapshot = RemovedCardSnapshot(card: row)
+            let quantity = requestedQuantity ?? row.quantity
+            guard quantity > 0, quantity <= row.quantity else {
+                throw CollectionStoreError.insufficientQuantity(collectionKey)
+            }
+            var snapshot = RemovedCardSnapshot(card: row, quantity: quantity)
+            let removedAt = Date.now
+            snapshot.removedAt = removedAt
             try requireMaintainableGame(row.cardGame)
             let operationID = UUID()
             try requireAppended(
@@ -4856,20 +4876,36 @@ struct CollectionStore {
                 )
             )
             snapshot.operationID = operationID
-            _ = try appendActivity(
+            let removal = try appendActivity(
                 row,
                 source: .correction,
                 kind: .removed,
                 deltaQuantity: -quantity,
                 ledgerOperationIDs: [operationID],
+                occurredAt: removedAt,
                 removalSnapshot: snapshot
             )
+            removal.dispositionKindRaw = disposition?.kind.rawValue
+            removal.saleTotalUSDTenThousandths = disposition?.saleTotal?.tenThousandths
+            removal.dispositionNote = disposition?.note
 
+            var unresolved = quantity
             for activity in try activities(forKey: row.collectionKey)
                 where activity.kind.hasQuantityClaim && activity.remainingQuantity > 0 {
-                activity.resolvedQuantity = activity.claimedQuantity
+                if quantity == row.quantity {
+                    activity.resolvedQuantity = activity.claimedQuantity
+                    continue
+                }
+                let consumed = min(unresolved, activity.remainingQuantity)
+                activity.resolvedQuantity += consumed
+                unresolved -= consumed
+                if unresolved == 0 { break }
             }
-            context.delete(row)
+            if quantity == row.quantity {
+                context.delete(row)
+            } else {
+                row.quantity -= quantity
+            }
             try commit()
             return snapshot
         } catch {
@@ -4953,7 +4989,7 @@ struct CollectionStore {
             guard snapshot.quantity > 0 else {
                 throw CollectionStoreError.restoreConflict("snapshot has no copies")
             }
-            if existing != nil, removalActivity == nil {
+            if existing != nil, removalActivity == nil || snapshot.operationID == nil {
                 // A legacy snapshot has no disposal event with which to prove
                 // that an existing row is merely a surviving sibling copy.
                 // Treat it conservatively as a re-acquisition.
@@ -4961,17 +4997,12 @@ struct CollectionStore {
                     "\(snapshot.collectionKey) was acquired again"
                 )
             }
-            if removalActivity != nil, existing != nil {
+            if removalActivity != nil, let operationID = snapshot.operationID {
                 // A row can still exist because this removal took only the
                 // copies claimed by one entry while sibling copies remained.
-                // That is safe to merge back into. A positive ledger event
-                // recorded after the disposal, however, proves the position
-                // was acquired again and restoring would double it.
-                guard let operationID = snapshot.operationID else {
-                    throw CollectionStoreError.restoreConflict(
-                        "\(snapshot.collectionKey) was acquired again"
-                    )
-                }
+                // A missing row can also mean a later acquisition was removed.
+                // Check the ledger in both cases so restoring an older removal
+                // cannot bring the same physical copy back a second time.
                 let removalEvents = try ledger.events(forOperationID: operationID)
                 let removalRecordedAt = removalEvents.map(\.recordedAt).max() ?? .distantPast
                 let wasReacquired = Self.positionWasReacquired(
@@ -5171,6 +5202,7 @@ struct CollectionStore {
                 }
                 let quantity = card.quantity
                 var snapshot = RemovedCardSnapshot(card: card)
+                snapshot.removedAt = occurredAt
                 let operationID = UUID()
                 try requireAppended(
                     ledger.record(
@@ -6051,6 +6083,10 @@ struct RemovedCardSnapshot: Identifiable, Codable, Sendable {
     /// exactly that rather than recording a fresh acquisition. `nil` only for a
     /// snapshot taken before the ledger existed.
     var operationID: UUID?
+    /// Absent only in older snapshots. New removal banners share the history
+    /// entry's timestamp, so time spent waiting or backgrounded cannot extend Undo.
+    var removedAt: Date?
+    var restoreExpiresAt: Date? { removedAt?.addingTimeInterval(CollectionActivity.restoreWindow) }
     var collectionKey: String
     let game: CardGame
     let providerID: String

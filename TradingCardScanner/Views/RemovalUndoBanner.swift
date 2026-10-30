@@ -3,7 +3,7 @@ import SwiftUI
 /// The single presentation of "that's gone — unless you say otherwise".
 ///
 /// Collection and Portfolio both remove cards, and both owe the same promise:
-/// a removal is recoverable until Undo, Dismiss, or the next removal. Two
+/// a removal is recoverable until Undo, Dismiss, the next removal, or expiry. Two
 /// copies of this layout meant two chances for the recovery affordance to drift
 /// apart, so there is one.
 ///
@@ -15,11 +15,20 @@ struct RemovalUndoBanner: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let name: String
+    let expiresAt: Date
     var isRestoring = false
     let onUndo: () -> Void
     let onDismiss: () -> Void
 
     var body: some View {
+        TimelineView(.explicit([Date.now, expiresAt].sorted())) { context in
+            if context.date < expiresAt {
+                content
+            }
+        }
+    }
+
+    private var content: some View {
         Group {
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: 8) {

@@ -1,6 +1,62 @@
 import Foundation
 import SwiftData
 
+enum CollectionDispositionKind: String, CaseIterable, Identifiable, Sendable {
+    case sold
+    case traded
+
+    var id: String { rawValue }
+    var label: String { self == .sold ? "Sold" : "Traded" }
+    var symbolName: String { self == .sold ? "dollarsign.circle" : "arrow.left.arrow.right" }
+}
+
+/// Personal transaction evidence, separate from provider market valuations.
+struct CollectionDisposition: Equatable, Sendable {
+    var kind: CollectionDispositionKind
+    /// Total for all copies in this transaction, in USD; nil is unknown, not zero.
+    var saleTotal: Money?
+    var note: String?
+
+    enum ValidationError: LocalizedError {
+        case invalidAmount
+        var errorDescription: String? {
+            "Enter a valid total in USD with up to two decimal places, or leave it blank."
+        }
+    }
+
+    func validated() throws -> Self {
+        if let saleTotal {
+            guard kind == .sold, saleTotal.isValid, saleTotal.tenThousandths >= 0 else {
+                throw ValidationError.invalidAmount
+            }
+        }
+        let trimmed = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return Self(kind: kind, saleTotal: saleTotal, note: trimmed?.isEmpty == false ? trimmed : nil)
+    }
+
+    /// Strict, locale-aware decimal entry with exact integer storage. Never
+    /// accept a partial parse ("12abc"), negative amount, or arithmetic overflow.
+    static func parseSaleTotal(_ input: String, locale: Locale = .current) throws -> Money? {
+        let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        let separator = locale.decimalSeparator ?? "."
+        let parts = text.components(separatedBy: separator)
+        guard parts.count <= 2,
+              parts.allSatisfy({ $0.allSatisfy { $0.isASCII && $0.isNumber } }),
+              parts.contains(where: { !$0.isEmpty }),
+              parts.count == 1 || parts[1].count <= 2,
+              let dollars = Int64(parts[0].isEmpty ? "0" : parts[0]) else {
+            throw ValidationError.invalidAmount
+        }
+        let fraction = parts.count == 2 ? parts[1] : ""
+        let cents = Int64(fraction.padding(toLength: 2, withPad: "0", startingAt: 0)) ?? 0
+        let (whole, overflow) = dollars.multipliedReportingOverflow(by: Money.scale)
+        let (total, sumOverflow) = whole.addingReportingOverflow(cents * 100)
+        guard !overflow, !sumOverflow else { throw ValidationError.invalidAmount }
+        return Money(tenThousandths: total)
+    }
+}
+
 enum CollectionActivitySource: String, CaseIterable, Sendable {
     case scan
     case csvImport
@@ -125,6 +181,10 @@ final class CollectionActivity {
     /// Only removal entries use this. The ledger has no artwork/provider fields,
     /// so this snapshot is the durable material needed to restore a position.
     var removalSnapshotData: Data?
+    /// Optional personal sale/trade evidence survives removal of the owned row.
+    var dispositionKindRaw: String?
+    var saleTotalUSDTenThousandths: Int64?
+    var dispositionNote: String?
     /// Number of the entry's claimed copies already consumed by a later action.
     /// It prevents a repeated tap from applying the same history action twice.
     var resolvedQuantity: Int = 0
@@ -133,6 +193,19 @@ final class CollectionActivity {
     /// this relationship. It is deliberately optional so older activities
     /// migrate without inventing a history link.
     var backfillAnchorCard: CollectedCard?
+
+    var dispositionKind: CollectionDispositionKind? {
+        dispositionKindRaw.flatMap(CollectionDispositionKind.init(rawValue:))
+    }
+
+    var actionLabel: String { dispositionKind?.label ?? kind.label }
+    var actionSymbolName: String { dispositionKind?.symbolName ?? kind.symbolName }
+    var saleTotal: Money? { saleTotalUSDTenThousandths.map { Money(tenThousandths: $0) } }
+    var transactionSummary: String? {
+        guard let dispositionKind else { return nil }
+        if dispositionKind == .traded { return "Trade recorded" }
+        return saleTotal.map { "\($0.formatted()) total · USD" } ?? "Sale price not recorded"
+    }
 
     init(
         card: CollectedCard,

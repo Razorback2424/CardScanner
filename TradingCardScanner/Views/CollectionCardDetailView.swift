@@ -185,6 +185,7 @@ private struct CollectionCardDetailContent: View {
     let localArtworkFilename: String?
 
     @State private var isConfirmingRemoval = false
+    @State private var dispositionTarget: CollectionDispositionTarget?
     @State private var isChoosingArtwork = false
     @State private var selectedArtwork: PhotosPickerItem?
     @State private var errorMessage: String?
@@ -298,6 +299,7 @@ private struct CollectionCardDetailContent: View {
                         priceHistorySection(model: chartModel, movement: movement)
                         marketplaceSection
                         ownershipSection
+                            .id("card-ownership")
 
                         if isLogicalConflict {
                             conflictNotice
@@ -313,9 +315,9 @@ private struct CollectionCardDetailContent: View {
                     let arguments = ProcessInfo.processInfo.arguments
                     if let index = arguments.firstIndex(of: "-ui_debug_state"),
                        arguments.indices.contains(index + 1),
-                       arguments[index + 1].hasPrefix("price-chart") {
+                       arguments[index + 1].hasPrefix("price-chart") || arguments[index + 1] == "ownership" {
                         try? await Task.sleep(for: .milliseconds(300))
-                        scrollProxy.scrollTo("card-price-valuation", anchor: .top)
+                        scrollProxy.scrollTo(arguments[index + 1] == "ownership" ? "card-ownership" : "card-price-valuation", anchor: .top)
                     }
                 }
 #endif
@@ -379,6 +381,11 @@ private struct CollectionCardDetailContent: View {
             if CommandLine.arguments.contains("-ui_card_details_route") {
                 isShowingPrintingDetailsRoute = true
             }
+            if let index = CommandLine.arguments.firstIndex(of: "-ui_debug_state"),
+               CommandLine.arguments.indices.contains(index + 1),
+               ["record-sale", "record-trade"].contains(CommandLine.arguments[index + 1]) {
+                presentDisposition(kind: CommandLine.arguments[index + 1] == "record-trade" ? .traded : .sold)
+            }
         }
         .navigationDestination(isPresented: $isShowingPrintingDetailsRoute) {
             printingDetailsDestination
@@ -420,6 +427,16 @@ private struct CollectionCardDetailContent: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "Please try again.")
+        }
+        .sheet(item: $dispositionTarget) { target in
+            CollectionDispositionSheet(target: target) { snapshot in
+                let remaining = target.quantity - snapshot.quantity
+                quantityState.update(remaining, for: quantityInput)
+                if remaining == 0 {
+                    onRemoved(snapshot)
+                    dismiss()
+                }
+            }
         }
         .confirmationDialog(
             "Remove \(card.name)?",
@@ -1022,15 +1039,26 @@ private struct CollectionCardDetailContent: View {
     }
 
     private var ownershipSection: some View {
-        CardDetailOwnershipPanel(
-            quantity: displayedQuantity,
-            holdingTotal: holdingTotal,
-            allowsQuantityIncrease: card.allowsQuantityAggregation,
-            isUpdating: isOwnershipWritePending,
-            onDecrease: { updateQuantity(displayedQuantity - 1) },
-            onIncrease: { updateQuantity(displayedQuantity + 1) }
-        ) {
-            printingDetailsDestination
+        VStack(spacing: 0) {
+            CardDetailOwnershipPanel(
+                quantity: displayedQuantity,
+                holdingTotal: holdingTotal,
+                allowsQuantityIncrease: card.allowsQuantityAggregation,
+                isUpdating: isOwnershipWritePending,
+                onDecrease: { updateQuantity(displayedQuantity - 1) },
+                onIncrease: { updateQuantity(displayedQuantity + 1) }
+            ) {
+                printingDetailsDestination
+            }
+            Button {
+                presentDisposition()
+            } label: {
+                Label("Record sale or trade", systemImage: "arrow.left.arrow.right")
+                    .font(.body)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                    .contentShape(Rectangle())
+            }
+            .disabled(isOwnershipWritePending || displayedQuantity <= 0)
         }
         .padding(.horizontal, 16)
         .padding(.top, 24)
@@ -1455,7 +1483,11 @@ private struct CollectionCardDetailContent: View {
 
     private func updateQuantity(_ newQuantity: Int) {
         guard !isOwnershipWritePending,
-              (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
+              (0...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
+        if newQuantity == 0 {
+            removeCard()
+            return
+        }
         let input = quantityInput
         let observedQuantity = quantityState.expectedQuantity(for: input)
         let container = modelContext.container
@@ -1496,6 +1528,14 @@ private struct CollectionCardDetailContent: View {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    private func presentDisposition(kind: CollectionDispositionKind = .sold) {
+        guard !isOwnershipWritePending, displayedQuantity > 0 else { return }
+        dispositionTarget = CollectionDispositionTarget(
+            collectionKey: card.collectionKey, treatments: card.magicTreatmentIDsRaw,
+            cardName: card.name, quantity: displayedQuantity, kind: kind
+        )
     }
 
     private func removeCard() {
@@ -1880,6 +1920,143 @@ struct CardDetailMarketplaceButton: View {
     }
 }
 
+private struct CollectionDispositionTarget: Identifiable {
+    let id = UUID()
+    let collectionKey: String
+    let treatments: [String]
+    let cardName: String
+    let quantity: Int
+    let kind: CollectionDispositionKind
+}
+
+private struct CollectionDispositionSheet: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    let target: CollectionDispositionTarget
+    let onRecorded: (RemovedCardSnapshot) -> Void
+    @State private var kind: CollectionDispositionKind
+    @State private var quantity = 1
+    @State private var amount = ""
+    @State private var note = ""
+    @State private var isSaving = false
+    @State private var errorMessage: String?
+
+    init(target: CollectionDispositionTarget, onRecorded: @escaping (RemovedCardSnapshot) -> Void) {
+        self.target = target
+        self.onRecorded = onRecorded
+        _kind = State(initialValue: target.kind)
+    }
+
+    private var amountIsValid: Bool {
+        kind == .traded || (try? CollectionDisposition.parseSaleTotal(amount)) != nil
+            || amount.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Text(target.cardName).font(.headline)
+                    Picker("Transaction", selection: $kind) {
+                        ForEach(CollectionDispositionKind.allCases) { kind in
+                            Text(kind.label).tag(kind)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    Stepper("Quantity: \(quantity)", value: $quantity, in: 1...target.quantity)
+                } footer: {
+                    Text("Saving reduces your owned quantity by \(quantity). The record stays in Collection Activity, even when you own no copies.")
+                }
+
+                if kind == .sold {
+                    Section {
+                        LabeledContent("Total sold for (USD)") {
+                            TextField("Optional", text: $amount)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                                .accessibilityLabel("Total sold for in US dollars, optional")
+                        }
+                        if !amountIsValid {
+                            Text(CollectionDisposition.ValidationError.invalidAmount.localizedDescription)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                        }
+                    } footer: {
+                        Text(quantity == 1
+                             ? "Enter the total for this copy, before fees. Leave blank if unknown."
+                             : "Enter the total for all \(quantity) copies, before fees. Leave blank if unknown.")
+                    }
+                }
+
+                Section {
+                    TextField(kind == .traded ? "What did you receive? (optional)" : "Notes (optional)",
+                              text: $note, axis: .vertical)
+                        .lineLimit(3...6)
+                        .accessibilityLabel(kind == .traded ? "Trade details, optional" : "Sale notes, optional")
+                } footer: {
+                    Text("Personal records are kept separately from market prices.")
+                }
+
+                if let errorMessage {
+                    Section {
+                        Label(errorMessage, systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            .disabled(isSaving)
+            .navigationTitle("Record sale or trade")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }.disabled(isSaving)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { save() }.disabled(isSaving || !amountIsValid)
+                }
+                ToolbarItem(placement: .status) {
+                    if isSaving { ProgressView().accessibilityLabel("Saving transaction") }
+                }
+            }
+            .interactiveDismissDisabled(isSaving)
+        }
+    }
+
+    private func save() {
+        guard !isSaving, amountIsValid else { return }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else {
+            errorMessage = "Your collection is still loading. Try again in a moment."
+            return
+        }
+        let shouldContinue = generation.continuation(for: token)
+        let container = modelContext.container
+        isSaving = true
+        errorMessage = nil
+        Task { @MainActor in
+            defer { isSaving = false }
+            do {
+                let disposition = CollectionDisposition(kind: kind,
+                    saleTotal: kind == .sold ? try CollectionDisposition.parseSaleTotal(amount) : nil,
+                    note: note)
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                let snapshot = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.remove(collectionKey: target.collectionKey, treatments: target.treatments,
+                        expectedCurrent: target.quantity, quantity: quantity, disposition: disposition,
+                        shouldContinue: shouldContinue)
+                }
+                guard generation.isCurrent(token) else { return }
+                dismiss()
+                onRecorded(snapshot)
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+}
+
 private struct CardDetailOwnershipPanel<Details: View>: View {
     let quantity: Int
     let holdingTotal: String?
@@ -1981,7 +2158,7 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
-            .disabled(quantity <= 1)
+            .disabled(quantity <= 0)
             .accessibilityLabel("Decrease quantity")
 
             Text("\(quantity)")
@@ -2143,12 +2320,16 @@ private struct CollectionCardHistoryView: View {
                         CollectionActivityEditor(activity: activity)
                     } label: {
                         HStack(spacing: 10) {
-                            Image(systemName: activity.kind.symbolName)
+                            Image(systemName: activity.actionSymbolName)
                                 .foregroundStyle(historyColor(for: activity.kind))
                                 .frame(width: 24)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(activity.kind.label)
+                                Text(activity.actionLabel)
                                     .font(.subheadline.weight(.semibold))
+                                if let summary = activity.transactionSummary {
+                                    Text(summary)
+                                        .font(.subheadline)
+                                }
                                 Text(historyMetadata(for: activity))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)

@@ -127,6 +127,26 @@ final class CollectionStoreDigestTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
+    func testPersonalTransactionEvidenceChangesDigestWithoutChangingOwnership() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        try seed(context, reversed: false)
+        let activity = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>()).first)
+        var previous = try CollectionStoreDigester.make(in: context, storeID: storeID)
+        for update in [
+            { activity.dispositionKindRaw = CollectionDispositionKind.sold.rawValue },
+            { activity.saleTotalUSDTenThousandths = 123_400 },
+            { activity.dispositionNote = "Synthetic sale note" }
+        ] {
+            update()
+            try context.save()
+            let next = try CollectionStoreDigester.make(in: context, storeID: storeID)
+            XCTAssertNotEqual(next, previous)
+            XCTAssertEqual(next.totalQuantity, previous.totalQuantity)
+            previous = next
+        }
+    }
+
     func testNonfiniteMaterialValueRejectsDigest() throws {
         let container = try makeContainer()
         try seed(container.mainContext, reversed: false)
