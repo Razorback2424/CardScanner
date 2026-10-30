@@ -1,3 +1,40 @@
+# 2026-10-29 — Saved-card artwork and price-history identity repair
+
+At `44b1831`, fixed Collection grid/detail artwork
+requests that omitted the catalog identity required by the existing Classic
+fallback. The wider sweep repaired the same omission in Portfolio thumbnails,
+historical addition tiles with retained snapshots and Browse's owned-card fan.
+Resolved IDs survive imported ownership keys. Extended the existing reviewed
+artwork join to all 196 products across 30th Celebration, Classic Collection
+and eight Mega Evolution Energy cards; no schema migration or re-import.
+
+History now uses those reviewed product/finish identities and all 90 Trick or
+Trade mappings ahead of stale original-release handles. Corrected cache keys
+bypass unrelated earlier misses, and a modern Unlimited marker does not trigger
+a redundant name search. Exact product, English/raw/USD, Near Mint and finish
+checks remain required. No provider history is synthesized from a current quote
+and no portfolio accounting history is rewritten.
+
+The initial simulator selection passed 154/154. Final expanded selections
+executed 326 cases: 320 passed, six Lorcana live/candidate opt-ins skipped,
+zero failures. The six Yu-Gi-Oh! history controls were run by their actual test
+class separately. Build data/results are on the external SSD under
+`CodexBuilds/TradingCardScannerMVP_fixed_v4/collection-detail-redesign/DerivedData/Logs/Test/`;
+final result names end in `18-05-27--0600.xcresult` and
+`18-09-12--0600.xcresult`. Existing compiler/platform diagnostics remain;
+this is not a warning-free or full-target claim.
+
+All 196 reviewed full-size image endpoints returned HTTP 200/image MIME on
+HEAD checks. Misty and Crobat G downloads also decoded and visually retained
+the anniversary stamp. The bundled sweep found 844 rows without stored image
+URLs; 653 have an existing allowed derived path and 191 need separate source
+verification. Those counts include variant/print-run slots and are not a live
+missing-card census. See the [artwork authority](docs/plans/artwork-fallback-plan.md)
+and [history authority](docs/plans/price_history_chart_plan.md). No authenticated
+history, physical-device installation, provider-wide, CloudKit or release
+acceptance is claimed. The implementation and tests are committed through
+`9aeeff4`.
+
 # 2026-10-29 — Launch-speed branch native verification
 
 Fetched and checked out `claude/launch-speed` at `c557499`, preserving the
@@ -4861,3 +4898,34 @@ historical.
   [current checklist](references/listing_photos_success_checklist.md).
 - Used Keller Family Photos for remaining captures after T7 reached about
   3.6 GiB free: `/Volumes/Keller Family Photos/CodexBuild/ListingPhotoStyles-20261029/`.
+
+### 2026-10-29 — High-confidence production refinement fixes
+
+- Reject ambiguous fallback products before retaining provider handles. Cancel
+  shared directory/daily-price waiters promptly while the operation completes
+  its own cache publication and cleanup. Retain catalog activation through
+  writer contention, coalesce newer revisions and stop for retired sessions.
+- Label Lorcana browse-only sets/cards/search results before acquisition,
+  preserve supported raw/graded actions, and omit unsupported graded actions.
+  A rendered maximum-text check also led to a small stacked Browse filter/badge
+  layout. Removed redundant centering source bytes and made failed key removal
+  preserve settings state with an error.
+- Final normal Debug Simulator regression selection: **431 passed, 6 skipped,
+  0 failures**. The skips require prepared Lorcana expansion inputs. An initial
+  unsigned Keychain setup failure was corrected by normal local signing; its
+  focused rerun passed 53/53. Existing user/concurrent changes were preserved.
+- Verified Browse set/card/search notices and accessibility labels, unsupported
+  and supported detail actions, maximum text/dark appearance, and dummy-key
+  save/remove. Standard Simulator appearance/text size restored afterward.
+  See the [implementation and confidence ledger](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-29-high-confidence-refinement-fixes).
+  Evidence is on Keller Family Photos under
+  `/Volumes/Keller Family Photos/CodexBuilds/CardScannerRefinement-20261029/`.
+- Measurements, published endpoints, catalog expansion and owner-controlled
+  release gates remain separate. No full-suite or device/release-readiness claim.
+- Centering's deterministic image/controls also render with the existing
+  `LOCAL_COLLECTOR_TOOLS` test flag; normal Debug still enforces its purchase gate.
+- Final rail QA caught a clipped availability caption caused by the lazy
+  horizontal stack's initial height. Reserved caption space in rail tiles;
+  the subsequent normal Debug build and 81 Browse/loading/set-artwork tests
+  pass with no skips or failures. The expanded 431-pass run preceded this
+  final layout-only repair.

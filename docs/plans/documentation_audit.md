@@ -8,6 +8,25 @@ history.
 
 ## Current authority boundary — updated 2026-10-29
 
+**High-confidence production refinement — 2026-10-29, `9aeeff4`:** the
+[refinement follow-up](../audits/production-refinement-master-review-2026-10-26.md#2026-10-29-high-confidence-refinement-fixes)
+records unique fallback matching, cancellable shared-price waiters, retried
+catalog publication during collection writes, truthful Browse availability,
+graded-action visibility, centering retention and Keychain-removal fixes, plus
+a rendered accessibility-layout repair. The expanded native selection has
+431 passes, 6 prepared-data skips and no failures. Its scope does not close
+published-feed, later-set physical coverage, device, purchase or release gates.
+
+**Saved-card artwork/history identity sweep — 2026-10-29, `44b1831`:** the
+[artwork authority](artwork-fallback-plan.md)
+records Collection/Portfolio/Browse identity propagation, 196 reviewed product
+image endpoints and the remaining bundled source-URL inventory. The
+[history authority](price_history_chart_plan.md) records exact anniversary and
+Trick or Trade product/finish requests and independent provider-history limits.
+The October 7 card-detail paragraph in the Browse pricing plan is now explicitly
+historical; it predates the October 18 implementation. These targeted repairs
+do not certify all-card/provider, physical-device or release coverage.
+
 **Hang inspection protocol — 2026-10-29, `fe7ac88`:** the
 [inspection plan](hang-inspection-plan.md) defines a repeatable Instruments
 workflow, source attribution and post-fix verification, starting with initial

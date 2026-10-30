@@ -60,7 +60,10 @@ free set-level successor are in the
 
 ## Final architectural decision
 
-**Card-detail history audit — 2026-10-07:** owned-card details still render
+**Historical card-detail history audit — 2026-10-07:** superseded by the
+[current individual-card history authority](price_history_chart_plan.md),
+implemented 2026-10-18 and updated with reviewed-product repairs 2026-10-29.
+At the time of this earlier audit, owned-card details rendered
 `PriceObservation` / `PriceCheckDay` knowledge history. Stage 4A does not feed
 that chart or backfill unchecked dates. `JustTCGBatchRequest` exposes an
 `includePriceHistory` flag, but current callers pass false and `JustTCGVariant`

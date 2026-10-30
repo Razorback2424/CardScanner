@@ -1,5 +1,10 @@
 # Production refinement master review
 
+**2026-10-29 follow-up:** the [high-confidence refinement fixes](#2026-10-29-high-confidence-refinement-fixes)
+below record the later review's implementation, focused Simulator verification,
+and retained release/measurement boundaries. Earlier checkpoint counts below
+remain historical evidence for their respective patches.
+
 **2026-10-28 follow-up:** the later comprehensive-review implementation is recorded
 in the [current progress entry](../../progress.md#2026-10-28--refinement-review-implementation).
 It includes catalog-backed slab finish discovery and first-baseline reconciliation,
@@ -636,3 +641,57 @@ Do not combine a persistence-read rewrite, transaction-context reuse, rendering-
 ## Remaining confidence limits
 
 Comprehensive production subsystem coverage was achieved, with deeper cross-file tracing of high-risk paths. Confidence remains limited for runtime frame budgets, large-store memory, camera/lighting accuracy, centering precision, SwiftUI presentation/layout lifetimes, actual provider quota/availability, purchases in distribution, CloudKit restoration, historical on-disk migration permutations, and the final packaged release configuration. None of those gates is closed by this report.
+
+## 2026-10-29 high-confidence refinement fixes
+
+**Candidate:** `9aeeff4`; existing artwork/history and other user changes were
+preserved. These small repairs follow the later
+comprehensive source review; they do not replace the earlier findings ledger.
+
+| Demonstrated problem | Small repair and complexity effect | Verification |
+| --- | --- | --- |
+| Fallback search chose the first matching numbered product when several marketplace products matched. | Require one matching product before returning a price or retaining provider handles. Preserves complexity; conservative misses replace arbitrary identity choices. | Ambiguous responses in both orders and duplicate rows remain unresolved; a unique numbered result and the existing direct Magic handle still price correctly. |
+| Cancelled directory/daily-price consumers waited for a shared download to finish. | Release each cancelled waiter independently; let the shared operation own cache publication, failure state and pending cleanup. Adds one small helper shared by the two actors. | A held download does not delay cancellation; the remaining consumer receives the single request's result, and the daily cache survives reopening. Directory failure remains retryable. |
+| A catalog activation event could be lost while a collection import held the writer. | Retry only serializer contention without blocking the UI thread; coalesce to the newest durable snapshot and stop for a retired storage session. Adds bounded per-subscriber retry state. | Both existing subscribers receive revision 3 after contention, without duplicate revisions; a stale session never publishes. Existing save-failure and withdrawal tests pass. |
+| Lorcana discovery cards could look collectible until the detail screen refused acquisition. | Carry optional catalog-owned availability copy into set tiles, card tiles and search results, including accessibility labels. Adds two optional display fields; ownership authority is unchanged. | Bundled set 14 is browse-only; set 1 is partially supported; card notices agree with acquisition authority. Search, artwork copies, Codable round trips and older payloads are covered. |
+| Unsupported games displayed an unexplained disabled graded-copy action. | Omit that action when the runtime lacks graded acquisition capability. Slightly reduces UI complexity. | Rendered unsupported Lorcana detail omits it; supported Pokémon detail retains both raw and graded acquisition. |
+| Centering retained original encoded photo bytes solely for a DEBUG loaded-state check. | Keep a Boolean loaded-state marker instead. Reduces retained state without changing detection, guides or rotation. | All 52 selected centering analyzer/export tests pass. The deterministic fixture and controls render using the existing local-tools compiler flag; normal Debug retains the purchase gate. No measured memory-size or precision claim. |
+| Key removal reported success and cleared UI state after a Keychain deletion failure. | Return an error before changing the key/toggle state when deletion fails. Preserves complexity. | Normal dummy-key save/remove was verified in the Simulator. The failure branch was source-reviewed; no physical Keychain failure was injected. |
+| At maximum text size, Browse search filters and badges collapsed into narrow columns. | Stack them at accessibility sizes using native layout; retain the standard-size row. Adds two local layout choices. | Latest-build screenshots show readable controls and a scroll-accessible availability notice in maximum Dynamic Type/dark mode; standard-size rendering remains intact. |
+
+### Current verification and limits
+
+- Normal locally signed Debug build and expanded native selection: **431 passed,
+  6 skipped, 0 failures** out of 437 cases on iPhone 17 Pro / iOS 27.0 Simulator.
+  Coverage includes fallback/directory matching, One Piece integration, Lorcana
+  discovery/pricing, Yu-Gi-Oh! pricing, refresh lifecycle, Browse/loading/collection,
+  and centering analyzer/export. Six prepared Lorcana expansion acceptance cases
+  require a separate hash-bound input workspace; they were not silently accepted.
+- The initial unsigned run had 197 passes and 9 Keychain entitlement failures
+  (`errSecMissingEntitlement`); the normally signed fallback rerun passed all 53
+  cases, and the expanded final run above used normal signing.
+- A final rendered rail check found that its lazy horizontal stack clipped a
+  later availability caption after measuring an earlier tile. Reserving that
+  caption space in rail tiles fixes the introduced layout issue; the subsequent
+  normal Debug build and 81 Browse/loading/set-artwork tests pass without skips
+  or failures. The 431-pass expanded run preceded this final layout-only repair.
+- Scoped HIG gate: PASS for truthful capability/availability copy, preserved
+  supported actions, semantic availability text and accessible-size stacking.
+  Native hierarchy inspection includes the new availability labels. Physical
+  VoiceOver, touch/camera behavior and distribution purchases remain unverified.
+- HIG categories: platform patterns PASS (native controls/navigation); clarity
+  PASS (availability precedes acquisition); typography PASS (semantic text and
+  accessibility-size stacking); accessibility baseline PASS within inspected
+  labels/layouts; friction PASS (no new prompts); design consistency PASS
+  (supported actions retained). Verdict: PASS for this patch. Top issues: none
+  remaining within this scope. Minimal fix list: none beyond the implemented
+  availability, graded-action and accessible-layout changes above.
+- Evidence is external under
+  `/Volumes/Keller Family Photos/CodexBuilds/CardScannerRefinement-20261029/`:
+  `Regression.xcresult`, `regression.log`, and `UI/`. No full-suite, live-provider,
+  physical-device, CloudKit, archive or release acceptance is claimed.
+- Intentionally unchanged: published mirror/readback configuration, One Piece
+  production enablement, later Lorcana physical-catalog expansion, and the
+  owner-deferred privacy/support publication. These require their existing
+  data/product/release decisions, not automatic code fallbacks. Image decode,
+  large Activity/import costs and launch/frame budgets remain measurement work.

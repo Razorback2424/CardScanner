@@ -22,6 +22,62 @@ keep the vendored source commit current, measure provider/device behavior beyond
 the targeted fallback probe, and resolve the licensing caveat below before
 monetization or broad distribution.
 
+## Saved-card identity repair and wider sweep — 2026-10-29
+
+Reviewed against `5be81c8` plus working-tree changes. Collection tiles and
+details were omitting the provider identity required by the existing Classic
+product fallback. Portfolio thumbnails and Browse's owned-card fan had the
+same omission. Their value snapshots now retain the resolved catalog identity,
+including CSV holdings whose ownership keys remain synthetic. Historical
+addition tiles retain the identity from their saved removal snapshot when one
+exists. No persistent model/schema migration or collection re-import is needed.
+
+The ordered artwork source now reuses the entire existing reviewed product
+table: 30 Classic cards, 158 main-set 30th Celebration cards and eight reviewed
+Mega Evolution Energy cards. Provider images retain priority; exact product
+images recover missing/failed provider URLs. Game and provider-set checks
+remain required. Display names/numbers do not select products.
+
+Live verification: all 196 full-size product endpoints returned HTTP 200 with
+an image MIME type to HEAD requests. The reported Misty and Crobat G images
+were also downloaded, decoded as 660 × 920 JPEGs and visually checked for the
+30th anniversary stamp. This verifies those endpoints, not physical-device
+rendering or future CDN availability.
+
+Native verification: the final expanded selection and separate six-case
+Yu-Gi-Oh! history control run executed 326 tests: 320 passed, six opt-in
+Lorcana live/candidate cases skipped, zero failures. This includes all 196
+reviewed artwork identities, saved/imported Classic projections, Portfolio
+snapshot recovery, exact history requests and cross-game mapping/cache
+controls. The initial narrower repair selection also passed all 154 cases.
+
+The broader bundled inventory contains 31,918 checklist rows across 157 manifest
+entries. Of those, 844 rows in 23 provider sets lack both stored artwork URLs;
+653 have a syntactically supported existing Limitless fallback. The remaining
+191 rows are concentrated below. Counts include physical variant slots and
+print-run entries, not unique cards or demonstrated live failures. Existing
+signed artwork and identity-checked metadata backfill may recover these rows;
+their live coverage was not certified in this sweep.
+
+| Provider set | Rows without stored URLs or an allowed derived path |
+| --- | ---: |
+| `bog` — Best of Game | 20 |
+| `ecard2` — Aquapolis | 49 |
+| `ecard3` — Skyridge | 32 |
+| `ex5.5` — Poké Card Creator Pack | 5 |
+| `exu` — Unseen Forces Unown Collection | 28 |
+| `mfb` — My First Battle | 48 |
+| `pl2` — Rising Rivals | 2 |
+| `xy8` — BREAKthrough | 1 |
+| `xya` — Yellow A Alternate | 6 |
+
+Letter suffixes, Unown symbols and historical stamps require exact source
+identity. Removing these distinctions to synthesize an image URL is not a safe
+repair. The [coverage audit](../audits/card-coverage-gaps-and-research.md) and
+[set-pricing audit](../research/set-pricing-audit.md) retain their separate
+catalog/product research boundaries. Price-history identity repairs and their
+provider limits are recorded in the [history authority](price_history_chart_plan.md).
+
 ## Verified findings (probed 2026-09-14)
 
 - TCGdex **has** Pitch Black (`me05`) card art. `me05/119/high.png` → 200/256 KB;
