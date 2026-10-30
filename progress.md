@@ -1,3 +1,31 @@
+# 2026-10-30 — High-confidence review fixes
+
+Follow-up based on `db318a8`, committed as `00942d9`, `6813f22` and `4d420ab`,
+preserving the existing sale/trade work:
+closed the certified-card restore/reacquisition loophole; aligned raw history
+correction eligibility with the writer's remaining-quantity check and explained
+the partial-claim restriction; moved metadata application to the existing
+background model actor with fresh-context serialization and generation checks.
+
+Undo uses the actual removal/history timestamp and expires in Collection and
+Portfolio. The timestamp is optional snapshot JSON, retaining older decoding
+and pre-ledger restoration. Removed the unused photo-workflow state and the
+now-unused history card index. No new actor, dependency or SwiftData model field.
+
+Baseline: 111 focused tests passed. Both new regressions reproduced the old
+certificate duplication/main-actor blocking before the fixes. Final Debug
+simulator verification: **208 passed, zero failures/skips** (202 ownership,
+normalization, ledger, item-kind, schema and digest tests plus six cross-game
+and construction/workflow checks). Existing compiler diagnostics remain.
+Artifacts are on the external volume under
+`CodexBuilds/TradingCardScannerReviewFixes-20261030/`; the initial full-T7 build
+failure was superseded by the passing baseline on the other external volume.
+
+See the [implementation ledger](docs/plans/october-refinement-implementation-plan.md).
+Graded-refresh scheduling, measurement-only performance work and gated production
+URL activation remain deferred. No physical-device, live-provider, CloudKit,
+rendered UI, archive or release acceptance is claimed. No deployment was made.
+
 # 2026-10-29 — Saved-card artwork and price-history identity repair
 
 At `44b1831`, fixed Collection grid/detail artwork
@@ -4929,3 +4957,32 @@ historical.
   the subsequent normal Debug build and 81 Browse/loading/set-artwork tests
   pass with no skips or failures. The expanded 431-pass run preceded this
   final layout-only repair.
+
+### 2026-10-29 — Zero quantity and optional personal sales/trades
+
+- The collection detail minus action can remove the last copy through the
+  existing removal/history/undo path. The store also accepts zero quantity
+  with its existing stale-value protection; negative quantities are rejected.
+- Added optional sale/trade entry with quantity, exact total sale price in USD
+  before fees, and notes/received items. Blank prices remain unknown; an
+  explicit zero remains zero. Metadata lives on removal activity, persists
+  after the last owned copy leaves, and participates in the store digest.
+  Personal transaction evidence does not replace provider market prices.
+- Normal Debug iOS Simulator regression: **202 passed, 0 failures**, covering
+  collection history, ledger completeness, portfolio ledger, store digest,
+  schema compatibility, item kinds and forward-compatible games. An initial
+  new schema test selected the relationship's entity accidentally; its entity
+  lookup was corrected before the green rerun. New coverage includes partial
+  sale/full trade, last-copy removal, restore, stale/invalid requests, failed
+  save rollback, exact localized amount parsing and reopening a disk store.
+- Isolated synthetic simulator interaction verified a $12.34 sale with a note,
+  undo, retained Sold history and reviewable original details after restore.
+  Final Debug build succeeded after a copy adjustment and deterministic
+  ownership capture route. Rendered last-copy decrement removed the card and
+  showed Undo; light sale, dark trade and maximum accessibility text/scrolling
+  were inspected. Native controls, clarity, legibility, accessibility,
+  one-tap decrement and navigation consistency pass the HIG design gate.
+  Evidence and generated build data are under
+  `/Volumes/Keller Family Photos/CodexBuilds/CardTransactions-20261029/`.
+  Physical-device, live CloudKit migration/sync and release acceptance remain
+  unverified; these are personal records, with no shared transaction backend.

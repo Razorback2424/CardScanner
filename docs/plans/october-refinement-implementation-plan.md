@@ -547,3 +547,45 @@ approved live privacy/support URLs and contact details; representative physical
 hardware/performance traces. None is silently considered complete by this plan.
 Current centering correctness and phone/tablet light/largest-text capture evidence
 are recorded in the [guided repair ledger](../audits/centering-guided-repair.md).
+
+## 2026-10-30 — High-confidence review follow-up
+
+Implemented on `db318a8` in commits `00942d9` and `6813f22`; the unused photo
+workflow state was removed in `4d420ab`. The pre-existing sale/trade work was
+preserved. No deployment was performed. Rollback means reverting only these
+follow-up commits.
+
+- Certified restoration now checks later acquisitions even when no owned row
+  remains. Legacy snapshots without a ledger link retain their absent-row restore
+  path. Acceptance: one certificate stays at quantity one in either restore order;
+  independent raw removals remain restorable.
+- Raw history correction validates the same remaining quantity as its writer.
+  Partially consumed acquisition entries explain the restriction instead of
+  offering a guaranteed failure. Supporting split corrections is deferred.
+- Catalog metadata application reuses the existing background model actor,
+  serialized fresh contexts and identity gate. Thread-safe generation checks run
+  before the write, during application and before commit. Acceptance: the main
+  actor remains responsive under ownership-lock contention and retired storage
+  receives no metadata write.
+- Removal snapshots carry the actual history timestamp as an optional JSON field;
+  Collection and Portfolio Undo banners expire from that shared deadline. Older
+  JSON remains decodable. Removed the unused photo-workflow Boolean and the
+  history index's now-unused card dictionary.
+- Baseline: 111 focused simulator tests passed. The two new regressions failed
+  against the old production code, reproducing certificate quantity two and
+  main-actor blocking. The first fix batch passed all 113 focused tests. Final
+  regression passed 202 tests, followed by four cross-game normalization checks
+  and two workflow/view-construction checks: **208 passed, zero failures/skips**.
+  Older JSON and pre-ledger absent-row restoration are covered. Existing compiler
+  diagnostics remain; this is not a full-suite or rendered/device UI claim.
+  Logs/results are on the external build volume under
+  `CodexBuilds/TradingCardScannerReviewFixes-20261030/`. The expected-failure run
+  finished both test cases; its stuck diagnostic collection was terminated after
+  retaining the log. The initial T7 attempt hit a compiler failure with only
+  32 MB free; the baseline and final passing runs used the other external volume.
+
+Deferred: graded-refresh scheduling and unmeasured performance changes. Production
+URLs remain gated by the existing [publication dependency](../audits/feature-completeness-review-2026-10-29.md)
+and [privacy/support publication](../legal/bluehost-publication.md); no unverified
+destination or provider bypass is enabled. Device performance, physical-camera,
+CloudKit, live-provider and release acceptance remain open.
