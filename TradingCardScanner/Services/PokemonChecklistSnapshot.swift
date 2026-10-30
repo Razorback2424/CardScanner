@@ -405,10 +405,16 @@ enum PokemonMasterSetChecklistBuilder {
                 }
                 .flatMap { brief, card in
                     let rawSummary = summary(brief, set: set)
-                    let base = BrowseCatalog.applyingSignedCardArtwork(
+                    var base = BrowseCatalog.applyingSignedCardArtwork(
                         [rawSummary],
                         set: set
                     ).first ?? rawSummary
+                    if base.imageURL == nil, let imageURL = card.highImageURL {
+                        base = base.withArtwork(
+                            thumbnailURL: card.lowImageURL,
+                            imageURL: imageURL
+                        )
+                    }
                     return PokemonMasterSetDefinition.requiredVariants(for: card).map {
                         requirement in
                         var value = base

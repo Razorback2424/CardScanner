@@ -1,6 +1,79 @@
 import XCTest
 import SwiftData
+import PokemonCatalogCore
 @testable import TradingCardScanner
+
+private final class ArtworkRecoveryURLProtocol: URLProtocol, @unchecked Sendable {
+    private static let lock = NSLock()
+    private static var fixture: ArtworkRecoveryFixture?
+    static func install(_ value: ArtworkRecoveryFixture?) {
+        lock.lock(); defer { lock.unlock() }; fixture = value
+    }
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        Self.lock.lock(); let fixture = Self.fixture; Self.lock.unlock()
+        guard let fixture, let url = request.url else { return }
+        let (data, status, mime) = fixture.response(for: url)
+        let response = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil,
+            headerFields: ["Content-Type": mime])!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: data)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+    override func stopLoading() {}
+}
+
+private final class ArtworkRecoveryFixture: @unchecked Sendable {
+    private let lock = NSLock()
+    private var paths: [String] = []
+    let hasProviderImage: Bool
+    let mismatchedMembership: Bool
+    init(hasProviderImage: Bool = false, mismatchedMembership: Bool = false) {
+        self.hasProviderImage = hasProviderImage
+        self.mismatchedMembership = mismatchedMembership
+    }
+    var requests: [String] { lock.lock(); defer { lock.unlock() }; return paths }
+    var session: URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [ArtworkRecoveryURLProtocol.self]
+        return URLSession(configuration: configuration)
+    }
+    func response(for url: URL) -> (Data, Int, String) {
+        lock.lock(); paths.append(url.path); lock.unlock()
+        if url.host == "assets.tcgdex.net" {
+            return (Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=")!, 200, "image/png")
+        }
+        let object: Any
+        if url.path == "/v2/en/sets" {
+            object = [["id": "svp", "name": "SVP Black Star Promos"]]
+        } else if url.path == "/v2/en/sets/svp" {
+            object = setObject
+        } else if url.path.hasSuffix("/196") || url.path.hasSuffix("/svp-196") {
+            object = cardObject("196")
+        } else if url.path.hasSuffix("/200") || url.path.hasSuffix("/svp-200") {
+            object = cardObject("200")
+        } else { return (Data(), 404, "application/json") }
+        return (try! JSONSerialization.data(withJSONObject: object), 200, "application/json")
+    }
+    var setObject: [String: Any] {
+        ["id": "svp", "name": "SVP Black Star Promos", "serie": ["id": "sv"],
+         "cardCount": ["official": 2, "total": 2],
+         "cards": [brief("196"), brief("200")]]
+    }
+    private func brief(_ number: String) -> [String: Any] {
+        ["id": "svp-" + number, "localId": number,
+         "name": mismatchedMembership ? "Wrong card" : number == "196" ? "Charizard ex" : "Eevee"]
+    }
+    func cardObject(_ number: String) -> [String: Any] {
+        var card: [String: Any] = ["id": "svp-" + number, "localId": number,
+            "name": number == "196" ? "Charizard ex" : "Eevee",
+            "set": ["id": "svp", "name": "SVP Black Star Promos", "cardCount": ["official": 2, "total": 2]],
+            "variants": ["firstEdition": false, "holo": true, "normal": false, "reverse": false]]
+        if hasProviderImage { card["image"] = "https://assets.tcgdex.net/en/sv/svp/" + number }
+        return card
+    }
+}
 
 private actor SealedNormalizationFixture: SealedBrowseProviding {
     enum Outcome { case match, directoryFailure, pageFailure, missingSet, missingProduct }
@@ -140,6 +213,83 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
 /// have not got any, which is the case these tests protect.
 @MainActor
 final class CatalogNormalizationTests: XCTestCase {
+    func testManifestRecoveryFeedsScannerAndBrowseWithoutChangingFingerprintOrRepeatingProbes() async throws {
+        let fixture = ArtworkRecoveryFixture()
+        ArtworkRecoveryURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); ArtworkRecoveryURLProtocol.install(nil) }
+        let service = TCGdexService(session: session)
+        async let first = service.fetchCard(id: "svp-196")
+        async let second = service.fetchCard(id: "svp-196")
+        let (card, duplicate) = try await (first, second)
+        XCTAssertNil(card.image, "CDN recovery must not mutate provider fingerprint evidence")
+        XCTAssertEqual(card.highImageURL?.absoluteString, "https://assets.tcgdex.net/en/sv/svp/196/high.png")
+        XCTAssertEqual(card.lowImageURL?.absoluteString, "https://assets.tcgdex.net/en/sv/svp/196/low.png")
+        XCTAssertEqual(card.highImageURL, duplicate.highImageURL)
+        XCTAssertEqual(fixture.requests.filter { $0 == "/v2/en/sets/svp" }.count, 1)
+        XCTAssertEqual(fixture.requests.filter { $0.hasSuffix("/high.png") }.count, 1)
+        XCTAssertEqual(fixture.requests.filter { $0.hasSuffix("/low.png") }.count, 1)
+        let resolved = IdentifiedCard.pokemon(card, setCode: "SVP")
+        XCTAssertEqual(resolved.storedImageURL, card.highImageURL?.absoluteString)
+        XCTAssertEqual(resolved.catalogMetadataThumbnailURL, card.lowImageURL?.absoluteString)
+
+        let setData = try JSONSerialization.data(withJSONObject: fixture.setObject)
+        let provider = try JSONDecoder().decode(TCGdexSetCatalog.self, from: setData)
+        let other = try await service.fetchCard(id: "svp-200")
+        let details = [card.id: card, other.id: other]
+        let raw = try JSONDecoder().decode(TCGdexCard.self,
+            from: JSONSerialization.data(withJSONObject: fixture.cardObject("196")))
+        XCTAssertEqual(PokemonMasterSetChecklistBuilder.canonicalFingerprint(of: provider, cardDetails: details),
+            PokemonMasterSetChecklistBuilder.canonicalFingerprint(of: provider, cardDetails: [raw.id: raw, other.id: other]))
+        let set = CatalogSet(catalogID: .init(game: .pokemon, providerID: "svp"),
+            name: "SVP Black Star Promos", code: "SVP", logoURL: nil, symbolURL: nil,
+            cardCount: 2, releaseDate: nil, sortRank: 1)
+        let built = try PokemonMasterSetChecklistBuilder.build(providerSet: provider, baseSet: set, cardDetails: details)
+        let summary = try XCTUnwrap(built.flatMap(\.cards).first { $0.providerID == card.id })
+        XCTAssertEqual(summary.imageURL, card.highImageURL)
+        XCTAssertEqual(summary.thumbnailURL, card.lowImageURL)
+    }
+
+    func testManifestRecoveryRepairsAllPreviouslyCheckedCollectionRows() async throws {
+        let fixture = ArtworkRecoveryFixture()
+        ArtworkRecoveryURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); ArtworkRecoveryURLProtocol.install(nil) }
+        let context = try makeContext()
+        for (number, name) in [("196", "Charizard ex"), ("200", "Eevee")] {
+            let card = importedCard(setName: "SVP Black Star Promos", cardNumber: number, name: name)
+            card.catalogProviderID = "svp-" + number
+            card.catalogMetadataCheckedAt = .now
+            card.catalogMetadataVersion = 10
+            context.insert(card)
+        }
+        try context.save()
+        await CollectionCatalogNormalizer(tcgdex: TCGdexService(session: session)).normalizeImportedCards(in: context)
+        let saved = try ModelContext(context.container).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(saved.count, 2)
+        for card in saved {
+            XCTAssertEqual(card.highImageURL?.absoluteString, "https://assets.tcgdex.net/en/sv/svp/\(card.cardNumber)/high.png")
+            XCTAssertEqual(card.lowImageURL?.absoluteString, "https://assets.tcgdex.net/en/sv/svp/\(card.cardNumber)/low.png")
+            XCTAssertEqual(card.catalogMetadataVersion, CollectionCatalogNormalizer.metadataVersion)
+            XCTAssertFalse(CollectionCatalogNormalizer.needsNormalization(card))
+        }
+    }
+
+    func testArtworkRecoveryPreservesProviderImagesAndRejectsWrongMembership() async throws {
+        for fixture in [ArtworkRecoveryFixture(hasProviderImage: true), ArtworkRecoveryFixture(mismatchedMembership: true)] {
+            ArtworkRecoveryURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); ArtworkRecoveryURLProtocol.install(nil) }
+            let card = try await TCGdexService(session: session).fetchCard(id: "svp-196")
+            XCTAssertNil(card.recoveredArtwork)
+            XCTAssertFalse(fixture.requests.contains { $0.hasSuffix(".png") })
+            if fixture.hasProviderImage {
+                XCTAssertEqual(card.highImageURL?.absoluteString, "https://assets.tcgdex.net/en/sv/svp/196/high.png")
+                XCTAssertEqual(fixture.requests.count, 1)
+            } else { XCTAssertNil(card.highImageURL) }
+        }
+    }
+
     func testMetadataApplyKeepsMainActorResponsiveAndRechecksRetiredStorageAfterLockWait() async throws {
         for retireStorage in [false, true] {
             let container = try ProductionRowFixtures.makeContainer()

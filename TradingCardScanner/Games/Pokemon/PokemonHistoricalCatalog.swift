@@ -191,7 +191,7 @@ actor PokemonHistoricalCatalog {
             name: identity.setName,
             cardCount: TCGdexCardCount(total: printedCount, official: printedCount)
         )
-        let materializedCard = TCGdexCard(
+        var materializedCard = TCGdexCard(
             id: card.id,
             localId: identity.localID,
             name: card.name,
@@ -202,6 +202,7 @@ actor PokemonHistoricalCatalog {
             pricing: card.pricing,
             variantsDetailed: card.variantsDetailed
         )
+        materializedCard.recoveredArtwork = card.recoveredArtwork
         return .pokemon(
             materializedCard,
             setCode: registrySnapshot.printedCode(forProviderSetID: card.set.id)

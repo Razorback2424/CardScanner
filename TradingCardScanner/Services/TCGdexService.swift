@@ -44,13 +44,26 @@ protocol TCGdexCatalogSource: Sendable {
 }
 
 struct TCGdexService: TCGdexCatalogSource, Sendable {
+    private let session: URLSession
+    private let artworkRecovery: TCGdexArtworkRecovery
+
+    init() {
+        session = .shared
+        artworkRecovery = .shared
+    }
+
+    init(session: URLSession) {
+        self.session = session
+        artworkRecovery = TCGdexArtworkRecovery(session: session)
+    }
+
     func fetchSetDirectory(locale: TCGdexLocale = .en) async throws -> [CatalogSetReference] {
         guard let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/sets") else {
             throw TCGdexError.invalidURL
         }
         var request = URLRequest(url: url)
         request.timeoutInterval = 8
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse,
               (200..<300).contains(http.statusCode) else {
             throw TCGdexError.badResponse
@@ -72,7 +85,8 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
               let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/sets/\(encodedSetID)/\(encodedLocalID)") else {
             throw TCGdexError.invalidURL
         }
-        return try await fetch(url, ignoringCache: ignoringCache)
+        return try await fetch(url, expectedID: setID + "-" + localID,
+                               locale: locale, ignoringCache: ignoringCache)
     }
 
     func fetchSet(id: String, locale: TCGdexLocale = .en) async throws -> TCGdexSetCatalog {
@@ -82,7 +96,7 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         }
         var request = URLRequest(url: url)
         request.timeoutInterval = 12
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse,
               (200..<300).contains(http.statusCode) else {
             throw TCGdexError.badResponse
@@ -106,11 +120,14 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
               let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/cards/\(encoded)") else {
             throw TCGdexError.invalidURL
         }
-        return try await fetch(url, ignoringCache: ignoringCache, timeout: timeout)
+        return try await fetch(url, expectedID: id, locale: locale,
+                               ignoringCache: ignoringCache, timeout: timeout)
     }
 
     private func fetch(
         _ url: URL,
+        expectedID: String,
+        locale: TCGdexLocale,
         ignoringCache: Bool = false,
         timeout: TimeInterval = 8
     ) async throws -> TCGdexCard {
@@ -123,7 +140,7 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         // prices were checked means they were actually checked.
         request.cachePolicy = ignoringCache ? .reloadIgnoringLocalCacheData : .useProtocolCachePolicy
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else {
             throw TCGdexError.badResponse
         }
@@ -136,7 +153,88 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
             throw TCGdexError.badResponse
         }
 
-        return try JSONDecoder().decode(TCGdexCard.self, from: data)
+        var card = try JSONDecoder().decode(TCGdexCard.self, from: data)
+        guard card.id.caseInsensitiveCompare(expectedID) == .orderedSame else {
+            throw TCGdexError.identityMismatch
+        }
+        if card.storedArtworkURL == nil {
+            card.recoveredArtwork = await artworkRecovery.artwork(for: card, locale: locale)
+        }
+        return card
+    }
+}
+
+/// Coalesces missing-artwork work across scans, Browse, imports, and refreshes.
+/// Misses expire quickly so a provider/CDN outage never becomes permanent.
+actor TCGdexArtworkRecovery {
+    static let shared = TCGdexArtworkRecovery(session: .shared)
+    private struct Memo<Value: Sendable> {
+        let expiresAt: Date
+        let task: Task<Value?, Never>
+    }
+    private let session: URLSession
+    private let resolver: PokemonCatalogTCGdexCardArtworkResolver
+    private var sets = BoundedCache<String, Memo<TCGdexSetCatalog>>(capacity: 64)
+    private var cards = BoundedCache<String, Memo<PokemonCatalogResolvedCardArtwork>>(capacity: 512)
+
+    init(session: URLSession) {
+        self.session = session
+        resolver = .init { request in
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                throw URLError(.badServerResponse)
+            }
+            return (data, http)
+        }
+    }
+
+    func artwork(for card: TCGdexCard, locale: TCGdexLocale) async -> PokemonCatalogResolvedCardArtwork? {
+        let key = locale.rawValue + ":" + card.id
+        if let memo = cards[key], memo.expiresAt > .now { return await memo.task.value }
+        let resolver = resolver
+        let task = Task<PokemonCatalogResolvedCardArtwork?, Never> {
+            guard let set = await self.set(id: card.set.id, locale: locale),
+                  set.id == card.set.id,
+                  let seriesID = set.serie?.id,
+                  set.cards.contains(where: {
+                      $0.id == card.id && $0.localId == card.localId
+                          && PokemonCatalogTextNormalization.canonicalMembershipName($0.name)
+                            == PokemonCatalogTextNormalization.canonicalMembershipName(card.name)
+                  }) else { return nil }
+            return await resolver.resolve(language: locale.rawValue, seriesID: seriesID,
+                setID: set.id, cardID: card.id, localID: card.localId)
+        }
+        cards[key] = Memo(expiresAt: .now.addingTimeInterval(60), task: task)
+        let result = await task.value
+        if result != nil {
+            cards[key] = Memo(expiresAt: .now.addingTimeInterval(8 * 60 * 60), task: task)
+        }
+        return result
+    }
+
+    private func set(id: String, locale: TCGdexLocale) async -> TCGdexSetCatalog? {
+        let key = locale.rawValue + ":" + id
+        if let memo = sets[key], memo.expiresAt > .now { return await memo.task.value }
+        let session = session
+        let task = Task<TCGdexSetCatalog?, Never> {
+            let url = URL(string: "https://api.tcgdex.net/v2")!
+                .appendingPathComponent(locale.rawValue).appendingPathComponent("sets")
+                .appendingPathComponent(id)
+            var request = URLRequest(url: url)
+            request.timeoutInterval = 3
+            guard let (data, response) = try? await session.data(for: request),
+                  let http = response as? HTTPURLResponse,
+                  (200..<300).contains(http.statusCode),
+                  let set = try? JSONDecoder().decode(TCGdexSetCatalog.self, from: data),
+                  set.id == id else { return nil }
+            return set
+        }
+        sets[key] = Memo(expiresAt: .now.addingTimeInterval(60), task: task)
+        let result = await task.value
+        if result != nil {
+            sets[key] = Memo(expiresAt: .now.addingTimeInterval(8 * 60 * 60), task: task)
+        }
+        return result
     }
 }
 

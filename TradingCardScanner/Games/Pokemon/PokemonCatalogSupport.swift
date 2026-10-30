@@ -821,7 +821,7 @@ actor ResolvedPokemonCardCache {
             cardID: card.id,
             localID: card.localId,
             name: card.name,
-            image: card.image,
+            image: card.storedArtworkURL,
             rarity: card.rarity,
             setID: card.set.id,
             setName: card.set.name,

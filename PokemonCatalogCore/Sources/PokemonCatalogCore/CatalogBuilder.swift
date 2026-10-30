@@ -1381,7 +1381,11 @@ public struct PokemonCatalogBuilder: Sendable {
                     reason: "set brief and exact card detail identities disagree"
                 )
             }
+            let recovered = providerSet.resolvedCardArtworkByLocalID?[
+                brief.localID.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            ]
             let primaryImage = nonEmpty(brief.image) ?? nonEmpty(card.image)
+                ?? (recovered?.source == .tcgdexCDNProbe ? recovered?.imageURL : nil)
             if let primaryImage { try validateURL(primaryImage) }
             summaries.append(
                 PokemonCatalogCardSummary(

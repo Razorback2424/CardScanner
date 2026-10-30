@@ -93,7 +93,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// and locally rewrite legacy gateway URLs without spending a request.
     /// 9: retry missing Pokémon artwork through exact TCGdex card details.
     /// 10: repair saved Pokémon artwork from the active signed Browse catalog.
-    nonisolated static let metadataVersion = 10
+    /// 11: recover exact CDN artwork omitted from the provider image manifest.
+    nonisolated static let metadataVersion = 11
     private var requestsAnotherPass = false
     private var retryFailedSealedOnNextPass = false
     /// Input discovery now suspends at the model actor. Keep the same
@@ -1023,6 +1024,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         service: any TCGdexCatalogSource
     ) async -> ImportedCatalogMetadata {
         var imageURL = usableTCGdexImageURL(brief.image) ? brief.image : nil
+        var thumbnailURL = imageURL.map { $0 + "/low.png" }
         if imageURL == nil,
            let exact = try? await service.fetchCard(
                setID: setID,
@@ -1038,8 +1040,9 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 imported: brief.name,
                 catalog: exact.name
            ),
-           usableTCGdexImageURL(exact.image) {
-            imageURL = exact.image
+           usableTCGdexImageURL(exact.storedArtworkURL) {
+            imageURL = exact.storedArtworkURL
+            thumbnailURL = exact.lowImageURL?.absoluteString
         }
 
         return ImportedCatalogMetadata(
@@ -1047,7 +1050,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
             setCode: printedCode,
             rarity: nil,
             imageURL: imageURL,
-            thumbnailURL: imageURL.map { $0 + "/low.png" },
+            thumbnailURL: thumbnailURL,
             tcgplayerURL: nil,
             setReleaseOrder: releaseOrder
         )

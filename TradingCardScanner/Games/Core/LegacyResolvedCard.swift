@@ -14,7 +14,7 @@ enum LegacyResolvedCard: Identifiable, Sendable {
 
     var storedImageURL: String? {
         switch self {
-        case let .pokemon(card, _): return card.image
+        case let .pokemon(card, _): return card.storedArtworkURL
         case .magic: return displayImageURL?.absoluteString
         }
     }
@@ -35,9 +35,7 @@ enum LegacyResolvedCard: Identifiable, Sendable {
 
     var catalogMetadataThumbnailURL: String? {
         switch self {
-        case let .pokemon(card, _): return card.image.map {
-            URL(string: $0)?.pathExtension.isEmpty == false ? $0 : $0 + "/low.png"
-        }
+        case let .pokemon(card, _): return card.lowImageURL?.absoluteString
         case .magic: return thumbnailImageURL?.absoluteString
         }
     }
@@ -155,9 +153,7 @@ enum LegacyResolvedCard: Identifiable, Sendable {
     var thumbnailImageURL: URL? {
         switch self {
         case let .pokemon(card, _):
-            guard let image = card.image else { return nil }
-            guard let url = URL(string: image) else { return nil }
-            return url.pathExtension.isEmpty ? URL(string: image + "/low.png") : url
+            return card.lowImageURL
         case let .magic(card): return card.thumbnailImageURL
         }
     }

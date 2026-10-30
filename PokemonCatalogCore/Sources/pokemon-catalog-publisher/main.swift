@@ -347,6 +347,9 @@ struct PokemonCatalogPublisherMain {
         }
         let enricher = PokemonCatalogArtworkEnricher(
             artworkResolver: offlineResolver,
+            cardArtworkResolver: .init(loader: { request in
+                throw URLError(.resourceUnavailable)
+            }),
             secondaryArtworkProbe: offlineSecondaryProbe,
             secondaryCandidates: secondary.sets,
             secondaryCardArtworkLoader: { _, _ in secondary.cards ?? [] }

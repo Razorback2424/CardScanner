@@ -25,6 +25,7 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
     }
 
     private let artworkResolver: PokemonCatalogTCGdexArtworkResolver
+    private let cardArtworkResolver: PokemonCatalogTCGdexCardArtworkResolver
     private let secondaryArtworkProbe: PokemonCatalogArtworkProbe
     private let secondaryCandidates: [PokemonCatalogSecondarySet]
     private let secondaryCardArtworkLoader: SecondaryCardArtworkLoader?
@@ -32,12 +33,14 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
 
     public init(
         artworkResolver: PokemonCatalogTCGdexArtworkResolver = .init(),
+        cardArtworkResolver: PokemonCatalogTCGdexCardArtworkResolver = .init(),
         secondaryArtworkProbe: PokemonCatalogArtworkProbe = .init(),
         secondaryCandidates: [PokemonCatalogSecondarySet] = [],
         secondaryCardArtworkLoader: SecondaryCardArtworkLoader? = nil,
         logger: @escaping Logger = { message in print(message) }
     ) {
         self.artworkResolver = artworkResolver
+        self.cardArtworkResolver = cardArtworkResolver
         self.secondaryArtworkProbe = secondaryArtworkProbe
         self.secondaryCandidates = secondaryCandidates
         self.secondaryCardArtworkLoader = secondaryCardArtworkLoader
@@ -106,6 +109,35 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
                     image: imageURL,
                     source: .tcgdexCardDetail
                 )
+        }
+
+        // The provider manifest can omit an image even though the exact card
+        // files already exist. Probe each missing identity, never sample a CDN
+        // template and assume the rest of the cards exist.
+        if let seriesID, !seriesID.isEmpty {
+            let missing = providerSet.cards.filter {
+                nonEmpty($0.image) == nil
+                    && cardArtworkByLocalID[normalizedLocalID($0.localID)] == nil
+            }
+            let resolver = cardArtworkResolver
+            await withTaskGroup(of: (String, PokemonCatalogResolvedCardArtwork?).self) { group in
+                var iterator = missing.makeIterator()
+                func enqueue(_ brief: PokemonCatalogProviderCardBrief) {
+                    group.addTask {
+                        (brief.localID, await resolver.resolve(
+                            seriesID: seriesID, setID: providerSet.id,
+                            cardID: brief.id, localID: brief.localID
+                        ))
+                    }
+                }
+                for _ in 0..<min(4, missing.count) {
+                    if let brief = iterator.next() { enqueue(brief) }
+                }
+                while let (localID, artwork) = await group.next() {
+                    if let artwork { cardArtworkByLocalID[normalizedLocalID(localID)] = artwork }
+                    if !Task.isCancelled, let brief = iterator.next() { enqueue(brief) }
+                }
+            }
         }
 
         let cardsMissingArtwork = providerSet.cards.filter { brief in
@@ -205,6 +237,10 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
             .sorted()
         if !detailLocalIDs.isEmpty {
             sources.append("cards:tcgdexDetail:\(detailLocalIDs.joined(separator: ","))")
+        }
+        let probedLocalIDs = (artworkBySource[.tcgdexCDNProbe] ?? []).map(\.key).sorted()
+        if !probedLocalIDs.isEmpty {
+            sources.append("cards:tcgdexCDNProbe:\(probedLocalIDs.joined(separator: ","))")
         }
         let secondaryLocalIDs = (artworkBySource[.secondaryProvider] ?? [])
             .map(\.key)

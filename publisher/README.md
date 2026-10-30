@@ -6,6 +6,18 @@ authorize scanner recognition.
 `PokemonCatalogCore` is the reusable macOS library and
 `pokemon-catalog-publisher` is the command-line entry point.
 
+Missing card artwork is resolved from exact card details, then from the card's
+own TCGdex CDN path, before considering the secondary provider. CDN recovery
+uses the provider's series, set, and padded local ID; each recovered image must
+return a successful image response and decode. PNG and WebP derivatives are
+checked independently, and a single healthy size can serve both placements.
+The app shares this resolver for live lookups and saved collection repair.
+Recovered URLs remain separate from raw provider fingerprint data. Recorded
+fixture validation never performs live artwork probes.
+
+The opt-in CDN regression check is
+`POKEMON_LIVE_ARTWORK_TESTS=1 swift test --package-path PokemonCatalogCore --filter TCGdexCardArtworkResolverTests/testLiveManifestOmissionsWhenRequested`.
+
 ## Local validation
 
 Use the recorded fixture and a fixed timestamp when reviewing deterministic

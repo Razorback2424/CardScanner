@@ -1,4 +1,5 @@
 import Foundation
+import PokemonCatalogCore
 
 struct TCGdexCard: Decodable, Identifiable, Sendable {
     let id: String
@@ -18,6 +19,16 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     let variantsDetailed: [TCGdexDetailedVariant]?
     /// Device-local supplemental pricing; never decoded as TCGdex evidence.
     var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
+    /// Validated CDN evidence, kept out of the raw provider fingerprint.
+    var recoveredArtwork: PokemonCatalogResolvedCardArtwork? = nil
+
+    private var providerArtworkURL: String? {
+        guard let image,
+              let url = URL(string: image), url.scheme?.lowercased() == "https",
+              url.host != nil, !url.path.isEmpty else { return nil }
+        return image
+    }
+    var storedArtworkURL: String? { providerArtworkURL ?? recoveredArtwork?.imageURL }
 
     enum CodingKeys: String, CodingKey {
         case id, localId, name, image, rarity, set, variants, pricing
@@ -73,9 +84,17 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     }
 
     var highImageURL: URL? {
-        guard let image else { return nil }
+        guard let image = storedArtworkURL else { return nil }
         guard let url = URL(string: image) else { return nil }
         return url.pathExtension.isEmpty ? URL(string: image + "/high.png") : url
+    }
+
+    var lowImageURL: URL? {
+        if providerArtworkURL == nil, let recoveredArtwork {
+            return URL(string: recoveredArtwork.thumbnailURL)
+        }
+        guard let image = providerArtworkURL, let url = URL(string: image) else { return nil }
+        return url.pathExtension.isEmpty ? URL(string: image + "/low.png") : url
     }
 
     /// What TCGdex says this printing physically exists as, drawn from both

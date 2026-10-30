@@ -195,6 +195,7 @@ public struct PokemonCatalogProviderDetailedVariant: Codable, Equatable, Hashabl
 public struct PokemonCatalogResolvedCardArtwork: Equatable, Sendable {
     public enum Source: String, Equatable, Hashable, Sendable {
         case tcgdexCardDetail
+        case tcgdexCDNProbe
         case secondaryProvider
     }
 
