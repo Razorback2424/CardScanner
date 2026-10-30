@@ -5447,6 +5447,12 @@ final class ScannerViewModel: ObservableObject {
         return storageGeneration.continuation(for: storageGenerationToken)
     }
 
+    private var writerContinuation: StorageGenerationContinuation {
+        guard let storageGeneration else { return { true } }
+        guard let storageGenerationToken else { return { false } }
+        return storageGeneration.continuation(for: storageGenerationToken)
+    }
+
     /// Takes a detached pending value before persistence starts. The caller for
     /// Add another therefore cannot re-enter duplicate interception, including
     /// on a double tap.
@@ -5700,6 +5706,7 @@ final class ScannerViewModel: ObservableObject {
                   identifiedCatalogCard: true
               ),
               let modelContainer,
+              let collectionWriter,
               (priceQuoteService.supportsStoredPrintingRefresh(for: card.game)
                   || PokemonTCGCSVMapping.byCardID[card.providerID] != nil
                   || PriceVendorCredentials.hasKey) else { return }
@@ -5744,10 +5751,8 @@ final class ScannerViewModel: ObservableObject {
         // context. The identity is a value snapshot, so no SwiftData model is
         // retained while the paced vendor request is in flight.
         let fallbackContext = ModelContext(modelContainer)
-        let priceReadContext = ModelContext(modelContainer)
-        priceReadContext.autosaveEnabled = false
-        let fallbackPrices = PriceStore(context: priceReadContext, checkpointsInFreshContext: true)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
+        let shouldContinue = writerContinuation
         let task = Task { @MainActor [weak self] in
             defer {
                 self?.fallbackQuoteTasks[key] = nil
@@ -5776,17 +5781,11 @@ final class ScannerViewModel: ObservableObject {
                 let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
                 guard self.isStorageGenerationCurrent else { return }
-                guard fallbackPrices.store(
-                    quote,
-                    game: card.game,
-                    printingID: printingID,
-                    variantID: variant?.id,
-                    marketVariantID: marketVariantID,
-                    treatmentIDs: treatmentIDs
-                ) else { return }
-                guard self.isStorageGenerationCurrent,
-                      fallbackPrices.save() else { return }
-                guard self.isStorageGenerationCurrent else { return }
+                let writer = await collectionWriter.value
+                guard (try? await writer.storeCatalogPrice(quote, game: card.game, printingID: printingID,
+                    variantID: variant?.id, treatments: treatmentIDs, marketVariantID: marketVariantID,
+                    shouldContinue: shouldContinue)) == true,
+                      self.isStorageGenerationCurrent else { return }
                 self.applyFallbackQuote(
                     quote,
                     priceKey: key,

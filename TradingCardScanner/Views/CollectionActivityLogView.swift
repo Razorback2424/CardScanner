@@ -789,7 +789,7 @@ struct CollectionActivityEditor: View {
                     errorMessage = "This entry could not be corrected."
                     return
                 }
-                queueFallbackPrice(input: input, priceKey: priceKey, game: game)
+                queueFallbackPrice(input: input, priceKey: priceKey, game: game, shouldContinue: shouldContinue)
                 dismiss()
             } catch is CancellationError {
             } catch {
@@ -802,7 +802,8 @@ struct CollectionActivityEditor: View {
     private func queueFallbackPrice(
         input: PriceFallbackCardInput,
         priceKey: String,
-        game: CardGame
+        game: CardGame,
+        shouldContinue: @escaping StorageGenerationContinuation
     ) {
         // A correction can land on a destination row that already has a valid
         // observation. Leave it alone; the normal stale-target gate owns later
@@ -823,10 +824,8 @@ struct CollectionActivityEditor: View {
         guard !hasFinishedPrice, usesFallback, PriceVendorCredentials.hasKey else { return }
 
         fallbackQuoteTask?.cancel()
-        let fallbackContext = ModelContext(modelContext.container)
-        let priceReadContext = ModelContext(modelContext.container)
-        priceReadContext.autosaveEnabled = false
-        let fallbackPrices = PriceStore(context: priceReadContext, checkpointsInFreshContext: true)
+        let container = modelContext.container
+        let fallbackContext = ModelContext(container)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         fallbackQuoteTask = Task { @MainActor in
             switch await resolver.resolve(input) {
@@ -840,15 +839,10 @@ struct CollectionActivityEditor: View {
                 )
                 let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
-                fallbackPrices.store(
-                    quote,
-                    game: input.game,
-                    printingID: input.printingID,
-                    variantID: input.variant?.id,
-                    marketVariantID: marketVariantID,
-                    treatmentIDs: input.treatmentIDs
-                )
-                _ = fallbackPrices.save()
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                _ = try? await writer.storeCatalogPrice(quote, game: input.game, printingID: input.printingID,
+                    variantID: input.variant?.id, treatments: input.treatmentIDs,
+                    marketVariantID: marketVariantID, shouldContinue: shouldContinue)
             case .failed:
                 break
             }
