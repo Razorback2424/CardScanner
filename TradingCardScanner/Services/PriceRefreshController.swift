@@ -1914,28 +1914,39 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             }
         }
 
-        func stampCoverage(
+        func recordMiss(
             _ target: PriceTarget,
             status: GradedMarketCoverageStatus,
             variants: [GradedVariant] = []
         ) {
-            let coverage = GradedMarketCoverage(
-                status: status,
-                variants: variants,
-                targetCompany: target.gradingCompany,
-                targetGrade: CardGrade(
-                    value: JustTCGV2GradedClient.normalizedVendorGrade(target.grade),
-                    label: target.gradeLabel,
-                    qualifier: target.gradingQualifier
+            let accepted: Bool
+            if target.marketVariantID != nil {
+                // An omitted bound listing is an attempted lookup, not new
+                // price evidence. Preserve its quote and advance retry state.
+                accepted = store.recordLookupStatus(
+                    .gradedVariantUnavailable, game: target.game,
+                    printingID: target.printingID, variantID: target.variantID,
+                    treatmentIDs: target.magicTreatmentIDsRaw
                 )
-            )
-            let accepted = store.recordGradedMarketCoverage(
-                coverage,
-                game: target.game,
-                printingID: target.printingID,
-                variantID: target.variantID,
-                treatmentIDs: target.magicTreatmentIDsRaw
-            )
+            } else {
+                let coverage = GradedMarketCoverage(
+                    status: status,
+                    variants: variants,
+                    targetCompany: target.gradingCompany,
+                    targetGrade: CardGrade(
+                        value: JustTCGV2GradedClient.normalizedVendorGrade(target.grade),
+                        label: target.gradeLabel,
+                        qualifier: target.gradingQualifier
+                    )
+                )
+                accepted = store.recordGradedMarketCoverage(
+                    coverage,
+                    game: target.game,
+                    printingID: target.printingID,
+                    variantID: target.variantID,
+                    treatmentIDs: target.magicTreatmentIDsRaw
+                )
+            }
             if accepted {
                 stagedWriteCount += 1
                 rememberPriceKey(target.id)
@@ -1961,15 +1972,15 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     variants = values
                 case .cardFoundWithoutGradedVariants:
                     lookupMisses += group.count
-                    for target in group where target.marketVariantID == nil {
-                        stampCoverage(target, status: .noGradedListings)
+                    for target in group {
+                        recordMiss(target, status: .noGradedListings)
                     }
                     await checkpoint()
                     continue
                 case .noProductMatch:
                     lookupMisses += group.count
-                    for target in group where target.marketVariantID == nil {
-                        stampCoverage(target, status: .cardNotTracked)
+                    for target in group {
+                        recordMiss(target, status: .cardNotTracked)
                     }
                     await checkpoint()
                     continue
@@ -2012,13 +2023,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 }
                 guard let variant else {
                     lookupMisses += 1
-                    if target.marketVariantID == nil {
-                        stampCoverage(
-                            target,
-                            status: .gradeNotListed,
-                            variants: variants
-                        )
-                    }
+                    recordMiss(target, status: .gradeNotListed, variants: variants)
                     continue
                 }
 

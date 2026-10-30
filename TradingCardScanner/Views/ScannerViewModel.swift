@@ -1622,7 +1622,6 @@ final class ScannerViewModel: ObservableObject {
     private var activeIdentificationRequest: ScanRequest?
     private var pendingResolutionRequests: [UUID: (request: ScanRequest, isAdditionalCopy: Bool)] = [:]
     private var authorizedWriteRequestIDs: Set<UUID> = []
-    private var scannedGradedOutcomes: [UUID: ScannedGradedOutcome] = [:]
     private var oneCardScanIntervals: [UUID: OSSignpostIntervalState] = [:]
     private let sessionMetricsLog: ScanSessionMetricsLog
     private let metricsDefaults: UserDefaults
@@ -2670,7 +2669,6 @@ final class ScannerViewModel: ObservableObject {
         pendingResolutionRequests.removeAll()
         isProcessingIdentification = false
         identificationQueue.removeAll()
-        scannedGradedOutcomes.removeAll()
         pendingChoice = nil
         pendingPrintRunChoice = nil
         pendingIdentityChoice = nil
@@ -3178,8 +3176,6 @@ final class ScannerViewModel: ObservableObject {
     func dismissChoice() {
         if let pending = pendingChoice {
             if pending.request.heldRepeatAuthorizationID != nil { clearHeldRepeatState() }
-            let requestID = pending.request.id
-            scannedGradedOutcomes.removeValue(forKey: requestID)
             endOneCardScan(encounterID: pending.request.encounterID, outcome: "choice-dismissed")
             clearAcknowledgement(for: pending.request.encounterID)
         }
@@ -3212,8 +3208,6 @@ final class ScannerViewModel: ObservableObject {
     func dismissPrintRunChoice() {
         if let pending = pendingPrintRunChoice {
             if pending.request.heldRepeatAuthorizationID != nil { clearHeldRepeatState() }
-            let requestID = pending.request.id
-            scannedGradedOutcomes.removeValue(forKey: requestID)
             endOneCardScan(encounterID: pending.request.encounterID, outcome: "print-run-dismissed")
             clearAcknowledgement(for: pending.request.encounterID)
         }
@@ -3307,8 +3301,6 @@ final class ScannerViewModel: ObservableObject {
                 fileUnresolved(request: pending.request, reason: .noConfirmedMatch,
                                candidates: pending.candidates, printingCandidates: pending.displayCandidates)
             }
-            let requestID = pending.request.id
-            scannedGradedOutcomes.removeValue(forKey: requestID)
             endOneCardScan(encounterID: pending.request.encounterID, outcome: "identity-dismissed")
             clearAcknowledgement(for: pending.request.encounterID)
         }
@@ -4527,12 +4519,6 @@ final class ScannerViewModel: ObservableObject {
             )
             return
         }
-        var resolvedScan = resolvedScan
-        if resolvedScan.gradedOutcome == nil {
-            resolvedScan.gradedOutcome = scannedGradedOutcomes.removeValue(forKey: resolvedScan.request.id)
-        } else {
-            scannedGradedOutcomes.removeValue(forKey: resolvedScan.request.id)
-        }
         switch resolvedScan.request.purpose {
         case .collection:
             let candidate = CollectionCommitCandidate(resolvedScan: resolvedScan)
@@ -4732,8 +4718,12 @@ final class ScannerViewModel: ObservableObject {
     private func queueGradedBinding(scanID: RecentScan.ID) {
         guard let scan = sessionScans.first(where: { $0.id == scanID }),
               let slab = scan.subject.slab,
+              let collectionWriter,
               gradedBindingScanIDs.insert(scanID).inserted else { return }
         let writeSessionID = scannerSessionID
+        let shouldContinue = storageGenerationContinuation
+        let expectedIdentity = GradedBindingIdentity(finishID: scan.resolved.variant?.id,
+            printRun: scan.pokemonPrintRun)
         let encounterID = committedSessionHistory.first(where: { $0.id == scanID })?.encounterID.uuidString ?? "none"
         Task { @MainActor [weak self] in
             guard let self else { return }
@@ -4782,49 +4772,52 @@ final class ScannerViewModel: ObservableObject {
                 "gradedPriceLookupFinished",
                 "scan=\(scanID.uuidString) encounter=\(encounterID) result=\(lookupResult)"
             )
-            guard writeSessionID == self.scannerSessionID,
-                  self.isStorageGenerationCurrent,
-                  !self.undoingScanIDs.contains(scanID),
-                  let current = self.sessionScans.first(where: { $0.id == scanID }),
-                  current.resolved.variant == scan.resolved.variant,
-                  current.pokemonPrintRun == scan.pokemonPrintRun,
-                  Self.isCompatibleGradedEvidence(current.subject.slab, with: slab) else { return }
+            // A saved holding outlives the scanner presentation. Resolve its
+            // latest key while the session exists; after departure the writer
+            // follows durable aliases and rechecks the expected finish/run.
+            let currentCollectionKey: @MainActor () -> String? = {
+                guard !Task.isCancelled, shouldContinue?() ?? true,
+                      self.isStorageGenerationCurrent,
+                      !self.undoingScanIDs.contains(scanID) else { return nil }
+                guard writeSessionID == self.scannerSessionID else {
+                    return scan.mutation.collectionKey
+                }
+                guard let current = self.sessionScans.first(where: { $0.id == scanID }),
+                      current.resolved.variant == scan.resolved.variant,
+                      current.pokemonPrintRun == scan.pokemonPrintRun,
+                      Self.isCompatibleGradedEvidence(current.subject.slab, with: slab) else { return nil }
+                return current.mutation.collectionKey
+            }
+            guard currentCollectionKey() != nil else { return }
             guard case let .bound(variant) = outcome else {
-                self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
+                if writeSessionID == self.scannerSessionID {
+                    self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
+                }
                 if let coverage = outcome.marketCoverage {
-                    guard let collectionWriter = self.collectionWriter else {
-                        self.noteGradedBindingOutcome(outcome, slab: slab)
-                        return
-                    }
-                    self.beginTrackedWrite(for: writeSessionID)
-                    defer { self.endTrackedWrite(for: writeSessionID) }
                     do {
                         let collectionWriter = await collectionWriter.value
-                        guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
-                              latest.resolved.variant == scan.resolved.variant,
-                              latest.pokemonPrintRun == scan.pokemonPrintRun,
-                              Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
-                              !self.undoingScanIDs.contains(scanID) else { return }
+                        guard let collectionKey = currentCollectionKey() else { return }
+                        let shouldTrackWrite = writeSessionID == self.scannerSessionID
+                        if shouldTrackWrite { self.beginTrackedWrite(for: writeSessionID) }
+                        defer { if shouldTrackWrite { self.endTrackedWrite(for: writeSessionID) } }
                         let saved = try await collectionWriter.recordGradedMarketCoverage(
-                            collectionKey: latest.mutation.collectionKey,
-                            coverage: coverage
+                            collectionKey: collectionKey,
+                            coverage: coverage,
+                            expectedIdentity: expectedIdentity
                         )
-                        if !saved {
+                        if !saved, writeSessionID == self.scannerSessionID, currentCollectionKey() != nil {
                             self.show(ScanNote(text: "Graded price status could not be saved", tone: .info))
                         }
                     } catch {
-                        guard writeSessionID == self.scannerSessionID else { return }
+                        guard writeSessionID == self.scannerSessionID, currentCollectionKey() != nil else { return }
                         self.show(ScanNote(text: "Graded price status could not be saved", tone: .info))
                     }
                 }
-                self.noteGradedBindingOutcome(outcome, slab: slab)
+                if writeSessionID == self.scannerSessionID, currentCollectionKey() != nil {
+                    self.noteGradedBindingOutcome(outcome, slab: slab)
+                }
                 return
             }
-            guard let collectionWriter = self.collectionWriter else {
-                self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
-                return
-            }
-            let collectionKeyBeforeGateWait = current.mutation.collectionKey
             do {
                 let collectionWriter = await collectionWriter.value
                 // The identity gate can wait for an entire refresh pass. Resolve
@@ -4832,25 +4825,7 @@ final class ScannerViewModel: ObservableObject {
                 // just the actual ownership write so ending the scan session
                 // does not drain for the duration of background pricing.
                 let bindLatest: @MainActor () async throws -> GradedVariantBindingReceipt? = {
-                    guard self.isStorageGenerationCurrent,
-                          !self.undoingScanIDs.contains(scanID) else {
-                        return nil
-                    }
-
-                    let collectionKey: String
-                    if writeSessionID == self.scannerSessionID {
-                        guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
-                              Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab) else {
-                            return nil
-                        }
-                        collectionKey = latest.mutation.collectionKey
-                    } else {
-                        // The scan session can end while this lookup waits for
-                        // the price gate. Its committed row remains durable;
-                        // bind it using the key captured before the wait, but
-                        // do not publish any result into the next session.
-                        collectionKey = collectionKeyBeforeGateWait
-                    }
+                    guard let collectionKey = currentCollectionKey() else { return nil }
 
                     let shouldTrackWrite = writeSessionID == self.scannerSessionID
                     if shouldTrackWrite { self.beginTrackedWrite(for: writeSessionID) }
@@ -4860,16 +4835,14 @@ final class ScannerViewModel: ObservableObject {
                     return try await collectionWriter.bindScannedGraded(
                         collectionKey: collectionKey,
                         variant: variant,
-                        expectedIdentity: GradedBindingIdentity(finishID: scan.resolved.variant?.id,
-                            printRun: scan.pokemonPrintRun)
+                        expectedIdentity: expectedIdentity
                     )
                 }
                 let resolvedBinding: GradedVariantBindingReceipt?
                 // This read is only an optimization. The serialized writer
                 // rechecks the current row and throws if a promotion became
                 // necessary after this preflight.
-                let preflightKey = self.sessionScans.first(where: { $0.id == scanID })?
-                    .mutation.collectionKey
+                let preflightKey = currentCollectionKey()
                 if let preflightKey,
                    await collectionWriter.requiresGradedBindingPromotion(for: preflightKey) {
                     resolvedBinding = try await CollectionExclusiveWrites.withPriceIdentityExclusivity(

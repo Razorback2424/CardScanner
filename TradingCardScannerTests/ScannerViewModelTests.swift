@@ -879,6 +879,127 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(receiptPrice.unitMarketPriceUSD, 250)
     }
 
+    func testSlabBindingCompletesAfterSessionEndsDuringLookupWithoutChangingReplacementSession() async throws {
+        for restartScanner in [false, true] {
+            let variant = GradedVariant(id: "graded-after-lookup-departure", cardID: "graded-card",
+                company: .psa, grade: CardGrade(value: "10", label: "Gem Mint"), printing: "Normal",
+                marketPriceUSD: 250, updatedAt: nil)
+            let gate = ScannerGradedResolverGate()
+            let model = try makeModel(variants: [.normal], gradedOutcome: .bound(variant), gradedResolverGate: gate)
+            let container = try XCTUnwrap(self.container)
+            useSlabMode(model)
+            confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+            await gate.waitUntilStarted()
+            XCTAssertEqual(model.sessionScans.count, 1)
+            model.endSession()
+            if restartScanner {
+                model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false)
+                confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+                await assertEventually { model.sessionScans.count == 1 }
+            }
+            let scanIDs = model.sessionScans.map(\.id)
+            let receipt = model.receipt
+            let note = model.note
+            await gate.release()
+
+            let bound = await waitUntil {
+                let verification = ModelContext(container)
+                guard let row = try? verification.fetch(FetchDescriptor<CollectedCard>()).first(where: { $0.itemKind == .gradedCard }),
+                      row.justTCGVariantID == variant.id else { return false }
+                return PriceStore(context: verification).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD == 250
+            }
+            XCTAssertTrue(bound)
+            XCTAssertEqual(model.sessionScans.map(\.id), scanIDs)
+            XCTAssertEqual(model.recent.map(\.id), scanIDs)
+            XCTAssertEqual(model.receipt?.scanID, receipt?.scanID)
+            XCTAssertEqual(model.note?.text, note?.text)
+            model.endSession()
+        }
+    }
+
+    func testGradedCoverageCompletesAfterSessionEndsDuringLookup() async throws {
+        let gate = ScannerGradedResolverGate()
+        let coverage = GradedMarketCoverage(status: .gradeNotListed, variants: [], targetCompany: .psa,
+            targetGrade: .init(value: "10", label: "Gem Mint"))
+        let model = try makeModel(variants: [.normal], gradedOutcome: .gradeNotTracked(coverage), gradedResolverGate: gate)
+        let container = try XCTUnwrap(self.container)
+        useSlabMode(model)
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        await gate.waitUntilStarted()
+        model.endSession()
+        await gate.release()
+
+        let saved = await waitUntil {
+            let verification = ModelContext(container)
+            guard let row = try? verification.fetch(FetchDescriptor<CollectedCard>()).first else { return false }
+            return PriceStore(context: verification).record(forKey: row.priceKey)?.gradedMarketCoverage == coverage
+        }
+        XCTAssertTrue(saved)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertNil(model.receipt)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testDepartedGradedLookupCannotWriteAfterStorageGenerationIsReplaced() async throws {
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        let variant = GradedVariant(id: "old-generation-listing", company: .psa,
+            grade: .init(value: "10", label: "Gem Mint"), printing: "Normal", marketPriceUSD: 250, updatedAt: nil)
+        let gate = ScannerGradedResolverGate()
+        let model = try makeModel(variants: [.normal], gradedOutcome: .bound(variant),
+            gradedResolverGate: gate, storageGeneration: generation)
+        let container = try XCTUnwrap(self.container)
+        useSlabMode(model)
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        await gate.waitUntilStarted()
+        model.endSession()
+        generation.suspend()
+        generation.installReady(storeID: UUID())
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false, storageGeneration: generation)
+        await gate.release()
+        await settle()
+
+        let verification = ModelContext(container)
+        XCTAssertNil(try verification.fetch(FetchDescriptor<CollectedCard>()).first?.justTCGVariantID)
+        XCTAssertFalse(try verification.fetch(FetchDescriptor<PriceRecord>()).contains { $0.marketVariantID == variant.id })
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertNil(model.receipt)
+        model.endSession()
+    }
+
+    func testDepartedGradedLookupCannotRestoreAnUndoneOrCorrectedHolding() async throws {
+        for correctFinish in [false, true] {
+            let variant = GradedVariant(id: "obsolete-normal-listing", company: .psa,
+                grade: .init(value: "10", label: "Gem Mint"), printing: "Normal", marketPriceUSD: 250, updatedAt: nil)
+            let gate = ScannerGradedResolverGate()
+            let model = try makeModel(variants: correctFinish ? [.normal, .holo] : [.normal],
+                gradedOutcome: .bound(variant), gradedResolverGate: gate)
+            let container = try XCTUnwrap(self.container)
+            useSlabMode(model)
+            confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+            await gate.waitUntilStarted()
+            let scanID = try XCTUnwrap(model.sessionScans.first?.id)
+            if correctFinish {
+                let result = await model.correct(scanID: scanID, to: .holo)
+                XCTAssertEqual(result, .saved)
+            } else {
+                let undone = await model.undoScan(scanID: scanID)
+                XCTAssertTrue(undone)
+            }
+            model.endSession()
+            await gate.release(andFutureCalls: true)
+            await settle()
+
+            let verification = ModelContext(container)
+            let rows = try verification.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, correctFinish ? 1 : 0)
+            XCTAssertNil(rows.first?.justTCGVariantID)
+            if correctFinish { XCTAssertEqual(rows.first?.variant, .holo) }
+            XCTAssertFalse(try verification.fetch(FetchDescriptor<PriceRecord>()).contains { $0.marketVariantID == variant.id })
+            XCTAssertTrue(model.sessionScans.isEmpty)
+        }
+    }
+
     func testSlabBindingCompletesAfterScannerSessionEndsDuringGateWait() async throws {
         let variant = GradedVariant(
             id: "graded-v2-after-session-end",

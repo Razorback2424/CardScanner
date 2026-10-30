@@ -30,6 +30,197 @@ private actor UpgradeProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testPokemonCatalogRetainsNewerMarketDataAcrossDirectAndCheckpointWrites() throws {
+        let checkedAt = Date.now
+        let retrievedAt = checkedAt.addingTimeInterval(-2 * 24 * 60 * 60)
+        let olderData = retrievedAt.addingTimeInterval(-10 * 24 * 60 * 60)
+        let cases: [(PriceSource, Date?)] = [
+            (.tcgplayer, olderData), (.justTCG, olderData), (.tcgCSV, olderData), (.justTCG, nil)
+        ]
+        for checkpoint in [false, true] {
+            for (source, sourceDate) in cases {
+                let (container, context) = try makePriceContext()
+                let original = NormalizedPrice(unitMarketPriceUSD: 12, currencyCode: "USD", source: source,
+                    sourceVariantID: "original", sourceUpdatedAt: source == .tcgCSV ? nil : retrievedAt,
+                    fetchedAt: retrievedAt)
+                let seed = PriceStore(context: context)
+                XCTAssertTrue(seed.store(.price(original), game: .pokemon, printingID: "card", variantID: "normal", at: retrievedAt))
+                XCTAssertTrue(seed.recordFailure(game: .pokemon, printingID: "card", variantID: "normal",
+                    at: checkedAt.addingTimeInterval(-60)))
+                XCTAssertTrue(seed.save())
+
+                let readContext = ModelContext(container)
+                readContext.autosaveEnabled = false
+                let store = PriceStore(context: readContext, checkpointsInFreshContext: checkpoint)
+                XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 8, currencyCode: "USD", source: .tcgplayer,
+                    sourceVariantID: "normal", sourceUpdatedAt: sourceDate, fetchedAt: checkedAt)),
+                    game: .pokemon, printingID: "card", variantID: "normal", at: checkedAt))
+                XCTAssertTrue(store.save())
+
+                let verification = ModelContext(container)
+                let record = try XCTUnwrap(PriceStore(context: verification).record(forKey: "pokemon:card:normal"))
+                XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 12)
+                XCTAssertEqual(record.source, source)
+                XCTAssertEqual(record.sourceVariantID, original.sourceVariantID)
+                XCTAssertEqual(record.sourceUpdatedAt, original.sourceUpdatedAt)
+                XCTAssertEqual(record.fetchedAt, retrievedAt)
+                XCTAssertEqual(record.lastSuccessfulCheckAt, checkedAt)
+                XCTAssertEqual(record.lastCheckedAt, checkedAt)
+                XCTAssertNil(record.lastFailureAt)
+                XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+                XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceCheckDay>()).count, 2)
+            }
+        }
+    }
+
+    @MainActor
+    func testPokemonCatalogFreshnessGuardAllowsRestatementImportAndInvalidationRecovery() throws {
+        let retrievedAt = Date.now.addingTimeInterval(-120)
+        let sourceDate = retrievedAt.addingTimeInterval(-60)
+        let cases: [(source: PriceSource, sourceOffset: TimeInterval, invalidated: Bool)] = [
+            (.tcgplayer, 0, false), (.tcgplayer, 30, false),
+            (.importedCSV, -30, false), (.tcgplayer, -30, true)
+        ]
+        for scenario in cases {
+            let (container, context) = try makePriceContext()
+            let store = PriceStore(context: context)
+            XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 12, currencyCode: "USD",
+                source: scenario.source, sourceVariantID: "normal",
+                sourceUpdatedAt: sourceDate, fetchedAt: retrievedAt)),
+                game: .pokemon, printingID: "card", variantID: "normal", at: retrievedAt))
+            if scenario.invalidated {
+                XCTAssertNotNil(PriceObservationLog(context: context).recordInvalidation(
+                    instrumentKey: "pokemon:card:normal", source: .tcgplayer, at: retrievedAt.addingTimeInterval(10)))
+            }
+            let candidateDate = sourceDate.addingTimeInterval(scenario.sourceOffset)
+            XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 8, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: candidateDate, fetchedAt: retrievedAt.addingTimeInterval(60))),
+                game: .pokemon, printingID: "card", variantID: "normal", at: retrievedAt.addingTimeInterval(60)))
+            XCTAssertTrue(store.save())
+            let record = try XCTUnwrap(store.record(forKey: "pokemon:card:normal"))
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 8)
+            XCTAssertEqual(record.sourceUpdatedAt, candidateDate)
+            XCTAssertFalse(record.isInvalidated)
+            if scenario.sourceOffset == 0 {
+                XCTAssertEqual(PriceObservationLog(context: context).newestObservation(instrumentKey: record.key)?.kind, .sourceRestatement)
+            }
+            withExtendedLifetime(container) {}
+        }
+    }
+
+    @MainActor
+    func testCollectionRefreshCannotRegressNewerPokemonMarketData() async throws {
+        let (container, context) = try makePriceContext()
+        let card = try pokemonCard()
+        let row = CollectedCard(collectionKey: "pokemon:refresh:normal", game: .pokemon,
+            providerID: card.providerID, name: card.name, setName: card.setName, setCode: card.setCode,
+            cardNumber: card.cardNumber, rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .normal, variantResolution: .userConfirmed)
+        context.insert(row)
+        let retrievedAt = Date.now.addingTimeInterval(-2 * 24 * 60 * 60)
+        let store = PriceStore(context: context)
+        XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 12, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "vendor-normal", sourceUpdatedAt: retrievedAt, fetchedAt: retrievedAt)),
+            game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID, at: retrievedAt))
+        XCTAssertTrue(store.save())
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setPokemonFetchOverrideForTesting { _ in card }
+        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false, gradedOnly: false), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(result) = outcome else { return XCTFail("Expected completed refresh") }
+        XCTAssertFalse(result.persistenceFailed)
+        let fresh = ModelContext(container)
+        let record = try XCTUnwrap(PriceStore(context: fresh).record(forKey: row.priceKey))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 12)
+        XCTAssertEqual(record.source, .justTCG)
+        XCTAssertEqual(record.fetchedAt, retrievedAt)
+        XCTAssertGreaterThan(try XCTUnwrap(record.lastCheckedAt), retrievedAt)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+    }
+
+    @MainActor
+    func testPokemonCatalogCanRepairAnIneligibleLegacyPrice() throws {
+        for amount in [-1, Double.greatestFiniteMagnitude] {
+            let (container, context) = try makePriceContext()
+            let originalAt = Date.now.addingTimeInterval(-60)
+            let record = PriceRecord(key: "pokemon:card:normal", game: .pokemon, printingID: "card", variantID: "normal")
+            record.unitMarketPriceUSD = amount
+            record.sourceRaw = PriceSource.justTCG.rawValue
+            record.sourceVariantID = "invalid-legacy-quote"
+            record.sourceUpdatedAt = originalAt
+            record.fetchedAt = originalAt
+            context.insert(record)
+            try context.save()
+
+            let store = PriceStore(context: context)
+            XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 8, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: originalAt.addingTimeInterval(-24 * 60 * 60), fetchedAt: .now)),
+                game: .pokemon, printingID: "card", variantID: "normal"))
+            XCTAssertTrue(store.save())
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 8)
+            XCTAssertEqual(record.source, .tcgplayer)
+            withExtendedLifetime(container) {}
+        }
+    }
+
+    @MainActor
+    func testBoundGradedMissesAdvanceRetryStateWithoutChangingPriceEvidence() async throws {
+        let outcomes: [GradedVariantLookupResult] = [.noProductMatch, .cardFoundWithoutGradedVariants,
+            .matched([.init(id: "different-listing", company: .cgc, grade: .init(value: "10"),
+                printing: "Normal", marketPriceUSD: 30, updatedAt: nil)])]
+        for hasPrice in [false, true] {
+            for outcome in outcomes {
+                let (container, context) = try makePriceContext()
+                let row = gradedImport(name: "Bound", catalogID: "ex7-78", finish: .normal)
+                row.justTCGVariantID = "owned-listing"
+                row.justTCGAPIVersion = "v2"
+                context.insert(row)
+                let originalAt = Date.now.addingTimeInterval(-2 * 24 * 60 * 60)
+                let store = PriceStore(context: context)
+                if hasPrice {
+                    XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 12, currencyCode: "USD", source: .justTCG,
+                        sourceVariantID: "owned-listing", sourceUpdatedAt: originalAt, fetchedAt: originalAt)),
+                        game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID, at: originalAt))
+                }
+                XCTAssertTrue(store.save())
+                let worker = PriceRefreshModelActor(modelContainer: container)
+                await worker.setGradedLookupOverrideForTesting { _, _ in outcome }
+                let request = PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+                    forceUnsupportedRetry: false, sortOldestFirst: true, maximumTargetCount: nil,
+                    markRecentlyCheckedIfEmpty: false, gradedOnly: true)
+                guard case let .completed(result) = await worker.run(request, progress: { _ in }, shouldContinue: nil) else {
+                    return XCTFail("Expected completed graded lookup")
+                }
+                XCTAssertEqual(result.gradedLookupMisses, 1)
+                XCTAssertFalse(result.persistenceFailed)
+                let verification = ModelContext(container)
+                let record = try XCTUnwrap(PriceStore(context: verification).record(forKey: row.priceKey))
+                XCTAssertEqual(record.effectiveUnitMarketPriceUSD, hasPrice ? 12 : nil)
+                XCTAssertEqual(record.fetchedAt, hasPrice ? originalAt : nil)
+                XCTAssertEqual(record.lastSuccessfulCheckAt, hasPrice ? originalAt : nil)
+                XCTAssertEqual(record.lastFailureReasonRaw, PricingDiagnosticReason.gradedVariantUnavailable.rawValue)
+                XCTAssertNil(record.lastFailureAt)
+                XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceObservation>()).count, hasPrice ? 1 : 0)
+                XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceCheckDay>()).count, hasPrice ? 1 : 0)
+                let targets = try PriceRefreshTargets.make(context: verification, usesPriceFallback: false, includeImported: true)
+                let attemptedAt = try XCTUnwrap(record.lastCheckedAt)
+                XCTAssertTrue(PriceRefreshController.staleTargets(from: targets, now: attemptedAt.addingTimeInterval(1)).isEmpty)
+                XCTAssertEqual(PriceRefreshController.staleTargets(from: targets,
+                    now: attemptedAt.addingTimeInterval(PriceRefreshController.automaticRefreshInterval)).count, 1)
+                let nextWorker = PriceRefreshModelActor(modelContainer: container)
+                await nextWorker.setGradedLookupOverrideForTesting { _, _ in
+                    XCTFail("A completed miss must not be requested again immediately")
+                    return outcome
+                }
+                guard case .noTargets = await nextWorker.run(request, progress: { _ in }, shouldContinue: nil) else {
+                    return XCTFail("Expected recent graded miss to be skipped")
+                }
+            }
+        }
+    }
+
+    @MainActor
     func testSelectedMarketVariantRefreshDoesNotInferADifferentFinish() async throws {
         for candidateID in ["selected-holo", "different-holo"] {
             let (container, context) = try makePriceContext()
@@ -213,6 +404,28 @@ final class PricingTests: XCTestCase {
     private func gradedRequest() -> PriceRefreshRequest {
         .init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
             sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false, gradedOnly: true)
+    }
+
+    @MainActor
+    func testGradedCoverageWriterRejectsAnOutcomeForThePreviousPhysicalIdentity() async throws {
+        let (container, context) = try makePriceContext()
+        let row = gradedImport(name: "Corrected", catalogID: "ex7-78", finish: .holo)
+        context.insert(row)
+        try context.save()
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        let coverage = GradedMarketCoverage(status: .gradeNotListed)
+        for identity in [GradedBindingIdentity(finishID: PhysicalVariant.normal.id, printRun: nil),
+                         .init(finishID: PhysicalVariant.holo.id, printRun: .firstEdition)] {
+            let rejected = try await writer.recordGradedMarketCoverage(collectionKey: row.collectionKey,
+                coverage: coverage, expectedIdentity: identity)
+            XCTAssertFalse(rejected)
+        }
+        let verification = ModelContext(container)
+        XCTAssertNil(PriceStore(context: verification).record(forKey: row.priceKey))
+        let accepted = try await writer.recordGradedMarketCoverage(collectionKey: row.collectionKey,
+            coverage: coverage, expectedIdentity: .init(finishID: PhysicalVariant.holo.id, printRun: nil))
+        XCTAssertTrue(accepted)
+        XCTAssertEqual(PriceStore(context: ModelContext(container)).record(forKey: row.priceKey)?.gradedMarketCoverage, coverage)
     }
 
     @MainActor

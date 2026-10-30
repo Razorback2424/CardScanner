@@ -970,6 +970,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
     func recordGradedMarketCoverage(
         collectionKey: String,
         coverage: GradedMarketCoverage,
+        expectedIdentity: GradedBindingIdentity? = nil,
         at date: Date = .now
     ) throws -> Bool {
         return try performOwnershipWrite { context in
@@ -977,6 +978,11 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             let collectionStore = CollectionStore(context: context)
             guard let row = try collectionStore.card(forAnyKey: collectionKey),
                   row.itemKind == .gradedCard else { return false }
+            if let expectedIdentity,
+               row.variantID != expectedIdentity.finishID || row.pokemonPrintRun != expectedIdentity.printRun {
+                context.rollback()
+                return false
+            }
             let accepted = PriceStore(context: context).recordGradedMarketCoverage(
                 coverage,
                 game: row.cardGame,

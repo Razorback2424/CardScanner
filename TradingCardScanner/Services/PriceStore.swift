@@ -1015,6 +1015,29 @@ struct PriceStore {
             coverageDate = price.fetchedAt
             isClockRollbackRepair = !record.isInvalidated
                 && record.fetchedAt.map { $0 > date.addingTimeInterval(5 * 60) } == true
+            // TCGdex can freshly download an older upstream snapshot. Keep the
+            // newer raw Pokémon quote, just as Price Check does. Equal source
+            // dates still allow restatements; invalidations, imported values,
+            // clock repairs and exact vendor bindings retain their own rules.
+            if game == .pokemon, price.source == .tcgplayer, price.isUsableUSD,
+               !record.isInvalidated, !isClockRollbackRepair,
+               record.source != .importedCSV,
+               PortfolioPriceEligibility.eligibleUnitPrice(amount: record.unitMarketPriceUSD,
+                   currencyCode: record.currencyCode) != nil,
+               let previousDate = record.sourceUpdatedAt ?? record.fetchedAt,
+               (price.effectiveAsOf < previousDate
+                || (record.sourceUpdatedAt != nil && price.sourceUpdatedAt == nil)) {
+                if record.lastCheckedAt.map({ coverageDate >= $0 }) ?? true {
+                    PriceObservationLog(context: context, index: index).recordSuccessfulCheck(
+                        instrumentKey: key, source: price.source, at: coverageDate
+                    )
+                    record.lastCheckedAt = coverageDate
+                    record.lastSuccessfulCheckAt = coverageDate
+                    record.lastFailureAt = nil
+                    record.lastFailureReasonRaw = nil
+                }
+                return true
+            }
         } else {
             if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
             coverageDate = date
