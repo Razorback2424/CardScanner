@@ -1,5 +1,63 @@
 # CardScanner App Review Fix Plan
 
+## High-confidence refinement fixes — 2026-10-31
+
+Scope: the five source-proven findings from the current review, based on clean
+`main@36c2a64`. The owner authorized all high-confidence fixes, including the
+small UI findings. The fixes are split into focused commits. Publication,
+release-gate changes and speculative performance refactors remain out of scope.
+
+- [x] Respect acquisition quantity in aggregated graded finish correction;
+  verify split/merge, shared vendor quotes, earlier removed acquisitions,
+  pricing, lineage, undo and transaction rollback.
+- [x] End nil-artwork loading in Price Check and scan review; preserve existing
+  artwork sizing and loading/error behavior.
+- [x] Retry transient graded discovery in place; verify failure-to-success,
+  incomplete search, terminal absence and overlapping-load protection.
+- [x] Recover a daily feed publication rollover with one bounded marker refresh;
+  verify ordinary/manual retry, torn responses and cache/coalescing behavior.
+- [x] Restore the resolved-identity pricing diagnostic without weakening more
+  specific reasons; remove the confirmed unused graded-picker summary state.
+
+Baseline: repository status and diff were clean; prior review package tests had
+145 passes and one opt-in live-network skip. The focused iOS baseline passed
+168/168 tests. The four new correction/rollover/diagnostic regressions then
+failed against unchanged production logic, confirming the reviewed defects.
+Verification uses external-SSD DerivedData and recorded provider responses.
+The first post-fix selection passed 175 tests; its graded-picker test could not
+write its synthetic key because the unsigned simulator host lacks Keychain
+entitlements (`-34018`). The signed rerun passed all three checks, including a
+credential round trip; this was a test-host configuration failure. The broader
+selection then passed 757 tests with one opt-in benchmark skipped. A Release
+simulator build passed. A further correction-boundary regression reproduced
+shared vendor price/history migration affecting another slab; its scoped ledger
+fix and historical-acquisition regression passed the 273-test correction,
+scanner/history and refresh-race selection. The final combined signed-simulator
+selection passed **764 tests, zero failures, one opt-in benchmark skipped**.
+The final 45-test feed suite passed, including fresh-cache manual retry,
+known-build invalidation of cached sets and unchanged-build quote-date retention.
+The exact final **Release simulator rebuild passed**, with no new compiler
+warning messages relative to the earlier Release build. `git diff --check`
+and the added local documentation links pass validation. All five code findings
+are implemented; the owner-controlled and measurement gates below remain open.
+
+The correction reuses the existing split/ledger transaction and removes the
+duplicated graded branches. Partial corrections preserve other quantities;
+bound whole-row corrections preserve shared vendor instruments and historical
+events, moving only the selected claims with correction legs. Compatible
+quotes retain their original retrieval date; incompatible quotes are not
+borrowed. The detail screen explains which copies change and confirms a split.
+
+UI gate: **PASS** for these scoped changes: native Retry and unavailable states,
+existing navigation, no added confirmation prompt, and unchanged artwork sizing.
+Hosted Price Check/scan review renders exposed the unavailable text at standard
+and accessibility text sizes. Physical-device VoiceOver and provider acceptance
+are not claimed. No dependency, persistence-schema or release-policy change.
+Each fix stays local to its existing path; rollback is its focused source/test
+diff. Privacy/support destinations require published owner-controlled URLs;
+Activity/CSV performance changes require measurements and remain outside scope.
+Commit references are recorded in the 2026-10-31 entry in `progress.md`.
+
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task. The remediation changes are now committed in the repository history;
 > this plan does not constitute release certification.
