@@ -310,11 +310,20 @@ enum PortfolioReplaySnapshotBuilder {
         let epochDay = PortfolioCalendar.day(containing: epoch, in: timeZone)
         let coverage: PortfolioCoverageIndex
         do {
+            let newestClose = try newestPublishedClose(in: context)
+            // Backdated events written after the newest close change days that close
+            // already covered; recompute coverage from the earliest of them.
+            let earliestEditedDay = newestClose.flatMap { close in
+                reading.events.lazy.filter { $0.recordedAt > close.computedAt }
+                    .map { PortfolioCalendar.day(containing: $0.occurredAt, in: timeZone) }.min()
+            }
             coverage = try coverageIndexThrowing(
                 context: context,
                 from: epochDay,
                 through: through,
-                timeZone: timeZone
+                timeZone: timeZone,
+                newestClose: newestClose,
+                earliestEditedDay: earliestEditedDay
             )
         } catch {
             coverage = PortfolioCoverageIndex(checkedByDay: [:])
@@ -538,7 +547,8 @@ enum PortfolioReplaySnapshotBuilder {
             context: context,
             from: start,
             through: end,
-            timeZone: timeZone
+            timeZone: timeZone,
+            newestClose: newestPublishedClose(in: context)
         )) ?? PortfolioCoverageIndex(checkedByDay: [:])
     }
 
@@ -567,11 +577,19 @@ enum PortfolioReplaySnapshotBuilder {
         )
     }
 
+    private static func newestPublishedClose(in context: ModelContext) throws -> PortfolioDailyClose? {
+        var newestClose = FetchDescriptor<PortfolioDailyClose>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        newestClose.fetchLimit = 1
+        return try context.fetch(newestClose).first
+    }
+
     private static func coverageIndexThrowing(
         context: ModelContext,
         from start: Date,
         through end: Date,
-        timeZone: TimeZone
+        timeZone: TimeZone,
+        newestClose: PortfolioDailyClose?,
+        earliestEditedDay: Date? = nil
     ) throws -> PortfolioCoverageIndex {
         let signpostState = PerformanceSignpost.signposter.beginInterval("coverageIndex")
         defer { PerformanceSignpost.signposter.endInterval("coverageIndex", signpostState) }
@@ -583,15 +601,12 @@ enum PortfolioReplaySnapshotBuilder {
         // window is unaffected: `start` still wins.
         let retentionStart = coverageWindowStart(endingAt: end, timeZone: timeZone)
         var windowStart = max(start, retentionStart)
-        // Days through the newest published close keep the coverage that close
-        // records, and every authoritative recompute publishes all missing days,
-        // so only a short recent margin needs recomputing from check-day rows.
-        var newestClose = FetchDescriptor<PortfolioDailyClose>(sortBy: [SortDescriptor(\.date, order: .reverse)])
-        newestClose.fetchLimit = 1
-        if let newest = try context.fetch(newestClose).first?.date {
+        // Published closes retain coverage outside the recent margin unless
+        // a newly recorded ownership event changes an earlier day.
+        if let newest = newestClose?.date {
             let recomputeFrom = PortfolioCalendar.day(
                 containing: newest.addingTimeInterval(-Double(coverageRecomputeMarginDays) * 86_400), in: timeZone)
-            windowStart = min(max(windowStart, recomputeFrom), lastDay)
+            windowStart = min(max(windowStart, min(recomputeFrom, earliestEditedDay ?? recomputeFrom)), lastDay)
         }
         let descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.portfolioDay >= windowStart && $0.portfolioDay <= lastDay }
