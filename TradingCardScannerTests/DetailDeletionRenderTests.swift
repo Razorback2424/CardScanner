@@ -1,11 +1,62 @@
 import SwiftData
 import SwiftUI
 import UIKit
+import Vision
 import XCTest
 @testable import TradingCardScanner
 
 @MainActor
 final class DetailDeletionRenderTests: XCTestCase {
+    func testScanResultsWithoutArtworkRenderAnUnavailableStateAtAccessibleTextSizes() throws {
+        let card = try IdentifiedCard(game: .magic, physicalPrintingID: "missing-artwork-fixture",
+            canonicalCardID: "missing-artwork-fixture", language: "en", name: "Artwork Fixture",
+            setName: "Fixture Set", setCode: "TST", cardNumber: "1", printedIdentifier: "TST 1",
+            variantEvidence: .init(game: .magic, setID: "fixture", cardNumber: "1", catalogVariants: [.nonfoil]))
+        let subject = ScanSubject(identifier: try .init(game: .magic, namespace: "fixture", fields: [],
+            displayIdentifier: "TST 1", suppressionIdentity: "fixture"))
+        let variant = ResolvedVariant(variant: .nonfoil, resolution: .userConfirmed)
+        let quote = PriceLookup.price(.init(unitMarketPriceUSD: 1, currencyCode: "USD", source: .scryfall,
+            sourceVariantID: "usd", sourceUpdatedAt: nil, fetchedAt: .now))
+        let scan = RecentScan(subject: subject, card: card, resolved: variant, options: [.nonfoil],
+            mutation: .init(collectionKey: card.collectionKey(variant: .nonfoil), activityID: nil,
+                didInsert: false), price: quote)
+        let result = PriceCheckResult(resolvedScan: .init(
+            request: .init(subject: subject, purpose: .priceCheck, generation: 0), card: card,
+            resolved: variant, pokemonPrintRun: nil, options: [.nonfoil]),
+            quote: quote, checkedAt: .now, quoteState: .current, shouldAutoRefresh: false)
+        let model = ScannerViewModel()
+        let screens = [
+            AnyView(PriceCheckResultView(initialResult: result).environmentObject(model)),
+            AnyView(ScanReviewSheet(scan: scan, onCorrect: { _ in .saved }, onDelete: { true })
+                .environmentObject(model))
+        ]
+        for (index, screen) in screens.enumerated() {
+            for size in [DynamicTypeSize.large, .accessibility3] {
+                let controller = UIHostingController(rootView: screen.environment(\.dynamicTypeSize, size))
+                let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+                window.rootViewController = controller
+                window.makeKeyAndVisible()
+                defer { window.isHidden = true; window.rootViewController = nil }
+                controller.view.frame = window.bounds
+                controller.view.setNeedsLayout()
+                controller.view.layoutIfNeeded()
+                let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                    controller.view.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+                }
+                let request = VNRecognizeTextRequest()
+                request.recognitionLevel = .accurate
+                try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+                let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }
+                    .joined(separator: " ").lowercased()
+                XCTAssertTrue(text.contains("image unavailable"), "Missing artwork must finish loading: \(text)")
+                let attachment = XCTAttachment(image: image)
+                attachment.name = "missing-artwork-\(index)-\(size)"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
+        }
+    }
+
     func testHistoryLoadingAndFailuresKeepSavedDataAndDistinguishEmptyPeriods() {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         let points = [JustTCGHistoryPoint(p: 20, t: now.addingTimeInterval(-30 * 86_400).timeIntervalSince1970)]

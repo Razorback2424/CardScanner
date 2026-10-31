@@ -1618,9 +1618,10 @@ actor CollectionDetailWriter: BackgroundModelActor {
         }
     }
 
+    @discardableResult
     func correctFinish(collectionKey: String, treatments: [String], activityID: UUID,
                        quantity: Int, variant: PhysicalVariant,
-                       shouldContinue: StorageGenerationContinuation) throws {
+                       shouldContinue: StorageGenerationContinuation) throws -> CollectionMutation? {
         try perform(shouldContinue: shouldContinue) { context in
             let mutation = try CollectionStore(context: context).recordVariantCorrection(forCollectionKey: collectionKey,
                 magicTreatmentIDsRaw: treatments, to: .init(variant: variant, resolution: .userConfirmed),
@@ -1628,6 +1629,7 @@ actor CollectionDetailWriter: BackgroundModelActor {
             // Read-through identity repair can dirty this fresh context even
             // when the finish is already current. A no-op has nothing to save.
             if mutation == nil { context.rollback() }
+            return mutation
         }
     }
 
@@ -4361,7 +4363,8 @@ struct CollectionStore {
         on row: CollectedCard,
         to variant: PhysicalVariant?,
         resolution: VariantResolution,
-        revalidateBinding: Bool = false
+        revalidateBinding: Bool = false,
+        migratesPriceLineage: Bool = true
     ) throws {
         let oldPriceKey = row.priceKey
         let oldRecord = PriceStore(context: context).record(forKey: oldPriceKey)
@@ -4380,15 +4383,32 @@ struct CollectionStore {
         )
         if oldPriceKey != newPriceKey {
             try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
-            try PriceIdentityLineageMigration.migrate(
-                from: oldPriceKey,
-                to: newPriceKey,
-                game: row.cardGame,
-                printingID: printingID,
-                variantID: variant?.id,
-                treatmentIDs: treatmentIDs,
-                in: context
-            )
+            if migratesPriceLineage {
+                try PriceIdentityLineageMigration.migrate(
+                    from: oldPriceKey, to: newPriceKey, game: row.cardGame,
+                    printingID: printingID, variantID: variant?.id,
+                    treatmentIDs: treatmentIDs, in: context)
+            } else if compatibleBinding, let oldRecord,
+                      let amount = oldRecord.effectiveUnitMarketPriceUSD,
+                      let source = oldRecord.source, let fetchedAt = oldRecord.fetchedAt,
+                      let listingID = oldRecord.sourceVariantID ?? row.justTCGVariantID {
+                // The vendor instrument can price other slabs. Reuse a quote
+                // only when its published finish agrees, retaining its date
+                // and leaving the original quote and history in place.
+                let prices = PriceStore(context: context)
+                _ = prices.store(.price(.init(unitMarketPriceUSD: amount,
+                    currencyCode: oldRecord.currencyCode, source: source,
+                    sourceVariantID: listingID,
+                    sourceUpdatedAt: oldRecord.sourceUpdatedAt, fetchedAt: fetchedAt)),
+                    game: row.cardGame, printingID: printingID, variantID: variant?.id,
+                    marketVariantID: row.justTCGVariantID, at: fetchedAt, treatmentIDs: treatmentIDs)
+                if let record = prices.record(forKey: newPriceKey) {
+                    if record.gradedPrinting == nil { record.gradedPrinting = oldRecord.gradedPrinting }
+                    if record.canonicalMarketID == nil { record.canonicalMarketID = oldRecord.canonicalMarketID }
+                    if record.marketRegionRaw == nil { record.marketRegionRaw = oldRecord.marketRegionRaw }
+                    record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+                }
+            }
         }
         row.variantID = variant?.id
         row.variantLabel = variant?.label
@@ -4406,7 +4426,9 @@ struct CollectionStore {
                 record.marketVariantID = nil
             }
             let caches = try context.fetch(FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == oldPriceKey || $0.key == newPriceKey }))
-            for cache in caches { context.delete(cache) }
+            for cache in caches where migratesPriceLineage || cache.key != oldPriceKey {
+                context.delete(cache)
+            }
         }
     }
 
@@ -5369,34 +5391,13 @@ struct CollectionStore {
             expectedQuantity: quantity
         )
 
-        // A graded row's collection identity is the slab/grade/certificate,
-        // not its raw-card finish. The printed finish can therefore be corrected
-        // in place without manufacturing a second slab row. Move its price
-        // lineage before changing the finish part of the price key.
+        // Graded corrections share the claim-aware transaction below. A
+        // certless holding can represent more than this scanner acquisition.
         if previous.itemKind == .gradedCard {
-            try updateGradedVariantIdentity(
-                on: previous,
-                to: corrected.variant,
-                resolution: corrected.resolution
-            )
-            clearPendingCatalogFinish(on: previous)
-            activityToRetarget.variantID = previous.variantID
-            activityToRetarget.variantLabel = previous.variantLabel
-            activityToRetarget.correctedAt = .now
-            _ = try appendActivity(
-                previous,
-                source: source,
-                kind: .corrected,
-                deltaQuantity: 0,
-                ledgerOperationIDs: operationIDs
-            )
-            try commit()
-            return CollectionMutation(
-                collectionKey: previousKey,
-                activityID: activityToRetarget.id,
-                didInsert: false,
-                ledgerOperationIDs: operationIDs
-            )
+            activityToRetarget.ledgerOperationIDs = operationIDs
+            return try recordVariantCorrection(for: previous, to: corrected,
+                claims: [.init(activityID: activityToRetarget.id, quantity: quantity)],
+                source: source, mode: .visibleCorrection)
         }
 
         // Read the outgoing side's price key before the row is decremented or
@@ -5550,29 +5551,9 @@ struct CollectionStore {
             }
 
             if previous.itemKind == .gradedCard {
-                try updateGradedVariantIdentity(
-                    on: previous,
-                    to: corrected.variant,
-                    resolution: corrected.resolution
-                )
-                clearPendingCatalogFinish(on: previous)
-                activityToRetarget.variantID = previous.variantID
-                activityToRetarget.variantLabel = previous.variantLabel
-                activityToRetarget.correctedAt = .now
-                _ = try appendActivity(
-                    previous,
-                    source: source,
-                    kind: .corrected,
-                    deltaQuantity: 0,
-                    ledgerOperationIDs: operationIDs
-                )
-                try commit()
-                return CollectionMutation(
-                    collectionKey: previousKey,
-                    activityID: activityToRetarget.id,
-                    didInsert: false,
-                    ledgerOperationIDs: operationIDs
-                )
+                return try recordVariantCorrection(for: previous, to: corrected,
+                    claims: [.init(activityID: activityToRetarget.id, quantity: quantity)],
+                    source: source, mode: .visibleCorrection)
             }
 
             let parts = previous.collectionKey.split(separator: "@", maxSplits: 1)
@@ -5836,27 +5817,54 @@ struct CollectionStore {
             }
 
             if previous.itemKind == .gradedCard {
-                guard mode == .visibleCorrection else {
+                guard mode == .visibleCorrection,
+                      previous.quantity == totalQuantity || previous.certificationNumber == nil else {
                     throw CollectionStoreError.invalidActivity(claims[0].activityID)
                 }
+            }
+
+            // One slab (or all claims in a holding) can keep its identity. A
+            // partial correction instead uses the existing split/ledger path,
+            // leaving the other copies and their price evidence untouched.
+            if previous.itemKind == .gradedCard, previous.quantity == totalQuantity {
+                let previousPriceKey = ledger.priceStorageKey(for: previous)
+                let selectedIDs = Set(selected.map { $0.activity.id })
+                let hasOtherAcquisitions = try activities(forKey: previousKey).contains {
+                    $0.kind.hasQuantityClaim && $0.signedQuantity > 0 && !selectedIDs.contains($0.id)
+                }
+                let preservesPriceHistory = previous.justTCGVariantID != nil || hasOtherAcquisitions
                 try updateGradedVariantIdentity(
                     on: previous,
                     to: corrected.variant,
-                    resolution: corrected.resolution
+                    resolution: corrected.resolution,
+                    migratesPriceLineage: !preservesPriceHistory
                 )
                 clearPendingCatalogFinish(on: previous)
                 var operationIDs: [UUID] = []
                 for entry in selected {
+                    var correctedOperationIDs = entry.operationIDs
+                    var correctionOperationIDs = entry.operationIDs
+                    if preservesPriceHistory, previousPriceKey != ledger.priceStorageKey(for: previous) {
+                        let correctionID = UUID()
+                        let correction = ledger.recordCorrection(fromCollectionKey: previousKey,
+                            fromPriceStorageKey: previousPriceKey, toCard: previous,
+                            source: source, quantity: entry.claim.quantity, operationID: correctionID)
+                        try requireAppended(correction.from)
+                        try requireAppended(correction.to)
+                        correctedOperationIDs.append(correctionID)
+                        correctionOperationIDs = [correctionID]
+                    }
                     entry.activity.variantID = previous.variantID
                     entry.activity.variantLabel = previous.variantLabel
                     entry.activity.correctedAt = .now
-                    operationIDs.append(contentsOf: entry.operationIDs)
+                    entry.activity.ledgerOperationIDs = correctedOperationIDs
+                    operationIDs.append(contentsOf: correctedOperationIDs)
                     _ = try appendActivity(
                         previous,
                         source: source,
                         kind: .corrected,
                         deltaQuantity: 0,
-                        ledgerOperationIDs: entry.operationIDs
+                        ledgerOperationIDs: correctionOperationIDs
                     )
                 }
                 try commit()
@@ -5873,7 +5881,9 @@ struct CollectionStore {
             let runSuffix = parts.dropFirst().first.map { "@\($0)" } ?? ""
             let identityBase = base.split(separator: "#", maxSplits: 1).first.map(String.init) ?? base
             let correctedTreatmentEvidence = MagicTreatmentEvidence(
-                treatments: previous.magicTreatmentIDs(for: corrected.variant)
+                treatments: (previous.itemKind == .gradedCard
+                    ? previous.magicTreatmentIDsRaw
+                    : previous.magicTreatmentIDs(for: corrected.variant))
                     .compactMap(MagicTreatment.init(id:)),
                 qualifiers: previous.magicTreatmentQualifiers
             )
@@ -5882,12 +5892,30 @@ struct CollectionStore {
             let correctedTreatmentQualifiers = Dictionary(uniqueKeysWithValues: correctedTreatments.compactMap { treatment in
                 correctedTreatmentEvidence.qualifier(for: treatment).map { (treatment.id, $0) }
             })
-            let destinationKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
-                base: identityBase,
-                game: previous.cardGame,
-                finish: corrected.variant,
-                rawTreatmentIDs: correctedTreatmentIDs
-            ) + runSuffix
+            let destinationKey: String
+            if previous.itemKind == .gradedCard {
+                var keyBase = identityBase
+                var existing: CollectedCard?
+                if let printingID = previous.underlyingPrintingID,
+                   let company = previous.gradingCompany, let grade = previous.cardGrade {
+                    keyBase = CollectedCard.scannedGradedCollectionKey(game: previous.cardGame,
+                        underlyingPrintingID: printingID, company: company, grade: grade,
+                        certificationNumber: nil, pokemonPrintRun: previous.pokemonPrintRun)
+                    existing = try certlessScannedGradedCard(game: previous.cardGame,
+                        underlyingProviderID: printingID, company: company, grade: grade,
+                        variantID: corrected.variant?.id, pokemonPrintRun: previous.pokemonPrintRun,
+                        treatmentIDs: correctedTreatmentIDs)
+                }
+                destinationKey = existing?.collectionKey ?? MagicTreatmentKeyCodec.appendCollectionSuffix(
+                    to: "\(keyBase):holding:\(UUID().uuidString)", rawIDs: correctedTreatmentIDs)
+            } else {
+                destinationKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                    base: identityBase,
+                    game: previous.cardGame,
+                    finish: corrected.variant,
+                    rawTreatmentIDs: correctedTreatmentIDs
+                ) + runSuffix
+            }
             guard destinationKey != previousKey else {
                 throw CollectionStoreError.invalidActivity(claims[0].activityID)
             }
@@ -5946,7 +5974,7 @@ struct CollectionStore {
                 let inserted = CollectedCard(
                     collectionKey: destinationKey,
                     game: previousSnapshot.game,
-                    providerID: previousSnapshot.providerID,
+                    providerID: previous.itemKind == .gradedCard ? destinationKey : previousSnapshot.providerID,
                     name: previousSnapshot.name,
                     setName: previousSnapshot.setName,
                     setCode: previousSnapshot.setCode,
@@ -5988,6 +6016,9 @@ struct CollectionStore {
                 inserted.gradingQualifier = previousSnapshot.gradingQualifier
                 inserted.certificationNumber = previousSnapshot.certificationNumber
                 inserted.marketRegionRaw = previousSnapshot.marketRegionRaw
+                if previous.itemKind == .gradedCard {
+                    inserted.magicTreatmentMigrationVersion = previous.magicTreatmentMigrationVersion
+                }
                 clearPendingCatalogFinish(on: inserted)
                 context.insert(inserted)
                 correctedRow = inserted

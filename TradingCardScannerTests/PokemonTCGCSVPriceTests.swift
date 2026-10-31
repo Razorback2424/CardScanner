@@ -606,6 +606,87 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertGreaterThan(validated.validatedAt, original.validatedAt)
     }
 
+    func testPublicationRolloverRefreshesCachedMarkerForAnUncachedSet() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        _ = try await service.snapshot(setID: "30th-c", retry: false)
+        server.advance(2 * 60 * 60)
+        let nextBuild = "2026-09-30T00:00:00Z"
+        server.publish(build: nextBuild)
+        let result = try await service.snapshot(setID: "30th", retry: false)
+        XCTAssertEqual(result.feedBuild, nextBuild)
+        XCTAssertFalse(result.valuesByCardID.isEmpty)
+        XCTAssertEqual(server.requests.filter { $0.url?.lastPathComponent == "last-updated.txt" }.count, 2)
+        let revisited = try await service.snapshot(setID: "30th-c", retry: false)
+        XCTAssertEqual(revisited.feedBuild, nextBuild, "A known publication invalidates older cached sets")
+    }
+
+    func testManualRetryChecksPublicationEvenWithAFreshCachedSnapshot() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        _ = try await service.snapshot(setID: "30th-c", retry: false)
+        server.advance(2 * 60 * 60)
+        let nextBuild = "2026-09-30T00:00:00Z"
+        server.publish(build: nextBuild)
+        let refreshed = try await service.snapshot(setID: "30th-c", retry: true)
+        XCTAssertEqual(refreshed.feedBuild, nextBuild)
+        XCTAssertEqual(server.requests.count, 6)
+        let checked = try await service.snapshot(setID: "30th-c", retry: true)
+        XCTAssertEqual(checked.fetchedAt, refreshed.fetchedAt, "An unchanged build never restamps its quote")
+        XCTAssertEqual(server.requests.count, 7, "Retry checks the marker without redownloading unchanged files")
+    }
+
+    func testExplicitRetryRefreshesMarkerAfterAPublicationFailure() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        _ = try await service.snapshot(setID: "30th-c", retry: false)
+        server.advance(2 * 60 * 60)
+        let nextBuild = "2026-09-30T00:00:00Z"
+        server.publish(build: nextBuild)
+        server.fail = true
+        do { _ = try await service.snapshot(setID: "30th", retry: false); XCTFail("Expected outage") } catch {}
+        server.fail = false
+        let result = try await service.snapshot(setID: "30th", retry: true)
+        XCTAssertEqual(result.feedBuild, nextBuild)
+        XCTAssertFalse(result.valuesByCardID.isEmpty)
+    }
+
+    func testRolloverRecoveryStillRejectsTornFilesAndBoundsRequests() async throws {
+        let valid = try server()
+        var routes = valid.routes
+        let path = "/tcgplayer/3/24837/products"
+        routes[path] = MarketMirrorFixture.stamped(try XCTUnwrap(routes[path]), capturedAt: date,
+            build: "2026-09-29T20:05:57+0000")
+        let server = TCGCSVTestServer(routes: routes, now: date)
+        server.publish(build: "2026-09-30T00:00:00Z")
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        for retry in [false, true] {
+            do {
+                _ = try await service.snapshot(setID: "30th-c", retry: retry)
+                XCTFail("Mixed daily files must never become a quote")
+            } catch PriceQuoteError.providerUnavailable {
+            } catch { XCTFail("Unexpected error: \(error)") }
+            XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("30th-c.json").path))
+        }
+        XCTAssertEqual(server.requests.count, 8, "Each attempt stops after files and one marker recheck")
+    }
+
     func testCancellingOneWaiterDoesNotCancelSharedDownload() async throws {
         let server = try server()
         server.delay = 0.15
@@ -1155,12 +1236,13 @@ private struct UnavailablePokemonTransport: PokemonBrowseTransport {
 
 private final class TCGCSVTestServer: @unchecked Sendable {
     private let lock = NSLock()
-    let routes: [String: Data]
+    private var routeData: [String: Data]
     private var clock: Date
     private var recorded: [URLRequest] = []
     private var shouldFail = false
     private var requestDelay: TimeInterval = 0
-    init(routes: [String: Data], now: Date) { self.routes = routes; clock = now }
+    init(routes: [String: Data], now: Date) { routeData = routes; clock = now }
+    var routes: [String: Data] { lock.withLock { routeData } }
     var now: Date { lock.withLock { clock } }
     var requests: [URLRequest] { lock.withLock { recorded } }
     var fail: Bool {
@@ -1172,13 +1254,16 @@ private final class TCGCSVTestServer: @unchecked Sendable {
         set { lock.withLock { requestDelay = newValue } }
     }
     func advance(_ seconds: TimeInterval) { lock.withLock { clock.addTimeInterval(seconds) } }
+    func publish(build: String) {
+        lock.withLock { routeData["/last-updated.txt"] = Data(build.utf8) }
+    }
     func response(_ request: URLRequest) -> (Int, Data) {
         lock.withLock {
             recorded.append(request)
-            let build = routes["/last-updated.txt"].flatMap { String(data: $0, encoding: .utf8) }?
+            let build = routeData["/last-updated.txt"].flatMap { String(data: $0, encoding: .utf8) }?
                 .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             return shouldFail ? (503, Data()) : (200,
-                MarketMirrorFixture.stamped(routes[request.url!.path] ?? Data(), capturedAt: clock, build: build))
+                MarketMirrorFixture.stamped(routeData[request.url!.path] ?? Data(), capturedAt: clock, build: build))
         }
     }
 }

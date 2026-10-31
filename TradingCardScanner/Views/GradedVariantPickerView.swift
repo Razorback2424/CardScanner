@@ -6,6 +6,7 @@ import SwiftUI
 final class GradedVariantModel: ObservableObject {
     @Published private(set) var variants: [GradedVariant] = []
     @Published private(set) var isLoading = false
+    @Published private(set) var canRetry = false
     @Published var errorMessage: String?
 
     private let client: JustTCGV2GradedClient
@@ -40,9 +41,13 @@ final class GradedVariantModel: ObservableObject {
     func load(identity: GradedCardIdentity, game: CardGame) async {
         guard isConfigured, !isLoading else { return }
         isLoading = true
+        canRetry = false
+        errorMessage = nil
         defer { isLoading = false }
         do {
-            switch try await client.lookup(identity: identity, game: game) {
+            let result = try await client.lookup(identity: identity, game: game)
+            try Task.checkCancellation()
+            switch result {
             case let .matched(values):
                 variants = values
                 errorMessage = nil
@@ -55,12 +60,16 @@ final class GradedVariantModel: ObservableObject {
             case .incompleteSearch:
                 variants = []
                 errorMessage = "The pricing search is incomplete. Try again later."
+                canRetry = true
             case .localIdentityUnresolved:
                 variants = []
                 errorMessage = "Confirm the card’s set and print run before checking graded prices."
             }
+        } catch is CancellationError {
         } catch {
+            guard !Task.isCancelled else { return }
             errorMessage = SealedBrowseModel.message(for: error)
+            canRetry = true
         }
     }
 }
@@ -74,7 +83,7 @@ struct GradedVariantPickerView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @StateObject private var model: GradedVariantModel
-    @State private var addedSummary: String?
+    @State private var retry = 0
 
     init(
         card: IdentifiedCard,
@@ -102,6 +111,13 @@ struct GradedVariantPickerView: View {
                     Text(errorMessage)
                         .font(.footnote)
                         .foregroundStyle(.orange)
+                    if model.canRetry {
+                        Button("Retry") {
+                            guard !model.isLoading else { return }
+                            retry += 1
+                        }
+                        .disabled(model.isLoading)
+                    }
                 }
 
                 ForEach(model.byCompany, id: \.company) { group in
@@ -128,7 +144,7 @@ struct GradedVariantPickerView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .task {
+            .task(id: retry) {
                 await model.load(
                     identity: GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun),
                     game: card.game
@@ -168,10 +184,7 @@ struct GradedVariantPickerView: View {
             variant: variant,
             setReleaseOrder: setReleaseOrder,
             pokemonPrintRun: pokemonPrintRun,
-            onAdded: { summary in
-                addedSummary = summary
-                dismiss()
-            }
+            onAdded: { _ in dismiss() }
         )
     }
 }

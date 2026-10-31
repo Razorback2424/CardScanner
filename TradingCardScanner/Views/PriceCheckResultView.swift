@@ -85,15 +85,22 @@ struct PriceCheckResultView: View {
 
     @ViewBuilder
     private var artwork: some View {
-        AsyncImage(url: result.card.displayImageURL) { phase in
-            switch phase {
-            case let .success(image):
-                image.resizable().scaledToFit()
-            case .failure:
+        Group {
+            if let url = result.card.displayImageURL {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case let .success(image):
+                        image.resizable().scaledToFit()
+                    case .failure:
+                        ContentUnavailableView("Image unavailable", systemImage: "photo")
+                            .frame(height: 380)
+                    default:
+                        ProgressView().frame(height: 380)
+                    }
+                }
+            } else {
                 ContentUnavailableView("Image unavailable", systemImage: "photo")
                     .frame(height: 380)
-            default:
-                ProgressView().frame(height: 380)
             }
         }
         .frame(maxHeight: 420)

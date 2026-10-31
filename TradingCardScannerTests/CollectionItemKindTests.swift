@@ -6,6 +6,291 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testPartialGradedFinishCorrectionPreservesOtherAcquisitionsAcrossEntryPoints() throws {
+        for entryPoint in 0..<3 {
+            for hasDestination in [false, true] {
+                let container = try ProductionRowFixtures.makeContainer()
+                let context = container.mainContext
+                let store = CollectionStore(context: context)
+                let card = try ProductionRowFixtures.pokemonCard()
+                let destination = hasDestination ? try store.addScannedGraded(underlying: card,
+                    company: .psa, grade: .init(value: "10"), certificationNumber: nil,
+                    resolved: .init(variant: .reverse, resolution: .userConfirmed)) : nil
+                let acquisitions = try (0..<3).map { _ in
+                    try store.addScannedGraded(underlying: card, company: .psa,
+                        grade: .init(value: "10"), certificationNumber: nil)
+                }
+                let original = try XCTUnwrap(store.card(forKey: acquisitions[0].collectionKey))
+                let selected = entryPoint == 2 ? Array(acquisitions.suffix(2)) : [acquisitions[2]]
+                let corrected = ResolvedVariant(variant: .reverse, resolution: .userConfirmed)
+                let mutation: CollectionMutation?
+                switch entryPoint {
+                case 0:
+                    mutation = try store.recordVariantCorrection(for: card, from: nil, to: corrected,
+                        previousCollectionKey: original.collectionKey,
+                        previousLedgerOperationIDs: selected[0].ledgerOperationIDs,
+                        activityID: selected[0].activityID, quantity: 1)
+                case 1:
+                    mutation = try store.recordVariantCorrection(for: original, to: corrected,
+                        activityID: XCTUnwrap(selected[0].activityID), quantity: 1)
+                default:
+                    mutation = try store.recordVariantCorrection(for: original, to: corrected,
+                        claims: selected.map { .init(activityID: try XCTUnwrap($0.activityID), quantity: 1) },
+                        source: .correction, mode: .visibleCorrection)
+                }
+                let result = try XCTUnwrap(mutation)
+                XCTAssertNotEqual(result.collectionKey, original.collectionKey)
+                if let destination { XCTAssertEqual(result.collectionKey, destination.collectionKey) }
+                let correctedRow = try XCTUnwrap(store.card(forKey: result.collectionKey))
+                XCTAssertEqual(original.quantity, 3 - selected.count)
+                XCTAssertNil(original.variant)
+                XCTAssertEqual(correctedRow.quantity, selected.count + (hasDestination ? 1 : 0))
+                XCTAssertEqual(correctedRow.variant, .reverse)
+                XCTAssertEqual(correctedRow.itemKind, .gradedCard)
+                XCTAssertEqual(correctedRow.gradingCompany, .psa)
+                XCTAssertEqual(correctedRow.gradeRaw, "10")
+                XCTAssertEqual(correctedRow.catalogProviderID, card.providerID)
+                XCTAssertNil(correctedRow.justTCGVariantID)
+                XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>())
+                    .first { $0.id == acquisitions[0].activityID }?.variantID, nil)
+                let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+                XCTAssertEqual(InventoryLedger.quantities(from: events)[original.collectionKey], 3 - selected.count)
+                XCTAssertEqual(InventoryLedger.quantities(from: events)[result.collectionKey], correctedRow.quantity)
+                XCTAssertTrue(CollectionActivity.integrityDefects(
+                    activities: try context.fetch(FetchDescriptor<CollectionActivity>()), events: events).isEmpty)
+
+                // Undo each acquisition using its current correction lineage,
+                // including when two claims moved in the same transaction.
+                for acquisition in selected.reversed() {
+                    let activity = try XCTUnwrap(context.fetch(FetchDescriptor<CollectionActivity>())
+                        .first { $0.id == acquisition.activityID })
+                    try store.undo(.init(collectionKey: activity.collectionKey, activityID: activity.id,
+                        didInsert: false, ledgerOperationIDs: activity.ledgerOperationIDs))
+                }
+                for acquisition in acquisitions.prefix(3 - selected.count) { try store.undo(acquisition) }
+                let fresh = ModelContext(container)
+                let remaining = try fresh.fetch(FetchDescriptor<CollectedCard>())
+                XCTAssertEqual(remaining.reduce(0) { $0 + $1.quantity }, hasDestination ? 1 : 0)
+                XCTAssertTrue(remaining.allSatisfy { $0.variant == .reverse })
+                XCTAssertTrue(CollectionActivity.integrityDefects(
+                    activities: try fresh.fetch(FetchDescriptor<CollectionActivity>()),
+                    events: try fresh.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+            }
+        }
+    }
+
+    func testPartialGradedFinishCorrectionKeepsSourceBindingAndPriceAndRollsBackOnFailure() async throws {
+        for failsSave in [true, false] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            let store = CollectionStore(context: context)
+            let card = try ProductionRowFixtures.pokemonCard()
+            let grade = CardGrade(value: "10", label: "Gem Mint", qualifier: "OC")
+            let first = try store.addScannedGraded(underlying: card, company: .psa,
+                grade: grade, certificationNumber: nil,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let second = try store.addScannedGraded(underlying: card, company: .psa,
+                grade: grade, certificationNumber: nil,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            _ = try await writer.bindScannedGraded(collectionKey: first.collectionKey,
+                variant: .init(id: "normal-market", cardID: "normal-card", company: .psa,
+                    grade: grade, printing: "Normal", marketPriceUSD: 50, updatedAt: nil))
+            let fresh = ModelContext(container)
+            let source = try XCTUnwrap(CollectionStore(context: fresh).card(forKey: first.collectionKey))
+            let sourcePriceKey = source.priceKey
+            let eventCount = try fresh.fetchCount(FetchDescriptor<InventoryEvent>())
+            let activityCount = try fresh.fetchCount(FetchDescriptor<CollectionActivity>())
+            let correctionStore = CollectionStore(context: fresh, beforeSaveForTesting: { _ in
+                if failsSave { throw CocoaError(.fileWriteUnknown) }
+            })
+            if failsSave {
+                XCTAssertThrowsError(try correctionStore.recordVariantCorrection(for: source,
+                    to: .init(variant: .reverse, resolution: .userConfirmed),
+                    activityID: XCTUnwrap(second.activityID), quantity: 1))
+            } else {
+                let corrected = try XCTUnwrap(correctionStore.recordVariantCorrection(for: source,
+                    to: .init(variant: .reverse, resolution: .userConfirmed),
+                    activityID: XCTUnwrap(second.activityID), quantity: 1))
+                let target = try XCTUnwrap(correctionStore.card(forKey: corrected.collectionKey))
+                XCTAssertEqual(target.gradingQualifier, grade.qualifier)
+                XCTAssertEqual(target.gradeLabel, grade.label)
+                XCTAssertNil(target.justTCGVariantID)
+                XCTAssertNil(PriceStore(context: fresh).record(forKey: target.priceKey))
+            }
+            let verify = ModelContext(container)
+            let rows = try verify.fetch(FetchDescriptor<CollectedCard>())
+            let unchanged = try XCTUnwrap(rows.first { $0.collectionKey == first.collectionKey })
+            XCTAssertEqual(unchanged.quantity, failsSave ? 2 : 1)
+            XCTAssertEqual(unchanged.variant, .normal)
+            XCTAssertEqual(unchanged.justTCGVariantID, "normal-market")
+            XCTAssertEqual(unchanged.priceKey, sourcePriceKey)
+            XCTAssertEqual(PriceStore(context: verify).record(forKey: sourcePriceKey)?.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, 2)
+            if failsSave {
+                XCTAssertEqual(rows.count, 1)
+                XCTAssertEqual(try verify.fetchCount(FetchDescriptor<InventoryEvent>()), eventCount)
+                XCTAssertEqual(try verify.fetchCount(FetchDescriptor<CollectionActivity>()), activityCount)
+            }
+            XCTAssertTrue(CollectionActivity.integrityDefects(
+                activities: try verify.fetch(FetchDescriptor<CollectionActivity>()),
+                events: try verify.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+        }
+    }
+
+    func testPartialGradedFinishCorrectionRetainsBoundDestinationAndPrintRun() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = CollectionStore(context: container.mainContext)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let grade = CardGrade(value: "10")
+        let otherRun = try store.addScannedGraded(underlying: card, company: .psa, grade: grade,
+            certificationNumber: nil, pokemonPrintRun: .firstEdition,
+            resolved: .init(variant: .reverse, resolution: .userConfirmed))
+        let destination = try store.addScannedGraded(underlying: card, company: .psa, grade: grade,
+            certificationNumber: nil, pokemonPrintRun: .unlimited,
+            resolved: .init(variant: .reverse, resolution: .userConfirmed))
+        let source = try (0..<2).map { _ in
+            try store.addScannedGraded(underlying: card, company: .psa, grade: grade,
+                certificationNumber: nil, pokemonPrintRun: .unlimited,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+        }
+        let scanner = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        _ = try await scanner.bindScannedGraded(collectionKey: destination.collectionKey,
+            variant: .init(id: "reverse-market", company: .psa, grade: grade,
+                printing: "Unlimited Reverse Holofoil", marketPriceUSD: 40, updatedAt: nil))
+        let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+        let receipt = try await writer.correctFinish(collectionKey: source[1].collectionKey,
+            treatments: [], activityID: XCTUnwrap(source[1].activityID), quantity: 1,
+            variant: .reverse, shouldContinue: { true })
+        let correction = try XCTUnwrap(receipt)
+        XCTAssertEqual(correction.collectionKey, destination.collectionKey)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        let corrected = try XCTUnwrap(rows.first { $0.collectionKey == destination.collectionKey })
+        XCTAssertEqual(corrected.quantity, 2)
+        XCTAssertEqual(corrected.pokemonPrintRun, .unlimited)
+        XCTAssertEqual(corrected.justTCGVariantID, "reverse-market")
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: corrected.priceKey)?.effectiveUnitMarketPriceUSD, 40)
+        XCTAssertEqual(rows.first { $0.collectionKey == source[0].collectionKey }?.quantity, 1)
+        XCTAssertEqual(rows.first { $0.collectionKey == otherRun.collectionKey }?.quantity, 1)
+        try CollectionStore(context: fresh).undo(correction)
+        XCTAssertEqual(corrected.quantity, 1)
+    }
+
+    func testWholeGradedHoldingCorrectionKeepsKeyAndUpdatesEverySelectedClaim() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let acquisitions = try (0..<2).map { _ in
+            try store.addScannedGraded(underlying: card, company: .psa,
+                grade: .init(value: "10"), certificationNumber: nil)
+        }
+        let row = try XCTUnwrap(store.card(forKey: acquisitions[0].collectionKey))
+        let result = try XCTUnwrap(store.recordVariantCorrection(for: row,
+            to: .init(variant: .reverse, resolution: .userConfirmed),
+            claims: acquisitions.map { .init(activityID: try XCTUnwrap($0.activityID), quantity: 1) },
+            source: .correction, mode: .visibleCorrection))
+        XCTAssertEqual(result.collectionKey, acquisitions[0].collectionKey)
+        XCTAssertEqual(row.quantity, 2)
+        XCTAssertEqual(row.variant, .reverse)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), 2)
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertTrue(activities.filter { $0.kind == .added }.allSatisfy { $0.variantID == "reverse" })
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities,
+            events: try context.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+    }
+
+    func testGradedCorrectionDoesNotRewriteAnotherSlabsSharedPriceHistory() throws {
+        for initialFinish: PhysicalVariant? in [.normal, nil] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            let store = CollectionStore(context: context)
+            let card = try ProductionRowFixtures.pokemonCard()
+            let listing = GradedVariant(id: "shared-normal-market", cardID: "shared-normal-card",
+                company: .psa, grade: .init(value: "10"), printing: "Normal",
+                marketPriceUSD: 50, updatedAt: nil)
+            let first = try store.addGraded(underlying: card, variant: listing,
+                certificationNumber: "SHARED-FIRST",
+                resolved: .init(variant: initialFinish, resolution: .userConfirmed))
+            let second = try store.addGraded(underlying: card, variant: listing,
+                certificationNumber: "SHARED-SECOND",
+                resolved: .init(variant: initialFinish, resolution: .userConfirmed))
+            let firstRow = try XCTUnwrap(store.card(forKey: first.collectionKey))
+            let secondRow = try XCTUnwrap(store.card(forKey: second.collectionKey))
+            let originalKey = secondRow.priceKey
+            XCTAssertEqual(firstRow.priceKey, originalKey)
+            let originalRecord = try XCTUnwrap(PriceStore(context: context).record(forKey: originalKey))
+            originalRecord.gradedPrinting = listing.printing
+            try context.save()
+            let fetchedAt = originalRecord.fetchedAt
+            let eventsBefore = try context.fetch(FetchDescriptor<InventoryEvent>())
+            let originalEventKeys = Dictionary(uniqueKeysWithValues: eventsBefore.map { ($0.id, $0.priceStorageKey) })
+            let nextFinish: PhysicalVariant = initialFinish == nil ? .normal : .reverse
+            let correction = try XCTUnwrap(store.recordVariantCorrection(for: firstRow,
+                to: .init(variant: nextFinish, resolution: .userConfirmed),
+                activityID: XCTUnwrap(first.activityID), quantity: 1))
+            XCTAssertEqual(correction.collectionKey, first.collectionKey)
+            XCTAssertEqual(secondRow.variant, initialFinish)
+            XCTAssertEqual(secondRow.priceKey, originalKey)
+            XCTAssertEqual(PriceStore(context: context).record(forKey: originalKey)?.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertEqual(PriceStore(context: context).record(forKey: originalKey)?.fetchedAt, fetchedAt)
+            let eventsAfter = try context.fetch(FetchDescriptor<InventoryEvent>())
+            for event in eventsAfter where originalEventKeys[event.id] != nil {
+                XCTAssertEqual(event.priceStorageKey, originalEventKeys[event.id], "Keep previously recorded knowledge in place")
+            }
+            XCTAssertEqual(PriceStore(context: context).record(forKey: firstRow.priceKey)?.effectiveUnitMarketPriceUSD,
+                initialFinish == nil ? 50 : nil)
+            if initialFinish == nil {
+                XCTAssertEqual(PriceStore(context: context).record(forKey: firstRow.priceKey)?.fetchedAt, fetchedAt)
+            }
+            let quantities = Dictionary(grouping: eventsAfter, by: \.priceStorageKey)
+                .mapValues { $0.reduce(0) { $0 + $1.deltaQuantity } }
+            XCTAssertEqual(quantities[originalKey], 1)
+            XCTAssertEqual(quantities[firstRow.priceKey], 1)
+            try store.undo(correction)
+            XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.collectionKey), [second.collectionKey])
+            XCTAssertEqual(PriceStore(context: context).record(forKey: originalKey)?.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertTrue(CollectionActivity.integrityDefects(
+                activities: try context.fetch(FetchDescriptor<CollectionActivity>()),
+                events: try context.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+        }
+    }
+
+    func testGradedFinishCorrectionPreservesRemovedAcquisitionsPriceIdentity() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let acquisitions = try (0..<2).map { _ in
+            try store.addScannedGraded(underlying: card, company: .psa,
+                grade: .init(value: "10"), certificationNumber: nil,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+        }
+        try store.undo(acquisitions[1])
+        let row = try XCTUnwrap(store.card(forKey: acquisitions[0].collectionKey))
+        let original = Dictionary(uniqueKeysWithValues: try context.fetch(FetchDescriptor<InventoryEvent>())
+            .map { ($0.id, $0.priceStorageKey) })
+        let correction = try XCTUnwrap(store.recordVariantCorrection(for: row,
+            to: .init(variant: .reverse, resolution: .userConfirmed),
+            activityID: XCTUnwrap(acquisitions[0].activityID), quantity: 1))
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(row.variant, .reverse)
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        for event in events where original[event.id] != nil {
+            XCTAssertEqual(event.priceStorageKey, original[event.id])
+        }
+        XCTAssertEqual(events.filter { original[$0.id] == nil }.count, 2)
+        try store.undo(correction)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        XCTAssertTrue(CollectionActivity.integrityDefects(
+            activities: try context.fetch(FetchDescriptor<CollectionActivity>()),
+            events: try context.fetch(FetchDescriptor<InventoryEvent>())).isEmpty)
+    }
+
     func testSynchronousGradedPickerAcquisitionBlocksMainActorUnderContention() async throws {
         let container = try makePickerContainer()
         let card = try identifiedPokemonCard()
@@ -405,11 +690,20 @@ final class CollectionItemKindTests: XCTestCase {
         let keys = try autoreleasepool {
             let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
             let store = CollectionStore(context: container.mainContext)
-            return try [PhysicalVariant.normal, .reverse].map { finish in
+            let keys = try [PhysicalVariant.normal, .reverse].map { finish in
                 try store.addScannedGraded(underlying: card, company: .psa,
                     grade: CardGrade(value: "10"), certificationNumber: nil,
                     resolved: ResolvedVariant(variant: finish, resolution: .userConfirmed)).collectionKey
             }
+            let extra = try store.addScannedGraded(underlying: card, company: .psa,
+                grade: CardGrade(value: "10"), certificationNumber: nil,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+            let normal = try XCTUnwrap(store.card(forKey: keys[0]))
+            let corrected = try XCTUnwrap(store.recordVariantCorrection(for: normal,
+                to: .init(variant: .reverse, resolution: .userConfirmed),
+                activityID: XCTUnwrap(extra.activityID), quantity: 1))
+            XCTAssertEqual(corrected.collectionKey, keys[1])
+            return keys
         }
         let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
         let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
@@ -426,7 +720,7 @@ final class CollectionItemKindTests: XCTestCase {
             resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed))
         XCTAssertEqual(repeated.collectionKey, keys[1])
         XCTAssertEqual(store.card(forKey: keys[0])?.quantity, 1)
-        XCTAssertEqual(store.card(forKey: keys[1])?.quantity, 2)
+        XCTAssertEqual(store.card(forKey: keys[1])?.quantity, 3)
         XCTAssertEqual(try target.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 2)
     }
 

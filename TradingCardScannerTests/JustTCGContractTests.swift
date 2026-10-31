@@ -26,6 +26,80 @@ private actor EditionPriceProbe {
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
     @MainActor
+    func testGradedPickerRetriesTransientAndIncompleteSearchesWithoutRetryingTerminalResults() async throws {
+        let previousKey = PriceVendorCredentials.key
+        defer {
+            if let previousKey { try? PriceVendorCredentials.store(previousKey) }
+            else { PriceVendorCredentials.remove() }
+        }
+        try PriceVendorCredentials.store("graded-picker-fixture-key")
+        let suite = "GradedPickerRetry-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [RecordingURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let model = GradedVariantModel(transport: .init(configuration: settings, session: session,
+            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "fixture-key"))
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-subset-product-proof",
+            withExtension: "json", subdirectory: "TradingCards/SetPricingAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let entry = try XCTUnwrap((document["cases"] as? [[String: Any]])?.first)
+        let source = try JSONDecoder().decode(TCGdexCard.self,
+            from: JSONSerialization.data(withJSONObject: XCTUnwrap(entry["source"])))
+        let identity = GradedCardIdentity(name: source.name, setName: source.set.name,
+            collectorNumber: source.localId, catalogID: source.id, finish: .holo)
+        var vendor = try XCTUnwrap(entry["vendor"] as? [String: Any])
+        vendor["variants"] = [["id": "retry-slab", "type": "graded", "printing": "Holofoil",
+            "grading": ["company": "PSA", "grade": 10],
+            "markets": [["region": "NA", "currency": "USD", "price": 50]]]]
+        func body() throws -> String {
+            String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self)
+        }
+
+        RecordingURLProtocol.reset(status: 503)
+        await model.load(identity: identity, game: .pokemon)
+        XCTAssertTrue(model.canRetry)
+        XCTAssertNotNil(model.errorMessage)
+        XCTAssertFalse(model.isLoading)
+
+        RecordingURLProtocol.reset(body: try body())
+        async let first: Void = model.load(identity: identity, game: .pokemon)
+        async let second: Void = model.load(identity: identity, game: .pokemon)
+        _ = await (first, second)
+        XCTAssertEqual(model.variants.map(\.id), ["retry-slab"])
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "Overlapping loads share the model's loading guard")
+        XCTAssertNil(model.errorMessage)
+        XCTAssertFalse(model.canRetry)
+
+        RecordingURLProtocol.reset(headers: ["Link": "<https://justtcg.test/v2/cards?cursor=repeated>; rel=\"next\""])
+        await model.load(identity: identity, game: .pokemon)
+        XCTAssertTrue(model.canRetry)
+        XCTAssertTrue(model.variants.isEmpty)
+
+        vendor["variants"] = []
+        RecordingURLProtocol.reset(body: try body())
+        await model.load(identity: identity, game: .pokemon)
+        XCTAssertFalse(model.canRetry)
+        XCTAssertEqual(model.errorMessage, "No graded prices are published for this card yet.")
+        RecordingURLProtocol.reset()
+        await model.load(identity: identity, game: .pokemon)
+        XCTAssertFalse(model.canRetry)
+        XCTAssertEqual(model.errorMessage, "Couldn't find this card at the pricing vendor.")
+
+        let canceled = Task { await model.load(identity: identity, game: .pokemon) }
+        canceled.cancel()
+        await canceled.value
+        XCTAssertNil(model.errorMessage)
+        XCTAssertFalse(model.canRetry)
+        XCTAssertFalse(model.isLoading)
+    }
+
+    @MainActor
     func testClassicPikachuHistoryFetchesExactModernProductAndRejectsOtherListings() async throws {
         let suite = "ClassicHistory-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))

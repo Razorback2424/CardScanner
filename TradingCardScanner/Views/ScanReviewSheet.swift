@@ -36,15 +36,22 @@ struct ScanReviewSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 18) {
-                    AsyncImage(url: scan.displayImageURL) { phase in
-                        switch phase {
-                        case let .success(image):
-                            image.resizable().scaledToFit()
-                        case .failure:
+                    Group {
+                        if let url = scan.displayImageURL {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case let .success(image):
+                                    image.resizable().scaledToFit()
+                                case .failure:
+                                    ContentUnavailableView("Image unavailable", systemImage: "photo")
+                                        .frame(height: 380)
+                                default:
+                                    ProgressView().frame(height: 380)
+                                }
+                            }
+                        } else {
                             ContentUnavailableView("Image unavailable", systemImage: "photo")
                                 .frame(height: 380)
-                        default:
-                            ProgressView().frame(height: 380)
                         }
                     }
                     .frame(maxHeight: 420)

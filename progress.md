@@ -17,6 +17,42 @@ and sealed-browse entry points are not wired yet.
 The verification checklist is in
 [`docs/plans/card_sharing_handoff.md`](docs/plans/card_sharing_handoff.md).
 
+# 2026-10-31 — High-confidence production review fixes
+
+Remediation based on clean `main@36c2a64`, split into four focused commits:
+`c1798ca` (graded finish correction claims), `8229bc6` (retry and unavailable
+states), `21e6ec1` (feed publication rollover recovery), and `21c75ff`
+(resolved-identity pricing diagnostics).
+Graded finish correction now respects acquisition quantities, reuses the
+existing split/ledger transaction, preserves another slab's shared vendor
+quote and previously recorded history, and explains partial corrections in
+detail. Added split/merge, bound-quote, print-run, rollback, undo and historical
+acquisition coverage; CSV reopen/round-trip coverage includes a partial correction.
+
+Missing artwork now ends in an unavailable state in Price Check and scan review.
+Graded discovery retries transient/incomplete results in place, ignores
+cancellation, and removes unused summary state. The resolved-identity pricing
+explanation is reachable without treating an unsupported finish or raw identity
+as sufficient graded pricing evidence. Daily-feed rollover recovery has one
+bounded marker refresh and retains exact-file validation and original quote dates.
+
+The focused baseline passed 168 tests; the original correction/rollover/diagnostic
+regressions reproduced their failures before fixes. The combined signed iOS 27
+simulator selection passed **764 tests, zero failures, one opt-in performance
+benchmark skipped**. Hosted unavailable-artwork rendering passed at standard and
+accessibility text sizes. An unsigned Keychain test-host failure was resolved by
+signed-simulator verification. The final 45-test feed suite also passed, including
+manual retry with a fresh cache and invalidation of cached sets after observing
+a newer publication. The final Release simulator rebuild passed, with no new
+compiler warning messages relative to the earlier Release build; see the
+[fix plan](app_review_fix_plan.md). Diff whitespace and added local links pass.
+
+DerivedData is on the external SSD. Activity/CSV optimizations remain
+measurement-gated. Privacy/support publication remains owner-deferred; no URLs,
+feed activation, One Piece production gate or CloudKit policy was changed.
+These checks do not certify physical-device, live-provider, distribution or
+release readiness.
+
 # 2026-10-31 — Refinement follow-up closed
 
 Steps 1–4 are complete on `refinement/review-followup-2026-10-31` at
