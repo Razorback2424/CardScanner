@@ -1,7 +1,11 @@
 # One Piece catalog and scanner integration
 
-**Status:** proposed expansion; documentation only, no One Piece implementation.
-**Reconciled:** 2026-10-03 against `dd2a1e3` and the current working tree.
+**Status:** current catalog design; implementation authorized and in progress in
+the isolated `one-piece-integration` worktree; production support disabled.
+**Reconciled:** 2026-10-04 against uncommitted implementation at base `69c714f`.
+The original source/design review used `dd2a1e3` and its working tree; subsequent
+code status and delivery priorities live in the
+[implementation ledger](one_piece_code_implementation.md).
 **Draft provenance:** owner-supplied audit drafted more than a month earlier,
 including an explicitly dated 2026-08-26 provider comparison. Its missing citation
 markers were not source URLs. Historical counts and forecasts below are retained
@@ -12,7 +16,8 @@ as supplied claims, not independently reproduced evidence.
 Plan English One Piece support around official discovery, multiple-source
 reconciliation, and permanent app-owned physical-printing IDs. Bandai discovers
 canonical cards and artwork; Limitless helps reconcile physical releases;
-Scrydex is a candidate enrichment and raw-market provider. No single vendor's
+TCGCSV/TCGplayer adds broad market-product discovery; Scrydex remains a candidate
+enrichment and raw-market provider. No single vendor's
 catalog, naming scheme, or expansion count defines completeness.
 
 Identification must remain independent of pricing. A new card can be represented
@@ -27,17 +32,31 @@ automatic optical finish assignment are separate follow-ups. Do not promise
 day-one coverage or production readiness until the relevant corpus, rights,
 provider, device, and rollout evidence exists.
 
-## Changes required by the current architecture
+## Architecture contracts and current adaptation
+
+The 2026-10-04 code audit includes tracked and untracked work. Shared identities,
+runtime adapters, One Piece core/local projections and fixture flows now exist.
+The real review registry now contains 2,745 printing records (2,490 verified), with
+dated source observations and retained hashes; synthetic fixtures still cover
+some stress distinctions. This does not establish full physical completeness.
+Recovery revalidation and compact Pokémon/Magic-style printing choice now exist.
+The owner-rejected verbose picker is historical. Real scanner/device and
+collector-distinguishability acceptance remain open; retain separate printing
+and finish stages.
+Remaining write boundaries and actual seed/publication/device/sync acceptance
+remain open.
+The implementation ledger is the current execution/status authority; this table
+retains the design contract without treating earlier source locations as current.
 
 | Current source boundary | Adaptation of the older draft |
 | --- | --- |
-| [`CardGame`](../../TradingCardScanner/Services/SetCodeMap.swift), [`ScanIdentifier`](../../TradingCardScanner/Services/ScanParser.swift), and [`IdentifiedCard`](../../TradingCardScanner/Models/TCGdexCard.swift) support Pokémon and Magic | Add a deliberate third-game adapter and audit exhaustive switches; One Piece is not already a generic catalog plug-in. |
-| [`RecognitionProfile`](../../TradingCardScanner/Services/CardScanner.swift) runs both current parsers and rejects competing valid identities | Add the One Piece parser to the combined vocabulary and retain cross-game ambiguity rejection; no game toggle or confidence contest. |
-| [`CardCatalog`](../../TradingCardScanner/Services/CardCatalog.swift) resolves validated identifiers; Pokémon has an offline checklist factory | Resolve One Piece candidates from a validated local release rather than calling three upstream vendors per scan. Canonical-number validation precedes physical-printing choice. |
+| [`CardGame`](../../TradingCardScanner/Models/CardGame.swift), [`ScanIdentifier`](../../TradingCardScanner/Services/ScanParser.swift), and [`ResolvedCatalogCard`](../../TradingCardScanner/Models/ResolvedCatalogCard.swift) are generic values with legacy bridges | Retain single-string game encoding and existing Pokémon/Magic keys; One Piece uses its registered adapters. Audit remaining central legacy routing before claiming the next game requires no central edits. |
+| [`RecognitionProfile`](../../TradingCardScanner/Services/CardScanner.swift) aggregates registered recognizers | Retain cross-game/internal ambiguity rejection and language evidence; no game toggle or confidence contest. Real-card validation remains open. |
+| [`CardCatalog`](../../TradingCardScanner/Services/CardCatalog.swift) dispatches registered catalog adapters alongside legacy paths | One Piece candidates come from its validated local release, not per-scan upstream requests. Canonical-number validation precedes physical-printing choice; incomplete coverage must not manufacture uniqueness. |
 | [`VariantResolver`](../../TradingCardScanner/Services/VariantResolver.swift) uses deterministic catalog evidence, applicable user locks, and validated printed-label evidence | Optical similarity may rank candidate artwork/printing choices. It cannot silently decide an ambiguous finish, stamp, or identical-art reprint. The draft's “high confidence → auto-select” is not the current acceptance contract. |
-| [`CollectedCard`](../../TradingCardScanner/Models/CollectedCard.swift) preserves legacy collection keys, physical variants, and resolution provenance | Introduce stable One Piece IDs without rekeying Pokémon/Magic rows or renaming the SwiftData entity. Audit unknown-game decoding: the current fallback to Pokémon is unsafe for older clients receiving One Piece rows. |
+| [`CollectedCard`](../../TradingCardScanner/Models/CollectedCard.swift) preserves legacy keys, physical variants and provenance, and now retains unknown game strings | Keep stable One Piece UUID identity without rekeying existing games or renaming the SwiftData entity. Old installed clients still have unsafe fallback behavior; preserve the creation/sync gate and close remaining unsupported-row mutation paths. |
 | [`PriceRecord`](../../TradingCardScanner/Models/PriceRecord.swift) keys by game, printing, variant, and applicable Magic treatment | Map One Piece prices to exact local printing/physical-variant identities. Market IDs stay provider mappings, separate from ownership. Preserve existing freshness and unavailable-price semantics. |
-| Pokémon and Magic have signed-release core packages and device coordinators/stores | Reuse the publication and activation patterns, not their game-specific schema. Neither existing contract is an implemented full One Piece physical-printing/image index. |
+| Pokémon/Magic stores share signed storage mechanics; One Piece has its own core, registry, coordinator and bounded update client | Preserve separate schemas, trust keys and physical identities. Signing/preparation and fixture activation do not establish a reviewed real catalog or production delivery. All shared-site deployments must preserve the new namespace. |
 | [`shared_pricing_cache_plan.md`](shared_pricing_cache_plan.md) is a future backend with independent gates | This plan does not install a Scrydex backend or authorize price redistribution. Reconcile provider access and retention with [`browse_pricing_coverage_plan.md`](browse_pricing_coverage_plan.md) before selecting the price path. |
 
 The signed-catalog precedents are
@@ -45,7 +64,7 @@ The signed-catalog precedents are
 [`magic_catalog_key_handling_runbook.md`](magic_catalog_key_handling_runbook.md),
 [`PokemonCatalogCore`](../../PokemonCatalogCore/Sources/PokemonCatalogCore/CatalogContract.swift),
 and [`MagicCatalogCore`](../../MagicCatalogCore/Sources/MagicCatalogCore/CatalogContract.swift).
-Their implementation and rollout statuses remain separate; this proposal does
+Their implementation and rollout statuses remain separate; this design does
 not mark their open operational gates complete.
 
 ## Source roles and evidence boundary
@@ -54,11 +73,21 @@ not mark their open operational gates complete.
 | --- | --- | --- |
 | Official English Bandai catalog and announcements | Canonical numbers, official metadata, artwork discovery, release/event evidence | A source artwork occurrence is not a permanent physical-printing identity; official availability does not grant hosting or commercial rights. |
 | Limitless | Expected physical prints, product appearances, release reconciliation, discrepancy checks | Use during ingestion/review through permitted access. Product rows may group distinctions more coarsely than collector treatments. |
+| TCGCSV / TCGplayer category 68 | Broad market-product discovery, exact source names, product/group aliases and optional source price lanes | Retain paced daily source captures and explicit inventory gaps. A product is not an app-owned physical UUID, and this export lacks SKU-level language/printing/condition identity. |
 | Scrydex | Candidate variant vocabulary, variant imagery, cross-expansion associations, exact raw quotes | Enumerate paginated card/search results and reconcile them independently. Expansion totals and variant names are not completeness proofs or IDs. |
 | App-owned registry | Permanent printing IDs, source aliases, reviewed joins, unresolved distinctions, release history | Identity persists across URL, vendor-name, and source-index changes. |
 
 A limited public-source check on 2026-10-03 establishes the following, not a fresh
 all-history coverage audit:
+
+**2026-10-04 discovery update:** the [stress review corpus](../../OnePieceCatalogCore/ReviewCorpus/english-stress/README.md)
+now includes a reproducible category-68 capture: 7,408 review rows across 87 groups,
+with one empty presale inventory explicitly incomplete. This supersedes the earlier
+absence of broad market discovery, not physical completeness or rights gates.
+Thirty-one market observations cover Shanks/Nami/Luffy; seven illustration
+correspondences and a missing Nami thumbnail are recorded separately. Current
+digital Bandai block-1 footers are not proof of original physical release footers.
+Do not promote source product rows or artwork matches to verified printing UUIDs.
 
 - The [official English card list](https://en.onepiece-cardgame.com/cardlist/)
   remains an accessible discovery source.
@@ -116,6 +145,21 @@ reconciliation, scan resolution, and market mapping as separate statuses:
 | Provisional | Official discovery with incomplete physical-release reconciliation. May show a canonical candidate or explicit provisional choice; cannot pretend all possible prints are known. |
 | Verified | Reviewed evidence agrees on the specific physical printing and required qualifiers; at least two corroborating signals are preferred. |
 | Conflicted/quarantined | Contradictory image, release, stamp, or identity evidence; excluded from automatic physical resolution and exact quoting until reviewed. |
+
+An unverified review printing may have an empty `supportedVariantIDs` list when
+its finish evidence is unresolved. Do not invent a normal/foil finish to satisfy
+the schema. Verified printings must have at least one registered supported
+variant. Unresolved printings remain in the candidate universe and block
+automatic uniqueness; learning a finish does not allocate a replacement UUID.
+Promotion to verified status is a protected publisher review change.
+
+Rules version 2 requires a `finish` review entry covering every supported finish
+of a verified printing. A catalog observation may specify one `finishVariantID`
+or a JSON string array in `finishVariantIDs`, but cannot supply both. Evidence
+must agree with the canonical number, language and release. Market observations,
+watermarked renders and physical-card photographs alone cannot authorize a
+finish. Missing or contradictory evidence rejects the candidate; rules-version-1
+releases require evidence migration and protected re-publication before activation.
 
 Two websites repeating the same Bandai image are not automatically independent
 evidence of a stamp, finish, or distribution. Verification requires evidence for
@@ -220,7 +264,19 @@ claim or “Fair Value” methodology is established by this audit.
 
 ## Implementation slices and acceptance
 
-These are proposed slices, not authorization to implement or publish now.
+The owner subsequently authorized code implementation; the
+[implementation ledger](one_piece_code_implementation.md) records its current
+state, audit findings and execution order. Production publication, provider
+entitlements and sync activation still require their stated acceptance gates.
+The original documentation-only provenance is historical, not a prohibition on
+the authorized work. The 2026-10-04 audit was restricted to plan updates.
+
+These design gates use A–H, whereas the code-level ledger uses A–N. They are
+different checklists: design A maps mainly to code G; design B to code G;
+design C to code F/H; design D to code C/D/E/I; design E to code A/J/K;
+design F to code L; design G to code M/N; and design H to code acceptance/rollout.
+Passing a fixture checkpoint in the code ledger does not close a corpus,
+provider, device or operational design gate here.
 
 - [ ] **A — Corpus and access:** establish current English inventory, dated
   source observations, permitted access/asset use, discrepancy ledger, and
