@@ -161,6 +161,7 @@ struct CollectionDetailArtworkSource<Content: View>: View {
 
 private struct CollectionCardDetailContent: View {
     @Environment(\.cardGameRuntimes) private var runtimes
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .largeTitle) private var titleFontSize: CGFloat = 32
@@ -944,7 +945,7 @@ private struct CollectionCardDetailContent: View {
         guard let summary = gradedFinishSummary else { return }
         isLoadingGradedFinishes = true
         defer { if !Task.isCancelled { isLoadingGradedFinishes = false } }
-        let catalog = runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        let catalog = sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
         do {
             let details = try await catalog.details(for: summary)
             guard !Task.isCancelled, summary == gradedFinishSummary else { return }
@@ -2285,6 +2286,7 @@ private struct CardPrintingDetailsView<SetDestination: View>: View {
 
 private struct CollectionSetDestination: View {
     @Environment(\.cardGameRuntimes) private var runtimes
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     let game: CardGame
     let setName: String
     let setCode: String
@@ -2322,7 +2324,7 @@ private struct CollectionSetDestination: View {
 
     private func load() async {
         failure = nil
-        let catalog = catalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        let catalog = catalog ?? sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
         self.catalog = catalog
         do {
             let sets = try await catalog.sets(for: game)
