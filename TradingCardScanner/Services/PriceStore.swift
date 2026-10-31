@@ -158,8 +158,15 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
-        if record?.lastFailureAt != nil {
-            if record?.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue { return .invalidProviderQuote }
+        if let record, record.lastFailureAt != nil {
+            if record.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue { return .invalidProviderQuote }
+            if card.itemKind == .rawCard, card.catalogProviderID != nil,
+               let checkedAt = record.lastCheckedAt,
+               let metadataCheckedAt = card.catalogMetadataCheckedAt, metadataCheckedAt > checkedAt,
+               card.variant.map({ PokemonVariantRules.requiresPhysicalReview(
+                   cardID: card.catalogProviderID ?? card.providerID, variant: $0) }) != true {
+                return .identityResolvedAfterFailedCheck
+            }
             return .providerRequestFailed
         }
         if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
@@ -195,22 +202,12 @@ enum PricingDiagnostics {
            record.currencyCode.caseInsensitiveCompare("USD") != .orderedSame { return .otherCurrency }
         guard let record, record.lastCheckedAt != nil else { return .notChecked }
 
-        if card.catalogProviderID != nil,
-           record.lastFailureAt != nil,
-           let metadataCheckedAt = card.catalogMetadataCheckedAt,
-           metadataCheckedAt > (record.lastCheckedAt ?? .distantPast) {
-            return .identityResolvedAfterFailedCheck
-        }
-
         switch card.itemKind {
         case .sealedProduct:
             return .noExactVariantPrice
         case .gradedCard:
-            return record.lastFailureAt != nil
-                ? .providerRequestFailed
-                : .gradedMarketPriceNull
+            return .gradedMarketPriceNull
         case .rawCard:
-            if record.lastFailureAt != nil { return .providerRequestFailed }
             if card.justTCGVariantID == nil, card.justTCGCardID != nil {
                 return .justTCGVariantUnresolved
             }

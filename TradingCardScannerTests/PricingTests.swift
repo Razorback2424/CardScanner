@@ -755,6 +755,32 @@ final class PricingTests: XCTestCase {
     }
 
     @MainActor
+    func testNewlyResolvedRawIdentityExplainsRetryWithoutOverridingInvalidQuotes() throws {
+        let card = CollectedCard(card: try pokemonCard(),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let checkedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let record = PriceRecord(key: card.priceKey, game: .pokemon,
+            printingID: card.priceStorageID, variantID: card.variantID)
+        record.recordFailure(at: checkedAt)
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .providerRequestFailed)
+        card.catalogProviderID = card.providerID
+        card.catalogMetadataCheckedAt = checkedAt
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .providerRequestFailed)
+        card.catalogMetadataCheckedAt = checkedAt.addingTimeInterval(60)
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .identityResolvedAfterFailedCheck)
+        record.lastFailureReasonRaw = PricingDiagnosticReason.invalidProviderQuote.rawValue
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .invalidProviderQuote)
+        record.lastFailureReasonRaw = nil
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .providerRequestFailed,
+            "Resolving the raw card does not establish a graded listing")
+        card.itemKindRaw = CollectionItemKind.rawCard.rawValue
+        card.catalogProviderID = "xya-24a"
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .providerRequestFailed,
+            "An unsupported physical finish must not be described as ready to price")
+    }
+
+    @MainActor
     func testIncompleteAndFailedAttemptsRetainPriorGradedCoverageWithoutNegativeCaching() throws {
         let (container, context) = try makePriceContext()
         defer { withExtendedLifetime(container) {} }
