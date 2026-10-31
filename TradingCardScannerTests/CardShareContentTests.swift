@@ -1,4 +1,6 @@
 import XCTest
+import SwiftUI
+import UIKit
 @testable import TradingCardScanner
 
 /// What a shared card image is allowed to state. Every rule here protects the
@@ -175,5 +177,97 @@ final class CardShareContentTests: XCTestCase {
     /// (days before `now`, price)
     private func points(_ values: [(Double, Double)]) -> [JustTCGHistoryPoint] {
         values.map { JustTCGHistoryPoint(p: $0.1, t: now.addingTimeInterval(-$0.0 * 86_400).timeIntervalSince1970) }
+    }
+}
+
+@MainActor
+final class CardShareRenderTests: XCTestCase {
+    private let now = Date(timeIntervalSince1970: 1_793_448_000)
+
+    func testMissingArtworkCannotExportAPreviewPlaceholder() {
+        let content = CollectionShareImage(identity: identity, price: price, artwork: nil, showsFinishSheen: true)
+        XCTAssertNil(CardShareRenderer.render(content, artwork: nil))
+    }
+
+    func testCollectionExportsAtSocialImageResolutionAcrossVariants() throws {
+        let cases: [(String, CardShareIdentity.Badge?, Bool, Bool)] = [
+            ("normal", nil, false, true),
+            ("holo", .finish("Holo"), true, true),
+            ("reverse", .finish("Reverse"), true, true),
+            ("foil", .finish("Foil"), true, true),
+            ("graded", .grade("PSA 10"), false, true),
+            ("sealed", nil, false, false),
+            ("no-price", nil, false, true),
+            ("long-name", .finish("Reverse"), true, true)
+        ]
+        for (name, badge, sheen, isCard) in cases {
+            let identity = CardShareIdentity(
+                name: name == "long-name" ? "A Very Long Legendary Trading Card Name With Extra Words" : (isCard ? "Share test card" : "Booster Bundle"),
+                setCode: isCard ? "TST" : nil,
+                setName: name == "long-name" ? "A Very Long Set Name With Extra Words" : "Test Set",
+                number: isCard ? CardShareNumber("087/165") : nil,
+                badge: badge
+            )
+            let scenarioPrice = CardSharePrice(amount: price.amount, currencyCode: price.currencyCode,
+                basis: name == "graded" ? "PSA 10 market" : (isCard ? price.basis : "Market price"),
+                source: name == "graded" ? "JustTCG" : price.source, asOf: now)
+            let content = CollectionShareImage(identity: identity, price: name == "no-price" ? nil : scenarioPrice,
+                artwork: artwork(), showsFinishSheen: sheen, now: now)
+            try checkExport(content, name: "collection-" + name)
+        }
+    }
+
+    func testBuyCheckExportsHistoryAndAskingPricesOutsideHistoryRange() throws {
+        let points = [(89.0, 57.32), (70, 56.4), (50, 59), (30, 61.2), (0, 64.2)].map {
+            JustTCGHistoryPoint(p: $0.1, t: now.addingTimeInterval(-$0.0 * 86_400).timeIntervalSince1970)
+        }
+        let trend = try XCTUnwrap(CardShareTrend.make(points: points, now: now))
+        for amount in ["", "20", "64.20", "100"] {
+            let content = BuyCheckShareImage(identity: identity, price: price,
+                ask: CardShareAsk(text: amount, market: price.amount, locale: Locale(identifier: "en_US")),
+                trend: trend, artwork: artwork(), now: now)
+            try checkExport(content, name: "buy-history-" + (amount.isEmpty ? "no-ask" : amount))
+        }
+        try checkExport(BuyCheckShareImage(identity: identity, price: price, ask: nil,
+            trend: nil, artwork: artwork(), now: now), name: "buy-no-history")
+    }
+
+    func testUserPhotoExportsKeepPortraitAndPanoramicContent() throws {
+        for size in [CGSize(width: 120, height: 400), CGSize(width: 400, height: 120)] {
+            let photo = artwork(size: size, kind: .userPhoto)
+            try checkExport(CollectionShareImage(identity: identity, price: nil,
+                artwork: photo, showsFinishSheen: true, now: now), name: "user-photo-\(Int(size.width))")
+        }
+    }
+
+    private var identity: CardShareIdentity {
+        CardShareIdentity(name: "Share test card", setCode: "TST", setName: "Test Set",
+            number: CardShareNumber("087/165"), badge: .finish("Reverse"))
+    }
+
+    private var price: CardSharePrice {
+        CardSharePrice(amount: 64.2, currencyCode: "USD", basis: "Near Mint market", source: "TCGplayer", asOf: now)
+    }
+
+    private func artwork(size: CGSize = CGSize(width: 215, height: 300), kind: CardShareArtwork.Kind = .catalog) -> CardShareArtwork {
+        let image = UIGraphicsImageRenderer(size: size).image { context in
+            UIColor.systemIndigo.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+            UIColor.systemMint.setFill()
+            context.fill(CGRect(x: 8, y: 8, width: size.width - 16, height: size.height - 16))
+            ("TEST ART" as NSString).draw(at: CGPoint(x: 15, y: 25),
+                withAttributes: [.font: UIFont.boldSystemFont(ofSize: 18), .foregroundColor: UIColor.black])
+        }
+        return CardShareArtwork(image: image, kind: kind)
+    }
+
+    private func checkExport<Content: View>(_ content: Content, name: String) throws {
+        let image = try XCTUnwrap(CardShareRenderer.render(content, artwork: artwork()))
+        XCTAssertEqual(image.cgImage?.width, 1080, name)
+        XCTAssertEqual(image.cgImage?.height, 1350, name)
+        let attachment = XCTAttachment(image: image)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 }

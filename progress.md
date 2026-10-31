@@ -1,4 +1,4 @@
-# 2026-10-31 — Card sharing (unverified build)
+# 2026-10-31 — Card sharing — Mac verification
 
 On `claude/card-share-sheet`, a Share button on collection card details and on
 the Price Check result replaces screenshots with a rendered 1080 × 1350 image
@@ -10,11 +10,34 @@ that is omitted below five observations or two weeks of history; graded checks
 send no chart. Logic is in `CardShareContent.swift` with
 `CardShareContentTests`; views are in `CardShareViews.swift`.
 
-This was written in a Linux session without Xcode: it has **not** been built,
-run or tested. Build, run `CardShareContentTests`, and check both sheets and
-the rendered images on a simulator and device before merging. Catalog-detail
-and sealed-browse entry points are not wired yet.
-The verification checklist is in
+Mac verification merged committed `main@17658c9` through `f1ff681`, preserving
+the original checkout's unrelated uncommitted work. Final Debug and Release
+builds pass on the arm64 iPhone 16 / iOS 27 simulator with Xcode 27.1; Release
+used `ONLY_ACTIVE_ARCH=YES`. No project-reference or original logic-test fixes
+were required. `CardShareContentTests` passes **17/17**; four added export tests
+and eight detail-render regressions bring the focused run to **29/29**, including
+the final post-fix rerun.
+
+The full sharing regression has **2,780 passed, 16 skipped and six failed**;
+clean main has **2,758 passed, 16 skipped and seven failed**. Every branch
+failure also occurs on main: **zero new failures**. The six shared failures
+cover collection/graded identity assertions, three local-StoreKit cases and
+SwiftData notification keys. Main's additional app-opening timeout passed on
+the branch. This is not a green full suite.
+
+Verification repaired placeholder-image export after failed artwork loading,
+cropping of unusually wide/tall personal photos, and a reproduced accessibility
+text truncation in the asking-price row. Fifteen 1080 × 1350 export fixtures
+were inspected; iPhone SE and iPad captures cover both sheets, accessibility3
+control rows, light surroundings and German currency formatting. The full
+regression preceded the final control-row layout repair; final builds, the
+29-test rerun and recaptured rows cover that repair. Artifacts remain on the
+external SSD; no screenshots or raw logs are committed.
+
+Native Save Image/preview parity, Price persistence, actual asking-price input
+and keyboard dismissal, real collection/scan cases, spoken VoiceOver and
+physical-phone share destinations remain manual. Catalog-detail and sealed-browse
+entry points are not wired yet. The evidence and remaining checklist are in
 [`docs/plans/card_sharing_handoff.md`](docs/plans/card_sharing_handoff.md).
 
 # 2026-10-31 — High-confidence production review fixes

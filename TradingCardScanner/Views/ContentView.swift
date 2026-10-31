@@ -180,6 +180,9 @@ struct ContentView: View {
 #endif
 #if DEBUG
         .overlay {
+            if debugRoute == "CardShareReview" {
+                CardShareReviewView()
+            }
 #if LOCAL_ONLY_SIGNING
             if debugRoute == "PricingSettingsReview" {
                 NavigationStack {

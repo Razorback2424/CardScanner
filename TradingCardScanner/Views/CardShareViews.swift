@@ -411,7 +411,7 @@ private struct ShareArtworkView: View {
 
     private var aspect: CGFloat {
         guard let image = artwork?.image, image.size.height > 0 else { return CardShareStyle.cardAspect }
-        return min(max(image.size.width / image.size.height, 0.5), 1.6)
+        return image.size.width / image.size.height
     }
 
     private func fittedSize(in bounds: CGSize) -> CGSize {
@@ -744,7 +744,8 @@ struct CollectionShareSheet: View {
             VStack(spacing: 16) {
                 CardSharePreview(content: image, summary: summary)
                 priceRow
-                CardShareButton(rendered: isLoadingArtwork ? nil : rendered, title: identity.name, message: summary)
+                CardShareButton(rendered: isLoadingArtwork ? nil : rendered, title: identity.name, message: summary,
+                    artworkUnavailable: !isLoadingArtwork && artwork == nil)
             }
             .padding(.horizontal, 20)
             .padding(.top, 4)
@@ -766,7 +767,7 @@ struct CollectionShareSheet: View {
             isLoadingArtwork = false
         }
         .task(id: RenderKey(includesPrice: includesPrice, isLoadingArtwork: isLoadingArtwork)) {
-            rendered = CardShareRenderer.render(image)
+            rendered = CardShareRenderer.render(image, artwork: artwork)
         }
     }
 
@@ -807,6 +808,7 @@ struct BuyCheckShareSheet: View {
 
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var askText = ""
     @State private var trend: CardShareTrend?
     @State private var artwork: CardShareArtwork?
@@ -837,7 +839,8 @@ struct BuyCheckShareSheet: View {
                 CardSharePreview(content: image, summary: summary)
                     .onTapGesture { isAskFocused = false }
                 askRow
-                CardShareButton(rendered: isLoadingArtwork ? nil : rendered, title: identity.name, message: summary)
+                CardShareButton(rendered: isLoadingArtwork ? nil : rendered, title: identity.name, message: summary,
+                    artworkUnavailable: !isLoadingArtwork && artwork == nil)
             }
             .padding(.horizontal, 20)
             .padding(.top, 4)
@@ -864,12 +867,15 @@ struct BuyCheckShareSheet: View {
         }
         .task { await loadHistory() }
         .task(id: RenderKey(ask: ask, trend: trend, isLoadingArtwork: isLoadingArtwork)) {
-            rendered = CardShareRenderer.render(image)
+            rendered = CardShareRenderer.render(image, artwork: artwork)
         }
     }
 
     private var askRow: some View {
-        HStack(spacing: 12) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout(spacing: 12))
+        return layout {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Asking price")
                     .font(.body.weight(.semibold))
@@ -877,7 +883,10 @@ struct BuyCheckShareSheet: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            Spacer(minLength: 8)
+            .fixedSize(horizontal: false, vertical: true)
+            if !dynamicTypeSize.isAccessibilitySize {
+                Spacer(minLength: 8)
+            }
             HStack(spacing: 3) {
                 Text(CardShareFormat.currencySymbol(for: price.currencyCode))
                     .font(.body.weight(.bold))
@@ -891,13 +900,15 @@ struct BuyCheckShareSheet: View {
                     .accessibilityLabel("Asking price")
             }
             .padding(.horizontal, 12)
-            .frame(width: 116, height: 44)
+            .frame(width: dynamicTypeSize.isAccessibilitySize ? nil : 116)
+            .frame(minHeight: 44)
             .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
             .onTapGesture { isAskFocused = true }
         }
         .padding(.leading, 16)
         .padding(.trailing, 8)
+        .padding(.vertical, 10)
         .frame(minHeight: 60)
         .background(CardShareStyle.rowBackground, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
@@ -927,7 +938,9 @@ struct BuyCheckShareSheet: View {
 
 enum CardShareRenderer {
     @MainActor
-    static func render<Content: View>(_ content: Content) -> UIImage? {
+    static func render<Content: View>(_ content: Content, artwork: CardShareArtwork?) -> UIImage? {
+        // A failed or unfinished load must never export the preview placeholder.
+        guard artwork != nil else { return nil }
         let renderer = ImageRenderer(content: content.environment(\.colorScheme, .dark))
         renderer.scale = CardShareStyle.renderScale
         renderer.isOpaque = true
@@ -973,6 +986,7 @@ private struct CardShareButton: View {
     let rendered: UIImage?
     let title: String
     let message: String
+    let artworkUnavailable: Bool
 
     var body: some View {
         if let rendered {
@@ -983,7 +997,7 @@ private struct CardShareButton: View {
             .buttonStyle(.plain)
         } else {
             Button {} label: {
-                label(text: "Preparing…")
+                label(text: artworkUnavailable ? "Artwork unavailable" : "Preparing…")
             }
             .buttonStyle(.plain)
             .disabled(true)
@@ -1019,3 +1033,54 @@ private struct CardShareCloseButton: View {
         .accessibilityLabel("Close")
     }
 }
+
+#if DEBUG
+/// Deterministic visual QA of the actual sheets, without scanning or saved data.
+private struct CardShareReviewState {
+    static var value: String {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1) else { return "holo" }
+        return arguments[index + 1]
+    }
+}
+
+struct CardShareReviewView: View {
+    @State private var isPresented = true
+    private let state = CardShareReviewState.value
+    private let artworkURL = URL(string: "https://images.pokemontcg.io/sv3pt5/87_hires.png")!
+
+    private var identity: CardShareIdentity {
+        CardShareIdentity(
+            name: state.contains("long") ? "A Very Long Legendary Trading Card Name With Extra Words" : (state == "sealed" ? "Booster Bundle" : "Share test card"),
+            setCode: state == "sealed" ? nil : "TST",
+            setName: state.contains("long") ? "A Very Long Set Name With Extra Words" : "Test Set",
+            number: state == "sealed" ? nil : CardShareNumber("087/165"),
+            badge: state == "graded" ? .grade("PSA 10") : (["normal", "sealed"].contains(state) ? nil : .finish("Reverse"))
+        )
+    }
+
+    private var price: CardSharePrice {
+        CardSharePrice(amount: 64.2, currencyCode: "USD",
+            basis: state == "graded" ? "PSA 10 market" : (state == "sealed" ? "Market price" : "Near Mint market"),
+            source: state == "graded" ? "JustTCG" : "TCGplayer", asOf: .now)
+    }
+
+    var body: some View {
+        Button("Open share sheet") { isPresented = true }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.systemBackground))
+            .sheet(isPresented: $isPresented) {
+                Group {
+                    if state.hasPrefix("buy") {
+                        BuyCheckShareSheet(identity: identity, price: price, artworkURLs: [artworkURL], historyRequest: nil)
+                    } else {
+                        CollectionShareSheet(identity: identity, price: state == "no-price" ? nil : price,
+                            showsFinishSheen: !["normal", "graded", "sealed"].contains(state), localArtworkFilename: nil,
+                            remoteArtworkURLs: state == "missing-art" ? [] : [artworkURL])
+                    }
+                }
+                .environment(\.dynamicTypeSize, ProcessInfo.processInfo.arguments.contains("large-text") ? .accessibility3 : .large)
+            }
+    }
+}
+#endif
