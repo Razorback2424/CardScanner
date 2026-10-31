@@ -1,0 +1,4 @@
+[
+  {"provider":"bandai","snapshotID":"super-pre-release-2022:d111ead69a68a88522d13ee2b5efebc6543ced160929320db4f9d28d020cd33f","paginationComplete":false,"observationIDs":["bandai:2022-super-pre-release:winner","bandai:2022-super-pre-release:participant","bandai:2022-super-pre-release:winner-render","bandai:2022-super-pre-release:participant-render"]},
+  {"provider":"cgc","snapshotID":"winner-article:2d2066f78eb3a097a34ad73fe71d511388255b4b85da23b8aca27f54bb29ca98","paginationComplete":false,"observationIDs":["cgc:2026-winner:article","cgc:2026-winner:physical-front"]}
+]

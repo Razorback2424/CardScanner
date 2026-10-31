@@ -1,0 +1,228 @@
+{
+  "generatedFromCatalogSHA256": "70af09718d750821f0207446f8632e7024d2aa765ed39edb4d66f4fdf3a9cfa2",
+  "rows": [
+    {
+      "bandaiArtworkAliases": [
+        "OP01-120",
+        "OP01-120_p1",
+        "OP01-120_p2"
+      ],
+      "candidateMarketProducts": [
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Shanks (Championship 2023) [Serial Number]",
+          "productID": 514047
+        },
+        {
+          "groupID": 3188,
+          "groupLabel": "Romance Dawn",
+          "name": "Shanks",
+          "productID": 454664
+        },
+        {
+          "groupID": 3188,
+          "groupLabel": "Romance Dawn",
+          "name": "Shanks (Parallel)",
+          "productID": 454665
+        },
+        {
+          "groupID": 3188,
+          "groupLabel": "Romance Dawn",
+          "name": "Shanks (Parallel) (Manga) (Alternate Art)",
+          "productID": 454666
+        },
+        {
+          "groupID": 23496,
+          "groupLabel": "Premium Booster -The Best-",
+          "name": "Shanks (OP01-120) (Alternate Art)",
+          "productID": 586194
+        },
+        {
+          "groupID": 23496,
+          "groupLabel": "Premium Booster -The Best-",
+          "name": "Shanks (Manga)",
+          "productID": 587708
+        },
+        {
+          "groupID": 23496,
+          "groupLabel": "Premium Booster -The Best-",
+          "name": "Shanks (OP01-120) (Reprint)",
+          "productID": 594316
+        }
+      ],
+      "number": "OP01-120",
+      "physicalCoverageComplete": false,
+      "reviewedPhysicalJoins": []
+    },
+    {
+      "bandaiArtworkAliases": [
+        "P-001",
+        "P-001_p1",
+        "P-001_p2",
+        "P-001_p5"
+      ],
+      "candidateMarketProducts": [
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Promotion Pack 2022)",
+          "productID": 450299
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Super Pre-Release) [Participant]",
+          "productID": 450300
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Super Pre-Release) [Winner]",
+          "productID": 450301
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Store Championship Trophy Card)",
+          "productID": 503023
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Alternate Art)",
+          "productID": 509752
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Gift Collection 2023)",
+          "productID": 523785
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (001) (Offline Regional 2024 Vol. 2) [Participant]",
+          "productID": 544770
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (001) (Offline Regional 2024 Vol. 2) [Finalist]",
+          "productID": 544771
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (001) (Offline Regional 2024 Vol. 2) [Winner]",
+          "productID": 544772
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (001) (Online Regional 2024 Vol. 2) [Participant]",
+          "productID": 544773
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (001) (Online Regional 2024 Vol. 2) [Finalist]",
+          "productID": 544774
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (001) (Online Regional 2024 Vol. 2) [Winner]",
+          "productID": 544775
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Monkey.D.Luffy (Premium Card Collection -BANDAI CARD GAMES Fest. 23-24 Edition-)",
+          "productID": 564250
+        },
+        {
+          "groupID": 23907,
+          "groupLabel": "One Piece Demo Deck Cards",
+          "name": "Monkey.D.Luffy (001)",
+          "productID": 602790
+        }
+      ],
+      "number": "P-001",
+      "physicalCoverageComplete": false,
+      "reviewedPhysicalJoins": []
+    },
+    {
+      "bandaiArtworkAliases": [
+        "ST01-007"
+      ],
+      "candidateMarketProducts": [
+        {
+          "groupID": 17659,
+          "groupLabel": "ST-01: Starter Deck 1 Straw Hat Crew (Super Pre-Release Edition)",
+          "name": "Nami",
+          "productID": 416939
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Nami (Tournament Pack Vol. 3) [Participant]",
+          "productID": 496999
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Nami (Tournament Pack Vol. 3) [Winner]",
+          "productID": 497000
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Nami (Premium Card Collection -ONE PIECE FILM RED Edition-)",
+          "productID": 504477
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Nami (CS 2023 Celebration Pack)",
+          "productID": 525324
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Nami (2025 New Year Event)",
+          "productID": 610801
+        },
+        {
+          "groupID": 17675,
+          "groupLabel": "One Piece Promotion Cards",
+          "name": "Nami (2025 New Year Event Winner)",
+          "productID": 610802
+        },
+        {
+          "groupID": 3189,
+          "groupLabel": "ST-01: Starter Deck 1 Straw Hat Crew",
+          "name": "Nami",
+          "productID": 288236
+        },
+        {
+          "groupID": 23272,
+          "groupLabel": "Wings of the Captain",
+          "name": "Nami (TR)",
+          "productID": 541664
+        },
+        {
+          "groupID": 23890,
+          "groupLabel": "Revision Pack Cards",
+          "name": "Nami",
+          "productID": 599781
+        }
+      ],
+      "number": "ST01-007",
+      "physicalCoverageComplete": false,
+      "reviewedPhysicalJoins": []
+    }
+  ],
+  "schemaVersion": 1,
+  "upstreamBuild": "2026-10-03T20:05:38+0000"
+}

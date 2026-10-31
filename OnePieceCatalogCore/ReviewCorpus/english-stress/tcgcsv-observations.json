@@ -1,0 +1,746 @@
+[
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "288236"
+    },
+    "id": "tcgplayer:288236:f90b7de8c5fe8a3dbecd9c4bbfa6494e486c9f96e90313d6808782f50d52279d",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:07+00:00",
+    "payloadSHA256": "f90b7de8c5fe8a3dbecd9c4bbfa6494e486c9f96e90313d6808782f50d52279d",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/288236/one-piece-card-game-st-01-starter-deck-1-straw-hat-crew-nami",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/288236_200w.jpg",
+      "sourceGroupLabel": "ST-01: Starter Deck 1 Straw Hat Crew",
+      "sourceProductName": "Nami",
+      "sourceVariantClass": "base_or_standard",
+      "sourceVariantLabels": ""
+    },
+    "productEvidence": [
+      "tcgplayer-group:3189"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/3189/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "416939"
+    },
+    "id": "tcgplayer:416939:6f5262d6ec37252107eccc785d089aec25c2b09a18dedc2e018d208d41179ffe",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "6f5262d6ec37252107eccc785d089aec25c2b09a18dedc2e018d208d41179ffe",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/416939/one-piece-card-game-st-01-starter-deck-1-straw-hat-crew-super-pre-release-edition-nami",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/416939_200w.jpg",
+      "sourceGroupLabel": "ST-01: Starter Deck 1 Straw Hat Crew (Super Pre-Release Edition)",
+      "sourceProductName": "Nami",
+      "sourceVariantClass": "pre_release",
+      "sourceVariantLabels": "pre_release"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17659"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17659/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "450299"
+    },
+    "id": "tcgplayer:450299:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/450299/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-promotion-pack-2022",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/450299_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Promotion Pack 2022)",
+      "sourceVariantClass": "promotion_pack",
+      "sourceVariantLabels": "promotion_pack,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "450300"
+    },
+    "id": "tcgplayer:450300:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/450300/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-super-pre-release-participant",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/450300_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Super Pre-Release) [Participant]",
+      "sourceVariantClass": "participant",
+      "sourceVariantLabels": "participant,pre_release,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "450301"
+    },
+    "id": "tcgplayer:450301:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/450301/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-super-pre-release-winner",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/450301_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Super Pre-Release) [Winner]",
+      "sourceVariantClass": "winner_champion",
+      "sourceVariantLabels": "winner_champion,pre_release,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "454664"
+    },
+    "id": "tcgplayer:454664:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:07+00:00",
+    "payloadSHA256": "04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/454664/one-piece-card-game-romance-dawn-shanks",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/454664_200w.jpg",
+      "sourceGroupLabel": "Romance Dawn",
+      "sourceProductName": "Shanks",
+      "sourceVariantClass": "base_or_standard",
+      "sourceVariantLabels": ""
+    },
+    "productEvidence": [
+      "tcgplayer-group:3188"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/3188/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "454665"
+    },
+    "id": "tcgplayer:454665:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:07+00:00",
+    "payloadSHA256": "04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/454665/one-piece-card-game-romance-dawn-shanks-parallel",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/454665_200w.jpg",
+      "sourceGroupLabel": "Romance Dawn",
+      "sourceProductName": "Shanks (Parallel)",
+      "sourceVariantClass": "alternate_art",
+      "sourceVariantLabels": "alternate_art"
+    },
+    "productEvidence": [
+      "tcgplayer-group:3188"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/3188/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "454666"
+    },
+    "id": "tcgplayer:454666:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:07+00:00",
+    "payloadSHA256": "04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/454666/one-piece-card-game-romance-dawn-shanks-parallel-manga-alternate-art",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/454666_200w.jpg",
+      "sourceGroupLabel": "Romance Dawn",
+      "sourceProductName": "Shanks (Parallel) (Manga) (Alternate Art)",
+      "sourceVariantClass": "manga",
+      "sourceVariantLabels": "manga,alternate_art"
+    },
+    "productEvidence": [
+      "tcgplayer-group:3188"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/3188/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "496999"
+    },
+    "id": "tcgplayer:496999:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/496999/one-piece-card-game-one-piece-promotion-cards-nami-tournament-pack-vol-3-participant",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/496999_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Nami (Tournament Pack Vol. 3) [Participant]",
+      "sourceVariantClass": "participant",
+      "sourceVariantLabels": "participant,tournament,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "497000"
+    },
+    "id": "tcgplayer:497000:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/497000/one-piece-card-game-one-piece-promotion-cards-nami-tournament-pack-vol-3-winner",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/497000_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Nami (Tournament Pack Vol. 3) [Winner]",
+      "sourceVariantClass": "winner_champion",
+      "sourceVariantLabels": "winner_champion,tournament,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "503023"
+    },
+    "id": "tcgplayer:503023:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/503023/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-store-championship-trophy-card",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/503023_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Store Championship Trophy Card)",
+      "sourceVariantClass": "winner_champion",
+      "sourceVariantLabels": "winner_champion,store_championship,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "504477"
+    },
+    "id": "tcgplayer:504477:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/504477/one-piece-card-game-one-piece-promotion-cards-nami-premium-card-collection-one-piece-film-red-edition",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/504477_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Nami (Premium Card Collection -ONE PIECE FILM RED Edition-)",
+      "sourceVariantClass": "premium_card_collection",
+      "sourceVariantLabels": "premium_card_collection,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "509752"
+    },
+    "id": "tcgplayer:509752:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/509752/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-alternate-art",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/509752_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Alternate Art)",
+      "sourceVariantClass": "alternate_art",
+      "sourceVariantLabels": "alternate_art,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "514047"
+    },
+    "id": "tcgplayer:514047:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/514047/one-piece-card-game-one-piece-promotion-cards-shanks-championship-2023-serial-number",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/514047_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Shanks (Championship 2023) [Serial Number]",
+      "sourceVariantClass": "serial_numbered",
+      "sourceVariantLabels": "serial_numbered,winner_champion,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "523785"
+    },
+    "id": "tcgplayer:523785:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/523785/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-gift-collection-2023",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/523785_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Gift Collection 2023)",
+      "sourceVariantClass": "promotion",
+      "sourceVariantLabels": "promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "525324"
+    },
+    "id": "tcgplayer:525324:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/525324/one-piece-card-game-one-piece-promotion-cards-nami-cs-2023-celebration-pack",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/525324_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Nami (CS 2023 Celebration Pack)",
+      "sourceVariantClass": "celebration",
+      "sourceVariantLabels": "celebration,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "541664"
+    },
+    "id": "tcgplayer:541664:d42c17d47dba15521f681bc1880401dd2207c56b2e4dc63fdd235f1df2a3bab4",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:13+00:00",
+    "payloadSHA256": "d42c17d47dba15521f681bc1880401dd2207c56b2e4dc63fdd235f1df2a3bab4",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/541664/one-piece-card-game-wings-of-the-captain-nami-tr",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/541664_200w.jpg",
+      "sourceGroupLabel": "Wings of the Captain",
+      "sourceProductName": "Nami (TR)",
+      "sourceVariantClass": "treasure_rare",
+      "sourceVariantLabels": "treasure_rare"
+    },
+    "productEvidence": [
+      "tcgplayer-group:23272"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/23272/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "544770"
+    },
+    "id": "tcgplayer:544770:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/544770/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-001-offline-regional-2024-vol-2-participant",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/544770_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (001) (Offline Regional 2024 Vol. 2) [Participant]",
+      "sourceVariantClass": "participant",
+      "sourceVariantLabels": "participant,regional,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "544771"
+    },
+    "id": "tcgplayer:544771:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/544771/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-001-offline-regional-2024-vol-2-finalist",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/544771_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (001) (Offline Regional 2024 Vol. 2) [Finalist]",
+      "sourceVariantClass": "finalist_top",
+      "sourceVariantLabels": "finalist_top,regional,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "544772"
+    },
+    "id": "tcgplayer:544772:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/544772/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-001-offline-regional-2024-vol-2-winner",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/544772_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (001) (Offline Regional 2024 Vol. 2) [Winner]",
+      "sourceVariantClass": "winner_champion",
+      "sourceVariantLabels": "winner_champion,regional,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "544773"
+    },
+    "id": "tcgplayer:544773:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/544773/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-001-online-regional-2024-vol-2-participant",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/544773_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (001) (Online Regional 2024 Vol. 2) [Participant]",
+      "sourceVariantClass": "participant",
+      "sourceVariantLabels": "participant,regional,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "544774"
+    },
+    "id": "tcgplayer:544774:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/544774/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-001-online-regional-2024-vol-2-finalist",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/544774_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (001) (Online Regional 2024 Vol. 2) [Finalist]",
+      "sourceVariantClass": "finalist_top",
+      "sourceVariantLabels": "finalist_top,regional,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "544775"
+    },
+    "id": "tcgplayer:544775:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/544775/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-001-online-regional-2024-vol-2-winner",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/544775_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (001) (Online Regional 2024 Vol. 2) [Winner]",
+      "sourceVariantClass": "winner_champion",
+      "sourceVariantLabels": "winner_champion,regional,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "564250"
+    },
+    "id": "tcgplayer:564250:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/564250/one-piece-card-game-one-piece-promotion-cards-monkeydluffy-premium-card-collection-bandai-card-games-fest-23-24-edition",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/564250_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Monkey.D.Luffy (Premium Card Collection -BANDAI CARD GAMES Fest. 23-24 Edition-)",
+      "sourceVariantClass": "premium_card_collection",
+      "sourceVariantLabels": "premium_card_collection,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "586194"
+    },
+    "id": "tcgplayer:586194:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:17+00:00",
+    "payloadSHA256": "f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/586194/one-piece-card-game-premium-booster-the-best-shanks-op01-120-alternate-art",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/586194_200w.jpg",
+      "sourceGroupLabel": "Premium Booster -The Best-",
+      "sourceProductName": "Shanks (OP01-120) (Alternate Art)",
+      "sourceVariantClass": "alternate_art",
+      "sourceVariantLabels": "alternate_art"
+    },
+    "productEvidence": [
+      "tcgplayer-group:23496"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/23496/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "587708"
+    },
+    "id": "tcgplayer:587708:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:17+00:00",
+    "payloadSHA256": "f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/587708/one-piece-card-game-premium-booster-the-best-shanks-manga",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/587708_200w.jpg",
+      "sourceGroupLabel": "Premium Booster -The Best-",
+      "sourceProductName": "Shanks (Manga)",
+      "sourceVariantClass": "manga",
+      "sourceVariantLabels": "manga"
+    },
+    "productEvidence": [
+      "tcgplayer-group:23496"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/23496/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "594316"
+    },
+    "id": "tcgplayer:594316:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:17+00:00",
+    "payloadSHA256": "f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/594316/one-piece-card-game-premium-booster-the-best-shanks-op01-120-reprint",
+      "number": "OP01-120",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/594316_200w.jpg",
+      "sourceGroupLabel": "Premium Booster -The Best-",
+      "sourceProductName": "Shanks (OP01-120) (Reprint)",
+      "sourceVariantClass": "reprint",
+      "sourceVariantLabels": "reprint"
+    },
+    "productEvidence": [
+      "tcgplayer-group:23496"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/23496/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "599781"
+    },
+    "id": "tcgplayer:599781:3175ead63e809eed211dc05a2ccde6ac3af149cf7d121b8f78399c336aaf003a",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:17+00:00",
+    "payloadSHA256": "3175ead63e809eed211dc05a2ccde6ac3af149cf7d121b8f78399c336aaf003a",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/599781/one-piece-card-game-revision-pack-cards-nami",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/599781_200w.jpg",
+      "sourceGroupLabel": "Revision Pack Cards",
+      "sourceProductName": "Nami",
+      "sourceVariantClass": "revision",
+      "sourceVariantLabels": "revision"
+    },
+    "productEvidence": [
+      "tcgplayer-group:23890"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/23890/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "602790"
+    },
+    "id": "tcgplayer:602790:5b48beb8107daf772a8db52f4a1f1446d86b500e3d28d8c39c7c1a3e9b7234a6",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:17+00:00",
+    "payloadSHA256": "5b48beb8107daf772a8db52f4a1f1446d86b500e3d28d8c39c7c1a3e9b7234a6",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/602790/one-piece-card-game-one-piece-demo-deck-cards-monkeydluffy-001",
+      "number": "P-001",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/602790_200w.jpg",
+      "sourceGroupLabel": "One Piece Demo Deck Cards",
+      "sourceProductName": "Monkey.D.Luffy (001)",
+      "sourceVariantClass": "demo_deck",
+      "sourceVariantLabels": "demo_deck"
+    },
+    "productEvidence": [
+      "tcgplayer-group:23907"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/23907/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "610801"
+    },
+    "id": "tcgplayer:610801:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/610801/one-piece-card-game-one-piece-promotion-cards-nami-2025-new-year-event",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/610801_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Nami (2025 New Year Event)",
+      "sourceVariantClass": "promotion",
+      "sourceVariantLabels": "promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  },
+  {
+    "alias": {
+      "provider": "tcgplayer",
+      "sourceID": "610802"
+    },
+    "id": "tcgplayer:610802:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "kind": "market",
+    "language": "unknown",
+    "observedAt": "2026-10-04T15:59:06+00:00",
+    "payloadSHA256": "7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+    "printedEvidence": {
+      "marketProductURL": "https://www.tcgplayer.com/product/610802/one-piece-card-game-one-piece-promotion-cards-nami-2025-new-year-event-winner",
+      "number": "ST01-007",
+      "referenceImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/610802_200w.jpg",
+      "sourceGroupLabel": "One Piece Promotion Cards",
+      "sourceProductName": "Nami (2025 New Year Event Winner)",
+      "sourceVariantClass": "winner_champion",
+      "sourceVariantLabels": "winner_champion,promotion"
+    },
+    "productEvidence": [
+      "tcgplayer-group:17675"
+    ],
+    "sourceURL": "https://tcgcsv.com/tcgplayer/68/17675/products"
+  }
+]

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "purpose": "internal-source-review",
+  "physicalCoverageComplete": false,
+  "captures": [
+    {
+      "id": "bandai-op01",
+      "provider": "bandai",
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+      "numbers": [
+        "OP01-120"
+      ],
+      "rawFile": "bandai-op01.html",
+      "payloadSHA256": "ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+      "observedAt": "2026-10-04T12:53:44Z",
+      "byteCount": 412512
+    },
+    {
+      "id": "bandai-st01",
+      "provider": "bandai",
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569001",
+      "numbers": [
+        "ST01-007"
+      ],
+      "rawFile": "bandai-st01.html",
+      "payloadSHA256": "c6d6d527c9f34dde7527433232517c709e4f83b08f6bf11e92ed96ba1625f0e5",
+      "observedAt": "2026-10-04T12:55:32Z",
+      "byteCount": 92433
+    },
+    {
+      "id": "bandai-promos",
+      "provider": "bandai",
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569901",
+      "numbers": [
+        "P-001"
+      ],
+      "rawFile": "bandai-promos.html",
+      "payloadSHA256": "b3422d9fb59bf5facc69e79c063775a12e19d7ec5a59bf075d93fdd36ad86d37",
+      "observedAt": "2026-10-04T12:55:35Z",
+      "byteCount": 914529
+    },
+    {
+      "id": "limitless-op01-120",
+      "provider": "limitless",
+      "sourceURL": "https://onepiece.limitlesstcg.com/cards/en/OP01-120",
+      "numbers": [
+        "OP01-120"
+      ],
+      "rawFile": "limitless-op01-120.html",
+      "payloadSHA256": "b3883a395351ad9636cd149fca6f3195de0c853caf43ea8c430ff40dbd0af3f0",
+      "observedAt": "2026-10-04T12:53:44Z",
+      "byteCount": 23846
+    },
+    {
+      "id": "limitless-st01-007",
+      "provider": "limitless",
+      "sourceURL": "https://onepiece.limitlesstcg.com/cards/en/ST01-007",
+      "numbers": [
+        "ST01-007"
+      ],
+      "rawFile": "limitless-st01-007.html",
+      "payloadSHA256": "05b08718c5bd81ce82b2174a0e54b9427288187239252e6baca11b98578234a8",
+      "observedAt": "2026-10-04T12:53:43Z",
+      "byteCount": 26770
+    },
+    {
+      "id": "limitless-p-001",
+      "provider": "limitless",
+      "sourceURL": "https://onepiece.limitlesstcg.com/cards/en/P-001",
+      "numbers": [
+        "P-001"
+      ],
+      "rawFile": "limitless-p-001.html",
+      "payloadSHA256": "3636b29ae81f903f438be96281ea5b7e683e100a659cf56da100439f58dbe02f",
+      "observedAt": "2026-10-04T12:53:45Z",
+      "byteCount": 23776
+    }
+  ]
+}

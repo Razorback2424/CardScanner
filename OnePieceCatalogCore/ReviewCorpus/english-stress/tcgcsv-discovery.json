@@ -1,0 +1,35 @@
+{
+  "all_declared_group_inventories_complete": false,
+  "catalog_row_count": 7408,
+  "don_rows": 242,
+  "excluded_non_card_products": 276,
+  "generated_at": "2026-10-04T15:59:04+00:00",
+  "group_count": 87,
+  "imagesDownloaded": false,
+  "incomplete_group_inventories": [
+    24834
+  ],
+  "kitSHA256": "60d795768f70e7ecdc17460d8f4ad2d2cdec39c21d9081057d922152f02e54db",
+  "numbered_card_rows": 7009,
+  "originalBuilderSHA256": "1d90a1a4f11202b12b69f8e76f1cc7f701f0db341a39f5a4e98b5ca0b1d8c058",
+  "outputSHA256": {
+    "one_piece_catalog.csv": "e8aa414be58f28bca40fe99ba83c3b843bc961c133c3a209aed95021b8369205",
+    "one_piece_catalog.json": "70af09718d750821f0207446f8632e7024d2aa765ed39edb4d66f4fdf3a9cfa2",
+    "one_piece_catalog_audit.json": "de7b1df890504142ac9d14003aee2245c51e8426dc940eecbe08992ee66549d1",
+    "one_piece_groups.csv": "98d91ae25090d4022141572ffbedf61db2a17836ba490bfd7528292c62dc042c"
+  },
+  "physicalCoverageComplete": false,
+  "pricesRequested": false,
+  "purpose": "source-discovery-review-only",
+  "retainedResponseCount": 90,
+  "schemaVersion": 1,
+  "sourceCaptureManifestSHA256": "89494e9e68f7e34c58bbac5d81b99d48e6bb8ebf95af9cddd088ebc4cd93430e",
+  "sourceURLs": [
+    "https://tcgcsv.com/docs",
+    "https://tcgcsv.com/faq",
+    "https://tcgcsv.com/tcgplayer/68/groups"
+  ],
+  "unique_printed_card_numbers": 2877,
+  "unnumbered_card_candidates": 151,
+  "upstreamBuild": "2026-10-03T20:05:38+0000"
+}

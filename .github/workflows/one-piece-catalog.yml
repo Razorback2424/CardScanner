@@ -1,0 +1,122 @@
+name: One Piece catalog
+
+on:
+  pull_request:
+    paths:
+      - "OnePieceCatalogCore/**"
+      - "Config/OnePieceCatalogProduction.xcconfig"
+      - "scripts/normalize_one_piece_sources.py"
+      - "scripts/build_one_piece_catalog.py"
+      - "scripts/one_piece_tcgcsv_capture.py"
+      - "scripts/reconcile_one_piece_tcgcsv_sources.py"
+      - "scripts/reconcile_one_piece_launch_products.py"
+      - "scripts/review_one_piece_base_market_mappings.py"
+      - "scripts/tests/test_one_piece_base_market_mappings.py"
+      - "scripts/capture_one_piece_products.py"
+      - "scripts/discover_one_piece_products.py"
+      - "scripts/tests/test_one_piece_product_discovery.py"
+      - "scripts/tests/test_one_piece_product_pipeline.py"
+      - "scripts/tests/test_one_piece_tcgcsv_catalog.py"
+      - "scripts/tests/test_normalize_one_piece_sources.py"
+      - ".github/workflows/one-piece-catalog.yml"
+  workflow_dispatch:
+    inputs:
+      sign:
+        description: "Prepare a signed artifact (does not deploy)"
+        type: boolean
+        default: false
+      candidate:
+        description: "Reviewed canonical payload path in this repository"
+        type: string
+      reviewed_sha256:
+        description: "SHA-256 of the exact reviewed payload bytes"
+        type: string
+      trusted_keys:
+        description: "Repository JSON map of dedicated key IDs to base64 public keys"
+        type: string
+      previous:
+        description: "Previous verified envelope path; required after bootstrap"
+        type: string
+      bootstrap:
+        description: "Explicit first publication at revision one"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test bounded source normalization
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_normalize_one_piece_sources.py -v
+      - name: Test retained TCGCSV capture and catalog builder
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_tcgcsv_catalog.py -v
+      - name: Test reviewed product reconciliation
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_product_pipeline.py -v
+      - name: Test complete ordinary-product discovery
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_product_discovery.py -v
+      - name: Test exact base market mapping review
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_base_market_mappings.py -v
+      - name: Test catalog core and publisher CLI
+        run: swift test --package-path OnePieceCatalogCore
+
+  sign-reviewed-artifact:
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && inputs.sign == true && github.ref == 'refs/heads/main'
+    runs-on: macos-14
+    environment: one-piece-catalog-signing
+    env:
+      KEY_ID: ${{ vars.ONE_PIECE_CATALOG_KEY_ID }}
+      CANDIDATE: ${{ inputs.candidate }}
+      REVIEWED_SHA256: ${{ inputs.reviewed_sha256 }}
+      TRUSTED_KEYS: ${{ inputs.trusted_keys }}
+      PREVIOUS: ${{ inputs.previous }}
+      BOOTSTRAP: ${{ inputs.bootstrap }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare and independently verify the reviewed envelope
+        env:
+          ONE_PIECE_CATALOG_SIGNING_KEY: ${{ secrets.ONE_PIECE_CATALOG_SIGNING_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$KEY_ID"
+          python3 - <<'PY'
+          import os, pathlib
+          root = pathlib.Path.cwd().resolve()
+          for name in ("CANDIDATE", "TRUSTED_KEYS", "PREVIOUS"):
+              value = os.environ.get(name, "")
+              if value:
+                  path = pathlib.Path(value).resolve(strict=True)
+                  path.relative_to(root)
+                  if not path.is_file():
+                      raise ValueError("Publication inputs must be repository files")
+          PY
+          artifact_root="$RUNNER_TEMP/one-piece-signed-artifact"
+          mkdir -p "$artifact_root"
+          baseline=()
+          if [ "$BOOTSTRAP" = true ]; then
+            test -z "$PREVIOUS"
+            baseline+=(--bootstrap-registry yes)
+          else
+            test -n "$PREVIOUS"
+            baseline+=(--previous "$PREVIOUS")
+          fi
+          swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher sign \
+            --input "$CANDIDATE" --trusted-keys "$TRUSTED_KEYS" --key-id "$KEY_ID" \
+            --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
+            --output "$artifact_root/release-envelope.json" --manifest "$artifact_root/manifest.json"
+          swift run --skip-build --package-path OnePieceCatalogCore one-piece-catalog-publisher verify \
+            --input "$artifact_root/release-envelope.json" --trusted-keys "$TRUSTED_KEYS" \
+            --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
+            --manifest "$artifact_root/verified-manifest.json"
+          cmp "$artifact_root/manifest.json" "$artifact_root/verified-manifest.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: one-piece-signed-artifact-${{ github.run_id }}
+          path: ${{ runner.temp }}/one-piece-signed-artifact/
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,5 @@
+{
+  "description": "Synthetic contract cases. These labels and counts are not production source evidence.",
+  "numbers": ["OP01-120", "ST01-007", "P-001", "ST01-012", "OP05-119", "OP01-016", "OP01-017", "P-106", "ST32-004", "OP99-001", "EB99-001", "PRB99-001", "ST99-001"],
+  "distinctions": ["base", "alternative artwork", "identical-art reprint", "stamped event", "serialized prize treatment"]
+}

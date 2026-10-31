@@ -1,0 +1,770 @@
+[
+  {
+    "id": "bandai:filmred:OP01-005_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-005"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-005",
+      "name": "Uta",
+      "sourceArtworkAlias": "OP01-005_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-005_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-005"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-005_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:01Z",
+    "language": "en",
+    "payloadSHA256": "1d69df014e6a652759542e9292f94a4ffa5c9738188194739a1fcde18f63056e",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-005",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "1d69df014e6a652759542e9292f94a4ffa5c9738188194739a1fcde18f63056e"
+  },
+  {
+    "id": "bandai:filmred:OP01-005_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-005"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-005",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-014_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-014"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-014",
+      "name": "Jinbe",
+      "sourceArtworkAlias": "OP01-014_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-014_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-014"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-014_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:03Z",
+    "language": "en",
+    "payloadSHA256": "10474914277704f9ca298cdafe4d7956745cddc22066e28ba87f1b57809b6821",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-014",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "10474914277704f9ca298cdafe4d7956745cddc22066e28ba87f1b57809b6821"
+  },
+  {
+    "id": "bandai:filmred:OP01-014_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-014"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-014",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-017_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-017"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-017",
+      "name": "Nico Robin",
+      "sourceArtworkAlias": "OP01-017_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-017_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-017"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-017_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:04Z",
+    "language": "en",
+    "payloadSHA256": "2f095ef73b078607119d555f3f036f37ea6cd942f192bcb3cda84b111a35c0df",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-017",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "2f095ef73b078607119d555f3f036f37ea6cd942f192bcb3cda84b111a35c0df"
+  },
+  {
+    "id": "bandai:filmred:OP01-017_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-017"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-017",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-021_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-021"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-021",
+      "name": "Franky",
+      "sourceArtworkAlias": "OP01-021_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:OP01-021_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-021"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-021_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:05Z",
+    "language": "en",
+    "payloadSHA256": "49dbcfa453ac0ef21807b979d4fa7ad3bcb7ff02e0519bf44cc22731e6f4b71c",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-021",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "49dbcfa453ac0ef21807b979d4fa7ad3bcb7ff02e0519bf44cc22731e6f4b71c"
+  },
+  {
+    "id": "bandai:filmred:OP01-021_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:OP01-021"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "OP01-021",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:P-016_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:P-016"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "P-016",
+      "name": "Shanks",
+      "sourceArtworkAlias": "P-016_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:P-016_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:P-016"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-016_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:06Z",
+    "language": "en",
+    "payloadSHA256": "2e953d7ce599d137986b5511c7973bc879a8383fcd1fb2ecaf9b140ffd892e2b",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "P-016",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "2e953d7ce599d137986b5511c7973bc879a8383fcd1fb2ecaf9b140ffd892e2b"
+  },
+  {
+    "id": "bandai:filmred:P-016_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:P-016"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "P-016",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:P-022_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:P-022"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "P-022",
+      "name": "Monkey.D.Luffy",
+      "sourceArtworkAlias": "P-022_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:P-022_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:P-022"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-022_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:08Z",
+    "language": "en",
+    "payloadSHA256": "808c3578f51dc0b2f4d599128972d0f614066c16e57274e7de103906a31c86df",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "P-022",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "808c3578f51dc0b2f4d599128972d0f614066c16e57274e7de103906a31c86df"
+  },
+  {
+    "id": "bandai:filmred:P-022_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:P-022"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "P-022",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-002_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-002"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-002",
+      "name": "Usopp",
+      "sourceArtworkAlias": "ST01-002_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-002_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-002"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-002_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:09Z",
+    "language": "en",
+    "payloadSHA256": "f12dd9a88e31906466d3bf82ab78c3aad7c8bfee15b40c6e067452ae83dba181",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-002",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "f12dd9a88e31906466d3bf82ab78c3aad7c8bfee15b40c6e067452ae83dba181"
+  },
+  {
+    "id": "bandai:filmred:ST01-002_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-002"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-002",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-004_p2:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-004"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-004",
+      "name": "Sanji",
+      "sourceArtworkAlias": "ST01-004_p2",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-004_p2:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-004"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-004_p2.png?260929",
+    "observedAt": "2026-10-04T18:10:10Z",
+    "language": "en",
+    "payloadSHA256": "1b0ea5303608562b9ed562e792765825d40aa12729c52aeb24ffbcd29b020562",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-004",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "1b0ea5303608562b9ed562e792765825d40aa12729c52aeb24ffbcd29b020562"
+  },
+  {
+    "id": "bandai:filmred:ST01-004_p2:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-004"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-004",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-006_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-006"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-006",
+      "name": "Tony Tony.Chopper",
+      "sourceArtworkAlias": "ST01-006_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-006_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-006"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-006_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:11Z",
+    "language": "en",
+    "payloadSHA256": "70a83424fc7ac5f1df2ce3273be215a01a04e25750f07e4c40692d288a0ebf43",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-006",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "70a83424fc7ac5f1df2ce3273be215a01a04e25750f07e4c40692d288a0ebf43"
+  },
+  {
+    "id": "bandai:filmred:ST01-006_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-006"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-006",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-007_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-007"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-007",
+      "name": "Nami",
+      "sourceArtworkAlias": "ST01-007_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-007_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-007"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-007_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:12Z",
+    "language": "en",
+    "payloadSHA256": "3bfd1c590abc9e3fad25f51f464a2ad66e878862f193675e824355c902c26565",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-007",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "3bfd1c590abc9e3fad25f51f464a2ad66e878862f193675e824355c902c26565"
+  },
+  {
+    "id": "bandai:filmred:ST01-007_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-007"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-007",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-011_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-011"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-011",
+      "name": "Brook",
+      "sourceArtworkAlias": "ST01-011_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-011_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-011"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-011_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:14Z",
+    "language": "en",
+    "payloadSHA256": "f8a060abd022639b6ca97dbb014c003baf047a0a2380fca167c1448f1d94a064",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-011",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "f8a060abd022639b6ca97dbb014c003baf047a0a2380fca167c1448f1d94a064"
+  },
+  {
+    "id": "bandai:filmred:ST01-011_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-011"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-011",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-013_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-013"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "observedAt": "2026-10-04T18:09:06Z",
+    "language": "en",
+    "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-013",
+      "name": "Roronoa Zoro",
+      "sourceArtworkAlias": "ST01-013_p1",
+      "sourceLabel": "Premium Card Collection -FILM RED Edition-",
+      "sourceRole": "manufacturer-product-card-list"
+    }
+  },
+  {
+    "id": "bandai:filmred:ST01-013_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-013"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-013_p1.png?260929",
+    "observedAt": "2026-10-04T18:10:15Z",
+    "language": "en",
+    "payloadSHA256": "11fc58c356c4590ac6bb8f87a06232a0148308f36bd0b10f039f55ae3a7aabcb",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-013",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "11fc58c356c4590ac6bb8f87a06232a0148308f36bd0b10f039f55ae3a7aabcb"
+  },
+  {
+    "id": "bandai:filmred:ST01-013_p1:spec",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "product:premium-card-collection-film-red-2023:ST01-013"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+    "observedAt": "2026-10-04T18:07:32Z",
+    "language": "en",
+    "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+    "productEvidence": [
+      "product:premium-card-collection-film-red-2023"
+    ],
+    "printedEvidence": {
+      "number": "ST01-013",
+      "treatment": "FILM RED alternate artwork",
+      "sourceFinishLabel": "Silver Foil + Texture Foil",
+      "finishVariantID": "foil",
+      "sourceRole": "manufacturer-retail-product-specification"
+    }
+  }
+]

@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-04",
+  "purpose": "internal-publisher-review-not-production-assets",
+  "productID": "product:premium-card-collection-film-red-2023",
+  "decision": "Twelve manufacturer-listed English retail alternate-art printings verified from official product specification and product-scoped card list. UUIDs allocated once independently of vendor IDs.",
+  "deliveryMonth": "2023-11",
+  "finishDecision": "All twelve product cards explicitly Silver Foil + Texture Foil; foil is the supported finish, texture an inherent treatment.",
+  "captureDirectory": "OnePieceSourceReview/2026-10-04/retail-review",
+  "captures": [
+    {
+      "rawFile": "st01-product.html",
+      "sourceURL": "https://en.onepiece-cardgame.com/products/decks/st01-04.php",
+      "payloadSHA256": "6f9d264ed14666d3eced0854845718a2958d76155ce5df8331e61d89432c7e3b",
+      "byteCount": 52884,
+      "observedAt": "2026-10-04T18:07:32Z"
+    },
+    {
+      "rawFile": "filmred-product.html",
+      "sourceURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_filmred.php",
+      "payloadSHA256": "8a41db8c9d027f8c9381c35443d00f5a233b969eed1d577c2b156da349a4d75d",
+      "byteCount": 42555,
+      "observedAt": "2026-10-04T18:07:32Z"
+    },
+    {
+      "rawFile": "filmred-presentation.jpg",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/products/other/cardcollection_filmred/mv_01.jpg",
+      "payloadSHA256": "711810ea9e6bc9e745acf7bc51c4d01da45ee31822c5d35034cf6b040e989a9b",
+      "byteCount": 361315,
+      "observedAt": "2026-10-04T18:07:33Z"
+    },
+    {
+      "rawFile": "other-products.html",
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+      "payloadSHA256": "5aea929445fb0d9b3cfb4b6791e1b0476d027ed15be66e5fb9fdbb24944e8979",
+      "byteCount": 463476,
+      "observedAt": "2026-10-04T18:09:06Z"
+    },
+    {
+      "rawFile": "OP01-005_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-005_p1.png?260929",
+      "payloadSHA256": "1d69df014e6a652759542e9292f94a4ffa5c9738188194739a1fcde18f63056e",
+      "byteCount": 251962,
+      "observedAt": "2026-10-04T18:10:01Z"
+    },
+    {
+      "rawFile": "OP01-014_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-014_p1.png?260929",
+      "payloadSHA256": "10474914277704f9ca298cdafe4d7956745cddc22066e28ba87f1b57809b6821",
+      "byteCount": 266421,
+      "observedAt": "2026-10-04T18:10:03Z"
+    },
+    {
+      "rawFile": "OP01-017_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-017_p1.png?260929",
+      "payloadSHA256": "2f095ef73b078607119d555f3f036f37ea6cd942f192bcb3cda84b111a35c0df",
+      "byteCount": 277463,
+      "observedAt": "2026-10-04T18:10:04Z"
+    },
+    {
+      "rawFile": "OP01-021_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-021_p1.png?260929",
+      "payloadSHA256": "49dbcfa453ac0ef21807b979d4fa7ad3bcb7ff02e0519bf44cc22731e6f4b71c",
+      "byteCount": 291777,
+      "observedAt": "2026-10-04T18:10:05Z"
+    },
+    {
+      "rawFile": "P-016_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-016_p1.png?260929",
+      "payloadSHA256": "2e953d7ce599d137986b5511c7973bc879a8383fcd1fb2ecaf9b140ffd892e2b",
+      "byteCount": 234997,
+      "observedAt": "2026-10-04T18:10:06Z"
+    },
+    {
+      "rawFile": "P-022_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-022_p1.png?260929",
+      "payloadSHA256": "808c3578f51dc0b2f4d599128972d0f614066c16e57274e7de103906a31c86df",
+      "byteCount": 290532,
+      "observedAt": "2026-10-04T18:10:08Z"
+    },
+    {
+      "rawFile": "ST01-002_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-002_p1.png?260929",
+      "payloadSHA256": "f12dd9a88e31906466d3bf82ab78c3aad7c8bfee15b40c6e067452ae83dba181",
+      "byteCount": 264151,
+      "observedAt": "2026-10-04T18:10:09Z"
+    },
+    {
+      "rawFile": "ST01-004_p2.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-004_p2.png?260929",
+      "payloadSHA256": "1b0ea5303608562b9ed562e792765825d40aa12729c52aeb24ffbcd29b020562",
+      "byteCount": 267481,
+      "observedAt": "2026-10-04T18:10:10Z"
+    },
+    {
+      "rawFile": "ST01-006_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-006_p1.png?260929",
+      "payloadSHA256": "70a83424fc7ac5f1df2ce3273be215a01a04e25750f07e4c40692d288a0ebf43",
+      "byteCount": 288188,
+      "observedAt": "2026-10-04T18:10:11Z"
+    },
+    {
+      "rawFile": "ST01-007_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-007_p1.png?260929",
+      "payloadSHA256": "3bfd1c590abc9e3fad25f51f464a2ad66e878862f193675e824355c902c26565",
+      "byteCount": 293650,
+      "observedAt": "2026-10-04T18:10:12Z"
+    },
+    {
+      "rawFile": "ST01-011_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-011_p1.png?260929",
+      "payloadSHA256": "f8a060abd022639b6ca97dbb014c003baf047a0a2380fca167c1448f1d94a064",
+      "byteCount": 284961,
+      "observedAt": "2026-10-04T18:10:14Z"
+    },
+    {
+      "rawFile": "ST01-013_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-013_p1.png?260929",
+      "payloadSHA256": "11fc58c356c4590ac6bb8f87a06232a0148308f36bd0b10f039f55ae3a7aabcb",
+      "byteCount": 287627,
+      "observedAt": "2026-10-04T18:10:15Z"
+    }
+  ],
+  "printings": [
+    {
+      "printedNumber": "OP01-005",
+      "printingID": "dda224b3-c4e7-496e-ba88-3bfbb23a98d9",
+      "artworkID": "a4e1c24f-9791-4975-881d-2b64a974dead",
+      "manufacturerArtworkAlias": "OP01-005_p1"
+    },
+    {
+      "printedNumber": "OP01-014",
+      "printingID": "4b253e74-b443-495e-a192-0a5c2733175f",
+      "artworkID": "ee0070fa-0779-4aec-8247-eee5e13b9cf4",
+      "manufacturerArtworkAlias": "OP01-014_p1"
+    },
+    {
+      "printedNumber": "OP01-017",
+      "printingID": "2aaff5b0-3bb0-4c22-a9e9-79fd760f7d73",
+      "artworkID": "f86e85b0-fe10-48be-ade7-948a62d534a8",
+      "manufacturerArtworkAlias": "OP01-017_p1"
+    },
+    {
+      "printedNumber": "OP01-021",
+      "printingID": "1da3b22e-a0e6-402d-a2b6-df8fa5c1d0e8",
+      "artworkID": "03931c83-8720-4946-85c1-cdc4bc9f7b02",
+      "manufacturerArtworkAlias": "OP01-021_p1"
+    },
+    {
+      "printedNumber": "P-016",
+      "printingID": "695e615b-a3a9-4acd-b65a-808af6b1518b",
+      "artworkID": "2c628bde-5cf3-45ff-a800-39ea0a496d8b",
+      "manufacturerArtworkAlias": "P-016_p1"
+    },
+    {
+      "printedNumber": "P-022",
+      "printingID": "c47ab979-588f-467e-9557-55599d162d43",
+      "artworkID": "5c843127-b665-42a2-baa5-d0fdf7e4f027",
+      "manufacturerArtworkAlias": "P-022_p1"
+    },
+    {
+      "printedNumber": "ST01-002",
+      "printingID": "8197473c-fc38-4991-ad68-8e0bfc134795",
+      "artworkID": "13a80dc6-a38c-4fbd-bce5-6ed01f270a7f",
+      "manufacturerArtworkAlias": "ST01-002_p1"
+    },
+    {
+      "printedNumber": "ST01-004",
+      "printingID": "aee23c14-9a79-474d-bfd1-d395e24fdeb2",
+      "artworkID": "a310e9cb-7cd3-4de4-b553-daedd231c33c",
+      "manufacturerArtworkAlias": "ST01-004_p2"
+    },
+    {
+      "printedNumber": "ST01-006",
+      "printingID": "3c2ff8c8-49d5-417a-b710-a3c727200c9b",
+      "artworkID": "ec9b87da-ea85-4fd5-b36d-64e7fbf364d9",
+      "manufacturerArtworkAlias": "ST01-006_p1"
+    },
+    {
+      "printedNumber": "ST01-007",
+      "printingID": "6a0527fd-1a7a-448c-a55b-53deba7bb428",
+      "artworkID": "ad9580cd-7ae3-4376-bb98-3ab0b284827e",
+      "manufacturerArtworkAlias": "ST01-007_p1"
+    },
+    {
+      "printedNumber": "ST01-011",
+      "printingID": "4dcf1508-b4c8-451d-8352-59c0b2127136",
+      "artworkID": "7fb44557-39a4-470e-908c-d89fb4169b55",
+      "manufacturerArtworkAlias": "ST01-011_p1"
+    },
+    {
+      "printedNumber": "ST01-013",
+      "printingID": "6df49989-92c3-45fa-b982-93ee5b195b9d",
+      "artworkID": "4ed45d59-3c94-416f-8293-a46da1c0a652",
+      "manufacturerArtworkAlias": "ST01-013_p1"
+    }
+  ],
+  "limitations": [
+    "Original ST01 starter Nami finish is not established; no normal finish inferred.",
+    "Watermarked current renders do not prove original physical footer, stamp absence or geographic sub-printing.",
+    "Artwork aliases remain evidence fields; only product-scoped aliases enter ownership registry.",
+    "No market mapping or image redistribution permission established.",
+    "Canonical printing coverage incomplete; explicit choice remains required."
+  ],
+  "publisherCandidates": [
+    {"revision":6,"rawFile":"review-candidate-revision-6.json","sha256":"6f20e58d8981c13fd4c48fde10cc7023ed9664d0b5143aec09626ad70cad7135","changeClass":"protectedReview"},
+    {"revision":7,"rawFile":"review-candidate-revision-7.json","sha256":"a6fa364f6af5e0da25fa12c65dd3cfed35a54e42e3792b0e9c6d7ab4600e1989","changeClass":"none"}
+  ],
+  "physicalCoverageComplete": false,
+  "exactMarketMappingsApproved": false,
+  "productionAssetRightsEstablished": false
+}
