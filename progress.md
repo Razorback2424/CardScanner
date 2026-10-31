@@ -1,3 +1,37 @@
+# 2026-10-31 — Refinement follow-up verification
+
+On `refinement/review-followup-2026-10-31` from `ade96f1`, Debug, Release and
+ReleaseLocal simulator builds pass; Release omits the owner One Piece catalog.
+The initial second S6 gate run failed a live-network-dependent lifecycle test.
+Test-only `9453ea5` supplies its existing fixture override and awaits queue
+completion. Both full S6 repetitions then pass: 120 passed, one skipped each.
+The shipped catalog-alias suites pass 87/87; storage/replay has 100 passed and
+one skipped; expanded S2 has 499 passed and six skipped, with no failures.
+
+The exact pre-index 1,500 × 365 benchmark writes a scan price in 51.261084 ms,
+over the 50 ms gate; the indexed main product measures 29.578375 ms. The
+in-place simulator upgrade retains every semantic collection, price, ledger
+and Portfolio row and its store identity. Physical index creation on that
+upgraded store is not established: its two local tables still list no indexes.
+A second in-place upgrade preserves a three-point chart disk cache and displays
+the same +$10 / +100% without chart injection. Synthetic-ID price refresh
+reports prices unavailable; these checks do not establish live-provider success.
+
+`3241304` fixes catalog quotes leaking into owned history after a later refresh;
+`408e439` widens coverage for newly recorded backdated inventory events. Both
+new regressions fail against main production logic and pass after their fixes.
+Their expanded selections pass 159 with one skipped and 274 with one skipped,
+respectively, with no failures.
+Post-fix newest-close coverage reads take 0.021548084 s versus 1.021585834 s for
+the full 300 × 365 window. The final combined selection at `408e439` executes
+816 cases: **808 passed, eight skipped, zero failed**.
+The final Release rebuild also passes and still omits the owner catalog.
+
+See the [dated verification and accuracy fixes](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+for the original failure, counts, benchmark comparison, upgrade limits and the
+known cross-device coverage residual. No PR or main merge was made. Device,
+provider, CloudKit, archive and release gates remain open.
+
 # 2026-10-30 — Indexed price history and resolved catalog pricing
 
 The aged-store 1,500-instrument × 365-day scan-write benchmark exceeded the
@@ -13,8 +47,8 @@ print run match; an owned quote or withdrawal takes precedence. Collection
 snapshots follow the selected price key, portfolio replay preserves earlier
 shared quotes only until an owned quote or withdrawal, and an open additions
 breakdown refreshes prices learned during the same selected period. Regression
-coverage was added for these paths and same-period refresh; no fresh test result
-is claimed in this pass.
+coverage was added for these paths and same-period refresh. This entry's
+unverified status is superseded by the dated 2026-10-31 verification above.
 
 # 2026-10-30 — High-confidence review fixes
 

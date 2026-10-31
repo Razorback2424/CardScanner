@@ -1,12 +1,21 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-10-29
+**Audit date:** 2026-10-02; review evidence updated 2026-10-31
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-29
+## Current authority boundary — updated 2026-10-31
+
+**Refinement verification and accuracy fixes — 2026-10-31:** the
+[dated follow-up](../audits/production-refinement-master-review-2026-10-26.md#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+supersedes the master's initial S6-reverted/S7-not-started checkpoint and the
+October 30 progress entry's unverified status. It records fresh crash, pricing,
+storage and upgrade checks, exact S7 measurements, two reproduced accuracy
+defects and their fixes. Upgrade data retention is distinct from physical index
+creation, which remains unestablished on the inspected store. Existing device,
+provider, CloudKit and release gates remain open.
 
 **High-confidence production refinement — 2026-10-29, `9aeeff4`:** the
 [refinement follow-up](../audits/production-refinement-master-review-2026-10-26.md#2026-10-29-high-confidence-refinement-fixes)
