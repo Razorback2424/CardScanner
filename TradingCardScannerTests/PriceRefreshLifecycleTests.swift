@@ -536,6 +536,9 @@ final class PriceRefreshLifecycleTests: XCTestCase {
     func testRefreshArrivingDuringSuspensionQueuesWithoutWaitingForResume() async throws {
         let container = try makeContainer(withCard: true)
         let controller = PriceRefreshController()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
         let suspension = await controller.suspendPasses()
 
         let queued = await controller.refresh(Self.request, container: container)
@@ -543,9 +546,8 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertTrue(controller.isPassInFlight == false)
 
         controller.resume(suspension)
-        for _ in 0..<100 where controller.isPassInFlight {
-            try await Task.sleep(for: .milliseconds(10))
-        }
+        let completed = await controller.waitForQueuedRefreshesToFinish()
+        XCTAssertEqual(completed?.didRun, true)
         XCTAssertFalse(controller.isPassInFlight)
     }
 
