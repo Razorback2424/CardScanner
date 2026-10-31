@@ -11,6 +11,7 @@ struct UnresolvedScanDetailView: View {
     @State private var candidates: [PokemonCatalogCardIdentity] = []
     @State private var isLoadingCandidates = false
     @State private var isShowingCatalogSearch = false
+    @State private var isShowingPrintingDetails = false
     @State private var pendingCatalogChoice: UnresolvedResolutionChoice?
 
     private var canChooseCard: Bool {
@@ -42,6 +43,17 @@ struct UnresolvedScanDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             } else {
+                if !scan.printingCandidates.isEmpty {
+                    Section("Choose printing") {
+                        ForEach(scan.printingCandidates) { candidate in
+                            Button(candidate.compactChoiceLabel(among: scan.printingCandidates)) {
+                                onResolve(.printing(candidate))
+                            }
+                            .disabled(candidate.selectionEvidence(among: scan.printingCandidates) != .labels)
+                        }
+                        Button("Compare printing details") { isShowingPrintingDetails = true }
+                    }
+                }
                 if canChooseCard {
                     Section("Choose card") {
                         if isLoadingCandidates && candidates.isEmpty {
@@ -90,7 +102,7 @@ struct UnresolvedScanDetailView: View {
                             }
                         }
                     case .noConfirmedMatch:
-                        if scan.game == .magic {
+                        if scan.game == .magic || !scan.printingCandidates.isEmpty {
                             Button("Retry lookup", systemImage: "arrow.clockwise") {
                                 onResolve(.retryLookup)
                             }
@@ -113,6 +125,12 @@ struct UnresolvedScanDetailView: View {
         }
         .navigationTitle("Needs attention")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isShowingPrintingDetails) {
+            PrintingChoiceDetails(candidates: scan.printingCandidates) { selected in
+                isShowingPrintingDetails = false
+                onResolve(.printing(selected))
+            }
+        }
         .task(id: scan.id) {
             guard canChooseCard, !scan.isReadOnly else { return }
             isLoadingCandidates = true

@@ -286,16 +286,8 @@ extension PhysicalVariant {
 
     /// Which variants a Finish Lock can be set to, per game. Ordered the way the
     /// menu should read.
-    static func selectable(for game: CardGame) -> [PhysicalVariant] {
-        switch game {
-        case .pokemon:
-            return [
-                .normal, .holo, .reverse,
-                .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
-                .firstEdition
-            ]
-        case .magic: return [.nonfoil, .foil, .etched]
-        }
+    static func selectable(for game: CardGame, registry: CardGameRegistry = .standard) -> [PhysicalVariant] {
+        registry.variantPolicy(for: game)?.selectableVariants ?? []
     }
 
     /// Ordering for the one-tap control: most likely first, because the first

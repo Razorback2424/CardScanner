@@ -157,7 +157,9 @@ actor ProductPriceService {
         // outright left a large part of an imported collection permanently
         // unpriceable. It is answered only when the vendor's listing is
         // unambiguous — see `ProductFinish.Requirement.unknown`.
-        let game = ProductCatalogIdentity.game(for: subject.game, catalogID: subject.catalogID)
+        guard let game = ProductCatalogIdentity.game(for: subject.game, catalogID: subject.catalogID) else {
+            return .requestFailed
+        }
         guard let requirement = ProductFinish.requirement(
             for: variant,
             printRun: subject.pokemonPrintRun,

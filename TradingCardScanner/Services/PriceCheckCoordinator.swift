@@ -5,6 +5,7 @@ import SwiftData
 /// prevents a disabled fallback or an exhausted vendor budget from masquerading
 /// as proof that the card has no price.
 enum PriceCheckRefreshIssue: Equatable, Sendable {
+    case unsupportedGame
     /// The provider matched the product but has no listing for its exact
     /// finish. This is the only terminal absence claim about the price.
     case noExactPrice
@@ -33,6 +34,7 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
 /// The transient state of the Price Check sheet. `lastKnown` deliberately keeps
 /// its issue so a cached amount remains useful without being presented as current.
 enum PriceCheckQuoteState: Equatable, Sendable {
+    case unsupportedGame
     case checking
     case current
     case lastKnown(PriceCheckRefreshIssue)
@@ -92,6 +94,9 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceCheckRefreshOutcome {
+        guard quoteService.supportsPricing(for: card.game) else {
+            return .failed(.unsupportedGame)
+        }
         do {
             let catalogQuote = try await quoteService.refresh(
                 card: card,
@@ -102,6 +107,7 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
                PriceCheckCoordinator.isUsableUSD(catalogQuote) {
                 return .quote(catalogQuote)
             }
+            guard quoteService.allowsProviderFallback(for: card.game) else { return .quote(catalogQuote) }
             return await fallback(
                 card: card,
                 variant: variant,
@@ -111,7 +117,12 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             return .cancelled
         } catch let error as URLError where error.code == .cancelled {
             return .cancelled
+        } catch PriceQuoteError.pricingUnsupported {
+            return .failed(.unsupportedGame)
+        } catch PriceQuoteError.identityMismatch {
+            return .failed(.notMatched)
         } catch {
+            guard quoteService.allowsProviderFallback(for: card.game) else { return .failed(.providerUnavailable) }
             // JustTCG is deliberately sequential: it is consulted only after
             // TCGdex fails or cannot provide a usable USD quote.
             return await fallback(
@@ -144,6 +155,8 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             return .failed(.unsupportedFinish)
         case .failed(.unsupportedTreatment):
             return .failed(.unsupportedTreatment)
+        case .failed(.unsupportedGame):
+            return .failed(.unsupportedGame)
         case .failed(.disabled):
             return .failed(.fallbackDisabled)
         case .failed(.missingCredentials):
@@ -168,18 +181,21 @@ final class PriceCheckCoordinator {
     private let collectionPrices: PriceStore
     private let refreshProvider: PriceCheckRefreshProvider
     private let gradedResolver: ScannedGradedResolving
+    private let quoteService: PriceQuoteService
 
     init(
         context: ModelContext,
         refreshProvider: PriceCheckRefreshProvider? = nil,
+        quoteService: PriceQuoteService = PriceQuoteService(),
         gradedResolver: ScannedGradedResolving = ScannedGradedResolver()
     ) {
         cache = QuoteCache(context: context)
         collectionPrices = PriceStore(context: context)
         let fallbackResolver = PriceFallbackQuoteResolver(context: context)
         self.refreshProvider = refreshProvider
-            ?? LivePriceCheckRefreshProvider(fallbackResolver: fallbackResolver)
+            ?? LivePriceCheckRefreshProvider(quoteService: quoteService, fallbackResolver: fallbackResolver)
         self.gradedResolver = gradedResolver
+        self.quoteService = quoteService
     }
 
     func present(_ resolvedScan: ResolvedScan) -> PriceCheckResult {
@@ -334,6 +350,9 @@ final class PriceCheckCoordinator {
     ) async -> PriceCheckRefreshOutcome {
         guard shouldContinue?() ?? true else { return .cancelled }
         if let slab = result.resolvedScan.request.subject.slab {
+            guard quoteService.supportsGradedPricing(for: result.card.game) else {
+                return .failed(.unsupportedGame)
+            }
             let outcome = await gradedResolver.resolve(
                 card: result.card,
                 slab: slab,
@@ -502,7 +521,7 @@ final class PriceCheckCoordinator {
                 source: source,
                 sourceVariantID: sourceVariantID,
                 sourceUpdatedAt: record.sourceUpdatedAt,
-                fetchedAt: fetchedAt
+                fetchedAt: fetchedAt, catalogIdentity: record.catalogPriceIdentity
             ),
             retrievedAt: fetchedAt
         )
@@ -524,7 +543,7 @@ final class PriceCheckCoordinator {
                 source: source,
                 sourceVariantID: sourceVariantID,
                 sourceUpdatedAt: quote.sourceUpdatedAt,
-                fetchedAt: retrievedAt
+                fetchedAt: retrievedAt, catalogIdentity: quote.catalogPriceIdentity
             ),
             retrievedAt: retrievedAt
         )

@@ -168,7 +168,8 @@ struct CollectionView: View {
     let onRefresh: @MainActor () async -> CollectionRefreshOutcome
     @Binding var sort: CollectionSort
 
-    @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
+    @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
+    private let runtimes: CardGameRuntimeContainer?
 
     @State private var searchText = ""
     /// What the grid is actually filtered by. Trails `searchText` by one short
@@ -215,6 +216,7 @@ struct CollectionView: View {
 
     init(
         catalog: any BrowseCatalogProviding = BrowseCatalog(),
+        runtimes: CardGameRuntimeContainer? = nil,
         history: PortfolioHistoryStore,
         refresh: PriceRefreshController,
         opensBrowseOnLaunch: Bool,
@@ -227,6 +229,8 @@ struct CollectionView: View {
         sort: Binding<CollectionSort>
     ) {
         self.catalog = catalog
+        self.runtimes = runtimes
+        _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
         self.history = history
         self.refresh = refresh
         self.opensBrowseOnLaunch = opensBrowseOnLaunch
@@ -308,6 +312,7 @@ struct CollectionView: View {
             SettingsView()
         }
         .task {
+            if let runtimes { CollectionStore.configureGames(runtimes.registry, for: modelContext.container) }
             guard let storageToken = CollectionStorageGeneration.shared.currentToken() else {
                 return
             }

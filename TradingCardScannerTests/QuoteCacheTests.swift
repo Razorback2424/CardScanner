@@ -4,6 +4,18 @@ import XCTest
 
 @MainActor
 final class QuoteCacheTests: XCTestCase {
+    func testMissingPricingAdapterIsTerminalInLivePriceCheck() async throws {
+        let context = try makeContext()
+        let service = PriceQuoteService(registry: .standard,
+                                       adapters: try GamePriceAdapterRegistry(adapters: []))
+        let coordinator = PriceCheckCoordinator(context: context, quoteService: service)
+        let result = coordinator.present(priceCheckScan())
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .failed(.unsupportedGame))
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<ProductIdentity>()).isEmpty)
+    }
+
     private var container: ModelContainer?
 
     override func tearDown() {

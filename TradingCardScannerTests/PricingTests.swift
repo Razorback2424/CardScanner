@@ -1040,7 +1040,7 @@ final class PricingTests: XCTestCase {
     }
 
     func testParallelPatternsAppearAsCatalogVariants() throws {
-        guard case let .pokemon(card, _) = try ballPatternCard() else { return XCTFail("Expected Pokémon") }
+        guard case let .pokemon(card, _) = try ballPatternCard().legacyIdentity else { return XCTFail("Expected Pokémon") }
 
         XCTAssertTrue(card.catalogVariants.contains(.pokeBall))
         XCTAssertTrue(card.catalogVariants.contains(.masterBall))

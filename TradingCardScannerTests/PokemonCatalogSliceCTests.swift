@@ -327,7 +327,7 @@ final class PokemonCatalogSliceCTests: XCTestCase {
             candidate: candidate,
             number: number,
             registry: registry
-        ) else {
+        )?.legacyIdentity else {
             return XCTFail("Selected Classic Pikachu should resolve from its checklist row")
         }
         XCTAssertEqual(card.id, "30th-c-014")
@@ -383,7 +383,7 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         scanner.usePokemonRegistry(registry)
         scanner.drainProfileQueuesForTesting()
         guard case let .identified(subject) = scanner.recognitionOutcomeForTesting(["30C 001/128"]),
-              case let .pokemon(_, _, _, definition) = subject.identifier else {
+              case let .pokemon(_, _, _, definition) = subject.identifier.legacyIdentity else {
             return XCTFail("30C should resolve to the scannable 30th expansion")
         }
         XCTAssertEqual(definition.tcgdexSetID, "30th")
@@ -422,7 +422,7 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         scanner.drainProfileQueuesForTesting()
 
         guard case let .identified(subject) = scanner.recognitionOutcomeForTesting(["TST 001/100"]),
-              case let .pokemon(code, localID, total, definition) = subject.identifier else {
+              case let .pokemon(code, localID, total, definition) = subject.identifier.legacyIdentity else {
             return XCTFail("Activated fixture code was not recognized")
         }
         XCTAssertEqual(code, "TST")
@@ -520,6 +520,30 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         XCTAssertNotNil(scanner.observeConfirmationForTesting(["TST 001/100"]))
     }
 
+    func testPokemonAdapterRetainsModernEvidenceButRejectsStaleHistoricalMembership() throws {
+        let firstRegistry = SliceCFixture.registry()
+        // Even equal revisions must have different authority when membership changes.
+        let laterRegistry = SliceCFixture.registry(descriptors: [SliceCFixture.descriptor(officialCount: 101)])
+        let first = PokemonCatalogAdapter(registry: firstRegistry)
+        let later = PokemonCatalogAdapter(registry: laterRegistry)
+        XCTAssertNotEqual(first.generation, later.generation)
+        let modern = try XCTUnwrap(PokemonScanProfile(registry: firstRegistry).parse("TST 001/100"))
+        let dispatched = try first.prepareLookupIdentifier(modern)
+        let prepared = try later.prepareLookupIdentifier(dispatched)
+        XCTAssertEqual(prepared.fields, modern.fields)
+        XCTAssertEqual(prepared.suppressionIdentity, modern.suppressionIdentity)
+        XCTAssertEqual(prepared.catalogGeneration, later.generation)
+        XCTAssertTrue(later.acceptsCompletion(for: dispatched, fromGeneration: first.generation))
+
+        let historical = ScanIdentifier.pokemonHistorical(SliceCFixture.historicalFixture().evidence)
+        let oldHistorical = try first.prepareLookupIdentifier(historical)
+        XCTAssertFalse(later.acceptsCompletion(for: oldHistorical, fromGeneration: first.generation))
+        XCTAssertThrowsError(try later.prepareLookupIdentifier(oldHistorical))
+        let retry = try later.identifierForRetry(oldHistorical)
+        XCTAssertEqual(retry.fields, historical.fields)
+        XCTAssertEqual(retry.catalogGeneration, later.generation)
+    }
+
     func testDispatchedIdentifierRetainsTheDefinitionThatParsedIt() {
         let first = PokemonScanProfile(
             registry: SliceCFixture.registry()
@@ -531,8 +555,8 @@ final class PokemonCatalogSliceCTests: XCTestCase {
             )
         )
 
-        guard case let .pokemon(_, _, firstTotal, firstDefinition)? = first.parse("TST 001/100"),
-              case let .pokemon(_, _, laterTotal, laterDefinition)? = later.parse("TST 001/101") else {
+        guard case let .pokemon(_, _, firstTotal, firstDefinition)? = first.parse("TST 001/100")?.legacyIdentity,
+              case let .pokemon(_, _, laterTotal, laterDefinition)? = later.parse("TST 001/101")?.legacyIdentity else {
             return XCTFail("Fixture profiles did not produce their own identifiers")
         }
         XCTAssertEqual(firstTotal, 100)

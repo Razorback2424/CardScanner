@@ -2,6 +2,19 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScannedGradedResolverTests: XCTestCase {
+    func testDisabledGradedCapabilityStopsBeforeVendorLookup() async {
+        let recorder = GradedIdentityRecorder()
+        let resolver = ScannedGradedResolver(
+            client: StubLookupClient(result: .matched([]), identityRecorder: recorder),
+            credentialsAvailable: true, gameRegistry: CardGameRegistry(descriptors: [])
+        )
+        let outcome = await resolver.resolve(card: card, slab: slab(company: .psa, value: "10"),
+                                             pokemonPrintRun: nil)
+        XCTAssertEqual(outcome, .unavailable)
+        let identity = await recorder.lastIdentity
+        XCTAssertNil(identity)
+    }
+
     func testResolverBindsSingleGradeWhenVendorLabelUsesDifferentVocabulary() async {
         let vendorVariant = variant(
             id: "vendor-gem-mt",

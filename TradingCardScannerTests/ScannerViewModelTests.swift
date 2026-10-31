@@ -251,8 +251,113 @@ private actor ScannerPrintRunRecorder {
 /// ScannerViewModel is the orchestration boundary for the camera, catalog,
 /// persistence, and the choice sheets. These tests drive its callbacks directly
 /// so the state-machine contracts can be checked without a camera or network.
+private struct ScannerPrintingCatalogFixture: GameCatalogAdapter {
+    let game = CardGame.onePiece
+    let generation = "printing-fixture-1"
+    let retrievedAt = Date(timeIntervalSince1970: 12345)
+
+    func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
+        .needsPrintingChoice(
+            canonical: .init(id: "one-piece:en:OP01-120", game: game, name: "Shanks",
+                             printedIdentifier: "OP01-120", language: "en"),
+            candidates: ["first-uuid", "second-uuid"].map { id in
+                .init(id: id, game: game, canonicalCardID: "one-piece:en:OP01-120",
+                      language: "en", catalogGeneration: generation, name: "Shanks",
+                      printedIdentifier: "OP01-120", releaseLabel: id == "first-uuid" ? "Original release" : "Premium release",
+                      treatmentLabel: nil, distributionLabel: nil, releaseDate: nil, thumbnailURL: nil)
+            }
+        )
+    }
+
+    func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
+        let card = try ResolvedCatalogCard(
+            game: game, physicalPrintingID: candidate.id, canonicalCardID: candidate.canonicalCardID,
+            language: "en", name: "Shanks", setName: candidate.releaseLabel ?? "Release",
+            setCode: "OP01", cardNumber: "OP01-120", printedIdentifier: "OP01-120",
+            variantEvidence: .init(game: game, setID: "fixture", cardNumber: "OP01-120",
+                                   catalogVariants: [.normal, .foil])
+        )
+        return .init(card, retrievedAt: retrievedAt, path: .cacheHit)
+    }
+}
+
 @MainActor
 final class ScannerViewModelTests: XCTestCase {
+    private func printingIdentifier() throws -> ScanIdentifier {
+        try .init(game: .onePiece, namespace: "numbered-card",
+                  fields: [.init(key: "number", value: "OP01-120")], displayIdentifier: "OP01-120",
+                  suppressionIdentity: "OP01-120", catalogGeneration: "printing-fixture-1")
+    }
+
+    func testGenericPrintingChoicePrecedesVariantAndPreservesCatalogTimestamp() async throws {
+        let model = try makeModel(variants: [.normal], printingCatalog: ScannerPrintingCatalogFixture())
+        confirm(model, try printingIdentifier(), encounterID: UUID())
+        let appeared = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(appeared)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertTrue(model.recent.isEmpty)
+        let choice = try XCTUnwrap(model.pendingIdentityChoice)
+        XCTAssertEqual(choice.displayCandidates.count, 2)
+        model.choose(choice.displayCandidates[1])
+        let finishAppeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(finishAppeared)
+        XCTAssertEqual(model.pendingChoice?.card.physicalPrintingID, "second-uuid")
+        XCTAssertEqual(model.pendingChoice?.catalogRetrievedAt, Date(timeIntervalSince1970: 12345))
+        XCTAssertEqual(model.pendingChoice?.identityResolution, .userSelectedPrinting)
+        XCTAssertNil(model.pendingIdentityChoice)
+        model.viewDisappeared()
+    }
+
+    func testDismissedGenericPrintingChoicesRetainSeparateEncounters() async throws {
+        let model = try makeModel(variants: [.normal], printingCatalog: ScannerPrintingCatalogFixture())
+        let identifier = try printingIdentifier()
+        let first = UUID()
+        let second = UUID()
+        confirm(model, identifier, encounterID: first)
+        let firstAppeared = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(firstAppeared)
+        model.dismissIdentityChoice()
+        confirm(model, identifier, encounterID: second)
+        let secondAppeared = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(secondAppeared)
+        model.dismissIdentityChoice()
+        XCTAssertEqual(Set(model.unresolvedScans.map(\.id)), Set([first, second]))
+        XCTAssertEqual(model.unresolvedScans.map(\.identifier), [identifier, identifier])
+        XCTAssertEqual(model.successCount, 0)
+        model.viewDisappeared()
+    }
+
+    func testGenericPrintingChoiceSurvivesStoreReloadAndRecoverySelection() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fileURL = root.appendingPathComponent("unresolved.json")
+        let store = UnresolvedScanStore(fileURL: fileURL)
+        let adapter = ScannerPrintingCatalogFixture()
+        let model = try makeModel(variants: [.normal], unresolvedScanStore: store, printingCatalog: adapter)
+        confirm(model, try printingIdentifier(), encounterID: UUID())
+        let appeared = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(appeared)
+        model.dismissIdentityChoice()
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        XCTAssertEqual(row.printingCandidates.count, 2)
+        let didSave = await store.save(model.unresolvedScans)
+        XCTAssertTrue(didSave)
+        let registered = try GameCatalogAdapterRegistry(adapters: [adapter])
+        let restored = await UnresolvedScanStore(fileURL: fileURL).load(gameCatalogAdapters: registered)
+        XCTAssertEqual(restored.first?.printingCandidates, row.printingCandidates)
+        XCTAssertEqual(restored.first?.identifier, row.identifier)
+        XCTAssertFalse(try XCTUnwrap(restored.first).isReadOnly)
+        let unsupported = await UnresolvedScanStore(fileURL: fileURL).load()
+        XCTAssertTrue(try XCTUnwrap(unsupported.first).isReadOnly)
+        XCTAssertEqual(unsupported.first?.printingCandidates, row.printingCandidates)
+        model.resolveUnresolved(id: row.id, choice: .printing(row.printingCandidates[0]))
+        let finishAppeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(finishAppeared)
+        XCTAssertEqual(model.pendingChoice?.card.physicalPrintingID, "first-uuid")
+        XCTAssertEqual(model.pendingChoice?.request.unresolvedScanID, row.id)
+        XCTAssertEqual(model.pendingChoice?.catalogRetrievedAt, adapter.retrievedAt)
+        model.viewDisappeared()
+    }
     private var container: ModelContainer?
 
     override func tearDown() {
@@ -2251,7 +2356,7 @@ final class ScannerViewModelTests: XCTestCase {
     }
 
     func testCatalogSelectionResolvesRawAndSlabRowsWithOriginalEvidence() async throws {
-        for game in CardGame.allCases {
+        for game in CardGameRegistry.standard.games(supporting: .browse) {
             for isSlab in [false, true] {
                 let model = try makeModel(variants: [.normal], gradedOutcome: .unavailable)
                 let identifier: ScanIdentifier = game == .pokemon ? scannerIdentifier()
@@ -3300,7 +3405,8 @@ final class ScannerViewModelTests: XCTestCase {
         sourceFailure: ScannerStubPokemonSource.Failure? = nil,
         failureSwitch: ScannerCatalogFailureSwitch? = nil,
         unresolvedScanStore: UnresolvedScanStore? = nil,
-        offline: PokemonOfflineCatalog? = nil
+        offline: PokemonOfflineCatalog? = nil,
+        printingCatalog: (any GameCatalogAdapter)? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -3340,7 +3446,8 @@ final class ScannerViewModelTests: XCTestCase {
                 root: root,
                 appVersion: "scanner-tests"
             ),
-            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0),
+            gameCatalogAdapters: try .init(adapters: printingCatalog.map { [$0] } ?? [])
         )
         let model = ScannerViewModel(
             scanner: CardScanner(),

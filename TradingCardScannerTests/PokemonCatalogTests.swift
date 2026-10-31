@@ -559,7 +559,7 @@ final class PokemonCatalogParityTests: XCTestCase {
             let text = "\(code) 001/\(String(format: "%03d", compiled.officialCount))"
             let result = ScanParser.parsePokemon(text)
             XCTAssertNotNil(result, "Parser failed for \(text)")
-            if case let .pokemon(setCode, _, printedTotal, definition)? = result {
+            if case let .pokemon(setCode, _, printedTotal, definition)? = result?.legacyIdentity {
                 XCTAssertEqual(setCode, code)
                 XCTAssertEqual(printedTotal, compiled.officialCount)
                 XCTAssertEqual(definition.tcgdexSetID, compiled.tcgdexSetID)
@@ -575,7 +575,7 @@ final class PokemonCatalogParityTests: XCTestCase {
             let text = "\(prefix) \(number)"
             let result = ScanParser.parsePokemon(text)
             XCTAssertNotNil(result, "Parser failed for \(text)")
-            if case let .pokemonPromo(resultPrefix, localID, definition)? = result {
+            if case let .pokemonPromo(resultPrefix, localID, definition)? = result?.legacyIdentity {
                 XCTAssertEqual(resultPrefix, prefix)
                 XCTAssertEqual(definition.tcgdexSetID, compiled.tcgdexSetID)
                 let expectedLocalID = compiled.catalogLocalID(number: 1)

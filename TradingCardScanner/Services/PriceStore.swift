@@ -1241,7 +1241,7 @@ struct PriceStore {
                             continue
                         }
                         let copy = PriceRecord(
-                            key: key, game: CardGame(rawValue: source.game) ?? .pokemon,
+                            key: key, game: CardGame(rawValue: source.game),
                             printingID: source.printingID, variantID: source.variantID
                         )
                         Self.copyReadState(from: source, to: copy)
@@ -1295,6 +1295,7 @@ struct PriceStore {
         copy.lastFailureAt = source.lastFailureAt
         copy.lastFailureReasonRaw = source.lastFailureReasonRaw
         copy.invalidatedAt = source.invalidatedAt
+        copy.catalogPriceIdentity = source.catalogPriceIdentity
         copy.gradedMarketCoverageJSON = source.gradedMarketCoverageJSON
         copy.itemKindRaw = source.itemKindRaw
         copy.canonicalMarketID = source.canonicalMarketID

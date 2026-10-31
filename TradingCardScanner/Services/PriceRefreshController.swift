@@ -223,16 +223,9 @@ struct RefreshRowPatch: Sendable {
         let imageURL: String?
         let thumbnailURL: String?
         let tcgplayerURL: String?
-        switch card {
-        case let .pokemon(pokemon, _):
-            imageURL = pokemon.image
-            thumbnailURL = pokemon.image.map { $0 + "/low.png" }
-            tcgplayerURL = nil
-        case let .magic(magic):
-            imageURL = card.displayImageURL?.absoluteString
-            thumbnailURL = card.thumbnailImageURL?.absoluteString
-            tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
-        }
+        imageURL = card.storedImageURL
+        thumbnailURL = card.catalogMetadataThumbnailURL
+        tcgplayerURL = card.providerPurchaseURL
         let metadata = ImportedCatalogMetadata(
             providerID: card.providerID,
             setCode: card.setCode,
@@ -258,6 +251,8 @@ struct RefreshRowPatch: Sendable {
 /// provider request is suspended.
 @ModelActor
 actor PriceRefreshModelActor {
+    private var gamePricing = PriceQuoteService()
+    func configureGamePricing(_ service: PriceQuoteService) { gamePricing = service }
     private let tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
     private let importedResolver = ImportedCardResolver()
@@ -519,7 +514,8 @@ actor PriceRefreshModelActor {
         // identity, grader and grade is requestable even when it has not yet
         // acquired the vendor's variant UUID; refreshGraded owns that lookup.
         let unsupported = targets.filter {
-            $0.itemKind == .gradedCard
+            CardGameRegistry.standard.supports($0.game, .gradedPricing)
+                && $0.itemKind == .gradedCard
                 && $0.marketVariantID == nil
                 && !$0.canResolveGradedVariant
         }
@@ -532,7 +528,36 @@ actor PriceRefreshModelActor {
             ), key: target.id)
         }
         let unsupportedIDs = Set(unsupported.map(\.id))
-        let supportedTargets = targets.filter { !unsupportedIDs.contains($0.id) }
+        let mappedTargets = targets.filter {
+            $0.itemKind == .rawCard && $0.importedIdentity == nil
+                && gamePricing.supportsStoredPrintingRefresh(for: $0.game)
+        }
+        for target in mappedTargets {
+            guard storageContinuation?() ?? true, !Task.isCancelled else { break }
+            do {
+                let lookup = try await gamePricing.refreshStoredPrinting(game: target.game,
+                    printingID: target.catalogPrintingID ?? target.printingID,
+                    variant: target.variantID.map(PhysicalVariant.resolving))
+                guard storageContinuation?() ?? true, !Task.isCancelled else { break }
+                let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
+                let amount: Double?
+                if case let .price(price) = lookup { amount = price.unitMarketPriceUSD; checkedUnstampedProvider = true }
+                else { amount = previous }
+                stage(store.store(lookup, game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, at: .now), key: target.id,
+                    priced: { if case .price = lookup { return true }; return false }(), changed: previous != amount)
+            } catch is CancellationError { break }
+            catch {
+                failed += 1
+                stage(store.recordFailure(game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, at: .now), key: target.id)
+            }
+            if checkpointIsDue() { _ = await commitStaged() }
+        }
+        let supportedTargets = targets.filter {
+            CardGameRegistry.standard.supports($0.game, .pricing)
+                && !unsupportedIDs.contains($0.id)
+        }
         let vendorNative = supportedTargets.filter(\.isVendorNative)
         // An unbound graded row is neither a catalog-card request nor a raw
         // fallback candidate. It is handled by the v2 graded pass below.
@@ -968,7 +993,7 @@ actor PriceRefreshModelActor {
             )
         }
         let gradedResult = await refreshGraded(
-            targets,
+            supportedTargets,
             store: store,
             progress: progress
         )
@@ -1741,7 +1766,8 @@ actor PriceRefreshModelActor {
             )
         }
         let slabs = targets.filter {
-            guard $0.itemKind == .gradedCard else { return false }
+            guard CardGameRegistry.standard.supports($0.game, .gradedPricing),
+                  $0.itemKind == .gradedCard else { return false }
             if $0.marketVariantID != nil { return true }
             return $0.canResolveGradedVariant
         }
@@ -2665,6 +2691,8 @@ enum PriceRefreshWorkOutcome: Sendable {
 @MainActor
 final class PriceRefreshController: ObservableObject {
     static let shared = PriceRefreshController()
+    private var gamePricing = PriceQuoteService()
+    func configureGamePricing(_ service: PriceQuoteService) { gamePricing = service }
 
     enum Owner: Equatable, Sendable {
         case foreground
@@ -3466,6 +3494,7 @@ final class PriceRefreshController: ObservableObject {
         lastProgressPublicationAt = nil
         lastPublishedProgressPercent = nil
         let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.configureGamePricing(gamePricing)
         if let pokemonFetchOverrideForTesting {
             await worker.setPokemonFetchOverrideForTesting(pokemonFetchOverrideForTesting)
         }
@@ -3687,7 +3716,7 @@ final class PriceRefreshController: ObservableObject {
                !justTCGCardID.isEmpty {
                 return [.cardID(justTCGCardID)]
             }
-            guard case let .magic(magic)? = card,
+            guard case let .magic(magic)? = card?.legacyIdentity,
                   let tcgplayerID = magic.tcgplayerID else {
                 return []
             }
@@ -4294,6 +4323,8 @@ final class PriceRefreshController: ObservableObject {
             case .magic:
                 let card = try await scryfall.fetchCard(id: printing.printingID, ignoringCache: true)
                 return PriceFetchOutcome(printing: printing, result: .card(.magic(card)))
+            default:
+                return PriceFetchOutcome(printing: printing, result: .failed)
             }
         } catch is CancellationError {
             return PriceFetchOutcome(printing: printing, result: .cancelled)
@@ -4395,6 +4426,7 @@ private actor ImportedCardResolver {
                 return .magic(card)
             }
             throw ScryfallError.identityMismatch
+        default: throw CardGameSupportError.unsupportedGame(game)
         }
     }
 

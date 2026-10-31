@@ -13,6 +13,8 @@ struct NormalizedPrice: Equatable, Sendable {
     /// has to respect rather than paper over.
     let sourceUpdatedAt: Date?
     let fetchedAt: Date
+    /// Catalog-owned mapping evidence; nil for providers without this contract.
+    var catalogIdentity: String? = nil
 }
 
 enum PriceLookup: Equatable, Sendable {
@@ -122,7 +124,7 @@ enum CardPricing {
             pokemonPrintRun: pokemonPrintRun, at: fetchedAt
         )
         if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
-        if case let .pokemon(pokemon, _) = card,
+        if case let .pokemon(pokemon, _) = card.legacyIdentity,
            let supplemental = pokemon.supplementalTCGCSV?.quote(
                cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun
            ) { return supplemental }
@@ -136,7 +138,9 @@ enum CardPricing {
         pokemonPrintRun: PokemonPrintRun? = nil,
         at fetchedAt: Date = .now
     ) -> PriceLookup {
-        switch card {
+        switch card.legacyIdentity {
+        case .none:
+            return .unavailable(nil)
         case let .pokemon(pokemon, _):
             if pokemonPrintRun == .firstEdition {
                 guard let variant,

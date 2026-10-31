@@ -23,6 +23,7 @@ final class BrowseViewModel: ObservableObject {
     @Published private(set) var searchResults: [CatalogSearchResult] = []
 
     let catalog: any BrowseCatalogProviding
+    var gameRegistry: CardGameRegistry { catalog.gameRegistry }
     let sealedModel: SealedBrowseModel
     private let includesSealedProducts: Bool
     private var searchTask: Task<Void, Never>?
@@ -53,7 +54,7 @@ final class BrowseViewModel: ObservableObject {
     var isSearching: Bool { !normalizedQuery.isEmpty }
 
     var searchGames: [CardGame] {
-        selectedGame.map { [$0] } ?? CardGame.allCases
+        selectedGame.map { [$0] } ?? gameRegistry.games(supporting: .browse)
     }
 
     /// A single deterministic stream assembled from the independently paged
@@ -63,7 +64,7 @@ final class BrowseViewModel: ObservableObject {
         let cardResults = searchGames.flatMap { game in
             (lanes[game]?.cards ?? []).map(CatalogSearchResult.card)
         }
-        let sealedResults = (includesSealedProducts ? searchGames : []).flatMap { game in
+        let sealedResults = searchGames.filter { sealedLaneIsRequested(for: $0) }.flatMap { game in
             (sealedModel.searchLanes[game]?.products ?? []).map {
                 CatalogSearchResult.sealed(game: game, product: $0)
             }
@@ -100,7 +101,7 @@ final class BrowseViewModel: ObservableObject {
         }
 
         let sealedWasSkipped = includesSealedProducts && !sealedModel.isConfigured
-            && games.contains { !sealedLaneIsRequested(for: $0) }
+            && games.contains { gameRegistry.supports($0, .sealed) && !sealedLaneIsRequested(for: $0) }
         for game in games where sealedLaneIsRequested(for: game) {
             if let lane = sealedModel.searchLanes[game] {
                 statuses.append(
@@ -146,7 +147,7 @@ final class BrowseViewModel: ObservableObject {
     }
 
     func loadSets() async {
-        for game in CardGame.allCases where sets[game] == nil {
+        for game in gameRegistry.games(supporting: .browse) where sets[game] == nil {
             do {
                 sets[game] = try await catalog.sets(for: game)
                 setErrors[game] = nil
@@ -158,10 +159,12 @@ final class BrowseViewModel: ObservableObject {
 
     func observeCatalogUpdates() async {
         let updates = await catalog.catalogUpdates()
-        for await _ in updates {
+        for await update in updates {
             guard !Task.isCancelled else { return }
+            let affectedGames = gameRegistry.games(supporting: .browse).filter { update.affects(game: $0) }
+            guard !affectedGames.isEmpty else { continue }
             var refreshed = sets
-            for game in CardGame.allCases {
+            for game in affectedGames {
                 do {
                     refreshed[game] = try await catalog.sets(for: game)
                     setErrors[game] = nil
@@ -173,8 +176,16 @@ final class BrowseViewModel: ObservableObject {
             sets = refreshed
             let available = Set(refreshed.values.flatMap { $0.map(\.catalogID) })
             let retainedSelection = selectedSets.intersection(available)
-            if retainedSelection != selectedSets { selectedSets = retainedSelection }
-            recomputeSearchResults()
+            if retainedSelection != selectedSets {
+                selectedSets = retainedSelection
+            } else if normalizedQuery.count >= 2 && searchGames.contains(where: { affectedGames.contains($0) }) {
+                // Invalidate previous-generation rows/cursors even when the query
+                // and selected sets did not change. Existing debounce coalesces
+                // successive checklist/catalog publications.
+                scheduleSearch()
+            } else {
+                recomputeSearchResults()
+            }
         }
     }
 
@@ -304,18 +315,19 @@ final class BrowseViewModel: ObservableObject {
     private func runSearch(query: String, token: UUID) async {
         let games = searchGames
         for game in games { lanes[game] = Lane(isLoading: true) }
-        for game in CardGame.allCases where !games.contains(game) { lanes[game] = nil }
+        for game in gameRegistry.games(supporting: .browse) where !games.contains(game) { lanes[game] = nil }
         recomputeSearchResults()
 
         async let cardSearch: Void = searchCardLanes(games: games, query: query, token: token)
         if includesSealedProducts {
-            await sealedModel.search(query: query, games: games)
+            await sealedModel.search(query: query, games: games.filter { gameRegistry.supports($0, .sealed) })
         }
         await cardSearch
     }
 
     private func sealedLaneIsRequested(for game: CardGame) -> Bool {
-        includesSealedProducts && (sealedModel.isConfigured || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true))
+        includesSealedProducts && gameRegistry.supports(game, .sealed)
+            && (sealedModel.isConfigured || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true))
     }
 
     private func searchCardLanes(games: [CardGame], query: String, token: UUID) async {
@@ -443,7 +455,7 @@ struct BrowseView: View {
         }
         .sheet(isPresented: $showsSetFilter) {
             CatalogSetFilterSheet(
-                sets: CardGame.allCases.flatMap { model.sets[$0] ?? [] },
+                sets: model.gameRegistry.games(supporting: .browse).flatMap { model.sets[$0] ?? [] },
                 selectedGame: model.selectedGame,
                 selection: $model.selectedSets
             )
@@ -548,7 +560,7 @@ struct BrowseView: View {
                     if recoveryGame == nil {
                         Menu {
                             Button("All Games") { model.selectedGame = nil }
-                            ForEach(CardGame.allCases) { game in
+                            ForEach(model.gameRegistry.games(supporting: .browse)) { game in
                                 Button(game.label) { model.selectedGame = game }
                             }
                         } label: {
@@ -580,7 +592,7 @@ struct BrowseView: View {
     }
 
     private var isCatalogLoadedForRail: Bool {
-        CardGame.allCases.allSatisfy { model.sets[$0] != nil }
+        model.gameRegistry.games(supporting: .browse).allSatisfy { model.sets[$0] != nil }
     }
 
     private var releaseRail: CatalogReleaseRail {
@@ -592,7 +604,7 @@ struct BrowseView: View {
     }
 
     private func requestSetCompletionRebuild() {
-        let sets = CardGame.allCases.flatMap { model.sets[$0] ?? [] }
+        let sets = model.gameRegistry.games(supporting: .browse).flatMap { model.sets[$0] ?? [] }
         guard !sets.isEmpty else { return }
         let currentOwnership = ownership
         let tier = masterSetTier
@@ -645,7 +657,7 @@ struct BrowseView: View {
         let rows = projectionStore.snapshot?.rows ?? []
         Text("Browse by game")
             .font(.headline)
-        ForEach(recoveryGame.map { [$0] } ?? CardGame.allCases) { game in
+        ForEach(recoveryGame.map { [$0] } ?? model.gameRegistry.games(supporting: .browse)) { game in
             if let sets = model.sets[game] {
                 let summary = CatalogGameSummary(game: game, sets: sets, rows: rows)
                 NavigationLink {
@@ -1047,7 +1059,7 @@ enum CatalogSetOrdering {
         from setsByGame: [CardGame: [CatalogSet]],
         now: Date = .now
     ) -> CatalogReleaseRail {
-        let eligibleByGame = Dictionary(uniqueKeysWithValues: CardGame.allCases.map { game in
+        let eligibleByGame = Dictionary(uniqueKeysWithValues: setsByGame.keys.sorted(by: { $0.rawValue < $1.rawValue }).map { game in
             (
                 game,
                 (setsByGame[game] ?? []).filter { set in
@@ -1075,7 +1087,7 @@ enum CatalogSetOrdering {
             )
         }
 
-        let fallback = CardGame.allCases.flatMap { game in
+        let fallback = setsByGame.keys.sorted(by: { $0.rawValue < $1.rawValue }).flatMap { game in
             newestFirst(eligibleByGame[game] ?? []).prefix(railPerGameFallbackLimit)
         }
         return CatalogReleaseRail(
@@ -1772,7 +1784,9 @@ private struct CatalogSetGrid: View {
 private struct CatalogSetCardsView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     @EnvironmentObject private var setCompletionStore: CatalogSetCompletionStore
-    let set: CatalogSet
+    private let initialSet: CatalogSet
+    @State private var refreshedSet: CatalogSet?
+    private var set: CatalogSet { refreshedSet ?? initialSet }
     let catalog: any BrowseCatalogProviding
     @State private var cards: [CatalogCardSummary] = []
     @State private var cursor: String?
@@ -1795,6 +1809,11 @@ private struct CatalogSetCardsView: View {
     @State private var loadedPageCount = 0
     @State private var priceReloadAfterCurrentLoad = false
     @State private var queuedPricePriority: TaskPriority = .utility
+
+    init(set: CatalogSet, catalog: any BrowseCatalogProviding) {
+        self.initialSet = set
+        self.catalog = catalog
+    }
 
     private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
         CatalogSetQuery.apply(
@@ -1942,11 +1961,7 @@ private struct CatalogSetCardsView: View {
             let updates = await catalog.catalogUpdates()
             for await update in updates {
                 guard !Task.isCancelled else { return }
-                if let changedProviderSetID = update.providerSetID,
-                   changedProviderSetID.caseInsensitiveCompare(set.providerID)
-                        != .orderedSame {
-                    continue
-                }
+                guard update.affects(game: set.game, providerSetID: set.providerID) else { continue }
                 await requestReload()
             }
         }
@@ -2110,6 +2125,11 @@ private struct CatalogSetCardsView: View {
         }
         if reset { error = nil }
         do {
+            if reset {
+                let current = try await catalog.currentSet(for: set)
+                guard contentGeneration == requestID, !Task.isCancelled else { return }
+                refreshedSet = current
+            }
             var page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
             var refreshedCards = page.items
             var pagesLoaded = 1
@@ -2138,6 +2158,13 @@ private struct CatalogSetCardsView: View {
             }
         } catch {
             guard contentGeneration == requestID, !Task.isCancelled else { return }
+            if let catalogError = error as? BrowseCatalogError, case .unknownSet = catalogError {
+                // A withdrawn set must not retain selectable old-generation rows.
+                cards = []
+                cursor = nil
+                loadedPageCount = 0
+                refreshVisibleGroups()
+            }
             self.error = error.localizedDescription
         }
     }
@@ -3289,7 +3316,7 @@ private struct CatalogSetFilterSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(CardGame.allCases) { game in
+                ForEach(Set(sets.map(\.game)).sorted(by: { $0.rawValue < $1.rawValue })) { game in
                     let gameSets = visible.filter { $0.game == game }
                     if !gameSets.isEmpty {
                         Section(game.label) {

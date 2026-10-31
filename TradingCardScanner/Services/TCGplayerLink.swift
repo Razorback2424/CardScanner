@@ -47,7 +47,8 @@ enum TCGplayerLinkBuilder {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun? = nil
     ) -> URL? {
-        switch card {
+        switch card.legacyIdentity {
+        case .none: return nil
         case let .magic(magic):
             return productURL(
                 productID: magic.tcgplayerID.map(String.init),
@@ -116,6 +117,7 @@ enum TCGplayerLinkBuilder {
             case PhysicalVariant.foil.id: return "Foil"
             default: return nil
             }
+        default: return nil
         }
     }
 

@@ -95,6 +95,7 @@ final class PriceRecord {
     var sourceRaw: String?
     /// The provider-side listing the number was read from, e.g. `reverse-holofoil`.
     var sourceVariantID: String?
+    var catalogPriceIdentity: String?
     /// When the *market data* is current through, per the provider.
     var sourceUpdatedAt: Date?
     /// When this app last retrieved the value it is currently showing.
@@ -236,6 +237,7 @@ final class PriceRecord {
         lastFailureReasonRaw = nil
         gradedMarketCoverageJSON = nil
         self.invalidatedAt = nil
+        catalogPriceIdentity = price.catalogIdentity
         return true
     }
 

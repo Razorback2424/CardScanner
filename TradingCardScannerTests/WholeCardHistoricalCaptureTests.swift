@@ -101,7 +101,7 @@ final class WholeCardHistoricalCaptureTests: XCTestCase {
         XCTAssertNil(HistoricalTitleRequestPolicy.number(for: .ambiguous, footerLines: fraction))
         XCTAssertNil(
             HistoricalTitleRequestPolicy.number(
-                for: .spatiallyRejectedMagicCollector,
+                for: .fallbackBlocked,
                 footerLines: fraction
             )
         )

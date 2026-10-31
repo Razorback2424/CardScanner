@@ -40,6 +40,7 @@ struct ContentView: View {
     /// app session. Its protected checklist and in-memory caches therefore do
     /// not reset when the user pushes into a set and returns.
     @State private var browseCatalog: BrowseCatalog
+    private let runtimes: CardGameRuntimeContainer?
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var collectionSort: CollectionSort = .priceHighToLow
     /// The mutation observer can start before the separate launch task. Keep it
@@ -59,12 +60,17 @@ struct ContentView: View {
         catalogCoordinator: PokemonCatalogCoordinator,
         magicCatalogCoordinator: MagicCatalogCoordinator = MagicCatalogCoordinator()
     ) {
-        _browseCatalog = State(
-            initialValue: BrowseCatalog(
-                catalogCoordinator: catalogCoordinator,
-                magicCatalogCoordinator: magicCatalogCoordinator
-            )
-        )
+        self.init(browseCatalog: BrowseCatalog(catalogCoordinator: catalogCoordinator,
+                                             magicCatalogCoordinator: magicCatalogCoordinator))
+    }
+
+    init(runtimes: CardGameRuntimeContainer) {
+        self.init(browseCatalog: runtimes.makeBrowseCatalog(), runtimes: runtimes)
+    }
+
+    private init(browseCatalog: BrowseCatalog, runtimes: CardGameRuntimeContainer? = nil) {
+        self.runtimes = runtimes
+        _browseCatalog = State(initialValue: browseCatalog)
 #if DEBUG || CARD_FINISH_PERF_HARNESS
         let arguments = ProcessInfo.processInfo.arguments
         let routeIndex = arguments.firstIndex(of: "-ui_debug_route")
@@ -110,6 +116,7 @@ struct ContentView: View {
 
             CollectionView(
                 catalog: browseCatalog,
+                runtimes: runtimes,
                 history: history,
                 refresh: refresh,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
@@ -139,6 +146,7 @@ struct ContentView: View {
                 .tag(Tab.pro)
         }
         .environmentObject(priceSnapshot)
+        .environment(\.cardGameRuntimes, runtimes)
         .environmentObject(projectionStore)
         .environmentObject(setCompletionStore)
         .environmentObject(revisionStore)
@@ -162,6 +170,9 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color(uiColor: .systemBackground))
                     .ignoresSafeArea()
+            } else if debugRoute == "PrintingChoice" {
+                PrintingChoiceDebugView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
 #endif
@@ -229,6 +240,10 @@ struct ContentView: View {
             hasStartedPortfolio = true
         }
 #endif
+        .task {
+            guard let runtimes else { return }
+            await runtimes.observeCollectionCatalogActivations(for: modelContext.container)
+        }
         .task {
             refresh.registerPortfolio(portfolio)
             refresh.registerPriceSnapshotStore(priceSnapshot)
@@ -481,6 +496,7 @@ struct ContentView: View {
     @MainActor
     private func backfillExistingCollectionAtLaunch() async {
         let container = modelContext.container
+        runtimes?.configureCollectionAuthority(for: container)
         do {
             try await Task.detached(priority: .utility) {
                 try CollectionWriteSerializer.perform(

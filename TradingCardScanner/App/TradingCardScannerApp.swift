@@ -4,9 +4,7 @@ import SwiftData
 @main
 struct TradingCardScannerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    private let catalogCoordinator: PokemonCatalogCoordinator
-    private let magicCatalogCoordinator: MagicCatalogCoordinator
-    @StateObject private var scannerModel: ScannerViewModel
+    private let runtimes: CardGameRuntimeContainer
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
     @StateObject private var storageBootstrap = CollectionStorageBootstrap()
@@ -14,17 +12,8 @@ struct TradingCardScannerApp: App {
     init() {
         CollectionWriteSerializer.enforcesOwnershipRule =
             ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil
-        let catalogCoordinator = PokemonCatalogCoordinator()
-        let magicCatalogCoordinator = MagicCatalogCoordinator()
-        self.catalogCoordinator = catalogCoordinator
-        self.magicCatalogCoordinator = magicCatalogCoordinator
-        _scannerModel = StateObject(
-            wrappedValue: ScannerViewModel(
-                catalog: CardCatalog(magicCatalogCoordinator: magicCatalogCoordinator),
-                catalogCoordinator: catalogCoordinator,
-                magicCatalogCoordinator: magicCatalogCoordinator
-            )
-        )
+        let runtimes = CardGameRuntimeContainer.appDefaults()
+        self.runtimes = runtimes
     }
 
     // Compatibility name for existing portfolio/status call sites. The
@@ -42,12 +31,9 @@ struct TradingCardScannerApp: App {
             Group {
                 switch storageBootstrap.state {
                 case .ready(let session):
-                    ContentView(
-                        catalogCoordinator: catalogCoordinator,
-                        magicCatalogCoordinator: magicCatalogCoordinator
-                    )
+                    CollectionSessionContent(runtimes: runtimes, container: session.container)
+                        .id(ObjectIdentifier(session.container))
                         .modelContainer(session.container)
-                        .environmentObject(scannerModel)
                         .environmentObject(scanSummaryStore)
                         .environment(\.cardFinishMotionSource, cardFinishMotion)
                 default:
@@ -56,6 +42,7 @@ struct TradingCardScannerApp: App {
             }
             .task {
                 await storageBootstrap.start()
+                await runtimes.refreshCatalogsAtLaunch()
             }
         }
     }
@@ -70,5 +57,45 @@ struct TradingCardScannerApp: App {
             throw CollectionStorageBootstrapError.storageSessionUnavailable
         }
         return session.container
+    }
+}
+
+/// Runtime consumers are created only after their actual storage session exists.
+@MainActor
+private struct CollectionSessionContent: View {
+    let runtimes: CardGameRuntimeContainer
+    let container: ModelContainer
+    private struct Services {
+        let runtimes: CardGameRuntimeContainer
+        let scanner: ScannerViewModel
+    }
+    @State private var services: Services?
+    @State private var failed = false
+    @State private var attempt = 0
+
+    var body: some View {
+        Group {
+            if let services {
+                ContentView(runtimes: services.runtimes).environmentObject(services.scanner)
+            } else if failed {
+                ContentUnavailableView {
+                    Label("Couldn't prepare catalog", systemImage: "exclamationmark.triangle")
+                } description: {
+                    Text("Your collection is safe. Try preparing the catalog again.")
+                } actions: {
+                    Button("Retry") { failed = false; attempt += 1 }
+                }
+            } else { ProgressView("Preparing catalog") }
+        }
+        .task(id: attempt) {
+            guard services == nil else { return }
+            do {
+                let bound = try await runtimes.bound(to: container, isCurrent: {
+                    CollectionStorageGeneration.shared.activeSession()?.container === container
+                })
+                services = .init(runtimes: bound, scanner: bound.makeScannerModel())
+            } catch { failed = true }
+        }
+        .onDisappear { services?.scanner.viewDisappeared() }
     }
 }

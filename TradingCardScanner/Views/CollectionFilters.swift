@@ -30,7 +30,7 @@ struct CollectionFilterSheet: View {
                 Section("Show") {
                     Picker("Game", selection: gameSelection) {
                         Text("All Games").tag(nil as CardGame?)
-                        ForEach(CardGame.allCases) { game in
+                        ForEach(CardGameRegistry.standard.games(supporting: .browse)) { game in
                             Text(game.label).tag(game as CardGame?)
                         }
                     }

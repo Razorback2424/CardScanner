@@ -2,6 +2,68 @@ import XCTest
 @testable import TradingCardScanner
 
 final class UnresolvedScanStoreTests: XCTestCase {
+    func testUnknownGameSnapshotRemainsVisibleReadOnlyAcrossRelaunch() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let identifier = try ScanIdentifier(game: CardGame(rawValue: "future-game"),
+            namespace: "numbered-card", fields: [.init(key: "number", value: "F01-001")],
+            displayIdentifier: "F01-001", suppressionIdentity: "F01-001")
+        let row = UnresolvedScan(subject: ScanSubject(identifier: identifier), reason: .lookupFailed)
+        let initialSave = await store.save([row])
+        XCTAssertTrue(initialSave)
+        let loaded = await UnresolvedScanStore(fileURL: store.fileURL).load()
+        XCTAssertEqual(loaded.count, 1)
+        XCTAssertEqual(loaded.first?.identifier, identifier)
+        XCTAssertEqual(loaded.first?.game.rawValue, "future-game")
+        XCTAssertTrue(loaded.first?.isReadOnly == true)
+    }
+
+    func testFutureSnapshotFieldsAndMalformedNeighborAreRetained() async throws {
+        let (directory, store) = makeStore()
+        let fileURL = await store.fileURL
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let identifier = try ScanIdentifier(game: CardGame(rawValue: "future-game"),
+            namespace: "numbered-card", fields: [.init(key: "number", value: "F01-001")],
+            displayIdentifier: "F01-001", suppressionIdentity: "F01-001")
+        let row = UnresolvedScan(subject: ScanSubject(identifier: identifier), reason: .lookupFailed)
+        let encoded = try JSONEncoder().encode(UnresolvedScanRecord(scan: row))
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        var snapshot = try XCTUnwrap(object["identifierSnapshot"] as? [String: Any])
+        snapshot["schemaVersion"] = 99
+        snapshot["futureEvidence"] = ["retained": true]
+        object["identifierSnapshot"] = snapshot
+        object["futureRecordProperty"] = "keep"
+        let malformed: [String: Any] = ["futureUnsupportedRecord": true]
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try JSONSerialization.data(withJSONObject: [object, malformed]).write(to: fileURL)
+        let loaded = await store.load()
+        XCTAssertEqual(loaded.count, 1)
+        XCTAssertTrue(loaded[0].isReadOnly)
+        let saved = await store.save(loaded)
+        XCTAssertTrue(saved)
+        let retained = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fileURL)) as? [[String: Any]])
+        XCTAssertEqual(retained.count, 2)
+        XCTAssertEqual(retained[0]["futureRecordProperty"] as? String, "keep")
+        let retainedSnapshot = try XCTUnwrap(retained[0]["identifierSnapshot"] as? [String: Any])
+        XCTAssertEqual(retainedSnapshot["schemaVersion"] as? Int, 99)
+        XCTAssertNotNil(retainedSnapshot["futureEvidence"])
+        XCTAssertEqual(retained[1]["futureUnsupportedRecord"] as? Bool, true)
+    }
+
+    func testLegacyRecordWithoutSnapshotStillRehydrates() async throws {
+        let (directory, store) = makeStore()
+        let fileURL = await store.fileURL
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let row = UnresolvedScan(subject: historicalSubject(localID: "1"), reason: .interrupted)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(UnresolvedScanRecord(scan: row))) as? [String: Any])
+        object.removeValue(forKey: "identifierSnapshot")
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try JSONSerialization.data(withJSONObject: [object]).write(to: fileURL)
+        let loaded = await store.load()
+        XCTAssertEqual(loaded.first?.identifier, row.identifier)
+        XCTAssertFalse(loaded.first?.isReadOnly ?? true)
+    }
+
     func testInterruptedAdditionalCopyMarkerSurvivesRelaunch() async throws {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }
@@ -274,7 +336,7 @@ final class UnresolvedScanStoreTests: XCTestCase {
         let restored = await store.load(registry: registry)
         XCTAssertEqual(restored.count, 1)
         XCTAssertFalse(restored[0].isReadOnly)
-        guard case let .pokemon(code, localID, denominator, _) = restored[0].identifier else {
+        guard case let .pokemon(code, localID, denominator, _) = restored[0].identifier.legacyIdentity else {
             return XCTFail("the saved printed set code was lost before the registry loaded")
         }
         XCTAssertEqual(code, "ZZZ")
@@ -297,7 +359,7 @@ final class UnresolvedScanStoreTests: XCTestCase {
         await store.save([row])
 
         let restored = await store.load(registry: .bundledSeed)
-        guard case let .magic(_, _, language, _) = restored.first?.identifier else {
+        guard case let .magic(_, _, language, _) = restored.first?.identifier.legacyIdentity else {
             return XCTFail("expected a Magic unresolved row")
         }
         XCTAssertEqual(language, "ja")

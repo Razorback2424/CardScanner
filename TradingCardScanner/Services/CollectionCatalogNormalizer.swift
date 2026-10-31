@@ -39,15 +39,6 @@ struct ImportedCatalogMetadata: Sendable {
     }
 }
 
-private struct ImportedCatalogRequest: Hashable, Sendable {
-    let sourceProviderID: String
-    let game: CardGame
-    let name: String
-    let setName: String
-    let cardNumber: String
-    let itemKind: CollectionItemKind
-}
-
 private struct ImportedCatalogResolution: Sendable {
     var matches: [String: ImportedCatalogMetadata] = [:]
     /// Sealed rows for which the vendor directory and every relevant product
@@ -65,7 +56,7 @@ fileprivate struct ImportedCatalogRowIdentity: Sendable {
 }
 
 fileprivate struct ImportedCatalogNormalizationInputs: Sendable {
-    let requests: [ImportedCatalogRequest]
+    let requests: [GameImportRequest]
     let rowIdentitiesByProviderID: [String: [ImportedCatalogRowIdentity]]
 }
 
@@ -85,6 +76,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     @Published private(set) var status: Status = .idle
 
     private let resolver: ImportedCatalogBatchResolver
+    private let gameRegistry: CardGameRegistry
     private nonisolated static let retryInterval: TimeInterval = 8 * 60 * 60
     /// Bumped whenever the resolver learns to match something it previously
     /// could not, so existing collections re-run against the new rules instead
@@ -105,9 +97,14 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
     init(
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
-        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared)
+        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared),
+        gameRegistry: CardGameRegistry = .standard,
+        gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
+        gameActivationSources: [any GameCatalogActivationSource] = []
     ) {
-        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, justTCG: justTCG)
+        self.gameRegistry = gameRegistry
+        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, justTCG: justTCG,
+            gameImportAdapters: gameImportAdapters, gameActivationSources: gameActivationSources)
     }
 
     /// Production callers use a context dedicated to catalog normalization.
@@ -143,7 +140,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
         let inputActor = CollectionCatalogNormalizationInputActor(
             modelContainer: context.container
         )
-        let inputs = await inputActor.inputs(now: now)
+        let inputs = await inputActor.inputs(now: now, gameRegistry: gameRegistry)
         isCollectingInputs = false
         guard shouldContinue?() ?? true else { return }
         let requests = inputs.requests
@@ -175,9 +172,9 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
 
         let needsIdentityGate = requests.contains { request in
-            guard let metadata = matches[request.sourceProviderID],
+            guard let metadata = matches[request.identityKey],
                   let marketVariantID = metadata.justTCGVariantID else { return false }
-            guard let snapshots = rowIdentitiesByProviderID[request.sourceProviderID] else {
+            guard let snapshots = rowIdentitiesByProviderID[request.identityKey] else {
                 return false
             }
             return snapshots.contains { row in
@@ -189,12 +186,13 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 container: container,
                 timeout: .mainThread
             ) { writeContext in
+                    let store = CollectionStore(context: writeContext, gameRegistry: gameRegistry)
                     let priceLog = PriceObservationLog(context: writeContext)
                     for request in requests {
                         guard shouldContinue?() ?? true else {
                             throw CancellationError()
                         }
-                        let snapshots = rowIdentitiesByProviderID[request.sourceProviderID] ?? []
+                        let snapshots = rowIdentitiesByProviderID[request.identityKey] ?? []
                         let rowKeys = Array(Set(snapshots.map(\.collectionKey)))
                         guard !rowKeys.isEmpty else { continue }
                         let liveRows = try writeContext.fetch(
@@ -207,13 +205,15 @@ final class CollectionCatalogNormalizer: ObservableObject {
                             uniquingKeysWith: { first, _ in first }
                         )
                         let rows = liveRows.filter { row in
+                            guard row.cardGame == request.game,
+                                  store.permitsSyncedMetadataWrite(for: row) else { return false }
                             guard let snapshot = snapshotsByKey[row.collectionKey] else { return false }
                             return row.priceKey == snapshot.priceKey
                                 && row.providerID == snapshot.providerID
                                 && row.catalogProviderID == snapshot.catalogProviderID
                                 && row.justTCGVariantID == snapshot.marketVariantID
                         }
-                        if let metadata = matches[request.sourceProviderID] {
+                        if let metadata = matches[request.identityKey] {
                             for row in rows {
                                 let exactIdentityMatches: Bool
                                 let preserveExistingMetadata: Bool
@@ -253,7 +253,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
                                         variantUUID: marketVariantID,
                                         magicTreatments: row.magicTreatments
                                     )
-                                    normalizedRow = try CollectionStore(context: writeContext).rekey(
+                                    normalizedRow = try store.rekey(
                                         row,
                                         to: canonicalKey,
                                         magicTreatmentIDsRaw: row.magicTreatmentIDsRaw,
@@ -279,7 +279,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
                             }
                         } else {
                             let isDefinitiveSealedMiss = request.itemKind == .sealedProduct
-                                && resolution.definitiveSealedMisses.contains(request.sourceProviderID)
+                                && resolution.definitiveSealedMisses.contains(request.identityKey)
                             for row in rows {
                                 Self.recordCatalogMetadataCheck(
                                     on: row,
@@ -291,7 +291,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
                             }
                         }
                     }
-                    if writeContext.hasChanges { try writeContext.save() }
+                    if writeContext.hasChanges {
+                        try store.validatePendingGameWrites()
+                        try writeContext.save()
+                    }
                 }
         }
 
@@ -421,11 +424,13 @@ final class CollectionCatalogNormalizer: ObservableObject {
 /// across the provider suspension.
 @ModelActor
 actor CollectionCatalogNormalizationInputActor {
-    fileprivate func inputs(now: Date) -> ImportedCatalogNormalizationInputs {
+    fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry) -> ImportedCatalogNormalizationInputs {
         let readContext = ModelContext(modelContext.container)
+        let store = CollectionStore(context: readContext, gameRegistry: gameRegistry)
         var allCards = (try? readContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
         let repairs = allCards.compactMap { card -> (key: String, oldURL: String, newURL: String, updateThumbnail: Bool)? in
             guard card.itemKind == .sealedProduct,
+                  store.permitsSyncedMetadataWrite(for: card),
                   let oldURL = card.imageURL,
                   let newURL = CollectionCatalogNormalizer
                     .migratedLegacySealedArtworkURL(from: oldURL) else {
@@ -439,6 +444,7 @@ actor CollectionCatalogNormalizationInputActor {
                     container: modelContext.container,
                     timeout: .wait
                 ) { context in
+                    let writeStore = CollectionStore(context: context, gameRegistry: gameRegistry)
                     let keys = Array(Set(repairs.map(\.key)))
                     let rows = try context.fetch(
                         FetchDescriptor<CollectedCard>(
@@ -452,11 +458,15 @@ actor CollectionCatalogNormalizationInputActor {
                     for row in rows {
                         guard let repair = repairsByKey[row.collectionKey],
                               row.itemKind == .sealedProduct,
+                              writeStore.permitsSyncedMetadataWrite(for: row),
                               row.imageURL == repair.oldURL else { continue }
                         row.imageURL = repair.newURL
                         if repair.updateThumbnail { row.thumbnailURL = repair.newURL }
                     }
-                    if context.hasChanges { try context.save() }
+                    if context.hasChanges {
+                        try writeStore.validatePendingGameWrites()
+                        try context.save()
+                    }
                 }
                 readContext.rollback()
                 allCards = try readContext.fetch(FetchDescriptor<CollectedCard>())
@@ -468,14 +478,17 @@ actor CollectionCatalogNormalizationInputActor {
         }
 
         let candidates = allCards.filter {
-            CollectionCatalogNormalizer.needsNormalization($0, now: now)
+            store.permitsSyncedMetadataWrite(for: $0)
+                && CollectionCatalogNormalizer.needsNormalization($0, now: now)
         }
         let requests = Dictionary(
             candidates.map { card in
                 (
-                    card.providerID,
-                    ImportedCatalogRequest(
+                    GameImportRequest.identityKey(game: card.cardGame, providerID: card.providerID,
+                                                  catalogProviderID: card.catalogProviderID, itemKind: card.itemKind),
+                    GameImportRequest(
                         sourceProviderID: card.providerID,
+                        catalogProviderID: card.catalogProviderID,
                         game: card.cardGame,
                         name: card.name,
                         setName: card.setName,
@@ -485,11 +498,12 @@ actor CollectionCatalogNormalizationInputActor {
                 )
             },
             uniquingKeysWith: { first, _ in first }
-        ).values.sorted { $0.sourceProviderID < $1.sourceProviderID }
+        ).values.sorted { $0.identityKey < $1.identityKey }
         let rowIdentitiesByProviderID = candidates.reduce(
             into: [String: [ImportedCatalogRowIdentity]]()
         ) { result, card in
-            result[card.providerID, default: []].append(
+            result[GameImportRequest.identityKey(game: card.cardGame, providerID: card.providerID,
+                                                catalogProviderID: card.catalogProviderID, itemKind: card.itemKind), default: []].append(
                 ImportedCatalogRowIdentity(
                     collectionKey: card.collectionKey,
                     priceKey: card.priceKey,
@@ -510,6 +524,8 @@ actor CollectionCatalogNormalizationInputActor {
 /// Stateless and Sendable so the two provider-specific strategies can run in
 /// parallel without sharing mutable lookup state.
 private struct ImportedCatalogBatchResolver: Sendable {
+    private let gameImportAdapters: GameImportAdapterRegistry
+    private let gameActivationSources: [CardGame: any GameCatalogActivationSource]
     private let tcgdex: any TCGdexCatalogSource
     private let pokemonArtwork = PokemonTCGAPIService()
     private let scryfall = ScryfallService()
@@ -518,19 +534,50 @@ private struct ImportedCatalogBatchResolver: Sendable {
 
     init(
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
-        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared)
+        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared),
+        gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
+        gameActivationSources: [any GameCatalogActivationSource] = []
     ) {
         self.tcgdex = tcgdex
         self.justTCG = justTCG
+        self.gameImportAdapters = gameImportAdapters
+        self.gameActivationSources = Dictionary(gameActivationSources.map { ($0.game, $0) },
+                                               uniquingKeysWith: { first, _ in first })
     }
 
-    func resolve(_ requests: [ImportedCatalogRequest]) async -> ImportedCatalogResolution {
+    func resolve(_ requests: [GameImportRequest]) async -> ImportedCatalogResolution {
+        var adapters = gameImportAdapters
+        for game in Set(requests.map(\.game)) {
+            if let source = gameActivationSources[game],
+               let snapshot = await source.currentSnapshot(),
+               let adapter = snapshot.importer, adapter.game == game {
+                adapters = adapters.replacing(adapter)
+            }
+        }
+        let adapted = requests.filter { adapters.adapter(for: $0.game) != nil }
+        let requests = requests.filter { adapters.adapter(for: $0.game) == nil }
         // Sealed identity is the only artwork pass here that consumes the
         // metered JustTCG allowance. Finish it first so raw-card catalog work
         // can never race it for the requests intentionally reserved above the
         // background ceiling.
         var resolution = await resolveSealed(requests.filter { $0.itemKind == .sealedProduct })
         var result = resolution.matches
+        let groups = Dictionary(grouping: adapted, by: \.game)
+        await withTaskGroup(of: (CardGame, String?, [String: ImportedCatalogMetadata]).self) { group in
+            for (game, rows) in groups {
+                guard let adapter = adapters.adapter(for: game) else { continue }
+                group.addTask {
+                    let allowed = Set(rows.map(\.identityKey))
+                    let matches = await adapter.metadata(for: rows).filter { allowed.contains($0.key) }
+                    return (game, adapter.generation, matches)
+                }
+            }
+            for await (game, generation, matches) in group {
+                if let source = gameActivationSources[game], let generation,
+                   await source.currentSnapshot()?.importer?.generation != generation { continue }
+                result.merge(matches, uniquingKeysWith: { first, _ in first })
+            }
+        }
         let cards = requests.filter { $0.itemKind != .sealedProduct }
         async let pokemon = resolvePokemon(cards.filter { $0.game == .pokemon })
         async let magic = resolveMagic(cards.filter { $0.game == .magic })
@@ -540,7 +587,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
             guard request.game == .pokemon, request.itemKind == .rawCard else { return false }
             guard CatalogIdentityNormalization.japaneseSetID(forImportedName: request.setName) == nil
             else { return false }
-            return result[request.sourceProviderID]?.imageURL == nil
+            return result[request.identityKey]?.imageURL == nil
         }
         guard !missingArtwork.isEmpty else {
             resolution.matches = result
@@ -559,7 +606,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                         setName: request.setName,
                         cardNumber: request.cardNumber
                     ) else { return nil }
-                    return (request.sourceProviderID, card)
+                    return (request.identityKey, card)
                 }
             }
             while let match = await group.next() {
@@ -598,7 +645,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                             setName: request.setName,
                             cardNumber: request.cardNumber
                         ) else { return nil }
-                        return (request.sourceProviderID, card)
+                        return (request.identityKey, card)
                     }
                 }
             }
@@ -611,12 +658,12 @@ private struct ImportedCatalogBatchResolver: Sendable {
     /// Resolve a whole set at once so several boxes cost one catalogue request
     /// instead of one request each.
     private func resolveSealed(
-        _ requests: [ImportedCatalogRequest]
+        _ requests: [GameImportRequest]
     ) async -> ImportedCatalogResolution {
         guard !requests.isEmpty, PriceVendorCredentials.hasKey else { return .init() }
         var resolution = ImportedCatalogResolution()
 
-        for game in CardGame.allCases {
+        for game in CardGameRegistry.standard.games(supporting: .sealed) {
             let gameRequests = requests.filter { $0.game == game }
             guard !gameRequests.isEmpty else { continue }
             let sets: [SealedSetSummary]
@@ -629,7 +676,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
             }
             guard !Task.isCancelled else { return resolution }
 
-            var requestsBySetID: [String: [ImportedCatalogRequest]] = [:]
+            var requestsBySetID: [String: [GameImportRequest]] = [:]
             for request in gameRequests {
                 let importedSet = CatalogIdentityNormalization.canonicalSetName(
                     request.setName,
@@ -638,7 +685,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 guard let set = sets.first(where: {
                     CatalogIdentityNormalization.canonicalSetName($0.name, game: game) == importedSet
                 }) else {
-                    resolution.definitiveSealedMisses.insert(request.sourceProviderID)
+                    resolution.definitiveSealedMisses.insert(request.identityKey)
                     continue
                 }
                 requestsBySetID[set.id, default: []].append(request)
@@ -673,10 +720,10 @@ private struct ImportedCatalogBatchResolver: Sendable {
                         named: request.name,
                         in: products
                     ) else {
-                        resolution.definitiveSealedMisses.insert(request.sourceProviderID)
+                        resolution.definitiveSealedMisses.insert(request.identityKey)
                         continue
                     }
-                    resolution.matches[request.sourceProviderID] = ImportedCatalogMetadata(
+                    resolution.matches[request.identityKey] = ImportedCatalogMetadata(
                         providerID: product.id,
                         setCode: "",
                         rarity: nil,
@@ -713,15 +760,15 @@ private struct ImportedCatalogBatchResolver: Sendable {
     }
 
     private func resolvePokemon(
-        _ requests: [ImportedCatalogRequest]
+        _ requests: [GameImportRequest]
     ) async -> [String: ImportedCatalogMetadata] {
         guard !requests.isEmpty,
               let directory = try? await tcgdex.fetchSetDirectory(locale: .en) else {
             return [:]
         }
 
-        var requestsBySetID: [String: [ImportedCatalogRequest]] = [:]
-        var japaneseRequestsBySetID: [String: [ImportedCatalogRequest]] = [:]
+        var requestsBySetID: [String: [GameImportRequest]] = [:]
+        var japaneseRequestsBySetID: [String: [GameImportRequest]] = [:]
         for request in requests {
             // Japanese-exclusive sets are absent from the English edition
             // entirely, so they are routed by an explicit name map rather than
@@ -786,7 +833,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
 
     private nonisolated static func resolvePokemonSet(
         id: String,
-        requests: [ImportedCatalogRequest],
+        requests: [GameImportRequest],
         locale: TCGdexLocale = .en,
         service: any TCGdexCatalogSource,
         registry: PokemonCatalogRegistry
@@ -804,7 +851,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         }
         let releaseOrder = registry.releaseOrder(forProviderSetID: set.id) ?? 0
 
-        var resolvedBriefs: [(ImportedCatalogRequest, TCGdexCardBrief)] = []
+        var resolvedBriefs: [(GameImportRequest, TCGdexCardBrief)] = []
         for request in requests {
             let number = CatalogIdentityNormalization.localNumber(request.cardNumber)
             guard let candidates = cardsByNumber[number] else { continue }
@@ -832,7 +879,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 cursor += 1
                 group.addTask {
                     (
-                        request.sourceProviderID,
+                        request.identityKey,
                         await Self.pokemonMetadata(
                             request: request,
                             brief: brief,
@@ -852,7 +899,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 cursor += 1
                 group.addTask {
                     (
-                        request.sourceProviderID,
+                        request.identityKey,
                         await Self.pokemonMetadata(
                             request: request,
                             brief: brief,
@@ -870,7 +917,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
     }
 
     private nonisolated static func pokemonMetadata(
-        request: ImportedCatalogRequest,
+        request: GameImportRequest,
         brief: TCGdexCardBrief,
         setID: String,
         locale: TCGdexLocale,
@@ -919,7 +966,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
     }
 
     private func resolveMagic(
-        _ requests: [ImportedCatalogRequest]
+        _ requests: [GameImportRequest]
     ) async -> [String: ImportedCatalogMetadata] {
         guard !requests.isEmpty else { return [:] }
         async let setDirectory = scryfall.fetchSetDirectory()
@@ -936,7 +983,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
             let name: String
         }
 
-        var requestsByLookup: [LookupKey: [ImportedCatalogRequest]] = [:]
+        var requestsByLookup: [LookupKey: [GameImportRequest]] = [:]
         for request in requests {
             guard let set = CatalogIdentityNormalization.matchingSets(
                 named: request.setName,
@@ -1021,7 +1068,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
                     guard let card = candidates.first(where: {
                         CatalogIdentityNormalization.namesMatch(imported: request.name, catalog: $0.name)
                     }) else { continue }
-                    result[request.sourceProviderID] = ImportedCatalogMetadata(
+                    result[request.identityKey] = ImportedCatalogMetadata(
                         providerID: card.id,
                         setCode: card.setCode.uppercased(),
                         rarity: card.rarity,

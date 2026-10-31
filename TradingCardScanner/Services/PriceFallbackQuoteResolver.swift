@@ -11,6 +11,7 @@ enum PriceFallbackQuoteResolution: Equatable {
     case failed(Failure)
 
     enum Failure: Equatable {
+        case unsupportedGame
         case noExactPrice
         /// The vendor search did not identify this card as a product. This is
         /// a matching outcome, not proof that a matched product lacks a price.
@@ -93,17 +94,20 @@ final class PriceFallbackQuoteResolver {
     private let productService: ProductPriceService
     private let transport: JustTCGTransport
     private let marketPrices: PokemonMarketPriceResolver
+    private let gameRegistry: CardGameRegistry
 
     init(
         context: ModelContext,
         productService: ProductPriceService = ProductPriceService.shared,
         transport: JustTCGTransport = JustTCGTransport.shared,
-        tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared
+        tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
+        gameRegistry: CardGameRegistry = .standard
     ) {
         self.context = context
         self.productService = productService
         self.transport = transport
         self.marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource)
+        self.gameRegistry = gameRegistry
     }
 
     /// Whether a catalog answer leaves work for the USD fallback. A non-USD
@@ -191,6 +195,7 @@ final class PriceFallbackQuoteResolver {
         lookupCandidates: [JustTCGBatchLookup] = []
     ) async -> PriceFallbackQuoteResolution {
         // This free exact-product path is independent of the paid vendor setting/key.
+        guard gameRegistry.supports(game, .pricing) else { return .failed(.unsupportedGame) }
         let bulkQuote: PriceLookup?
         var bulkFailed = false
         do {
@@ -335,7 +340,7 @@ final class PriceFallbackQuoteResolver {
         variant: PhysicalVariant?
     ) -> [JustTCGBatchLookup] {
         var lookups = verifiedLookups(card: card, variant: variant)
-        if case let .magic(magic) = card,
+        if case let .magic(magic) = card.legacyIdentity,
            let tcgplayerID = magic.tcgplayerID {
             lookups.append(.tcgplayerID(String(tcgplayerID)))
         }

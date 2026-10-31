@@ -632,6 +632,8 @@ enum CollectionCSV {
         _ plan: CollectionCSVImportPlan,
         to context: ModelContext,
         batchSize: Int = 100,
+        gameRegistry: CardGameRegistry = .standard,
+        gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
         progress: (@Sendable (Int, Int) -> Void)? = nil,
         shouldContinue: (@Sendable () -> Bool)? = nil
     ) throws -> CollectionCSVImportResult {
@@ -647,7 +649,7 @@ enum CollectionCSV {
             // The same store the scanner writes through. An import is an
             // ownership mutation like any other; it does not get its own rules
             // for identity, history or the ledger.
-            let collectionStore = CollectionStore(context: context)
+            let collectionStore = CollectionStore(context: context, gameRegistry: gameRegistry)
             let priceRecords = try context.fetch(FetchDescriptor<PriceRecord>())
             let priceObservations = try context.fetch(FetchDescriptor<PriceObservation>())
             let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(
@@ -777,6 +779,10 @@ enum CollectionCSV {
 
                     do {
                         let entry = plan.entries[index]
+                        guard gameRegistry.supports(entry.game, .collectionWrite) else {
+                            throw CardGameSupportError.unsupportedGame(entry.game)
+                        }
+                        try gameImportAdapters.validate(entry)
                         let operationID = plan.operationID(for: entry)
                         let existingOperationEvents = try ledger.events(forOperationID: operationID)
                         if !existingOperationEvents.isEmpty {
@@ -1070,6 +1076,8 @@ enum CollectionCSV {
         to container: ModelContainer,
         batchSize: Int = 100,
         exclusiveToken: UUID,
+        gameRegistry: CardGameRegistry = .standard,
+        gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
         progress: (@Sendable (Int, Int) -> Void)? = nil,
         shouldContinue: (@Sendable () -> Bool)? = nil
     ) async throws -> CollectionCSVImportResult {
@@ -1078,6 +1086,8 @@ enum CollectionCSV {
             plan,
             exclusiveToken: exclusiveToken,
             batchSize: batchSize,
+            gameRegistry: gameRegistry,
+            gameImportAdapters: gameImportAdapters,
             progress: progress,
             shouldContinue: shouldContinue
         )
@@ -1096,8 +1106,13 @@ enum CollectionCSV {
         let explicitCollectionKey = nonempty(value(["collection_key"], in: row))
 
         let isScryfallExport = !(row["scryfall_uuid"] ?? "").isEmpty
-        let game = CardGame(rawValue: value(["game"], in: row)?.lowercased() ?? "")
-            ?? (isScryfallExport ? .magic : .pokemon)
+        let game: CardGame
+        if let explicitGame = row["game"] {
+            guard !explicitGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
+            game = CardGame(rawValue: explicitGame)
+        } else {
+            game = isScryfallExport ? .magic : .pokemon
+        }
         guard isSupportedLanguage(value(["language", "lang"], in: row)) else { return [] }
         let setName = value(["set_name"], in: row) ?? "Unknown Set"
         let setCode = value(["set_code", "set"], in: row) ?? ""
@@ -1201,10 +1216,15 @@ enum CollectionCSV {
     private static func portfolioEntries(from row: [String: String]) -> [CollectionCSVEntry] {
         let category = value(["category"], in: row)?.lowercased()
         let game: CardGame
-        switch category {
-        case "pokemon": game = .pokemon
-        case "magic: the gathering", "magic": game = .magic
-        default: return []
+        if let explicitGame = row["game"] {
+            guard !explicitGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
+            game = CardGame(rawValue: explicitGame)
+        } else {
+            switch category {
+            case "pokemon": game = .pokemon
+            case "magic: the gathering", "magic": game = .magic
+            default: return []
+            }
         }
 
         guard positiveInt(value(["quantity"], in: row)) > 0,
@@ -1310,8 +1330,8 @@ enum CollectionCSV {
     ) -> CollectionCSVEntry {
         let canonicalCardNumber = canonicalImportedCardNumber(cardNumber, game: game)
         let resolvedPrintRun = pokemonPrintRun
-            ?? (variant?.id == PhysicalVariant.firstEdition.id ? .firstEdition : nil)
-        let resolvedVariant = variant?.id == PhysicalVariant.firstEdition.id ? nil : variant
+            ?? (game == .pokemon && variant?.id == PhysicalVariant.firstEdition.id ? .firstEdition : nil)
+        let resolvedVariant = game == .pokemon && variant?.id == PhysicalVariant.firstEdition.id ? nil : variant
         let resolvedTreatmentIDs: [String]
         switch itemKind {
         case .rawCard:
@@ -1332,7 +1352,7 @@ enum CollectionCSV {
         let resolvedQuantity = itemKind == .gradedCard && resolvedCertificationNumber != nil
             ? 1
             : quantity
-        let baseKey = game == .magic ? "magic:\(providerID)" : providerID
+        let baseKey = game == .pokemon ? providerID : "\(game.rawValue):\(providerID)"
         let alreadyNamespacedKey: String? =
             // A legacy row may carry a previously namespaced provider id and
             // a later export may also expose catalog metadata. Preserve the
@@ -1844,6 +1864,8 @@ actor CollectionCSVImportActor {
         _ plan: CollectionCSVImportPlan,
         exclusiveToken: UUID,
         batchSize: Int,
+        gameRegistry: CardGameRegistry,
+        gameImportAdapters: GameImportAdapterRegistry,
         progress: (@Sendable (Int, Int) -> Void)?,
         shouldContinue: (@Sendable () -> Bool)?
     ) throws -> CollectionCSVImportResult {
@@ -1856,6 +1878,8 @@ actor CollectionCSVImportActor {
                 plan,
                 to: freshContext,
                 batchSize: batchSize,
+                gameRegistry: gameRegistry,
+                gameImportAdapters: gameImportAdapters,
                 progress: progress,
                 shouldContinue: shouldContinue
             )

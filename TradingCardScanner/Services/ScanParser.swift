@@ -37,7 +37,191 @@ struct RecognizedLine: Equatable, Sendable {
 /// `Hashable` because the session catalog caches resolved cards by identifier,
 /// which is what lets a second copy of an already-scanned printing skip the
 /// network entirely.
-enum ScanIdentifier: Equatable, Hashable, Sendable {
+/// Transitional typed projection for the existing game adapters. New games use
+/// the generic fields directly; they do not add cases to this projection.
+struct ScanIdentityField: Hashable, Codable, Sendable {
+    let key: String
+    let value: String
+}
+
+enum ScanIdentityError: Error {
+    case invalidNamespace
+    case duplicateOrEmptyField
+}
+
+struct ScanIdentifier: Hashable, Sendable {
+    let game: CardGame
+    let namespace: String
+    let fields: [ScanIdentityField]
+    let displayIdentifier: String
+    let suppressionIdentity: String
+    /// Pins semantic catalog context independently from OCR vocabulary. A game
+    /// module supplies this when catalog membership can change under a number.
+    let catalogGeneration: String?
+
+    init(game: CardGame, namespace: String, fields: [ScanIdentityField],
+         displayIdentifier: String, suppressionIdentity: String,
+         catalogGeneration: String? = nil) throws {
+        guard !namespace.isEmpty else { throw ScanIdentityError.invalidNamespace }
+        guard fields.allSatisfy({ !$0.key.isEmpty }),
+              Set(fields.map(\.key)).count == fields.count else {
+            throw ScanIdentityError.duplicateOrEmptyField
+        }
+        self.game = game
+        self.namespace = namespace
+        self.fields = fields.sorted { $0.key < $1.key }
+        self.displayIdentifier = displayIdentifier
+        self.suppressionIdentity = suppressionIdentity
+        self.catalogGeneration = catalogGeneration
+    }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.game == rhs.game && lhs.namespace == rhs.namespace && lhs.fields == rhs.fields
+            && lhs.catalogGeneration == rhs.catalogGeneration
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(game)
+        hasher.combine(namespace)
+        hasher.combine(fields)
+        hasher.combine(catalogGeneration)
+    }
+
+    private init(_ legacy: LegacyScanIdentifier) {
+        let namespace: String
+        var values: [String: String]
+        var suppressionValues: [String: String]?
+        switch legacy {
+        case let .pokemon(code, number, total, definition):
+            namespace = "modern"
+            values = ["printedCode": code, "localID": number, "denominator": String(total),
+                      "providerSetID": definition.tcgdexSetID,
+                      "officialCount": String(definition.officialCount),
+                      "releaseIndex": String(definition.releaseIndex)]
+        case let .pokemonPromo(prefix, localID, definition):
+            namespace = "promo"
+            values = ["prefix": prefix, "localID": localID, "providerSetID": definition.tcgdexSetID,
+                      "catalogLocalIDPrefix": definition.catalogLocalIDPrefix,
+                      "localIDPadWidth": String(definition.localIDPadWidth)]
+        case let .pokemonHistorical(evidence):
+            namespace = "historical"
+            let prefix: String
+            switch evidence.number.scheme {
+            case .officialSet: prefix = ""
+            case let .subset(value): prefix = value
+            }
+            values = ["localID": evidence.number.localID,
+                      "denominator": String(evidence.number.denominator), "subsetPrefix": prefix]
+            suppressionValues = values
+            let titleBytes = try! JSONEncoder().encode(evidence.titleCandidates)
+            values["titleReadings"] = String(decoding: titleBytes, as: UTF8.self)
+        case let .magic(code, number, language, kind):
+            namespace = "card"
+            values = ["setCode": code, "collectorNumber": number,
+                      "language": language, "contentKind": kind.rawValue]
+        case .opaque:
+            preconditionFailure("Opaque identities must use the generic initializer")
+        }
+        let suppression = Self.stableKey(namespace: namespace, values: suppressionValues ?? values)
+        try! self.init(game: legacy.game, namespace: namespace,
+                       fields: values.map { .init(key: $0.key, value: $0.value) },
+                       displayIdentifier: legacy.displayIdentifier, suppressionIdentity: suppression)
+    }
+
+    /// Length framing avoids collisions when values contain separator characters.
+    private static func stableKey(namespace: String, values: [String: String]) -> String {
+        ([namespace] + values.keys.sorted().flatMap { [$0, values[$0]!] })
+            .map { "\($0.utf8.count):\($0)" }.joined()
+    }
+
+    static func pokemon(setCode: String, cardNumber: String, printedTotal: Int,
+                        setDefinition: PokemonSetDefinition) -> Self {
+        Self(.pokemon(setCode: setCode, cardNumber: cardNumber,
+                      printedTotal: printedTotal, setDefinition: setDefinition))
+    }
+    static func pokemonPromo(prefix: String, localID: String,
+                             setDefinition: PokemonPromoSetDefinition) -> Self {
+        Self(.pokemonPromo(prefix: prefix, localID: localID, setDefinition: setDefinition))
+    }
+    static func pokemonHistorical(_ evidence: PokemonHistoricalScanEvidence) -> Self {
+        Self(.pokemonHistorical(evidence))
+    }
+    static func magic(setCode: String, collectorNumber: String, language: String,
+                      contentKind: MagicContentKind = .regular) -> Self {
+        Self(.magic(setCode: setCode, collectorNumber: collectorNumber,
+                    language: language, contentKind: contentKind))
+    }
+
+    /// Adapter bridge retains the original immutable definition context. It will
+    /// move with the Pokémon/Magic adapters when their service seams are extracted.
+    var legacyIdentity: LegacyScanIdentifier {
+        let values = Dictionary(uniqueKeysWithValues: fields.map { ($0.key, $0.value) })
+        if game == .pokemon, namespace == "modern",
+           let code = values["printedCode"], let number = values["localID"],
+           let total = values["denominator"].flatMap(Int.init),
+           let provider = values["providerSetID"],
+           let count = values["officialCount"].flatMap(Int.init),
+           let index = values["releaseIndex"].flatMap(Int.init) {
+            return .pokemon(setCode: code, cardNumber: number, printedTotal: total,
+                            setDefinition: .init(printedCode: code, tcgdexSetID: provider,
+                                                 officialCount: count, releaseIndex: index))
+        }
+        if game == .pokemon, namespace == "promo",
+           let prefix = values["prefix"], let localID = values["localID"],
+           let provider = values["providerSetID"], let catalogPrefix = values["catalogLocalIDPrefix"],
+           let width = values["localIDPadWidth"].flatMap(Int.init) {
+            return .pokemonPromo(prefix: prefix, localID: localID,
+                                 setDefinition: .init(printedPrefix: prefix, tcgdexSetID: provider,
+                                                      catalogLocalIDPrefix: catalogPrefix, localIDPadWidth: width))
+        }
+        if game == .pokemon, namespace == "historical",
+           let localID = values["localID"], let total = values["denominator"].flatMap(Int.init),
+           let prefix = values["subsetPrefix"],
+           let titleText = values["titleReadings"],
+           let titles = try? JSONDecoder().decode([String].self, from: Data(titleText.utf8)) {
+            return .pokemonHistorical(.init(number: .init(localID: localID, denominator: total,
+                scheme: prefix.isEmpty ? .officialSet : .subset(prefix: prefix)), titleCandidates: titles))
+        }
+        if game == .magic, namespace == "card",
+           let code = values["setCode"], let number = values["collectorNumber"],
+           let language = values["language"],
+           let kind = values["contentKind"].flatMap(MagicContentKind.init(rawValue:)) {
+            return .magic(setCode: code, collectorNumber: number, language: language, contentKind: kind)
+        }
+        return .opaque(game: game, display: displayIdentifier)
+    }
+
+    var magicContentKind: MagicContentKind { legacyIdentity.magicContentKind }
+}
+
+struct ScanIdentifierSnapshot: Codable, Equatable, Sendable {
+    let schemaVersion: Int
+    let game: CardGame
+    let namespace: String
+    let fields: [ScanIdentityField]
+    let displayIdentifier: String
+    let suppressionIdentity: String
+    let catalogGeneration: String?
+
+    init(identifier: ScanIdentifier) {
+        schemaVersion = 1
+        game = identifier.game
+        namespace = identifier.namespace
+        fields = identifier.fields
+        displayIdentifier = identifier.displayIdentifier
+        suppressionIdentity = identifier.suppressionIdentity
+        catalogGeneration = identifier.catalogGeneration
+    }
+
+    func identifier() throws -> ScanIdentifier {
+        try ScanIdentifier(game: game, namespace: namespace, fields: fields,
+                           displayIdentifier: displayIdentifier, suppressionIdentity: suppressionIdentity,
+                           catalogGeneration: catalogGeneration)
+    }
+}
+
+enum LegacyScanIdentifier: Equatable, Hashable, Sendable {
+    case opaque(game: CardGame, display: String)
     case pokemon(setCode: String, cardNumber: String, printedTotal: Int, setDefinition: PokemonSetDefinition)
     /// A Black Star Promo whose printed prefix is the set identity. It is kept
     /// separate from modern expansions because promo cards have no `/total`.
@@ -62,6 +246,7 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
         switch self {
         case .pokemon, .pokemonPromo, .pokemonHistorical: return .pokemon
         case .magic: return .magic
+        case let .opaque(game, _): return game
         }
     }
 
@@ -69,6 +254,7 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
         switch self {
         case .pokemon, .pokemonPromo, .pokemonHistorical: return .regular
         case let .magic(_, _, _, contentKind): return contentKind
+        case .opaque: return .regular
         }
     }
 
@@ -79,6 +265,7 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
     /// understood the marker rather than silently ignoring it.
     var displayIdentifier: String {
         switch self {
+        case let .opaque(_, display): return display
         case let .pokemon(setCode, cardNumber, printedTotal, _):
             let unpadded = ScanText.unpaddedPokemonLocalID(cardNumber)
             return "\(setCode) \(unpadded)/\(printedTotal)"
@@ -118,19 +305,13 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
 /// it errs the same way: a missed card costs one more pass, a phantom duplicate
 /// quietly corrupts a collection.
 indirect enum ScanSuppressionKey: Hashable, Sendable {
-    case identifier(ScanIdentifier)
-    case pokemonPrintedNumber(PokemonPrintedNumberEvidence)
+    case identifier(game: CardGame, key: String)
     case gradedSlab(base: ScanSuppressionKey, slab: String)
 }
 
 extension ScanIdentifier {
     var suppressionKey: ScanSuppressionKey {
-        switch self {
-        case let .pokemonHistorical(evidence):
-            return .pokemonPrintedNumber(evidence.number)
-        case .pokemon, .pokemonPromo, .magic:
-            return .identifier(self)
-        }
+        .identifier(game: game, key: suppressionIdentity)
     }
 }
 
@@ -209,6 +390,7 @@ struct CandidateConfirmationWindow {
     }
 
     private static func matches(_ lhs: ScanSubject, _ rhs: ScanSubject) -> Bool {
+        guard lhs.identifier.catalogGeneration == rhs.identifier.catalogGeneration else { return false }
         if lhs.slab != nil || rhs.slab != nil { return lhs == rhs }
         return lhs.suppressionKey == rhs.suppressionKey
     }
@@ -219,7 +401,7 @@ struct CandidateConfirmationWindow {
     ) -> ScanSubject {
         if let codeRead = observations.first(where: { subject in
             guard subject.inferredNameReadings == nil else { return false }
-            if case .pokemon = subject.identifier { return true }
+            if case .pokemon = subject.identifier.legacyIdentity { return true }
             return false
         }) {
             return codeRead
@@ -230,13 +412,13 @@ struct CandidateConfirmationWindow {
             if let inferred = subject.inferredNameReadings {
                 readings.append(contentsOf: inferred)
             }
-            if case let .pokemonHistorical(evidence) = subject.identifier {
+            if case let .pokemonHistorical(evidence) = subject.identifier.legacyIdentity {
                 readings.append(contentsOf: evidence.titleCandidates)
             }
         }
         readings = Array(Set(readings)).sorted()
 
-        switch candidate.identifier {
+        switch candidate.identifier.legacyIdentity {
         case let .pokemonHistorical(evidence):
             return ScanSubject(
                 identifier: .pokemonHistorical(
@@ -690,18 +872,14 @@ struct PokemonScanProfile: Sendable {
     /// individual line resolves, which handles split observations like "OBF" +
     /// "223/197" without making two visible card identifiers ambiguous.
     func parse(_ recognizedLines: [String]) -> ScanIdentifier? {
-        let lineCandidates = ScanText.unique(
-            recognizedLines.compactMap { uniqueCandidate(in: $0) }
-        )
+        guard case let .identified(subject) = parseOutcome(recognizedLines) else { return nil }
+        return subject.identifier
+    }
 
-        if lineCandidates.count == 1 {
-            return lineCandidates[0]
-        }
-        if lineCandidates.count > 1 {
-            return nil
-        }
-
-        return uniqueCandidate(in: recognizedLines.joined(separator: " "))
+    func parseOutcome(_ recognizedLines: [String]) -> GameRecognitionOutcome {
+        let lineCandidates = recognizedLines.flatMap { candidates(in: $0) }
+        if !lineCandidates.isEmpty { return .identities(lineCandidates) }
+        return .identities(candidates(in: recognizedLines.joined(separator: " ")))
     }
 
     func parse(_ recognizedText: String) -> ScanIdentifier? {
@@ -709,6 +887,11 @@ struct PokemonScanProfile: Sendable {
     }
 
     private func uniqueCandidate(in recognizedText: String) -> ScanIdentifier? {
+        let unique = candidates(in: recognizedText)
+        return unique.count == 1 ? unique[0] : nil
+    }
+
+    private func candidates(in recognizedText: String) -> [ScanIdentifier] {
         let normalized = recognizedText
             .uppercased()
             .replacingOccurrences(of: "\n", with: " ")
@@ -738,8 +921,7 @@ struct PokemonScanProfile: Sendable {
             }
         }
 
-        let unique = ScanText.unique(candidates)
-        return unique.count == 1 ? unique[0] : nil
+        return ScanText.unique(candidates)
     }
 
     private func numberMatches(in text: String) -> [(localID: String, total: Int)] {
@@ -934,6 +1116,7 @@ struct MagicScanProfile: Sendable {
         if unique.count == 1 {
             return .identified(unique[0])
         }
+        if unique.count > 1 { return .ambiguous }
         return rejectedCollectorInMagicFooter ? .spatiallyRejectedCollector : .nothing
     }
 
@@ -1218,6 +1401,7 @@ struct MagicScanProfile: Sendable {
 }
 
 enum MagicParseOutcome: Equatable {
+    case ambiguous
     case identified(ScanIdentifier)
     /// A known-code + EN footer window contained a textually valid collector
     /// reading that was rejected only because it was substantially to the right.

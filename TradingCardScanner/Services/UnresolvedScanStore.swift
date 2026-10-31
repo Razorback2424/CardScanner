@@ -7,6 +7,8 @@ actor UnresolvedScanStore {
 
     let fileURL: URL
     private var preservedReadOnlyRecords: [UUID: UnresolvedScanRecord] = [:]
+    private var originalRecordBytes: [UUID: Data] = [:]
+    private var undecodableRecordBytes: [Data] = []
     private enum WriteState { case unloaded, awaitingMerge(UUID), writable, blocked }
     private var writeState: WriteState = .unloaded
     private let readData: @Sendable (URL) throws -> Data
@@ -34,9 +36,11 @@ actor UnresolvedScanStore {
 
     func load(
         registry: PokemonCatalogRegistry = .bundledSeed,
-        magicDefinitions: [MagicSetDefinition] = MagicSetSnapshot.definitions
+        magicDefinitions: [MagicSetDefinition] = MagicSetSnapshot.definitions,
+        gameCatalogAdapters: GameCatalogAdapterRegistry = try! .init(adapters: [])
     ) -> [UnresolvedScan] {
-        if case let .loaded(scans, _) = loadResult(registry: registry, magicDefinitions: magicDefinitions) {
+        if case let .loaded(scans, _) = loadResult(registry: registry, magicDefinitions: magicDefinitions,
+                                                 gameCatalogAdapters: gameCatalogAdapters) {
             // Compatibility for callers that directly own the returned list.
             // The view model uses loadResult and saves its merged snapshot.
             writeState = .writable
@@ -47,15 +51,38 @@ actor UnresolvedScanStore {
 
     func loadResult(
         registry: PokemonCatalogRegistry = .bundledSeed,
-        magicDefinitions: [MagicSetDefinition] = MagicSetSnapshot.definitions
+        magicDefinitions: [MagicSetDefinition] = MagicSetSnapshot.definitions,
+        gameCatalogAdapters: GameCatalogAdapterRegistry = try! .init(adapters: [])
     ) -> LoadResult {
         let records: [UnresolvedScanRecord]
         do {
-            records = try JSONDecoder().decode([UnresolvedScanRecord].self, from: readData(fileURL))
+            let data = try readData(fileURL)
+            guard let items = try JSONSerialization.jsonObject(with: data) as? [Any] else {
+                throw CocoaError(.coderReadCorrupt)
+            }
+            var decoded: [UnresolvedScanRecord] = []
+            var originals: [UUID: Data] = [:]
+            var opaque: [Data] = []
+            for item in items {
+                let bytes = try JSONSerialization.data(withJSONObject: item, options: [.fragmentsAllowed])
+                if let record = try? JSONDecoder().decode(UnresolvedScanRecord.self, from: bytes) {
+                    decoded.append(record)
+                    originals[record.id] = bytes
+                } else {
+                    // A future or malformed entry cannot hide the other entries
+                    // or be silently deleted by their next successful save.
+                    opaque.append(bytes)
+                }
+            }
+            records = decoded
+            originalRecordBytes = originals
+            undecodableRecordBytes = opaque
         } catch {
             if Self.isMissingFile(error) {
                 writeState = .writable
                 preservedReadOnlyRecords.removeAll()
+                originalRecordBytes.removeAll()
+                undecodableRecordBytes.removeAll()
                 return .missing
             }
             writeState = .blocked
@@ -75,7 +102,8 @@ actor UnresolvedScanStore {
         )
         preservedReadOnlyRecords.removeAll(keepingCapacity: true)
         let scans = uniqueRecords.map { record in
-            let scan = record.rehydrate(registry: registry, magicByCode: magicByCode)
+            let scan = record.rehydrate(registry: registry, magicByCode: magicByCode,
+                                        gameCatalogAdapters: gameCatalogAdapters)
             if scan.isReadOnly {
                 preservedReadOnlyRecords[scan.id] = record
             }
@@ -127,7 +155,20 @@ actor UnresolvedScanStore {
                 withIntermediateDirectories: true
             )
             Self.excludeFromBackup(fileURL.deletingLastPathComponent())
-            let data = try JSONEncoder().encode(Array(records))
+            let encoder = JSONEncoder()
+            let objects: [Any] = try records.map { record in
+                let bytes: Data
+                if retainedReadOnlyIDs.contains(record.id),
+                   let original = originalRecordBytes[record.id] {
+                    bytes = original
+                } else {
+                    bytes = try encoder.encode(record)
+                }
+                return try JSONSerialization.jsonObject(with: bytes, options: [.fragmentsAllowed])
+            } + undecodableRecordBytes.map {
+                try JSONSerialization.jsonObject(with: $0, options: [.fragmentsAllowed])
+            }
+            let data = try JSONSerialization.data(withJSONObject: objects)
             try data.write(to: fileURL, options: .atomic)
             writeState = .writable
             Self.excludeFromBackup(fileURL)
@@ -190,11 +231,17 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
     let magicLanguage: String?
     /// Optional so records written before interrupted-copy recovery still decode.
     let isAdditionalCopy: Bool?
+    /// Optional to retain compatibility with records written by existing clients.
+    let identifierSnapshot: ScanIdentifierSnapshot?
+    /// Generation-bound physical choices; absent in legacy records.
+    let printingCandidates: [PhysicalPrintingCandidate]?
 
     init(scan: UnresolvedScan) {
         id = scan.id
         createdAt = scan.createdAt
         game = scan.game
+        identifierSnapshot = ScanIdentifierSnapshot(identifier: scan.identifier)
+        printingCandidates = scan.printingCandidates
         isAdditionalCopy = scan.isAdditionalCopy
         switch scan.reason {
         case .interrupted: reason = .interrupted; saveCandidateID = nil
@@ -216,7 +263,17 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             candidates: scan.candidates
         )
 
-        switch scan.identifier {
+        switch scan.identifier.legacyIdentity {
+        case .opaque:
+            pokemonLocalID = nil
+            pokemonDenominator = nil
+            pokemonSubsetPrefix = nil
+            setPrintedCode = nil
+            providerSetID = nil
+            magicSetCode = nil
+            magicCollectorNumber = nil
+            magicContentKind = nil
+            magicLanguage = nil
         case let .pokemon(code, localID, denominator, definition):
             pokemonLocalID = localID
             pokemonDenominator = denominator
@@ -266,10 +323,30 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
 
     fileprivate func rehydrate(
         registry: PokemonCatalogRegistry,
-        magicByCode: [String: MagicSetDefinition]
+        magicByCode: [String: MagicSetDefinition],
+        gameCatalogAdapters: GameCatalogAdapterRegistry
     ) -> UnresolvedScan {
         let identifier: ScanIdentifier
         var readOnly = false
+        if let snapshot = identifierSnapshot,
+           snapshot.game == game,
+           let restored = try? snapshot.identifier() {
+            identifier = restored
+            readOnly = snapshot.schemaVersion != 1 || snapshot.game != game
+                || !CardGameRegistry.standard.supports(restored.game, .scan)
+            switch restored.legacyIdentity {
+            case let .pokemon(code, _, _, _):
+                if registry.pokemonSetDefinition(forPrintedCode: code) == nil { readOnly = true }
+            case let .pokemonPromo(prefix, _, _):
+                if registry.pokemonPromoSetDefinition(forPrefix: prefix) == nil { readOnly = true }
+            case let .magic(code, _, _, _):
+                if magicByCode[code.uppercased()] == nil { readOnly = true }
+            case .pokemonHistorical: break
+            case .opaque:
+                readOnly = snapshot.schemaVersion != 1
+                    || gameCatalogAdapters.adapter(for: game).flatMap { try? $0.identifierForRetry(restored) } == nil
+            }
+        } else {
         switch game {
         case .pokemon:
             if let code = setPrintedCode,
@@ -331,6 +408,14 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
                 language: magicLanguage ?? "en",
                 contentKind: magicContentKind ?? .regular
             )
+        default:
+            identifier = try! ScanIdentifier(
+                game: game, namespace: "legacy-unavailable", fields: [],
+                displayIdentifier: displayIdentifier, suppressionIdentity: id.uuidString
+            )
+            readOnly = true
+        }
+        if identifierSnapshot != nil { readOnly = true }
         }
 
         let subject = ScanSubject(
@@ -352,6 +437,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             subject: subject,
             reason: reasonValue,
             createdAt: createdAt,
+            printingCandidates: printingCandidates ?? [],
             requestEvidence: UnresolvedScanRequestEvidence(
                 catalogIdentifier: catalogIdentifier,
                 titleReadings: titleReadings
@@ -361,7 +447,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             storedDisplayIdentifier: readOnly ? displayIdentifier : nil,
             candidateHints: candidateProviderIDsAndNames,
             mergeSessionID: {
-                if case .pokemonHistorical = identifier {
+                if case .pokemonHistorical = identifier.legacyIdentity {
                     return mergeSessionID ?? id
                 }
                 return nil

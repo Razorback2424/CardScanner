@@ -3,7 +3,7 @@ import Foundation
 /// A scanner finish lock may name either a physical finish or a reviewed Magic
 /// treatment. Treatment locks remain anchored to their physical finish so they
 /// can never invent a printing that the exact catalog does not publish.
-struct MagicFinishLock: Equatable, Hashable, Sendable, Identifiable {
+struct VariantLock: Equatable, Hashable, Sendable, Identifiable {
     let finish: PhysicalVariant
     let treatment: MagicTreatment?
 
@@ -24,20 +24,14 @@ struct MagicFinishLock: Equatable, Hashable, Sendable, Identifiable {
     /// The intentionally narrow menu surface. Magic exposes its three
     /// provider finishes plus the two reviewed treatment locks; Pokémon keeps
     /// the existing physical-variant menu unchanged.
-    static func selectable(for game: CardGame) -> [MagicFinishLock] {
-        let finishes = PhysicalVariant.selectable(for: game).map {
-            MagicFinishLock(finish: $0)
-        }
-        guard game == .magic else { return finishes }
-        return finishes + MagicTreatment.lockable.compactMap { treatment in
-            guard treatment.requiredFinishes.count == 1,
-                  let finish = treatment.requiredFinishes.first else {
-                return nil
-            }
-            return MagicFinishLock(finish: finish, treatment: treatment)
-        }
+    static func selectable(for game: CardGame, registry: CardGameRegistry = .standard) -> [VariantLock] {
+        registry.variantPolicy(for: game)?.lockOptions ?? []
     }
 }
+
+/// Source compatibility for callers during the runtime migration. IDs, labels,
+/// treatment qualification and lock applicability are unchanged.
+typealias MagicFinishLock = VariantLock
 
 /// Everything the resolver is allowed to reason from. Deliberately a plain value
 /// rather than the catalog card itself: the resolver must be testable without a
@@ -99,7 +93,7 @@ enum VariantOutcome: Equatable {
     /// user's Finish Lock named a variant or treatment this printing does not
     /// exist in — the
     /// catalog stays authoritative about what is physically possible.
-    case needsChoice(options: [PhysicalVariant], lockDidNotApply: MagicFinishLock?)
+    case needsChoice(options: [PhysicalVariant], lockDidNotApply: VariantLock?)
 }
 
 /// Sits between identity and collection mutation.
@@ -112,7 +106,7 @@ enum VariantOutcome: Equatable {
 enum VariantResolver {
     static func resolve(
         _ evidence: VariantEvidence,
-        finishLock: MagicFinishLock? = nil,
+        finishLock: VariantLock? = nil,
         printedFinish: PhysicalVariant? = nil
     ) -> VariantOutcome {
         let resolutionID = PerformanceSignpost.makeID()
@@ -205,7 +199,7 @@ enum VariantResolver {
     ) -> VariantOutcome {
         resolve(
             evidence,
-            finishLock: MagicFinishLock(finish: finishLock),
+            finishLock: VariantLock(finish: finishLock),
             printedFinish: printedFinish
         )
     }

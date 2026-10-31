@@ -336,7 +336,13 @@ struct CollectionStorageBootstrapDependencies {
         fileManager: FileManager = .default,
         readinessSource: any CloudRestorationReadinessSource = UnprovenCloudRestorationReadinessSource()
     ) -> Self {
-        let paths = CollectionStoragePaths.production(fileManager: fileManager)
+        var paths = CollectionStoragePaths.production(fileManager: fileManager)
+#if DEBUG && LOCAL_ONLY_SIGNING
+        if OnePieceCatalogBootstrap.isLocalReviewLaunch {
+            paths = .production(resolvedApplicationSupportURL: paths.applicationSupportURL
+                .appendingPathComponent("OnePieceLocalReview", isDirectory: true))
+        }
+#endif
         let manifestStore = CollectionStoreManifestStore(
             directoryURL: paths.collectionStorageDirectoryURL,
             isUsable: paths.isStable
