@@ -51,6 +51,19 @@ final class PriceSnapshotStore: ObservableObject {
         return prices[key]
     }
 
+    /// Price eligibility can select a different exact alias without changing
+    /// collection shape. A cached grid row must follow that selected key too.
+    func applying(to row: CollectionRow) -> CollectionRow {
+        var row = row
+        if let key = priceStorageKeyByCollectionKey[row.id] {
+            row.priceStorageKey = key
+            row.price = display(for: key) ?? .unknown
+        } else if let price = display(for: row.priceStorageKey) {
+            row.price = price
+        }
+        return row
+    }
+
     /// Applies only values that changed. A refresh may send repeated keys across
     /// checkpoint boundaries; those do not cause another publication.
     func apply(_ deltas: [PriceDelta]) {

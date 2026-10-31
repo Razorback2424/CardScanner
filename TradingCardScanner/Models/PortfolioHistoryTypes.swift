@@ -443,6 +443,18 @@ struct PortfolioHistoryResult: Equatable, Sendable {
         self.range == range
     }
 
+    /// Navigation retains the selected period, but its replay can gain prices
+    /// after the destination opens. Refresh that evidence without switching
+    /// ranges or moving an open breakdown across a day boundary.
+    func updatedForSamePeriod(from latest: PortfolioHistoryResult?) -> PortfolioHistoryResult {
+        guard let latest, latest.range == range,
+              let accountingInterval,
+              latest.accountingInterval == accountingInterval,
+              let latestInstant = latest.points.last?.instant,
+              latestInstant >= (points.last?.instant ?? .distantPast) else { return self }
+        return latest
+    }
+
     func movement(for collectionKey: String) -> PortfolioContributionDetail? {
         movementDetails[collectionKey]
     }

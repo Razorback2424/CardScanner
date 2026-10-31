@@ -47,6 +47,42 @@ private actor HistoryCalculationProbe {
 }
 
 final class PortfolioHistoryEngineTests: XCTestCase {
+    func testOpenAdditionBreakdownReceivesFirstPriceLearnedAfterNavigation() throws {
+        let acquisition = event(quantity: 1, at: date(2, hour: 9))
+        let captured = PortfolioHistoryEngine.calculate(input: input(
+            closes: [close(1, value: 0, market: 0)], events: [acquisition],
+            currentValue: 0, now: date(2, hour: 10), attribution: .init()), range: .oneDay)
+        let latest = PortfolioHistoryEngine.calculate(input: input(
+            closes: [close(1, value: 0, market: 0)], events: [acquisition],
+            observations: [observation(8, at: date(2, hour: 11))],
+            currentValue: 8, now: date(2, hour: 12),
+            attribution: .init(newlyAddedValue: money(8))), range: .oneDay)
+
+        XCTAssertEqual(captured.additions[acquisition.collectionKey], .zero)
+        let displayed = captured.updatedForSamePeriod(from: latest)
+        XCTAssertEqual(displayed.additions[acquisition.collectionKey], money(8))
+        XCTAssertEqual(displayed.addedQuantities[acquisition.collectionKey], 1)
+        XCTAssertEqual(displayed.accounting?.newlyAddedValue, money(8))
+        XCTAssertEqual(displayed, latest)
+    }
+
+    func testOpenPeriodRetainsItsSelectionWhenOtherHistoryResultsArrive() {
+        let captured = PortfolioHistoryEngine.calculate(input: input(
+            closes: [close(1, value: 0, market: 0)],
+            currentValue: 0, now: date(2, hour: 10)), range: .oneDay)
+        XCTAssertEqual(captured.updatedForSamePeriod(from: nil), captured)
+        for change in 0..<4 {
+            var unrelated = captured
+            switch change {
+            case 0: unrelated.range = .oneMonth
+            case 1: unrelated.accountingInterval?.liveDay = date(3)
+            case 2: unrelated.accountingInterval?.anchorDate = date(2)
+            default: unrelated.points[unrelated.points.count - 1].instant = date(2, hour: 9)
+            }
+            XCTAssertEqual(captured.updatedForSamePeriod(from: unrelated), captured)
+        }
+    }
+
     @MainActor
     func testPeriodSwitchRetainsCompletedPresentationUntilLatestRangeIsReady() async throws {
         let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")

@@ -1,3 +1,21 @@
+# 2026-10-30 — Indexed price history and resolved catalog pricing
+
+The aged-store 1,500-instrument × 365-day scan-write benchmark exceeded the
+owner-approved 50 ms gate. Added SwiftData indexes for daily price checks and
+price observations, and raised the app and test deployment targets to iOS 18.
+The [Lorcana production acceptance ledger](docs/release/lorcana-production-acceptance.md)
+distinguishes this source update from the earlier archived build; no new archive
+or distribution package is certified.
+
+Normalized Pokémon CSV holdings keep their local ownership identity. Raw
+Pokémon rows can now read through an exact catalog price only when finish and
+print run match; an owned quote or withdrawal takes precedence. Collection
+snapshots follow the selected price key, portfolio replay preserves earlier
+shared quotes only until an owned quote or withdrawal, and an open additions
+breakdown refreshes prices learned during the same selected period. Regression
+coverage was added for these paths and same-period refresh; no fresh test result
+is claimed in this pass.
+
 # 2026-10-30 — High-confidence review fixes
 
 Follow-up based on `db318a8`, committed as `00942d9`, `6813f22` and `4d420ab`,
