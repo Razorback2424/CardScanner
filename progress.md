@@ -1,3 +1,18 @@
+# 2026-10-31 — Refinement follow-up closed
+
+Steps 1–4 are complete on `refinement/review-followup-2026-10-31` at
+`5344635`. A direct remote check confirms that branch is pushed; `origin/main`
+was at `ade96f1` when the closeout was first published, before the requested
+main integration. The branch was pushed directly without a PR.
+
+The [closeout ledger](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+records shipped-code verification, both accuracy fixes and their reproduced
+regressions, and reconciled docs. Existing Mac artifacts confirm the final
+selection: **808 passed, eight skipped, zero failed**, with a passing Release
+build. This closeout adds no code or fresh test run. Physical index creation
+after upgrade, cross-device backdated coverage and owner-device/release gates
+remain open; earlier S6-reverted/S7-pending entries are historical.
+
 # 2026-10-31 — Refinement follow-up verification
 
 On `refinement/review-followup-2026-10-31` from `ade96f1`, Debug, Release and
@@ -5040,6 +5055,9 @@ historical.
   unverified; these are personal records, with no shared transaction backend.
 
 ### 2026-10-30 — Ordered refinement implementation; stopped at S6
+
+**Historical checkpoint:** superseded by the
+[2026-10-31 closeout](#2026-10-31--refinement-follow-up-closed).
 
 - Created `refinement/review-2026-10-30` from `f22d28f`. Accepted and pushed one
   commit per slice: S1 `f0149b0` (production owner-catalog exclusion), S2

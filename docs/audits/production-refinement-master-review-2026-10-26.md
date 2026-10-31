@@ -1,5 +1,12 @@
 # Production refinement master review
 
+**2026-10-31 closeout:** the [refinement follow-up](#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+is complete on `refinement/review-followup-2026-10-31` at `5344635`, verified
+on `origin`. Steps 1–4 are closed for the scoped simulator verification,
+accuracy fixes and documentation. Earlier S6-reverted/S7-pending notes are
+historical; the follow-up records the remaining index, cross-device coverage
+and owner-device limits. This closes the follow-up, not broader release acceptance.
+
 **2026-10-29 follow-up:** the [high-confidence refinement fixes](#2026-10-29-high-confidence-refinement-fixes)
 below record the later review's implementation, focused Simulator verification,
 and retained release/measurement boundaries. Earlier checkpoint counts below
@@ -773,9 +780,10 @@ A queued context/container lifetime issue is a source-level suspicion, not an
 established root cause: the pending request stores a `ModelContext`, and
 `startRecompute` reads `context.container`.
 
-S6 remains reverted and has no commit. Per the owner's stop-on-failed-acceptance
-rule, no additional engine fix was improvised. Resolving this failed gate, or an
-owner decision to defer S6, is required before continuing the ordered plan.
+At this historical checkpoint, S6 remained reverted and had no commit. Per the
+owner's stop-on-failed-acceptance rule, no additional engine fix was improvised.
+Resolving this failed gate, or an owner decision to defer S6, was required
+before continuing the ordered plan.
 
 ### Remaining work and evidence limits
 
@@ -801,6 +809,23 @@ The original stop record is retained.
   provider, CloudKit, archive or release readiness is claimed.
 
 ## 2026-10-31 refinement follow-up verification and accuracy fixes
+
+**Status:** complete; remote branch verified at `5344635` on 2026-10-31.
+At that verification point, `origin/main` was at `ade96f1` and the branch had
+not yet been merged. This closeout uses the existing Mac build/test artifacts;
+no new test run accompanies it. The later integration is recorded in Git history.
+
+| Follow-up step | Closed with |
+| --- | --- |
+| 1 — Verify what shipped | Configuration/resource checks, two passing S6 repetitions, S7 measurements and in-place simulator upgrade checks recorded below |
+| 2 — Defect A | `3241304`; reproduced failure, fixed owned-history cutoff and passing regression/expanded selection |
+| 3 — Defect B | `408e439`; reproduced failure, widened backdated-event coverage and passing regression/expanded selection |
+| 4 — Reconcile docs | `5344635`; audit, progress and release evidence reconciled, with this explicit closeout |
+
+The final combined selection has **808 passed, eight skipped, zero failed**;
+the final Release build passes. Physical index creation after upgrade and
+cross-device backdated coverage remain unresolved. Owner-device, provider,
+CloudKit, archive and release acceptance remain open as detailed below.
 
 **Candidate:** `refinement/review-followup-2026-10-31`, from `origin/main`
 at `ade96f1`. The starting tree was clean: the former eight local edits are
