@@ -184,9 +184,84 @@ final class CardShareContentTests: XCTestCase {
 final class CardShareRenderTests: XCTestCase {
     private let now = Date(timeIntervalSince1970: 1_793_448_000)
 
-    func testMissingArtworkCannotExportAPreviewPlaceholder() {
-        let content = CollectionShareImage(identity: identity, price: price, artwork: nil, showsFinishSheen: true)
-        XCTAssertNil(CardShareRenderer.render(content, artwork: nil))
+    func testBothImagesWithoutArtworkExportTheirIdentityAndPrice() throws {
+        try checkExport(CollectionShareImage(identity: identity, price: price, artwork: nil,
+            showsFinishSheen: true, now: now), name: "collection-without-artwork")
+        try checkExport(BuyCheckShareImage(identity: identity, price: price, ask: nil, trend: nil,
+            artwork: nil, now: now), name: "buy-without-artwork")
+    }
+
+    func testMissingSourcesFinishWithoutBlockingFactOnlyExport() async throws {
+        let state = CardShareArtworkState()
+        await state.load(localFilename: nil, remoteURLs: [])
+        XCTAssertFalse(state.isLoading)
+        XCTAssertNil(state.artwork)
+        XCTAssertEqual(state.revision, 1)
+        try checkExport(CollectionShareImage(identity: identity, price: nil, artwork: state.artwork,
+            showsFinishSheen: false, now: now), name: "manual-entry-without-artwork")
+    }
+
+    func testSlowLoadFailureAndRetryKeepBothSharesExportable() async throws {
+        let state = CardShareArtworkState()
+        let started = expectation(description: "Artwork load started")
+        var completion: CheckedContinuation<CardShareArtwork?, Never>?
+        let task = Task { @MainActor in
+            await state.load(localFilename: nil, remoteURLs: []) { _, _ in
+                await withCheckedContinuation { continuation in
+                    completion = continuation
+                    started.fulfill()
+                }
+            }
+        }
+        await fulfillment(of: [started], timeout: 2)
+        XCTAssertTrue(state.isLoading)
+        let loading = try checkExport(CollectionShareImage(identity: identity, price: price,
+            artwork: state.artwork, showsFinishSheen: true, now: now), name: "share-during-slow-load")
+        completion?.resume(returning: nil)
+        await task.value
+        XCTAssertFalse(state.isLoading)
+        XCTAssertNil(state.artwork)
+        try checkExport(BuyCheckShareImage(identity: identity, price: price, ask: nil, trend: nil,
+            artwork: state.artwork, now: now), name: "share-after-load-failure")
+
+        let recovered = artwork()
+        await state.load(localFilename: nil, remoteURLs: []) { _, _ in recovered }
+        XCTAssertTrue(state.artwork?.image === recovered.image)
+        XCTAssertEqual(state.revision, 2)
+        let retried = try checkExport(CollectionShareImage(identity: identity, price: price,
+            artwork: state.artwork, showsFinishSheen: true, now: now), name: "share-after-retry")
+        XCTAssertNotEqual(loading.pngData(), retried.pngData())
+    }
+
+    func testLateArtworkAttemptCannotOverwriteSuccessfulRetry() async throws {
+        let state = CardShareArtworkState()
+        let started = expectation(description: "Old artwork request started")
+        var completion: CheckedContinuation<CardShareArtwork?, Never>?
+        let oldTask = Task { @MainActor in
+            await state.load(localFilename: nil, remoteURLs: []) { _, _ in
+                await withCheckedContinuation { continuation in
+                    completion = continuation
+                    started.fulfill()
+                }
+            }
+        }
+        await fulfillment(of: [started], timeout: 2)
+        let current = artwork()
+        await state.load(localFilename: nil, remoteURLs: []) { _, _ in current }
+        completion?.resume(returning: artwork())
+        await oldTask.value
+        XCTAssertTrue(state.artwork?.image === current.image)
+        XCTAssertFalse(state.isLoading)
+        XCTAssertEqual(state.revision, 1)
+    }
+
+    func testPersonalPhotoBoundsAndCornerRadiusHandleExtremeShapes() {
+        XCTAssertEqual(CardShareArtworkLayout.aspect(for: artwork(size: CGSize(width: 200, height: 300), kind: .userPhoto)), 2 / 3, accuracy: 0.001)
+        XCTAssertEqual(CardShareArtworkLayout.aspect(for: artwork(size: CGSize(width: 360, height: 120), kind: .userPhoto)), 3)
+        XCTAssertEqual(CardShareArtworkLayout.aspect(for: artwork(size: CGSize(width: 20, height: 400), kind: .userPhoto)), 1 / 3, accuracy: 0.001)
+        XCTAssertEqual(CardShareArtworkLayout.aspect(for: artwork(size: CGSize(width: 400, height: 20), kind: .userPhoto)), 3)
+        XCTAssertEqual(CardShareArtworkLayout.aspect(for: artwork(size: CGSize(width: 400, height: 20), kind: .catalog)), 20)
+        XCTAssertLessThanOrEqual(CardShareArtworkLayout.cornerRadius(for: CGSize(width: 100, height: 20), kind: .userPhoto), 2)
     }
 
     func testCollectionExportsAtSocialImageResolutionAcrossVariants() throws {
@@ -232,11 +307,12 @@ final class CardShareRenderTests: XCTestCase {
             trend: nil, artwork: artwork(), now: now), name: "buy-no-history")
     }
 
-    func testUserPhotoExportsKeepPortraitAndPanoramicContent() throws {
-        for size in [CGSize(width: 120, height: 400), CGSize(width: 400, height: 120)] {
+    func testUserPhotoExportsIncludeOrdinaryAndExtremeAspectRatios() throws {
+        for size in [CGSize(width: 120, height: 360), CGSize(width: 360, height: 120),
+                     CGSize(width: 20, height: 400), CGSize(width: 400, height: 20)] {
             let photo = artwork(size: size, kind: .userPhoto)
             try checkExport(CollectionShareImage(identity: identity, price: nil,
-                artwork: photo, showsFinishSheen: true, now: now), name: "user-photo-\(Int(size.width))")
+                artwork: photo, showsFinishSheen: true, now: now), name: "user-photo-\(Int(size.width))-\(Int(size.height))")
         }
     }
 
@@ -261,13 +337,15 @@ final class CardShareRenderTests: XCTestCase {
         return CardShareArtwork(image: image, kind: kind)
     }
 
-    private func checkExport<Content: View>(_ content: Content, name: String) throws {
-        let image = try XCTUnwrap(CardShareRenderer.render(content, artwork: artwork()))
+    @discardableResult
+    private func checkExport<Content: View>(_ content: Content, name: String) throws -> UIImage {
+        let image = try XCTUnwrap(CardShareRenderer.render(content))
         XCTAssertEqual(image.cgImage?.width, 1080, name)
         XCTAssertEqual(image.cgImage?.height, 1350, name)
         let attachment = XCTAttachment(image: image)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+        return image
     }
 }

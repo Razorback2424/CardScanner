@@ -1,15 +1,64 @@
 # Card sharing — implementation hand-off
 
-**Status:** verified on Mac for Debug/Release builds, focused tests, exported
-fixtures and scoped simulator layouts — 2026-10-31. Native sharing, real-card
-interaction and physical-device acceptance remain open.
+**Status:** post-merge artwork-recovery follow-up — 2026-10-31. Debug tests,
+Release simulator build and scoped captures pass. Native sharing,
+real-card interaction and physical-device acceptance remain open on `main`.
 
-Branch `claude/card-share-sheet` now includes committed `main@17658c9` through
-merge `f1ff681`. The original Linux-only implementation at `a9b48c7` has been
-compiled and exercised on Mac. The original checkout's unrelated uncommitted
-changes were preserved in place; verification used an isolated worktree.
+[PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at
+15:41:17 UTC as `3053218`, after its verified draft state at 15:37. Draft status
+did not keep the feature off main. The remaining manual gates apply to main.
 
-## Mac verification — 2026-10-31
+**Known regression at reviewed `main@3053218`:** `e503728` prevented placeholder
+export by refusing all exports without artwork. That stranded manual entries,
+unillustrated sealed products and failed/offline image loads. The original
+guard-only test did not establish a usable recovery path. That behavior is
+repaired separately on `fix/card-share-artwork-recovery`; its evidence follows.
+
+## Post-merge review follow-up — 2026-10-31
+
+- Based on `main@3053218`. Both sheet images now have an intentional layout
+  without artwork, with identity and available prices and no photo placeholder.
+  Share becomes available after rendering those facts, even while artwork is
+  loading. A failed load offers **Retry** when there is a source to retry;
+  items with no source can still share their facts and close the sheet.
+- Removed the renderer's separate `artwork:` gate. Rendering depends only on
+  the view supplied. A shared artwork state handles load completion and retry,
+  discarding late results from older attempts.
+- Personal photos between 1:3 and 3:1 keep their proportions. More extreme
+  shapes receive a **centered crop** to those bounds, with corner radius based
+  on the shorter edge. This replaces the earlier unrestricted thin-strip
+  behavior; it does not promise that every extreme photograph stays whole.
+- The accessibility asking field has symmetric insets and retains its required
+  height when the recovery row is present. DEBUG review artwork is generated
+  locally through an injected loader; its states require no provider or warm
+  image cache.
+- Final Debug selection: **33 passed, zero failed/skipped** (17 logic, eight
+  render/recovery, eight detail-render tests). It exercises empty sources,
+  suspended loading, failure, successful retry and a late superseded result.
+  Both actual share-image views export without artwork; no unrelated image is
+  passed to a renderer guard to make the tests pass.
+- Inspected 23 exported fixtures and actual iPhone SE sheets, including a
+  source-free collection share and a failed price-check share at accessibility3
+  with German formatting. Close, Retry where applicable, and Share are visible;
+  the asking field fits inside its background. Native taps, saved-file parity
+  and physical-device acceptance remain manual.
+- Final Release build passes with Xcode 27.1 for the arm64 iPhone 16 / iOS 27
+  simulator, using `ONLY_ACTIVE_ARCH=YES`. The full suite was not rerun for this
+  follow-up;
+  the earlier full-run comparison below is historical evidence, not a fresh
+  assertion about this branch.
+
+Local evidence is on the external SSD under
+`/Volumes/T7/CodexBuild/card-share-recovery-20261031/`. The source review's
+functional dead end is tracked explicitly here rather than certified by the
+original placeholder-prevention checkbox.
+
+Follow-up design verdict: **RISK** pending native actions and spoken VoiceOver.
+Platform patterns, clarity, captured typography and interaction cost pass for
+the tested fixtures: Share stays primary and Retry is optional. Accessibility
+and App Review interaction acceptance still require the manual checks below.
+
+## Initial Mac verification — 2026-10-31 (historical)
 
 - Xcode 27.1, iOS 27.0, arm64 iPhone 16 simulator: Debug and Release pass.
   Release used `ONLY_ACTIVE_ARCH=YES`; this is simulator evidence, not an
@@ -35,9 +84,10 @@ changes were preserved in place; verification used an isolated worktree.
   accessibility3 text, German currency formatting, and iPad Pro 11-inch (M4).
   The large-text asking row initially truncated its label, explanation and
   currency field; the corrected stacked row was rebuilt and recaptured.
-- Export now refuses missing artwork instead of enabling Share with a
-  placeholder. Personal photos retain their actual aspect ratio rather than
-  being cropped to an arbitrary ratio range.
+- The initial export guard refused missing artwork, introducing the dead end
+  described above. Its unlimited photo aspect ratio also allowed extreme thin
+  strips. Those two earlier implementation claims are superseded by the
+  post-merge follow-up; the initial build/test counts remain historical facts.
 
 Build data, logs, result bundles and uncommitted captures are on the external
 SSD under `/Volumes/T7/CodexBuild/card-share-20261031/`. Interrupted runs and the
@@ -53,8 +103,9 @@ capture evidence, not acceptance of every real card or external share target.
 
 Design gate: **RISK** pending spoken VoiceOver and native share-target checks.
 Native presentation/control patterns, clarity, captured typography and
-interaction cost pass for the inspected fixtures. The three repaired issues
-were placeholder export, personal-photo cropping and large-text truncation.
+interaction cost pass for the inspected fixtures. The initial fixes addressed
+placeholder export, personal-photo cropping and large-text truncation; review
+found the first two incomplete as described above.
 The remaining acceptance work is listed in the unchecked items below.
 
 ## What it does
@@ -69,6 +120,8 @@ same facts as plain text. The image is chosen by where Share is tapped:
 
 Product rules the code enforces:
 
+- Missing, loading or failed artwork uses a deliberate layout without a photo;
+  it does not block sharing. Retry is optional when an artwork source exists.
 - A raw price is labelled with the provider's condition ("Near Mint market"
   for TCGplayer, TCGCSV and JustTCG; otherwise "Market price"), never as the
   copy's condition, which the app does not record.
@@ -133,8 +186,8 @@ Expected 17 passed. Expected values were computed by hand; if one fails, check
 `testAskParsingAcceptsLocaleAndPastedFormatting`, and the exact summary text in
 `testSummaryCarriesTheSameFactsAsTheImage` first.
 
-- [x] `CardShareContentTests` 17/17; added render tests 4/4; detail render tests 8/8
-- [x] Full suite has no new failures compared with clean main; six shared baseline failures remain
+- [x] Follow-up: `CardShareContentTests` 17/17; render/recovery tests 8/8; detail render tests 8/8
+- [x] Initial full suite had no new failures compared with clean main; six shared baseline failures remain (historical run, not repeated for the follow-up)
 
 ## 3. Simulator checks
 
@@ -144,10 +197,11 @@ Collection share (card detail → share icon left of the "…" menu):
 - [x] Normal export fixture: no badge, no sheen; unit test excludes Nonfoil badges
 - [x] Graded export fixture: white PSA 10 pill, "PSA 10 market", JustTCG footer
 - [x] Sealed export fixture: no number or set-code chip; "Market price"
-- [x] Synthetic personal-photo fixtures: no sheen, portrait/panoramic proportions preserved
+- [x] Synthetic personal-photo fixtures: no sheen; ordinary proportions preserved and extreme shapes cropped to 1:3–3:1 with adaptive corners
 - [x] No-price sheet fixture: disabled Price switch and readable explanation, including accessibility3
 - [ ] Price choice persists across sheets; with price off the footer shows only the mark
-- [ ] Share reads "Preparing…" until artwork loads; saved image is 1080 × 1350 and matches the preview; text arrives in Messages
+- [x] Follow-up: Share is available after rendering the facts, including missing, suspended and failed artwork loads; Retry is visible when a source exists
+- [ ] Native saved image is 1080 × 1350 and matches the preview; text arrives in Messages
 
 Buy check (Price Check result → share icon, top leading):
 
@@ -176,7 +230,8 @@ Both sheets:
 ## 4. Rendering questions
 
 - [ ] The sheen's soft-light and overlay blend modes survive `ImageRenderer`; if the export differs from the preview, replace them with low-opacity white gradients
-- [x] Missing/unfinished artwork cannot be exported (renderer guard and regression test); live slow-network timing remains manual
+- [x] Follow-up fixtures export the facts without a photo during missing/unfinished/failed loads, without exporting a photo placeholder
+- [ ] With actual images missing or the network off, confirm native Share, Retry when applicable, and Close work; the earlier refusal-to-export guard was a known dead end
 - [x] Exported chart end dot is not clipped, including asks outside the history range
 
 ## 5. Device checks
@@ -193,20 +248,26 @@ Both sheets:
   collection are covered by the collection share.
 - End-to-end UI automation for the native ShareLink activity sheet. Render
   fixtures now live in `CardShareRenderTests`; `-ui_debug_route CardShareReview`
-  opens the real sheets with named fixture states for repeatable captures.
+  opens the real sheets with locally generated artwork and named missing,
+  failed, retry, slow and extreme-photo states for offline captures.
 
 ## Remaining manual acceptance
 
 1. Exercise both entry points with actual collection cards and scan results,
    including graded, sealed, personal-photo and no-price cases; confirm Price
    persists after closing and reopening the sheet.
-2. Type asking prices, including `55,00` in Germany; verify live updates, Done
+2. Open Share on a manual entry or sealed product with no image, and with the
+   network off. Confirm the fact-only preview, native Share, optional Retry and
+   Close. Share a very tall photo and panorama; assess the intentional centered
+   crop when the source is outside 1:3–3:1.
+3. Type asking prices, including `55,00` in Germany; verify live updates, Done
    and preview-tap keyboard dismissal. Perform the spoken VoiceOver checks.
-3. Use Share → Save Image and compare that saved file with the preview,
+4. Use Share → Save Image and compare that saved file with the preview,
    including the foil effect and 1080 × 1350 dimensions. Test slow networking.
-4. On a real phone, send to Messages, Instagram Stories/feed, Discord and
+5. On a real phone, send to Messages, Instagram Stories/feed, Discord and
    Facebook; verify cropping and which targets retain the text. Judge the
    colorful Share button on device.
 
-See the dated verification entry in [`progress.md`](../../progress.md). These
-manual gates remain open even when the pull request is available for review.
+See the dated verification entries in [`progress.md`](../../progress.md). These
+manual gates apply to the feature already merged into main; neither the merge
+nor follow-up automated evidence closes them.
