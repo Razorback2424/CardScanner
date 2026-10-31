@@ -204,6 +204,7 @@ private struct CollectionCardDetailContent: View {
     @State private var isLoadingGradedFinishes = false
     @State private var gradedFinishLoadFailed = false
     @State private var gradedFinishRetry = 0
+    @State private var gradedFinishCorrectionMessage: String?
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
 #endif
@@ -800,7 +801,14 @@ private struct CollectionCardDetailContent: View {
                     }
                 }
                 if !options.isEmpty {
-                    Text("The slab stays the same card; this only corrects its printed finish.")
+                    Text(card.quantity > activity.remainingQuantity
+                        ? "Applies to the \(activity.remainingQuantity == 1 ? "most recently added copy" : "\(activity.remainingQuantity) most recently added copies"). Other copies keep their finish."
+                        : "The slab stays the same card; this only corrects its printed finish.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if let gradedFinishCorrectionMessage {
+                    Text(gradedFinishCorrectionMessage)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -923,13 +931,18 @@ private struct CollectionCardDetailContent: View {
         guard let token = generation.currentToken() else { return }
         let shouldContinue = generation.continuation(for: token)
         isOwnershipWritePending = true
+        gradedFinishCorrectionMessage = nil
         Task { @MainActor in
             defer { isOwnershipWritePending = false }
             do {
                 let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
-                try await CollectionExclusiveWrites.retryingIfRequired {
+                let mutation = try await CollectionExclusiveWrites.retryingIfRequired {
                     try await writer.correctFinish(collectionKey: collectionKey, treatments: treatments,
                         activityID: activityID, quantity: quantity, variant: variant, shouldContinue: shouldContinue)
+                }
+                guard generation.isCurrent(token) else { return }
+                if let mutation, mutation.collectionKey != collectionKey {
+                    gradedFinishCorrectionMessage = "Corrected \(quantity) \(quantity == 1 ? "copy" : "copies") to \(variant.label). Other copies kept their finish."
                 }
             } catch is CancellationError {
             } catch {
