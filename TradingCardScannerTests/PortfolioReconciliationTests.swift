@@ -587,6 +587,15 @@ final class PortfolioReconciliationTests: XCTestCase {
         }
         try context.save()
 
+        var storedScanPrice = false
+        let scanPriceWriteDuration = try clock.measure {
+            storedScanPrice = PriceStore(context: context).store(.price(NormalizedPrice(
+                unitMarketPriceUSD: 5, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "instrument-0", sourceUpdatedAt: nil, fetchedAt: .now)),
+                game: .pokemon, printingID: "instrument-0", variantID: nil)
+            try context.save()
+        }
+        XCTAssertTrue(storedScanPrice)
         let coverageDuration = clock.measure {
             _ = PortfolioReplaySnapshotBuilder.coverageIndex(
                 context: context,
@@ -605,6 +614,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         shape              \(instrumentCount) instruments × \(dayCount) days
         PriceCheckDay      \(checkDays) rows
         PriceObservation   \(observations) rows
+        scan price write   \(scanPriceWriteDuration)
         coverageIndex      \(coverageDuration)
         PriceRefreshDataIndex.init  \(indexDuration)
         ─────────────────────────────────────────────────────────────
