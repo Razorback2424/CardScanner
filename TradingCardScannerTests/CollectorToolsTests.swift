@@ -2,6 +2,7 @@ import XCTest
 import Compression
 import StoreKit
 import StoreKitTest
+import SwiftData
 import UIKit
 @testable import TradingCardScanner
 
@@ -410,5 +411,46 @@ final class CollectorToolsTests: XCTestCase {
             cursor += 46 + nameCount + extraCount + commentCount
         }
         return result
+    }
+}
+
+@MainActor
+final class ListingPhotoCardSourceTests: XCTestCase {
+    func testOnlyCardsWithAUsableSavedPhotoAreRead() throws {
+        let container = try ModelContainer(for: CollectedCard.self, LocalArtworkOverride.self,
+                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let context = container.mainContext
+        func insertCard(_ key: String, legacyFilename: String? = nil) {
+            let card = CollectedCard(collectionKey: key, game: .pokemon, providerID: key, name: key, setName: "Set",
+                setCode: "", cardNumber: "1", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                variant: .normal, variantResolution: .userConfirmed)
+            card.userArtworkFilename = legacyFilename
+            context.insert(card)
+        }
+        let older = Date(timeIntervalSince1970: 1_000)
+        let newer = Date(timeIntervalSince1970: 2_000)
+        insertCard("override")
+        insertCard("legacy", legacyFilename: "legacy.jpg")
+        insertCard("none")
+        insertCard("cleared-legacy", legacyFilename: "stale.jpg")
+        insertCard("cleared-override")
+        context.insert(LocalArtworkOverride(collectionKey: "override", filename: "older.jpg", updatedAt: older))
+        context.insert(LocalArtworkOverride(collectionKey: "override", filename: "newer.jpg", updatedAt: newer))
+        context.insert(LocalArtworkOverride(collectionKey: "cleared-legacy", filename: "", updatedAt: newer))
+        context.insert(LocalArtworkOverride(collectionKey: "cleared-override", filename: "kept.jpg", updatedAt: older))
+        context.insert(LocalArtworkOverride(collectionKey: "cleared-override", filename: "", updatedAt: newer))
+        try context.save()
+
+        let rows = try context.fetch(FetchDescriptor<LocalArtworkOverride>(
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]))
+        let latest = ListingPhotoCardSource.latestFilenames(rows)
+        let fetched = try context.fetch(ListingPhotoCardSource.descriptor(latest: latest))
+        XCTAssertEqual(Set(fetched.map(\.collectionKey)), ["override", "legacy", "cleared-legacy"],
+                       "Only cards with a photo key or a legacy filename are read")
+        let eligible = Dictionary(uniqueKeysWithValues: fetched.compactMap { card in
+            ListingPhotoCardSource.filename(for: card, latest: latest).map { (card.collectionKey, $0) }
+        })
+        XCTAssertEqual(eligible, ["override": "newer.jpg", "legacy": "legacy.jpg"],
+                       "The newest override wins, and an empty override clears a legacy filename")
     }
 }
