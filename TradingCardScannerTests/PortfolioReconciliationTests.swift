@@ -1495,6 +1495,47 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(engine.inputRevision, 1)
     }
 
+    func testQueuedRecomputeRetainsItsContainerUntilCompletionOrCancellation() async throws {
+        for cancelsCurrent in [false, true] {
+            let context = try makeContext()
+            let activeContainer = try XCTUnwrap(container)
+            let date = Date(timeIntervalSince1970: 2_000_000_000)
+            let gate = PortfolioComputationGate()
+            let engine = PortfolioEngine(computationProvider: { container, epoch, through, zone in
+                await gate.wait()
+                return await PortfolioComputationActor(modelContainer: container).compute(
+                    epoch: epoch, liveInstant: through, timeZoneIdentifier: zone)
+            })
+            engine.recompute(context: context, now: date)
+            await waitForComputationGate(gate, count: 1)
+
+            var queuedContext: ModelContext? = try makeContext()
+            weak var queuedContainer = container
+            engine.recompute(context: try XCTUnwrap(queuedContext), now: date.addingTimeInterval(60))
+            queuedContext = nil
+            container = nil
+            let retainedWhileQueued = queuedContainer != nil
+            XCTAssertTrue(retainedWhileQueued, "A queued context must keep its store alive after its caller releases it")
+            if !retainedWhileQueued {
+                // Replace the invalid request so the failing regression can clean up without trapping.
+                engine.recompute(context: activeContainer.mainContext, now: date.addingTimeInterval(60))
+            }
+            if cancelsCurrent { engine.cancelRecompute() }
+            await gate.release()
+            await waitForComputationGate(gate, count: 1)
+            if retainedWhileQueued {
+                XCTAssertNotNil(queuedContainer, "Starting the trailing replay must retain the store too")
+            }
+            await gate.release()
+            await waitForRecomputeToFinish(engine)
+            for _ in 0..<10_000 where queuedContainer != nil { await Task.yield() }
+            XCTAssertNil(queuedContainer, "A finished replay must release the store")
+            XCTAssertNotNil(engine.summary)
+            XCTAssertEqual(engine.inputRevision, cancelsCurrent ? 1 : 2)
+            withExtendedLifetime(activeContainer) {}
+        }
+    }
+
     func testRecomputeAndWaitIncludesTheTrailingReplayItQueues() async throws {
         let context = try makeContext()
         let date = Date(timeIntervalSince1970: 2_000_000_000)

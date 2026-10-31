@@ -173,8 +173,10 @@ final class PortfolioEngine: ObservableObject {
     /// answers. Keep only the newest request and replay once more after the
     /// current pass publishes, rather than repeatedly cancelling work that was
     /// about to update the value.
+    /// A context does not own its container, so retain the queued store too.
     private var pendingRecompute: (
         context: ModelContext,
+        container: ModelContainer,
         now: Date,
         intervalState: OSSignpostIntervalState,
         intervalMetadata: String
@@ -369,6 +371,7 @@ final class PortfolioEngine: ObservableObject {
             }
             pendingRecompute = (
                 context,
+                context.container,
                 now,
                 intervalState,
                 intervalMetadata
@@ -378,6 +381,7 @@ final class PortfolioEngine: ObservableObject {
 
         startRecompute(
             context: context,
+            container: context.container,
             now: now,
             intervalState: intervalState,
             intervalMetadata: intervalMetadata
@@ -393,6 +397,7 @@ final class PortfolioEngine: ObservableObject {
 
     private func startRecompute(
         context: ModelContext,
+        container: ModelContainer,
         now: Date,
         intervalState: OSSignpostIntervalState,
         intervalMetadata: String
@@ -411,11 +416,12 @@ final class PortfolioEngine: ObservableObject {
 
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
 
-        let container = context.container
         let epoch = PortfolioEpoch.startedAt() ?? now
 
         let computationProvider = self.computationProvider
         computationTask = Task { @MainActor [weak self] in
+            // Publication still uses the context after the background read ends.
+            defer { withExtendedLifetime(container) {} }
             let computation: PortfolioReplaySnapshotBuilder.Computation
             if let computationProvider {
                 computation = await computationProvider(
@@ -648,6 +654,7 @@ final class PortfolioEngine: ObservableObject {
         self.pendingRecompute = nil
         startRecompute(
             context: pendingRecompute.context,
+            container: pendingRecompute.container,
             now: pendingRecompute.now,
             intervalState: pendingRecompute.intervalState,
             intervalMetadata: pendingRecompute.intervalMetadata
@@ -663,6 +670,7 @@ final class PortfolioEngine: ObservableObject {
         self.pendingRecompute = nil
         startRecompute(
             context: pendingRecompute.context,
+            container: pendingRecompute.container,
             now: pendingRecompute.now,
             intervalState: pendingRecompute.intervalState,
             intervalMetadata: pendingRecompute.intervalMetadata
