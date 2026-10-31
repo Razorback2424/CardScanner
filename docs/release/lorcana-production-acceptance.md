@@ -219,6 +219,13 @@ or hardware identifiers and remain external; only sanitized conclusions belong h
 | Full simulator regression | Finalized: 2,186 passed, two failed, 12 skipped / 2,200 cases; five runtime warnings | `full-regression.xcresult`: three assertion failures across two cases, centering timing and stale sealed-provider expectation. The latter is corrected and passes in the final replay; this is not a green full-app baseline. |
 | Final source targeted replay | Finalized: 276 passed, one failed, zero skipped / 277 cases; two internal QoS warnings | `final-targeted-replay.xcresult` confirms all 77 JustTCG contract tests and Lorcana discovery/parser/scanner selectors pass. Only centering timing fails (two assertions). |
 
+**2026-10-30 source update:** the app and test targets now require iOS 18.0.
+The 1,500-instrument × 365-day scan-write benchmark exceeded the owner-approved
+50 ms gate, so the local `PriceCheckDay` and `PriceObservation` tables now declare
+indexes. The minimum-iOS-17.0 row above describes the earlier archived build;
+it is not the current deployment target. This source/simulator change does not
+update that archive or certify a new distribution package.
+
 The three focused skips are the first-unlock file-protection assertion (requires
 a physical device) and the two intentionally disabled live-provider tests.
 The earlier live replay remains separate evidence. Storage negative tests emit
