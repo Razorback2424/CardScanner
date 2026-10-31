@@ -194,6 +194,7 @@ private struct CollectionCardDetailContent: View {
     @State private var artworkAccent: ArtworkAccent?
     @State private var quantityState = CollectionDetailQuantityState()
     @State private var isOwnershipWritePending = false
+    @State private var isSharing = false
     @State private var selectedPriceDate: Date?
     @State private var marketHistory: [JustTCGHistoryPoint] = []
     @State private var marketHistoryError: String?
@@ -359,6 +360,7 @@ private struct CollectionCardDetailContent: View {
                     if isOwnershipWritePending {
                         ProgressView().tint(.white).accessibilityLabel("Saving collection change")
                     }
+                    shareButton
                     artworkMenu
                 }
             }
@@ -369,6 +371,7 @@ private struct CollectionCardDetailContent: View {
         .toolbar(.hidden, for: .tabBar)
         // Keep the presentation host alive after the toolbar menu dismisses.
         .photosPicker(isPresented: $isChoosingArtwork, selection: $selectedArtwork, matching: .images)
+        .sheet(isPresented: $isSharing) { shareSheet }
         .onChange(of: selectedArtwork) { _, item in
             guard let item else { return }
             artworkGeneration &+= 1
@@ -452,6 +455,41 @@ private struct CollectionCardDetailContent: View {
         } message: {
             Text(removalMessage)
         }
+    }
+
+    private var shareButton: some View {
+        Button {
+            isSharing = true
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .font(.title3.weight(.semibold))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.white)
+        }
+        .accessibilityLabel("Share card")
+        .accessibilityHint("Shares an image of this card, with or without its price.")
+    }
+
+    private var shareSheet: some View {
+        let source = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
+        return CollectionShareSheet(
+            identity: CardShareIdentity(collectedCard: card),
+            price: CardSharePrice(collectedCard: card, display: price),
+            showsFinishSheen: showsShareFinishSheen,
+            localArtworkFilename: localArtworkFilename,
+            remoteArtworkURLs: [source.primaryURL].compactMap { $0 } + source.fallbacks
+        )
+    }
+
+    /// The same finishes the detail hero animates; a still pose stands in for
+    /// the live sheen in the shared image.
+    private var showsShareFinishSheen: Bool {
+        guard card.itemKind == .rawCard,
+              let variant = card.variant,
+              let resolution = card.variantResolution,
+              resolution != .catalogSilent,
+              resolution != .imported else { return false }
+        return [PhysicalVariant.holo.id, PhysicalVariant.reverse.id, PhysicalVariant.foil.id].contains(variant.id)
     }
 
     @ViewBuilder

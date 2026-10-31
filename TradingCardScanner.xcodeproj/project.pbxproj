@@ -26,6 +26,7 @@
 		A0020030 /* MagicContentKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020030 /* MagicContentKindTests.swift */; };
 		A0010068 /* MagicContentKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010068 /* MagicContentKind.swift */; };
 		A0020029 /* CollectionItemKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020029 /* CollectionItemKindTests.swift */; };
+		A0029001 /* CardShareContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0029001 /* CardShareContentTests.swift */; };
 		A0010067 /* GradedVariantPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010067 /* GradedVariantPickerView.swift */; };
 		A0010066 /* SealedBrowseViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010066 /* SealedBrowseViews.swift */; };
 		A0020028 /* JustTCGContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020028 /* JustTCGContractTests.swift */; };
@@ -133,6 +134,8 @@
 		A0010023 /* CardLatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010023 /* CardLatch.swift */; };
 		A0010024 /* CollectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010024 /* CollectionStore.swift */; };
 		A0010025 /* ScanFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010025 /* ScanFeedback.swift */; };
+		A0019001 /* CardShareContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0019001 /* CardShareContent.swift */; };
+		A0019002 /* CardShareViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0019002 /* CardShareViews.swift */; };
 		A0010026 /* ScanSessionOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010026 /* ScanSessionOverlays.swift */; };
 		A00300D1 /* AppGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300D1 /* AppGlass.swift */; };
 		A00300E1 /* CardFinishOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300E1 /* CardFinishOverlay.swift */; };
@@ -386,6 +389,7 @@
 		B0020030 /* MagicContentKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicContentKindTests.swift; sourceTree = "<group>"; };
 		B0010068 /* MagicContentKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicContentKind.swift; sourceTree = "<group>"; };
 		B0020029 /* CollectionItemKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionItemKindTests.swift; sourceTree = "<group>"; };
+		B0029001 /* CardShareContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardShareContentTests.swift; sourceTree = "<group>"; };
 		B0010067 /* GradedVariantPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradedVariantPickerView.swift; sourceTree = "<group>"; };
 		B0010066 /* SealedBrowseViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SealedBrowseViews.swift; sourceTree = "<group>"; };
 		B0020028 /* JustTCGContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGContractTests.swift; sourceTree = "<group>"; };
@@ -496,6 +500,8 @@
 		B0010023 /* CardLatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatch.swift; sourceTree = "<group>"; };
 		B0010024 /* CollectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStore.swift; sourceTree = "<group>"; };
 		B0010025 /* ScanFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanFeedback.swift; sourceTree = "<group>"; };
+		B0019001 /* CardShareContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardShareContent.swift; sourceTree = "<group>"; };
+		B0019002 /* CardShareViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardShareViews.swift; sourceTree = "<group>"; };
 		B0010026 /* ScanSessionOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionOverlays.swift; sourceTree = "<group>"; };
 		B00300D1 /* AppGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGlass.swift; sourceTree = "<group>"; };
 		B00300E1 /* CardFinishOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFinishOverlay.swift; sourceTree = "<group>"; };
@@ -951,6 +957,7 @@
 				B0010023 /* CardLatch.swift */,
 				B0010024 /* CollectionStore.swift */,
 				B0010025 /* ScanFeedback.swift */,
+				B0019001 /* CardShareContent.swift */,
 				B0010031 /* PriceProvider.swift */,
 				B0010140 /* PriceCoverageGapLog.swift */,
 				B0010032 /* PriceStore.swift */,
@@ -1044,6 +1051,7 @@
 							B0010066 /* SealedBrowseViews.swift */,
 							B0010067 /* GradedVariantPickerView.swift */,
 				B00100A5 /* RemovalUndoBanner.swift */,
+				B0019002 /* CardShareViews.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1114,6 +1122,7 @@
 				B0020031 /* MagicPhysicalObjectTests.swift */,
 				B0020030 /* MagicContentKindTests.swift */,
 				B0020029 /* CollectionItemKindTests.swift */,
+				B0029001 /* CardShareContentTests.swift */,
 				B0020028 /* JustTCGContractTests.swift */,
 				B0020027 /* ProductFallbackTests.swift */,
 				B0020026 /* ProductCatalogIdentityTests.swift */,
@@ -1491,6 +1500,8 @@
 				A0010023 /* CardLatch.swift in Sources */,
 				A0010024 /* CollectionStore.swift in Sources */,
 				A0010025 /* ScanFeedback.swift in Sources */,
+				A0019001 /* CardShareContent.swift in Sources */,
+				A0019002 /* CardShareViews.swift in Sources */,
 				A0010026 /* ScanSessionOverlays.swift in Sources */,
 				A0010027 /* ScanReviewSheet.swift in Sources */,
 				A0010030 /* PriceRecord.swift in Sources */,
@@ -1620,6 +1631,7 @@
 				A0020031 /* MagicPhysicalObjectTests.swift in Sources */,
 				A0020030 /* MagicContentKindTests.swift in Sources */,
 				A0020029 /* CollectionItemKindTests.swift in Sources */,
+				A0029001 /* CardShareContentTests.swift in Sources */,
 				A0020028 /* JustTCGContractTests.swift in Sources */,
 				A0020027 /* ProductFallbackTests.swift in Sources */,
 				A0020026 /* ProductCatalogIdentityTests.swift in Sources */,

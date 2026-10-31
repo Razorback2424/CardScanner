@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-10-31
 
+**Card sharing Mac verification — 2026-10-31:** the
+[sharing handoff](card_sharing_handoff.md) supersedes the initial Linux-only,
+unbuilt status. Debug/Release arm64 simulator builds and the final 29 focused
+tests pass; the full branch regression reports 2,780 passed, 16 skipped and
+six failures, all also present in clean `main@17658c9` (2,758 passed, 16 skipped,
+seven failed). The final accessibility-only control-row repair has subsequent
+build, focused-test and screenshot evidence. Export fixtures and SE/iPad
+captures do not close native Save Image/preview parity, real-card interactions,
+spoken VoiceOver, physical-phone destinations or release gates.
+
 **Refinement verification and accuracy fixes — closed 2026-10-31:** the
 [dated follow-up](../audits/production-refinement-master-review-2026-10-26.md#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
 supersedes the master's initial S6-reverted/S7-not-started checkpoint and the
