@@ -201,7 +201,7 @@ detector. Defer this integration until there is a concrete distribution need.
 
 **Status:** instrumentation added on `refinement/production-review-2026-10-31`;
 no device run yet. Findings R1–R10 and the implemented slices are recorded in the
-[production refinement review](../audits/production-refinement-master-review-2026-10-26.md).
+[production refinement review](../audits/production-refinement-master-review-2026-10-26.md#2026-10-31-production-review-second-pass).
 This section owns the owner's device run and the decision rules that follow it.
 
 New intervals use the existing `PerformanceSignpost` helper (subsystem
