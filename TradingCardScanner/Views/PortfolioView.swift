@@ -1564,7 +1564,9 @@ private struct PortfolioDetailsView: View {
 #endif
 
     private var summary: PortfolioSummary { portfolio.summary ?? fallbackSummary }
-    private var historyResult: PortfolioHistoryResult? { snapshotHistoryResult ?? history.activeResult }
+    private var historyResult: PortfolioHistoryResult? {
+        snapshotHistoryResult?.updatedForSamePeriod(from: history.result) ?? history.activeResult
+    }
 
     var body: some View {
         List {
@@ -1624,7 +1626,7 @@ private struct PortfolioDetailsView: View {
         .navigationDestination(isPresented: $showsAdditionsDebugScreen) {
             if let result = historyResult {
                 PortfolioAdditionsView(
-                    result: result, holdings: portfolio.holdings,
+                    snapshotResult: result, holdings: portfolio.holdings,
                     history: history, onRemoved: onRemoved
                 )
             }
@@ -1646,7 +1648,7 @@ private struct PortfolioDetailsView: View {
                 if PortfolioHistoryDisplay.hasBreakdown(accounting) {
                     NavigationLink {
                         PortfolioAdditionsView(
-                            result: result, holdings: portfolio.holdings,
+                            snapshotResult: result, holdings: portfolio.holdings,
                             history: history, onRemoved: onRemoved
                         )
                     } label: {
@@ -1783,12 +1785,12 @@ private struct PortfolioDetailsView: View {
     }
 }
 
-/// Uses the frozen period's replay values, rather than today's card prices or
-/// activity timestamps, which cannot explain additions first priced later.
+/// Uses replay values for the selected period, including prices learned while
+/// this screen is open. Current market prices cannot explain acquisition value.
 private struct PortfolioAdditionsView: View {
-    let result: PortfolioHistoryResult
+    let snapshotResult: PortfolioHistoryResult
     let holdings: [PortfolioHoldingSnapshot]
-    let history: PortfolioHistoryStore
+    @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -1800,6 +1802,10 @@ private struct PortfolioAdditionsView: View {
     @State private var searchText = ""
     @ScaledMetric(relativeTo: .largeTitle) private var totalFontSize: CGFloat = 42
     @ScaledMetric(relativeTo: .title2) private var fractionFontSize: CGFloat = 27
+
+    private var result: PortfolioHistoryResult {
+        snapshotResult.updatedForSamePeriod(from: history.result)
+    }
 
     private enum SortOrder: String, CaseIterable, Identifiable {
         case newestFirst, oldestFirst, priceHighToLow, priceLowToHigh
@@ -2022,7 +2028,7 @@ private struct PortfolioAdditionsView: View {
             prompt: "Search cards in this period"
         )
         .scrollDismissesKeyboard(.interactively)
-        .task { loadHistoricalRows() }
+        .task(id: result) { loadHistoricalRows() }
     }
 
     private var sortMenu: some View {

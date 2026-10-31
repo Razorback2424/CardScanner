@@ -1192,13 +1192,7 @@ struct CollectionView: View {
                 priceRevision: priceSnapshot.revision
             )
         ) {
-            cached.all.map { row in
-                var row = row
-                if let price = priceSnapshot.display(for: row.priceStorageKey) {
-                    row.price = price
-                }
-                return row
-            }
+            cached.all.map { priceSnapshot.applying(to: $0) }
         }
         let queryKey = QueryCacheKey(
             projectionRevision: projectionStore.revision,

@@ -39,6 +39,8 @@ enum PriceObservationKind: String, Codable, Hashable, Sendable {
 /// carrying forward, and writes nothing here.
 @Model
 final class PriceObservation {
+    #Index<PriceObservation>([\.instrumentKey, \.receivedAt])
+
     var id: UUID = UUID()
     /// Matches `PriceRecord.key` — game, printing and physical variant. One
     /// observation values every copy owned of that exact object.

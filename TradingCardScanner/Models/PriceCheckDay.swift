@@ -16,6 +16,8 @@ import SwiftData
 /// trade — correctness first, and measure the size before compacting it.
 @Model
 final class PriceCheckDay {
+    #Index<PriceCheckDay>([\.instrumentKey, \.portfolioDay], [\.portfolioDay])
+
     var instrumentKey: String = ""
     /// `startOfDay` in the portfolio timezone. See `PortfolioCalendar`.
     var portfolioDay: Date = Date.now

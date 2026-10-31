@@ -462,7 +462,7 @@ struct StoreRevisionMonitor: View {
             // prices, or metadata, so reconcile once before accepting a baseline.
             await projectionStore.rebuild(container: modelContext.container)
             await priceSnapshot.rebuild(container: modelContext.container)
-            await portfolio.recomputeAndWait(context: modelContext)
+            portfolio.recompute(context: modelContext)
             guard storageGeneration.isCurrent(storageToken), !Task.isCancelled,
                   applyGeneration == generation else { return }
             self.previousFingerprint = fingerprint

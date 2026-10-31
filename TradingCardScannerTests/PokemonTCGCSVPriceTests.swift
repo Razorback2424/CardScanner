@@ -733,6 +733,187 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
     }
 
     @MainActor
+    func testSavedGenesectReadsFallbackQuoteStoredUnderItsResolvedCatalogIdentity() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let startedAt = Date.now.addingTimeInterval(-60)
+        // A normalized import keeps its local ownership/price identity. A
+        // subsequent scanner fallback currently saves by the resolved card ID.
+        let row = CollectedCard(collectionKey: "csv:genesect#holo", game: .pokemon,
+            providerID: "csv:genesect", name: "Genesect EX", setName: "30th Classic Collection",
+            setCode: "30TH-C", cardNumber: "11", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .holo, variantResolution: .userConfirmed)
+        row.catalogProviderID = "30th-c-004"
+        context.insert(row)
+        _ = InventoryLedger(context: context).record(row, kind: .acquire,
+            source: .scan, deltaQuantity: 1)
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.unavailable(.tcgplayer), game: .pokemon,
+            printingID: row.priceStorageID, variantID: "holo"))
+        XCTAssertTrue(prices.save())
+        let projectionActor = await CollectionProjectionActor.makeBackground(modelContainer: container)
+        let initialProjection = await projectionActor.snapshot()
+        let cachedRow = try XCTUnwrap(initialProjection.rowsByCollectionKey[row.collectionKey])
+        XCTAssertEqual(cachedRow.priceStorageKey, row.priceKey)
+        let quote = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 8.06, currencyCode: "USD",
+            source: .tcgCSV, sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: .now))
+        XCTAssertTrue(prices.store(quote, game: .pokemon, printingID: "30th-c-004", variantID: "holo"))
+        XCTAssertTrue(prices.save())
+
+        let records = Dictionary(uniqueKeysWithValues: prices.allRecords().map { ($0.key, $0) })
+        XCTAssertEqual(PriceStore.record(for: row, in: records)?.effectiveUnitMarketPriceUSD, 8.06)
+        let reader = await PriceSnapshotModelActor.makeBackground(modelContainer: container)
+        let snapshot = await reader.snapshot()
+        let displayKey = try XCTUnwrap(snapshot.priceStorageKeyByCollectionKey[row.collectionKey])
+        XCTAssertEqual(snapshot.prices[displayKey]?.amount, 8.06)
+        XCTAssertNil(snapshot.diagnosticsByCollectionKey[row.collectionKey]?.unpricedReason)
+        let channel = PriceSnapshotStore()
+        channel.replace(with: snapshot)
+        let displayedRow = channel.applying(to: cachedRow)
+        XCTAssertEqual(displayedRow.priceStorageKey, displayKey)
+        XCTAssertEqual(displayedRow.price.amount, 8.06)
+        channel.replace(with: PriceSnapshot(prices: [:], diagnosticsByCollectionKey: [:],
+            priceStorageKeyByCollectionKey: [row.collectionKey: row.priceKey]))
+        XCTAssertNil(channel.applying(to: displayedRow).price.amount,
+            "An empty selected instrument must not retain a cached alias quote")
+        let replay = PortfolioReplaySnapshotBuilder.compute(context: ModelContext(container),
+            epoch: startedAt, through: .now, timeZone: TimeZone(secondsFromGMT: 0)!).replay
+        XCTAssertEqual(replay.live?.attribution.currentValue, Money(rounding: 8.06))
+        XCTAssertEqual(replay.live?.additions[row.collectionKey], Money(rounding: 8.06))
+        XCTAssertEqual(row.providerID, "csv:genesect")
+        XCTAssertEqual(row.quantity, 1)
+
+        // A later explicit withdrawal on the owned identity still wins over
+        // the shared catalog quote; read-through must never revive it.
+        let local = try XCTUnwrap(prices.record(forKey: row.priceKey))
+        local.invalidate(at: .now)
+        XCTAssertTrue(prices.save())
+        XCTAssertEqual(PriceStore.priceStorageKey(for: row, in: records), row.priceKey)
+        XCTAssertNil(PriceStore.record(for: row, in: records)?.effectiveUnitMarketPriceUSD)
+    }
+
+    @MainActor
+    func testSharedCatalogQuotesCannotOverrideOwnedPriceOrReviveItsWithdrawal() throws {
+        for withdraw in [false, true] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            let epoch = Date.now.addingTimeInterval(-120)
+            let row = CollectedCard(collectionKey: "csv:genesect#holo", game: .pokemon,
+                providerID: "csv:genesect", name: "Genesect EX", setName: "30th Classic Collection",
+                setCode: "30TH-C", cardNumber: "11", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                variant: .holo, variantResolution: .userConfirmed)
+            row.catalogProviderID = "30th-c-004"
+            context.insert(row)
+            let prices = PriceStore(context: context)
+            func store(_ amount: Double, id: String, seconds: TimeInterval) {
+                let fetchedAt = epoch.addingTimeInterval(seconds)
+                XCTAssertTrue(prices.store(.price(NormalizedPrice(unitMarketPriceUSD: amount,
+                    currencyCode: "USD", source: .tcgCSV, sourceVariantID: "holofoil",
+                    sourceUpdatedAt: nil, fetchedAt: fetchedAt)), game: .pokemon,
+                    printingID: id, variantID: "holo", at: fetchedAt))
+            }
+            store(8, id: "30th-c-004", seconds: 10)
+            _ = InventoryLedger(context: context).record(row, kind: .acquire, source: .scan,
+                deltaQuantity: 1, occurredAt: epoch.addingTimeInterval(20))
+            store(10, id: row.priceStorageID, seconds: 30)
+            if withdraw {
+                XCTAssertNotNil(PriceObservationLog(context: context).recordInvalidation(
+                    instrumentKey: row.priceKey, source: .tcgCSV, at: epoch.addingTimeInterval(40)))
+            }
+            store(9, id: "30th-c-004", seconds: 50)
+            XCTAssertTrue(prices.save())
+            let records = Dictionary(uniqueKeysWithValues: prices.allRecords().map { ($0.key, $0) })
+            XCTAssertEqual(PriceStore.record(for: row, in: records)?.effectiveUnitMarketPriceUSD, withdraw ? nil : 10)
+            let replay = PortfolioReplaySnapshotBuilder.compute(context: ModelContext(container),
+                epoch: epoch, through: .now, timeZone: TimeZone(secondsFromGMT: 0)!).replay
+            XCTAssertEqual(replay.live?.attribution.currentValue, Money(rounding: withdraw ? 0 : 10))
+            XCTAssertEqual(replay.live?.additions[row.collectionKey], Money(rounding: 8))
+        }
+    }
+
+    @MainActor
+    func testCatalogPriceReadThroughNeverCrossesFinishPrintRunOrItemKind() {
+        let row = CollectedCard(collectionKey: "csv:genesect#holo", game: .pokemon,
+            providerID: "csv:genesect", name: "Genesect EX", setName: "30th Classic Collection",
+            setCode: "30TH-C", cardNumber: "11", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .holo, variantResolution: .userConfirmed)
+        row.catalogProviderID = "30th-c-004"
+        let key = PriceRecord.key(game: .pokemon, printingID: "30th-c-004", variantID: "holo")
+        let price = PriceRecord(key: key, game: .pokemon, printingID: "30th-c-004", variantID: "holo")
+        price.applyImported(amount: 8.06, sourceUpdatedAt: nil)
+        let records = [key: price]
+        XCTAssertEqual(PriceStore.record(for: row, in: records)?.effectiveUnitMarketPriceUSD, 8.06)
+        for variant in [PhysicalVariant.reverse, .normal, nil] {
+            row.variantID = variant?.id
+            XCTAssertNil(PriceStore.record(for: row, in: records))
+        }
+        row.variantID = "holo"
+        row.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+        XCTAssertNil(PriceStore.record(for: row, in: records))
+        row.pokemonPrintRunRaw = nil
+        for kind in [CollectionItemKind.gradedCard, .sealedProduct] {
+            row.itemKindRaw = kind.rawValue
+            XCTAssertNil(PriceStore.record(for: row, in: records))
+        }
+    }
+
+    @MainActor
+    func testScannedGenesectRefreshPricesPortfolioAndCardsAddedUsingExactBrowseIdentity() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let startedAt = Date.now.addingTimeInterval(-60)
+        // Scanning preserves the reprinted 11/101 while Browse uses slot 004.
+        let card = TCGdexCard(id: "30th-c-004", localId: "11", name: "Genesect EX",
+            image: nil, rarity: nil,
+            set: TCGdexSetBrief(id: "30th-c", name: "30th Classic Collection",
+                cardCount: TCGdexCardCount(total: 101, official: 101)),
+            variants: nil, pricing: nil, variantsDetailed: nil)
+        let identified = IdentifiedCard.pokemon(card, setCode: "30TH-C")
+        _ = try CollectionStore(context: context).add(identified,
+            resolved: .init(variant: .holo, resolution: .userConfirmed), source: .scan)
+        let snapshot = PokemonTCGCSVSnapshot(schemaVersion: 1, setID: "30th-c", feedBuild: "genesect",
+            fetchedAt: .now, validatedAt: .now, valuesByCardID: ["30th-c-004": 8.06])
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let browse = BrowseCatalog(cache: CatalogCacheStore(root: root),
+            pokemonTransport: UnavailablePokemonTransport(), tcgCSVSource: RecordedTCGCSV(snapshot: snapshot))
+        let summary = CatalogCardSummary(game: .pokemon, providerID: card.id,
+            setID: .init(game: .pokemon, providerID: card.set.id), setName: card.set.name,
+            setCode: "30TH-C", name: card.name, collectorNumber: "004", thumbnailURL: nil,
+            imageURL: nil, masterSetVariant: .holo)
+        var browsePrice: Double?
+        for await update in browse.sortPriceUpdates(for: [summary]) {
+            browsePrice = update.prices[summary.id] ?? browsePrice
+        }
+        XCTAssertEqual(browsePrice, 8.06)
+        let actor = PriceRefreshModelActor(modelContainer: container)
+        await actor.setPokemonFetchOverrideForTesting { _ in throw URLError(.notConnectedToInternet) }
+        await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: snapshot))
+        let result = await actor.run(PriceRefreshRequest(
+            usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false
+        ), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
+        XCTAssertEqual(report.priced, 1)
+        let readContext = ModelContext(container)
+        let key = identified.collectionKey(variant: .holo)
+        let row = try XCTUnwrap(readContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.collectionKey, key)
+        XCTAssertEqual(row.cardNumber, "11")
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(PriceStore(context: readContext).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD, browsePrice)
+        let computation = PortfolioReplaySnapshotBuilder.compute(context: readContext,
+            epoch: startedAt, through: .now, timeZone: TimeZone(secondsFromGMT: 0)!)
+        let live = try XCTUnwrap(computation.replay.live)
+        XCTAssertEqual(live.attribution.currentValue, Money(rounding: 8.06))
+        XCTAssertEqual(live.additions[key], Money(rounding: 8.06))
+        XCTAssertEqual(live.addedQuantities[key], 1)
+    }
+
+    @MainActor
     func testCollectionRefreshUsesBulkWhenCatalogIsDownAndPaidFallbackDisabled() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])

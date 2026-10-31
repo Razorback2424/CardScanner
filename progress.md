@@ -1,3 +1,21 @@
+# 2026-10-30 — Indexed price history and resolved catalog pricing
+
+The aged-store 1,500-instrument × 365-day scan-write benchmark exceeded the
+owner-approved 50 ms gate. Added SwiftData indexes for daily price checks and
+price observations, and raised the app and test deployment targets to iOS 18.
+The [Lorcana production acceptance ledger](docs/release/lorcana-production-acceptance.md)
+distinguishes this source update from the earlier archived build; no new archive
+or distribution package is certified.
+
+Normalized Pokémon CSV holdings keep their local ownership identity. Raw
+Pokémon rows can now read through an exact catalog price only when finish and
+print run match; an owned quote or withdrawal takes precedence. Collection
+snapshots follow the selected price key, portfolio replay preserves earlier
+shared quotes only until an owned quote or withdrawal, and an open additions
+breakdown refreshes prices learned during the same selected period. Regression
+coverage was added for these paths and same-period refresh; no fresh test result
+is claimed in this pass.
+
 # 2026-10-30 — High-confidence review fixes
 
 Follow-up based on `db318a8`, committed as `00942d9`, `6813f22` and `4d420ab`,
@@ -4986,3 +5004,41 @@ historical.
   `/Volumes/Keller Family Photos/CodexBuilds/CardTransactions-20261029/`.
   Physical-device, live CloudKit migration/sync and release acceptance remain
   unverified; these are personal records, with no shared transaction backend.
+
+### 2026-10-30 — Ordered refinement implementation; stopped at S6
+
+- Created `refinement/review-2026-10-30` from `f22d28f`. Accepted and pushed one
+  commit per slice: S1 `f0149b0` (production owner-catalog exclusion), S2
+  `bc6e369` (background fallback writes), S3 `ecd1eab` (bounded coverage read),
+  S4 `204d6d7` (reuse incomplete migration reports), S5 `f05a734` (shared launch
+  and binding code). No PR was opened. The eight existing uncommitted changes
+  were preserved and excluded from these commits.
+- Accepted slices passed their required simulator builds/tests with normal
+  signing. S1: 102 passes; S2: focused regression plus 498 expanded passes and
+  six prepared-data skips; S3: 86 reconciliation passes, one opt-in skip,
+  129 expanded passes and both deliberate benchmarks; S4: focused regression
+  plus 109 expanded passes; S5: three build configurations, 48 passes and one
+  device-only skip. Actual Yu-Gi-Oh! file classes and the Magic migration class
+  were selected explicitly where the supplied suite name was insufficient.
+- At 300 instruments × 365 days, S3's full coverage read measured 1.057006 s
+  before and 0.961710 s after; with yesterday's close present it took
+  0.025211 s, about 2.6% of the full read. Refresh-index construction measured
+  0.129414 s before and 0.101061 s after. External test-run specifications
+  supplied benchmark variables that Xcode did not forward from the shell.
+- S6's optimized on-disk fixture trace measured a 6.884908291 s lower bound from
+  launch storage start to the first refresh-attempt signpost. The one-line
+  change passed M08's focused case but its expanded run crashed in SwiftData
+  through queued portfolio recomputation. Xcode restarted, then stalled
+  finalizing; the runner was terminated with exit 143. Reverting only S6 made
+  the identical selection pass: 119 passes, one benchmark skip, no failures.
+  S6 remains reverted and uncommitted; no broader engine fix was attempted.
+- The stop rule leaves S7a, the conditional S7b gate/upgrade check and final
+  expanded regression pending. No scan-write benchmark, index benefit,
+  minimum-OS change or upgrade acceptance is claimed. Release still excludes
+  the 20.9 MiB owner catalog, while Debug retains it.
+- See the [dated implementation and stop-gate ledger](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-30-refinement-implementation-and-s6-stop-gate).
+  Evidence is external under
+  `/Volumes/Keller Family Photos/CodexBuilds/refinement-review-2026-10-30/`.
+  The temporary seeder was removed; no logs, screenshots, stores or results were
+  committed. Device lock-wait, mature launch and quantity-edit checks remain
+  owner-run. No device/provider/CloudKit/archive/release readiness claim.

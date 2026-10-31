@@ -274,6 +274,9 @@ enum PortfolioReplaySnapshotBuilder {
             eventKeys: Set(reading.events.map(\.collectionKey))
         )
         let priceIdentityAliases = priceIdentityAliases(for: projection)
+        let catalogPriceKeys = Set(projection.positions.compactMap { $0.representative.resolvedCatalogPriceKey })
+        let recordsByKey = Dictionary(grouping: records, by: \.key)
+            .compactMapValues(PriceStore.authoritativeRecord(in:))
         let events = rebaseDelayedInitialBalances(reading.events.map { event -> LedgerEntry in
             var entry = PortfolioEngine.entry(from: event)
             entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
@@ -282,7 +285,17 @@ enum PortfolioReplaySnapshotBuilder {
         })
         let observations = rows.map { row -> ObservationEntry in
             var entry = PortfolioEngine.observationEntry(from: row)
-            entry.instrumentKey = priceIdentityAliases[entry.instrumentKey] ?? entry.instrumentKey
+            let selectedKey = priceIdentityAliases[entry.instrumentKey] ?? entry.instrumentKey
+            // Once an owned record supplies the selected price (or withdraws
+            // it), later shared catalog quotes cannot supersede that record.
+            // Earlier quotes still explain the acquisition and market history.
+            if selectedKey != entry.instrumentKey, catalogPriceKeys.contains(entry.instrumentKey),
+               let record = recordsByKey[selectedKey],
+               let cutoff = record.invalidatedAt ?? record.fetchedAt,
+               entry.receivedAt >= cutoff {
+                return entry
+            }
+            entry.instrumentKey = selectedKey
             return entry
         }
         let activityDefects = CollectionActivity.integrityDefects(
@@ -371,12 +384,11 @@ enum PortfolioReplaySnapshotBuilder {
         return rebased
     }
 
-    /// A treatment-aware collection can be migrated after its ownership event
-    /// was written. The event deliberately keeps its legacy price key so the
-    /// old observation remains historical truth, while a later exact refresh
-    /// writes the canonical treatment key. Replay must reason over one logical
-    /// instrument in that state or the current canonical price appears as an
-    /// unexplained portfolio change.
+    /// A position can retain a local or legacy price key while exact catalog
+    /// quotes arrive under its resolved identity. Treatment migrations can also
+    /// change the selected price key after ownership events were written.
+    /// Replay must use the same logical instrument as the collection display
+    /// or a valid current price appears as an unexplained portfolio change.
     ///
     /// The alias is only safe when every position that claims a price key
     /// resolves to the same current instrument. Two treatment-qualified rows
@@ -527,8 +539,9 @@ enum PortfolioReplaySnapshotBuilder {
         )) ?? PortfolioCoverageIndex(checkedByDay: [:])
     }
 
-    /// How far back coverage is recomputed rather than replayed from the
-    /// closes already published.
+    /// Retention and pruning horizon for check-day evidence, and the maximum
+    /// coverage read window. Published closes normally narrow the read to a
+    /// recent recompute margin.
     ///
     /// `PriceCheckDay` gains one row per instrument per checked day and nothing
     /// pruned it, so this read grew with calendar time whether or not the
@@ -539,6 +552,7 @@ enum PortfolioReplaySnapshotBuilder {
     /// its chart can show. `ALL` still renders: `PortfolioDailyClose` stores
     /// each day's coverage counts and is never pruned.
     static let coverageRetentionDays = 400
+    static let coverageRecomputeMarginDays = 7
 
     static func coverageWindowStart(
         endingAt end: Date,
@@ -565,7 +579,17 @@ enum PortfolioReplaySnapshotBuilder {
         // read stops growing once the window fills. A store younger than the
         // window is unaffected: `start` still wins.
         let retentionStart = coverageWindowStart(endingAt: end, timeZone: timeZone)
-        let windowStart = max(start, retentionStart)
+        var windowStart = max(start, retentionStart)
+        // Days through the newest published close keep the coverage that close
+        // records, and every authoritative recompute publishes all missing days,
+        // so only a short recent margin needs recomputing from check-day rows.
+        var newestClose = FetchDescriptor<PortfolioDailyClose>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        newestClose.fetchLimit = 1
+        if let newest = try context.fetch(newestClose).first?.date {
+            let recomputeFrom = PortfolioCalendar.day(
+                containing: newest.addingTimeInterval(-Double(coverageRecomputeMarginDays) * 86_400), in: timeZone)
+            windowStart = min(max(windowStart, recomputeFrom), lastDay)
+        }
         let descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.portfolioDay >= windowStart && $0.portfolioDay <= lastDay }
         )

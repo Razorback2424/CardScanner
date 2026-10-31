@@ -1764,7 +1764,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG LOCAL_ONLY_SIGNING";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScanner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1791,12 +1791,13 @@
 				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				EXCLUDED_SOURCE_FILE_NAMES = OnePieceOwnerCatalog;
 			DEVELOPMENT_TEAM = D4X943SP8Z;
 			ENABLE_TESTABILITY = YES;
 			SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";
 			GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScanner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1828,7 +1829,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG LOCAL_ONLY_SIGNING";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScanner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1855,9 +1856,10 @@
 				CARD_SCANNER_SUPPORT_URL = "";
 			CURRENT_PROJECT_VERSION = 1;
 			DEVELOPMENT_TEAM = D4X943SP8Z;
+			EXCLUDED_SOURCE_FILE_NAMES = OnePieceOwnerCatalog;
 			GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScanner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1886,7 +1888,7 @@
 				DEVELOPMENT_TEAM = D4X943SP8Z;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScanner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1909,7 +1911,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1933,7 +1935,7 @@
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1958,7 +1960,7 @@
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1982,7 +1984,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2004,7 +2006,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

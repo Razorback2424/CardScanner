@@ -461,6 +461,34 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(index.checkedInstruments(on: youngEpoch), ["instrument"])
     }
 
+    func testCoverageReadStartsNearNewestPublishedClose() throws {
+        let context = try makeContext()
+        let zone = TimeZone(secondsFromGMT: 0)!
+        let today = PortfolioCalendar.day(containing: .now, in: zone)
+        let epoch = today.addingTimeInterval(-60 * 86_400)
+        for daysAgo in 0...60 {
+            let day = today.addingTimeInterval(-Double(daysAgo) * 86_400)
+            context.insert(PriceCheckDay(instrumentKey: "instrument", portfolioDay: day,
+                lastSuccessfulCheckAt: day, source: .tcgplayer))
+        }
+        let yesterday = today.addingTimeInterval(-86_400)
+        _ = PortfolioEngine.publish(
+            [replayDay(yesterday, closeValue: 5,
+                coverage: PortfolioCoverage(refreshed: 1, carriedForward: 0, state: .complete))],
+            timeZone: zone,
+            context: context
+        )
+        try context.save()
+
+        let index = PortfolioReplaySnapshotBuilder.coverageIndex(
+            context: context, from: epoch, through: .now, timeZone: zone
+        )
+        XCTAssertEqual(index.windowStart, yesterday.addingTimeInterval(-7 * 86_400))
+        XCTAssertTrue(index.checkedInstruments(on: today.addingTimeInterval(-30 * 86_400)).isEmpty)
+        XCTAssertEqual(index.checkedInstruments(on: today.addingTimeInterval(-2 * 86_400)), ["instrument"])
+        XCTAssertEqual(index.checkedInstruments(on: today), ["instrument"])
+    }
+
     // MARK: - Slice 1 baseline
 
     /// Measures the two whole-table reads the remediation plan's gated slices
@@ -559,6 +587,15 @@ final class PortfolioReconciliationTests: XCTestCase {
         }
         try context.save()
 
+        var storedScanPrice = false
+        let scanPriceWriteDuration = try clock.measure {
+            storedScanPrice = PriceStore(context: context).store(.price(NormalizedPrice(
+                unitMarketPriceUSD: 5, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "instrument-0", sourceUpdatedAt: nil, fetchedAt: .now)),
+                game: .pokemon, printingID: "instrument-0", variantID: nil)
+            try context.save()
+        }
+        XCTAssertTrue(storedScanPrice)
         let coverageDuration = clock.measure {
             _ = PortfolioReplaySnapshotBuilder.coverageIndex(
                 context: context,
@@ -577,11 +614,29 @@ final class PortfolioReconciliationTests: XCTestCase {
         shape              \(instrumentCount) instruments × \(dayCount) days
         PriceCheckDay      \(checkDays) rows
         PriceObservation   \(observations) rows
+        scan price write   \(scanPriceWriteDuration)
         coverageIndex      \(coverageDuration)
         PriceRefreshDataIndex.init  \(indexDuration)
         ─────────────────────────────────────────────────────────────
 
         """)
+
+        let yesterday = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-86_400), in: timeZone
+        )
+        _ = PortfolioEngine.publish(
+            [replayDay(yesterday, closeValue: 0,
+                coverage: PortfolioCoverage(refreshed: instrumentCount, carriedForward: 0, state: .complete))],
+            timeZone: timeZone,
+            context: context
+        )
+        try context.save()
+        let recentCoverageDuration = clock.measure {
+            _ = PortfolioReplaySnapshotBuilder.coverageIndex(
+                context: context, from: epochDay, through: today, timeZone: timeZone
+            )
+        }
+        print("coverageIndex (newest close present) \(recentCoverageDuration)")
 
         // The one thing worth asserting: the coverage read really is bounded by
         // the window it is given, so a narrower window in R1 can bound its cost.
@@ -1448,6 +1503,47 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertFalse(engine.isRecomputing)
         XCTAssertNotNil(engine.summary)
         XCTAssertEqual(engine.inputRevision, 1)
+    }
+
+    func testQueuedRecomputeRetainsItsContainerUntilCompletionOrCancellation() async throws {
+        for cancelsCurrent in [false, true] {
+            let context = try makeContext()
+            let activeContainer = try XCTUnwrap(container)
+            let date = Date(timeIntervalSince1970: 2_000_000_000)
+            let gate = PortfolioComputationGate()
+            let engine = PortfolioEngine(computationProvider: { container, epoch, through, zone in
+                await gate.wait()
+                return await PortfolioComputationActor(modelContainer: container).compute(
+                    epoch: epoch, liveInstant: through, timeZoneIdentifier: zone)
+            })
+            engine.recompute(context: context, now: date)
+            await waitForComputationGate(gate, count: 1)
+
+            var queuedContext: ModelContext? = try makeContext()
+            weak var queuedContainer = container
+            engine.recompute(context: try XCTUnwrap(queuedContext), now: date.addingTimeInterval(60))
+            queuedContext = nil
+            container = nil
+            let retainedWhileQueued = queuedContainer != nil
+            XCTAssertTrue(retainedWhileQueued, "A queued context must keep its store alive after its caller releases it")
+            if !retainedWhileQueued {
+                // Replace the invalid request so the failing regression can clean up without trapping.
+                engine.recompute(context: activeContainer.mainContext, now: date.addingTimeInterval(60))
+            }
+            if cancelsCurrent { engine.cancelRecompute() }
+            await gate.release()
+            await waitForComputationGate(gate, count: 1)
+            if retainedWhileQueued {
+                XCTAssertNotNil(queuedContainer, "Starting the trailing replay must retain the store too")
+            }
+            await gate.release()
+            await waitForRecomputeToFinish(engine)
+            for _ in 0..<10_000 where queuedContainer != nil { await Task.yield() }
+            XCTAssertNil(queuedContainer, "A finished replay must release the store")
+            XCTAssertNotNil(engine.summary)
+            XCTAssertEqual(engine.inputRevision, cancelsCurrent ? 1 : 2)
+            withExtendedLifetime(activeContainer) {}
+        }
     }
 
     func testRecomputeAndWaitIncludesTheTrailingReplayItQueues() async throws {

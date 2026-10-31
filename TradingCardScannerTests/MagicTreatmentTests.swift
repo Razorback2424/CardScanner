@@ -1615,6 +1615,29 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertEqual(refreshedRunCount, 2)
     }
 
+    func testIncompleteNetworkReportIsReusedUntilInvalidated() async throws {
+        let context = try makeContext()
+        let counter = MagicTreatmentMigrationRunCounter()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                _ = await counter.increment()
+                var report = MagicTreatmentMigration.Report()
+                report.fail("unresolvable")
+                return report
+            }
+        )
+
+        _ = await coordinator.runNetwork(in: context)
+        _ = await coordinator.runNetwork(in: context)
+        let cachedRunCount = await counter.value()
+        XCTAssertEqual(cachedRunCount, 1)
+
+        coordinator.invalidateCompletedReports()
+        _ = await coordinator.runNetwork(in: context)
+        let refreshedRunCount = await counter.value()
+        XCTAssertEqual(refreshedRunCount, 2)
+    }
+
     func testLocalMigrationDefersCatalogMissesToBatchedNetworkPhase() async throws {
         let context = try makeContext()
         let date = Date(timeIntervalSince1970: 900)

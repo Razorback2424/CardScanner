@@ -523,12 +523,24 @@ final class CollectedCard {
         )
     }
 
-    /// Keys used by builds before print run and vendor-native price identities
-    /// were separated from collection-row identity. Reading through these keeps
-    /// already-working stored prices visible until a fresh observation is saved
-    /// under the canonical key.
+    /// A normalized Pokémon import keeps its local ownership identity, while
+    /// scanner fallback quotes use the resolved catalog identity. The alias
+    /// identifies the same printing only with the same finish and print run.
+    var resolvedCatalogPriceKey: String? {
+        guard itemKind == .rawCard, cardGame == .pokemon,
+              let catalogProviderID, !catalogProviderID.isEmpty,
+              !catalogProviderID.hasPrefix("csv:"), catalogProviderID != providerID else { return nil }
+        let catalogStorageID = pokemonPrintRun.map {
+            "\(catalogProviderID)@\($0.rawValue)"
+        } ?? catalogProviderID
+        return PriceRecord.key(game: cardGame, printingID: catalogStorageID, variantID: variantID)
+    }
+
+    /// Exact aliases from resolved Pokémon catalog identities and builds before
+    /// print run and vendor-native prices were separated from ownership. These
+    /// keep valid stored prices visible until this row receives its own quote.
     var legacyPriceKeys: [String] {
-        var keys: [String] = []
+        var keys = [resolvedCatalogPriceKey].compactMap { $0 }
         // Treatment identity was added after price records already existed.
         // Read through to the same printing and finish until an exact provider
         // refresh writes the treatment-qualified key; this preserves a real
