@@ -1,5 +1,12 @@
 # Production refinement master review
 
+**2026-10-31 closeout:** the [refinement follow-up](#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+is complete on `refinement/review-followup-2026-10-31` at `5344635`, verified
+on `origin`. Steps 1–4 are closed for the scoped simulator verification,
+accuracy fixes and documentation. Earlier S6-reverted/S7-pending notes are
+historical; the follow-up records the remaining index, cross-device coverage
+and owner-device limits. This closes the follow-up, not broader release acceptance.
+
 **2026-10-29 follow-up:** the [high-confidence refinement fixes](#2026-10-29-high-confidence-refinement-fixes)
 below record the later review's implementation, focused Simulator verification,
 and retained release/measurement boundaries. Earlier checkpoint counts below
@@ -737,6 +744,10 @@ invocation skipped. Measured runs used `EnvironmentVariables` in external
 
 ### S6 measured, rejected and reverted
 
+> **Historical checkpoint, superseded on 2026-10-31:** S6 subsequently landed in
+> `3e497f6`. The [verified follow-up](#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+> below records its fresh crash-gate results and the later S7 work.
+
 A temporary test helper generated an on-disk fixture with 300 owned instruments,
 365 days of checks, 5,700 observations and published closes through yesterday.
 The helper was removed without being committed. The optimized ReleaseLocal app
@@ -769,11 +780,16 @@ A queued context/container lifetime issue is a source-level suspicion, not an
 established root cause: the pending request stores a `ModelContext`, and
 `startRecompute` reads `context.container`.
 
-S6 remains reverted and has no commit. Per the owner's stop-on-failed-acceptance
-rule, no additional engine fix was improvised. Resolving this failed gate, or an
-owner decision to defer S6, is required before continuing the ordered plan.
+At this historical checkpoint, S6 remained reverted and had no commit. Per the
+owner's stop-on-failed-acceptance rule, no additional engine fix was improvised.
+Resolving this failed gate, or an owner decision to defer S6, was required
+before continuing the ordered plan.
 
 ### Remaining work and evidence limits
+
+**Historical status:** the S6/S7 and final-verification status below is superseded
+by the [2026-10-31 follow-up](#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes).
+The original stop record is retained.
 
 - S7a was not started because S6 failed acceptance. No scan-write measurements
   exist at either requested shape. S7b's 50 ms gate has not been evaluated; no
@@ -791,3 +807,141 @@ owner decision to defer S6, is required before continuing the ordered plan.
   main-thread ownership-lock waits, mature-collection launch-to-refresh timing,
   and prompt Portfolio updates after a quantity edit. No physical-device,
   provider, CloudKit, archive or release readiness is claimed.
+
+## 2026-10-31 refinement follow-up verification and accuracy fixes
+
+**Status:** complete; remote branch verified at `5344635` on 2026-10-31.
+At that verification point, `origin/main` was at `ade96f1` and the branch had
+not yet been merged. This closeout uses the existing Mac build/test artifacts;
+no new test run accompanies it. The later integration is recorded in Git history.
+
+| Follow-up step | Closed with |
+| --- | --- |
+| 1 — Verify what shipped | Configuration/resource checks, two passing S6 repetitions, S7 measurements and in-place simulator upgrade checks recorded below |
+| 2 — Defect A | `3241304`; reproduced failure, fixed owned-history cutoff and passing regression/expanded selection |
+| 3 — Defect B | `408e439`; reproduced failure, widened backdated-event coverage and passing regression/expanded selection |
+| 4 — Reconcile docs | `5344635`; audit, progress and release evidence reconciled, with this explicit closeout |
+
+The final combined selection has **808 passed, eight skipped, zero failed**;
+the final Release build passes. Physical index creation after upgrade and
+cross-device backdated coverage remain unresolved. Owner-device, provider,
+CloudKit, archive and release acceptance remain open as detailed below.
+
+**Candidate:** `refinement/review-followup-2026-10-31`, from `origin/main`
+at `ade96f1`. The starting tree was clean: the former eight local edits are
+already in the merged history. Follow-up commits are pushed separately; no PR
+or merge to `main` was made. Tests use normal local signing, Xcode 27.1 and
+iPhone 17 Pro / iOS 27.0 Simulator. These are selected-suite simulator results.
+
+### Verify the shipped changes
+
+Debug, Release and ReleaseLocal simulator builds pass at the reviewed baseline.
+Release omits `OnePieceOwnerCatalog`; Debug retains it. All ten app/test
+deployment settings are iOS 18.0. A final Release rebuild at `408e439` also
+passes and omits the owner catalog. The first test invocation could not find the
+requested iPhone 17 Pro destination (exit 70, no tests); creating that simulator
+resolved the setup issue without changing existing simulators.
+
+S6 was re-landed in `3e497f6`, retaining the model container through queued
+recompute completion or cancellation. The initial fresh crash-gate repetitions
+reported 120 passed / one skipped / zero failed, then 119 passed / one skipped /
+one failed. Neither crashed. The second run failed
+`testRefreshArrivingDuringSuspensionQueuesWithoutWaitingForResume` at line 549:
+it used a real catalog request and expected completion within about one second.
+Xcode exited 65; its separate simulator diagnostic collection timed out after
+600 seconds. The owner authorized a focused unblock.
+
+`9453ea5` makes that test deterministic using the existing fixture-fetch override
+and queued-refresh completion API, with no production change. Its focused test
+passes. Both complete crash-gate repetitions then pass, including
+`testQueuedRecomputeRetainsItsContainerUntilCompletionOrCancellation`:
+
+| Step 1 selection | Passed | Skipped | Failed |
+| --- | ---: | ---: | ---: |
+| S6: revision monitor, refresh lifecycle, reconciliation — repetition 1 | 120 | 1 | 0 |
+| Same selection — repetition 2 | 120 | 1 | 0 |
+| `d115390`: Pokémon CSV pricing and portfolio history | 87 | 0 | 0 |
+| Store continuity, storage bootstrap, replay engine and closes | 100 | 1 | 0 |
+| S2: Lorcana, scanner, One Piece, Yu-Gi-Oh!, product fallback and activity history | 499 | 6 | 0 |
+
+The S2 selection includes both One Piece classes and all ten classes in
+`YuGiOhIntegrationTests.swift`. Skips are the opt-in performance baseline,
+physical-device file protection and six prepared-data/live-provider opt-ins.
+
+### S7 measurements and in-place upgrade
+
+Fresh external `.xctestrun` environment settings ran the unchanged benchmark at
+1,500 instruments × 365 days: 547,500 check days and 28,500 observations.
+The exact pre-index `e292646` source was exported and built separately; the
+indexed product uses `ade96f1` production code with the test-only unblock above.
+
+| Measurement | Pre-index `e292646` | Indexed main product |
+| --- | ---: | ---: |
+| Scan price write | 51.261084 ms | 29.578375 ms |
+| Full-window `coverageIndex` | 5.010375041 s | 5.780256333 s |
+| `coverageIndex`, newest close present | 0.123734959 s | 0.126457250 s |
+
+Both benchmark cases pass. The pre-index scan write exceeds the approved 50 ms
+gate. These are single-run in-memory fixture timings; the full-window coverage
+read did not improve in this comparison.
+
+The mandatory simulator upgrade installed the iOS-17-targeting `e292646` app,
+seeded four fixture holdings, saved two quantity additions and invoked Refresh
+prices, then installed the iOS-18-targeting main product over it without deleting
+the app. Every semantic row in the collection, price, inventory/activity,
+observation, check-day and daily-close tables matches before/after; the store
+identity is unchanged. The UI retains the $1,802 total, quantities 1/1/2/3,
+stored unit prices $108/$126/$271/$342 and 30 Portfolio history points.
+Startup logs contain no migration or store-open errors.
+
+The first card-detail chart check used an injected debug series. A second
+isolated `e292646` → main upgrade seeds the actual disk cache with three
+synthetic prices ($10/$13/$20) and launches without chart injection. Both
+builds display +$10 / +100%; the cache bytes match exactly after upgrade.
+This verifies persisted chart-cache retention. The synthetic provider IDs
+report some prices unavailable on manual refresh; stored prices remain intact.
+These fixture checks do not establish live-provider history or refresh success.
+The SQLite index lists for `PriceCheckDay` and `PriceObservation` remain empty
+after upgrade. Data retention passed, but creation of physical indexes and an
+on-disk upgrade performance benefit are not established by this evidence.
+
+### Accuracy fixes
+
+- **Defect A — `3241304`:** shared catalog observations stop at the earlier of
+  first owned observation and the owned record's quote/withdrawal time. A later
+  unchanged owned refresh cannot move that cutoff forward. The new whole-day
+  regression fails against main production logic with three $9 closes instead
+  of $10; the $8 acquisition remains correct. After the fix the focused case
+  passes, and the three acceptance suites report 159 passed, one benchmark
+  skipped and zero failed.
+- **Defect B — `408e439`:** coverage widens from the recent margin to the earliest
+  backdated event recorded after the newest close's `computedAt`, using the
+  events already read and one newest-close fetch. The epoch/400-day bounds and
+  public coverage wrapper behavior remain. Against main production sources the
+  regression starts coverage on October 23, omitting the October 1 acquisition's
+  check day; both assertions fail. After the fix it passes; expanded portfolio
+  and activity coverage reports 274 passed, one benchmark skipped, zero failed.
+
+The post-fix 300 × 365 S3 benchmark passes: full-window coverage is 1.021585834 s
+and newest-close coverage is 0.021548084 s (about 2.1%); scan write is
+0.014899416 s. Both new regressions were verified against `origin/main`
+production logic before their fixes. The existing coverage-contract and
+newest-close tests pass unchanged.
+
+**Known coverage residual:** a CloudKit event arriving from another device with
+`recordedAt` before this device's newest close still retains the older coverage
+outside the margin. This remains a documented tradeoff, like edits beyond the
+400-day evidence horizon; no additional synchronization mechanism was added.
+
+**Final expanded verification:** at code tip `408e439`, the combined 25-class
+selection executes 816 cases: **808 passed, eight skipped, zero failed**.
+It includes both new regressions, the S6 lifetime/crash selection and all
+portfolio, pricing, scanner and storage classes listed above. No SIGTRAP occurs.
+
+Evidence remains external under
+`/Volumes/Keller Family Photos/CodexBuilds/refinement-review-followup-2026-10-31/`.
+Raw logs, stores, screenshots and result bundles are excluded from commits.
+Owner checks remain open: a 30-card Lorcana session without main-thread lock
+waits, mature-collection launch-to-refresh timing, consistent coverage after a
+backdated sale, and an iOS 18 device upgrade from the App Store build. No
+physical-device, provider, CloudKit, archive or release readiness is claimed.

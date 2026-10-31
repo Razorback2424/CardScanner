@@ -489,6 +489,45 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(index.checkedInstruments(on: today), ["instrument"])
     }
 
+    func testBackdatedEditRecomputesCoverageForAlreadyPublishedDays() throws {
+        let context = try makeContext()
+        let now = Date.now
+        let zone = TimeZone(secondsFromGMT: 0)!
+        let today = PortfolioCalendar.day(containing: now, in: zone)
+        let epoch = today.addingTimeInterval(-60 * 86_400)
+        let row = card(key: "backdated")
+        for daysAgo in 0...60 {
+            let day = today.addingTimeInterval(-Double(daysAgo) * 86_400)
+            context.insert(PriceCheckDay(instrumentKey: row.priceKey, portfolioDay: day,
+                lastSuccessfulCheckAt: day, source: .tcgplayer))
+        }
+        _ = PortfolioEngine.publish(
+            (1...60).map { daysAgo in
+                replayDay(today.addingTimeInterval(-Double(daysAgo) * 86_400), closeValue: 0,
+                    coverage: PortfolioCoverage(refreshed: 0, carriedForward: 0, state: .complete))
+            },
+            timeZone: zone,
+            context: context
+        )
+        for close in try PortfolioEngine.allCloses(in: context) {
+            close.computedAt = now.addingTimeInterval(-3_600)
+        }
+        try context.save()
+
+        let editedDay = today.addingTimeInterval(-30 * 86_400)
+        context.insert(row)
+        context.insert(InventoryEvent(operationID: UUID(), leg: nil, kind: .acquire, source: .scan,
+            collectionKey: row.collectionKey, priceStorageKey: row.priceKey, deltaQuantity: 1,
+            occurredAt: editedDay, recordedAt: now, valuation: .unpriced))
+        try context.save()
+
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context, epoch: epoch, through: now, timeZone: zone
+        )
+        XCTAssertLessThanOrEqual(try XCTUnwrap(computation.coverage.windowStart), editedDay)
+        XCTAssertEqual(computation.coverage.checkedInstruments(on: editedDay), [row.priceKey])
+    }
+
     // MARK: - Slice 1 baseline
 
     /// Measures the two whole-table reads the remediation plan's gated slices

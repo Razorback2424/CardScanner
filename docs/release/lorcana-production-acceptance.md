@@ -226,6 +226,17 @@ indexes. The minimum-iOS-17.0 row above describes the earlier archived build;
 it is not the current deployment target. This source/simulator change does not
 update that archive or certify a new distribution package.
 
+**2026-10-31 verification:** the exact pre-index `e292646` build measures
+**51.261084 ms** for a scan price write at 1,500 instruments × 365 days,
+exceeding 50 ms. The indexed `ade96f1` product measures **29.578375 ms** in the
+same in-memory fixture. Storage/replay suites pass 100 cases with one device
+skip; expanded S2 passes 499 with six opt-in skips. The in-place simulator
+upgrade retains collection, quotes, Portfolio history and a persisted chart
+cache, but its local tables still list no physical indexes. See the
+[refinement verification](../audits/production-refinement-master-review-2026-10-26.md#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+for the measurements and fixture/provider limits. This does not certify an
+App Store device upgrade or an on-disk index performance benefit.
+
 The three focused skips are the first-unlock file-protection assertion (requires
 a physical device) and the two intentionally disabled live-provider tests.
 The earlier live replay remains separate evidence. Storage negative tests emit

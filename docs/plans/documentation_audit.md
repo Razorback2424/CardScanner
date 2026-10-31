@@ -1,12 +1,29 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-10-29
+**Audit date:** 2026-10-02; review evidence updated 2026-10-31
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-29
+## Current authority boundary — updated 2026-10-31
+
+**Refinement verification and accuracy fixes — closed 2026-10-31:** the
+[dated follow-up](../audits/production-refinement-master-review-2026-10-26.md#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
+supersedes the master's initial S6-reverted/S7-not-started checkpoint and the
+October 30 progress entry's unverified status. It records fresh crash, pricing,
+storage and upgrade checks, exact S7 measurements, two reproduced accuracy
+defects and their fixes. Upgrade data retention is distinct from physical index
+creation, which remains unestablished on the inspected store. Existing device,
+provider, CloudKit and release gates remain open.
+Steps 1–4 are complete on `refinement/review-followup-2026-10-31` at
+`5344635`, confirmed directly on `origin`.
+The closeout uses existing Mac artifacts: 808 passed, eight skipped, zero failed
+in the final selection, plus a passing Release build. Cross-device backdated
+coverage remains a documented residual. This closes the scoped follow-up only;
+at the time of the branch verification, `main` was at `ade96f1` and the branch
+had not yet been merged. The earlier stop record is historical and no new tests
+or release acceptance are claimed by this documentation update.
 
 **High-confidence production refinement — 2026-10-29, `9aeeff4`:** the
 [refinement follow-up](../audits/production-refinement-master-review-2026-10-26.md#2026-10-29-high-confidence-refinement-fixes)
