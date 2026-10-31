@@ -8,7 +8,20 @@ history.
 
 ## Current authority boundary — updated 2026-10-31
 
-**Card sharing Mac verification — 2026-10-31:** the
+**Card sharing post-merge review — 2026-10-31:**
+[PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at 15:41:17
+UTC as `3053218`; its earlier draft status did not close any manual gate.
+The [sharing handoff](card_sharing_handoff.md) now records the original export
+guard as a regression at that main snapshot, rather than a completed recovery
+check. The follow-up offers fact-only images while artwork is absent/loading,
+optional Retry, a renderer without a separate artwork gate, bounded extreme
+personal photos, symmetric accessible inputs and offline DEBUG fixtures.
+Its final focused Debug run passes 33/33 with scoped screenshot evidence;
+the final arm64 Release simulator build also passes. Native offline/missing-art actions,
+extreme-photo acceptance, Save Image parity, VoiceOver and device destinations
+remain owner gates on the already-merged feature.
+
+**Initial card sharing Mac verification — 2026-10-31 (historical artwork behavior):** the
 [sharing handoff](card_sharing_handoff.md) supersedes the initial Linux-only,
 unbuilt status. Debug/Release arm64 simulator builds and the final 29 focused
 tests pass; the full branch regression reports 2,780 passed, 16 skipped and

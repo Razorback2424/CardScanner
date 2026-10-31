@@ -48,8 +48,10 @@ struct CardShareArtwork {
 }
 
 enum CardShareArtworkLoader {
+    typealias Load = @MainActor (String?, [URL]) async -> CardShareArtwork?
     static let pixelSize = 1_200
 
+    @MainActor
     static func load(localFilename: String?, remoteURLs: [URL]) async -> CardShareArtwork? {
         if let localFilename, !localFilename.isEmpty {
             let dimension = pixelSize
@@ -64,6 +66,44 @@ enum CardShareArtworkLoader {
             }
         }
         return nil
+    }
+}
+
+/// Artwork enriches a share; loading or failing to load it never blocks the
+/// identity and price. A newer attempt owns the result if an old request lingers.
+@MainActor
+final class CardShareArtworkState: ObservableObject {
+    @Published private(set) var artwork: CardShareArtwork?
+    @Published private(set) var isLoading = false
+    @Published private(set) var revision = 0
+    private var generation = 0
+
+    func load(localFilename: String?, remoteURLs: [URL],
+              using loader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load) async {
+        generation += 1
+        let attempt = generation
+        isLoading = true
+        let loaded = await loader(localFilename, remoteURLs)
+        guard attempt == generation else { return }
+        isLoading = false
+        guard !Task.isCancelled else { return }
+        artwork = loaded
+        revision += 1
+    }
+}
+
+enum CardShareArtworkLayout {
+    static func aspect(for artwork: CardShareArtwork?) -> CGFloat {
+        guard let artwork, artwork.image.size.height > 0 else { return CardShareStyle.cardAspect }
+        let aspect = artwork.image.size.width / artwork.image.size.height
+        // Ordinary photos remain whole. Extreme personal photos get a bounded,
+        // centered crop rather than reducing the share's artwork to a sliver.
+        return artwork.kind == .userPhoto ? min(max(aspect, 1 / 3), 3) : aspect
+    }
+
+    static func cornerRadius(for size: CGSize, kind: CardShareArtwork.Kind?) -> CGFloat {
+        let preferred: CGFloat = kind == .userPhoto ? 16 : max(6, size.width * 0.045)
+        return min(preferred, min(size.width, size.height) * 0.08)
     }
 }
 
@@ -151,11 +191,19 @@ struct CollectionShareImage: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ShareArtworkView(artwork: artwork, showsFinishSheen: showsFinishSheen, shadowRadius: 18)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.bottom, 17)
+            if artwork != nil {
+                ShareArtworkView(artwork: artwork, showsFinishSheen: showsFinishSheen, shadowRadius: 18)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.bottom, 17)
+            } else {
+                Spacer(minLength: 24)
+            }
 
             ShareIdentityBlock(identity: identity)
+
+            if artwork == nil {
+                Spacer(minLength: 24)
+            }
 
             if let price {
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
@@ -224,8 +272,10 @@ struct BuyCheckShareImage: View {
 
     private var identityRow: some View {
         HStack(alignment: .center, spacing: 17) {
-            ShareArtworkView(artwork: artwork, showsFinishSheen: false, shadowRadius: 10)
-                .frame(width: thumbnailWidth, height: thumbnailWidth / CardShareStyle.cardAspect)
+            if artwork != nil {
+                ShareArtworkView(artwork: artwork, showsFinishSheen: false, shadowRadius: 10)
+                    .frame(width: thumbnailWidth, height: thumbnailWidth / CardShareStyle.cardAspect)
+            }
 
             VStack(alignment: .leading, spacing: 7) {
                 Text(identity.name)
@@ -410,8 +460,7 @@ private struct ShareArtworkView: View {
     }
 
     private var aspect: CGFloat {
-        guard let image = artwork?.image, image.size.height > 0 else { return CardShareStyle.cardAspect }
-        return image.size.width / image.size.height
+        CardShareArtworkLayout.aspect(for: artwork)
     }
 
     private func fittedSize(in bounds: CGSize) -> CGSize {
@@ -426,7 +475,7 @@ private struct ShareArtworkView: View {
     }
 
     private func framed(size: CGSize) -> some View {
-        let radius: CGFloat = artwork?.kind == .userPhoto ? 16 : max(6, size.width * 0.045)
+        let radius = CardShareArtworkLayout.cornerRadius(for: size, kind: artwork?.kind)
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         return ZStack {
             if let artwork {
@@ -715,24 +764,25 @@ struct CollectionShareSheet: View {
     let showsFinishSheen: Bool
     let localArtworkFilename: String?
     let remoteArtworkURLs: [URL]
+    var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
 
     @Environment(\.dismiss) private var dismiss
     /// Remembers the last choice: someone who shares prices usually keeps
     /// sharing them, and someone who does not should never be surprised.
     @AppStorage("cardShare.includesPrice") private var includesPrice = false
-    @State private var artwork: CardShareArtwork?
-    @State private var isLoadingArtwork = true
+    @StateObject private var artwork = CardShareArtworkState()
+    @State private var artworkAttempt = 0
     @State private var rendered: UIImage?
 
     private struct RenderKey: Equatable {
         let includesPrice: Bool
-        let isLoadingArtwork: Bool
+        let artworkRevision: Int
     }
 
     private var sharedPrice: CardSharePrice? { includesPrice ? price : nil }
 
     private var image: CollectionShareImage {
-        CollectionShareImage(identity: identity, price: sharedPrice, artwork: artwork, showsFinishSheen: showsFinishSheen)
+        CollectionShareImage(identity: identity, price: sharedPrice, artwork: artwork.artwork, showsFinishSheen: showsFinishSheen)
     }
 
     private var summary: String {
@@ -744,8 +794,13 @@ struct CollectionShareSheet: View {
             VStack(spacing: 16) {
                 CardSharePreview(content: image, summary: summary)
                 priceRow
-                CardShareButton(rendered: isLoadingArtwork ? nil : rendered, title: identity.name, message: summary,
-                    artworkUnavailable: !isLoadingArtwork && artwork == nil)
+                if artwork.artwork == nil {
+                    CardShareArtworkStatus(isLoading: artwork.isLoading,
+                        canRetry: artwork.revision > 0 && (localArtworkFilename?.isEmpty == false || !remoteArtworkURLs.isEmpty)) {
+                        artworkAttempt += 1
+                    }
+                }
+                CardShareButton(rendered: rendered, title: identity.name, message: summary)
             }
             .padding(.horizontal, 20)
             .padding(.top, 4)
@@ -762,12 +817,11 @@ struct CollectionShareSheet: View {
         .presentationDragIndicator(.visible)
         .presentationBackground(CardShareStyle.sheetBackground)
         .preferredColorScheme(.dark)
-        .task {
-            artwork = await CardShareArtworkLoader.load(localFilename: localArtworkFilename, remoteURLs: remoteArtworkURLs)
-            isLoadingArtwork = false
+        .task(id: artworkAttempt) {
+            await artwork.load(localFilename: localArtworkFilename, remoteURLs: remoteArtworkURLs, using: artworkLoader)
         }
-        .task(id: RenderKey(includesPrice: includesPrice, isLoadingArtwork: isLoadingArtwork)) {
-            rendered = CardShareRenderer.render(image, artwork: artwork)
+        .task(id: RenderKey(includesPrice: includesPrice, artworkRevision: artwork.revision)) {
+            rendered = CardShareRenderer.render(image)
         }
     }
 
@@ -805,14 +859,15 @@ struct BuyCheckShareSheet: View {
     /// Nil where market history is not available for this item, such as a
     /// graded price check. The image then goes out without a chart.
     let historyRequest: CardMarketHistoryRequest?
+    var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
 
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var askText = ""
     @State private var trend: CardShareTrend?
-    @State private var artwork: CardShareArtwork?
-    @State private var isLoadingArtwork = true
+    @StateObject private var artwork = CardShareArtworkState()
+    @State private var artworkAttempt = 0
     @State private var rendered: UIImage?
     @State private var now = Date.now
     @FocusState private var isAskFocused: Bool
@@ -820,13 +875,13 @@ struct BuyCheckShareSheet: View {
     private struct RenderKey: Equatable {
         let ask: CardShareAsk?
         let trend: CardShareTrend?
-        let isLoadingArtwork: Bool
+        let artworkRevision: Int
     }
 
     private var ask: CardShareAsk? { CardShareAsk(text: askText, market: price.amount) }
 
     private var image: BuyCheckShareImage {
-        BuyCheckShareImage(identity: identity, price: price, ask: ask, trend: trend, artwork: artwork, now: now)
+        BuyCheckShareImage(identity: identity, price: price, ask: ask, trend: trend, artwork: artwork.artwork, now: now)
     }
 
     private var summary: String {
@@ -839,8 +894,13 @@ struct BuyCheckShareSheet: View {
                 CardSharePreview(content: image, summary: summary)
                     .onTapGesture { isAskFocused = false }
                 askRow
-                CardShareButton(rendered: isLoadingArtwork ? nil : rendered, title: identity.name, message: summary,
-                    artworkUnavailable: !isLoadingArtwork && artwork == nil)
+                if artwork.artwork == nil {
+                    CardShareArtworkStatus(isLoading: artwork.isLoading,
+                        canRetry: artwork.revision > 0 && !artworkURLs.isEmpty) {
+                        artworkAttempt += 1
+                    }
+                }
+                CardShareButton(rendered: rendered, title: identity.name, message: summary)
             }
             .padding(.horizontal, 20)
             .padding(.top, 4)
@@ -861,13 +921,12 @@ struct BuyCheckShareSheet: View {
         .presentationDragIndicator(.visible)
         .presentationBackground(CardShareStyle.sheetBackground)
         .preferredColorScheme(.dark)
-        .task {
-            artwork = await CardShareArtworkLoader.load(localFilename: nil, remoteURLs: artworkURLs)
-            isLoadingArtwork = false
+        .task(id: artworkAttempt) {
+            await artwork.load(localFilename: nil, remoteURLs: artworkURLs, using: artworkLoader)
         }
         .task { await loadHistory() }
-        .task(id: RenderKey(ask: ask, trend: trend, isLoadingArtwork: isLoadingArtwork)) {
-            rendered = CardShareRenderer.render(image, artwork: artwork)
+        .task(id: RenderKey(ask: ask, trend: trend, artworkRevision: artwork.revision)) {
+            rendered = CardShareRenderer.render(image)
         }
     }
 
@@ -902,14 +961,16 @@ struct BuyCheckShareSheet: View {
             .padding(.horizontal, 12)
             .frame(width: dynamicTypeSize.isAccessibilitySize ? nil : 116)
             .frame(minHeight: 44)
+            .fixedSize(horizontal: false, vertical: true)
             .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
             .onTapGesture { isAskFocused = true }
         }
         .padding(.leading, 16)
-        .padding(.trailing, 8)
+        .padding(.trailing, dynamicTypeSize.isAccessibilitySize ? 16 : 8)
         .padding(.vertical, 10)
         .frame(minHeight: 60)
+        .fixedSize(horizontal: false, vertical: true)
         .background(CardShareStyle.rowBackground, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
@@ -938,9 +999,7 @@ struct BuyCheckShareSheet: View {
 
 enum CardShareRenderer {
     @MainActor
-    static func render<Content: View>(_ content: Content, artwork: CardShareArtwork?) -> UIImage? {
-        // A failed or unfinished load must never export the preview placeholder.
-        guard artwork != nil else { return nil }
+    static func render<Content: View>(_ content: Content) -> UIImage? {
         let renderer = ImageRenderer(content: content.environment(\.colorScheme, .dark))
         renderer.scale = CardShareStyle.renderScale
         renderer.isOpaque = true
@@ -986,7 +1045,6 @@ private struct CardShareButton: View {
     let rendered: UIImage?
     let title: String
     let message: String
-    let artworkUnavailable: Bool
 
     var body: some View {
         if let rendered {
@@ -997,7 +1055,7 @@ private struct CardShareButton: View {
             .buttonStyle(.plain)
         } else {
             Button {} label: {
-                label(text: artworkUnavailable ? "Artwork unavailable" : "Preparing…")
+                label(text: "Preparing…")
             }
             .buttonStyle(.plain)
             .disabled(true)
@@ -1013,6 +1071,30 @@ private struct CardShareButton: View {
             .frame(maxWidth: .infinity, minHeight: 54)
             .background(LinearGradient(colors: AppPalette.foil, startPoint: .leading, endPoint: .trailing), in: shape)
             .contentShape(shape)
+    }
+}
+
+private struct CardShareArtworkStatus: View {
+    let isLoading: Bool
+    let canRetry: Bool
+    let retry: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text("Sharing without artwork")
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+            if isLoading {
+                ProgressView().accessibilityLabel("Loading artwork")
+            } else if canRetry {
+                Button("Retry", action: retry)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityLabel("Retry artwork")
+            }
+        }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
+        .frame(minHeight: 24)
     }
 }
 
@@ -1046,8 +1128,9 @@ private struct CardShareReviewState {
 
 struct CardShareReviewView: View {
     @State private var isPresented = true
+    @State private var loadAttempts = 0
     private let state = CardShareReviewState.value
-    private let artworkURL = URL(string: "https://images.pokemontcg.io/sv3pt5/87_hires.png")!
+    private let artworkURL = URL(string: "https://card-share-review.invalid/artwork")!
 
     private var identity: CardShareIdentity {
         CardShareIdentity(
@@ -1072,15 +1155,45 @@ struct CardShareReviewView: View {
             .sheet(isPresented: $isPresented) {
                 Group {
                     if state.hasPrefix("buy") {
-                        BuyCheckShareSheet(identity: identity, price: price, artworkURLs: [artworkURL], historyRequest: nil)
+                        BuyCheckShareSheet(identity: identity, price: price, artworkURLs: [artworkURL], historyRequest: nil,
+                            artworkLoader: loadArtwork)
                     } else {
                         CollectionShareSheet(identity: identity, price: state == "no-price" ? nil : price,
                             showsFinishSheen: !["normal", "graded", "sealed"].contains(state), localArtworkFilename: nil,
-                            remoteArtworkURLs: state == "missing-art" ? [] : [artworkURL])
+                            remoteArtworkURLs: state == "missing-art" ? [] : [artworkURL], artworkLoader: loadArtwork)
                     }
                 }
                 .environment(\.dynamicTypeSize, ProcessInfo.processInfo.arguments.contains("large-text") ? .accessibility3 : .large)
             }
+    }
+
+    /// Generated locally so screenshot states never depend on a provider or
+    /// warmed image cache. The injected loader is used only by this DEBUG host.
+    private func loadArtwork(_ filename: String?, _ urls: [URL]) async -> CardShareArtwork? {
+        loadAttempts += 1
+        if state.contains("missing-art") || state.contains("failed-art") { return nil }
+        if state.contains("retry"), loadAttempts == 1 { return nil }
+        if state.contains("slow") {
+            try? await Task.sleep(for: .seconds(10))
+            guard !Task.isCancelled else { return nil }
+        }
+        let size: CGSize
+        switch state {
+        case "photo-tall": size = CGSize(width: 120, height: 360)
+        case "photo-wide": size = CGSize(width: 360, height: 120)
+        case "photo-extreme-tall": size = CGSize(width: 24, height: 480)
+        case "photo-extreme-wide": size = CGSize(width: 480, height: 24)
+        default: size = CGSize(width: 215, height: 300)
+        }
+        let image = UIGraphicsImageRenderer(size: size).image { context in
+            UIColor.systemIndigo.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+            UIColor.systemMint.setFill()
+            context.fill(CGRect(x: 4, y: 4, width: size.width - 8, height: size.height - 8))
+            ("TEST ART" as NSString).draw(at: CGPoint(x: 8, y: 8),
+                withAttributes: [.font: UIFont.boldSystemFont(ofSize: 14), .foregroundColor: UIColor.black])
+        }
+        return CardShareArtwork(image: image, kind: state.hasPrefix("photo-") ? .userPhoto : .catalog)
     }
 }
 #endif

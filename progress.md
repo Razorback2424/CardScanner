@@ -1,3 +1,37 @@
+# 2026-10-31 — Card sharing post-merge artwork recovery
+
+Follow-up on `fix/card-share-artwork-recovery` from `main@3053218`.
+[PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at 15:41:17
+UTC after its 15:37 draft state was reported. Its manual acceptance gates now
+apply to main. Review correctly identified that the original `e503728` export
+guard stranded items without artwork; the old guard-only test did not prove a
+usable sharing flow.
+
+Both sheets now render the facts without artwork during missing, slow or failed
+loads. Share stays available, Retry is offered when there is a source, and late
+results cannot replace a newer attempt. The renderer accepts only the actual
+view; tests no longer supply unrelated artwork to bypass a guard. Ordinary
+personal-photo proportions are preserved from 1:3 through 3:1; more extreme
+photos use a centered crop and proportional corners. The asking field has equal
+accessibility insets and intrinsic height. DEBUG review artwork is generated
+locally rather than fetched from a provider.
+
+The final Debug selection passes **33 tests, zero failures/skips**: 17 logic,
+eight render/recovery and eight detail-render cases. It covers empty sources,
+suspended loading, failure, retry, superseded results and extreme aspect ratios.
+Twenty-three exported fixtures were inspected. SE captures show an enabled
+Share without artwork and a readable accessibility3 failure/Retry row; a row
+compression found during the loop was repaired and recaptured. The final Release
+build passes on the arm64 iPhone 16 / iOS 27 simulator with Xcode 27.1 and
+`ONLY_ACTIVE_ARCH=YES`. No fresh full suite is claimed; the initial
+full-run counts below are historical.
+
+Evidence stays on the external SSD. Native Share/Retry/Close with actual missing
+images or networking off, extreme-photo acceptance, saved-file parity, keyboard
+interactions, spoken VoiceOver and physical-phone destinations remain manual.
+The current [handoff](docs/plans/card_sharing_handoff.md) distinguishes the
+reviewed main regression, follow-up evidence and those owner checks.
+
 # 2026-10-31 — Preserve saved feed prices during rollover outages
 
 Follow-up to review of `21e6ec1`, based on clean `main@17658c9`. A still-valid
@@ -17,7 +51,12 @@ check. Diff whitespace and added local links pass validation. See the
 `2b31f0d`. This is recorded-response simulator evidence, not live-provider or
 device acceptance.
 
-# 2026-10-31 — Card sharing — Mac verification
+# 2026-10-31 — Card sharing — initial Mac verification
+
+Historical checkpoint: the original artwork guard below introduced a missing-art
+dead end, and unlimited personal-photo proportions could become thin strips.
+The post-merge follow-up above supersedes those behavior claims. The recorded
+initial build/test counts are unchanged; manual gates were not closed by merge.
 
 On `claude/card-share-sheet`, a Share button on collection card details and on
 the Price Check result replaces screenshots with a rendered 1080 × 1350 image
