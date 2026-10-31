@@ -64,7 +64,8 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
             throw PokemonTCGCSVError.unsupportedSet
         }
         try Task.checkCancellation()
-        if let cached = load(key), isFresh(cached.validatedAt) { return cached }
+        if !retry, let cached = load(key), isFresh(cached.validatedAt),
+           build == nil || build?.value == cached.feedBuild { return cached }
         if let task = tasks[key] {
             return try await waitFor(task)
         }
@@ -73,7 +74,7 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         }
         let task = Task {
             do {
-                let result = try await self.download(setID: key, groupID: groupID)
+                let result = try await self.download(setID: key, groupID: groupID, retry: retry)
                 self.snapshots[key] = result
                 self.failures[key] = nil
                 self.tasks[key] = nil
@@ -126,22 +127,18 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         cacheDirectory.appendingPathComponent(key + ".json")
     }
 
-    private func download(setID: String, groupID: Int) async throws -> PokemonTCGCSVSnapshot {
-        let feedBuild = try await currentBuild()
-        var result: PokemonTCGCSVSnapshot
-        if var previous = load(setID), previous.feedBuild == feedBuild {
-            previous.validatedAt = now()
-            result = previous
-        } else {
-            let productsData = try await fetch("tcgplayer/3/\(groupID)/products")
-            let pricesData = try await fetch("tcgplayer/3/\(groupID)/prices")
-            let capturedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData,
-                expectedBuild: feedBuild, now: now())
-            result = try Self.decodeSnapshot(
-                products: productsData, prices: pricesData, setID: setID,
-                feedBuild: feedBuild, fetchedAt: capturedAt
-            )
-            result.validatedAt = now()
+    private func download(setID: String, groupID: Int, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
+        let feedBuild = try await currentBuild(forceRefresh: retry)
+        let result: PokemonTCGCSVSnapshot
+        do {
+            result = try await download(setID: setID, groupID: groupID, feedBuild: feedBuild)
+        } catch PriceQuoteError.providerUnavailable {
+            // Publication may advance while our marker is still cached. Retry
+            // once against a newly observed build; torn or invalid files under
+            // the same marker remain failures, never accepted quotes.
+            let latestBuild = try await currentBuild(forceRefresh: true)
+            guard latestBuild != feedBuild else { throw PriceQuoteError.providerUnavailable }
+            result = try await download(setID: setID, groupID: groupID, feedBuild: latestBuild)
         }
         // A cache write failure must not hide an otherwise valid current quote.
         if let data = try? JSONEncoder().encode(result) {
@@ -151,9 +148,27 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         return result
     }
 
-    private func currentBuild() async throws -> String {
-        if let build, isFresh(build.checkedAt) { return build.value }
+    private func download(setID: String, groupID: Int, feedBuild: String) async throws -> PokemonTCGCSVSnapshot {
+        if var previous = load(setID), previous.feedBuild == feedBuild {
+            previous.validatedAt = now()
+            return previous
+        } else {
+            let productsData = try await fetch("tcgplayer/3/\(groupID)/products")
+            let pricesData = try await fetch("tcgplayer/3/\(groupID)/prices")
+            let capturedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData,
+                expectedBuild: feedBuild, now: now())
+            var result = try Self.decodeSnapshot(
+                products: productsData, prices: pricesData, setID: setID,
+                feedBuild: feedBuild, fetchedAt: capturedAt
+            )
+            result.validatedAt = now()
+            return result
+        }
+    }
+
+    private func currentBuild(forceRefresh: Bool = false) async throws -> String {
         if let task = buildTask { return try await task.value }
+        if !forceRefresh, let build, isFresh(build.checkedAt) { return build.value }
         let task = Task {
             let data = try await self.fetch("last-updated.txt")
             guard let raw = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
