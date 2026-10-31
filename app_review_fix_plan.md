@@ -1,5 +1,29 @@
 # CardScanner App Review Fix Plan
 
+## Feed-cache fallback follow-up — 2026-10-31
+
+Based on clean `main@17658c9`, following review of `21e6ec1`:
+
+- [x] Reproduce loss of a still-valid saved snapshot after learning a newer
+  feed build, including manual retry and the failure cooldown.
+- [x] Return the original snapshot on refresh failure or cooldown while its
+  validation remains under 24 hours old. Preserve quote/validation dates, failed
+  request backoff, strict new-file validation and waiter cancellation.
+- [x] Verify expiry during a request, lagging publication files, recovery and
+  shared cancelled/non-cancelled waiters with recorded-response simulator tests.
+
+No release gate or provider configuration changes were made. The source/test
+fix is committed as `2b31f0d`; rollback is limited to its service/test diff.
+Both new outage regressions failed against the committed service before the fix.
+The post-fix feed suite passed **50 tests, zero failures/skips**, including all
+five new regressions. The expanded feed/pricing/quote-cache selection passed
+**171 tests, zero failures/skips**. The **Release simulator build passed**. The final feed
+suite rerun also passed **50/50**, including the deterministic in-flight expiry
+check. Diff whitespace and added local documentation links pass validation.
+Earlier counts below describe the earlier candidate. The cache is never
+restamped or rewritten on failure, and freshness is rechecked after the network
+await. No live-provider, physical-device or distribution readiness is claimed.
+
 ## High-confidence refinement fixes — 2026-10-31
 
 Scope: the five source-proven findings from the current review, based on clean

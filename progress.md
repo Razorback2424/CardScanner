@@ -1,3 +1,22 @@
+# 2026-10-31 — Preserve saved feed prices during rollover outages
+
+Follow-up to review of `21e6ec1`, based on clean `main@17658c9`. A still-valid
+Pokémon feed snapshot remains available when a newer build cannot be downloaded,
+including ordinary backoff and manual retry. Its quote and validation dates and
+disk bytes stay unchanged; failed-request backoff remains active. Expired data
+and cancellation still fail, and incomplete new files are never accepted.
+
+Both new outage regressions failed before the fix. The post-fix feed suite passed
+**50 tests, zero failures/skips**. Five new cases cover known-build outages,
+marker outages, lagging publication files, expiry during a request and shared
+cancelled/non-cancelled waiters. The expanded feed/pricing/quote-cache selection
+passed **171 tests, zero failures/skips**. The Release simulator build and final
+**50/50** feed-suite rerun passed, including the deterministic in-flight expiry
+check. Diff whitespace and added local links pass validation. See the
+[fix plan](app_review_fix_plan.md). The source/test fix is committed as
+`2b31f0d`. This is recorded-response simulator evidence, not live-provider or
+device acceptance.
+
 # 2026-10-31 — High-confidence production review fixes
 
 Remediation based on clean `main@36c2a64`, split into four focused commits:
