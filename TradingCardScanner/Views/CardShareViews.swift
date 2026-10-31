@@ -18,6 +18,8 @@ enum CardShareStyle {
     /// 1080 x 1350 portrait image that suits Messages, social posts and Discord.
     static let canvas = CGSize(width: 360, height: 450)
     static let renderScale: CGFloat = 3
+    /// How long the price-check bitmap waits for asking-price typing to pause.
+    static let askRenderPause: Duration = .milliseconds(200)
     static let cardAspect: CGFloat = 0.716
 
     static let ground = Color(red: 13 / 255, green: 13 / 255, blue: 20 / 255)
@@ -869,6 +871,8 @@ struct BuyCheckShareSheet: View {
     @StateObject private var artwork = CardShareArtworkState()
     @State private var artworkAttempt = 0
     @State private var rendered: UIImage?
+    /// The inputs `rendered` was drawn from.
+    @State private var renderedKey: RenderKey?
     @State private var now = Date.now
     @FocusState private var isAskFocused: Bool
 
@@ -876,6 +880,10 @@ struct BuyCheckShareSheet: View {
         let ask: CardShareAsk?
         let trend: CardShareTrend?
         let artworkRevision: Int
+    }
+
+    private var renderKey: RenderKey {
+        RenderKey(ask: ask, trend: trend, artworkRevision: artwork.revision)
     }
 
     private var ask: CardShareAsk? { CardShareAsk(text: askText, market: price.amount) }
@@ -925,8 +933,19 @@ struct BuyCheckShareSheet: View {
             await artwork.load(localFilename: nil, remoteURLs: artworkURLs, using: artworkLoader)
         }
         .task { await loadHistory() }
-        .task(id: RenderKey(ask: ask, trend: trend, artworkRevision: artwork.revision)) {
+        .task(id: renderKey) {
+            let key = renderKey
+            if let renderedKey, renderedKey.ask != key.ask {
+                // Typing an asking price: the preview above already follows
+                // every keystroke; only the share bitmap waits for a pause.
+                // Drop the old bitmap first so Share can never send a
+                // superseded price.
+                rendered = nil
+                try? await Task.sleep(for: CardShareStyle.askRenderPause)
+                guard !Task.isCancelled else { return }
+            }
             rendered = CardShareRenderer.render(image)
+            renderedKey = key
         }
     }
 
@@ -1000,6 +1019,8 @@ struct BuyCheckShareSheet: View {
 enum CardShareRenderer {
     @MainActor
     static func render<Content: View>(_ content: Content) -> UIImage? {
+        let state = PerformanceSignpost.beginInterval("CardShare.render", id: PerformanceSignpost.makeID(), "\(Content.self)")
+        defer { PerformanceSignpost.endInterval("CardShare.render", state, "") }
         let renderer = ImageRenderer(content: content.environment(\.colorScheme, .dark))
         renderer.scale = CardShareStyle.renderScale
         renderer.isOpaque = true
