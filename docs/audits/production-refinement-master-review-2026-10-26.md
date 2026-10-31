@@ -695,3 +695,99 @@ comprehensive source review; they do not replace the earlier findings ledger.
   owner-deferred privacy/support publication. These require their existing
   data/product/release decisions, not automatic code fallbacks. Image decode,
   large Activity/import costs and launch/frame budgets remain measurement work.
+
+## 2026-10-30 refinement implementation and S6 stop gate
+
+**Candidate:** `refinement/review-2026-10-30`, based on `f22d28f`; accepted
+implementation through `f05a734`, dated 2026-10-30. Each accepted slice was
+committed and pushed separately. No PR was opened. The eight pre-existing
+working-tree changes were preserved and excluded from these commits;
+verification ran with those changes present.
+
+| Slice | Commit | Implemented scope and verification |
+| --- | --- | --- |
+| S1 | `f0149b0` | Exclude `OnePieceOwnerCatalog` in app-target Release and DebugProduction. Release and Debug simulator builds pass. Release omits the directory; Debug retains its 21,356 KiB (20.9 MiB). Both One Piece suites pass all 102 cases. No fallback script was needed. |
+| S2 | `bc6e369` | Scanner and activity correction fallback prices use the existing background writer and storage-generation continuation. The exact Lorcana scan-to-price regression passes; expanded coverage has 498 passes, six prepared-data skips and no failures. Neither changed file constructs a fresh-checkpoint `PriceStore`. |
+| S3 | `ecd1eab` | Read coverage near the newest published close with a seven-day margin; retain the 400-day pruning/chart horizon. Reconciliation has 86 passes and one opt-in benchmark skip; four expanded portfolio suites pass all 129 cases. The two existing coverage-contract tests remain unchanged and pass. Both deliberate benchmark runs below pass. |
+| S4 | `204d6d7` | Reuse incomplete local/network Magic migration reports until invalidation. Completeness diagnostics remain unchanged. The new regression and all 109 expanded treatment, migration, snapshot, revision-monitor and refresh-lifecycle cases pass. |
+| S5 | `f05a734` | Extract shared launch sequencing and default runtime binding. Source comparison confirms equivalent fixture, launch and binding statement order. Debug, Release and ReleaseLocal simulator builds pass; opening/launch/bootstrap coverage has 48 passes, one physical-device-only skip and no failures. |
+
+`YuGiOhIntegrationTests` names a file rather than an XCTest class. S2 therefore
+ran all ten classes in that file separately (94 passes, included in the 498
+total). S4 includes the separate `MagicTreatmentMigrationTests` coordinator
+class. Tests used normal local signing on iPhone 17 Pro / iOS 27.0 Simulator
+with Xcode 27.1. An initial package-resolution failure from a missing compiler
+cache was resolved by directing that cache to the external SSD.
+
+### S3 measurements
+
+The opt-in fixture has 300 instruments, 365 days, 109,500 check-day rows and
+5,700 observations. These are simulator fixture timings, not device claims.
+
+| Measurement | Before S3 | After S3 |
+| --- | --- | --- |
+| Full-window `coverageIndex`, no published close | 1.057006 s | 0.961710 s |
+| `coverageIndex`, yesterday's close present | Not measured | 0.025211 s |
+| `PriceRefreshDataIndex.init` | 0.129414 s | 0.101061 s |
+
+The newest-close read is approximately 2.6% of the same run's full-window read.
+Xcode did not forward the shell's `PERF_BASELINE` variable, so the first
+invocation skipped. Measured runs used `EnvironmentVariables` in external
+`.xctestrun` specifications; the repository scheme was not edited.
+
+### S6 measured, rejected and reverted
+
+A temporary test helper generated an on-disk fixture with 300 owned instruments,
+365 days of checks, 5,700 observations and published closes through yesterday.
+The helper was removed without being committed. The optimized ReleaseLocal app
+reopened the fixture and displayed its expected $1,275 portfolio.
+
+The valid Logging trace explicitly enabled the `TradingCardScanner` subsystem
+to capture its custom `Performance` category. `Launch.storageStart` began at
+7.870789375 s and the first `priceRefresh.run` began at 14.755697666 s into the
+recording. Their **6.884908291 s** difference is a lower bound on launch-to-refresh
+entry, exceeding the approximately one-second gate. Two preceding coverage reads
+took approximately 96.1 ms and 32.3 ms. This warmed fixture's recorded refresh
+attempt had no eligible targets: the timing is refresh entry, not a provider
+response or an exact process-start measurement. Earlier recorder setup attempts
+did not capture the custom category and are not timing evidence.
+
+The authorized one-line change passed the focused M08 same-count first-baseline
+regression. Its expanded selection then crashed with **SIGTRAP / EXC_BREAKPOINT
+in SwiftData**, with the faulting stack through `PortfolioEngine.startRecompute`,
+`finishAppliedComputation` and `apply`.
+`PriceRefreshLifecycleTests.testProgressRelayPublishesTrailingCountWhileProviderIsIdle`
+was active when the process exited; that does not establish the relay as the
+cause. Xcode restarted the remaining tests, then stalled finalizing results.
+The runner was interrupted and terminated (exit 143), so that invocation is not
+a successful run or a finalized result bundle.
+
+With **only the S6 line reverted**, the identical selection passed: **119 passed,
+one opt-in benchmark skipped, zero failures** out of 120 cases. The failure was
+not reproduced on the pre-S6 baseline and must not be classified as pre-existing.
+A queued context/container lifetime issue is a source-level suspicion, not an
+established root cause: the pending request stores a `ModelContext`, and
+`startRecompute` reads `context.container`.
+
+S6 remains reverted and has no commit. Per the owner's stop-on-failed-acceptance
+rule, no additional engine fix was improvised. Resolving this failed gate, or an
+owner decision to defer S6, is required before continuing the ordered plan.
+
+### Remaining work and evidence limits
+
+- S7a was not started because S6 failed acceptance. No scan-write measurements
+  exist at either requested shape. S7b's 50 ms gate has not been evaluated; no
+  index benefit, deployment-target change or simulator upgrade acceptance is
+  claimed.
+- The final cross-slice expanded run remains pending. The accepted per-slice
+  runs above do not complete the plan's end-to-end gate.
+- Release's app bundle was rechecked after S5 and still omits the owner catalog.
+  Existing user changes remain uncommitted; no generated artifacts were staged.
+- Evidence is external under
+  `/Volumes/Keller Family Photos/CodexBuilds/refinement-review-2026-10-30/`.
+  The accepted timing source is `s6-before-logging.trace` and its exported
+  signposts. Raw logs, screenshots, stores and results are not repo artifacts.
+- Owner device checks remain open: a 30-card Lorcana Instruments session without
+  main-thread ownership-lock waits, mature-collection launch-to-refresh timing,
+  and prompt Portfolio updates after a quantity edit. No physical-device,
+  provider, CloudKit, archive or release readiness is claimed.
