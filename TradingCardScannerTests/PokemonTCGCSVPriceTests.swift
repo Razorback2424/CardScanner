@@ -725,6 +725,140 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(restored.fetchedAt, first.fetchedAt)
     }
 
+    func testNewBuildOutageKeepsFreshSnapshotThroughBackoffRetryAndRecovery() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        let saved = try await service.snapshot(setID: "30th-c", retry: false)
+        let cacheURL = root.appendingPathComponent("30th-c.json")
+        let savedBytes = try Data(contentsOf: cacheURL)
+        server.advance(2 * 60 * 60)
+        let nextBuild = "2026-09-30T00:00:00Z"
+        server.publish(build: nextBuild)
+        _ = try await service.snapshot(setID: "30th", retry: false)
+        server.fail = true
+        let requestsBefore = server.requests.count
+        for (retry, expectedRequests) in [(false, 1), (false, 1), (true, 2), (false, 2)] {
+            let result = try await service.snapshot(setID: "30th-c", retry: retry)
+            XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
+            XCTAssertEqual(result.feedBuild, saved.feedBuild)
+            XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
+            XCTAssertEqual(result.validatedAt, saved.validatedAt)
+            XCTAssertEqual(try Data(contentsOf: cacheURL), savedBytes)
+            XCTAssertEqual(server.requests.count - requestsBefore, expectedRequests,
+                "Ordinary requests respect backoff; manual retry can attempt recovery")
+        }
+        server.fail = false
+        let recovered = try await service.snapshot(setID: "30th-c", retry: true)
+        XCTAssertEqual(recovered.feedBuild, nextBuild)
+        XCTAssertGreaterThan(recovered.fetchedAt, saved.fetchedAt)
+        XCTAssertGreaterThan(recovered.validatedAt, saved.validatedAt)
+        XCTAssertNotEqual(try Data(contentsOf: cacheURL), savedBytes)
+    }
+
+    func testManualRetryMarkerOutageKeepsFreshSnapshotWithoutRestampingIt() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        let saved = try await service.snapshot(setID: "30th-c", retry: false)
+        server.advance(2 * 60 * 60)
+        server.publish(build: "2026-09-30T00:00:00Z")
+        server.fail = true
+        let result = try await service.snapshot(setID: "30th-c", retry: true)
+        XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
+        XCTAssertEqual(result.feedBuild, saved.feedBuild)
+        XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
+        XCTAssertEqual(result.validatedAt, saved.validatedAt)
+        XCTAssertEqual(server.requests.count, 4, "Only the publication check failed")
+    }
+
+    func testLaggingPublicationFilesKeepFreshSnapshotWithoutAcceptingTheNewBuild() async throws {
+        let valid = try server()
+        var routes = valid.routes
+        let path = "/tcgplayer/3/24837/products"
+        routes[path] = MarketMirrorFixture.stamped(try XCTUnwrap(routes[path]), capturedAt: date,
+            build: "2026-09-29T20:05:57+0000")
+        let server = TCGCSVTestServer(routes: routes, now: date)
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        let saved = try await service.snapshot(setID: "30th-c", retry: false)
+        let cacheURL = root.appendingPathComponent("30th-c.json")
+        let savedBytes = try Data(contentsOf: cacheURL)
+        server.advance(2 * 60 * 60)
+        server.publish(build: "2026-09-30T00:00:00Z")
+        _ = try await service.snapshot(setID: "30th", retry: false)
+        let requestsBefore = server.requests.count
+        let result = try await service.snapshot(setID: "30th-c", retry: false)
+        XCTAssertEqual(result.feedBuild, saved.feedBuild, "Mixed new files must never replace saved evidence")
+        XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
+        XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
+        XCTAssertEqual(result.validatedAt, saved.validatedAt)
+        XCTAssertEqual(try Data(contentsOf: cacheURL), savedBytes)
+        XCTAssertEqual(server.requests.count - requestsBefore, 3, "Only one marker recheck is allowed")
+    }
+
+    func testFreshFallbackExpiresWhileAnUnsuccessfulRequestIsInFlight() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        _ = try await service.snapshot(setID: "30th-c", retry: false)
+        server.advance(24 * 60 * 60 - 1)
+        server.fail = true
+        server.advanceOnNextResponse(2)
+        do {
+            _ = try await service.snapshot(setID: "30th-c", retry: true)
+            XCTFail("A snapshot that expired during the request cannot be returned")
+        } catch PokemonTCGCSVError.invalidResponse {}
+        let requestCount = server.requests.count
+        do {
+            _ = try await service.snapshot(setID: "30th-c", retry: false)
+            XCTFail("An expired snapshot cannot bypass failure backoff")
+        } catch PokemonTCGCSVError.retryLater {}
+        XCTAssertEqual(server.requests.count, requestCount)
+    }
+
+    func testCanceledRolloverWaiterDoesNotReceiveCachedFallbackOrCancelOtherWaiters() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        let saved = try await service.snapshot(setID: "30th-c", retry: false)
+        server.advance(2 * 60 * 60)
+        server.publish(build: "2026-09-30T00:00:00Z")
+        _ = try await service.snapshot(setID: "30th", retry: false)
+        server.fail = true
+        server.delay = 0.15
+        let requestsBefore = server.requests.count
+        let first = Task { try await service.snapshot(setID: "30th-c", retry: false) }
+        for _ in 0..<100 where server.requests.count == requestsBefore {
+            try await Task.sleep(for: .milliseconds(5))
+        }
+        XCTAssertGreaterThan(server.requests.count, requestsBefore)
+        let second = Task { try await service.snapshot(setID: "30th-c", retry: false) }
+        first.cancel()
+        do { _ = try await first.value; XCTFail("Cancellation must not return cached prices") }
+        catch is CancellationError {}
+        let result = try await second.value
+        XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
+        XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
+        XCTAssertEqual(result.validatedAt, saved.validatedAt)
+        XCTAssertEqual(server.requests.count - requestsBefore, 1, "Waiters must share one failed download")
+    }
+
     @MainActor
     func testInteractiveFallbackWorksWithPaidFallbackDisabled() async throws {
         let old = UserDefaults.standard.object(forKey: "usesPriceFallback")
@@ -1241,6 +1375,7 @@ private final class TCGCSVTestServer: @unchecked Sendable {
     private var recorded: [URLRequest] = []
     private var shouldFail = false
     private var requestDelay: TimeInterval = 0
+    private var nextResponseAdvance: TimeInterval = 0
     init(routes: [String: Data], now: Date) { routeData = routes; clock = now }
     var routes: [String: Data] { lock.withLock { routeData } }
     var now: Date { lock.withLock { clock } }
@@ -1254,12 +1389,17 @@ private final class TCGCSVTestServer: @unchecked Sendable {
         set { lock.withLock { requestDelay = newValue } }
     }
     func advance(_ seconds: TimeInterval) { lock.withLock { clock.addTimeInterval(seconds) } }
+    func advanceOnNextResponse(_ seconds: TimeInterval) {
+        lock.withLock { nextResponseAdvance = seconds }
+    }
     func publish(build: String) {
         lock.withLock { routeData["/last-updated.txt"] = Data(build.utf8) }
     }
     func response(_ request: URLRequest) -> (Int, Data) {
         lock.withLock {
             recorded.append(request)
+            clock.addTimeInterval(nextResponseAdvance)
+            nextResponseAdvance = 0
             let build = routeData["/last-updated.txt"].flatMap { String(data: $0, encoding: .utf8) }?
                 .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             return shouldFail ? (503, Data()) : (200,

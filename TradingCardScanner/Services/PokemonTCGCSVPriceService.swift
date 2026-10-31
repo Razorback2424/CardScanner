@@ -64,12 +64,14 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
             throw PokemonTCGCSVError.unsupportedSet
         }
         try Task.checkCancellation()
-        if !retry, let cached = load(key), isFresh(cached.validatedAt),
+        let cached = load(key)
+        if !retry, let cached, isFresh(cached.validatedAt),
            build == nil || build?.value == cached.feedBuild { return cached }
         if let task = tasks[key] {
             return try await waitFor(task)
         }
         if !retry, let failure = failures[key], now().timeIntervalSince(failure) < 15 * 60 {
+            if let cached, isFresh(cached.validatedAt) { return cached }
             throw PokemonTCGCSVError.retryLater
         }
         let task = Task {
@@ -81,7 +83,12 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
                 return result
             } catch {
                 self.tasks[key] = nil
-                if !(error is CancellationError) { self.failures[key] = self.now() }
+                if !(error is CancellationError) {
+                    self.failures[key] = self.now()
+                    // A newer publication does not invalidate the saved quote.
+                    // Recheck freshness after the request; never extend its dates.
+                    if let cached, self.isFresh(cached.validatedAt) { return cached }
+                }
                 throw error
             }
         }
