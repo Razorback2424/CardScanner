@@ -277,6 +277,9 @@ enum PortfolioReplaySnapshotBuilder {
         let catalogPriceKeys = Set(projection.positions.compactMap { $0.representative.resolvedCatalogPriceKey })
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
+        let firstObservedAt = rows.reduce(into: [String: Date]()) { first, row in
+            first[row.instrumentKey] = min(first[row.instrumentKey] ?? row.receivedAt, row.receivedAt)
+        }
         let events = rebaseDelayedInitialBalances(reading.events.map { event -> LedgerEntry in
             var entry = PortfolioEngine.entry(from: event)
             entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
@@ -286,12 +289,12 @@ enum PortfolioReplaySnapshotBuilder {
         let observations = rows.map { row -> ObservationEntry in
             var entry = PortfolioEngine.observationEntry(from: row)
             let selectedKey = priceIdentityAliases[entry.instrumentKey] ?? entry.instrumentKey
-            // Once an owned record supplies the selected price (or withdraws
+            // Once an owned record first supplies the selected price (or withdraws
             // it), later shared catalog quotes cannot supersede that record.
             // Earlier quotes still explain the acquisition and market history.
             if selectedKey != entry.instrumentKey, catalogPriceKeys.contains(entry.instrumentKey),
                let record = recordsByKey[selectedKey],
-               let cutoff = record.invalidatedAt ?? record.fetchedAt,
+               let cutoff = [firstObservedAt[selectedKey], record.invalidatedAt ?? record.fetchedAt].compactMap { $0 }.min(),
                entry.receivedAt >= cutoff {
                 return entry
             }

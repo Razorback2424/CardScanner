@@ -834,6 +834,45 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
     }
 
     @MainActor
+    func testSharedCatalogQuoteAfterOwnedPriceStaysOutOfHistoryAfterRefresh() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let zone = TimeZone(secondsFromGMT: 0)!
+        let epoch = PortfolioCalendar.day(containing: .now, in: zone).addingTimeInterval(-5 * 86_400)
+        let row = CollectedCard(collectionKey: "csv:genesect#holo", game: .pokemon,
+            providerID: "csv:genesect", name: "Genesect EX", setName: "30th Classic Collection",
+            setCode: "30TH-C", cardNumber: "11", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .holo, variantResolution: .userConfirmed)
+        row.catalogProviderID = "30th-c-004"
+        context.insert(row)
+        let prices = PriceStore(context: context)
+        func store(_ amount: Double, id: String, day: Int) {
+            let fetchedAt = epoch.addingTimeInterval(Double(day) * 86_400 + 3_600)
+            XCTAssertTrue(prices.store(.price(NormalizedPrice(unitMarketPriceUSD: amount,
+                currencyCode: "USD", source: .tcgCSV, sourceVariantID: "holofoil",
+                sourceUpdatedAt: nil, fetchedAt: fetchedAt)), game: .pokemon,
+                printingID: id, variantID: "holo", at: fetchedAt))
+        }
+        store(8, id: "30th-c-004", day: 0)
+        _ = InventoryLedger(context: context).record(row, kind: .acquire, source: .scan,
+            deltaQuantity: 1, occurredAt: epoch.addingTimeInterval(7_200))
+        store(10, id: row.priceStorageID, day: 1)
+        store(9, id: "30th-c-004", day: 2)
+        store(10, id: row.priceStorageID, day: 4)
+        XCTAssertTrue(prices.save())
+
+        let replay = PortfolioReplaySnapshotBuilder.compute(context: ModelContext(container),
+            epoch: epoch, through: epoch.addingTimeInterval(5 * 86_400), timeZone: zone).replay
+        let ownedDays = replay.days.filter { $0.displayDay >= epoch.addingTimeInterval(86_400) }
+        XCTAssertEqual(ownedDays.count, 4)
+        for day in ownedDays {
+            XCTAssertEqual(day.closeValue, Money(rounding: 10))
+        }
+        XCTAssertEqual(replay.days.first?.additions[row.collectionKey], Money(rounding: 8))
+    }
+
+    @MainActor
     func testCatalogPriceReadThroughNeverCrossesFinishPrintRunOrItemKind() {
         let row = CollectedCard(collectionKey: "csv:genesect#holo", game: .pokemon,
             providerID: "csv:genesect", name: "Genesect EX", setName: "30th Classic Collection",
