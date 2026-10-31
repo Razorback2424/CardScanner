@@ -14,6 +14,8 @@ This was written in a Linux session without Xcode: it has **not** been built,
 run or tested. Build, run `CardShareContentTests`, and check both sheets and
 the rendered images on a simulator and device before merging. Catalog-detail
 and sealed-browse entry points are not wired yet.
+The verification checklist is in
+[`docs/plans/card_sharing_handoff.md`](docs/plans/card_sharing_handoff.md).
 
 # 2026-10-31 — Refinement follow-up closed
 
