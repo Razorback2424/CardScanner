@@ -1148,7 +1148,11 @@ private struct CollectionCardDetailContent: View {
     }
 
     private func makePriceHistoryModel() -> PriceHistoryChartModel {
-        PriceHistoryChartModel.market(points: marketHistory, range: history.range)
+        let signpost = PerformanceSignpost.beginInterval("CardDetail.chartModel", id: PerformanceSignpost.makeID(),
+                                                         "points=\(marketHistory.count)")
+        let model = PriceHistoryChartModel.market(points: marketHistory, range: history.range)
+        PerformanceSignpost.endInterval("CardDetail.chartModel", signpost, "samples=\(model.samples.count)")
+        return model
     }
 
     private var marketHistoryRequest: CardMarketHistoryRequest { .init(card: card) }
@@ -1547,8 +1551,13 @@ private struct CollectionCardDetailContent: View {
         guard let token = generation.currentToken() else { return }
         let shouldContinue = generation.continuation(for: token)
         isOwnershipWritePending = true
+        // Tap to updated quantity, for the device measurement batch.
+        let signpost = PerformanceSignpost.beginInterval("CardDetail.quantityWrite", id: PerformanceSignpost.makeID(),
+                                                         "from=\(observedQuantity) to=\(newQuantity)")
         Task { @MainActor in
             defer { isOwnershipWritePending = false }
+            var outcome = "superseded"
+            defer { PerformanceSignpost.endInterval("CardDetail.quantityWrite", signpost, outcome) }
             do {
                 let expectedCurrent: Int
                 if let saved = quantityState.savedQuantity(for: input) {
@@ -1557,6 +1566,7 @@ private struct CollectionCardDetailContent: View {
                     await refreshDisplayedQuantity(for: input)
                     guard generation.isCurrent(token), quantityInput == input else { return }
                     guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
+                        outcome = "unavailable"
                         errorMessage = "The current quantity could not be loaded. Try again in a moment."
                         return
                     }
@@ -1570,11 +1580,15 @@ private struct CollectionCardDetailContent: View {
                 }
                 guard generation.isCurrent(token), quantityInput == input else { return }
                 quantityState.update(savedQuantity, for: input)
+                outcome = "saved"
             } catch is CancellationError {
                 // A canceled or retired-storage action must not publish success.
+                outcome = "cancelled"
             } catch {
+                outcome = "error"
                 guard generation.isCurrent(token) else { return }
                 if case CollectionStoreError.staleQuantity = error {
+                    outcome = "stale"
                     await refreshDisplayedQuantity(for: input)
                 }
                 errorMessage = error.localizedDescription

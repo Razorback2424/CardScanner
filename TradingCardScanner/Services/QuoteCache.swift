@@ -115,11 +115,14 @@ struct QuoteCache {
     @discardableResult
     private func save() -> Bool {
         guard context.hasChanges else { return true }
+        let signpost = PerformanceSignpost.beginInterval("PriceCheck.quoteSave", id: PerformanceSignpost.makeID(), "")
         do {
             try context.save()
+            PerformanceSignpost.endInterval("PriceCheck.quoteSave", signpost, "ok")
             return true
         } catch {
             context.rollback()
+            PerformanceSignpost.endInterval("PriceCheck.quoteSave", signpost, "rollback")
             return false
         }
     }

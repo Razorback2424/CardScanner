@@ -197,6 +197,52 @@ Keep exact build symbols and define private retention before persisting reports.
 Field diagnostics depend on platform collection/delivery and are not a live
 detector. Defer this integration until there is a concrete distribution need.
 
+## 2026-10-31 review measurement batch
+
+**Status:** instrumentation added on `refinement/production-review-2026-10-31`;
+no device run yet. Findings R1–R10 and the implemented slices are recorded in the
+[production refinement review](../audits/production-refinement-master-review-2026-10-26.md).
+This section owns the owner's device run and the decision rules that follow it.
+
+New intervals use the existing `PerformanceSignpost` helper (subsystem
+`TradingCardScanner`, category `Performance`). Their metadata carries only
+counts and outcomes:
+
+| Signpost | Boundary | Metadata |
+| --- | --- | --- |
+| `CardShare.render` | One price-check or collection share bitmap | view type |
+| `CardDetail.chartModel` | One card-detail chart model build | `points=`, `samples=` |
+| `CardDetail.quantityWrite` | Quantity tap to updated value | `from=`, `to=`; outcome `saved`, `stale`, `error`, `cancelled`, `unavailable` or `superseded` |
+| `PriceCheck.quoteSave` | One Price Check quote-cache save | `ok` or `rollback` |
+
+Use the capture protocol above with two optimized builds: **A** = `b592c91`
+(before the slices) and **B** = the branch tip. Record three runs per scenario,
+per-run values, the worst case, device and OS. Build A has no new signposts, so
+A/B comparisons use the SwiftUI instrument or visible behavior.
+
+| # | Scenario | Builds | Record |
+| --- | --- | --- | --- |
+| M1 | H01 launch to first `priceRefresh.run` on the mature collection | B | `Launch.storageStart` → `priceRefresh.run` (last lower bound 6.9 s, before S6 landed); main-thread lock waits in `PortfolioEngine` and `MagicTreatmentMigration` |
+| M2 | H06 10-card scan session | A, B | `ScannerChrome` / `ScannerView` body counts per card; hangs |
+| M3 | H06 30-card stack as described above | B | Hangs; `scannerPersistence` timing |
+| M4 | H05 card-detail chart drag on 1Y and All, oldest available device | B | Hangs; `CardDetail.chartModel` count and maximum duration during the drag |
+| M5 | H05 Portfolio chart drag | B | Hangs during the drag |
+| M6 | H04 500-card grid: scroll down, then back up | A, B | Visible placeholders on return; decode count |
+| M7 | Price-check share: type `125.50` in the asking price | B | `CardShare.render` count and duration (expected: one render after typing pauses) |
+| M8 | Quantity +/−: three quick taps | B | `CardDetail.quantityWrite` durations |
+| M9 | Price Check during an explicit price refresh | B | `PriceCheck.quoteSave` durations overlapping `priceRefresh.run`; hangs |
+
+Decision rules. Implement only the rows that trigger, one slice at a time:
+
+| Measurement | Trigger | Action |
+| --- | --- | --- |
+| M4 | Any hang ≥ 100 ms during the drag, or `CardDetail.chartModel` maximum > 8 ms | S8: compute the chart model once per data or range change |
+| M8 | Median `CardDetail.quantityWrite` > 150 ms | S9: coalesce rapid quantity taps into one follow-up write |
+| M9 | Any `PriceCheck.quoteSave` > 100 ms, or a hang overlapping one | S10: stop; write a design note for the owner (persistence boundary) |
+| M5 | Any hang ≥ 100 ms | Record a new finding; no fix in this batch |
+| M1 | More than 1 s to refresh entry | Record under H01; no fix in this batch |
+| M2, M3, M6, M7 | Informational | Record A/B results; they confirm or refute S2, S3 and S4 |
+
 ## Work queue
 
 - [x] Review source, existing evidence, optimization/symbol settings and local templates.
@@ -205,6 +251,7 @@ detector. Defer this integration until there is a concrete distribution need.
 - [ ] Attribute the highest-impact reproduced interval; add a marker only if needed.
 - [ ] Apply one measured fix and complete its before/after and correctness checks.
 - [ ] Sweep H03–H08 in order, reusing linked authorities and recording coverage gaps.
+- [ ] Run the [2026-10-31 review measurement batch](#2026-10-31-review-measurement-batch) (M1–M9) and apply its decision rules.
 
 ## Apple references
 
