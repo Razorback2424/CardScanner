@@ -3383,9 +3383,10 @@ actor CatalogImageCache {
 
     private let directory: URL
     private let responseDataLoader: @Sendable (URLRequest) async throws -> Data
+    /// Bounded by decoded bytes, not entry count: small accent-sampling copies
+    /// must not evict the full-size tiles a grid scrolls back to.
     private let memoryCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
-        cache.countLimit = 60
         cache.totalCostLimit = 48 * 1_024 * 1_024
         return cache
     }()

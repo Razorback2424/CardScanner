@@ -3631,10 +3631,10 @@ enum CollectionArtworkStore {
     /// again. The ordinary `save` call mints a fresh UUID filename for every
     /// write, so an entry can never go stale under its key. Deterministic
     /// fixtures may pass a filename, which replaces that file and clears the
-    /// decoded cache before it is read again.
+    /// decoded cache before it is read again. It is bounded by decoded bytes,
+    /// not entry count, so small accent-sampling copies do not evict tiles.
     private static let imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
-        cache.countLimit = 60
         cache.totalCostLimit = 48 * 1024 * 1024
         return cache
     }()
@@ -3761,7 +3761,8 @@ enum CollectionArtworkStore {
                 from: source,
                 targetPixelSize: targetPixelSize
               ) else { return nil }
-        let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
+            ?? max(Int(image.size.width * image.scale * image.size.height * image.scale * 4), 1)
         imageCache.setObject(image, forKey: cacheKey, cost: cost)
         return image
     }
