@@ -1176,7 +1176,7 @@ final class ScannerOverlaySmokeTests: XCTestCase {
         _ = IdentityChoiceBar(choice: identityChoice, onChoose: { _ in }, onDismiss: {}).body
         _ = ScanReceiptCard(receipt: receipt, onUndo: {}, onOpen: {}).body
         _ = RecentScanRail(scans: [recent], onSelect: { _ in }, onDelete: { _ in }).body
-        _ = CardThumbnail(url: nil, width: 40).body
+        _ = CardThumbnail(artwork: recent.artwork(prefersFullSize: false), width: 40).body
         _ = ScanNoteView(note: ScanNote(text: "No exact finish", tone: .problem)).body
     }
 

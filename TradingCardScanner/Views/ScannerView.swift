@@ -752,7 +752,7 @@ private struct SessionThumbnailStack: View {
     var body: some View {
         ZStack {
             ForEach(Array(Array(scans.enumerated()).reversed()), id: \.element.id) { index, scan in
-                CardThumbnail(url: scan.thumbnailURL, width: 20)
+                CardThumbnail(artwork: scan.artwork(prefersFullSize: false), width: 20)
                     .shadow(color: .black.opacity(0.3), radius: 1.5, y: 1)
                     .rotationEffect(.degrees(Double(index) * -9), anchor: .bottom)
                     .offset(x: CGFloat(index) * -4)

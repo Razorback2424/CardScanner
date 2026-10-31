@@ -79,6 +79,27 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertNil(CatalogCardArtworkSource(collectedCard: saved, prefersFullSize: true).primaryURL)
     }
 
+    /// Scanner thumbnails and the Price Check hero used one provider URL. They
+    /// now take the saved row's source, including the reviewed product art
+    /// that recovers cards whose provider artwork is missing.
+    @MainActor
+    func testScannedArtworkMatchesTheSavedRowIncludingReviewedFallbacks() throws {
+        for entry in PokemonTCGCSVMapping.entries where entry.setID == "30th-c" {
+            let identified: IdentifiedCard = .pokemon(try Self.card(entry.cardID), setCode: "30C")
+            let saved = CollectedCard(card: identified, resolved: .init(variant: .holo, resolution: .userConfirmed))
+            for prefersFullSize in [false, true] {
+                let scan = CatalogCardArtworkSource(identifiedCard: identified,
+                    thumbnailURL: identified.thumbnailImageURL, imageURL: identified.displayImageURL,
+                    prefersFullSize: prefersFullSize)
+                XCTAssertEqual(scan, CatalogCardArtworkSource(collectedCard: saved, prefersFullSize: prefersFullSize),
+                               entry.cardID)
+                XCTAssertEqual(scan.primaryURL?.absoluteString, prefersFullSize
+                    ? "https://tcgplayer-cdn.tcgplayer.com/product/\(entry.productID)_in_1000x1000.jpg"
+                    : "https://tcgplayer-cdn.tcgplayer.com/product/\(entry.productID)_400w.jpg", entry.cardID)
+            }
+        }
+    }
+
     @MainActor
     func testAnniversaryHistoryUsesReviewedProductForSavedAndBrowseCards() throws {
         for entry in PokemonTCGCSVMapping.entries where entry.setID != "mee" {

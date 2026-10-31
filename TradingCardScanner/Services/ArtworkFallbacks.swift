@@ -245,6 +245,18 @@ struct CatalogCardArtworkSource: Equatable, Sendable {
         )
     }
 
+    /// A just-identified printing, before or without a collection row. The
+    /// identity fields match `init(collectedCard:)`, so a scan shows the same
+    /// recovered artwork its saved row will.
+    init(identifiedCard card: IdentifiedCard, thumbnailURL: URL?, imageURL: URL?, prefersFullSize: Bool) {
+        self.init(
+            game: card.game, setCode: card.setCode, collectorNumber: card.cardNumber,
+            thumbnailURL: thumbnailURL, imageURL: imageURL,
+            prefersFullSize: prefersFullSize, providerID: card.providerID,
+            providerSetID: PokemonTCGCSVMapping.byCardID[card.providerID]?.setID
+        )
+    }
+
     init(portfolioHolding holding: PortfolioHoldingSnapshot, prefersFullSize: Bool) {
         self.init(
             game: holding.artworkGame, setCode: holding.artworkSetCode,

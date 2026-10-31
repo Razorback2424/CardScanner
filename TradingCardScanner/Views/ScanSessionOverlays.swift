@@ -1276,7 +1276,7 @@ struct RecentScanRail: View {
                     } label: {
                         // Every card here was added; a per-card checkmark only
                         // repeated that. The artwork is the content.
-                        CardThumbnail(url: scan.thumbnailURL, width: 44)
+                        CardThumbnail(artwork: scan.artwork(prefersFullSize: false), width: 44)
                             .shadow(color: .black.opacity(0.35), radius: 3, y: 1)
                             .overlay(alignment: .topTrailing) {
                                 if scan.id == gradedPriceUpdatedScanID {
@@ -1308,24 +1308,21 @@ struct RecentScanRail: View {
 }
 
 struct CardThumbnail: View {
-    let url: URL?
+    let artwork: CatalogCardArtworkSource
     var width: CGFloat
 
     var body: some View {
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case let .success(image):
-                image.resizable().scaledToFill()
-            default:
-                Rectangle().fill(.white.opacity(0.12))
-            }
-        }
-        .frame(width: width, height: width / 0.716)
-        .clipShape(RoundedRectangle(cornerRadius: width * 0.1, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: width * 0.1, style: .continuous)
-                .strokeBorder(.white.opacity(0.18), lineWidth: 0.5)
-        )
+        // The shared loader sizes the decode to this frame, reuses the
+        // collection's cache and tries the same fallbacks. The tile stays a
+        // plain fill until a candidate loads; a spinner does not fit here.
+        CatalogCachedImage(candidates: artwork.remoteCandidates, showsPlaceholder: false, contentMode: .fill)
+            .frame(width: width, height: width / 0.716)
+            .background(.white.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: width * 0.1, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: width * 0.1, style: .continuous)
+                    .strokeBorder(.white.opacity(0.18), lineWidth: 0.5)
+            )
     }
 }
 

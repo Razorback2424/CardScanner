@@ -83,21 +83,13 @@ struct PriceCheckResultView: View {
         )
     }
 
-    @ViewBuilder
     private var artwork: some View {
-        Group {
-            if let url = result.card.displayImageURL {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case let .success(image):
-                        image.resizable().scaledToFit()
-                    case .failure:
-                        ContentUnavailableView("Image unavailable", systemImage: "photo")
-                            .frame(height: 380)
-                    default:
-                        ProgressView().frame(height: 380)
-                    }
-                }
+        let source = CatalogCardArtworkSource(identifiedCard: result.card, thumbnailURL: result.card.thumbnailImageURL,
+                                              imageURL: result.card.displayImageURL, prefersFullSize: true)
+        return Group {
+            if source.primaryURL != nil {
+                CatalogCachedImage(url: source.primaryURL, fallbacks: source.fallbacks)
+                    .aspectRatio(0.727, contentMode: .fit)
             } else {
                 ContentUnavailableView("Image unavailable", systemImage: "photo")
                     .frame(height: 380)

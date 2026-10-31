@@ -752,6 +752,11 @@ struct RecentScan: Identifiable, Equatable {
             JustTCGV1Client.productImageURL(tcgplayerID: $0.tcgplayerProductID)
         } ?? card.displayImageURL
     }
+
+    func artwork(prefersFullSize: Bool) -> CatalogCardArtworkSource {
+        CatalogCardArtworkSource(identifiedCard: card, thumbnailURL: thumbnailURL,
+                                 imageURL: displayImageURL, prefersFullSize: prefersFullSize)
+    }
     var displaySetName: String {
         stampedRelease.map { "Trick or Trade \($0.year)" } ?? card.setName
     }

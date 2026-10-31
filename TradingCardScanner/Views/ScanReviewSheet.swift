@@ -36,19 +36,11 @@ struct ScanReviewSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 18) {
+                    let artwork = scan.artwork(prefersFullSize: true)
                     Group {
-                        if let url = scan.displayImageURL {
-                            AsyncImage(url: url) { phase in
-                                switch phase {
-                                case let .success(image):
-                                    image.resizable().scaledToFit()
-                                case .failure:
-                                    ContentUnavailableView("Image unavailable", systemImage: "photo")
-                                        .frame(height: 380)
-                                default:
-                                    ProgressView().frame(height: 380)
-                                }
-                            }
+                        if artwork.primaryURL != nil {
+                            CatalogCachedImage(url: artwork.primaryURL, fallbacks: artwork.fallbacks)
+                                .aspectRatio(0.727, contentMode: .fit)
                         } else {
                             ContentUnavailableView("Image unavailable", systemImage: "photo")
                                 .frame(height: 380)
@@ -330,7 +322,7 @@ private struct SessionScanRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            CardThumbnail(url: scan.thumbnailURL, width: 42)
+            CardThumbnail(artwork: scan.artwork(prefersFullSize: false), width: 42)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(scan.card.name)
