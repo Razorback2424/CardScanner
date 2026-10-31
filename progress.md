@@ -1,3 +1,20 @@
+# 2026-10-31 — Card sharing (unverified build)
+
+On `claude/card-share-sheet`, a Share button on collection card details and on
+the Price Check result replaces screenshots with a rendered 1080 × 1350 image
+plus the same facts as plain text. Collection shares (pulls and trades) have one
+choice, Price on/off, remembered across shares; the user's own photo is used
+when present, and a raw price is labelled with the provider's condition, never
+the copy's. Price-check shares add an optional asking price and a 3-month trend
+that is omitted below five observations or two weeks of history; graded checks
+send no chart. Logic is in `CardShareContent.swift` with
+`CardShareContentTests`; views are in `CardShareViews.swift`.
+
+This was written in a Linux session without Xcode: it has **not** been built,
+run or tested. Build, run `CardShareContentTests`, and check both sheets and
+the rendered images on a simulator and device before merging. Catalog-detail
+and sealed-browse entry points are not wired yet.
+
 # 2026-10-31 — Refinement follow-up closed
 
 Steps 1–4 are complete on `refinement/review-followup-2026-10-31` at

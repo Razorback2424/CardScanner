@@ -9,6 +9,7 @@ struct PriceCheckResultView: View {
 
     let initialResult: PriceCheckResult
     @State private var isShowingSettings = false
+    @State private var isSharing = false
 
     private var result: PriceCheckResult {
         guard let live = model.priceCheckResult, live.id == initialResult.id else {
@@ -35,8 +36,28 @@ struct PriceCheckResultView: View {
             .navigationTitle("Price Check")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        isSharing = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .disabled(sharePrice == nil)
+                    .accessibilityLabel("Share price check")
+                    .accessibilityHint("Shares an image of this card with its market price and recent trend.")
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                }
+            }
+            .sheet(isPresented: $isSharing) {
+                if let sharePrice {
+                    BuyCheckShareSheet(
+                        identity: CardShareIdentity(priceCheck: result),
+                        price: sharePrice,
+                        artworkURLs: [result.card.displayImageURL].compactMap { $0 },
+                        historyRequest: shareHistoryRequest
+                    )
                 }
             }
         }
@@ -44,6 +65,22 @@ struct PriceCheckResultView: View {
             SettingsView()
                 .environmentObject(model)
         }
+    }
+
+    private var sharePrice: CardSharePrice? {
+        CardSharePrice(priceCheck: result)
+    }
+
+    /// Market history is keyed to the raw printing. A graded check has no
+    /// matching raw history to stand behind, so its image goes out without a
+    /// chart rather than borrowing one.
+    private var shareHistoryRequest: CardMarketHistoryRequest? {
+        guard result.resolvedScan.request.subject.slab == nil else { return nil }
+        return CardMarketHistoryRequest(
+            card: result.card,
+            variant: result.resolved.variant,
+            printRun: result.pokemonPrintRun
+        )
     }
 
     @ViewBuilder
