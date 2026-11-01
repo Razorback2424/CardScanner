@@ -11,8 +11,12 @@ saved-finish physical-review guards from PR #8 are retained.
 ULST imports use their real numeric collectors, with exact UUID/response checks
 unchanged. CSV source evidence survives alternate format paths before One Piece
 validation. Regression additions exercise these reviewed failures, production
-publisher input and image-less checklist persistence. New native/core results
-will be recorded in the [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md).
+publisher input and image-less checklist persistence. The corrected stack at
+`dd0faea` passed 599 native tests, 83 Pokémon core tests (one opt-in skip),
+18 Magic core tests, 148 Python tests (five prerequisite skips) and 33 separate
+Yu-Gi-Oh fixtures. The [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md)
+links the exact run and records all results and limits. A stale Birthday test
+lookup was corrected to inspect historical membership; the full rerun passed.
 An independent integration check also found that shared metadata could attach
 a Pokémon print-run axis to a Magic import. The shared validation boundary now
 rejects that contradiction before either adapter path writes, preserving the
@@ -51,7 +55,7 @@ numbers (`CC015`/`CC016`), set count 25 and the CEL artwork code. Removed Birthd
 Pikachu's nonphysical `24/53` membership; all 25 Browse records remain.
 Regressions cover missing original sets/cards, conflicting names, positive
 original/reprint selection, and the standalone-number hold. Source/data and
-whitespace checks pass; new native execution is pending the integrated CI run.
+whitespace checks pass; the integrated `dd0faea` run above verifies these paths.
 
 # 2026-11-01 — Correct Celebrations physical-number evidence
 

@@ -2,8 +2,8 @@
 
 **Baseline:** `main@a2b11ade7ce37888ea4ca3debb8923b11a79b3bc`.
 **Delivery:** [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), unmerged.
-**Review follow-up:** corrected PR #8 → #9 → #10 stack; new native/core checks
-are pending for the changes described in the review follow-up below.
+**Review follow-up:** corrected PR #8 → #9 → #10 stack, verified at `dd0faea`;
+599 native tests pass. Exact core/offline results and limits are recorded below.
 **Scope:** Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh; recognition,
 catalog resolution, physical-printing choice, finishes, import, offline data
 and catalog ingestion. This is a dated audit and regression record, not an
@@ -384,13 +384,41 @@ differences; those do not establish missing payload rows.
 
 ### Consolidated review follow-up
 
-New native and core checks are pending. Their exact commit and results will be
-recorded here after CI completes. The earlier results below are retained as
-historical evidence and do not validate the new corrections by themselves.
-The catalog coverage workflow now runs both core suites on its recorded Xcode
-27.1 runner before the iOS regressions, including the production-input publisher
-tests. Separate core workflow attempts cancelled before execution are not
-counted as passes.
+The corrected stack at
+[`dd0faea53f56b63740013790d174f46ec8c64317`](https://github.com/Razorback2424/CardScanner/commit/dd0faea53f56b63740013790d174f46ec8c64317)
+passed [run 41318656809](https://github.com/Razorback2424/CardScanner/actions/runs/41318656809)
+on November 1. The catalog coverage workflow runs both core suites on its
+recorded Xcode 27.1 runner before the iOS regressions, including the actual
+production-input publisher tests.
+
+| Verification | Observed result | Evidence |
+| --- | --- | --- |
+| Native iOS Debug regression selection | **599 passed, zero failures/skips** | Native job `124884005257`; completed log and result bundle |
+| Pokémon core package | **84 total: 83 passed, one opt-in live-CDN skip**, zero failures | Same job, core step; both production membership boundary tests passed |
+| Magic core package | **18 passed**, zero failures | Same job, core step |
+| Python ingestion and census suite | **153 total: 148 passed, five skipped**, zero failures | Offline job `124884005392` |
+| Separate Yu-Gi-Oh builder/family fixtures | **33 passed**, zero failures | Same offline job |
+| Retained census | **912 sources, 2,569 informational/review rows, zero structural errors** | Committed summary/ledger and the run's census artifact |
+
+The five Python skips require the separately compiled Swift Yu-Gi-Oh publisher
+and `YUGIOH_CATALOG_PUBLISHER`; the Pokémon skip is the existing opt-in live CDN
+probe. They are not counted as passes. Separate cancelled core workflow attempts
+are not counted as passes either.
+
+The preceding `fe380a5` run executed 599 native tests with one failed assertion:
+the Birthday regression still queried the ordinary descriptor registry after
+the historical aliases were deliberately moved outside it. The correction
+asserts that ordinary membership is absent, unwraps the actual historical
+membership, requires exactly 24 members and excludes Birthday Pikachu. Both
+invented `24/53` and synthetic `CC008/25` resolver negatives remain. The corrected
+test and the full native selection passed on `dd0faea`; no runtime change was
+needed for that test correction.
+
+The passing selection also includes the persisted saved-holding regression,
+all 25 image-less Classic Collection records after rebuild/persist/reload,
+incomplete live original families, exact ULST import paths, and CSV parse/apply
+rejection and preservation checks. The final closeout changes only this audit
+and the progress record. Earlier results below remain historical evidence.
 
 ### Initial PR #10 verification — historical
 
@@ -415,8 +443,8 @@ publisher and `YUGIOH_CATALOG_PUBLISHER`. The Pokémon package skip is its opt-i
 live CDN check. Neither is counted as a pass. Production preparation/publication
 jobs were skipped by their existing pull-request gates.
 
-The native selection includes all new regressions and surrounding scanner,
-catalog, pricing and import cases. Its Yu-Gi-Oh test traverses every valid
+That initial selection covered the then-present regressions and surrounding
+scanner, catalog, pricing and import cases. Its Yu-Gi-Oh test traverses every valid
 bundled printed code; the Pokémon tests replay all 216 Shiny Vault identities,
 81 promo identifiers, 94 reviewed finish corrections and 24 enabled Celebrations
 memberships. The 27 Lorcana ingestion tests are included in the Python total,
