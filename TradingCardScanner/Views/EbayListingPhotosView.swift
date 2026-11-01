@@ -418,9 +418,11 @@ struct EbayListingPhotosView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(collectionTitle ?? (frontData == nil && backData == nil ? "Add your card" : "Your card"))
                     .font(.title2.bold())
-                Text(collectionSubtitle ?? "Front, back, or both. Each side makes 5 photos.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                if let collectionSubtitle {
+                    Text(collectionSubtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
             let layout = dynamicTypeSize.isAccessibilitySize
                 ? AnyLayout(VStackLayout(spacing: 16)) : AnyLayout(HStackLayout(alignment: .top, spacing: 14))
@@ -429,10 +431,6 @@ struct EbayListingPhotosView: View {
                 singleSlot(side: .back, isReady: backData != nil)
             }
             if frontData != nil || backData != nil {
-                Text("Tap a photo to replace it. Touch and hold for more.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity)
                 stylePreviewStrip
             }
             if frontData == nil && backData == nil {
@@ -479,8 +477,6 @@ struct EbayListingPhotosView: View {
                 if !dynamicTypeSize.isAccessibilitySize { Spacer() }
                 Button("Styles") { isShowingStyles = true }.font(.subheadline).frame(minHeight: 44)
             }
-            Text("Full view plus all four corners, for each side.")
-                .font(.caption).foregroundStyle(.secondary)
             let both = frontData != nil && backData != nil
             let previews = (both && generationScope == .back ? [] : frontStyles)
                 + (both && generationScope == .front ? [] : backStyles)
@@ -574,10 +570,7 @@ struct EbayListingPhotosView: View {
     private var batchContent: some View {
         VStack(alignment: .leading, spacing: 16) {
             if !collectorTools.isOwned {
-                Button("View Collector Tools and price") { isShowingOffer = true }
-                Text("One card is free here too. Review the one-time price before preparing multiple cards.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Button("Unlock Batches with Collector Tools", systemImage: "sparkles") { isShowingOffer = true }
             }
             PhotosPicker(
                 selection: Binding(
@@ -605,12 +598,12 @@ struct EbayListingPhotosView: View {
             .buttonStyle(.bordered)
             .disabled(isPreparingBatch)
 
-            Text("Images are paired in picker order, front then back. Review each pair and swap sides if needed before processing.")
+            Text("Pick front, then back, for each card.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
             if batchSourceCount % 2 == 1 {
-                Text("Choose one more photo: a batch needs an even number of images.")
+                Text("One photo is missing its back.")
                     .font(.footnote)
                     .foregroundStyle(.red)
             }
@@ -648,9 +641,6 @@ struct EbayListingPhotosView: View {
                         .foregroundStyle(.red)
                 }
                 if batchArchiveURL != nil {
-                    Text("The batch archive contains one numbered ten-photo folder per completed card.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
                     Button("Start Over", systemImage: "arrow.counterclockwise", action: startOverBatch)
                         .buttonStyle(.bordered)
                 }
@@ -1579,10 +1569,6 @@ private struct ListingCollectionPicker: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Text("Choose a card with a photo saved on this device. This adds its saved photo as the front; you can replace it or add a back.")
-                        .font(.subheadline).foregroundStyle(.secondary)
-                }
                 let localFiles = filenames
                 let eligible = cards.filter {
                     !(localFiles[$0.collectionKey] ?? $0.userArtworkFilename ?? "").isEmpty

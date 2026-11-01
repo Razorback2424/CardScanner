@@ -369,7 +369,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         case .printedLabel: return "Printed label"
         case .userConfirmed: return "You confirmed"
         case .imported: return "Imported"
-        case .catalogSilent: return "Not published"
+        case .catalogSilent: return "Unconfirmed"
         }
     }
 

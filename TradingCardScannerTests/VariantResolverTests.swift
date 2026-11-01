@@ -197,7 +197,7 @@ final class VariantResolverTests: XCTestCase {
                 finish: nil,
                 resolution: .catalogSilent
             ),
-            "Finish not published"
+            "Finish unconfirmed"
         )
         XCTAssertEqual(
             VariantProvenancePresentation.text(
@@ -206,6 +206,15 @@ final class VariantResolverTests: XCTestCase {
             ),
             "Holofoil · You confirmed"
         )
+    }
+
+    func testReceiptCallsOutOnlyFinishesThatNeedAPerson() {
+        XCTAssertFalse(VariantProvenancePresentation.needsAttention(finish: "Holo", resolution: .uniqueInCatalog))
+        XCTAssertFalse(VariantProvenancePresentation.needsAttention(finish: "Foil Etched", resolution: nil))
+        XCTAssertTrue(VariantProvenancePresentation.needsAttention(finish: nil, resolution: nil))
+        XCTAssertTrue(VariantProvenancePresentation.needsAttention(finish: nil, resolution: .catalogSilent))
+        XCTAssertTrue(VariantProvenancePresentation.needsAttention(finish: "Holofoil", resolution: .userConfirmed))
+        XCTAssertEqual(VariantProvenancePresentation.text(finish: "Foil Etched", resolution: nil), "Foil Etched")
     }
 
     func testUncertaintyNeverHardensWhenItCrossesIntoTheScanReceipt() throws {
@@ -234,7 +243,7 @@ final class VariantResolverTests: XCTestCase {
                 finish: receipt.variantLabel,
                 resolution: receipt.resolution
             ),
-            "Finish not published"
+            "Finish unconfirmed"
         )
     }
 

@@ -735,6 +735,8 @@ struct PortfolioView: View {
                     .font(.subheadline.weight(.semibold))
                     .accessibilityHint("Opens Collection sorted by price, highest first")
                 }
+                // The rail scrolls edge to edge; its heading keeps the page margin.
+                .padding(.horizontal, 16)
                 .accessibilityElement(children: .combine)
 
                 ScrollView(.horizontal, showsIndicators: false) {
