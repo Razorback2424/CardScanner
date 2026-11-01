@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 import CoreTransferable
+import CryptoKit
 
 /// Owns only centering artifacts. Files handed to the system remain available
 /// for this process; a later process retires the previous session's files.
@@ -72,12 +73,20 @@ final class CardCenteringViewModel: ObservableObject {
     private var undoStack: [CardCenteringMeasurement] = []
     private var lastUndoKey: (key: String, time: Date)?
 
+    @Published private(set) var nativeSourceData: Data?
+    private var nativeDetailCache: (revision: Int, rect: CGRect, crop: CardCenteringNativeRefiner.Crop)?
+    @Published private(set) var precisionEditReason: String?
+    private var precisionUndo: CardCenteringMeasurement?
+    private var precisionStart: CardCenteringMeasurement?
+
     private var hasLoadedSource = false
     private var loadGeneration = 0
     private var analysisGeneration = 0
+    private var analysisTask: Task<Void, Never>?
 
 #if DEBUG
     private var isSyntheticDebugFixture = false
+    private var debugInputSHA256: String?
 
     private var debugState: String? {
         let arguments = ProcessInfo.processInfo.arguments
@@ -101,6 +110,28 @@ final class CardCenteringViewModel: ObservableObject {
         measurement = fixture
     }
 
+    /// Generic deterministic UI evidence, applied after production analysis.
+    /// Values come from a caller-owned development fixture, never a detector
+    /// branch, image identity or production constant.
+    private func applyDebugPrecisionActions() {
+        struct Action: Decodable {
+            let frame: CardCenteringPrecisionFrame
+            let side: CardCenteringPrecisionSide
+            let position: Double?
+            let angle: Double?
+        }
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_precision_actions_path"), arguments.indices.contains(index + 1),
+           let data = try? Data(contentsOf: URL(fileURLWithPath: arguments[index + 1])),
+           let actions = try? JSONDecoder().decode([Action].self, from: data) {
+            for action in actions { updatePrecisionSide(action.side, frame: action.frame, position: action.position, angle: action.angle) }
+        }
+        if arguments.contains("-ui_debug_confirm_frames") { confirmFrames() }
+        if let index = arguments.firstIndex(of: "-ui_debug_photo_rotation"), arguments.indices.contains(index + 1),
+           let degrees = Double(arguments[index + 1]) { adjustRotation(by: degrees) }
+        if arguments.contains("-ui_debug_reset_photo_rotation") { resetRotation() }
+    }
+
     private struct DebugAnalysisMarker: Codable {
         let state: String
         let imageWidth: Int?
@@ -116,6 +147,7 @@ final class CardCenteringViewModel: ObservableObject {
         let coordinateMapping: CardCenteringCoordinateMapping?
         let leftRightCentering: String?
         let topBottomCentering: String?
+        let inputSHA256: String?
     }
 
     private var debugSettledMarkerURL: URL? {
@@ -150,7 +182,8 @@ final class CardCenteringViewModel: ObservableObject {
             screenScale: Double(UIScreen.main.scale),
             coordinateMapping: measurement?.coordinateMapping,
             leftRightCentering: measurement?.leftRightCentering,
-            topBottomCentering: measurement?.topBottomCentering
+            topBottomCentering: measurement?.topBottomCentering,
+            inputSHA256: debugInputSHA256
         )
         guard let data = try? JSONEncoder().encode(marker) else { return }
         try? data.write(to: url, options: .atomic)
@@ -166,6 +199,18 @@ final class CardCenteringViewModel: ObservableObject {
             "width": frame.width,
             "height": frame.height
         ]
+        guard let updated = try? JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]) else { return }
+        try? updated.write(to: url, options: .atomic)
+    }
+
+    func recordDebugExport(_ file: URL, snapshot: ExportSnapshot) {
+        guard matches(snapshot), let url = debugSettledMarkerURL,
+              let data = try? Data(contentsOf: url),
+              var object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+        object["exportFilePath"] = file.path
+        object["exportPhotoRotationDegrees"] = snapshot.rotationDegrees
+        object["geometryRole"] = ProcessInfo.processInfo.arguments.contains("-ui_debug_precision_actions_path")
+            ? "development_manual_guide_actions" : "unchanged_automatic_proposal_confirmed_for_comparison"
         guard let updated = try? JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]) else { return }
         try? updated.write(to: url, options: .atomic)
     }
@@ -220,6 +265,7 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     private func beginImageLoad() -> Int {
+        analysisTask?.cancel()
         loadGeneration &+= 1
         analysisGeneration &+= 1
         imageRevision &+= 1
@@ -227,10 +273,17 @@ final class CardCenteringViewModel: ObservableObject {
         detectedMeasurement = nil
         lumaField = nil
         clearUndo()
+
+        nativeSourceData = nil
+        nativeDetailCache = nil
+        precisionUndo = nil
+        precisionStart = nil
+        precisionEditReason = nil
         isAnalyzing = true
         errorMessage = nil
         rotationDegrees = 0
 #if DEBUG
+        debugInputSHA256 = nil
         clearDebugSettledMarker()
 #endif
         return loadGeneration
@@ -244,17 +297,86 @@ final class CardCenteringViewModel: ObservableObject {
     private func acceptImageData(_ data: Data) {
         hasLoadedSource = true
         selectedPhoto = nil
+#if DEBUG
+        debugInputSHA256 = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+#endif
         analyze(data, rotationDegrees: 0)
     }
 
     func adjustRotation(by amount: Double) {
         guard amount.isFinite else { return }
         let adjusted = ((rotationDegrees + amount) * 100).rounded() / 100
-        rotationDegrees = min(45, max(-45, adjusted))
+        let next = min(45, max(-45, adjusted))
+        guard next != rotationDegrees else { return }
+        rotationDegrees = next
+        invalidateAfterPhotoRotation()
     }
 
     func resetRotation() {
+        guard rotationDegrees != 0 else { return }
         rotationDegrees = 0
+        invalidateAfterPhotoRotation()
+    }
+
+    private func invalidateAfterPhotoRotation() {
+        measurement?.invalidateFrameConfirmationForPhotoRotation()
+        retireExportFile()
+        precisionUndo = nil
+        precisionStart = nil
+        precisionEditReason = nil
+    }
+
+    var precisionMeasurement: CardCenteringMeasurement? {
+        guard var value = measurement else { return nil }
+        let size = CardCenteringSize(width: Double(value.imageWidth), height: Double(value.imageHeight))
+        var mapping = value.coordinateMapping ?? CardCenteringCoordinateMapping(orientedSourceSize: size, workingSize: size)
+        mapping.appliedRotationDegrees += rotationDegrees
+        value.coordinateMapping = mapping
+        return value
+    }
+
+    var canUndoPrecisionEdit: Bool { precisionUndo != nil }
+    var canResetPrecisionEdits: Bool { precisionStart.map { $0 != measurement } ?? false }
+
+    func nativeDetailCrop(in rect: CGRect) -> CardCenteringNativeRefiner.Crop? {
+        guard let data = nativeSourceData, !rect.isNull, !rect.isInfinite else { return nil }
+        let key = rect.integral
+        if let cached = nativeDetailCache, cached.revision == imageRevision, cached.rect == key { return cached.crop }
+        let crop = autoreleasepool { () -> CardCenteringNativeRefiner.Crop? in
+            guard let source = UIImage(data: data) else { return nil }
+            return CardCenteringNativeRefiner.crop(source: source, orientedRect: key)
+        }
+        if let crop { nativeDetailCache = (imageRevision, key, crop) }
+        return crop
+    }
+
+    func updatePrecisionSide(_ side: CardCenteringPrecisionSide, frame: CardCenteringPrecisionFrame = .inner,
+                             position: Double? = nil, angle: Double? = nil) {
+        guard let before = measurement, var candidate = precisionMeasurement else { return }
+        guard candidate.setPrecisionSide(side, frame: frame, positionNativePixels: position, angleDegrees: angle) else {
+            precisionEditReason = "That change would cross or collapse a frame. The last valid guides are retained."
+            return
+        }
+        candidate.coordinateMapping = before.coordinateMapping
+        if precisionStart == nil { precisionStart = before }
+        precisionUndo = before
+        measurement = candidate
+        precisionEditReason = nil
+    }
+
+    func undoPrecisionEdit() {
+        guard let previous = precisionUndo else { return }
+        measurement = previous
+        precisionUndo = nil
+        precisionEditReason = nil
+    }
+
+    func resetPrecisionEdits() {
+        guard let starting = precisionStart else { return }
+        precisionUndo = measurement
+        measurement = starting
+        precisionStart = nil
+        precisionEditReason = nil
     }
 
     func updateOuter(
@@ -263,6 +385,8 @@ final class CardCenteringViewModel: ObservableObject {
         within range: ClosedRange<Int>
     ) {
         guard var measurement else { return }
+        precisionUndo = nil
+        precisionStart = nil
         measurement.setManualOuterEdge(
             keyPath,
             to: min(range.upperBound, max(range.lowerBound, value))
@@ -277,6 +401,8 @@ final class CardCenteringViewModel: ObservableObject {
         within range: ClosedRange<Int>
     ) {
         guard var measurement else { return }
+        precisionUndo = nil
+        precisionStart = nil
         measurement.setManualInnerEdge(
             keyPath,
             to: min(range.upperBound, max(range.lowerBound, value))
@@ -383,13 +509,16 @@ final class CardCenteringViewModel: ObservableObject {
 #if DEBUG
     /// Gives the screenshot route a stable, local image so the centering controls
     /// can be checked without a Photos permission prompt or a camera session.
-    func loadDebugFixtureIfNeeded() {
+    func loadDebugFixtureIfNeeded(arguments: [String] = ProcessInfo.processInfo.arguments) {
         guard !hasLoadedSource else { return }
-
-        let arguments = ProcessInfo.processInfo.arguments
-        if let index = arguments.firstIndex(of: "-ui_debug_fixture_path"),
-           arguments.indices.contains(index + 1),
-           let data = try? Data(contentsOf: URL(fileURLWithPath: arguments[index + 1])) {
+        if let index = arguments.firstIndex(of: "-ui_debug_fixture_path") {
+            guard arguments.indices.contains(index + 1),
+                  let data = try? Data(contentsOf: URL(fileURLWithPath: arguments[index + 1])) else {
+                hasLoadedSource = true
+                errorMessage = "The requested development image could not be read."
+                markDebugAnalysisSettled()
+                return
+            }
             loadImageData(data)
             return
         }
@@ -479,6 +608,7 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     private func analyze(_ data: Data, rotationDegrees: Double) {
+        analysisTask?.cancel()
         analysisGeneration &+= 1
         let requestID = analysisGeneration
         measurement = nil
@@ -487,14 +617,16 @@ final class CardCenteringViewModel: ObservableObject {
 #if DEBUG
         clearDebugSettledMarker()
 #endif
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        analysisTask = Task.detached(priority: .userInitiated) { [weak self] in
             let result = Result { try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees) }
-            DispatchQueue.main.async {
-                guard let self, self.analysisGeneration == requestID else { return }
+            guard let self, !Task.isCancelled else { return }
+            await MainActor.run {
+                guard self.analysisGeneration == requestID else { return }
                 self.isAnalyzing = false
                 switch result {
                 case let .success(analysis):
                     self.image = analysis.image
+                    self.nativeSourceData = analysis.nativeSourceData
                     self.imageRevision &+= 1
                     self.measurement = analysis.measurement
                     // `analysis.image` is already straightened when the card was
@@ -504,6 +636,7 @@ final class CardCenteringViewModel: ObservableObject {
                     // would rotate an already-level card a second time.
 #if DEBUG
                     self.applySyntheticDebugState()
+                    self.applyDebugPrecisionActions()
                     self.markDebugAnalysisSettled(
                         self.measurement,
                         appliedRotationDegrees: analysis.appliedRotationDegrees,
@@ -722,6 +855,7 @@ private struct GuidedCardCenteringView: View {
     @State private var isStraightening = false
     @State private var isShowingExactValues = false
     @State private var bottomPanelHeight: CGFloat = 0
+    @State private var precisionFocusReset = 0
     @State private var isShowingCamera = false
     @State private var isShowingSettings = false
     @State private var isShowingGuide = false
@@ -738,6 +872,16 @@ private struct GuidedCardCenteringView: View {
     /// windows and as a sheet in narrow ones, which a hand-rolled
     /// `UIActivityViewController` does not.
     @State private var exportURL: URL?
+    @State private var exportedSnapshot: CardCenteringViewModel.ExportSnapshot?
+    @State private var isPrecisionExpanded = ProcessInfo.processInfo.arguments.contains("CenteringPrecision")
+    @State private var precisionSide: CardCenteringPrecisionSide = ProcessInfo.processInfo.arguments.contains("outer-bottom-detail") ? .bottom : .left
+    @State private var precisionFrame: CardCenteringPrecisionFrame = ProcessInfo.processInfo.arguments.contains("outer-bottom-detail") ? .outer : .inner
+    @State private var nativeDetailProgress = 0.5
+
+    private var currentExportURL: URL? {
+        guard let exportedSnapshot, model.matches(exportedSnapshot) else { return nil }
+        return exportURL
+    }
 
     private struct ExportInput: Equatable {
         let imageRevision: Int
@@ -820,7 +964,7 @@ private struct GuidedCardCenteringView: View {
 
             if model.image != nil {
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    if let exportURL, model.measurement?.canReportRatios == true, !model.isAnalyzing {
+                    if let exportURL = currentExportURL, model.measurement?.canReportRatios == true, !model.isAnalyzing {
                         ShareLink(item: CenteringShareArtifact(url: exportURL), preview: SharePreview("Centering image")) {
                             Label("Export Image", systemImage: "square.and.arrow.up")
                         }
@@ -907,6 +1051,7 @@ private struct GuidedCardCenteringView: View {
             // rotation or a new image cannot leave the previous export
             // attached to ShareLink.
             exportURL = nil
+            exportedSnapshot = nil
             model.retireExportFile()
             guard let snapshot = model.exportSnapshot() else { return }
             try? await Task.sleep(for: .milliseconds(180))
@@ -921,6 +1066,10 @@ private struct GuidedCardCenteringView: View {
                 }
                 model.acceptExportFile(url)
                 exportURL = url
+                exportedSnapshot = snapshot
+#if DEBUG
+                model.recordDebugExport(url, snapshot: snapshot)
+#endif
             } catch {
                 guard !Task.isCancelled, model.matches(snapshot) else { return }
                 model.errorMessage = error.localizedDescription
@@ -929,6 +1078,7 @@ private struct GuidedCardCenteringView: View {
         .onDisappear {
             model.retireExportFile()
             exportURL = nil
+            exportedSnapshot = nil
         }
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
@@ -973,6 +1123,9 @@ private struct GuidedCardCenteringView: View {
         switch route {
         case "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls":
             isShowingExactValues = true
+        case "CenteringPrecision":
+            isShowingExactValues = true
+            isPrecisionExpanded = true
         case "CenteringRotation":
             isStraightening = true
         default:
@@ -1340,6 +1493,7 @@ private struct GuidedCardCenteringView: View {
                     Spacer()
                     Button("Done") {
                         focusedEdgeField = nil
+                        precisionFocusReset &+= 1
                     }
                 }
             }
@@ -1388,9 +1542,85 @@ private struct GuidedCardCenteringView: View {
                 .padding(.top, 10)
             }
             .id("inner-guides")
+
+            if measurement.geometryInnerQuad != nil {
+                DisclosureGroup("Precision adjustments", isExpanded: $isPrecisionExpanded) {
+                    if isPrecisionExpanded { precisionControls }
+                }
+                .id("precision-guides")
+            }
         }
         .padding(14)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var precisionControls: some View {
+        let frame = precisionFrame, side = precisionSide, revision = model.imageRevision
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("Native pixels set adjustment units, not accuracy. Angles run clockwise from the source image horizontal. Tap Done to apply a typed value.")
+                .font(.footnote).foregroundStyle(.secondary)
+            Picker("Guide frame", selection: $precisionFrame) {
+                ForEach(CardCenteringPrecisionFrame.allCases) { frame in Text(frame.label).tag(frame) }
+            }
+            .pickerStyle(.menu)
+            Picker("Side", selection: $precisionSide) {
+                ForEach(CardCenteringPrecisionSide.allCases) { side in Text(side.label).tag(side) }
+            }
+            .pickerStyle(.menu)
+            if let line = model.precisionMeasurement?.precisionLine(precisionSide, frame: precisionFrame) {
+                precisionNumber(precisionSide.isVertical ? "Horizontal position (native px)" : "Vertical position (native px)", value: line.position, step: 0.1) {
+                    guard model.imageRevision == revision else { return }
+                    model.updatePrecisionSide(side, frame: frame, position: $0)
+                }
+                .id("precision-position")
+                precisionNumber("Angle (degrees)", value: line.angle, step: 0.01) {
+                    guard model.imageRevision == revision else { return }
+                    model.updatePrecisionSide(side, frame: frame, angle: $0)
+                }
+                Slider(value: $nativeDetailProgress, in: 0...1) {
+                    Text("Detail position along side")
+                }
+                .accessibilityValue("\(Int(nativeDetailProgress * 100)) percent along side")
+                nativeDetail.id("native-detail")
+            }
+            HStack {
+                Button("Undo adjustment") { model.undoPrecisionEdit() }
+                    .disabled(!model.canUndoPrecisionEdit)
+                Spacer()
+                Button("Reset precision edits") { model.resetPrecisionEdits() }
+                    .disabled(!model.canResetPrecisionEdits)
+            }
+            .buttonStyle(.bordered)
+            if let reason = model.precisionEditReason {
+                Label(reason, systemImage: "exclamationmark.triangle").font(.footnote).foregroundStyle(.primary)
+                    .accessibilityLabel(reason)
+            }
+        }
+        .padding(.top, 10)
+    }
+
+    private func precisionNumber(_ label: String, value: Double, step: Double, update: @escaping (Double) -> Void) -> some View {
+        CardCenteringPrecisionNumberField(label: label,
+            accessibilityName: "\(precisionFrame.label) \(precisionSide.rawValue) \(label)",
+            value: value, step: step, focusReset: precisionFocusReset, update: update)
+            .id("\(precisionFrame.rawValue)-\(precisionSide.rawValue)-\(label)")
+    }
+
+    @ViewBuilder private var nativeDetail: some View {
+        if let value = model.precisionMeasurement,
+           let inner = value.geometryInnerQuad {
+            let selected = precisionFrame == .outer ? value.geometryOuterQuad : inner
+            let native = value.coordinateMapping?.nativeQuad(fromWorking: selected) ?? selected
+            let a = native.points[precisionSide.index], b = native.points[(precisionSide.index + 1) % 4]
+            let middle = CGPoint(x: a.x + (b.x - a.x) * nativeDetailProgress, y: a.y + (b.y - a.y) * nativeDetailProgress)
+            if let crop = model.nativeDetailCrop(in: CGRect(x: middle.x - 64, y: middle.y - 64, width: 128, height: 128)) {
+                Text(precisionFrame == .outer ? "Native source detail · selected card edge" : "Native source detail · selected inner guide").font(.caption).foregroundStyle(.secondary)
+                CardCenteringNativeDetailImage(image: crop.image, origin: crop.originOrientedNative,
+                    pixelWidth: crop.width, pixelHeight: crop.height, guideStart: a, guideEnd: b,
+                    guideColor: precisionFrame == .outer ? .red : .cyan)
+                    .accessibilityLabel("Enlarged original source pixels at \(Int(nativeDetailProgress * 100)) percent along the \(precisionFrame.rawValue) \(precisionSide.rawValue) guide. \(precisionFrame == .outer ? "Red" : "Cyan") marks the selected line.")
+            }
+        }
     }
 
     private func edgeStepper(
@@ -1462,6 +1692,102 @@ private struct GuidedCardCenteringView: View {
     }
 }
 
+/// Keep partially typed localized numbers intact. Formatting a value binding
+/// on every keystroke can replace the draft before its decimal digits arrive.
+struct CardCenteringPrecisionNumberField: View {
+    let label: String
+    let accessibilityName: String
+    let value: Double
+    let step: Double
+    let focusReset: Int
+    let update: (Double) -> Void
+    @Environment(\.locale) private var locale
+    @FocusState private var isFocused: Bool
+    @State private var draft = ""
+    @State private var inputReason: String?
+
+    static func parsedValue(_ text: String, locale: Locale) -> Double? {
+        guard let value = try? FloatingPointFormatStyle<Double>.number.locale(locale).parseStrategy.parse(text),
+              value.isFinite else { return nil }
+        return value
+    }
+
+    private var formattedValue: String {
+        value.formatted(.number.precision(.fractionLength(2)).locale(locale))
+    }
+
+    private func commit() {
+        // Merely focusing a rounded display must not quantize the authoritative
+        // Double line position when the person leaves without changing it.
+        guard draft != formattedValue else { inputReason = nil; return }
+        guard let parsed = Self.parsedValue(draft, locale: locale) else {
+            inputReason = "Enter a finite number using your region’s decimal separator."
+            draft = formattedValue
+            return
+        }
+        inputReason = nil
+        draft = formattedValue
+        if parsed != value { update(parsed) }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(label).font(.subheadline)
+            TextField(label, text: $draft)
+                .focused($isFocused)
+                .keyboardType(.numbersAndPunctuation)
+                .textFieldStyle(.roundedBorder)
+                .monospacedDigit()
+                .accessibilityLabel(accessibilityName)
+                .onSubmit { isFocused = false }
+            Stepper(label, onIncrement: { update(value + step) }, onDecrement: { update(value - step) })
+                .labelsHidden()
+                .disabled(isFocused)
+                .accessibilityLabel(accessibilityName)
+                .accessibilityValue("\(value)")
+            if let inputReason {
+                Label(inputReason, systemImage: "exclamationmark.triangle")
+                    .font(.footnote).foregroundStyle(.primary)
+            }
+        }
+        .onAppear { draft = formattedValue }
+        .onChange(of: value) { _, _ in if !isFocused { draft = formattedValue } }
+        .onChange(of: isFocused) { wasFocused, focused in if wasFocused && !focused { commit() } }
+        .onChange(of: focusReset) { _, _ in isFocused = false }
+        .onDisappear { if isFocused { commit() } }
+    }
+}
+
+/// Both layers receive the same aspect-constrained bounds. Applying an
+/// overlay to an internally letterboxed Image would map into the padding.
+struct CardCenteringNativeDetailImage: View {
+    let image: UIImage
+    let origin: CardCenteringPoint
+    let pixelWidth: Int
+    let pixelHeight: Int
+    let guideStart: CardCenteringPoint
+    let guideEnd: CardCenteringPoint
+    let guideColor: Color
+
+    var body: some View {
+        ZStack {
+            Image(uiImage: image).resizable().interpolation(.none)
+            GeometryReader { proxy in
+                Path { path in
+                    path.move(to: CGPoint(x: (guideStart.x - origin.x) * proxy.size.width / Double(pixelWidth),
+                        y: (guideStart.y - origin.y) * proxy.size.height / Double(pixelHeight)))
+                    path.addLine(to: CGPoint(x: (guideEnd.x - origin.x) * proxy.size.width / Double(pixelWidth),
+                        y: (guideEnd.y - origin.y) * proxy.size.height / Double(pixelHeight)))
+                }.stroke(guideColor, lineWidth: 1)
+            }
+        }
+        .aspectRatio(CGFloat(pixelWidth) / CGFloat(pixelHeight), contentMode: .fit)
+        .clipped()
+        .frame(maxHeight: 220)
+        .accessibilityElement(children: .ignore)
+    }
+}
+
 private struct CenteringMetric: View {
     let title: String
     let value: String
@@ -1488,7 +1814,7 @@ private struct CenteringMetric: View {
 
 /// The image/guide composition is kept as a separate internal view so its
 /// transform can be exercised with injected geometry without invoking the
-/// detector. Production callers still reach it only through `imageReview`.
+/// detector.
 struct CardCenteringImage: View {
     let image: UIImage
     let measurement: CardCenteringMeasurement

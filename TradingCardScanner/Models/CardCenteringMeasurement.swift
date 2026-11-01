@@ -560,6 +560,10 @@ struct CardCenteringCoordinateMapping: Codable, Equatable {
     /// The unrotated working canvas. It is equal to `workingSize` for the
     /// normal path and is retained separately when rotation enlarges the canvas.
     var unrotatedWorkingSize: CardCenteringSize
+    /// Optional provenance for old records. Coordinates use continuous raster
+    /// edges: the first pixel centre is (0.5, 0.5), not (0, 0).
+    var rawRasterSize: CardCenteringSize? = nil
+    var rawEXIFOrientation: Int? = nil
 
     init(
         orientedSourceSize: CardCenteringSize,
@@ -631,6 +635,182 @@ struct CardCenteringCoordinateMapping: Codable, Equatable {
             x: destinationSize.width / 2 + cosine * dx - sine * dy,
             y: destinationSize.height / 2 + sine * dx + cosine * dy
         )
+    }
+}
+
+/// EXIF transforms in continuous raw raster coordinates. These are independent
+/// of UIImage point size/scale and preserve pixel centres under every mirror.
+struct CardCenteringRasterOrientation {
+    let rawSize: CardCenteringSize
+    let exif: Int
+
+    var orientedSize: CardCenteringSize {
+        (5...8).contains(exif)
+            ? CardCenteringSize(width: rawSize.height, height: rawSize.width) : rawSize
+    }
+
+    func orientedPoint(fromRaw p: CardCenteringPoint) -> CardCenteringPoint {
+        let w = rawSize.width, h = rawSize.height
+        switch exif {
+        case 2: return .init(x: w - p.x, y: p.y)
+        case 3: return .init(x: w - p.x, y: h - p.y)
+        case 4: return .init(x: p.x, y: h - p.y)
+        case 5: return .init(x: p.y, y: p.x)
+        case 6: return .init(x: h - p.y, y: p.x)
+        case 7: return .init(x: h - p.y, y: w - p.x)
+        case 8: return .init(x: p.y, y: w - p.x)
+        default: return p
+        }
+    }
+
+    func rawPoint(fromOriented p: CardCenteringPoint) -> CardCenteringPoint {
+        let inverse = [1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 8, 7: 7, 8: 6][exif] ?? 1
+        return CardCenteringRasterOrientation(rawSize: orientedSize, exif: inverse).orientedPoint(fromRaw: p)
+    }
+}
+
+struct CardCenteringNativeSideEvidence: Codable, Equatable {
+    let version: Int
+    let frame: String
+    let side: String
+    let disposition: String
+    let reason: String?
+    let rawSampleCount: Int
+    let acceptedSampleCount: Int
+    let spatialCoverage: Double
+    let fitResidualNativePixels: Double?
+    let rejectedSampleCount: Int
+    let alternativeSeparationNativePixels: Double?
+    let observedPointsOrientedNative: [CardCenteringPoint]
+    let lineCoefficientsOrientedNative: [Double]?
+    var samples: [CardCenteringNativeSampleEvidence]? = nil
+    /// Native-only local search scale. This is an estimator setting, not an
+    /// accuracy bound or independent multi-scale agreement.
+    var derivativeRadiusNativePixels: Double? = nil
+    var configuration: String? = nil
+    var seedSource: String? = nil
+    var candidateLines: [CardCenteringNativeLineCandidateEvidence]? = nil
+}
+
+struct CardCenteringNativeSampleEvidence: Codable, Equatable {
+    let progress: Double
+    let pointOrientedNative: CardCenteringPoint?
+    let contrastRGB: Double?
+    let luminancePolarity: Double?
+    let transitionHalfHeightWidthNativePixels: Double?
+    let profileBaselineRGB: Double
+    let profileMADRGB: Double
+    let competingPeakSeparationNativePixels: Double?
+    let disposition: String
+    var candidatePeaks: [CardCenteringNativePeakEvidence]? = nil
+}
+
+struct CardCenteringNativePeakEvidence: Codable, Equatable {
+    let normalOffsetNativePixels: Double
+    let pointOrientedNative: CardCenteringPoint
+    let contrastRGB: Double
+}
+
+struct CardCenteringNativeLineCandidateEvidence: Codable, Equatable {
+    let seedSource: String
+    let lineCoefficientsOrientedNative: [Double]
+    let observedSampleCount: Int
+    let spatialCoverage: Double
+    let fitResidualNativePixels: Double
+    let medianContrastRGB: Double
+    let rejectionReasons: [String]
+}
+
+enum CardCenteringPrecisionSide: String, Codable, CaseIterable, Identifiable {
+    case left, top, right, bottom
+    var id: String { rawValue }
+    var index: Int {
+        switch self { case .top: 0; case .right: 1; case .bottom: 2; case .left: 3 }
+    }
+    var isVertical: Bool { self == .left || self == .right }
+    var label: String { rawValue.capitalized }
+}
+
+enum CardCenteringPrecisionFrame: String, Codable, CaseIterable, Identifiable {
+    case outer, inner
+    var id: String { rawValue }
+    var label: String { self == .outer ? "Card edge" : "Inner frame" }
+}
+
+extension CardCenteringMeasurement {
+    func precisionInnerLine(_ side: CardCenteringPrecisionSide) -> (position: Double, angle: Double)? {
+        precisionLine(side, frame: .inner)
+    }
+
+    func precisionLine(_ side: CardCenteringPrecisionSide, frame: CardCenteringPrecisionFrame) -> (position: Double, angle: Double)? {
+        guard let selected = frame == .outer ? geometryOuterQuad : geometryInnerQuad else { return nil }
+        let native = coordinateMapping?.nativeQuad(fromWorking: selected) ?? selected
+        let p = native.points[side.index], q = native.points[(side.index + 1) % 4]
+        var angle = atan2(q.y - p.y, q.x - p.x) * 180 / .pi
+        if side.isVertical {
+            while angle < 0 { angle += 180 }
+            while angle >= 180 { angle -= 180 }
+        } else {
+            while angle > 90 { angle -= 180 }
+            while angle <= -90 { angle += 180 }
+        }
+        return (side.isVertical ? (p.x + q.x) / 2 : (p.y + q.y) / 2, angle)
+    }
+
+    /// Replace one supporting line about its midpoint; adjacent supporting
+    /// lines stay fixed. Reject the entire edit rather than clamp/snap it.
+    /// Position is native x for a vertical side and native y otherwise.
+    @discardableResult
+    mutating func setPrecisionInnerSide(_ side: CardCenteringPrecisionSide,
+                                       positionNativePixels: Double? = nil,
+                                       angleDegrees: Double? = nil) -> Bool {
+        setPrecisionSide(side, frame: .inner, positionNativePixels: positionNativePixels, angleDegrees: angleDegrees)
+    }
+
+    @discardableResult
+    mutating func setPrecisionSide(_ side: CardCenteringPrecisionSide, frame: CardCenteringPrecisionFrame,
+                                  positionNativePixels: Double? = nil, angleDegrees: Double? = nil) -> Bool {
+        guard let selected = frame == .outer ? geometryOuterQuad : geometryInnerQuad else { return false }
+        let native = coordinateMapping?.nativeQuad(fromWorking: selected) ?? selected
+        var corners = native.points
+        let i = side.index, j = (i + 1) % 4
+        let p = corners[i], q = corners[j]
+        var midpoint = CardCenteringPoint(x: (p.x + q.x) / 2, y: (p.y + q.y) / 2)
+        if let positionNativePixels {
+            guard positionNativePixels.isFinite else { return false }
+            if side.isVertical { midpoint.x = positionNativePixels } else { midpoint.y = positionNativePixels }
+        }
+        let angle = angleDegrees.map { $0 * .pi / 180 } ?? atan2(q.y - p.y, q.x - p.x)
+        guard angle.isFinite else { return false }
+        let direction = CardCenteringPoint(x: cos(angle), y: sin(angle))
+        func intersect(_ a: CardCenteringPoint, _ b: CardCenteringPoint) -> CardCenteringPoint? {
+            let dx = b.x - a.x, dy = b.y - a.y
+            let determinant = direction.x * dy - direction.y * dx
+            guard determinant.isFinite, abs(determinant) > 1e-10 else { return nil }
+            let t = ((a.x - midpoint.x) * dy - (a.y - midpoint.y) * dx) / determinant
+            let value = CardCenteringPoint(x: midpoint.x + t * direction.x, y: midpoint.y + t * direction.y)
+            return value.x.isFinite && value.y.isFinite ? value : nil
+        }
+        guard let start = intersect(corners[(i + 3) % 4], p),
+              let end = intersect(q, corners[(i + 2) % 4]) else { return false }
+        corners[i] = start; corners[j] = end
+        let editedNative = CardCenteringQuad(topLeft: corners[0], topRight: corners[1], bottomRight: corners[2], bottomLeft: corners[3])
+        var candidate = self
+        let edited = coordinateMapping?.workingQuad(fromNative: editedNative) ?? editedNative
+        if frame == .outer {
+            candidate.outerQuad = edited
+            candidate.outer = edited.projectedEdges
+            candidate.rectification = CardCenteringRectification(outerQuad: edited)
+        } else {
+            candidate.innerQuad = edited
+            candidate.inner = edited.projectedEdges
+        }
+        candidate.usesQuadGeometry = true
+        guard candidate.hasValidFrameGeometry else { return false }
+        candidate.requireConfirmationAfterManualEditIfNeeded()
+        candidate.refreshWarnings()
+        self = candidate
+        return true
     }
 }
 
@@ -734,6 +914,9 @@ struct CardCenteringMeasurement: Equatable {
     /// the geometry checks below pass and the screen states a ratio it has no
     /// grounds for.
     var detectionNotes: [String] = []
+    /// Immutable evidence for the automatic proposal, not the person's later
+    /// edited geometry and not a calibrated physical accuracy interval.
+    var nativeRefinementEvidence: [CardCenteringNativeSideEvidence]? = nil
 
     /// Geometry is kept alongside the legacy scalar projection so callers that
     /// already bind to the four guide steppers remain source compatible.
@@ -909,6 +1092,12 @@ struct CardCenteringMeasurement: Equatable {
         guard squared.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
         innerQuad = squared
         inner = squared.projectedEdges
+    }
+
+    mutating func invalidateFrameConfirmationForPhotoRotation() {
+        confidence = .manualConfirmationRequired(preserving: confidence,
+            reason: "The photo moved beneath the guides. Realign and confirm both frames before reading centering.")
+        refreshWarnings()
     }
 
     var geometryOuterQuad: CardCenteringQuad {

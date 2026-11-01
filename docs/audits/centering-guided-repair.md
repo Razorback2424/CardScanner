@@ -1,5 +1,93 @@
 # Guided centering repair
 
+## Current precision candidate — 2026-11-01
+
+Branch provenance: `refinement/centering-native-2026-11-01`, based on
+`b592c914d2bae7ecfbea03218b20f94bdef90364`; implementation commit `f5f2e14`.
+This section supersedes historical candidate and timing claims below for this
+patch only. No publication, automatic-release or calibrated accuracy acceptance
+is implied. The REQ-045 guided contract and §5.1 tolerances are unchanged.
+
+Implemented guided changes use actual raster dimensions and all eight EXIF
+orientations, independent X/Y transforms and rounded presentation canvases.
+Advanced controls translate either frame's selected line in 0.1 native-pixel
+steps and turn it about its midpoint in 0.01-degree steps. Adjacent supporting
+lines stay fixed; invalid intersections retain the last valid geometry with a
+reason. Undo/reset, a registered source-pixel detail crop and locale-aware
+numeric fields support manual recovery. Decimal granularity is not accuracy.
+Typed values keep a localized draft until Done/focus loss. Actual UIKit editing
+events preserve French `119,11` and `-0,25`, and English `123.45`, then commit the
+exact values; incomplete drafts do not move guides. Focus/Done without editing
+preserves the authoritative unrounded Double. Headless HID text injection
+reported success without changing even a distinct replacement, so keyboard
+tool automation is not counted as acceptance. A scene-less first test harness
+failed before locating a field; its scene-backed correction passes.
+Original compressed bytes plus one small cached crop are retained for detail;
+the disclosure does not retain a full decoded camera raster.
+
+Photo-only rotation remains intentional. Rotation and reset revoke frame
+confirmation and immediately invalidate stale share snapshots. Pending or
+invalid frames cannot expose ratios/export. Existing homography, candidate
+precedence and automatic-reporting safety remain in place.
+
+Native independent-slope refinement is **DEBUG opt-in and disabled in
+production**. Development iterations preserve bounded strip sampling, spatial
+coverage, residual, slope, nesting and ambiguity gates. V1 accepted 1/36 available
+development inner sides; coherent multi-peak V2 accepted 1/36; deduplicated-track
+V2b accepted 3/36. These are fit-gate counts, not accuracy. V1's narrow band
+included the development reference at enough positions on only 11/36 sides.
+Existing profile alternatives repaired some seed coverage, but stable artwork
+edges can still win with the wrong semantic identity. One accepted V2b bottom
+line is about 1,186 native pixels from a short art-window development reference.
+No threshold relaxation can certify that selection. Automatic reporting and
+the failed joint selector remain disabled; no sealed holdout was opened.
+
+The exact original Gengar JPEG (1112×1536; SHA256
+`d174c27d5aaba21dd4602d926488eb6d93a535f31eabdee5937c13bc4a405562`)
+takes `scalarInner` with a Vision outer proposal throughout. Confirming its
+unchanged starting guides gives baseline 64.5/35.5 LR, 44.4/55.6 TB; default
+candidate 64.4/35.6, 44.0/56.0; experimental V2b 49.8/50.2, 44.2/55.8.
+V2b repairs only the left side, leaving top/right/bottom unresolved. The actual
+manual-control example gives 52.2/47.8, 50.4/49.6 after explicitly human-selected
+guide placement. None of these is calibrated ground truth or automatic success.
+
+Executed scope: 58 selected guided/export tests, 57 passes and one intentional
+experimental-benchmark skip; then 109 applicable analyzer, development ground
+truth, invariant, export and native tests with 108 cases passing and two latency
+assertions failing in the single native benchmark. That failed run included an
+unused legacy DEBUG research generator. Its receipt is preserved. A separate
+production-equivalent native run with that generator off passes the unchanged
+0.8/1.5-second limits (upper median 0.715 s, max 1.414 s). The final applicable
+recheck passes **109/109 with zero skips**, including the enabled native gate;
+production REQ-022 measures 0.491/0.536 s and native V2b 0.538/1.380 s.
+The earlier aggregate's production measurement was 0.493/0.540 s. These are existing ten-fixture Debug
+Simulator methods, without new repetitions or device performance acceptance;
+they are not a full-target run. Earlier failed raster-test receipts and their
+pure-color test correction are also retained, without relaxing its one-device-
+pixel registration tolerance.
+
+After adding the draft-field and scene-backed UIKit editing regression, the
+final binary, including unchanged-draft preservation, passes **110/110
+applicable cases, zero failures or skips**. Production REQ-022 is
+0.495113/0.542783 s (upper median/maximum); native V2b is
+0.549302/1.387473 s. These final measurements supersede the intermediate 109-case
+recheck for this candidate; all earlier receipts remain available.
+
+Evidence is private under `/Volumes/T7/ScanStash-Centering-Evidence-20261101/`:
+raw baseline/default/V1/V2/V2b proposals, native points/lines and rejection
+reasons, actual app screenshots and model exports, logs and `.xcresult` bundles.
+The [precision checklist](../../references/centering_native_precision_checklist.md)
+separates executed evidence from pending acceptance. Independent visual review,
+VoiceOver traversal, native save completion, representative physical
+capture, held-out accuracy and real-device gates remain open.
+Native share-popover presentation is visually verified with the confirmed
+manual example and retained PNG. Save Image is visible but absent from the
+headless semantic target list, so no save completion is claimed. A later
+off-viewport semantic rotation target misdirected to Pro; that attempt is
+retained as a tooling limit and excluded from rotation acceptance.
+
+## Historical checkpoints
+
 **Rotation correction — 2026-10-29, base `f306918` plus working-tree patch:**
 manual rotation now applies only to the photo, leaving the red/cyan measurement
 guides fixed on screen and in the shared export. Zoom/pan still move both layers

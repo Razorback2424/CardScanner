@@ -5412,3 +5412,38 @@ historical.
   The temporary seeder was removed; no logs, screenshots, stores or results were
   committed. Device lock-wait, mature launch and quantity-edit checks remain
   owner-run. No device/provider/CloudKit/archive/release readiness claim.
+
+### 2026-11-01 — Local centering precision candidate; native selection unresolved
+
+- Candidate source and tests are committed as `f5f2e14` on isolated branch
+  `refinement/centering-native-2026-11-01`, based on `b592c914`. This records the
+  implementation/evidence snapshot; it does not imply publication, automatic
+  precision release, or a signing/account change.
+- Implemented raster/EXIF mapping, Double line translation and midpoint angle
+  controls, native detail, undo/reset, invalid-edit reasons and rotation/export
+  confirmation safeguards. Automatic ratios and the failed joint selector stay
+  disabled. Decimal controls describe granularity, not physical accuracy.
+- Native development V1/V2/V2b experiments expose both bad seed coverage and
+  unresolved reference semantics. V2b accepts 3/36 inner sides, including wrong
+  artwork boundaries; it remains DEBUG opt-in and disabled in production.
+- Selected guided tests: 57 pass, one deliberate benchmark skip. Applicable
+  aggregate: 109 cases, two timing assertions fail in one native case; all other
+  108 cases pass. Excluding an unused research generator, the isolated native
+  benchmark passes unchanged limits at upper median 0.715 s/max 1.414 s.
+  Production REQ-022 passes at 0.493/0.540 s. This is not a full-target or device run.
+- Final corrected-configuration applicable recheck: **109 passes, zero failures
+  or skips**; production timing 0.491/0.536 s, experimental native 0.538/1.380 s.
+  Earlier failure and isolated 0.715/1.414 s receipt remain separate evidence.
+- Final draft-field candidate adds scene-backed UIKit editing-event coverage:
+  **110/110 applicable passes, zero failures/skips**. Production upper median/
+  maximum 0.495113/0.542783 s; experimental native 0.549302/1.387473 s.
+  French comma/negative and English typed drafts commit exactly on Done.
+  Focusing/Done without typing preserves the unrounded authoritative Double.
+  Headless HID injection leaves replacements unchanged and remains uncertain;
+  it is not treated as app keyboard acceptance.
+- Unchanged Gengar bytes replayed with exact branches and raw/confirmed outputs;
+  ten development fixtures compared without opening a sealed holdout. Private
+  evidence and current limitations are recorded in the
+  [guided centering ledger](docs/audits/centering-guided-repair.md#current-precision-candidate--2026-11-01).
+  Independent visual, physical capture, share/save/VoiceOver and device gates
+  remain open; no automatic precision or release readiness claim.

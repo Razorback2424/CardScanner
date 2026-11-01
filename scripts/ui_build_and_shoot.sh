@@ -44,8 +44,37 @@ LAUNCH_ARGS=("-ui_debug_route" "$ROUTE")
 if [[ -n "$STATE" ]]; then
   LAUNCH_ARGS+=("-ui_debug_state" "$STATE")
 fi
+if [[ -n "${UI_CONTENT_SIZE_CATEGORY:-}" ]]; then
+  LAUNCH_ARGS+=("-UIPreferredContentSizeCategoryName" "$UI_CONTENT_SIZE_CATEGORY")
+fi
+if [[ -n "${UI_APP_LOCALE:-}" ]]; then
+  LAUNCH_ARGS+=("-AppleLocale" "$UI_APP_LOCALE")
+fi
 if [[ "$ROUTE" == Centering* ]]; then
   CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
+  if [[ -n "${UI_CENTERING_FIXTURE_SOURCE:-}" ]]; then
+    UI_CENTERING_FIXTURE_PATH="$CONTAINER_PATH/Documents/centering-ui-input.${UI_CENTERING_FIXTURE_SOURCE##*.}"
+    cp "$UI_CENTERING_FIXTURE_SOURCE" "$UI_CENTERING_FIXTURE_PATH"
+  fi
+  if [[ -n "${UI_CENTERING_PRECISION_ACTIONS_SOURCE:-}" ]]; then
+    UI_CENTERING_PRECISION_ACTIONS_PATH="$CONTAINER_PATH/Documents/centering-ui-actions.json"
+    cp "$UI_CENTERING_PRECISION_ACTIONS_SOURCE" "$UI_CENTERING_PRECISION_ACTIONS_PATH"
+  fi
+  if [[ -n "${UI_CENTERING_FIXTURE_PATH:-}" ]]; then
+    LAUNCH_ARGS+=("-ui_debug_fixture_path" "$UI_CENTERING_FIXTURE_PATH")
+  fi
+  if [[ -n "${UI_CENTERING_PRECISION_ACTIONS_PATH:-}" ]]; then
+    LAUNCH_ARGS+=("-ui_debug_precision_actions_path" "$UI_CENTERING_PRECISION_ACTIONS_PATH")
+  fi
+  if [[ "${UI_CENTERING_CONFIRM_FRAMES:-0}" == "1" ]]; then
+    LAUNCH_ARGS+=("-ui_debug_confirm_frames")
+  fi
+  if [[ -n "${UI_CENTERING_PHOTO_ROTATION:-}" ]]; then
+    LAUNCH_ARGS+=("-ui_debug_photo_rotation" "$UI_CENTERING_PHOTO_ROTATION")
+  fi
+  if [[ "${UI_CENTERING_RESET_PHOTO_ROTATION:-0}" == "1" ]]; then
+    LAUNCH_ARGS+=("-ui_debug_reset_photo_rotation")
+  fi
   MARKER_PATH="$CONTAINER_PATH/Documents/centering-ui-ready.json"
   MARKER_PATTERN='presentedImageFrame'
   MARKER_ARTIFACT='centering-geometry.json'
@@ -91,12 +120,31 @@ if [[ -n "${MARKER_PATH:-}" ]]; then
     sleep 0.10
   done
   [[ "$settled" == "1" ]] || { echo "$ROUTE did not settle" >&2; exit 1; }
+  if [[ -n "${UI_CENTERING_EXPECTED_SHA256:-}" ]]; then
+    python3 - "$MARKER_PATH" "$UI_CENTERING_EXPECTED_SHA256" <<'PY'
+import json, sys
+record = json.load(open(sys.argv[1]))
+if record.get("inputSHA256") != sys.argv[2]:
+    raise SystemExit("The rendered input hash does not match the requested development image")
+PY
+  fi
   cp "$MARKER_PATH" "$ARTIFACTS_DIR/$MARKER_ARTIFACT"
   sleep "${UI_CAPTURE_DELAY_SECONDS:-1}"
 else
   sleep "${UI_CAPTURE_DELAY_SECONDS:-2.5}"
 fi
 "$(dirname "$0")/ui_screenshot_simctl.sh" "$SCREENSHOT_PATH" "$UI_DEVICE_ID"
+if [[ -n "${MARKER_PATH:-}" && -f "$MARKER_PATH" ]]; then
+  cp "$MARKER_PATH" "$ARTIFACTS_DIR/$MARKER_ARTIFACT"
+  python3 - "$MARKER_PATH" "$ARTIFACTS_DIR" <<'PY'
+import json, shutil, sys
+from pathlib import Path
+marker = json.loads(Path(sys.argv[1]).read_text())
+source = marker.get("exportFilePath")
+if source and Path(source).is_file():
+    shutil.copyfile(source, Path(sys.argv[2]) / "actual-model-export.png")
+PY
+fi
 
 python3 - "$META_PATH" "$SCHEME" "$BUNDLE_ID" "$ROUTE" "$STATE" "$UI_DEVICE_ID" <<'PY'
 import json, sys, time

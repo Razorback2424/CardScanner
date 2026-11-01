@@ -88,7 +88,7 @@ struct ContentView: View {
         case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
-        case "Pro", "ListingPhotos", "Centering", "CenteringStart", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation": initialTab = .pro
+        case "Pro", "ListingPhotos", "Centering", "CenteringStart", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation", "CenteringPrecision": initialTab = .pro
         default: initialTab = .portfolio
         }
         _selectedTab = State(initialValue: initialTab)

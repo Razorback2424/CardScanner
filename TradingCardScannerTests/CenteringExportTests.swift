@@ -3,6 +3,537 @@ import SwiftUI
 import UIKit
 @testable import TradingCardScanner
 
+final class CenteringNativePrecisionTests: XCTestCase {
+    private final class InputProbe: ObservableObject {
+        @Published var value = 119.005754
+        @Published var focusReset = 0
+        var updates: [Double] = []
+    }
+    private struct InputProbeView: View {
+        @ObservedObject var probe: InputProbe
+        var body: some View {
+            CardCenteringPrecisionNumberField(label: "Native position", accessibilityName: "Input probe",
+                value: probe.value, step: 0.1, focusReset: probe.focusReset) {
+                    probe.updates.append($0); probe.value = $0
+                }
+        }
+    }
+
+    @MainActor func testTypedLocalizedDraftPreservesAllDigitsAndCommitsOnlyOnDone() async throws {
+        for (identifier, text, expected) in [("fr_FR", "119,11", 119.11), ("fr_FR", "-0,25", -0.25), ("en_US", "123.45", 123.45)] {
+            let probe = InputProbe()
+            let host = UIHostingController(rootView: InputProbeView(probe: probe).environment(\.locale, Locale(identifier: identifier)))
+            let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+            let window = UIWindow(windowScene: scene)
+            window.frame = CGRect(x: 0, y: 0, width: 393, height: 852)
+            window.rootViewController = host; window.makeKeyAndVisible()
+            host.loadViewIfNeeded(); host.view.setNeedsLayout(); host.view.layoutIfNeeded()
+            defer { window.isHidden = true }
+            try await Task.sleep(for: .milliseconds(80))
+            func field(in view: UIView) -> UITextField? {
+                if let value = view as? UITextField { return value }
+                return view.subviews.compactMap { field(in: $0) }.first
+            }
+            let input = try XCTUnwrap(field(in: host.view))
+            XCTAssertTrue(input.becomeFirstResponder())
+            try await Task.sleep(for: .milliseconds(40))
+            probe.focusReset += 1
+            try await Task.sleep(for: .milliseconds(40))
+            XCTAssertTrue(probe.updates.isEmpty, "Focus/Done without editing must preserve the unrounded Double")
+            XCTAssertEqual(probe.value, 119.005754, accuracy: 1e-12)
+            XCTAssertTrue(input.becomeFirstResponder())
+            try await Task.sleep(for: .milliseconds(40))
+            input.selectedTextRange = input.textRange(from: input.beginningOfDocument, to: input.endOfDocument)
+            input.insertText(text)
+            try await Task.sleep(for: .milliseconds(40))
+            XCTAssertEqual(input.text, text, "Every typed digit must survive while focused: \(identifier)")
+            XCTAssertTrue(probe.updates.isEmpty, "An unfinished draft must not move the guide")
+            probe.focusReset += 1 // The production keyboard toolbar's Done action.
+            try await Task.sleep(for: .milliseconds(80))
+            XCTAssertEqual(try XCTUnwrap(probe.updates.last), expected, accuracy: 1e-10)
+            XCTAssertEqual(probe.value, expected, accuracy: 1e-10)
+            XCTAssertEqual(input.text, expected.formatted(.number.precision(.fractionLength(2)).locale(Locale(identifier: identifier))))
+        }
+    }
+
+    @MainActor func testNativeDetailLineUsesExactNonSquareImageBoundsWithoutLetterboxDrift() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let photo = UIGraphicsImageRenderer(size: CGSize(width: 128, height: 112), format: format).image { c in
+            UIColor.white.setFill(); c.fill(CGRect(x: 0, y: 0, width: 128, height: 112))
+        }
+        let content = CardCenteringNativeDetailImage(image: photo, origin: .init(x: 100, y: 200),
+            pixelWidth: 128, pixelHeight: 112, guideStart: .init(x: -1000, y: 228),
+            guideEnd: .init(x: 1000, y: 228), guideColor: Color(red: 1, green: 0, blue: 0))
+            .frame(width: 340, height: 220)
+        let renderer = ImageRenderer(content: content); renderer.scale = 3
+        let cg = try XCTUnwrap(renderer.uiImage?.cgImage)
+        var bytes = [UInt8](repeating: 0, count: cg.width * cg.height * 4)
+        let context = try XCTUnwrap(CGContext(data: &bytes, width: cg.width, height: cg.height,
+            bitsPerComponent: 8, bytesPerRow: cg.width * 4, space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        context.draw(cg, in: CGRect(x: 0, y: 0, width: cg.width, height: cg.height))
+        var red: [(x: Int, y: Int)] = []
+        for y in 0..<cg.height { for x in 0..<cg.width {
+            let i = (y * cg.width + x) * 4
+            if bytes[i] > 200 && bytes[i + 1] < 60 && bytes[i + 2] < 60 { red.append((x, y)) }
+        } }
+        let minimumX = try XCTUnwrap(red.map(\.x).min(), "The injected guide must be present in the actual raster")
+        let maximumX = try XCTUnwrap(red.map(\.x).max())
+        let fittedWidth = 220.0 * 128 / 112, left = (340 - fittedWidth) / 2
+        XCTAssertEqual(Double(minimumX), left * 3, accuracy: 1)
+        XCTAssertEqual(Double(maximumX) + 1, (left + fittedWidth) * 3, accuracy: 1)
+        let meanY = red.map { Double($0.y) + 0.5 }.reduce(0, +) / Double(red.count)
+        XCTAssertEqual(meanY, 28.0 / 112 * 220 * 3, accuracy: 1)
+    }
+    @MainActor func testExplicitMissingDebugInputNeverFallsBackToSyntheticEvidence() {
+        let model = CardCenteringViewModel()
+        model.loadDebugFixtureIfNeeded(arguments: ["app", "-ui_debug_fixture_path", "/missing-centering-development-fixture.jpeg"])
+        XCTAssertNil(model.image)
+        XCTAssertNil(model.measurement)
+        XCTAssertEqual(model.errorMessage, "The requested development image could not be read.")
+    }
+
+    @MainActor func testNativeDetailKeepsOneSmallCropAndInvalidatesItOnNewInput() async throws {
+        func solid(_ color: UIColor) -> Data {
+            let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+            return UIGraphicsImageRenderer(size: CGSize(width: 120, height: 168), format: format).image { c in
+                color.setFill(); c.fill(CGRect(x: 0, y: 0, width: 120, height: 168))
+            }.pngData()!
+        }
+        let model = CardCenteringViewModel()
+        func waitUntilSettled() async throws {
+            let deadline = Date().addingTimeInterval(10)
+            while model.isAnalyzing && Date() < deadline { try await Task.sleep(for: .milliseconds(20)) }
+            XCTAssertFalse(model.isAnalyzing)
+        }
+        let red = solid(.red)
+        model.loadCapturedPhoto(red); try await waitUntilSettled()
+        XCTAssertEqual(model.nativeSourceData, red)
+        let first = try XCTUnwrap(model.nativeDetailCrop(in: CGRect(x: 20.1, y: 20.1, width: 64, height: 64)))
+        let repeated = try XCTUnwrap(model.nativeDetailCrop(in: CGRect(x: 20.2, y: 20.2, width: 64, height: 64)))
+        XCTAssertTrue(first.image === repeated.image)
+        XCTAssertLessThanOrEqual(first.width * first.height, 65 * 65)
+        XCTAssertGreaterThan(first.rgba[0], 240)
+        let blue = solid(.blue)
+        model.loadCapturedPhoto(blue); try await waitUntilSettled()
+        XCTAssertEqual(model.nativeSourceData, blue)
+        let second = try XCTUnwrap(model.nativeDetailCrop(in: CGRect(x: 20.1, y: 20.1, width: 64, height: 64)))
+        XCTAssertFalse(first.image === second.image)
+        XCTAssertGreaterThan(second.rgba[2], 240)
+        XCTAssertLessThan(second.rgba[0], 15)
+    }
+
+    func testPrecisionDecimalFormatsPreserveCommaAndNegativeInput() throws {
+        for (identifier, position, angle) in [("en_US", "50.10", "-0.25"), ("fr_FR", "50,10", "-0,25"), ("de_DE", "50,10", "-0,25")] {
+            let parsedPosition = try XCTUnwrap(CardCenteringPrecisionNumberField.parsedValue(position, locale: Locale(identifier: identifier)))
+            let parsedAngle = try XCTUnwrap(CardCenteringPrecisionNumberField.parsedValue(angle, locale: Locale(identifier: identifier)))
+            var value = fixture()
+            XCTAssertTrue(value.setPrecisionInnerSide(.left, positionNativePixels: parsedPosition))
+            XCTAssertTrue(value.setPrecisionInnerSide(.top, angleDegrees: parsedAngle))
+            XCTAssertEqual(try XCTUnwrap(value.precisionInnerLine(.left)).position, 50.1, accuracy: 1e-8)
+            XCTAssertEqual(try XCTUnwrap(value.precisionInnerLine(.top)).angle, -0.25, accuracy: 1e-8)
+        }
+        for invalid in ["", "-", "NaN", "Infinity", "inf", "not a number"] {
+            XCTAssertNil(CardCenteringPrecisionNumberField.parsedValue(invalid, locale: Locale(identifier: "en_US")))
+        }
+    }
+
+    func testNativeV2bDevelopmentPerformanceUsesUnchangedBudget() throws {
+        guard ProcessInfo.processInfo.environment["RUN_NATIVE_REFINEMENT_BENCHMARK"] == "1" else {
+            throw XCTSkip("Experimental native refinement is disabled in production; set RUN_NATIVE_REFINEMENT_BENCHMARK=1 for its unchanged-budget development gate.")
+        }
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        var durations: [Double] = []
+        for name in ["IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351", "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"] {
+            let path = try XCTUnwrap(bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC"))
+            let data = try Data(contentsOf: path)
+            var diagnostics = CardCenteringAnalyzer.Diagnostics()
+            diagnostics.nativeLocalRefinementEnabled = true
+            diagnostics.nativeRefinementStrategy = .coherentDistinctTracks
+            // Match production's disabled research generator. Its candidates
+            // do not participate in this native refinement; timing it would
+            // conflate the new stage with an unrelated DEBUG experiment.
+            diagnostics.frontBottomCandidateGenerationEnabled = false
+            var stage: CardCenteringAnalysisDiagnostic?
+            diagnostics.analysisDiagnosticSink = { stage = $0 }
+            let start = CFAbsoluteTimeGetCurrent()
+            _ = try diagnostics.analyze(data)
+            let duration = CFAbsoluteTimeGetCurrent() - start
+            durations.append(duration)
+            print("CENTERING_NATIVE_V2B_TIMING \(name) seconds=\(duration)")
+            if let stage {
+                print("CENTERING_NATIVE_V2B_STAGE \(name) native=\(stage.nativeLocalRefinementSeconds ?? 0) innerGeneration=\(stage.stageTimings.innerCandidateGeneration) vision=\(stage.stageTimings.visionRequests) scalar=\(stage.stageTimings.scalarFields) researchGenerator=false")
+            }
+        }
+        let sorted = durations.sorted()
+        XCTAssertLessThanOrEqual(sorted[sorted.count / 2], 0.8)
+        XCTAssertLessThanOrEqual(sorted.last!, 1.5)
+    }
+    private func fixture() -> CardCenteringMeasurement {
+        CardCenteringMeasurement(imageWidth: 600, imageHeight: 840,
+            outerQuad: .axisAligned(.init(left: 20, top: 20, right: 580, bottom: 820)),
+            innerQuad: .axisAligned(.init(left: 50, top: 50, right: 550, bottom: 790)), warnings: [],
+            confidence: .manualConfirmationRequired(preserving: .legacyConfident, reason: "Review"))
+    }
+
+    func testSubpixelEditSurvivesUnchangedIntegerProjectionAndKeepsConfirmation() throws {
+        var value = fixture(); XCTAssertTrue(value.confirmFrames())
+        let old = value.inner
+        XCTAssertTrue(value.setPrecisionInnerSide(.left, positionNativePixels: 50.1))
+        XCTAssertEqual(value.inner, old)
+        XCTAssertEqual(value.innerQuad!.topLeft.x, 50.1, accuracy: 1e-10)
+        XCTAssertTrue(value.canReportRatios)
+    }
+
+    func testSelectedSideTurnsAboutMidpointWithAdjacentSupportingLinesFixed() throws {
+        var value = fixture()
+        XCTAssertTrue(value.setPrecisionInnerSide(.left, angleDegrees: 89.7))
+        let inner = try XCTUnwrap(value.innerQuad)
+        XCTAssertEqual((inner.topLeft.x + inner.bottomLeft.x) / 2, 50, accuracy: 1e-8)
+        XCTAssertEqual(inner.topLeft.y, 50, accuracy: 1e-8)
+        XCTAssertEqual(inner.bottomLeft.y, 790, accuracy: 1e-8)
+        XCTAssertEqual(inner.topRight, .init(x: 550, y: 50))
+        XCTAssertEqual(inner.bottomRight, .init(x: 550, y: 790))
+        XCTAssertFalse(value.canReportRatios)
+    }
+
+    func testInvalidPrecisionChangesRetainExactLastValidShape() {
+        for position in [Double.nan, .infinity, -20, 551] {
+            var value = fixture(); let before = value
+            XCTAssertFalse(value.setPrecisionInnerSide(.left, positionNativePixels: position))
+            XCTAssertEqual(value, before)
+        }
+        var value = fixture(); let before = value
+        XCTAssertFalse(value.setPrecisionInnerSide(.left, angleDegrees: 0))
+        XCTAssertEqual(value, before)
+    }
+
+    func testOuterPrecisionSideRepairsSlopeWithoutMovingInnerOrOppositeLine() throws {
+        var value = fixture(); value.confirmFrames()
+        let inner = value.innerQuad, oldTop = value.outerQuad.topLeft
+        let previousRectification = value.rectification
+        XCTAssertTrue(value.setPrecisionSide(.bottom, frame: .outer, angleDegrees: 0.5))
+        XCTAssertEqual(value.outerQuad.topLeft, oldTop)
+        XCTAssertEqual(value.outerQuad.topRight, .init(x: 580, y: 20))
+        XCTAssertEqual(value.innerQuad, inner)
+        XCTAssertNotEqual(value.rectification, previousRectification)
+        XCTAssertTrue(value.hasValidFrameGeometry)
+        XCTAssertTrue(value.canReportRatios)
+        XCTAssertEqual((value.outerQuad.bottomLeft.y + value.outerQuad.bottomRight.y) / 2, 820, accuracy: 1e-8)
+    }
+
+    func testVerticalPrecisionAngleDoesNotJumpAcrossNinetyDegrees() throws {
+        var value = fixture()
+        XCTAssertTrue(value.setPrecisionInnerSide(.left, angleDegrees: 90.01))
+        XCTAssertEqual(try XCTUnwrap(value.precisionInnerLine(.left)).angle, 90.01, accuracy: 1e-8)
+    }
+
+    func testNativeUnitsRespectUnequalAxisScalesAndPhotoTransform() throws {
+        var value = fixture()
+        value.coordinateMapping = .init(orientedSourceSize: .init(width: 1203, height: 2527),
+            workingSize: .init(width: 600, height: 840))
+        let position = try XCTUnwrap(value.precisionInnerLine(.left)).position
+        XCTAssertEqual(position, 100.25, accuracy: 1e-9)
+        XCTAssertTrue(value.setPrecisionInnerSide(.left, positionNativePixels: position + 0.1))
+        XCTAssertEqual(value.innerQuad!.topLeft.x, 50 + 0.1 * 600 / 1203, accuracy: 1e-9)
+    }
+
+    func testOldCoordinateMappingDecodesWithoutNewMetadata() throws {
+        let json = #"{"orientedSourceSize":{"width":1112,"height":1536},"workingSize":{"width":883,"height":1210},"unrotatedWorkingSize":{"width":869,"height":1200},"appliedRotationDegrees":-0.6246188985801678}"#
+        let mapping = try JSONDecoder().decode(CardCenteringCoordinateMapping.self, from: Data(json.utf8))
+        XCTAssertNil(mapping.rawRasterSize)
+        XCTAssertNil(mapping.rawEXIFOrientation)
+    }
+
+    func testEXIFPixelCentresMatchIndependentlyRenderedLandmarksAndCropOrigins() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let raw = UIGraphicsImageRenderer(size: CGSize(width: 7, height: 5), format: format).image { c in
+            UIColor.black.setFill(); c.fill(CGRect(x: 0, y: 0, width: 7, height: 5))
+            UIColor.red.setFill(); c.fill(CGRect(x: 1, y: 2, width: 1, height: 1))
+        }.cgImage!
+        // Independent raster-cell locations for the red source cell (1,2),
+        // tabulated for all eight EXIF operations, rather than inverse tests.
+        let cases: [(UIImage.Orientation, Int, Int, Int)] = [(.up, 1, 1, 2), (.upMirrored, 2, 5, 2),
+            (.down, 3, 5, 2), (.downMirrored, 4, 1, 2), (.leftMirrored, 5, 2, 1),
+            (.right, 6, 2, 1), (.rightMirrored, 7, 2, 5), (.left, 8, 2, 5)]
+        for (orientation, exif, expectedX, expectedY) in cases {
+            let source = UIImage(cgImage: raw, scale: 3, orientation: orientation)
+            let size = source.centeringRasterOrientation.orientedSize
+            let crop = try XCTUnwrap(CardCenteringNativeRefiner.crop(source: source,
+                orientedRect: CGRect(x: 0, y: 0, width: size.width, height: size.height)))
+            XCTAssertEqual(crop.width, exif >= 5 ? 5 : 7)
+            let index = (expectedY * crop.width + expectedX) * 4
+            XCTAssertGreaterThan(crop.rgba[index], 240, "EXIF \(exif)")
+            XCTAssertLessThan(crop.rgba[index + 1], 15, "EXIF \(exif)")
+            let mapped = source.centeringRasterOrientation.orientedPoint(fromRaw: .init(x: 1.5, y: 2.5))
+            XCTAssertEqual(mapped, .init(x: Double(expectedX) + 0.5, y: Double(expectedY) + 0.5))
+            let detail = try XCTUnwrap(CardCenteringNativeRefiner.crop(source: source,
+                orientedRect: CGRect(x: 1, y: 1, width: 3, height: 3)))
+            XCTAssertEqual(detail.originOrientedNative, .init(x: 1, y: 1))
+        }
+    }
+
+    private func synthetic(occluded: Bool = false) -> UIImage {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        return UIGraphicsImageRenderer(size: CGSize(width: 600, height: 840), format: format).image { c in
+            UIColor.white.setFill(); c.fill(CGRect(x: 0, y: 0, width: 600, height: 840))
+            UIColor.black.setFill(); c.fill(CGRect(x: 20, y: 20, width: 560, height: 800))
+            let path = UIBezierPath(); path.move(to: CGPoint(x: 50, y: 50)); path.addLine(to: CGPoint(x: 550, y: 54))
+            path.addLine(to: CGPoint(x: 547, y: 790)); path.addLine(to: CGPoint(x: 53, y: 788)); path.close()
+            UIColor.yellow.setFill(); path.fill()
+            if occluded { UIColor.black.setFill(); c.fill(CGRect(x: 35, y: 220, width: 50, height: 470)) }
+        }
+    }
+
+    func testActualRasterLandmarksMatchRoundedResizeAndRotationsAtUIImageScaleThree() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let raw = UIGraphicsImageRenderer(size: CGSize(width: 317, height: 211), format: format).image { c in
+            UIColor.black.setFill(); c.fill(CGRect(x: 0, y: 0, width: 317, height: 211))
+            UIColor.red.setFill(); c.fill(CGRect(x: 100, y: 90, width: 5, height: 5))
+        }.cgImage!
+        for orientation in [UIImage.Orientation.up, .upMirrored, .down, .downMirrored, .leftMirrored, .right, .rightMirrored, .left] {
+            for rotation in [-7.0, 0, 7] {
+                let source = UIImage(cgImage: raw, scale: 3, orientation: orientation)
+                let (image, mapping) = try XCTUnwrap(CardCenteringAnalyzer.prepareRasterForCoordinateTest(source, rotationDegrees: rotation, maxDimension: 200))
+                let cg = image.cgImage!
+                let crop = try XCTUnwrap(CardCenteringNativeRefiner.crop(source: image,
+                    orientedRect: CGRect(x: 0, y: 0, width: cg.width, height: cg.height)))
+                var sum = 0.0, sx = 0.0, sy = 0.0
+                for y in 0..<crop.height {
+                    for x in 0..<crop.width {
+                        let i = (y * crop.width + x) * 4
+                        let weight = max(0, Double(crop.rgba[i]) - Double(crop.rgba[i + 1]))
+                        sum += weight; sx += (Double(x) + 0.5) * weight; sy += (Double(y) + 0.5) * weight
+                    }
+                }
+                XCTAssertGreaterThan(sum, 0)
+                let oriented = source.centeringRasterOrientation.orientedPoint(fromRaw: .init(x: 102.5, y: 92.5))
+                let expected = mapping.workingPoint(fromNative: oriented)
+                XCTAssertLessThanOrEqual(hypot(sx / sum - expected.x, sy / sum - expected.y), 0.5,
+                    "orientation=\(orientation) rotation=\(rotation)")
+                XCTAssertEqual(max(mapping.unrotatedWorkingSize.width, mapping.unrotatedWorkingSize.height), 200)
+            }
+        }
+    }
+
+    func testNativeTransitionsRecoverIndependentInnerSlopesWithoutEqualBorderPrior() throws {
+        let value = fixture()
+        let result = CardCenteringNativeRefiner.refine(source: synthetic(), outer: value.outerQuad, inner: value.innerQuad!)
+        let inner = try XCTUnwrap(result.inner)
+        XCTAssertEqual(atan2(inner.topRight.y - inner.topLeft.y, inner.topRight.x - inner.topLeft.x), atan2(4, 500), accuracy: 0.002)
+        XCTAssertEqual(inner.topLeft.x, 50, accuracy: 1.2)
+        XCTAssertEqual(inner.bottomLeft.x, 53, accuracy: 1.2)
+        XCTAssertGreaterThan(result.evidence.filter { $0.disposition == "accepted_local_fit" }.count, 2)
+        XCTAssertTrue(result.evidence.filter { $0.disposition == "accepted_local_fit" }.allSatisfy {
+            $0.spatialCoverage >= 0.56 && $0.lineCoefficientsOrientedNative?.count == 3 && ($0.fitResidualNativePixels ?? 2) <= 1.1
+        })
+    }
+
+    func testCoherentNativeFitRetainsUsefulPeaksAcrossContaminatedPositions() throws {
+        let base = synthetic()
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let image = UIGraphicsImageRenderer(size: base.size, format: format).image { c in
+            base.draw(at: .zero)
+            UIColor.blue.setFill(); c.fill(CGRect(x: 56, y: 240, width: 4, height: 420))
+        }
+        let value = fixture()
+        for strategy in [CardCenteringNativeRefiner.Strategy.coherentCandidates, .coherentDistinctTracks] {
+            let result = CardCenteringNativeRefiner.refine(source: image, outer: value.outerQuad, inner: value.innerQuad!, strategy: strategy)
+            let left = try XCTUnwrap(result.evidence.first { $0.frame == "inner" && $0.side == "left" })
+            XCTAssertEqual(left.disposition, "accepted_local_fit")
+            XCTAssertEqual(try XCTUnwrap(result.inner).topLeft.x, 50, accuracy: 1.2)
+            XCTAssertTrue(left.samples!.contains { ($0.candidatePeaks?.count ?? 0) > 1 })
+            XCTAssertGreaterThanOrEqual(left.acceptedSampleCount, 15)
+        }
+    }
+
+    func testCoarseAlternativeCanRecoverBoundaryOutsideSelectedNativeBand() throws {
+        var value = fixture()
+        value.setManualInnerEdge(\.left, to: 90)
+        let legacy = CardCenteringNativeRefiner.refine(source: synthetic(), outer: value.outerQuad, inner: value.innerQuad!)
+        XCTAssertNotEqual(legacy.evidence.first { $0.frame == "inner" && $0.side == "left" }?.disposition, "accepted_local_fit")
+        for strategy in [CardCenteringNativeRefiner.Strategy.coherentCandidates, .coherentDistinctTracks] {
+            let result = CardCenteringNativeRefiner.refine(source: synthetic(), outer: value.outerQuad, inner: value.innerQuad!,
+                strategy: strategy, coarseSeeds: [.init(side: .left,
+                    geometryOrientedNative: [.init(x: 50.3, y: 120), .init(x: 52.7, y: 720)], source: "existing_coarse_profile_alternative")])
+            let left = try XCTUnwrap(result.evidence.first { $0.frame == "inner" && $0.side == "left" })
+            XCTAssertEqual(left.disposition, "accepted_local_fit")
+            XCTAssertEqual(left.seedSource, "existing_coarse_profile_alternative")
+            XCTAssertEqual(try XCTUnwrap(result.inner).topLeft.x, 50, accuracy: 1.2)
+        }
+    }
+
+    func testTwoCoherentNativeBoundariesStayAmbiguousInsteadOfChoosingStrongest() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 600, height: 840), format: format).image { c in
+            UIColor.white.setFill(); c.fill(CGRect(x: 0, y: 0, width: 600, height: 840))
+            UIColor.black.setFill(); c.fill(CGRect(x: 20, y: 20, width: 560, height: 800))
+            UIColor.yellow.setFill(); c.fill(CGRect(x: 50, y: 50, width: 500, height: 740))
+            UIColor.blue.setFill(); c.fill(CGRect(x: 56, y: 50, width: 4, height: 740))
+        }
+        let value = fixture()
+        for strategy in [CardCenteringNativeRefiner.Strategy.coherentCandidates, .coherentDistinctTracks] {
+            let result = CardCenteringNativeRefiner.refine(source: image, outer: value.outerQuad, inner: value.innerQuad!, strategy: strategy)
+            let left = try XCTUnwrap(result.evidence.first { $0.frame == "inner" && $0.side == "left" })
+            XCTAssertEqual(left.reason, "competing_coherent_native_lines")
+            XCTAssertEqual(left.disposition, "unrefined")
+            XCTAssertNil(left.lineCoefficientsOrientedNative)
+        }
+    }
+
+    func testOccludedSideDoesNotInventIndependentSlopeFromAdjacentSamples() {
+        let value = fixture()
+        let result = CardCenteringNativeRefiner.refine(source: synthetic(occluded: true), outer: value.outerQuad, inner: value.innerQuad!)
+        XCTAssertNotEqual(result.evidence.first { $0.frame == "inner" && $0.side == "left" }?.disposition, "accepted_local_fit")
+    }
+
+    func testNativeStripMemoryBoundRejectsLargeArea() {
+        XCTAssertNil(CardCenteringNativeRefiner.crop(source: synthetic(), orientedRect: .infinite))
+        XCTAssertNil(CardCenteringNativeRefiner.crop(source: synthetic(), orientedRect: .null))
+    }
+
+    func testNativeRefinementTransformsWithAllEXIFOrientations() throws {
+        let value = fixture(), raw = synthetic().cgImage!
+        for orientation in [UIImage.Orientation.up, .upMirrored, .down, .downMirrored, .leftMirrored, .right, .rightMirrored, .left] {
+            let source = UIImage(cgImage: raw, scale: 2, orientation: orientation)
+            let orientationMap = source.centeringRasterOrientation
+            // Reorder a transformed rectangle by its orientation's physical
+            // top/left corners, rather than assuming raw corner identities.
+            func transformed(_ quad: CardCenteringQuad) -> CardCenteringQuad {
+                let points = quad.points.map(orientationMap.orientedPoint(fromRaw:))
+                let byY = points.sorted { $0.y < $1.y }
+                let top = byY.prefix(2).sorted { $0.x < $1.x }, bottom = byY.suffix(2).sorted { $0.x < $1.x }
+                return .init(topLeft: top[0], topRight: top[1], bottomRight: bottom[1], bottomLeft: bottom[0])
+            }
+            let result = CardCenteringNativeRefiner.refine(source: source, outer: transformed(value.outerQuad), inner: transformed(value.innerQuad!))
+            XCTAssertNotNil(result.inner, "orientation \(orientation)")
+            XCTAssertGreaterThan(result.evidence.filter { $0.disposition == "accepted_local_fit" }.count, 2)
+        }
+    }
+
+    func testRepresentativeLargeNativeSourceUsesBoundedStrips() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let source = UIGraphicsImageRenderer(size: CGSize(width: 4032, height: 3024), format: format).image { c in
+            UIColor.white.setFill(); c.fill(CGRect(x: 0, y: 0, width: 4032, height: 3024))
+            UIColor.black.setFill(); c.fill(CGRect(x: 100, y: 100, width: 3832, height: 2824))
+            UIColor.yellow.setFill(); c.fill(CGRect(x: 150, y: 150, width: 3732, height: 2724))
+        }
+        let outer = CardCenteringQuad.axisAligned(.init(left: 100, top: 100, right: 3932, bottom: 2924))
+        let inner = CardCenteringQuad.axisAligned(.init(left: 151, top: 151, right: 3881, bottom: 2873))
+        let result = CardCenteringNativeRefiner.refine(source: source, outer: outer, inner: inner)
+        XCTAssertNotNil(result.inner)
+        XCTAssertEqual(result.evidence.count, 8)
+        XCTAssertTrue(result.evidence.allSatisfy { $0.rawSampleCount == 25 })
+        // Reject a full native Lab-style allocation by construction; crop
+        // region limits are checked before allocating RGBA/renderer buffers.
+        XCTAssertNil(CardCenteringNativeRefiner.crop(source: source, orientedRect: CGRect(x: 0, y: 0, width: 4032, height: 3024)))
+    }
+
+    func testUnsupportedNativeEvidenceKeepsOldGuidesAndRecordsReason() {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let source = UIGraphicsImageRenderer(size: CGSize(width: 600, height: 840), format: format).image { c in
+            UIColor.gray.setFill(); c.fill(CGRect(x: 0, y: 0, width: 600, height: 840))
+        }
+        let value = fixture()
+        let result = CardCenteringNativeRefiner.refine(source: source, outer: value.outerQuad, inner: value.innerQuad!)
+        XCTAssertNil(result.inner)
+        XCTAssertTrue(result.evidence.filter { $0.frame == "inner" }.allSatisfy {
+            $0.disposition == "unrefined" && $0.reason != nil && $0.acceptedSampleCount == 0
+        })
+    }
+
+    func testCancelledAnalyzerStopsBeforeDecodingOrProducingGuides() async {
+        let cancelled = await Task.detached {
+            withUnsafeCurrentTask { $0?.cancel() }
+            do {
+                _ = try CardCenteringAnalyzer.analyze(Data())
+                return false
+            } catch { return error is CancellationError }
+        }.value
+        XCTAssertTrue(cancelled)
+    }
+
+    func testCancelledNativeJobDoesNotConstructPartialGuides() async {
+        let image = synthetic(), value = fixture()
+        let result = await Task.detached {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return CardCenteringNativeRefiner.refine(source: image, outer: value.outerQuad, inner: value.innerQuad!)
+        }.value
+        XCTAssertNil(result.inner)
+        XCTAssertTrue(result.evidence.isEmpty)
+    }
+
+    func testRimAndStrongerShadowAreRetainedAsAmbiguousOuterEvidence() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let source = UIGraphicsImageRenderer(size: CGSize(width: 600, height: 840), format: format).image { c in
+            UIColor.white.setFill(); c.fill(CGRect(x: 0, y: 0, width: 600, height: 840))
+            UIColor(white: 0.65, alpha: 1).setFill(); c.fill(CGRect(x: 20, y: 20, width: 560, height: 806))
+            UIColor.black.setFill(); c.fill(CGRect(x: 20, y: 20, width: 560, height: 800))
+            UIColor.yellow.setFill(); c.fill(CGRect(x: 50, y: 50, width: 500, height: 740))
+        }
+        let value = fixture()
+        let result = CardCenteringNativeRefiner.refine(source: source, outer: value.outerQuad, inner: value.innerQuad!)
+        let bottom = try XCTUnwrap(result.evidence.first { $0.frame == "outer" && $0.side == "bottom" })
+        XCTAssertNotNil(bottom.alternativeSeparationNativePixels)
+        XCTAssertEqual(bottom.disposition, "observed_only")
+        XCTAssertEqual(bottom.reason, "card_edge_and_shadow_may_overlap")
+        XCTAssertNil(bottom.lineCoefficientsOrientedNative, "native gradient must not replace the physical outer semantic choice")
+    }
+
+    @MainActor func testCoarseEditsClearPrecisionUndoHistory() throws {
+        let model = CardCenteringViewModel(); model.measurement = fixture()
+        model.updatePrecisionSide(.left, position: 50.1)
+        model.updateOuter(\.left, to: 21, within: 0...599)
+        let coarse = model.measurement
+        model.resetPrecisionEdits(); model.undoPrecisionEdit()
+        XCTAssertEqual(model.measurement, coarse)
+    }
+
+    @MainActor func testPhotoRotationAndResetInvalidateApprovalAndStaleExport() throws {
+        let model = CardCenteringViewModel(); model.image = synthetic(); model.measurement = fixture()
+        model.confirmFrames(); let old = try XCTUnwrap(model.exportSnapshot())
+        let inner = model.measurement?.innerQuad, outer = model.measurement?.outerQuad
+        model.adjustRotation(by: 0.1)
+        XCTAssertFalse(model.measurement!.canReportRatios)
+        XCTAssertNil(model.exportSnapshot()); XCTAssertFalse(model.matches(old))
+        XCTAssertEqual(model.measurement?.innerQuad, inner); XCTAssertEqual(model.measurement?.outerQuad, outer)
+        XCTAssertTrue(model.measurement!.warnings.contains { $0.contains("photo moved") })
+        model.confirmFrames(); let rotated = try XCTUnwrap(model.exportSnapshot())
+        model.resetRotation()
+        XCTAssertFalse(model.matches(rotated)); XCTAssertNil(model.exportSnapshot())
+        XCTAssertFalse(model.measurement!.canReportRatios)
+    }
+
+    @MainActor func testPrecisionUndoAndResetRecoverExactGeometry() throws {
+        let model = CardCenteringViewModel(); model.measurement = fixture()
+        XCTAssertFalse(model.canUndoPrecisionEdit)
+        XCTAssertFalse(model.canResetPrecisionEdits)
+        let before = model.measurement
+        model.updatePrecisionSide(.left, position: 50.1)
+        XCTAssertTrue(model.canUndoPrecisionEdit)
+        XCTAssertTrue(model.canResetPrecisionEdits)
+        XCTAssertNotEqual(model.measurement, before)
+        model.undoPrecisionEdit(); XCTAssertEqual(model.measurement, before)
+        XCTAssertFalse(model.canUndoPrecisionEdit)
+        XCTAssertFalse(model.canResetPrecisionEdits)
+        model.updatePrecisionSide(.left, angle: 89.8)
+        model.resetPrecisionEdits(); XCTAssertEqual(model.measurement, before)
+    }
+
+    @MainActor func testNativePrecisionIncludesPhotoOnlyRotationInItsSourceMapping() throws {
+        let model = CardCenteringViewModel(); model.measurement = fixture()
+        model.adjustRotation(by: 7)
+        let precision = try XCTUnwrap(model.precisionMeasurement)
+        let mapping = try XCTUnwrap(precision.coordinateMapping)
+        XCTAssertEqual(mapping.appliedRotationDegrees, 7)
+        let line = try XCTUnwrap(precision.precisionInnerLine(.top))
+        XCTAssertEqual(line.angle, -7, accuracy: 1e-8)
+        model.updatePrecisionSide(.top, position: line.position + 0.1)
+        XCTAssertNil(model.measurement?.coordinateMapping, "temporary effective mapping must not overwrite source provenance")
+        XCTAssertTrue(model.measurement!.hasValidFrameGeometry)
+    }
+}
+
 final class CenteringExportTests: XCTestCase {
     @MainActor
     func testRepeatedSuccessfulExportsRetireSupersededArtifacts() throws {
