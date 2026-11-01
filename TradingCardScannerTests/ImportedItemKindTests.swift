@@ -1,5 +1,7 @@
 import XCTest
 import SwiftData
+import CryptoKit
+import OnePieceCatalogCore
 @testable import TradingCardScanner
 
 /// Importing graded slabs and sealed products.
@@ -99,6 +101,159 @@ final class ImportedItemKindTests: XCTestCase {
         }
         let unknown = "game,provider_id,card_name,quantity\nfuture-game,fixture,Future Card,1\n"
         XCTAssertEqual(try CollectionCSV.parse(Data(unknown.utf8)).entries.first?.game.rawValue, "future-game")
+    }
+
+    @MainActor
+    func testOnePieceSourceEvidenceCannotBeBypassedByProviderIDColumnAliases() throws {
+        let registry = try retainedOnePieceImportRegistry()
+        let printingID = "004fed82-16f2-4176-975d-a1a067277db3"
+        let catalog = OnePieceCatalogAdapter(registry: registry)
+        let card = try catalog.resolution(forPrintingID: XCTUnwrap(UUID(uuidString: printingID))).card
+        XCTAssertEqual(card.cardNumber, "OP13-117")
+        XCTAssertEqual(card.variantEvidence.catalogVariants, [.foil])
+        let adapter = OnePieceImportAdapter(registry: registry)
+        let adapters = try GameImportAdapterRegistry(adapters: [adapter])
+        let policy = CardGameRegistry(descriptors: [.init(game: .onePiece, displayName: "One Piece", sortOrder: 0,
+            capabilities: [.collectionWrite])])
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        CollectionStore.configureGames(policy, for: container)
+        CollectionStore.configureCatalogAdapters(try .init(adapters: [catalog]), legacyCorrectionGames: [], for: container)
+
+        let invalidEvidence: [[(String, String)]] = [
+            [("item_kind", "gradedCard")],
+            [("item_kind", "sealedProduct")],
+            [("item_kind", "future-kind")],
+            [("source_identity_conflict", "true")],
+            [("grading_company", "PSA"), ("grade", "10")],
+            [("certification_number", "fixture-cert")],
+            [("justtcg_card_id", "fixture-card")],
+            [("justtcg_variant_id", "fixture-variant")],
+            [("justtcg_api_version", "v2")],
+            [("pokemon_print_run", "unlimited")],
+            [("magic_content_kind", "token")],
+            [("magic_treatment_ids", "[\"surgefoil\"]")]
+        ]
+        for idColumn in ["provider_id", "tcgdex_id", "scryfall_uuid"] {
+            let columns = [
+                ("game", "one-piece"), (idColumn, printingID), ("card_name", card.name),
+                ("card_number", "OP13-117"), ("finish", "foil"),
+                ("quantity", idColumn == "scryfall_uuid" ? "0" : "1"), ("foil_quantity", "1")
+            ]
+            for evidence in invalidEvidence {
+                let label = idColumn + ":" + evidence.map { $0.0 + "=" + $0.1 }.joined(separator: ",")
+                let plan = try CollectionCSV.parse(sourceCSV(columns + evidence))
+                let entry = try XCTUnwrap(plan.entries.first, label)
+                XCTAssertEqual(plan.entries.count, 1, label)
+                XCTAssertThrowsError(try adapter.validate(entry), label)
+                let result = try CollectionCSV.apply(plan, to: container.mainContext,
+                    gameRegistry: policy, gameImportAdapters: adapters)
+                XCTAssertEqual(result.importedQuantity, 0, label)
+                XCTAssertEqual(result.failedRows.count, 1, label)
+                let fresh = ModelContext(container)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectionActivity>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<InventoryEvent>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceRecord>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceObservation>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<ReferenceQuote>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<ProductIdentity>()).isEmpty, label)
+            }
+        }
+
+        // The exact retained raw printing still imports through the formerly
+        // unsafe alias; rejecting every scryfall_uuid row would hide the bug.
+        let valid = try CollectionCSV.parse(sourceCSV([
+            ("game", "one-piece"), ("scryfall_uuid", printingID), ("card_name", card.name),
+            ("card_number", "OP13-117"), ("quantity", "0"), ("foil_quantity", "2"),
+            ("item_kind", "rawCard"), ("language", "ENG")
+        ]))
+        XCTAssertNoThrow(try adapter.validate(XCTUnwrap(valid.entries.first)))
+        let imported = try CollectionCSV.apply(valid, to: container.mainContext,
+            gameRegistry: policy, gameImportAdapters: adapters)
+        XCTAssertEqual(imported.importedQuantity, 2)
+        XCTAssertTrue(imported.failedRows.isEmpty)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.collectionKey, card.collectionKey(variant: .foil))
+        XCTAssertEqual(rows.first?.quantity, 2)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+        XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
+    func testEveryCSVFormatRetainsSourceKindLanguageAndConflictEvidence() throws {
+        let evidence = [("item_kind", "future-kind"), ("source_language", "ENG"),
+                        ("source_identity_conflict", "true")]
+        let formats: [[(String, String)]] = [
+            [("game", "one-piece"), ("provider_id", "fixture"), ("card_name", "Fixture"), ("quantity", "1")],
+            [("game", "one-piece"), ("scryfall_uuid", "fixture"), ("card_name", "Fixture"),
+             ("quantity", "1"), ("foil_quantity", "1")],
+            [("game", "one-piece"), ("category", "One Piece"), ("set", "Fixture Set"),
+             ("product_name", "Fixture"), ("card_number", "OP13-117"), ("grade", "Ungraded"), ("quantity", "1")]
+        ]
+        for (index, columns) in formats.enumerated() {
+            let plan = try CollectionCSV.parse(sourceCSV(columns + evidence))
+            XCTAssertEqual(plan.entries.count, index == 1 ? 2 : 1)
+            for entry in plan.entries {
+                XCTAssertEqual(entry.sourceItemKindRaw, "future-kind")
+                XCTAssertEqual(entry.sourceLanguage, "ENG")
+                XCTAssertTrue(entry.conflictingSourceIdentity)
+            }
+        }
+    }
+
+    @MainActor
+    func testMagicScryfallExportKeepsBothFinishQuantitiesAndTreatments() throws {
+        let printingID = "d104b2d6-f8f1-4ae3-88d5-1f86f092e21c"
+        let plan = try CollectionCSV.parse(sourceCSV([
+            ("scryfall_uuid", printingID), ("name", "Fixture Magic Card"),
+            ("set_code", "NEO"), ("collector_number", "1"), ("quantity", "2"), ("foil_quantity", "3"),
+            ("magic_treatment_ids", "[\"surgefoil\"]"), ("language", "English")
+        ]))
+        XCTAssertEqual(plan.entries.count, 2)
+        XCTAssertEqual(plan.entries.first { $0.variant == .nonfoil }?.quantity, 2)
+        XCTAssertEqual(plan.entries.first { $0.variant == .foil }?.quantity, 3)
+        for entry in plan.entries {
+            XCTAssertEqual(entry.game, .magic)
+            XCTAssertEqual(entry.itemKind, .rawCard)
+            XCTAssertEqual(entry.magicTreatmentIDsRaw, entry.variant == .foil ? ["surgefoil"] : [])
+            XCTAssertEqual(entry.imageURL, "https://api.scryfall.com/cards/\(printingID)?format=image&version=normal")
+        }
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let result = try CollectionCSV.apply(plan, to: container.mainContext)
+        XCTAssertEqual(result.importedQuantity, 5)
+        XCTAssertTrue(result.failedRows.isEmpty)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(Set(rows.map(\.collectionKey)), Set(plan.entries.map(\.collectionKey)))
+        XCTAssertEqual(Set(rows.compactMap(\.variantID)), Set(["nonfoil", "foil"]))
+    }
+
+    private func sourceCSV(_ columns: [(String, String)]) -> Data {
+        func quote(_ value: String) -> String { "\"" + value.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }
+        return Data((columns.map { quote($0.0) }.joined(separator: ",") + "\n"
+            + columns.map { quote($0.1) }.joined(separator: ",") + "\n").utf8)
+    }
+
+    private func retainedOnePieceImportRegistry() throws -> OnePieceCatalogRegistry {
+        let directory = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+            .deletingLastPathComponent().appendingPathComponent("TradingCardScanner/OnePieceOwnerCatalog")
+        let decoder = JSONDecoder()
+        let pins = try decoder.decode([String: String].self,
+            from: Data(contentsOf: directory.appendingPathComponent("public-keys.json")))
+        let keys = try pins.mapValues {
+            try Curve25519.Signing.PublicKey(rawRepresentation: XCTUnwrap(Data(base64Encoded: $0)))
+        }
+        let envelope = try decoder.decode(OnePieceCatalogReleaseEnvelope.self,
+            from: Data(contentsOf: directory.appendingPathComponent("one-piece-owner-catalog.json")))
+        let now = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-11-01T00:00:00Z"))
+        return OnePieceCatalogRegistry(verifiedRelease: try OnePieceCatalogSignature.verify(
+            envelope, trustedKeys: keys, now: now))
     }
 
     // MARK: - Grade parsing

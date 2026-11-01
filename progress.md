@@ -1,3 +1,20 @@
+# 2026-11-01 — Correct and consolidate catalog PR review findings
+
+PR #10 now builds on corrected PR #9 (which builds on PR #8). The consolidated
+candidate preserves provider CC numbering and set count 25, holds Birthday
+Pikachu outside fraction recognition, and rejects incomplete live reprint
+families. Historical Celebrations aliases stay outside the signed publisher
+and ordinary registry descriptors, preserving complete-membership validation
+and Browse artwork authorization. The degraded `SV 049/198` guard and both
+saved-finish physical-review guards from PR #8 are retained.
+
+ULST imports use their real numeric collectors, with exact UUID/response checks
+unchanged. CSV source evidence survives alternate format paths before One Piece
+validation. Regression additions exercise these reviewed failures, production
+publisher input and image-less checklist persistence. New native/core results
+will be recorded in the [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md).
+All PRs remain unmerged; no signed catalog or release publication is performed.
+
 # 2026-11-01 — Five-game catalog coverage and printing identity audit
 
 Work on `fix/catalog-coverage-audit-2026-11-01` from `main@a2b11ade` is delivered
@@ -19,6 +36,67 @@ reprints and One Piece signed-seed lag remain wrong-printing risks. Other
 Pokémon finishes and denominator-free identifiers require reviewed evidence;
 unreviewed physical records stay held. No production catalog was signed,
 published or activated. Existing physical-device and release gates remain open.
+
+# 2026-11-01 — Correct live Celebrations ambiguity and Birthday recognition
+
+PR #9 review follow-up on `e9b0830`: the live automatic resolver now rejects an
+exact reviewed Celebrations reprint when an incomplete or contradictory
+original family makes it appear unique. Explicit selection retains provider
+numbers (`CC015`/`CC016`), set count 25 and the CEL artwork code. Removed Birthday
+Pikachu's nonphysical `24/53` membership; all 25 Browse records remain.
+Regressions cover missing original sets/cards, conflicting names, positive
+original/reprint selection, and the standalone-number hold. Source/data and
+whitespace checks pass; new native execution is pending the integrated CI run.
+
+# 2026-11-01 — Correct Celebrations physical-number evidence
+
+Review follow-up on PR #8 at `c1d14b8`: Birthday Pikachu prints standalone `24`,
+not the supplier's `24/53`. Corrected the coverage table and replaced the
+all-25 signed-membership proposal with the 24-fraction historical approach
+being corrected in stacked PR #9. Existing Shiny Vault runtime behavior and
+saved-holding protection are unchanged. Documentation links and whitespace are
+checked separately; no new native or physical-card test pass is claimed.
+
+# 2026-11-01 — Five-game catalog coverage sweep
+
+Branch `refinement/catalog-coverage-2026-11-01` from `main@a2b11ad`. Each game
+was traced from printed identifier to catalog identity and finish, and the
+results were compared with the live signed Pokémon revision 18 and with public
+TCGdex, TCGCSV, pokemontcg.io and Scryfall data. Findings and evidence are in
+the [coverage audit](docs/audits/card-coverage-gaps-and-research.md#five-game-coverage-sweep--2026-11-01).
+
+Fixed:
+- Shiny Vault footers `SV49/SV94` (Hidden Fates) and `SV001/SV122`
+  (Shining Fates) are now scannable. Previously they were unreadable.
+- Hidden Fates Shiny Vault cards resolve as Holofoil instead of TCGdex's
+  incorrect Normal.
+- Review follow-up: an existing automatic Normal holding could still be
+  rekeyed to Holo after two refreshes 24 hours apart. Finish reconciliation now
+  skips any stored finish that a reviewed card requires a person to check.
+
+The focused selection passed **382 tests** and a wider scanner/Browse/pricing
+selection passed **385 tests**, both with zero failures or skips.
+
+Initial stacked follow-up on `refinement/celebrations-classic-membership-2026-11-01`
+(historical checkpoint; the corrected 24-fraction scope is recorded above):
+the 25 Celebrations Classic Collection reprints used to resolve silently as their
+original vintage printings, for example Claydol `15/106` as Great Encounters.
+They are now an explicit printing choice. The resolver reads a code-level
+membership list. It is not a registry descriptor, because a descriptor would
+switch off this set's only artwork source. Browse, publisher input, the signed
+catalog and the 30th Classic Collection are unchanged. A 22-class historical,
+registry, scanner and Browse selection passed **581 tests, zero failures or
+skips**.
+
+Review follow-ups:
+- A selected reprint keeps TCGdex numbering (`CC016`), so price refresh and
+  Limitless artwork (`CEL_CC16`) work.
+- A reprint that is the only offline match (Umbreon `17/17`) defers to the
+  live directory.
+- Both "Impostor" and "Imposter" Oak spellings offer both printings.
+
+Those initial tests reproduced their covered defects before the fixes. This is
+simulator evidence only and does not cover the later review corrections above.
 
 # 2026-10-31 — Card sharing post-merge artwork recovery
 

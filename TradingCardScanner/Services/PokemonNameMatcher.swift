@@ -42,18 +42,21 @@ enum PokemonNameMatcher {
 
     private static func normalizedName(_ raw: String) -> String {
         let canonical = CatalogIdentityNormalization.canonicalText(raw)
-        // Base Set prints "Impostor"; the Celebrations remake prints "Imposter".
-        // Treat this exact whole-title spelling pair as an edition ambiguity:
-        // one OCR e/o reading must not silently choose the original or remake.
-        if canonical == "imposter professor oak" { return "impostor professor oak" }
         // Providers append the Delta Species symbol to original titles but
         // omit it on Classic reprints. It cannot distinguish those printings:
         // both carry the same title and collector-number footer.
         if canonical.hasSuffix(" δ") {
             return String(canonical.dropLast(2)).trimmingCharacters(in: .whitespaces)
         }
-        return canonical
+        return reviewedEquivalents[canonical] ?? canonical
     }
+
+    /// Reviewed spellings that cannot distinguish two printings sharing one
+    /// footer. Providers name the Celebrations reprint of Base Set `73/102`
+    /// "Imposter"; the original is "Impostor". Either OCR reading must offer both.
+    private static let reviewedEquivalents = [
+        "imposter professor oak": "impostor professor oak"
+    ]
 
     private static func compact(_ canonical: String) -> String {
         canonical.filter { !$0.isWhitespace }

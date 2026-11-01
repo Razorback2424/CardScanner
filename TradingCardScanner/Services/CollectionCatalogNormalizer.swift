@@ -1309,10 +1309,11 @@ enum CatalogIdentityNormalization {
         return isJapanese ? .ja : .en
     }
 
-    /// These reprint sets use original-set composites such as `MM3-4`.
-    /// A name or plain number does not identify the physical printing.
+    /// PLST uses original-set composites such as `MM3-4`; a plain number
+    /// cannot identify its printing. ULST has its own numeric collectors and
+    /// uses the ordinary exact set/collector lookup.
     static func requiresCompositeCollectorNumber(setID: String) -> Bool {
-        ["plst", "ulst"].contains(setID.lowercased())
+        setID.lowercased() == "plst"
     }
 
     static func isCompositeMagicCollectorNumber(_ value: String) -> Bool {

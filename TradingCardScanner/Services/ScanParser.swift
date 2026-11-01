@@ -737,7 +737,10 @@ enum PokemonHistoricalScanParser {
             let totalPrefix = String(text[totalPrefixRange])
             guard totalPrefix.isEmpty || totalPrefix == cardPrefix else { return nil }
 
-            if cardPrefix.isEmpty {
+            // Shiny Vault prints its prefix on both sides (`SV49/SV94`). A bare
+            // `SV` before an ordinary fraction is a modern `SVI` code with its
+            // last letter lost, so it keeps the official-set reading it had.
+            if cardPrefix.isEmpty || (cardPrefix == "SV" && totalPrefix != "SV") {
                 return PokemonPrintedNumberEvidence(
                     localID: String(card) + suffix.lowercased(),
                     denominator: total,

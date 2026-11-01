@@ -222,24 +222,22 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         XCTAssertFalse(classic.scanEnabled)
     }
 
-    func testBundledCelebrationsMembershipMatchesReviewedPublisherRows() throws {
+    func testReviewedCelebrationsMembershipStaysOutsideCompletePublisherContract() throws {
         let input = try JSONDecoder().decode(PokemonCatalogHumanInputFile.self, from: Data(contentsOf:
             XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))))
-        let publisher = try XCTUnwrap(input.sets.first { $0.providerSetID == "cel25cc" })
-        let bundled = try XCTUnwrap(PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: "cel25cc"))
+        let registry = PokemonCatalogRegistry.bundledSeed
+        XCTAssertFalse(input.sets.contains { $0.providerSetID == "cel25cc" },
+                       "A 24-of-25 scan alias list cannot enter the publisher's complete membership contract")
+        XCTAssertNil(registry.descriptor(forProviderSetID: "cel25cc"))
+        let bundled = try XCTUnwrap(registry.membershipDescriptors.first { $0.providerSetID == "cel25cc" })
         let members = try XCTUnwrap(bundled.membershipRecognition?.members)
         XCTAssertEqual(members.count, 24)
         XCTAssertEqual(Set(members.map(\.providerCardID)), Set((1...25).filter { $0 != 8 }.map {
             "cel25cc-CC" + String(format: "%03d", $0)
         }))
-        XCTAssertEqual(members.sorted { $0.providerCardID < $1.providerCardID },
-                       publisher.membershipRecognition?.members.sorted { $0.providerCardID < $1.providerCardID })
         XCTAssertEqual(bundled.recognitionKind, .notScannable)
         XCTAssertFalse(bundled.scanEnabled)
-        XCTAssertEqual(publisher.recognitionKind, bundled.recognitionKind)
-        XCTAssertEqual(publisher.scanEnabled, bundled.scanEnabled)
-        XCTAssertEqual(publisher.parentProviderSetID, bundled.parentProviderSetID)
-        XCTAssertEqual(bundled.parentProviderSetID, "cel25")
+        XCTAssertTrue(registry.usesProviderNumbering(forMembershipSetID: "cel25cc"))
         XCTAssertNil(bundled.officialCount, "The reprints do not share one printed denominator")
     }
 
@@ -298,8 +296,8 @@ final class PokemonCatalogSliceCTests: XCTestCase {
             XCTAssertEqual(selected.providerID, providerID)
             guard case let .pokemon(card, _) = selected.legacyIdentity else { return XCTFail("Expected Pokémon") }
             XCTAssertEqual(card.id, providerID)
-            XCTAssertEqual(card.localId, evidence.number.localID)
-            XCTAssertEqual(card.set.cardCount.official, evidence.number.denominator)
+            XCTAssertEqual(card.localId, row.id, "Printed original fractions must not replace provider numbering")
+            XCTAssertEqual(card.set.cardCount.official, 25)
             XCTAssertEqual(selected.variantEvidence.catalogVariants, [.holo])
 
             let wrongNumber = PokemonPrintedNumberEvidence(localID: evidence.number.localID,

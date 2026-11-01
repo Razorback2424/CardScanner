@@ -136,7 +136,10 @@ actor PokemonHistoricalCatalog {
             in: identities
         ) {
         case let .unique(match):
-            guard PokemonHistoricalIdentityResolver.reviewedOriginalProviderID(forReprintID: match.providerID) == nil else {
+            // All reviewed Celebrations fractions also belong to an original.
+            // An incomplete or contradictory live family cannot prove which
+            // physical printing was scanned, even after the offline path deferred.
+            guard !PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: match.providerID) else {
                 throw PokemonHistoricalCatalogError.unsupported
             }
             identity = match
@@ -187,6 +190,13 @@ actor PokemonHistoricalCatalog {
             }
             return .pokemon(card, setCode: card.set.id.uppercased())
         }
+        if registrySnapshot.usesProviderNumbering(forMembershipSetID: card.set.id) {
+            return .pokemon(
+                card,
+                setCode: registrySnapshot.membershipPrintedCode(forProviderSetID: card.set.id)
+                    ?? card.set.id.uppercased()
+            )
+        }
 
         let printedCount = evidence.number.denominator
         let materializedSet = TCGdexSetBrief(
@@ -208,7 +218,7 @@ actor PokemonHistoricalCatalog {
         materializedCard.recoveredArtwork = card.recoveredArtwork
         return .pokemon(
             materializedCard,
-            setCode: registrySnapshot.printedCode(forProviderSetID: card.set.id)
+            setCode: registrySnapshot.membershipPrintedCode(forProviderSetID: card.set.id)
                 ?? card.set.id.uppercased()
         )
     }

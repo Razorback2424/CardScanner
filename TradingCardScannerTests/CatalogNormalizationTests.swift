@@ -102,6 +102,10 @@ private final class MagicImportFixture: @unchecked Sendable {
     static let mm3ListID = "0659529d-1328-47de-9910-cce5b744aedf"
     static let avrListID = "0c8e0b8f-fd4a-46fb-8eac-7be0dad65c26"
     static let ordinaryID = "00000000-0000-4000-8000-000000000004"
+    // Exact identity from https://api.scryfall.com/cards/ulst/1/en, reviewed
+    // 2026-11-01. ULST uses numeric collectors; it is not PLST's composite scheme.
+    static let ulstID = "e63f29cd-5c93-47dc-acdf-37f3b12e9328"
+    static let ulstSetName = "The List (Unfinity Foil Edition)"
     private let lock = NSLock()
     private var captured: [[[String: String]]] = []
     let mode: ResponseMode
@@ -116,7 +120,7 @@ private final class MagicImportFixture: @unchecked Sendable {
         if request.url?.path == "/sets" {
             return try JSONSerialization.data(withJSONObject: ["data": [
                 ["code": "plst", "name": "The List", "digital": false],
-                ["code": "ulst", "name": "Fixture Reprint Set", "digital": false],
+                ["code": "ulst", "name": Self.ulstSetName, "digital": false],
                 ["code": "mm3", "name": "Modern Masters 2017", "digital": false]
             ]])
         }
@@ -138,7 +142,8 @@ private final class MagicImportFixture: @unchecked Sendable {
             card(id: Self.mm3ListID, set: "plst", number: "MM3-4"),
             card(id: Self.avrListID, set: "plst", number: "AVR-20", finish: "foil"),
             card(id: Self.ordinaryID, set: "mm3", number: "4"),
-            card(id: "00000000-0000-4000-8000-000000000005", set: "ulst", number: "MM3-4")
+            card(id: Self.ulstID, set: "ulst", number: "1", finish: "foil",
+                name: "By Gnome Means", setName: Self.ulstSetName, rarity: "rare", releasedAt: "2022-10-07")
         ]
         var cards = identifiers.compactMap { identifier in
             records.first { card in
@@ -159,7 +164,8 @@ private final class MagicImportFixture: @unchecked Sendable {
             case .conflictingAcrossBatches:
                 if identifiers.first?["id"] == nil { cards[0]["id"] = Self.mm3ListID }
             case .missing: cards.removeFirst()
-            case .wrongNumber: cards[0]["collector_number"] = "MM3-999"
+            case .wrongNumber:
+                cards[0]["collector_number"] = cards[0]["set"] as? String == "ulst" ? "2" : "MM3-999"
             case .wrongSet: cards[0]["set"] = "avr"
             case .wrongName: cards[0]["name"] = "Different card"
             case .foreign: cards[0]["lang"] = "fr"
@@ -169,10 +175,12 @@ private final class MagicImportFixture: @unchecked Sendable {
         }
         return try JSONSerialization.data(withJSONObject: ["data": cards])
     }
-    private func card(id: String, set: String, number: String, finish: String = "nonfoil") -> [String: Any] {
-        ["id": id, "name": "Entreat the Angels", "set": set, "set_name": "Fixture set",
+    private func card(id: String, set: String, number: String, finish: String = "nonfoil",
+                      name: String = "Entreat the Angels", setName: String = "Fixture set",
+                      rarity: String = "mythic", releasedAt: String = "2020-09-01") -> [String: Any] {
+        ["id": id, "name": name, "set": set, "set_name": setName,
          "collector_number": number, "lang": "en", "digital": false, "layout": "normal",
-         "rarity": "mythic", "released_at": "2020-09-01", "finishes": [finish],
+         "rarity": rarity, "released_at": releasedAt, "finishes": [finish],
          "image_uris": ["normal": "https://example.test/\(id).jpg", "small": "https://example.test/\(id)-small.jpg"]]
     }
 }
@@ -324,13 +332,14 @@ final class CatalogNormalizationTests: XCTestCase {
         let mm3 = importedMagicCard(number: "MM3-4")
         let avr = importedMagicCard(number: "AVR-20", variant: .foil)
         let ordinary = importedMagicCard(number: "004/249", setName: "Modern Masters 2017")
-        let otherReprint = importedMagicCard(number: "MM3-4", setName: "Fixture Reprint Set")
+        let otherReprint = importedMagicCard(number: "1", setName: MagicImportFixture.ulstSetName,
+            name: "By Gnome Means", variant: .foil)
         for row in [mm3, avr, ordinary, otherReprint] { context.insert(row) }
         try context.save()
         await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
             .normalizeImportedCards(in: context)
         for (row, id) in [(mm3, MagicImportFixture.mm3ListID), (avr, MagicImportFixture.avrListID),
-                          (ordinary, MagicImportFixture.ordinaryID), (otherReprint, "00000000-0000-4000-8000-000000000005")] {
+                          (ordinary, MagicImportFixture.ordinaryID), (otherReprint, MagicImportFixture.ulstID)] {
             let saved = try persistedCard(withKey: row.collectionKey, from: context)
             XCTAssertEqual(saved.catalogProviderID, id)
             XCTAssertEqual(saved.imageURL, "https://example.test/\(id).jpg")
@@ -339,7 +348,60 @@ final class CatalogNormalizationTests: XCTestCase {
         XCTAssertEqual(sent.count, 4)
         XCTAssertTrue(sent.contains(["set": "plst", "collector_number": "mm3-4"]))
         XCTAssertTrue(sent.contains(["set": "plst", "collector_number": "avr-20"]))
+        XCTAssertTrue(sent.contains(["set": "ulst", "collector_number": "1"]))
         XCTAssertFalse(sent.contains { $0["name"] != nil })
+    }
+
+    func testULSTImportsUseNumericCollectorAndExistingExactUUID() async throws {
+        let fixture = MagicImportFixture()
+        MagicImportURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+        let context = try makeContext()
+        let plain = importedMagicCard(number: "1", setName: MagicImportFixture.ulstSetName,
+            name: "By Gnome Means", variant: .foil)
+        let padded = importedMagicCard(number: "001", setName: MagicImportFixture.ulstSetName,
+            name: "By Gnome Means", variant: .foil)
+        let direct = importedMagicCard(number: "1", setName: MagicImportFixture.ulstSetName,
+            name: "By Gnome Means", sourceID: MagicImportFixture.ulstID, variant: .foil)
+        for row in [plain, padded, direct] { context.insert(row) }
+        try context.save()
+        await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+            .normalizeImportedCards(in: context)
+        XCTAssertEqual(fixture.batches, [
+            [["id": MagicImportFixture.ulstID]],
+            [["set": "ulst", "collector_number": "1"]]
+        ])
+        for row in [plain, padded, direct] {
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertEqual(saved.catalogProviderID, MagicImportFixture.ulstID)
+            XCTAssertEqual(saved.imageURL, "https://example.test/\(MagicImportFixture.ulstID).jpg")
+        }
+    }
+
+    func testULSTImportsRejectContradictoryCollectorEvidence() async throws {
+        let cases: [(MagicImportFixture.ResponseMode, String, String?)] = [
+            (.wrongNumber, "1", nil),
+            (.normal, "2", MagicImportFixture.ulstID),
+            (.normal, "UST-1", MagicImportFixture.ulstID)
+        ]
+        for (mode, number, sourceID) in cases {
+            let fixture = MagicImportFixture(mode)
+            MagicImportURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+            let context = try makeContext()
+            let row = importedMagicCard(number: number, setName: MagicImportFixture.ulstSetName,
+                name: "By Gnome Means", sourceID: sourceID, variant: .foil)
+            context.insert(row); try context.save()
+            await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+                .normalizeImportedCards(in: context)
+            XCTAssertEqual(fixture.batches.flatMap { $0 }, sourceID.map { [["id": $0]] }
+                ?? [["set": "ulst", "collector_number": "1"]])
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertNil(saved.catalogProviderID, "Conflicting ULST collector evidence: \(mode), \(number)")
+            XCTAssertNil(saved.imageURL)
+        }
     }
 
     func testPlainAndNameOnlyListImportsRemainUnresolvedWithoutExactUUID() async throws {
@@ -349,7 +411,8 @@ final class CatalogNormalizationTests: XCTestCase {
         defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
         let context = try makeContext()
         let rows = [importedMagicCard(number: "4"), importedMagicCard(number: "20", variant: .foil),
-                    importedMagicCard(number: ""), importedMagicCard(number: "4", setName: "Fixture Reprint Set")]
+                    importedMagicCard(number: ""), importedMagicCard(number: "", setName: MagicImportFixture.ulstSetName,
+                        name: "By Gnome Means", variant: .foil)]
         for row in rows { context.insert(row) }
         try context.save()
         await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
@@ -491,11 +554,11 @@ final class CatalogNormalizationTests: XCTestCase {
         }
     }
 
-    private func importedMagicCard(number: String, setName: String = "The List",
+    private func importedMagicCard(number: String, setName: String = "The List", name: String = "Entreat the Angels",
                                    sourceID: String? = nil, variant: PhysicalVariant = .nonfoil) -> CollectedCard {
         let providerID = sourceID ?? "csv:\(setName)|\(number)"
         return CollectedCard(collectionKey: "magic:\(providerID)#\(variant.id)", game: .magic, providerID: providerID,
-            name: "Entreat the Angels", setName: setName, setCode: setName, cardNumber: number,
+            name: name, setName: setName, setCode: setName, cardNumber: number,
             rarity: nil, imageURL: nil, thumbnailURL: nil, variant: variant, variantResolution: .imported)
     }
 

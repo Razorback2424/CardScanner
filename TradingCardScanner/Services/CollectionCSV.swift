@@ -631,7 +631,17 @@ enum CollectionCSV {
                 continue
             }
 
-            let parsed = entries(from: row, isPortfolioExport: isPortfolioExport)
+            // Source evidence must survive every format parser, including the
+            // Scryfall quantity split and portfolio early return. Otherwise an
+            // alternate header can turn a rejected source row into a raw card.
+            let parsed = entries(from: row, isPortfolioExport: isPortfolioExport).map { parsedEntry in
+                var entry = parsedEntry
+                entry.sourceItemKindRaw = nonempty(value(["item_kind"], in: row))
+                entry.sourceLanguage = nonempty(value(["language", "lang", "source_language"], in: row))
+                entry.conflictingSourceIdentity = entry.conflictingSourceIdentity
+                    || value(["source_identity_conflict"], in: row)?.lowercased() == "true"
+                return entry
+            }
             if parsed.isEmpty {
                 skippedRows += 1
                 skippedValues.append(values)
@@ -1209,46 +1219,18 @@ enum CollectionCSV {
             value(["magic_content_kind", "content_kind"], in: row)
         )
 
+        let quantities: [(variant: PhysicalVariant?, quantity: Int)]
         if isScryfallExport {
-            var result: [CollectionCSVEntry] = []
-            let nonfoilQuantity = positiveInt(value(["quantity"], in: row))
-            let foilQuantity = positiveInt(value(["foil_quantity"], in: row))
-            let treatmentIDs = decodedTreatmentIDs(value(["magic_treatment_ids"], in: row))
-            if nonfoilQuantity > 0 {
-                result.append(makeEntry(
-                    game: game, providerID: providerID, catalogProviderID: catalogProviderID,
-                    explicitCollectionKey: explicitCollectionKey,
-                    name: name, setName: setName,
-                    setCode: setCode, cardNumber: cardNumber, rarity: rarity,
-                    imageURL: imageURL, thumbnailURL: thumbnailURL,
-                    variant: .nonfoil, quantity: nonfoilQuantity, dateAdded: importedDate,
-                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .nonfoil),
-                    magicTreatmentQualifiers: treatmentQualifiers,
-                    magicContentKindRaw: contentKindRaw
-                ))
-            }
-            if foilQuantity > 0 {
-                result.append(makeEntry(
-                    game: game, providerID: providerID, catalogProviderID: catalogProviderID,
-                    explicitCollectionKey: explicitCollectionKey,
-                    name: name, setName: setName,
-                    setCode: setCode, cardNumber: cardNumber, rarity: rarity,
-                    imageURL: imageURL, thumbnailURL: thumbnailURL,
-                    variant: .foil, quantity: foilQuantity, dateAdded: importedDate,
-                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .foil),
-                    magicTreatmentQualifiers: treatmentQualifiers,
-                    magicContentKindRaw: contentKindRaw
-                ))
-            }
-            return result
+            quantities = [
+                (.nonfoil, positiveInt(value(["quantity"], in: row))),
+                (.foil, positiveInt(value(["foil_quantity"], in: row)))
+            ]
+        } else {
+            quantities = [(importedVariant(
+                id: value(["finish", "variant_id"], in: row),
+                label: value(["finish_name", "variant", "finish_label"], in: row)
+            ), positiveInt(value(["quantity"], in: row)))]
         }
-
-        let quantity = positiveInt(value(["quantity"], in: row))
-        guard quantity > 0 else { return [] }
-        let variant = importedVariant(
-            id: value(["finish", "variant_id"], in: row),
-            label: value(["finish_name", "variant", "finish_label"], in: row)
-        )
         let printRun = importedPrintRun(value(["pokemon_print_run", "edition"], in: row))
         let marketCardID = value(["justtcg_card_id"], in: row)
         let marketVariantID = value(["justtcg_variant_id"], in: row)
@@ -1267,30 +1249,31 @@ enum CollectionCSV {
                 qualifier: value(["grading_qualifier"], in: row)
             )
         }
-        var entry = makeEntry(
-            game: game, providerID: providerID, catalogProviderID: catalogProviderID,
-            explicitCollectionKey: explicitCollectionKey,
-            name: name, setName: setName,
-            setCode: setCode, cardNumber: cardNumber, rarity: rarity,
-            imageURL: imageURL, thumbnailURL: thumbnailURL,
-            variant: variant, quantity: quantity, dateAdded: importedDate,
-            itemKind: itemKind,
-            gradingCompany: gradingCompany,
-            grade: grade,
-            pokemonPrintRun: printRun,
-            justTCGCardID: marketCardID,
-            justTCGVariantID: marketVariantID,
-            justTCGAPIVersion: marketAPIVersion,
-            certificationNumber: certificationNumber,
-            marketRegionRaw: marketRegion,
-            magicTreatmentIDs: treatmentIDs,
-            magicTreatmentQualifiers: treatmentQualifiers,
-            magicContentKindRaw: contentKindRaw
-        )
-        entry.sourceItemKindRaw = nonempty(value(["item_kind"], in: row))
-        entry.sourceLanguage = nonempty(value(["language", "lang", "source_language"], in: row))
-        entry.conflictingSourceIdentity = value(["source_identity_conflict"], in: row)?.lowercased() == "true"
-        return [entry]
+        // Both quantity formats use the same source metadata and key builder.
+        // In particular, scryfall_uuid is an ID-column alias, not permission to
+        // discard item-kind, grading, print-run, or marketplace evidence.
+        return quantities.filter { $0.quantity > 0 }.map { value in
+            makeEntry(
+                game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+                explicitCollectionKey: explicitCollectionKey,
+                name: name, setName: setName,
+                setCode: setCode, cardNumber: cardNumber, rarity: rarity,
+                imageURL: imageURL, thumbnailURL: thumbnailURL,
+                variant: value.variant, quantity: value.quantity, dateAdded: importedDate,
+                itemKind: itemKind,
+                gradingCompany: gradingCompany,
+                grade: grade,
+                pokemonPrintRun: printRun,
+                justTCGCardID: marketCardID,
+                justTCGVariantID: marketVariantID,
+                justTCGAPIVersion: marketAPIVersion,
+                certificationNumber: certificationNumber,
+                marketRegionRaw: marketRegion,
+                magicTreatmentIDs: treatmentIDs,
+                magicTreatmentQualifiers: treatmentQualifiers,
+                magicContentKindRaw: contentKindRaw
+            )
+        }
     }
 
     private static func importedGame(_ value: String) -> CardGame {

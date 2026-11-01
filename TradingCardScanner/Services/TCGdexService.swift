@@ -1146,8 +1146,7 @@ enum PokemonHistoricalIdentityResolver {
         "TG": [30: ["swsh9tg", "swsh10tg", "swsh11tg", "swsh12tg"]],
         "GG": [70: ["swsh12.5gg"]],
         "RC": [25: ["bw11"], 32: ["g1"]],
-        // The two Shiny Vault checklists have distinct printed denominators.
-        // SV is a collector prefix, not a modern expansion or promo code.
+        // Shiny Vault: Hidden Fates `SV1/SV94`, Shining Fates `SV001/SV122`.
         "SV": [94: ["sma"], 122: ["swsh4.5sv"]]
     ]
 
@@ -1220,7 +1219,7 @@ enum PokemonHistoricalIdentityResolver {
         guard case .officialSet = number.scheme else { return [] }
         let localID = canonicalLocalID(number.localID)
         var numberedMembers: [PokemonCatalogCardIdentity] = []
-        for descriptor in registry.descriptors {
+        for descriptor in registry.membershipDescriptors {
             guard let recognition = descriptor.membershipRecognition else { continue }
             for member in recognition.members {
                 guard member.printedDenominator == number.denominator,
@@ -1340,8 +1339,8 @@ enum PokemonHistoricalIdentityResolver {
 ///
 /// Scryfall accepts `set` + `collector_number`, `set` + `name`, or an exact ID.
 /// A name response does not establish a complete physical-printing family.
-/// Reprint imports require a composite collector such as `MM2-48` or an exact
-/// UUID; a plain exported number cannot identify its original set on its own.
+/// PLST imports require a composite collector such as `MM2-48` or an exact
+/// UUID; ULST has its own numeric collectors and uses exact set/number lookup.
 struct ScryfallCardIdentifier: Encodable, Hashable, Sendable {
     /// Scryfall's collection endpoint accepts an exact card id as well as the
     /// set/collector-number form. Exact ids are the only safe identifier for

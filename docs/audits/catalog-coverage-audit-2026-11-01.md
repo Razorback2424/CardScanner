@@ -2,6 +2,8 @@
 
 **Baseline:** `main@a2b11ade7ce37888ea4ca3debb8923b11a79b3bc`.
 **Delivery:** [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), unmerged.
+**Review follow-up:** corrected PR #8 → #9 → #10 stack; new native/core checks
+are pending for the changes described in the review follow-up below.
 **Scope:** Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh; recognition,
 catalog resolution, physical-printing choice, finishes, import, offline data
 and catalog ingestion. This is a dated audit and regression record, not an
@@ -23,6 +25,28 @@ coverage after the scoped fixes below.
 
 ## Method and evidence boundaries
 
+### PR-review corrections — 2026-11-01
+
+The earlier green CI did not cover seven confirmed review findings. The
+consolidated implementation now includes these corrections, plus the existing
+One Piece CSV bypass identified during review:
+
+| Finding | Correction and regression |
+| --- | --- |
+| Partial Celebrations membership blocked the complete-provider publisher contract | Keep the 24 historical scan aliases outside production publisher input. A core test reads that actual input and discovery policy, fetches a bounded provider fixture containing all 25 historical cards, and builds/validates an ordinary candidate. A separate test retains the strict 24-of-25 rejection. |
+| Missing or contradictory original data made a live reprint appear unique | Both automatic paths reject a reviewed reprint singleton; explicit original/reprint selection remains available. Tests cover missing directory entries, missing original cards, contradictory names and no premature detail fetch. |
+| Selected reprints overwrote provider CC numbers with original printed fractions | Preserve `CC001`–`CC025`, set count 25 and the CEL code. Scan fractions remain separate evidence. Tests verify all 24 selected identities plus exact Claydol artwork and price-response agreement. |
+| Numeric ULST collectors were incorrectly rejected as noncomposite | Only PLST requires an original-set composite. Real ULST `By Gnome Means`, collector `1`, is tested through numeric, padded and UUID import routes with contradiction rejection. |
+| Bare `SV` OCR could swallow a degraded SVI set code | Retain PR #8's `SV 049/198` official-set reading while recognizing genuine `SV…/SV94` and `SV…/SV122` subsets. |
+| Birthday Pikachu's supplier `24/53` was not a physical fraction | Remove that alias, retain all 25 Browse records and hold the standalone `24` scan route. |
+| A non-scannable descriptor disabled image fallback after a successful image-less checklist rebuild | Keep historical aliases outside ordinary descriptors. Rebuild, persist and reload all 25 image-less cards, then assert their exact small/full CEL_CC artwork fallbacks. Explicit artwork denial still applies. |
+| Alternate CSV formats erased source evidence before One Piece validation | Preserve source kind, language, conflict, grading and marketplace metadata across format paths. Full parse/apply tests require zero writes for contradictory records and retain valid One Piece/Magic imports. |
+
+The saved-finish behavior is also reconciled with PR #8: a stored finish outside
+the reviewed list requires physical review even when its earlier provenance was
+automatic. Both assessment and write-boundary checks remain in force. The
+integrated suite includes the persisted holding/key/quantity regression.
+
 The audit follows each representation separately: provider/discovery record,
 reviewed catalog membership, printed OCR identity, shared catalog outcome,
 printing/finish choice, ownership/import and exact market lane. It checks
@@ -35,8 +59,11 @@ of the exact inputs. Its [summary](../research/catalog-coverage-2026-11-01/summa
 and [discrepancy ledger](../research/catalog-coverage-2026-11-01/discrepancies.csv)
 separate intentional holds, source risks, signed-adoption gaps and informational
 differences. A discrepancy row is **not** necessarily a missing card or a defect.
-The retained run covers 912 source files, reports zero structural errors and
-2,568 informational/review rows. The source hashes identify the measured bytes.
+The corrected retained run covers 912 source files, reports zero structural
+errors and 2,569 informational/review rows. Historical scan aliases are counted
+separately from the 33 actual seed/publisher descriptors: Celebrations is outside
+the modern descriptor seed, with its 24 historical fractions tested natively.
+The source hashes identify the measured bytes.
 The census executes neither OCR nor the native picker and does not verify the
 One Piece envelope signature. Native regressions cover the affected runtime
 paths separately.
@@ -124,8 +151,9 @@ or permanent IDs. Unsupported IDs and the other Shiny Vault set are untouched.
 Regression coverage checks all 94 cards, live-style placeholder records,
 offline/persisted slots, idempotence, finish provenance and pricing. A real
 Holo quote can be used; an old Normal quote cannot price Holo. A missing Holo
-quote stays missing. Explicit user/import/printed-label finish evidence is not
-silently replaced by the automatic saved-finish repair.
+quote stays missing. Every stored finish outside the reviewed list waits for
+physical review, including earlier automatically inferred Normal holdings;
+assessment and write-boundary guards prevent an automatic rekey.
 
 ### Pokémon: Celebrations Classic used provider IDs that were not printed on cards
 
@@ -134,7 +162,7 @@ Celebrations Classic cards retain original printed numbers. The registry
 previously had no exact membership crosswalk for this set, so a recognizable
 original footer did not expose its Celebrations alternative.
 
-The PR adds **24 reviewed fraction memberships**, preserving both original and
+The stacked PR #9 adds **24 reviewed historical fraction memberships**, preserving both original and
 reprint IDs. Each was checked against the official checklist, exact product
 image, source product number and original catalog identity. The
 [25-row evidence ledger](../../TestFixtures/TradingCards/PokemonCatalogCoverageAudit/celebrations-classic-membership-review.json)
@@ -159,9 +187,12 @@ wrong denominators and exact selected-card identity.
 Base Set physically says “Impostor Professor Oak,” while Celebrations says
 “Imposter Professor Oak.” A whole-title alias conservatively retains both
 printing choices for either spelling; one OCR e/o substitution cannot choose
-an edition. Longer titles are not affected. The bundled and publisher
-memberships have a parity regression; signed remote-authority adoption remains
-a separate release step.
+an edition. Longer titles are not affected. These partial historical aliases
+remain separate from ordinary registry descriptors and production publisher
+input. The publisher's complete-membership contract and existing CEL artwork
+authorization are preserved; no signed Celebrations descriptor is introduced.
+Selected provider records keep their CC numbers and count 25. A snapshot
+rebuild/persist/reload regression verifies artwork for all 25 Browse identities.
 
 ### Magic: incomplete promo evidence could select an ordinary printing
 
@@ -201,9 +232,15 @@ snapshot contains both UUIDs:
 `0c8e0b8f-fd4a-46fb-8eac-7be0dad65c26` and
 `0659529d-1328-47de-9910-cce5b744aedf` respectively.
 
-Enrichment now preserves exact composite collectors and uses an existing valid
-Scryfall UUID when available. Plain-number/name-only reprint rows without an
-exact UUID stay unresolved. Bounded requests require one response matching the
+Enrichment now preserves exact collectors and uses an existing valid Scryfall
+UUID when available. PLST requires its original-set composite; ULST uses its
+own numeric collectors. The complete English paper ULST provider response has
+62 numeric collectors; the retained treatment snapshot independently contains
+19 numeric ULST rows. The positive fixture uses
+[By Gnome Means, ULST 1](https://api.scryfall.com/cards/ulst/1/en), UUID
+`e63f29cd-5c93-47dc-acdf-37f3b12e9328`, replacing the earlier fabricated
+`MM3-4` ULST fixture. Plain-number PLST and name-only imports without an exact
+UUID stay unresolved. Bounded requests require one response matching the
 exact key, English/non-digital scope, name, set and collector. Duplicate,
 conflicting, missing and out-of-order responses cannot choose another printing.
 Ordinary numbered imports remain supported.
@@ -267,6 +304,12 @@ contradictory graded, Magic and standalone JustTCG metadata. A direct adapter
 language guard supplements the shared parser's existing non-English rejection.
 Valid English aliases and existing exact UUID/finish/key rules are preserved.
 
+The review follow-up closes an earlier format-parser bypass: Scryfall quantity
+splitting now uses the same metadata construction as ordinary imports, and all
+formats retain raw source kind/language/conflict evidence. The full parse/apply
+matrix uses a verified OP13-117 foil printing with `provider_id`, `tcgdex_id`
+and `scryfall_uuid`, rather than testing only the ordinary CSV branch.
+
 The new CSV-to-apply regression verifies rejected rows create no collection,
 inventory, activity or price-observation writes. Direct adapter tests cover
 accepted English aliases and contradictory retained metadata. This is not a
@@ -328,12 +371,20 @@ differences; those do not establish missing payload rows.
 
 ## Verification and repeatability
 
+### Consolidated review follow-up
+
+New native and core checks are pending. Their exact commit and results will be
+recorded here after CI completes. The earlier results below are retained as
+historical evidence and do not validate the new corrections by themselves.
+
+### Initial PR #10 verification — historical
+
 The PR adds a native CI selection for scanner, catalog, printing, finish and
 import regressions and a separate offline ingestion/census job. It does not
 invoke publication jobs. The implementation at
 [`02d717cf1573c3e269c620b3cee7bc630b9eea2f`](https://github.com/Razorback2424/CardScanner/commit/02d717cf1573c3e269c620b3cee7bc630b9eea2f)
-passed the following checks on November 1. Subsequent audit wording and image
-receipt corrections do not change application, test or workflow code.
+passed the following checks on November 1 before the subsequent PR review found
+the gaps corrected above. The intervening documentation-only head was `c028928`.
 
 | Verification | Observed result | Evidence |
 | --- | --- | --- |

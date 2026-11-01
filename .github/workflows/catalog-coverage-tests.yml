@@ -78,13 +78,17 @@ jobs:
             -only-testing:TradingCardScannerTests/PokemonCatalogRegistryTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogParityTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
+            -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
+            -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
+            -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \
             -only-testing:TradingCardScannerTests/MagicCatalogBootstrapTests \
             -only-testing:TradingCardScannerTests/CatalogNormalizationTests \
             -only-testing:TradingCardScannerTests/YuGiOhRecognitionTests \
             -only-testing:TradingCardScannerTests/YuGiOhResolutionTests \
             -only-testing:TradingCardScannerTests/OnePieceIntegrationTests \
+            -only-testing:TradingCardScannerTests/ImportedItemKindTests \
             -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testCSVExportAppendsCatalogProviderWithoutReorderingOriginalColumns \
             -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testCSVRoundTripKeepsDistinctCertificatesApart \
             -only-testing:TradingCardScannerTests/MagicTreatmentTests/testCollectionCSVRoundTripsTreatmentIdentityAndCollectionKey \

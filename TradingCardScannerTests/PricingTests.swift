@@ -562,10 +562,7 @@ final class PricingTests: XCTestCase {
             XCTAssertFalse(row.isExpandedMasterSetVariant, row.providerID)
             XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: row.providerID, variant: .normal))
             XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: row.providerID, variant: .holo))
-            XCTAssertEqual(PokemonFinishReconciliation.repair(storedVariantID: "normal",
-                storedResolution: .uniqueInCatalog, itemKind: .rawCard, printRun: nil, card: card),
-                .init(variant: .holo, resolution: .uniqueInCatalog))
-            for provenance in [VariantResolution.userConfirmed, .finishLock, .printedLabel, .imported] {
+            for provenance in [VariantResolution.uniqueInCatalog, .userConfirmed, .finishLock, .printedLabel, .imported] {
                 XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: "normal",
                     storedResolution: provenance, itemKind: .rawCard, printRun: nil, card: card))
             }

@@ -3,7 +3,7 @@
   "discrepancyCounts": {
     "lorcana": 1833,
     "one-piece": 224,
-    "pokemon": 268,
+    "pokemon": 269,
     "yugioh": 243
   },
   "games": {
@@ -245,7 +245,7 @@
       "checklistEntries": 157,
       "distinctProviderSets": 146,
       "physicalSlotRows": 31918,
-      "publisherInputDescriptors": 34,
+      "publisherInputDescriptors": 33,
       "rawNormalOnlyEntries": [
         {
           "providerID": "bw1",
@@ -1730,12 +1730,15 @@
         "tinsel": 11
       },
       "snapshotGeneratedAt": "2026-10-20T00:55:55Z",
-      "staticSeedDescriptorCount": 34,
+      "staticHistoricalMembershipDescriptorCount": 1,
+      "staticHistoricalMembershipDescriptorIDs": [
+        "cel25cc"
+      ],
+      "staticSeedDescriptorCount": 33,
       "staticSeedDescriptorIDs": [
         "30th",
         "30th-c",
         "bwp",
-        "cel25cc",
         "dpp",
         "hgssp",
         "me01",
@@ -5435,8 +5438,8 @@
       "sha256": "4f58a9634a0f9c42c69f4be5848bda4008f70c5f6cdcbc1035fc2ed5d8c90595"
     },
     "TradingCardScanner/Services/PokemonCatalogRegistry.swift": {
-      "bytes": 18109,
-      "sha256": "a23d6c9eb5a1b5aec4341c01ffece3239dc7c07e1564450aa04a8342429d85d3"
+      "bytes": 20391,
+      "sha256": "fe475a6ae009fd26015d9086901bf108700f05c1412a01cf8a032021f9176f8c"
     },
     "TradingCardScanner/Services/SetCodeMap.swift": {
       "bytes": 5966,
@@ -5447,12 +5450,12 @@
       "sha256": "b501e466c3b5e91b430e3bfdc69a58f559538f34a00c6ad010df0981f3091ac8"
     },
     "publisher/catalog-input.json": {
-      "bytes": 17033,
-      "sha256": "b602581c9f3b0dc1e50f1da3ba3206a78aba7d2e46cf239f21b3753ee615a17c"
+      "bytes": 13745,
+      "sha256": "3ec0b9243eddec623721785bbb210edf75add1437f3d885a45c2085a0073c309"
     },
     "scripts/audit_catalog_coverage.py": {
-      "bytes": 30850,
-      "sha256": "107a25c0d9c6d205661afced11627bf1c933320e082260a0dea5102ee27131c3"
+      "bytes": 33717,
+      "sha256": "329742885c62d2573605960236492d83c20fb3ae99d78790270f5c1b5097e8d1"
     }
   },
   "structuralErrors": []

@@ -151,17 +151,21 @@ enum PokemonOfflineCardFactory {
             return (leftVariant, left.id) < (rightVariant, right.id)
         }
         guard let primary = summaries.first else { return nil }
+        let providerNumbering = isMembership
+            && registry.usesProviderNumbering(forMembershipSetID: entry.providerID)
         let card = makeCard(
             summaries: summaries,
             setName: entry.set.name,
             providerSetID: entry.providerID,
-            officialCount: number.denominator,
-            localID: candidate.localID
+            officialCount: providerNumbering
+                ? entry.officialCount ?? entry.set.cardCount ?? 0
+                : number.denominator,
+            localID: providerNumbering ? nil : candidate.localID
         )
         return .pokemon(
             card,
             setCode: isMembership
-                ? registry.printedCode(forProviderSetID: entry.providerID) ?? primary.setCode
+                ? registry.membershipPrintedCode(forProviderSetID: entry.providerID) ?? primary.setCode
                 : primary.setCode
         )
     }
@@ -272,10 +276,16 @@ enum PokemonOfflineCardFactory {
             in: Array(identitiesByProviderID.values)
         ) {
         case let .unique(identity):
-            if PokemonHistoricalIdentityResolver.reviewedOriginalProviderID(forReprintID: identity.providerID) != nil {
-                return nil
-            }
-            guard let value = summariesByProviderID[identity.providerID.lowercased()] else {
+            // Bundled checklists omit many originals (POP Series, Wizards
+            // promos), so a reprint that is the only offline match cannot prove
+            // that no original shares its printed number. The live path must
+            // also preserve ambiguity if its original-family response is incomplete.
+            guard !PokemonHistoricalIdentityResolver.isMembershipIdentity(
+                identity,
+                for: evidence.number,
+                in: registry
+            ),
+                  let value = summariesByProviderID[identity.providerID.lowercased()] else {
                 return nil
             }
             // Same ordering rule as the modern offline path, so the record's
@@ -336,7 +346,7 @@ enum PokemonOfflineCardFactory {
         registry: PokemonCatalogRegistry
     ) -> Set<String> {
         let localID = PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
-        return Set(registry.descriptors.compactMap { descriptor in
+        return Set(registry.membershipDescriptors.compactMap { descriptor in
             guard let recognition = descriptor.membershipRecognition,
                   recognition.members.contains(where: {
                       $0.printedDenominator == number.denominator

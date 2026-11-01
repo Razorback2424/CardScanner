@@ -88,6 +88,61 @@ def validate_pokemon_slots(entry, rows):
     return {'rows': len(rows), 'standardSlots': sum(not row.get('isExpandedMasterSetVariant', False) for row in rows)}
 
 
+def swift_static_initializer(source, name, required=True):
+    """Bounded lexical extraction of the registry's static initializer shapes."""
+    declarations = list(re.finditer(r'\bstatic\s+let\s+' + re.escape(name)
+        + r'(?:\s*:[^=\n]+)?\s*=\s*', source))
+    if not declarations and not required:
+        return None
+    require(len(declarations) == 1, f'Pokemon static declaration needs review: {name}')
+    start = declarations[0].end()
+    opening = re.match(r'(?:[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*\s*)?([({\[])', source[start:])
+    require(opening, f'Pokemon static initializer needs review: {name}')
+    start += opening.start(1)
+    stack, pairs = [], {')': '(', '}': '{', ']': '['}
+    tokens = re.finditer(r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*[\s\S]*?\*/|[(){}\[\]]', source[start:])
+    for token in tokens:
+        value = token.group()
+        if value.startswith(('"', '//', '/*')):
+            continue
+        if value in '({[':
+            stack.append(value)
+        else:
+            require(stack and stack.pop() == pairs[value], f'Unbalanced Pokemon initializer: {name}')
+            if not stack:
+                return source[start:start + token.end()]
+    raise CatalogIntegrityError(f'Unclosed Pokemon initializer: {name}')
+
+
+def pokemon_static_descriptor_inventory(definitions, registry):
+    # Declarations outside bundledSeed are not automatically registry members.
+    # Follow its explicit Self references (including energyDescriptor), and keep
+    # the historical resolver's separate descriptor list visible independently.
+    declared = re.findall(r'\.init\(printed(?:Code|Prefix):\s*"([^"]+)",\s*tcgdexSetID:\s*"([^"]+)"', definitions)
+    require(declared, 'No Pokemon literal seed definitions found; extraction needs review')
+    require(len({provider for _, provider in declared}) == len(declared), 'Duplicate Pokemon literal provider definition')
+
+    def literals(initializer, visited):
+        result = set(re.findall(r'providerSetID:\s*"([^"]+)"', initializer))
+        for name in set(re.findall(r'\bSelf\.([A-Za-z_]\w*)', initializer)):
+            require(name not in visited, f'Cyclic Pokemon static reference: {name}')
+            result.update(literals(swift_static_initializer(registry, name), visited | {name}))
+        return result
+
+    seed = {provider for _, provider in declared}
+    seed.update(literals(swift_static_initializer(registry, 'bundledSeed'), {'bundledSeed'}))
+    historical = set()
+    members = swift_static_initializer(registry, 'historicalMembershipDescriptors', required=False)
+    if members is not None:
+        require(members.startswith('['), 'Pokemon historical membership inventory needs review')
+        for reference in filter(None, (value.strip() for value in members[1:-1].split(','))):
+            match = re.fullmatch(r'(?:Self\.)?([A-Za-z_]\w*)', reference)
+            require(match, 'Pokemon historical membership reference needs review: ' + reference)
+            name = match.group(1)
+            historical.update(literals(swift_static_initializer(registry, name), {name}))
+    return seed, historical
+
+
 def pokemon(audit):
     root = Path('TradingCardScanner/PokemonChecklistSnapshot')
     manifest = audit.json(root / 'manifest.json')
@@ -115,14 +170,10 @@ def pokemon(audit):
                 f"Display cardCount={entry['set']['cardCount']}; standard slots={measured['standardSlots']}; counts have different semantics.",
                 'informational')
     # The bundled registry is assembled in Swift, not stored as a JSON release.
-    # Inventory literal declarations only; this does not execute or validate Swift.
+    # Inventory scoped literal declarations only; this does not execute or validate Swift.
     definitions = audit.text('TradingCardScanner/Services/SetCodeMap.swift')
     registry = audit.text('TradingCardScanner/Services/PokemonCatalogRegistry.swift')
-    declared = re.findall(r'\.init\(printed(?:Code|Prefix):\s*"([^"]+)",\s*tcgdexSetID:\s*"([^"]+)"', definitions)
-    require(declared, 'No Pokemon literal seed definitions found; extraction needs review')
-    literals = re.findall(r'providerSetID:\s*"([^"]+)"', registry)
-    descriptor_ids = {provider for _, provider in declared} | set(literals)
-    require(len({provider for _, provider in declared}) == len(declared), 'Duplicate Pokemon literal provider definition')
+    descriptor_ids, historical_ids = pokemon_static_descriptor_inventory(definitions, registry)
     publisher = audit.json('publisher/catalog-input.json')['sets']
     publisher_ids = set(unique(publisher, lambda row: row['providerSetID'], 'Pokemon publisher input'))
     for provider in sorted(descriptor_ids - provider_ids):
@@ -138,6 +189,8 @@ def pokemon(audit):
         distinctProviderSets=len(provider_ids), physicalSlotRows=len(variants), uniqueProviderCardIDs=len(card_ids),
         slotCountsByVariant=counts(variants), sets=per_set,
         staticSeedDescriptorCount=len(descriptor_ids), staticSeedDescriptorIDs=sorted(descriptor_ids),
+        staticHistoricalMembershipDescriptorCount=len(historical_ids),
+        staticHistoricalMembershipDescriptorIDs=sorted(historical_ids),
         publisherInputDescriptors=len(publisher), seedDescriptorsAbsentOffline=sorted(descriptor_ids - provider_ids),
         rawNormalOnlyEntries=all_normal, rawNormalOnlyRows=sum(entry['rows'] for entry in all_normal),
         boundary='Static seed declarations and offline checklist slots are different inventories; historical/live routes are not executed.')

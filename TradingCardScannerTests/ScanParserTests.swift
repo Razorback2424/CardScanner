@@ -757,6 +757,123 @@ final class ScanParserTests: XCTestCase {
         XCTAssertEqual(matches.map(\.providerID), ["30th-c-011", "pl1-47"])
     }
 
+    func testCelebrationsClassicReprintIsAChoiceBesideItsOriginal() throws {
+        let evidence = try historicalEvidence(number: "15/106", title: "Claydol")
+        let directory = try historicalDirectory([("dp4", 106, 106)])
+        let candidateSetIDs = PokemonHistoricalIdentityResolver.candidateSetIDs(
+            for: evidence,
+            in: directory,
+            registry: .bundledSeed
+        )
+        XCTAssertEqual(candidateSetIDs, ["cel25cc", "dp4"])
+
+        let members = PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+        let reprint = try XCTUnwrap(members.first)
+        XCTAssertEqual(members.count, 1)
+        XCTAssertEqual(reprint.providerID, "cel25cc-CC016")
+        XCTAssertEqual(reprint.localID, "15")
+        XCTAssertEqual(reprint.choiceLabel, "Celebrations Classic · 2021")
+
+        let original = historicalCard("dp4-15", set: "dp4", number: "15", name: "Claydol")
+        guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+            evidence,
+            candidateSetIDs: candidateSetIDs,
+            in: [original, reprint]
+        ) else {
+            return XCTFail("A Celebrations reprint must never resolve silently as its original")
+        }
+        XCTAssertEqual(matches.map(\.providerID), ["cel25cc-CC016", "dp4-15"])
+    }
+
+    func testImpostorAndImposterOakSpellingsBothOfferBothPrintings() throws {
+        let original = historicalCard("base1-73", set: "base1", number: "73", name: "Impostor Professor Oak")
+        for title in ["Impostor Professor Oak", "Imposter Professor Oak"] {
+            let evidence = try historicalEvidence(number: "73/102", title: title)
+            let reprints = PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+            XCTAssertEqual(reprints.map(\.providerID), ["cel25cc-CC004"], title)
+            guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+                evidence,
+                candidateSetIDs: ["base1", "cel25cc"],
+                in: [original] + reprints
+            ) else {
+                return XCTFail("\(title) must offer both printings")
+            }
+            XCTAssertEqual(matches.map(\.providerID), ["base1-73", "cel25cc-CC004"], title)
+        }
+        // The equivalence is exact; other Oak titles are unaffected.
+        XCTAssertTrue(PokemonNameMatcher.matches(["Professor Oak"], readings: ["Imposter Professor Oak"]).isEmpty)
+        XCTAssertEqual(
+            PokemonNameMatcher.matches(["Professor Oak", "Impostor Professor Oak"], readings: ["Professor Oak"]),
+            [0]
+        )
+    }
+
+    func testCharizardFourOfOneHundredTwoOffersBothClassicReprints() throws {
+        let evidence = try historicalEvidence(number: "4/102", title: "Charizard")
+        XCTAssertEqual(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+                .map(\.providerID).sorted(),
+            ["30th-c-001", "cel25cc-CC002"]
+        )
+        // Other 30th Classic numbers are unchanged by Celebrations membership.
+        let pikachu = try historicalEvidence(number: "58/102", title: "Pikachu")
+        XCTAssertEqual(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: pikachu, in: .bundledSeed)
+                .map(\.providerID),
+            ["30th-c-014"]
+        )
+        // A `/25` Celebrations main-set number never selects a reprint.
+        let celebrations = try historicalEvidence(number: "4/25", title: "Charizard")
+        XCTAssertTrue(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: celebrations, in: .bundledSeed).isEmpty
+        )
+    }
+
+    func testCelebrationsClassicMembershipStaysOutOfRegistryDescriptors() {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        // Browse, import, pricing and artwork read descriptors; they must keep
+        // treating Celebrations Classic Collection exactly as before.
+        XCTAssertNil(registry.descriptor(forProviderSetID: "cel25cc"))
+        XCTAssertFalse(registry.isScanDisabled(forProviderSetID: "cel25cc"))
+        XCTAssertNil(registry.printedCode(forProviderSetID: "cel25cc"))
+        XCTAssertEqual(registry.membershipPrintedCode(forProviderSetID: "cel25cc"), "CEL")
+        XCTAssertEqual(registry.membershipPrintedCode(forProviderSetID: "30th-c"), "30C")
+        XCTAssertEqual(
+            registry.membershipDescriptors.map(\.providerSetID).sorted(),
+            ["30th-c", "cel25cc"]
+        )
+        let members = PokemonCatalogRegistry.celebrationsClassicDescriptor.membershipRecognition?.members ?? []
+        XCTAssertEqual(members.count, 24)
+        XCTAssertEqual(
+            Set(members.map(\.providerCardID)),
+            Set((1...25).filter { $0 != 8 }.map { "cel25cc-CC" + String(format: "%03d", $0) })
+        )
+        XCTAssertEqual(
+            Set(members.map { "\($0.printedLocalID)/\($0.printedDenominator)" }).count,
+            24,
+            "Every enabled reprint prints a distinct original fraction"
+        )
+        for member in members {
+            XCTAssertTrue(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: member.providerCardID))
+            XCTAssertTrue(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: member.providerCardID.uppercased()))
+        }
+        XCTAssertFalse(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: "cel25cc-CC008"))
+        XCTAssertFalse(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: "cel25cc-CC026"))
+        XCTAssertFalse(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: "30th-c-001"))
+    }
+
+    func testCelebrationsBirthdayPikachuDoesNotInventAPrintedDenominator() throws {
+        XCTAssertNil(PokemonHistoricalScanParser.parse(
+            numberLines: ["24"], titleLines: ["_____'s Pikachu"]
+        ))
+        let evidence = try historicalEvidence(number: "24/53", title: "_____'s Pikachu")
+        XCTAssertFalse(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+                .contains { $0.setID == "cel25cc" },
+            "The supplier's 24/53 is not the card's standalone 24 footer"
+        )
+    }
+
     func testPrintingChoicesUseSetAndReleaseYearAndRecordTheirOwnProvenance() {
         let platinum = PokemonCatalogCardIdentity(
             providerID: "pl1-47",
@@ -779,6 +896,37 @@ final class ScanParserTests: XCTestCase {
         XCTAssertEqual(classic.choiceLabel, "30th Classic · 2026")
         XCTAssertEqual(IdentityResolution.userSelectedPrinting.label, "You selected printing")
         XCTAssertNotEqual(IdentityResolution.userSelectedPrinting, .catalogSelected)
+    }
+
+    func testShinyVaultNumbersSelectOnlyTheirVaultSets() throws {
+        let cases: [(printed: String, localID: String, denominator: Int, setID: String)] = [
+            ("SV49/SV94", "SV49", 94, "sma"),
+            ("SV107/SV122", "SV107", 122, "swsh4.5sv"),
+            ("SV001/SV122", "SV1", 122, "swsh4.5sv")
+        ]
+        for value in cases {
+            let evidence = try historicalEvidence(number: value.printed, title: "Charizard")
+            XCTAssertEqual(evidence.number.scheme, .subset(prefix: "SV"), value.printed)
+            XCTAssertEqual(evidence.number.localID, value.localID, value.printed)
+            XCTAssertEqual(evidence.number.denominator, value.denominator, value.printed)
+            XCTAssertTrue(PokemonHistoricalIdentityResolver.canAttempt(evidence.number), value.printed)
+            XCTAssertEqual(
+                PokemonHistoricalIdentityResolver.candidateSetIDs(for: evidence, in: []),
+                [value.setID],
+                value.printed
+            )
+        }
+        // The modern code parser never reads a vault footer as a card.
+        XCTAssertNil(ScanParser.parsePokemon("SV49/SV94"))
+    }
+
+    func testBareSVBeforeOrdinaryFractionKeepsOfficialSetReading() throws {
+        // `SVI 049/198` with its last letter lost must stay recoverable by
+        // denominator and title, not become an unsupported vault number.
+        let degraded = try XCTUnwrap(PokemonHistoricalScanParser.numberEvidence(in: ["SV 049/198"]))
+        XCTAssertEqual(degraded, officialNumber("49/198"))
+        XCTAssertEqual(PokemonHistoricalScanParser.numberEvidence(in: ["SVI EN 049/198"]), degraded)
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["49/SV94"]))
     }
 
     func testOfficialCount32DoesNotMasqueradeAsHoloSubset() throws {

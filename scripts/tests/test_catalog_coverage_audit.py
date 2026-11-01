@@ -1,5 +1,6 @@
 import copy
 import hashlib
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -7,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from audit_catalog_coverage import (
-    Audit, CatalogIntegrityError, compare_magic_audit, one_piece_registry,
+    Audit, CatalogIntegrityError, compare_magic_audit, one_piece_registry, pokemon,
     validate_magic_treatments, validate_pokemon_slots, yugioh_summary,
 )
 
@@ -45,6 +46,55 @@ class CatalogCoverageAuditTests(unittest.TestCase):
         wrong_run = dict(standard, setID=dict(set_id, pokemonPrintRun='firstEdition'))
         with self.assertRaisesRegex(CatalogIntegrityError, 'another set'):
             validate_pokemon_slots(entry, [wrong_run])
+
+    def testPokemonHistoricalDeclarationsDoNotHideRealSeedPublisherDifferences(self):
+        definitions = '''
+            .init(printedCode: "EXP", tcgdexSetID: "expansion")
+            .init(printedPrefix: "PR", tcgdexSetID: "promo")
+        '''
+        registry = '''
+        struct PokemonCatalogRegistry {
+            static let bundledSeed: PokemonCatalogRegistry = {
+                let member = PokemonCatalogSetDescriptor(providerSetID: "seed-member")
+                return PokemonCatalogRegistry(sets: [member, Self.energyDescriptor%s])
+            }()
+        }
+        extension PokemonCatalogRegistry {
+            static let historicalMembershipDescriptors = [historicalDescriptor]
+            static let historicalDescriptor: PokemonCatalogSetDescriptor = {
+                return PokemonCatalogSetDescriptor(providerSetID: "historical-only")
+            }()
+            static let energyDescriptor = PokemonCatalogSetDescriptor(providerSetID: "mee")
+        }
+        '''
+        for add_historical_to_seed in [False, True]:
+            with self.subTest(add_historical_to_seed=add_historical_to_seed), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                files = {
+                    'TradingCardScanner/PokemonChecklistSnapshot/manifest.json': json.dumps(
+                        dict(generatedAt='fixture', entries=[])),
+                    'TradingCardScanner/Services/SetCodeMap.swift': definitions,
+                    'TradingCardScanner/Services/PokemonCatalogRegistry.swift': registry % (
+                        ', Self.historicalDescriptor' if add_historical_to_seed else ''),
+                    'publisher/catalog-input.json': json.dumps(dict(sets=[
+                        dict(providerSetID=value) for value in ['expansion', 'promo', 'mee']]))
+                }
+                for name, content in files.items():
+                    path = root / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(content)
+                audit = Audit(root)
+                summary = pokemon(audit)
+                expected_seed = {'expansion', 'promo', 'seed-member', 'mee'}
+                expected_mismatches = {'seed-member'}
+                if add_historical_to_seed:
+                    expected_seed.add('historical-only')
+                    expected_mismatches.add('historical-only')
+                self.assertEqual(set(summary['staticSeedDescriptorIDs']), expected_seed)
+                self.assertEqual(summary['staticHistoricalMembershipDescriptorIDs'], ['historical-only'])
+                self.assertEqual(summary['staticHistoricalMembershipDescriptorCount'], 1)
+                self.assertEqual({row['identity'] for row in audit.discrepancies
+                    if row['code'] == 'seedPublisherDescriptorDifference'}, expected_mismatches)
 
     def testMagicTreatmentNormalizationMatchesRuntimeAndPreservesUnknownIDs(self):
         row = dict(id=PRINTING, treatments=[' NeonInk ', '', 'FutureTreatment'], qualifiers={'NEONINK ': ' red '})
