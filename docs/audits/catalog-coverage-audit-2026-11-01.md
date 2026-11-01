@@ -107,9 +107,10 @@ and exact [DP](https://api.tcgdex.net/v2/en/sets/dpp) and
 
 ### Pokémon: Hidden Fates Shiny Vault had an incorrect Normal finish
 
-All 94 retained `sma-SV1` through `sma-SV94` rows used a generated Normal
-placeholder. The official foil checklist and 94 exact product/collector joins
-establish Holofoil for this bounded cohort. The evidence is retained in
+All 94 bundled `sma-SV1` through `sma-SV94` rows were labeled Normal. A current
+representative `sma-SV1` response also reports a generated Normal variant.
+The official foil checklist and 94 exact product/collector joins establish
+Holofoil for this bounded cohort. The evidence is retained in
 [the reviewed crosswalk](../../TestFixtures/TradingCards/PokemonCatalogCoverageAudit/hidden-fates-shiny-vault-review.json),
 including source receipts. Direct market sources are
 [group 2594 products](https://tcgcsv.com/tcgplayer/3/2594/products) and
@@ -146,11 +147,12 @@ field says `24/53`, which is not its printed footer. It receives no invented
 fraction route and remains in the existing Browse checklist. Supporting its
 scan still needs a reviewed denominator-free identity path.
 
-Twenty-three originals are present offline; the original POP Series 5 Umbreon
-is absent. Both offline and live automatic resolution now refuse to select a
-sole reviewed Celebrations reprint from an incomplete or contradictory family.
-A full family preserves the existing original/reprint choice, and an explicit
-selection still resolves the exact reprint. Tests cover all 24 mappings,
+Among the 24 enabled memberships, 23 originals are present offline; the original
+POP Series 5 Umbreon is absent. Both offline and live automatic resolution
+reject any unique result for one of these 24 reviewed reprints. A complete
+original family produces the existing printing choice; incomplete or
+contradictory families remain unresolved. Explicit selection still resolves
+the exact reprint. Tests cover all 24 mappings,
 removing each original, incomplete live directories/rows, contradictory titles,
 wrong denominators and exact selected-card identity.
 
@@ -186,8 +188,8 @@ The recognition adapter adds an exact exception for regular English ALA 250,
 with adjacent ALA/EN evidence, no contradictory language and no denominator.
 Other ALA collectors and original `173/249`-style cards do not gain blanket
 modern support. Tests cover OCR forms, competing identities, geometry, foreign
-language, suffix/token/denominator rejection, and exact provider validation of
-printing UUID, set, collector, language and release era.
+language and suffix/token/denominator rejection. They verify the returned known
+UUID and reject mismatched set, collector, language and release era.
 
 ### Magic: imported List printings were matched by name instead of exact collector
 
@@ -202,13 +204,16 @@ snapshot contains both UUIDs:
 Enrichment now preserves exact composite collectors and uses an existing valid
 Scryfall UUID when available. Plain-number/name-only reprint rows without an
 exact UUID stay unresolved. Bounded requests require one response matching the
-exact key, English physical-card scope, name, set and collector. Duplicate,
+exact key, English/non-digital scope, name, set and collector. Duplicate,
 conflicting, missing and out-of-order responses cannot choose another printing.
 Ordinary numbered imports remain supported.
 
 The metadata version advances so still-unresolved rows can retry. This is not
 a speculative migration of already-enriched rows: an earlier wrong attachment
-with complete metadata needs a separate evidence-backed repair. Tests cover
+with complete metadata needs a separate evidence-backed repair. Invalid or
+conflicting existing catalog IDs also remain protected by the apply guard and
+may stay unresolved, even when a valid source UUID permits an exact lookup.
+Tests cover
 the real two-printing collision, List/ULST and ordinary imports, exact UUID
 routes, partial responses and contradictory provider data.
 
@@ -295,6 +300,7 @@ no catalog signature or identity ledger was regenerated.
 | Medium: Pokémon denominator-free historical subsets | 38 IDs across AR (9), SH (12), SL (11) and RT (6) lack a supported denominator-free historical identity route. Celebrations Birthday Pikachu is a separate confirmed standalone-number case. | Model the actual printed identifiers without fabricating denominators; retain name/set ambiguity and test every reviewed member. |
 | Medium: Lorcana discovery exceeds adopted physical coverage | 1,833 discovery-only rows: 1,460 in sets 9–14, 34 in sets 1–8 and 339 in other scopes. | Review physical size/stamp/distribution/finish universes and exact product joins; use the existing approval/identity pipeline. |
 | Medium: One Piece held cards | 221 canonical numbers have no verified printing; the owner seed includes 224 provisional and 31 conflicted printing records. | Resolve provenance/conflicts before verified membership; retain permanent IDs and do not equate canonical-card count with addable coverage. |
+| Medium: Yu-Gi-Oh secondary identity crosswalks | 1,028 printing rows have unresolved secondary canonical links. The code-family fix preserves the existing permanent printing and canonical IDs; it does not validate or repair those source crosswalks. | Review exact product/card identities and source names before correcting canonical links; keep distinct printings and existing collection references stable. |
 | Medium: signed-descriptor activation and freshness | Pokémon added descriptors are not an already-published remote release; Magic remains `legacy-live`; retained data dates differ. | Verify normal signed publication, installed adoption, new-set latency, empty/warm offline behavior and provider-outage recovery in their existing release workflows. |
 | Separate acceptance: physical scanning | Deterministic OCR text and provider fixtures establish logic, not glare/rotation/crop performance or held-out card accuracy. | A dated physical-card corpus covering ordinary, promo, subset, reprint and finish distinctions, with wrong-identity rate measured separately from unresolved scans. |
 
@@ -313,18 +319,50 @@ Wizards documents the original-format reprints and distinguishing stamp in
 [Unraveling Mystery Booster](https://magic.wizards.com/en/news/feature/unraveling-mystery-booster-2019-11-14)
 and [The List for Wilds of Eldraine](https://magic.wizards.com/en/news/announcements/whats-new-on-the-list-for-wilds-of-eldraine).
 
-There are also 74 provider-directory Pokémon entries absent from the retained
-offline snapshot in the dated comparison; 15 are digital Pocket. The other
-59 need classification and exact physical-card reconciliation. They are not
-59 proven missing physical sets. Low manifest display counts likewise do not
-establish missing payload rows. See the generated ledger for each distinction.
+The retained [provider-directory comparison](../research/catalog-variant-coverage-2026-10-15/pokemon-sets-absent-offline.csv),
+corroborated by the bounded November 1 directory read, contains 74 entries absent
+from the offline snapshot: 15 digital Pocket entries and 59 entries requiring
+scope and physical-card reconciliation. These are not 59 proven missing
+physical sets. The new census separately reports manifest display-count
+differences; those do not establish missing payload rows.
 
 ## Verification and repeatability
 
 The PR adds a native CI selection for scanner, catalog, printing, finish and
 import regressions and a separate offline ingestion/census job. It does not
-invoke publication jobs. Native verification status and exact final counts
-will be recorded here after the final PR revision is tested.
+invoke publication jobs. The implementation at
+[`02d717cf1573c3e269c620b3cee7bc630b9eea2f`](https://github.com/Razorback2424/CardScanner/commit/02d717cf1573c3e269c620b3cee7bc630b9eea2f)
+passed the following checks on November 1. Subsequent audit wording and image
+receipt corrections do not change application, test or workflow code.
+
+| Verification | Observed result | Evidence |
+| --- | --- | --- |
+| Native iOS Debug selection, Xcode 27.1 | **474 passed, zero failures/skips** | [Catalog regression run](https://github.com/Razorback2424/CardScanner/actions/runs/41311991297), native job `124864106790` |
+| Python ingestion and census suite | **152 total: 147 passed, five skipped**, zero failures | Same run, offline job `124864107041`; independently reproduced locally |
+| Separate Yu-Gi-Oh builder/family fixtures | **33 passed**, zero failures | Same offline job; independently reproduced locally |
+| Pokémon core package | **82 total: 81 passed, one skipped**, zero failures; publisher release build and recorded-input validation passed | [Pokémon core run](https://github.com/Razorback2424/CardScanner/actions/runs/41311991252) |
+| Magic core package | **18 passed**, zero failures; publisher release build and recorded-input validation passed | [Magic core run](https://github.com/Razorback2424/CardScanner/actions/runs/41311992068) |
+| Retained census | **912 sources, 2,568 review/informational rows, zero structural errors**; repeated output byte-identical | Committed summary/ledger above and CI census artifact |
+
+The five Python skips require the separately compiled shared Swift Yu-Gi-Oh
+publisher and `YUGIOH_CATALOG_PUBLISHER`. The Pokémon package skip is its opt-in
+live CDN check. Neither is counted as a pass. Production preparation/publication
+jobs were skipped by their existing pull-request gates.
+
+The native selection includes all new regressions and surrounding scanner,
+catalog, pricing and import cases. Its Yu-Gi-Oh test traverses every valid
+bundled printed code; the Pokémon tests replay all 216 Shiny Vault identities,
+81 promo identifiers, 94 reviewed finish corrections and 24 enabled Celebrations
+memberships. The 27 Lorcana ingestion tests are included in the Python total,
+with all 1,748 adopted mappings preserved. Counts are not a full-app suite or a
+physical-card acceptance result.
+
+Earlier CI attempts failed before XCTest on an invalid configuration and an
+older compiler. The passing run uses the existing Debug configuration and the
+repository's recorded Xcode 27.1 toolchain; no centering or CSV-export workaround
+remains in the patch. Native result/log and census artifacts are retained by
+the workflow for 14 days. Final documentation checks include added local links,
+receipt identity/hash review and `git diff --check`.
 
 Repeat the offline work from the repository root:
 
