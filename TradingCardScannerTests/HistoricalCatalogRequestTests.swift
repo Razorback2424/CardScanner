@@ -312,4 +312,92 @@ final class HistoricalCatalogRequestTests: XCTestCase {
             "the oldest resolved card should be refetched after the two-entry memo fills"
         )
     }
+
+    /// TCGdex's records for originals that the bundled checklist may lack and
+    /// for their Celebrations Classic reprints, which use `CC` local IDs.
+    private actor CelebrationsSource: PokemonHistoricalCatalogSource {
+        private static let cards: [String: (localID: String, name: String, set: String, count: Int)] = [
+            "pop5-17": ("17", "Umbreon ☆", "pop5", 17),
+            "dp4-15": ("15", "Claydol", "dp4", 106),
+            "cel25cc-CC015": ("CC015", "Umbreon ☆", "cel25cc", 25),
+            "cel25cc-CC016": ("CC016", "Claydol", "cel25cc", 25)
+        ]
+
+        func historicalSetDirectory() async throws -> [CatalogSetReference] {
+            [
+                CatalogSetReference(id: "pop5", name: "POP Series 5", cardCount: TCGdexCardCount(total: 17, official: 17)),
+                CatalogSetReference(id: "dp4", name: "Great Encounters", cardCount: TCGdexCardCount(total: 106, official: 106))
+            ]
+        }
+
+        func historicalSet(id: String) async throws -> TCGdexSetCatalog {
+            let entries = Self.cards.filter { $0.value.set == id }
+            let cards = entries.map { #"{ "id": "\#($0.key)", "localId": "\#($0.value.localID)", "name": "\#($0.value.name)" }"# }
+            let count = entries.first?.value.count ?? 0
+            return try JSONDecoder().decode(TCGdexSetCatalog.self, from: Data(#"""
+                { "id": "\#(id)", "name": "\#(id)", "cardCount": { "total": \#(count), "official": \#(count) },
+                  "cards": [\#(cards.joined(separator: ","))] }
+                """#.utf8))
+        }
+
+        func historicalCard(id: String) async throws -> TCGdexCard {
+            let value = try XCTUnwrap(Self.cards[id])
+            return TCGdexCard(
+                id: id, localId: value.localID, name: value.name, image: nil, rarity: nil,
+                set: TCGdexSetBrief(id: value.set, name: value.set,
+                                    cardCount: TCGdexCardCount(total: value.count, official: value.count)),
+                variants: nil, pricing: nil, variantsDetailed: nil
+            )
+        }
+    }
+
+    private func celebrationsEvidence(_ number: String, _ title: String) throws -> PokemonHistoricalScanEvidence {
+        let identifier = try XCTUnwrap(
+            PokemonHistoricalScanParser.parse(numberLines: [number], titleLines: [title])
+        )
+        guard case let .pokemonHistorical(value) = identifier.legacyIdentity else {
+            throw NSError(domain: "HistoricalCatalogRequestTests", code: 2)
+        }
+        return value
+    }
+
+    func testCelebrationsUmbreonIsAChoiceWhenOnlyTheLiveDirectoryHasTheOriginal() async throws {
+        let catalog = PokemonHistoricalCatalog(service: CelebrationsSource())
+        do {
+            _ = try await catalog.card(for: try celebrationsEvidence("17/17", "Umbreon ☆"), registry: .bundledSeed)
+            XCTFail("POP Series 5 Umbreon and its Celebrations reprint share 17/17")
+        } catch PokemonHistoricalCatalogError.ambiguous(let matches) {
+            XCTAssertEqual(matches.map(\.providerID), ["cel25cc-CC015", "pop5-17"])
+        }
+    }
+
+    func testSelectedCelebrationsReprintKeepsProviderNumberingForPriceAndArtwork() async throws {
+        let source = CelebrationsSource()
+        let catalog = PokemonHistoricalCatalog(service: source)
+        let evidence = try celebrationsEvidence("15/106", "Claydol")
+        let reprint = try XCTUnwrap(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed).first
+        )
+        XCTAssertEqual(reprint.localID, "15", "the choice still shows the printed number")
+
+        let selected = try await catalog.card(for: reprint, matching: evidence, registry: .bundledSeed)
+        XCTAssertEqual(selected.providerID, "cel25cc-CC016")
+        XCTAssertEqual(selected.cardNumber, "CC016")
+        XCTAssertEqual(selected.setCode, "CEL")
+
+        // Price refresh refetches the provider card and requires the same number.
+        let response = try await source.historicalCard(id: "cel25cc-CC016")
+        let stored = GamePriceIdentity.legacy(selected)
+        XCTAssertTrue(stored.matches(.legacy(.pokemon(response, setCode: stored.displaySetCode))))
+
+        // Artwork derives the reprint's own Limitless key, not main-set CEL 015.
+        let artwork = CatalogCardArtworkSource(
+            game: .pokemon, setCode: selected.setCode, collectorNumber: selected.cardNumber,
+            thumbnailURL: nil, imageURL: nil, prefersFullSize: false,
+            providerID: selected.providerID, providerSetID: "cel25cc"
+        )
+        let names = ([artwork.primaryURL].compactMap { $0 } + artwork.fallbacks).map(\.lastPathComponent)
+        XCTAssertTrue(names.contains("CEL_CC16_R_EN_XS.png"), "\(names)")
+        XCTAssertFalse(names.contains { $0.hasPrefix("CEL_015") }, "\(names)")
+    }
 }

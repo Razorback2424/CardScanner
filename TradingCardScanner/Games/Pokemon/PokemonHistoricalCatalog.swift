@@ -184,6 +184,13 @@ actor PokemonHistoricalCatalog {
             }
             return .pokemon(card, setCode: card.set.id.uppercased())
         }
+        if registrySnapshot.usesProviderNumbering(forMembershipSetID: card.set.id) {
+            return .pokemon(
+                card,
+                setCode: registrySnapshot.membershipPrintedCode(forProviderSetID: card.set.id)
+                    ?? card.set.id.uppercased()
+            )
+        }
 
         let printedCount = evidence.number.denominator
         let materializedSet = TCGdexSetBrief(

@@ -708,6 +708,29 @@ final class ScanParserTests: XCTestCase {
         XCTAssertEqual(matches.map(\.providerID), ["cel25cc-CC016", "dp4-15"])
     }
 
+    func testImpostorAndImposterOakSpellingsBothOfferBothPrintings() throws {
+        let original = historicalCard("base1-73", set: "base1", number: "73", name: "Impostor Professor Oak")
+        for title in ["Impostor Professor Oak", "Imposter Professor Oak"] {
+            let evidence = try historicalEvidence(number: "73/102", title: title)
+            let reprints = PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+            XCTAssertEqual(reprints.map(\.providerID), ["cel25cc-CC004"], title)
+            guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+                evidence,
+                candidateSetIDs: ["base1", "cel25cc"],
+                in: [original] + reprints
+            ) else {
+                return XCTFail("\(title) must offer both printings")
+            }
+            XCTAssertEqual(matches.map(\.providerID), ["base1-73", "cel25cc-CC004"], title)
+        }
+        // The equivalence is exact; other Oak titles are unaffected.
+        XCTAssertTrue(PokemonNameMatcher.matches(["Professor Oak"], readings: ["Imposter Professor Oak"]).isEmpty)
+        XCTAssertEqual(
+            PokemonNameMatcher.matches(["Professor Oak", "Impostor Professor Oak"], readings: ["Professor Oak"]),
+            [0]
+        )
+    }
+
     func testCharizardFourOfOneHundredTwoOffersBothClassicReprints() throws {
         let evidence = try historicalEvidence(number: "4/102", title: "Charizard")
         XCTAssertEqual(

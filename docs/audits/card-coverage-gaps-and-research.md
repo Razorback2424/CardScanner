@@ -48,6 +48,28 @@ Collection are therefore unchanged, and no signed revision is needed. A future
 signed `cel25cc` descriptor would take precedence. Charizard `4/102` now offers
 three printings: Base Set, Celebrations Classic and 30th Classic.
 
+Review follow-ups (2026-11-01):
+
+- **Numbering.** A selected reprint keeps TCGdex's numbering (`CC016`), the
+  number Browse stores. Writing the printed `15` into the record made price
+  refresh reject every TCGdex response as an identity mismatch, and made
+  artwork derive the main-set Limitless key `CEL_015` instead of `CEL_CC16`.
+  The printed number remains only on the choice and in the scan evidence. The
+  30th Classic Collection, whose membership is signed, still keeps its printed
+  number as before.
+- **Offline matches.** A reprint that is the only offline match is no longer
+  accepted. The bundled checklist lacks POP Series 5, so Umbreon `17/17` used
+  to resolve silently as the reprint. Such a scan now goes to the live
+  directory, which offers both printings, or to Needs Attention when offline.
+- **Oak spelling.** Providers name the reprint "Imposter" and the Base Set
+  original "Impostor", and exact-name preference let either OCR spelling settle
+  on one printing. A single reviewed name equivalence, following the existing
+  δ-suffix precedent for Classic reprints, now offers both.
+- **Unverified footer.** The `24/53` footer for _____'s Pikachu comes from
+  TCGplayer's listing only. No physical card or image has confirmed it. If the
+  card prints a bare `24`, the number reader cannot see it, so the member is
+  inert rather than harmful.
+
 Printed numbers below come from TCGplayer (TCGCSV group 2931). pokemontcg.io's
 `cel25c` numbers agree independently on every numerator; each denominator is
 the original set's official count.
@@ -108,9 +130,30 @@ canonical name, the original now becomes a choice, and the chosen reprint
 materializes as `cel25cc-CC016` with code `CEL`. A 22-class selection passed
 **581 tests, zero failures or skips**: historical capture/request, the
 Pokémon registry, coordinator, release store, update and parity suites,
-scanner view model, unresolved scans, normalization and Browse. Build output is
-under `/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source,
-data and simulator checks only. No physical card was scanned.
+scanner view model, unresolved scans, normalization and Browse.
+
+The review follow-ups add five checks:
+
+- A selected reprint keeps `CC016` both offline and live.
+- Its stored price identity matches TCGdex's exact provider record, as the
+  refresh adapter requires.
+- Its artwork derives `CEL_CC16`, not `CEL_015`.
+- Offline Umbreon `17/17` stays unresolved, while the live directory offers POP
+  Series 5 and the reprint together.
+- Both Oak spellings offer Base Set and the reprint, and the equivalence leaves
+  other Oak titles alone.
+
+With the four source fixes stashed and the tests kept, these tests reproduced
+every reported defect: the `15` record, the refresh identity mismatch, the
+`CEL_015` key, the silent Umbreon reprint, and single-printing Oak results for
+both spellings. The live Umbreon test also passed before the fix, because that
+path was already correct; it guards that behavior. With the fixes, a 30-class
+selection passed **1,050 tests, zero failures or skips**. It combines the
+22 classes above with the reconciliation, pricing, product-fallback and
+refresh suites, and includes the 30th Classic tests that keep its printed
+numbers. Build output is under
+`/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source, data
+and simulator checks only. No physical card was scanned.
 
 ## Four-game review — 2026-10-15
 

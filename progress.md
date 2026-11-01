@@ -26,7 +26,17 @@ membership list. It is not a registry descriptor, because a descriptor would
 switch off this set's only artwork source. Browse, publisher input, the signed
 catalog and the 30th Classic Collection are unchanged. A 22-class historical,
 registry, scanner and Browse selection passed **581 tests, zero failures or
-skips**. This is simulator evidence only.
+skips**.
+
+Review follow-ups:
+- A selected reprint keeps TCGdex numbering (`CC016`), so price refresh and
+  Limitless artwork (`CEL_CC16`) work.
+- A reprint that is the only offline match (Umbreon `17/17`) defers to the
+  live directory.
+- Both "Impostor" and "Imposter" Oak spellings offer both printings.
+
+The new tests reproduced every defect before the fixes. This is simulator
+evidence only.
 
 # 2026-10-31 — Card sharing post-merge artwork recovery
 

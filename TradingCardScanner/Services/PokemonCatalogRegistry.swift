@@ -393,6 +393,16 @@ extension PokemonCatalogRegistry {
             }
     }
 
+    /// Historical reprints keep the provider's own numbering (`CC016`), which
+    /// Browse, pricing and artwork use. The printed original number is only
+    /// scan evidence and is never written into the record.
+    func usesProviderNumbering(forMembershipSetID id: String) -> Bool {
+        descriptor(forProviderSetID: id) == nil
+            && Self.historicalMembershipDescriptors.contains {
+                $0.providerSetID.caseInsensitiveCompare(id) == .orderedSame
+            }
+    }
+
     /// The code shown for a membership card, including historical reprints.
     func membershipPrintedCode(forProviderSetID id: String) -> String? {
         printedCode(forProviderSetID: id)

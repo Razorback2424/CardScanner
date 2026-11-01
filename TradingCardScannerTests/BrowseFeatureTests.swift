@@ -4374,8 +4374,38 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         }
         XCTAssertEqual(card.id, "cel25cc-CC016")
         XCTAssertEqual(card.set.id, "cel25cc")
-        XCTAssertEqual(card.localId, "15")
+        // Provider numbering, as Browse stores it; `15` is only scan evidence.
+        XCTAssertEqual(card.localId, "CC016")
+        XCTAssertEqual(card.set.cardCount.official, 25)
         XCTAssertEqual(setCode, "CEL")
+
+        // The bundled checklist lacks POP Series 5, so the reprint is the only
+        // offline Umbreon 17/17 match. That must not settle the identity.
+        let umbreon = try XCTUnwrap(
+            PokemonHistoricalScanParser.parse(numberLines: ["17/17"], titleLines: ["Umbreon ☆"])
+        )
+        guard case let .pokemonHistorical(umbreonEvidence) = umbreon.legacyIdentity else {
+            return XCTFail("Expected historical Pokémon evidence")
+        }
+        XCTAssertEqual(
+            PokemonOfflineCardFactory.candidates(in: snapshot, number: umbreonEvidence.number).map(\.providerID),
+            ["cel25cc-CC015"]
+        )
+        XCTAssertNil(PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: umbreonEvidence))
+
+        // Either Oak spelling offers both Base Set and the reprint.
+        for title in ["Impostor Professor Oak", "Imposter Professor Oak"] {
+            let oak = try XCTUnwrap(
+                PokemonHistoricalScanParser.parse(numberLines: ["73/102"], titleLines: [title])
+            )
+            guard case let .pokemonHistorical(oakEvidence) = oak.legacyIdentity else {
+                return XCTFail("Expected historical Pokémon evidence")
+            }
+            XCTAssertNil(PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: oakEvidence), title)
+            let oaks = PokemonOfflineCardFactory.candidates(in: snapshot, number: oakEvidence.number)
+                .filter { PokemonNameMatcher.agrees(cardName: $0.name, readings: [title]) }
+            XCTAssertEqual(Set(oaks.map(\.providerID)), ["base1-73", "cel25cc-CC004"], title)
+        }
     }
 
     func testOfflineHistoricalCardPreservesAllPublishedVariantRows() throws {
