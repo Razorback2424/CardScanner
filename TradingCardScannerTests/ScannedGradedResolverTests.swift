@@ -219,6 +219,29 @@ final class ScannedGradedResolverTests: XCTestCase {
         XCTAssertEqual(match, vendorVariant)
     }
 
+    func testPremiumOrUnknownDesignationCannotUseAnUnlabeledOrdinaryQuote() {
+        for (company, label) in [(GradingCompany.bgs, "Black Label"), (.cgc, "Pristine"), (.bgs, "Unreviewed designation")] {
+            let ordinary = variant(id: "ordinary", company: company, grade: .init(value: "10"))
+            let owned = slab(company: company, value: "10", label: label)
+            XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [ordinary], for: owned), label)
+            let exact = variant(id: "premium", company: company, grade: owned.grade)
+            XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [ordinary, exact], for: owned), exact)
+        }
+        let ordinary = variant(id: "ordinary", company: .cgc, grade: .init(value: "10"))
+        XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [ordinary],
+            for: slab(company: .cgc, value: "10", label: "Gem Mint")), ordinary)
+    }
+
+    func testFlattenedImportedQualifierCannotUseOrdinaryUnlabeledQuote() throws {
+        let parsed = try XCTUnwrap(ImportedGradeParser.parse("PSA 8 OC"))
+        let owned = GradedSlabEvidence(company: parsed.company, grade: parsed.grade,
+            certificationNumber: nil, labelCardText: [], printedFinish: .normal)
+        let ordinary = variant(id: "ordinary", company: .psa, grade: .init(value: "8"))
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [ordinary], for: owned))
+        let exact = variant(id: "qualified", company: .psa, grade: .init(value: "8", qualifier: "OC"))
+        XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [ordinary, exact], for: owned), exact)
+    }
+
     func testConflictingVendorLabelIsNotUsedAsAFallbackMatch() {
         let vendorVariant = variant(
             id: "psa-pristine",

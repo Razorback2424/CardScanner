@@ -149,8 +149,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     }
 
     /// Match the stable grader/grade/qualifier axis first, then require the
-    /// vendor label to agree when it publishes one. A unique unlabeled vendor
-    /// variant remains usable; a conflicting Black Label never does.
+    /// vendor label to agree. A unique unlabeled vendor variant can cover an
+    /// ordinary descriptive grade, never a premium or unknown designation.
     static func matchingVariant(
         in variants: [GradedVariant],
         for slab: GradedSlabEvidence,
@@ -189,6 +189,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         if exactLabelMatches.count == 1 { return exactLabelMatches[0] }
         if exactLabelMatches.count > 1 { return nil }
 
+        let ordinaryLabels: Set<String> = ["GEM MINT", "MINT", "MINT+", "NM MT", "NM", "EX MT", "EX", "VG EX", "VG", "GOOD", "FAIR", "POOR"]
+        guard scannedLabel == nil || ordinaryLabels.contains(scannedLabel!) else { return nil }
         let unlabeled = candidates.filter { $0.grade.label == nil }
         guard unlabeled.count == 1 else { return nil }
         return unlabeled[0]

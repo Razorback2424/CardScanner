@@ -463,6 +463,31 @@ final class ImportedItemKindTests: XCTestCase {
         }
     }
 
+    func testFlattenedPSAQualifiersKeepTheirOwnIdentityAxis() throws {
+        for raw in ["PSA 8 OC", "PSA 8 (OC)", "PSA 8 NM-MT OC"] {
+            let parsed = try XCTUnwrap(ImportedGradeParser.parse(raw))
+            XCTAssertEqual(parsed.grade.value, "8")
+            XCTAssertEqual(parsed.grade.qualifier, "OC")
+            XCTAssertNotEqual(parsed.grade.identityFragment, CardGrade(value: "8").identityFragment)
+            XCTAssertFalse(parsed.grade.label?.contains("OC") ?? false)
+        }
+        XCTAssertNil(ImportedGradeParser.parse("PSA 8 OC ST"))
+        XCTAssertEqual(ImportedGradeParser.parse("BGS 10 Black Label")?.grade.label, "Black Label")
+        XCTAssertEqual(ImportedGradeParser.parse("CGC 10 Pristine")?.grade.label, "Pristine")
+    }
+
+    func testExplicitGradedPortfolioFinishesStaySeparateAndMissingFinishStaysUnknown() throws {
+        let plan = try CollectionCSV.parse(portfolioCSV([
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,Normal,CGC 10 Gem Mint,1,40.00,false",
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,Reverse Holofoil,CGC 10 Gem Mint,1,90.00,false",
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,,CGC 10 Gem Mint,1,20.00,false"
+        ]))
+        XCTAssertEqual(plan.entries.count, 3)
+        XCTAssertEqual(Set(plan.entries.map(\.collectionKey)).count, 3)
+        XCTAssertEqual(Set(plan.entries.compactMap(\.variant)), [.normal, .reverse])
+        XCTAssertEqual(plan.entries.filter { $0.variant == nil }.count, 1)
+    }
+
     func testMalformedGradeIsSkippedWithoutDroppingSiblingRows() throws {
         let plan = try CollectionCSV.parse(portfolioCSV([
             "Pokemon,SV: 151,Charizard ex,199/165,Rare,,PSA 10,1,900.00,false",
@@ -497,8 +522,7 @@ final class ImportedItemKindTests: XCTestCase {
         XCTAssertEqual(graded.gradingCompany, .psa)
         XCTAssertEqual(graded.grade?.value, "9")
         XCTAssertTrue(graded.collectionKey.hasPrefix("graded:"))
-        // A slab has no raw finish; carrying one would badge it "Holofoil".
-        XCTAssertNil(graded.variant)
+        XCTAssertEqual(graded.variant, .holo, "The export explicitly declares the slab's underlying finish")
 
         let raw = try XCTUnwrap(entries.first { $0.itemKind == .rawCard })
         XCTAssertEqual(raw.quantity, 2)
