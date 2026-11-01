@@ -143,6 +143,49 @@ def pokemon(audit):
         boundary='Static seed declarations and offline checklist slots are different inventories; historical/live routes are not executed.')
 
 
+def validate_magic_treatments(row):
+    # Match MagicTreatmentCatalog's whitespace/case handling. Unknown nonempty
+    # IDs are retained for forward compatibility, not rejected as missing data.
+    ids = [value.strip().lower() for value in row['treatments'] if value.strip()]
+    require(ids and len(ids) == len(set(ids)), f"Invalid Magic treatment list: {row['id']}")
+    qualifier_keys = []
+    for key, value in row.get('qualifiers', {}).items():
+        normalized = key.strip().lower()
+        require(normalized and value.strip() and normalized in ids,
+            f"Dangling Magic treatment qualifier: {row['id']}")
+        require(normalized not in qualifier_keys, f"Duplicate Magic treatment qualifier: {row['id']}")
+        qualifier_keys.append(normalized)
+    return ids
+
+
+def compare_magic_audit(runtime, snapshot, retained, audit):
+    # Different generations can be legitimate; drift is a review item rather
+    # than a structural failure or permission to regenerate either artifact.
+    for runtime_key, source_value in [
+        ('sourceContentSHA256', snapshot['source']['contentSHA256']),
+        ('sourceBulkDataID', snapshot['source']['bulkDataID']),
+        ('sourceBulkDataType', snapshot['source']['bulkDataType']),
+        ('sourceAuditSchemaVersion', snapshot['schemaVersion']),
+        ('sourceAuditRulesVersion', snapshot['rulesVersion']),
+    ]:
+        if runtime[runtime_key] != source_value:
+            audit.gap('magic', 'runtimeAuditSourceDifference', runtime_key, 'treatment enrichment provenance',
+                f"Runtime={runtime[runtime_key]}; retained audit={source_value}.")
+    if len(retained) != snapshot['auditedCardCount']:
+        audit.gap('magic', 'declaredAuditTotalDifference', 'manifest', 'test-only treatment snapshot',
+            f"Manifest auditedCardCount={snapshot['auditedCardCount']}; retained rows={len(retained)}.")
+    for row in runtime['entries']:
+        identity = uid(row['id'])
+        if identity not in retained:
+            audit.gap('magic', 'runtimeTreatmentOutsideRetainedAudit', identity, 'runtime treatment catalog',
+                'Runtime exact-printing enrichment is not present in the retained test-only treatment snapshot.')
+        elif any(row[key].strip().lower() != retained[identity][key].strip().lower()
+                 for key in ['setCode', 'collectorNumber']):
+            audit.gap('magic', 'runtimeTreatmentIdentityDiffersFromAudit', identity, 'runtime treatment catalog',
+                f"Runtime={row['setCode']}:{row['collectorNumber']}; retained audit="
+                f"{retained[identity]['setCode']}:{retained[identity]['collectorNumber']}.")
+
+
 def magic(audit):
     seed = audit.json('TradingCardScanner/MagicCatalogSeed/catalog.json')
     by_code = unique(seed['sets'], lambda row: row['code'].lower(), 'Magic production set descriptor')
@@ -163,10 +206,10 @@ def magic(audit):
     runtime = audit.json('TradingCardScanner/MagicTreatmentCatalog/manifest.json')
     vocabulary = set(audit.json('TradingCardScanner/MagicTreatmentCatalog/vocabulary.json'))
     mappings = unique(runtime['entries'], lambda row: uid(row['id']), 'Magic runtime treatment printing')
+    treatment_ids = []
     for row in mappings.values():
-        ids = row['treatments']
-        require(ids and len(ids) == len(set(value.lower() for value in ids)), f"Invalid Magic treatment list: {row['id']}")
-        require(set(row.get('qualifiers', {})) <= set(ids), f"Dangling Magic treatment qualifier: {row['id']}")
+        ids = validate_magic_treatments(row)
+        treatment_ids.extend(ids)
         for value in set(ids) - vocabulary:
             audit.gap('magic', 'treatmentOutsideVocabulary', row['id'], row['setCode'], value,
                 'informational')  # Unknown treatments are deliberately forward compatible.
@@ -174,7 +217,7 @@ def magic(audit):
     snapshot = audit.json(audit_root / 'manifest.json')
     unique(snapshot['entries'], lambda row: row['code'], 'Magic test-only snapshot set')
     retained, english_paper, suffixes = 0, 0, collections.Counter()
-    audit_ids = set()
+    audit_rows = {}
     for entry in snapshot['entries']:
         if not entry.get('resource'):
             require(entry['auditedCardCount'] == 0, f"Magic missing nonempty audit resource: {entry['code']}")
@@ -185,17 +228,15 @@ def magic(audit):
                 f"Manifest auditedCardCount={entry['auditedCardCount']}; retained rows={len(rows)}.")
         for row in rows:
             identity = uid(row['id'])
-            require(identity not in audit_ids, f'Magic test-only snapshot duplicate UUID: {identity}')
+            require(identity not in audit_rows, f'Magic test-only snapshot duplicate UUID: {identity}')
             require(row['setCode'] == entry['code'], f'Magic test-only snapshot set mismatch: {identity}')
             require(set(row.get('finishes', [])) <= {'nonfoil', 'foil', 'etched'}, f'Magic unsupported finish: {identity}')
-            audit_ids.add(identity)
+            audit_rows[identity] = row
             english_paper += row.get('language') == 'en' and not row.get('digital', False)
             if row.get('collectorNumberSuffix'):
                 suffixes[row['collectorNumberSuffix']] += 1
         retained += len(rows)
-    for identity in sorted(set(mappings) - audit_ids):
-        audit.gap('magic', 'runtimeTreatmentOutsideRetainedAudit', identity, 'runtime treatment catalog',
-            'Runtime exact-printing enrichment is not present in the retained test-only treatment snapshot.')
+    compare_magic_audit(runtime, snapshot, audit_rows, audit)
     return dict(productionSetSeed=dict(generatedAt=seed['generatedAt'], revision=seed['revision'],
             descriptors=len(by_code), scanEnabledDescriptors=sum(row['scanEnabled'] for row in seed['sets']),
             browseEnabledDescriptors=sum(row['browseEnabled'] for row in seed['sets']),
@@ -205,7 +246,7 @@ def magic(audit):
             compiledCodesAbsentSeedScan=sorted(compiled_codes - seed_scan_codes)),
         configuredProductionRollout=mode.group(1) if mode else None,
         runtimeTreatmentCatalog=dict(generatedAt=runtime['generatedAt'], exactPrintingMappings=len(mappings),
-            treatmentCounts=counts(value for row in mappings.values() for value in row['treatments'])),
+            treatmentCounts=counts(treatment_ids)),
         testOnlyTreatmentAudit=dict(generatedAt=snapshot['generatedAt'], setEntries=len(snapshot['entries']),
             retainedAuditedRows=retained, declaredTotalSourceCards=snapshot['totalCardCount'],
             englishNonDigitalRetainedRows=english_paper, collectorSuffixCounts=dict(sorted(suffixes.items()))),

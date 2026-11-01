@@ -6,7 +6,10 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from audit_catalog_coverage import Audit, CatalogIntegrityError, one_piece_registry, validate_pokemon_slots, yugioh_summary
+from audit_catalog_coverage import (
+    Audit, CatalogIntegrityError, compare_magic_audit, one_piece_registry,
+    validate_magic_treatments, validate_pokemon_slots, yugioh_summary,
+)
 
 
 PRINTING = 'aaaaaaaa-1111-4111-8111-111111111111'
@@ -42,6 +45,36 @@ class CatalogCoverageAuditTests(unittest.TestCase):
         wrong_run = dict(standard, setID=dict(set_id, pokemonPrintRun='firstEdition'))
         with self.assertRaisesRegex(CatalogIntegrityError, 'another set'):
             validate_pokemon_slots(entry, [wrong_run])
+
+    def testMagicTreatmentNormalizationMatchesRuntimeAndPreservesUnknownIDs(self):
+        row = dict(id=PRINTING, treatments=[' NeonInk ', '', 'FutureTreatment'], qualifiers={'NEONINK ': ' red '})
+        self.assertEqual(validate_magic_treatments(row), ['neonink', 'futuretreatment'])
+        for changes in [
+            dict(treatments=[' ', '']),
+            dict(treatments=['neonink', ' NEONINK ']),
+            dict(qualifiers={'unrelated': 'red'}),
+            dict(qualifiers={'neonink': ' '}),
+            dict(qualifiers={'neonink': 'red', 'NEONINK': 'red'}),
+        ]:
+            with self.subTest(changes=changes), self.assertRaises(CatalogIntegrityError):
+                validate_magic_treatments(dict(row, **changes))
+
+    def testMagicAuditDriftIsReportedWithoutBecomingACatalogPromotionGate(self):
+        row = dict(id=PRINTING, setCode='NEO', collectorNumber='429')
+        runtime = dict(sourceContentSHA256='a' * 64, sourceBulkDataID='bulk', sourceBulkDataType='default_cards',
+            sourceAuditSchemaVersion=2, sourceAuditRulesVersion=2, entries=[row])
+        snapshot = dict(source=dict(contentSHA256='a' * 64, bulkDataID='bulk', bulkDataType='default_cards'),
+            schemaVersion=2, rulesVersion=2, auditedCardCount=1)
+        with tempfile.TemporaryDirectory() as directory:
+            audit = Audit(directory)
+            compare_magic_audit(runtime, snapshot, {PRINTING: dict(row, setCode='neo')}, audit)
+            self.assertEqual(audit.discrepancies, [])
+            runtime['sourceContentSHA256'] = 'b' * 64
+            snapshot['auditedCardCount'] = 2
+            compare_magic_audit(runtime, snapshot, {PRINTING: dict(row, collectorNumber='430')}, audit)
+            self.assertEqual({row['code'] for row in audit.discrepancies},
+                {'runtimeAuditSourceDifference', 'declaredAuditTotalDifference', 'runtimeTreatmentIdentityDiffersFromAudit'})
+            self.assertTrue(all(row['disposition'] == 'review_required' for row in audit.discrepancies))
 
     def one_piece(self):
         canonical = 'one-piece:en:OP01-001'

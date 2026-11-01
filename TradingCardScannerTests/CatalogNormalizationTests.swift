@@ -75,6 +75,108 @@ private final class ArtworkRecoveryFixture: @unchecked Sendable {
     }
 }
 
+private final class MagicImportURLProtocol: URLProtocol, @unchecked Sendable {
+    private static let lock = NSLock()
+    private static var fixture: MagicImportFixture?
+    static func install(_ value: MagicImportFixture?) {
+        lock.lock(); defer { lock.unlock() }; fixture = value
+    }
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        Self.lock.lock(); let fixture = Self.fixture; Self.lock.unlock()
+        do {
+            guard let fixture, let url = request.url else { throw URLError(.badURL) }
+            let data = try fixture.response(for: request)
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: url, statusCode: 200,
+                httpVersion: nil, headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch { client?.urlProtocol(self, didFailWithError: error) }
+    }
+    override func stopLoading() {}
+}
+
+private final class MagicImportFixture: @unchecked Sendable {
+    enum ResponseMode: Equatable { case normal, duplicate, conflictingPrinting, reusedID, conflictingAcrossBatches, missing, wrongNumber, wrongSet, wrongName, foreign, digital, wrongID }
+    static let mm3ListID = "0659529d-1328-47de-9910-cce5b744aedf"
+    static let avrListID = "0c8e0b8f-fd4a-46fb-8eac-7be0dad65c26"
+    static let ordinaryID = "00000000-0000-4000-8000-000000000004"
+    private let lock = NSLock()
+    private var captured: [[[String: String]]] = []
+    let mode: ResponseMode
+    init(_ mode: ResponseMode = .normal) { self.mode = mode }
+    var batches: [[[String: String]]] { lock.lock(); defer { lock.unlock() }; return captured }
+    var session: URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MagicImportURLProtocol.self]
+        return URLSession(configuration: configuration)
+    }
+    func response(for request: URLRequest) throws -> Data {
+        if request.url?.path == "/sets" {
+            return try JSONSerialization.data(withJSONObject: ["data": [
+                ["code": "plst", "name": "The List", "digital": false],
+                ["code": "ulst", "name": "Fixture Reprint Set", "digital": false],
+                ["code": "mm3", "name": "Modern Masters 2017", "digital": false]
+            ]])
+        }
+        guard request.url?.path == "/cards/collection" else { throw URLError(.badURL) }
+        var body = request.httpBody ?? Data()
+        if body.isEmpty, let stream = request.httpBodyStream {
+            stream.open(); defer { stream.close() }
+            var buffer = [UInt8](repeating: 0, count: 1024)
+            while stream.hasBytesAvailable {
+                let count = stream.read(&buffer, maxLength: buffer.count)
+                if count <= 0 { break }
+                body.append(contentsOf: buffer.prefix(count))
+            }
+        }
+        let object = try JSONSerialization.jsonObject(with: body) as? [String: Any]
+        let identifiers = object?["identifiers"] as? [[String: String]] ?? []
+        lock.lock(); captured.append(identifiers); lock.unlock()
+        let records = [
+            card(id: Self.mm3ListID, set: "plst", number: "MM3-4"),
+            card(id: Self.avrListID, set: "plst", number: "AVR-20", finish: "foil"),
+            card(id: Self.ordinaryID, set: "mm3", number: "4"),
+            card(id: "00000000-0000-4000-8000-000000000005", set: "ulst", number: "MM3-4")
+        ]
+        var cards = identifiers.compactMap { identifier in
+            records.first { card in
+                if let id = identifier["id"] { return card["id"] as? String == id }
+                return card["set"] as? String == identifier["set"]
+                    && (card["collector_number"] as? String)?.lowercased() == identifier["collector_number"]?.lowercased()
+            }
+        }.reversed().map { $0 } // Responses deliberately do not follow request order.
+        if !cards.isEmpty {
+            switch mode {
+            case .normal: break
+            case .duplicate: cards.append(cards[0])
+            case .conflictingPrinting:
+                var other = cards[0]; other["id"] = "00000000-0000-4000-8000-000000000099"; cards.append(other)
+            case .reusedID:
+                let id = cards[0]["id"]
+                for index in cards.indices { cards[index]["id"] = id }
+            case .conflictingAcrossBatches:
+                if identifiers.first?["id"] == nil { cards[0]["id"] = Self.mm3ListID }
+            case .missing: cards.removeFirst()
+            case .wrongNumber: cards[0]["collector_number"] = "MM3-999"
+            case .wrongSet: cards[0]["set"] = "avr"
+            case .wrongName: cards[0]["name"] = "Different card"
+            case .foreign: cards[0]["lang"] = "fr"
+            case .digital: cards[0]["digital"] = true
+            case .wrongID: cards[0]["id"] = "00000000-0000-4000-8000-000000000099"
+            }
+        }
+        return try JSONSerialization.data(withJSONObject: ["data": cards])
+    }
+    private func card(id: String, set: String, number: String, finish: String = "nonfoil") -> [String: Any] {
+        ["id": id, "name": "Entreat the Angels", "set": set, "set_name": "Fixture set",
+         "collector_number": number, "lang": "en", "digital": false, "layout": "normal",
+         "rarity": "mythic", "released_at": "2020-09-01", "finishes": [finish],
+         "image_uris": ["normal": "https://example.test/\(id).jpg", "small": "https://example.test/\(id)-small.jpg"]]
+    }
+}
+
 private actor SealedNormalizationFixture: SealedBrowseProviding {
     enum Outcome { case match, directoryFailure, pageFailure, missingSet, missingProduct }
     var calls = 0
@@ -213,6 +315,190 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
 /// have not got any, which is the case these tests protect.
 @MainActor
 final class CatalogNormalizationTests: XCTestCase {
+    func testExactListCollectorsRemainDistinctWithOutOfOrderResponses() async throws {
+        let fixture = MagicImportFixture()
+        MagicImportURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+        let context = try makeContext()
+        let mm3 = importedMagicCard(number: "MM3-4")
+        let avr = importedMagicCard(number: "AVR-20", variant: .foil)
+        let ordinary = importedMagicCard(number: "004/249", setName: "Modern Masters 2017")
+        let otherReprint = importedMagicCard(number: "MM3-4", setName: "Fixture Reprint Set")
+        for row in [mm3, avr, ordinary, otherReprint] { context.insert(row) }
+        try context.save()
+        await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+            .normalizeImportedCards(in: context)
+        for (row, id) in [(mm3, MagicImportFixture.mm3ListID), (avr, MagicImportFixture.avrListID),
+                          (ordinary, MagicImportFixture.ordinaryID), (otherReprint, "00000000-0000-4000-8000-000000000005")] {
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertEqual(saved.catalogProviderID, id)
+            XCTAssertEqual(saved.imageURL, "https://example.test/\(id).jpg")
+        }
+        let sent = fixture.batches.flatMap { $0 }
+        XCTAssertEqual(sent.count, 4)
+        XCTAssertTrue(sent.contains(["set": "plst", "collector_number": "mm3-4"]))
+        XCTAssertTrue(sent.contains(["set": "plst", "collector_number": "avr-20"]))
+        XCTAssertFalse(sent.contains { $0["name"] != nil })
+    }
+
+    func testPlainAndNameOnlyListImportsRemainUnresolvedWithoutExactUUID() async throws {
+        let fixture = MagicImportFixture()
+        MagicImportURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+        let context = try makeContext()
+        let rows = [importedMagicCard(number: "4"), importedMagicCard(number: "20", variant: .foil),
+                    importedMagicCard(number: ""), importedMagicCard(number: "4", setName: "Fixture Reprint Set")]
+        for row in rows { context.insert(row) }
+        try context.save()
+        await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+            .normalizeImportedCards(in: context)
+        XCTAssertTrue(fixture.batches.isEmpty, "A single name response cannot establish a complete printing family")
+        for row in rows {
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertNil(saved.catalogProviderID)
+            XCTAssertNil(saved.imageURL)
+        }
+    }
+
+    func testListImportsRejectDuplicateMissingAndConflictingExactResponses() async throws {
+        for mode in [MagicImportFixture.ResponseMode.duplicate, .conflictingPrinting, .missing,
+                     .wrongNumber, .wrongSet, .wrongName, .foreign, .digital] {
+            let fixture = MagicImportFixture(mode)
+            MagicImportURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+            let context = try makeContext()
+            let row = importedMagicCard(number: "MM3-4")
+            context.insert(row); try context.save()
+            await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+                .normalizeImportedCards(in: context)
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertNil(saved.catalogProviderID, "Unexpected provider response: \(mode)")
+            XCTAssertNil(saved.imageURL)
+        }
+    }
+
+    func testExactUUIDAndCompositeListImportsUseSeparateDeduplicatedBatches() async throws {
+        let fixture = MagicImportFixture()
+        MagicImportURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+        let context = try makeContext()
+        let direct = importedMagicCard(number: "4", sourceID: MagicImportFixture.mm3ListID)
+        let known = importedMagicCard(number: "4")
+        known.catalogProviderID = MagicImportFixture.mm3ListID
+        let composite = importedMagicCard(number: "MM3-4")
+        for row in [direct, known, composite] { context.insert(row) }
+        try context.save()
+        await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+            .normalizeImportedCards(in: context)
+        XCTAssertEqual(fixture.batches.count, 2)
+        XCTAssertEqual(fixture.batches[0], [["id": MagicImportFixture.mm3ListID]])
+        XCTAssertEqual(fixture.batches[1], [["set": "plst", "collector_number": "mm3-4"]])
+        for row in [direct, known, composite] {
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertEqual(saved.catalogProviderID, MagicImportFixture.mm3ListID)
+            XCTAssertNotNil(saved.imageURL)
+        }
+    }
+
+    func testPartialListResponseDoesNotSubstituteAnotherRequestedPrinting() async throws {
+        let fixture = MagicImportFixture(.missing)
+        MagicImportURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+        let context = try makeContext()
+        let mm3 = importedMagicCard(number: "MM3-4")
+        let avr = importedMagicCard(number: "AVR-20", variant: .foil)
+        for row in [mm3, avr] { context.insert(row) }
+        try context.save()
+        await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+            .normalizeImportedCards(in: context)
+        XCTAssertNil(try persistedCard(withKey: mm3.collectionKey, from: context).catalogProviderID)
+        XCTAssertEqual(try persistedCard(withKey: avr.collectionKey, from: context).catalogProviderID,
+            MagicImportFixture.avrListID)
+    }
+
+    func testExactListUUIDCannotOverrideContradictoryImportedNumberOrProviderID() async throws {
+        for (mode, number) in [(MagicImportFixture.ResponseMode.normal, "AVR-20"), (.normal, "AVR-4"),
+                               (.normal, "20"), (.wrongID, "4")] {
+            let fixture = MagicImportFixture(mode)
+            MagicImportURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+            let context = try makeContext()
+            let row = importedMagicCard(number: number, sourceID: MagicImportFixture.mm3ListID)
+            context.insert(row); try context.save()
+            await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+                .normalizeImportedCards(in: context)
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertNil(saved.catalogProviderID)
+            XCTAssertNil(saved.imageURL)
+        }
+    }
+
+    func testMagicImportConflictingUUIDsStayUnresolvedAndInvalidCatalogIDDoesNotHideSourceUUID() async throws {
+        for catalogID in ["invalid-catalog-id", MagicImportFixture.avrListID] {
+            let fixture = MagicImportFixture()
+            MagicImportURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+            let context = try makeContext()
+            let row = importedMagicCard(number: "4", sourceID: MagicImportFixture.mm3ListID)
+            row.catalogProviderID = catalogID
+            context.insert(row); try context.save()
+            await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+                .normalizeImportedCards(in: context)
+            XCTAssertEqual(fixture.batches.flatMap { $0 }, catalogID == "invalid-catalog-id"
+                ? [["id": MagicImportFixture.mm3ListID]] : [],
+                "Use one valid UUID; never choose between conflicting valid identities")
+            let saved = try persistedCard(withKey: row.collectionKey, from: context)
+            XCTAssertEqual(saved.providerID, MagicImportFixture.mm3ListID)
+            XCTAssertEqual(saved.catalogProviderID, catalogID,
+                "Lookup improvements must not bypass the existing metadata ownership guard")
+            XCTAssertNil(saved.imageURL)
+        }
+        XCTAssertTrue(CatalogIdentityNormalization.magicCollectorNumberMatches(imported: "4A", catalog: "MM3-4a",
+            setID: "plst", exactPrintingID: true))
+        XCTAssertFalse(CatalogIdentityNormalization.magicCollectorNumberMatches(imported: "4", catalog: "MM3-4a",
+            setID: "plst", exactPrintingID: true), "A collector suffix cannot disappear")
+        XCTAssertFalse(CatalogIdentityNormalization.magicCollectorNumberMatches(imported: "4a", catalog: "MM3-4b",
+            setID: "plst", exactPrintingID: true))
+    }
+
+    func testMagicImportUUIDCannotIdentifyDifferentCollectorsWithinOrAcrossBatches() async throws {
+        for mode in [MagicImportFixture.ResponseMode.reusedID, .conflictingAcrossBatches] {
+            let fixture = MagicImportFixture(mode)
+            MagicImportURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); MagicImportURLProtocol.install(nil) }
+            let context = try makeContext()
+            let mm3 = mode == .reusedID ? importedMagicCard(number: "MM3-4")
+                : importedMagicCard(number: "4", sourceID: MagicImportFixture.mm3ListID)
+            let avr = importedMagicCard(number: "AVR-20", variant: .foil)
+            for row in [mm3, avr] { context.insert(row) }
+            try context.save()
+            await CollectionCatalogNormalizer(scryfall: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+                .normalizeImportedCards(in: context)
+            XCTAssertEqual(fixture.batches.count, mode == .reusedID ? 1 : 2)
+            for row in [mm3, avr] {
+                let saved = try persistedCard(withKey: row.collectionKey, from: context)
+                XCTAssertNil(saved.catalogProviderID, "A UUID reused for two collector identities cannot resolve either row")
+                XCTAssertNil(saved.imageURL)
+            }
+        }
+    }
+
+    private func importedMagicCard(number: String, setName: String = "The List",
+                                   sourceID: String? = nil, variant: PhysicalVariant = .nonfoil) -> CollectedCard {
+        let providerID = sourceID ?? "csv:\(setName)|\(number)"
+        return CollectedCard(collectionKey: "magic:\(providerID)#\(variant.id)", game: .magic, providerID: providerID,
+            name: "Entreat the Angels", setName: setName, setCode: setName, cardNumber: number,
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: variant, variantResolution: .imported)
+    }
+
     func testManifestRecoveryFeedsScannerAndBrowseWithoutChangingFingerprintOrRepeatingProbes() async throws {
         let fixture = ArtworkRecoveryFixture()
         ArtworkRecoveryURLProtocol.install(fixture)

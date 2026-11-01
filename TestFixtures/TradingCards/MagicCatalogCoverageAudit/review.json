@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Bounded provider and image receipts for exact catalog coverage fixes and unresolved printing aliases. Not a complete physical universe or live-release certification.",
+  "sources": [
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "2x2-208.json",
+      "responseSHA256": "8d129c04f204948d9d268970ae9f5c1e98ae5ee10d1959864d55fc3ccbb67104",
+      "url": "https://api.scryfall.com/cards/c0728027-a1ec-4814-87c4-10c3baced0e0",
+      "record": {
+        "id": "c0728027-a1ec-4814-87c4-10c3baced0e0",
+        "name": "Elsha of the Infinite",
+        "set": "2x2",
+        "collector_number": "208",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2022-07-08",
+        "finishes": [
+          "nonfoil",
+          "foil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/c/0/c0728027-a1ec-4814-87c4-10c3baced0e0.jpg?1783921837",
+      "imageSHA256": "53c0b995c8df83c1aded6598f6ab25db4c0c2f42a8f7e46ff3aaafbef89c0e36"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "afr-100.json",
+      "responseSHA256": "037bb9e2a11c3795e9eb926dbe582878c41659e1fdfa5baaa4d82628b7e09c38",
+      "url": "https://api.scryfall.com/cards/e6b3f460-92ba-4af0-aad9-cf86615d4177",
+      "record": {
+        "id": "e6b3f460-92ba-4af0-aad9-cf86615d4177",
+        "name": "Ebondeath, Dracolich",
+        "set": "afr",
+        "collector_number": "100",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2021-07-23",
+        "finishes": [
+          "nonfoil",
+          "foil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/e/6/e6b3f460-92ba-4af0-aad9-cf86615d4177.jpg?1783926497",
+      "imageSHA256": "3f72aabd3d0aa4dfba3d2d38d1c6574328eab1e344103081c6601935fbe770c1"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "ala-250.json",
+      "responseSHA256": "d2408927eb6a8eae1b384a8ffc92101c3b129ff82176f1b3c84bf44439029e68",
+      "url": "https://api.scryfall.com/cards/2e181878-d9fb-44d5-98ce-2899793ab2e7",
+      "record": {
+        "id": "2e181878-d9fb-44d5-98ce-2899793ab2e7",
+        "name": "Rafiq of the Many",
+        "set": "ala",
+        "collector_number": "250",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2022-04-29",
+        "finishes": [
+          "nonfoil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/2/e/2e181878-d9fb-44d5-98ce-2899793ab2e7.jpg?1783923528",
+      "imageSHA256": "2a036c60060989a65e3c39157597549d007395bf2f86b3c9819d4fc69075431d",
+      "reviewObservation": "250 M | ALA \u2022 EN; modern2022 printing in historical set"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "pafr-100p.json",
+      "responseSHA256": "15a78632aec9daf0842e6c0c4dbb0452fbaa8feb28ca6b1faef9dcd8d71a9f53",
+      "url": "https://api.scryfall.com/cards/6e13fa16-2893-42a5-bfc9-0eee7422835e",
+      "record": {
+        "id": "6e13fa16-2893-42a5-bfc9-0eee7422835e",
+        "name": "Ebondeath, Dracolich",
+        "set": "pafr",
+        "collector_number": "100p",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2021-07-23",
+        "finishes": [
+          "nonfoil",
+          "foil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/6/e/6e13fa16-2893-42a5-bfc9-0eee7422835e.jpg?1783926065",
+      "imageSHA256": "4185d415d5be93b1675970c9530cd2ddf0bed4d72823cae5b4037302101ed2fb",
+      "reviewObservation": "Provider record retained; reused-looking image does not prove visible physical stamp"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "pafr-100s.json",
+      "responseSHA256": "9f1920fda21c87631ea4cf5d0a6d7e7906a759879f9d390c0f460ce7abcdb71a",
+      "url": "https://api.scryfall.com/cards/7c4b7611-8466-4c3d-8144-81f9fc586a00",
+      "record": {
+        "id": "7c4b7611-8466-4c3d-8144-81f9fc586a00",
+        "name": "Ebondeath, Dracolich",
+        "set": "pafr",
+        "collector_number": "100s",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2021-07-23",
+        "finishes": [
+          "foil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/7/c/7c4b7611-8466-4c3d-8144-81f9fc586a00.jpg?1783926058",
+      "imageSHA256": "5a31f8979a99613a0835317c14fec14ab72c79bdb09bae658b6c08335ab44026",
+      "reviewObservation": "100/281 M | AFR \u2605 EN;2021 prerelease stamp"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "plst-2X2-208.json",
+      "responseSHA256": "c98aefe27dce1183748e61606260c6ca55f433ab4bd7a49a20658cef8a66ca59",
+      "url": "https://api.scryfall.com/cards/a31dc734-a19d-4d45-a8e1-9fb7932a1461",
+      "record": {
+        "id": "a31dc734-a19d-4d45-a8e1-9fb7932a1461",
+        "name": "Elsha of the Infinite",
+        "set": "plst",
+        "collector_number": "2X2-208",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2024-08-02",
+        "finishes": [
+          "nonfoil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/a/3/a31dc734-a19d-4d45-a8e1-9fb7932a1461.jpg?1783909921",
+      "imageSHA256": "5bab72f0d12fbdcd88cbc200962dbbd0a40488ba969978d31055d15193b82fdb",
+      "reviewObservation": "208/331 R | 2X2 \u2022 EN; lower-left Planeswalker symbol"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "plst-entreat-collection.json",
+      "responseSHA256": "01c46999c71af2775a9ac2591f35c97bea3ab31d35cd538b06ce338bd3598b1f",
+      "url": "https://api.scryfall.com/cards/collection",
+      "request": {
+        "identifiers": [
+          {
+            "set": "plst",
+            "name": "Entreat the Angels"
+          },
+          {
+            "set": "plst",
+            "collector_number": "AVR-20"
+          },
+          {
+            "set": "plst",
+            "collector_number": "MM3-4"
+          }
+        ]
+      },
+      "records": [
+        {
+          "id": "0c8e0b8f-fd4a-46fb-8eac-7be0dad65c26",
+          "name": "Entreat the Angels",
+          "set": "plst",
+          "collector_number": "AVR-20",
+          "lang": "en",
+          "digital": false,
+          "released_at": "2023-08-10",
+          "finishes": [
+            "foil"
+          ]
+        },
+        {
+          "id": "0c8e0b8f-fd4a-46fb-8eac-7be0dad65c26",
+          "name": "Entreat the Angels",
+          "set": "plst",
+          "collector_number": "AVR-20",
+          "lang": "en",
+          "digital": false,
+          "released_at": "2023-08-10",
+          "finishes": [
+            "foil"
+          ]
+        },
+        {
+          "id": "0659529d-1328-47de-9910-cce5b744aedf",
+          "name": "Entreat the Angels",
+          "set": "plst",
+          "collector_number": "MM3-4",
+          "lang": "en",
+          "digital": false,
+          "released_at": "2020-09-01",
+          "finishes": [
+            "nonfoil"
+          ]
+        }
+      ]
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "slz-1.json",
+      "responseSHA256": "0e2427759d7dea85356e4e45787c58bee5073e86291a884b909feac1c859c7d0",
+      "url": "https://api.scryfall.com/cards/bbcdd814-24a3-4a5c-b650-3460aba5d93a",
+      "record": {
+        "id": "bbcdd814-24a3-4a5c-b650-3460aba5d93a",
+        "name": "All That Glitters",
+        "set": "slz",
+        "collector_number": "1",
+        "lang": "en",
+        "digital": false,
+        "released_at": "2026-09-02",
+        "finishes": [
+          "nonfoil"
+        ]
+      },
+      "imageURL": "https://cards.scryfall.io/normal/front/b/b/bbcdd814-24a3-4a5c-b650-3460aba5d93a.jpg?1787673844",
+      "imageSHA256": "59f4c62d942f3087b200235b4b80fc2f459247a0d45eb6d0df2f0cb59322a357",
+      "reviewObservation": "C0001 | SLZ \u2022 EN; no printed denominator"
+    },
+    {
+      "captureDate": "2026-11-01",
+      "sourceFile": "slz-set.json",
+      "responseSHA256": "1dd9e3dbd8c7592933d86068979f2d5f5c2eaa90cd62868227b8b66979c5da47",
+      "url": "https://api.scryfall.com/sets/fbbad14d-1d42-4204-ade6-911876dc7c06",
+      "record": {
+        "id": "fbbad14d-1d42-4204-ade6-911876dc7c06",
+        "name": "The Zeta Set",
+        "code": "slz",
+        "digital": false,
+        "released_at": "2026-09-02",
+        "card_count": 363
+      }
+    }
+  ]
+}

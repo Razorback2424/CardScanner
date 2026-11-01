@@ -266,13 +266,14 @@ enum CollectionCSV {
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
-        let rows = cards.sorted { left, right in
+        let sortedCards: [CollectedCard] = cards.sorted { left, right in
             if left.game != right.game { return left.game < right.game }
             if left.setCode != right.setCode { return left.setCode < right.setCode }
             let byNumber = CollectorNumber.compare(left.cardNumber, right.cardNumber)
             if byNumber != .orderedSame { return byNumber == .orderedAscending }
             return (left.variantID ?? "") < (right.variantID ?? "")
-        }.map { card in
+        }
+        let rows: [[String]] = sortedCards.map { card -> [String] in
             // A few pre-Slice-5 synthetic test/import rows used a literal
             // `source-(certificate)` provider id for every slab. Do not
             // persist that malformed collection key into the new explicit
@@ -288,7 +289,7 @@ enum CollectionCSV {
                 }
                 return nil
             }()
-            return [
+            let identityFields: [String] = [
                 card.game,
                 card.providerID,
                 card.name,
@@ -301,7 +302,9 @@ enum CollectionCSV {
                 card.rarity ?? "",
                 card.imageURL ?? "",
                 card.thumbnailURL ?? "",
-                formatter.string(from: card.dateAdded),
+                formatter.string(from: card.dateAdded)
+            ]
+            let itemFields: [String] = [
                 // Rows written before item kinds existed export as raw cards,
                 // which is what they are.
                 card.itemKind.rawValue,
@@ -313,7 +316,9 @@ enum CollectionCSV {
                 card.gradeLabel ?? "",
                 card.gradingQualifier ?? "",
                 card.certificationNumber ?? "",
-                card.marketRegionRaw ?? "",
+                card.marketRegionRaw ?? ""
+            ]
+            let catalogFields: [String] = [
                 card.pokemonPrintRun?.rawValue ?? "",
                 encodedTreatmentIDs(card.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
@@ -321,6 +326,7 @@ enum CollectionCSV {
                 exportedCollectionKey ?? "",
                 card.catalogProviderID ?? ""
             ]
+            return identityFields + itemFields + catalogFields
         }
 
         let text = ([exportHeaders] + rows)
@@ -335,8 +341,8 @@ enum CollectionCSV {
     /// without re-importing rows that already committed.
     static func exportFailedEntries(_ entries: [CollectionCSVEntry]) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
-        let rows = entries.map { entry in
-            [
+        let rows: [[String]] = entries.map { entry -> [String] in
+            let identityFields: [String] = [
                 entry.game.rawValue,
                 entry.providerID,
                 entry.name,
@@ -349,7 +355,9 @@ enum CollectionCSV {
                 entry.rarity ?? "",
                 entry.imageURL ?? "",
                 entry.thumbnailURL ?? "",
-                formatter.string(from: entry.dateAdded),
+                formatter.string(from: entry.dateAdded)
+            ]
+            let itemFields: [String] = [
                 entry.sourceItemKindRaw ?? entry.itemKind.rawValue,
                 entry.justTCGCardID ?? "",
                 entry.justTCGVariantID ?? "",
@@ -359,7 +367,9 @@ enum CollectionCSV {
                 entry.grade?.label ?? "",
                 entry.grade?.qualifier ?? "",
                 entry.certificationNumber ?? "",
-                entry.marketRegionRaw ?? "",
+                entry.marketRegionRaw ?? ""
+            ]
+            let catalogFields: [String] = [
                 entry.pokemonPrintRun?.rawValue ?? "",
                 encodedTreatmentIDs(entry.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
@@ -369,6 +379,7 @@ enum CollectionCSV {
                 entry.sourceLanguage ?? "",
                 entry.conflictingSourceIdentity ? "true" : ""
             ]
+            return identityFields + itemFields + catalogFields
         }
         return CollectionCSVDocument(text: csvText(headers: exportHeaders + ["source_language", "source_identity_conflict"], rows: rows))
     }

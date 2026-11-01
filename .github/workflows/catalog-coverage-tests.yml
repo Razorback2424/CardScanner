@@ -7,6 +7,9 @@ on:
       - "TradingCardScannerTests/**"
       - "TradingCardScanner.xcodeproj/**"
       - "*CatalogCore/**"
+      - "Config/*Catalog*.xcconfig"
+      - "TestFixtures/TradingCards/**"
+      - "publisher/catalog-input.json"
       - "scripts/**"
       - ".github/workflows/catalog-coverage-tests.yml"
 
@@ -68,15 +71,22 @@ jobs:
             -resultBundlePath "$RUNNER_TEMP/catalog-tests.xcresult" \
             -parallel-testing-enabled NO \
             -only-testing:TradingCardScannerTests/ScanParserTests \
+            -only-testing:TradingCardScannerTests/HistoricalCatalogRequestTests \
             -only-testing:TradingCardScannerTests/VariantResolverTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogPromoPadWidthTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
             -only-testing:TradingCardScannerTests/PricingTests \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \
+            -only-testing:TradingCardScannerTests/MagicCatalogBootstrapTests \
             -only-testing:TradingCardScannerTests/CatalogNormalizationTests \
             -only-testing:TradingCardScannerTests/YuGiOhRecognitionTests \
             -only-testing:TradingCardScannerTests/YuGiOhResolutionTests \
             -only-testing:TradingCardScannerTests/OnePieceIntegrationTests \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testCSVExportAppendsCatalogProviderWithoutReorderingOriginalColumns \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testCSVRoundTripKeepsDistinctCertificatesApart \
+            -only-testing:TradingCardScannerTests/MagicTreatmentTests/testCollectionCSVRoundTripsTreatmentIdentityAndCollectionKey \
+            -only-testing:TradingCardScannerTests/LorcanaOwnershipTests/testConflictingDuplicateRowsRetainEvidenceThroughFailedExport \
+            -only-testing:TradingCardScannerTests/LorcanaOwnershipTests/testFailedCSVRowCanBeCorrectedAndRetriedWithoutDuplicatingCommittedCopies \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee "$RUNNER_TEMP/catalog-native-tests.log"
       - name: Retain native test results

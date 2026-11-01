@@ -94,7 +94,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// 9: retry missing Pokémon artwork through exact TCGdex card details.
     /// 10: repair saved Pokémon artwork from the active signed Browse catalog.
     /// 11: recover exact CDN artwork omitted from the provider image manifest.
-    nonisolated static let metadataVersion = 11
+    /// 12: preserve exact List collector identities; never guess by card name.
+    nonisolated static let metadataVersion = 12
     private var requestsAnotherPass = false
     private var retryFailedSealedOnNextPass = false
     /// Input discovery now suspends at the model actor. Keep the same
@@ -105,6 +106,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
     init(
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
+        scryfall: ScryfallService = ScryfallService(),
         justTCG: any SealedBrowseProviding = JustTCGV1Client(transport: JustTCGTransport.shared),
         sealedCredentialsAvailable: Bool? = nil,
         gameRegistry: CardGameRegistry = .standard,
@@ -113,7 +115,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
         pokemonRegistry: @escaping @Sendable () async -> PokemonCatalogRegistry = { .bundledSeed }
     ) {
         self.gameRegistry = gameRegistry
-        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, justTCG: justTCG,
+        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, scryfall: scryfall, justTCG: justTCG,
             sealedCredentialsAvailable: sealedCredentialsAvailable,
             gameImportAdapters: gameImportAdapters, gameActivationSources: gameActivationSources,
             pokemonRegistry: pokemonRegistry)
@@ -591,13 +593,14 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private let gameActivationSources: [CardGame: any GameCatalogActivationSource]
     private let tcgdex: any TCGdexCatalogSource
     private let pokemonArtwork = PokemonTCGAPIService()
-    private let scryfall = ScryfallService()
+    private let scryfall: ScryfallService
     private let justTCG: any SealedBrowseProviding
     private let sealedCredentialsAvailable: Bool?
     private static let pokemonConcurrency = 4
 
     init(
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
+        scryfall: ScryfallService = ScryfallService(),
         justTCG: any SealedBrowseProviding = JustTCGV1Client(transport: JustTCGTransport.shared),
         sealedCredentialsAvailable: Bool? = nil,
         gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
@@ -605,6 +608,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         pokemonRegistry: @escaping @Sendable () async -> PokemonCatalogRegistry = { .bundledSeed }
     ) {
         self.tcgdex = tcgdex
+        self.scryfall = scryfall
         self.pokemonRegistry = pokemonRegistry
         self.justTCG = justTCG
         self.sealedCredentialsAvailable = sealedCredentialsAvailable
@@ -1076,14 +1080,56 @@ private struct ImportedCatalogBatchResolver: Sendable {
         }
         let childSets = (try? await childDirectory) ?? [:]
 
-        struct LookupKey: Hashable {
-            let set: String
-            /// Empty for sets matched by card name instead of by number.
-            let number: String
-            let name: String
+        enum LookupKey: Hashable {
+            case printingID(String)
+            case collector(set: String, number: String)
+
+            var sortKey: String {
+                switch self {
+                case let .printingID(id): return "id:" + id
+                case let .collector(set, number): return "set:" + set + ":" + number
+                }
+            }
+
+            var identifier: ScryfallCardIdentifier {
+                switch self {
+                case let .printingID(id): return .init(id: id)
+                case let .collector(set, number): return .init(set: set, collectorNumber: number)
+                }
+            }
+
+            func matches(_ card: ScryfallCard) -> Bool {
+                switch self {
+                case let .printingID(id): return card.id.lowercased() == id
+                case let .collector(set, number):
+                    return card.setCode.lowercased() == set
+                        && CatalogIdentityNormalization.localNumber(card.collectorNumber).lowercased() == number
+                }
+            }
         }
 
-        var requestsByLookup: [LookupKey: [GameImportRequest]] = [:]
+        struct PendingRequest {
+            let request: GameImportRequest
+            let setID: String
+            let exactPrintingID: Bool
+        }
+
+        struct PrintingIdentity: Equatable {
+            let set: String
+            let number: String
+            let name: String
+            let language: String
+            let digital: Bool
+            init(_ card: ScryfallCard) {
+                set = card.setCode.lowercased()
+                number = card.collectorNumber.lowercased()
+                name = card.name
+                language = card.language.lowercased()
+                digital = card.digital
+            }
+        }
+
+        var requestsByLookup: [LookupKey: [PendingRequest]] = [:]
         for request in requests {
             guard let set = CatalogIdentityNormalization.matchingSets(
                 named: request.setName,
@@ -1104,70 +1150,69 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 setID = parentSetID
             }
             let key: LookupKey
-            if CatalogIdentityNormalization.matchesByCardName(setID: setID) {
-                key = LookupKey(set: setID, number: "", name: request.name)
+            let identityValues = [request.sourceProviderID] + [request.catalogProviderID].compactMap { $0 }
+            let exactIDs = Set(identityValues.compactMap { UUID(uuidString: $0)?.uuidString.lowercased() })
+            guard exactIDs.count <= 1 else { continue }
+            let exactID = exactIDs.first
+            if let exactID {
+                key = .printingID(exactID)
             } else {
-                key = LookupKey(
-                    set: setID,
-                    number: CatalogIdentityNormalization.localNumber(request.cardNumber),
-                    name: ""
-                )
-                guard !key.number.isEmpty else { continue }
+                let number = CatalogIdentityNormalization.localNumber(request.cardNumber).lowercased()
+                guard !number.isEmpty else { continue }
+                // Name + set asks Scryfall for one printing, not the complete
+                // family. A plain List number cannot establish which original
+                // set it reprints, even when that one response looks plausible.
+                if CatalogIdentityNormalization.requiresCompositeCollectorNumber(setID: setID),
+                   !CatalogIdentityNormalization.isCompositeMagicCollectorNumber(number) { continue }
+                key = .collector(set: setID, number: number)
             }
-            requestsByLookup[key, default: []].append(request)
+            requestsByLookup[key, default: []].append(.init(request: request, setID: setID,
+                exactPrintingID: exactID != nil))
         }
 
-        let lookups = requestsByLookup.keys.sorted {
-            if $0.set != $1.set { return $0.set < $1.set }
-            return $0.number == $1.number ? $0.name < $1.name : $0.number < $1.number
+        let lookups = requestsByLookup.keys.sorted { $0.sortKey < $1.sortKey }
+        // The same printing can be imported once by UUID and once by its
+        // collector identity. Keep those request forms in separate batches so
+        // their legitimate repeated response cannot hide an unexpected duplicate.
+        let groups = [lookups.filter { if case .printingID = $0 { return true }; return false },
+                      lookups.filter { if case .collector = $0 { return true }; return false }]
+        let batches = groups.flatMap { group in
+            stride(from: 0, to: group.count, by: 75).map { start in
+                Array(group[start..<min(start + 75, group.count)])
+            }
         }
         var result: [String: ImportedCatalogMetadata] = [:]
+        var seenPrintings: [String: PrintingIdentity] = [:]
+        var unusableIDs: Set<String> = []
 
-        for start in stride(from: 0, to: lookups.count, by: 75) {
+        for (index, batch) in batches.enumerated() {
             guard !Task.isCancelled else { break }
-            let batch = Array(lookups[start..<min(start + 75, lookups.count)])
-            let identifiers = batch.map { key in
-                key.number.isEmpty
-                    ? ScryfallCardIdentifier(set: key.set, name: key.name)
-                    : ScryfallCardIdentifier(set: key.set, collectorNumber: key.number)
-            }
+            let identifiers = batch.map(\.identifier)
             guard let cards = try? await scryfall.fetchCards(identifiers: identifiers) else {
                 continue
             }
-
-            // A response is indexed both ways, because one batch can mix
-            // number-keyed and name-keyed lookups.
-            var cardsByLookup: [LookupKey: [ScryfallCard]] = [:]
+            var batchIDs: Set<String> = []
             for card in cards {
-                let setID = card.setCode.lowercased()
-                let numberKey = LookupKey(
-                    set: setID,
-                    number: CatalogIdentityNormalization.localNumber(card.collectorNumber),
-                    name: ""
-                )
-                cardsByLookup[numberKey, default: []].append(card)
-                let nameKey = LookupKey(set: setID, number: "", name: card.name)
-                cardsByLookup[nameKey, default: []].append(card)
+                let id = card.id.lowercased()
+                if !batchIDs.insert(id).inserted { unusableIDs.insert(id) }
+                let identity = PrintingIdentity(card)
+                if let previous = seenPrintings[id], previous != identity { unusableIDs.insert(id) }
+                else { seenPrintings[id] = identity }
             }
+
             for key in batch {
-                var candidates = cardsByLookup[key]
-                // Name-keyed lookups echo Scryfall's own spelling, which may
-                // differ from the request's; fall back to matching within the
-                // set rather than losing the card over punctuation.
-                if candidates == nil, key.number.isEmpty {
-                    candidates = cards.filter {
-                        $0.setCode.lowercased() == key.set
-                            && CatalogIdentityNormalization.namesMatch(
-                                imported: key.name,
-                                catalog: $0.name
-                            )
-                    }
-                }
-                guard let candidates, !candidates.isEmpty else { continue }
-                for request in requestsByLookup[key] ?? [] {
-                    guard let card = candidates.first(where: {
-                        CatalogIdentityNormalization.namesMatch(imported: request.name, catalog: $0.name)
-                    }) else { continue }
+                let candidates = cards.filter { key.matches($0) }
+                // Provider ordering and duplicate records cannot decide an
+                // imported physical identity. Require one exact response.
+                guard candidates.count == 1, let card = candidates.first,
+                      UUID(uuidString: card.id) != nil, card.language == "en", !card.digital,
+                      !unusableIDs.contains(card.id.lowercased()) else { continue }
+                for pending in requestsByLookup[key] ?? [] {
+                    let request = pending.request
+                    guard card.setCode.lowercased() == pending.setID,
+                          CatalogIdentityNormalization.magicCollectorNumberMatches(imported: request.cardNumber,
+                            catalog: card.collectorNumber, setID: pending.setID, exactPrintingID: pending.exactPrintingID),
+                          CatalogIdentityNormalization.namesMatch(imported: request.name, catalog: card.name) else { continue }
                     result[request.identityKey] = ImportedCatalogMetadata(
                         providerID: card.id,
                         setCode: card.setCode.uppercased(),
@@ -1182,11 +1227,13 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 }
             }
 
-            if start + 75 < lookups.count {
+            if index + 1 < batches.count {
                 try? await Task.sleep(for: .milliseconds(150))
             }
         }
-        return result
+        // A later exact-ID/collector batch can expose a contradictory identity
+        // for an earlier response. Neither attachment may survive that conflict.
+        return result.filter { !unusableIDs.contains($0.value.providerID.lowercased()) }
     }
 }
 
@@ -1262,15 +1309,30 @@ enum CatalogIdentityNormalization {
         return isJapanese ? .ja : .en
     }
 
-    /// Sets whose Scryfall collector numbers are not the numbers printed on the
-    /// card, so identity has to come from the name instead.
-    ///
-    /// The List reprints cards from across Magic's history and files each under
-    /// its original set's code — `MM2-48`, `M15-94` — while every marketplace
-    /// export writes the plain number. Matching those by number finds nothing,
-    /// every time, which is why 100% of imported List cards went unpriced.
-    static func matchesByCardName(setID: String) -> Bool {
+    /// These reprint sets use original-set composites such as `MM3-4`.
+    /// A name or plain number does not identify the physical printing.
+    static func requiresCompositeCollectorNumber(setID: String) -> Bool {
         ["plst", "ulst"].contains(setID.lowercased())
+    }
+
+    static func isCompositeMagicCollectorNumber(_ value: String) -> Bool {
+        value.range(of: #"^[A-Za-z0-9]{1,8}-[^\s/]+$"#, options: .regularExpression) != nil
+    }
+
+    static func magicCollectorNumberMatches(imported: String, catalog: String,
+                                            setID: String, exactPrintingID: Bool) -> Bool {
+        let requested = localNumber(imported).lowercased()
+        let actual = localNumber(catalog).lowercased()
+        if requested == actual { return true }
+        guard exactPrintingID else { return false }
+        if requested.isEmpty { return true }
+        // An existing exact UUID can identify a List printing whose export
+        // omitted the original set prefix. The remaining number must agree;
+        // conflicting composite identities are never reduced to their suffix.
+        guard requiresCompositeCollectorNumber(setID: setID),
+              !isCompositeMagicCollectorNumber(requested),
+              isCompositeMagicCollectorNumber(actual), let separator = actual.firstIndex(of: "-") else { return false }
+        return localNumber(String(actual[actual.index(after: separator)...])) == requested
     }
 
     static func canonicalSetName(_ value: String, game: CardGame) -> String {
