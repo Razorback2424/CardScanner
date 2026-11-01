@@ -124,7 +124,7 @@ a risk queue; it is not classified as proven bad data.
 - Physical collision selection for `12ee460`: **97 pricing tests passed**, including durable ambiguous-row exclusion and retained quote history.
 - Lifecycle selection: **269 passed**; extended retained-handle selection: **270 passed**, zero failures.
 - Expanded aggregate at `87aa90f`: 1,057 passing results, two deliberate skips, and one collector-scope test failing three assertions because it still expected the collapsed 151 Cosmos slot. This prompted the explicit GO pack-scope regression above. Its narrow rerun confirmed Master membership but caught an expected-total calculation using raw rows before existing rarity-alias removal; `b9177dd` corrects that calculation from retained data. Final aggregate for `b9177dd` is recorded below.
-- **Final native aggregate at source `b9177dd844221497ae89e05dc810227a870ac59d`: 1,062 cases, 1,060 passed, zero failures, two deliberate skips** (`testLivePublishedMistyRefresh` and opt-in `testAgedStoreBaseline`). Xcode 27.1 / iOS 27.0, ad hoc signed simulator. All 28 catalog workflow selections plus item-kind, TCGCSV, fallback and full portfolio reconciliation classes ran. The required workflow now retains graded contracts, scanned graded resolution, lifecycle, share content and price snapshot regression suites. This is a selected aggregate, not every repository test.
+- **Completed aggregate before chronology review, source `b9177dd844221497ae89e05dc810227a870ac59d`: 1,062 cases, 1,060 passed, zero failures, two deliberate skips** (`testLivePublishedMistyRefresh` and opt-in `testAgedStoreBaseline`). Xcode 27.1 / iOS 27.0, ad hoc signed simulator. All 28 catalog workflow selections plus item-kind, TCGCSV, fallback and full portfolio reconciliation classes ran. The required workflow retains graded contracts, scanned graded resolution, lifecycle, share content and price snapshot regression suites. This is a selected aggregate, not every repository test.
 - A broader stage-one selection had one `CollectionKeyTests.testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind` assertion failure (expected nil, actual `direct-product`). The exact assertion was separately reproduced on untouched `main@0ab3b0e` using a separate baseline worktree and DerivedData. This is a baseline defect, not a green full-suite claim.
 - Updated Python ingestion/audit aggregate: **155 cases, 150 passed, five skipped** (optional shared Swift Yu-Gi-Oh publisher binary not supplied). Rehashed negative proofs reject wrong subtype, base finish and physical product.
 - Yu-Gi-Oh membership/printing-family aggregate: **33 passed**.
@@ -135,6 +135,40 @@ a risk queue; it is not classified as proven bad data.
 The raw census contains **4,421** all-Normal risk rows at this baseline. The
 previous 4,321 figure is not adopted as a current count; neither count proves
 that those cards have incorrect physical finishes.
+
+## Expiry chronology review follow-up
+
+Review of `132a4f7` found three confirmed chronology defects in the first expiry
+implementation. Commit `72bcbeb` addresses them within the same quote path:
+
+- Replay passes its cutoff through lifecycle eligibility, record amounts and
+  canonical/legacy key selection. A valid quote before its published expiry
+  stays valued at that cutoff, even after it expires today. Expiry blocks a
+  legacy imported-value fallback. Explicit withdrawal still follows the
+  observation log's knowledge timestamp rather than rewriting earlier cutoffs.
+- A newer positive exact JustTCG observation can supersede an older mutable
+  expired record while the record catches up. The instrument key, market UUID,
+  any source UUID, USD eligibility and local chronology must agree. Stale,
+  future-at-cutoff, foreign and wrong-identity observations do not revive it.
+  Follow-up `bd26f35` also rejects a later receipt with a provably older or
+  identical provider sale clock; receipt order cannot turn a cached old sale
+  into a new sale.
+- A later fetch of an expired upstream snapshot cannot withdraw a newer known
+  sale with a later provider sale/update clock. The comparison includes exact
+  stamped observations when the record lags. Equal sale clocks still allow
+  genuine expiry. Imported-valuation timestamps are not provider sale clocks.
+
+The existing metadata JSON gains an optional source timestamp; older envelopes
+remain decodable and no SwiftData field is added. Six regression tests cover
+these cases, including record-only and observation-backed cutoff valuation.
+Focused pricing/portfolio run: **194 total, 193 passed, one opt-in performance
+skip, zero failures**. Aggregate at `72bcbeb`: **1,068 total, 1,066 passed,
+two deliberate skips, zero failures**. The three historical/observation cases
+are selected by the required catalog CI workflow. **Final source
+`bd26f35ab46a0a8e0890bc29093b188e0d736786`: six focused passes; aggregate
+1,068 total = 1,066 passed + two deliberate live-feed/performance skips,
+zero failures.** The aggregate includes all 31 workflow selections plus
+item-kind, TCGCSV, fallback and full portfolio reconciliation classes.
 
 ## Remaining gates
 

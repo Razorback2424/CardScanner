@@ -5504,3 +5504,21 @@ historical.
   mutation, signed publication, deployment, merge or expanded credential access.
   Details and the exact limits remain in the
   [case ledger](docs/audits/catalog-pricing-cases-2026-11-01.md).
+
+## 2026-11-01 — Graded expiry chronology review
+
+- Follow-up to PR14 review threads: replay valuation and price-key selection
+  use the requested cutoff for expiry, preserving earlier valid quotes and the
+  knowledge timestamp of explicit withdrawal. Expired canonical evidence cannot
+  fall back to an old imported value.
+- Newer exact JustTCG USD sale observations can supersede an older mutable
+  withdrawal; mismatched UUIDs, stale/future receipts, foreign currency and
+  provably old provider sale clocks cannot revive it. Later-fetched stale
+  expiry responses cannot withdraw newer known provider sales. Imported-value
+  timestamps are excluded from provider-clock comparison.
+- Source `72bcbeb` passed 1,066 of 1,068 selected native cases, with two deliberate
+  skips and zero failures. Source `bd26f35` adds old-provider-clock negatives;
+  all six focused chronology regressions pass. Final aggregate at `bd26f35`:
+  **1,068 total, 1,066 passed, two deliberate skips, zero failures**.
+- The existing JSON envelope gains an optional provider timestamp; no SwiftData
+  field, holding migration, credential access, device install or publication.
