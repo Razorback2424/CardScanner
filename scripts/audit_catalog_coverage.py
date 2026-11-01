@@ -143,17 +143,46 @@ def pokemon_static_descriptor_inventory(definitions, registry):
     return seed, historical
 
 
+def validate_pokemon_parallel_proof(document):
+    require(document['schemaVersion'] == 1, 'Unsupported Pokemon parallel proof')
+    entries = unique(document['cases'], lambda row: row['catalogID'], 'Pokemon parallel catalog identity')
+    unique(document['cases'], lambda row: row['product']['productId'], 'Pokemon parallel product identity')
+    for identity, row in entries.items():
+        source, product = row['source'], row['product']
+        expected_hash = hashlib.sha256(json.dumps([source, product], sort_keys=True,
+            separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+        require(row['contentSHA256'] == expected_hash, f'Pokemon parallel proof hash mismatch: {identity}')
+        numbers = [field['value'] for field in product['extendedData'] if field['name'] == 'Number']
+        require(len(numbers) == 1 and re.fullmatch(r'\d+/\d+', numbers[0]),
+            f'Pokemon parallel needs one complete number: {identity}')
+        number, denominator = map(int, numbers[0].split('/'))
+        require(source['id'] == identity == source['set']['id'] + '-' + source['localId']
+            and int(source['localId']) == number and source['set']['cardCount']['official'] == denominator,
+            f'Pokemon parallel catalog/printed identity mismatch: {identity}')
+        require(row['variantID'] == 'cosmos' and product['categoryId'] == 3
+            and product['groupId'] in [2289, 2374] and product['productId'] > 0
+            and product['name'] == source['name'] + ' - ' + numbers[0] + ' (Cosmos Holo)',
+            f'Pokemon parallel needs exact Cosmos product proof: {identity}')
+        require(row['sourceURL'] == 'https://api.tcgdex.net/v2/en/cards/' + identity
+            and row['productURL'] == 'https://tcgcsv.com/tcgplayer/3/' + str(product['groupId']) + '/products',
+            f'Pokemon parallel source scope mismatch: {identity}')
+    return entries
+
+
 def pokemon(audit):
     root = Path('TradingCardScanner/PokemonChecklistSnapshot')
     manifest = audit.json(root / 'manifest.json')
     entries = manifest['entries']
     unique(entries, lambda entry: json.dumps(entry['set']['catalogID'], sort_keys=True), 'Pokemon checklist sets')
     provider_ids, card_ids, variants, per_set, all_normal = set(), set(), [], [], []
+    slots_by_card = collections.defaultdict(set)
     for entry in entries:
         rows = audit.json(root / entry['resource'])
         measured = validate_pokemon_slots(entry, rows)
         provider_ids.add(entry['providerID'])
         card_ids.update(row['providerID'] for row in rows)
+        for row in rows:
+            slots_by_card[row['providerID']].add((row.get('masterSetVariant') or {}).get('id'))
         variants.extend((row.get('masterSetVariant') or {}).get('id', '(unspecified)') for row in rows)
         per_set.append(dict(providerID=entry['providerID'], printRun=entry['set']['catalogID'].get('pokemonPrintRun'),
             rows=measured['rows'], standardSlots=measured['standardSlots'], declaredCardCount=entry['set']['cardCount']))
@@ -185,6 +214,18 @@ def pokemon(audit):
     for provider in sorted(descriptor_ids ^ publisher_ids):
         audit.gap('pokemon', 'seedPublisherDescriptorDifference', provider, 'publisher input',
             'Only in static bundled declarations.' if provider in descriptor_ids else 'Only in publisher input.')
+    parallel_path = Path('TestFixtures/TradingCards/PokemonCatalogCoverageAudit/reported-parallel-review.json')
+    parallel_review = []
+    if (audit.repo / parallel_path).is_file():
+        proof = validate_pokemon_parallel_proof(audit.json(parallel_path))
+        for identity, row in proof.items():
+            present = row['variantID'] in slots_by_card[identity]
+            parallel_review.append(dict(catalogID=identity, variantID=row['variantID'],
+                productID=row['product']['productId'], rawSnapshotHasSlot=present))
+            if not present:
+                audit.gap('pokemon', 'reviewedParallelMissingFromRawSnapshot', identity, 'exact Cosmos reprint',
+                    'Public exact-product proof retained; native tests verify the read-time choice/product repair. '
+                    'This census does not execute Swift or prove an authenticated price.', 'runtime_projection_required')
     return dict(snapshotGeneratedAt=manifest['generatedAt'], checklistEntries=len(entries),
         distinctProviderSets=len(provider_ids), physicalSlotRows=len(variants), uniqueProviderCardIDs=len(card_ids),
         slotCountsByVariant=counts(variants), sets=per_set,
@@ -193,6 +234,7 @@ def pokemon(audit):
         staticHistoricalMembershipDescriptorIDs=sorted(historical_ids),
         publisherInputDescriptors=len(publisher), seedDescriptorsAbsentOffline=sorted(descriptor_ids - provider_ids),
         rawNormalOnlyEntries=all_normal, rawNormalOnlyRows=sum(entry['rows'] for entry in all_normal),
+        reviewedParallelProducts=parallel_review,
         boundary='Static seed declarations and offline checklist slots are different inventories; historical/live routes are not executed.')
 
 

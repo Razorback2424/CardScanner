@@ -285,6 +285,39 @@ struct PokemonVariantRule: Equatable, Sendable {
     var cardNumbers: Set<Int>? = nil
 }
 
+/// Exact English Cosmos reprints missing from the provider's physical/product
+/// metadata. Public product and catalog proof is retained in
+/// PokemonCatalogCoverageAudit/reported-parallel-review.json. These are product
+/// bindings, never a generic Cosmos-to-Holofoil alias or a saved collection edit.
+enum PokemonReviewedParallelCatalog {
+    struct Entry: Sendable {
+        let catalogID, setID, name, printedNumber: String
+        let productID: Int
+
+        func matches(name: String, setID: String, number: String) -> Bool {
+            self.setID == setID
+                && CatalogIdentityNormalization.namesMatch(imported: self.name, catalog: name)
+                && ProductCatalogIdentity.numbersMatch(printedNumber, number)
+        }
+
+        func matches(_ card: TCGdexCard) -> Bool {
+            catalogID == card.id
+                && matches(name: card.name, setID: card.set.id, number: card.localId)
+                && Int(printedNumber.split(separator: "/").last ?? "") == card.set.cardCount.official
+        }
+    }
+
+    static let variant = PhysicalVariant.pokemonFoilPattern("cosmos")
+    static let entries: [Entry] = [
+        Entry(catalogID: "me05-040", setID: "me05", name: "Marshadow", printedNumber: "040/084", productID: 714065),
+        Entry(catalogID: "me02.5-097", setID: "me02.5", name: "Team Rocket's Mimikyu", printedNumber: "097/217", productID: 714066),
+        Entry(catalogID: "sv04.5-007", setID: "sv04.5", name: "Charmander", printedNumber: "007/091", productID: 641613),
+        Entry(catalogID: "sv04.5-008", setID: "sv04.5", name: "Charmeleon", printedNumber: "008/091", productID: 641614)
+    ]
+
+    static func entry(cardID: String) -> Entry? { entries.first { $0.catalogID == cardID } }
+}
+
 /// The small supplemental layer this app owns.
 ///
 /// TCGdex models identity superbly and publishes normal/holo/reverse, but it does

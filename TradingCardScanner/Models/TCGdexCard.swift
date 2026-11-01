@@ -133,6 +133,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         for choice in stampChoices where !result.contains(choice.variant) {
             result.append(choice.variant)
         }
+        if PokemonReviewedParallelCatalog.entry(cardID: id)?.matches(self) == true,
+           !result.contains(PokemonReviewedParallelCatalog.variant) {
+            result.append(PokemonReviewedParallelCatalog.variant)
+        }
         return result
     }
 

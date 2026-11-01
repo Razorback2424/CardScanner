@@ -142,6 +142,25 @@ enum CardPricing {
         }
         let detailed = exactDetailedVariants(on: pokemon, variant: variant, printRun: printRun)
         let products = detailed.reduce(into: Set<Int>()) { $0.formUnion(productIDs(in: $1)) }
+        if variant == PokemonReviewedParallelCatalog.variant,
+           printRun == nil || printRun == .unlimited,
+           let reviewed = PokemonReviewedParallelCatalog.entry(cardID: pokemon.id), reviewed.matches(pokemon) {
+            // A later conflicting provider handle is new evidence to review,
+            // not permission to choose between products. Missing handles are
+            // exactly the gap this reviewed binding fills.
+            guard products.isEmpty || (products == [reviewed.productID]
+                && detailed.allSatisfy({ productIDs(in: $0) == products })) else { return nil }
+            return reviewed.productID
+        }
+        if variant == .holo, printRun == nil || printRun == .unlimited,
+           let reviewed = PokemonTCGCSVMapping.byCardID[pokemon.id], reviewed.setID == pokemon.set.id {
+            // Reuse the existing reviewed identity when the daily feed is
+            // unconfigured/unavailable. The paid fallback can ask for this
+            // exact product instead of searching a differently grouped set.
+            guard products.isEmpty || (products == [reviewed.productID]
+                && detailed.allSatisfy({ productIDs(in: $0) == products })) else { return nil }
+            return reviewed.productID
+        }
         if products.count == 1, detailed.allSatisfy({ productIDs(in: $0) == products }) {
             return products.first
         }

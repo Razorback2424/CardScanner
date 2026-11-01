@@ -5447,3 +5447,25 @@ historical.
   [guided centering ledger](docs/audits/centering-guided-repair.md#current-precision-candidate--2026-11-01).
   Independent visual, physical capture, share/save/VoiceOver and device gates
   remain open; no automatic precision or release readiness claim.
+
+## 2026-11-01 — Exact Cosmos choices and pricing regression cases
+
+- From `main@0ab3b0e`, added exact Cosmos choices/bindings for PBL Marshadow
+  and ASC Team Rocket's Mimikyu, and missing Cosmos product handles for PAF
+  Charmander/Charmeleon. Cached checklist projection repairs choices without
+  rewriting source fingerprints or stored collection identities.
+- Reused the existing Genesect/30th mapping for direct paid-provider lookup
+  when the daily feed cannot answer. Gengar's existing exact Cosmos handle is
+  regression-tested separately from ordinary, GameStop and EB Games products.
+  No generic Cosmos/Tinsel finish alias, automatic identity rekey, invented
+  price, signed catalog publication or device install was added.
+- Final simulator aggregate: **820 passed, zero failures, one deliberate live
+  feed skip** (821 cases), including required catalog selections plus pricing,
+  graded and refresh suites. Earlier unsigned fixture Keychain failure is
+  recorded separately. Python: 149 passed/five optional publisher skips;
+  Yu-Gi-Oh families 33 passed; Pokémon core 83 passed/one skip; Magic core 18
+  passed. Census has zero structural errors and five exact Cosmos proofs.
+- [Case matrix and acceptance limits](docs/audits/catalog-pricing-cases-2026-11-01.md)
+  retain the physical-review, Tinsel, unavailable authenticated graded replay,
+  disconnected-device and unpublished-feed gaps. Private photos, collection
+  export, holdings and certificate identifiers remain outside the repository.

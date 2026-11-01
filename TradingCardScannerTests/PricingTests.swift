@@ -29,6 +29,171 @@ private actor UpgradeProbeTransport: PokemonBrowseTransport {
 }
 
 final class PricingTests: XCTestCase {
+    private func reportedParallelCases() throws -> [[String: Any]] {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-parallel-review",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        return try XCTUnwrap(document["cases"] as? [[String: Any]])
+    }
+
+    func testReportedUnpricedIdentitiesKeepReviewAndCurrencySafeguards() throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-unpriced-review",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        for entry in try XCTUnwrap(document["cases"] as? [[String: Any]]) {
+            let source = try XCTUnwrap(entry["source"] as? [String: Any])
+            let provider = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: source))
+            let card = IdentifiedCard.pokemon(provider, setCode: "")
+            switch provider.id {
+            case "30th-c-004":
+                XCTAssertEqual(provider.catalogVariants, [.holo])
+                for run: PokemonPrintRun? in [nil, .unlimited] {
+                    XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: card, variant: .holo, pokemonPrintRun: run),
+                        [.tcgplayerID("716158")], "Existing mapping must survive an unavailable daily feed")
+                }
+                for variant: PhysicalVariant in [.normal, .reverse, .pokemonFoilPattern("cosmos")] {
+                    XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: variant).isEmpty)
+                }
+                for run: PokemonPrintRun in [.firstEdition, .shadowless] {
+                    XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: .holo, pokemonPrintRun: run).isEmpty)
+                }
+            case "me02.5-155", "me02.5-178":
+                let finish = provider.id == "me02.5-155"
+                    ? PhysicalVariant.resolving("pokemonStamp|holo|pokemon-center|") : .reverse
+                XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: provider.id, variant: finish))
+                XCTAssertNil(CardPricing.price(for: card, variant: finish, magicTreatments: []).value)
+                XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: finish).isEmpty)
+                XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: finish.id,
+                    storedResolution: .userConfirmed, itemKind: .rawCard, printRun: nil, card: card))
+            case "sv10.5w-021":
+                let tinsel = PhysicalVariant.pokemonFoilPattern("tinsel")
+                XCTAssertTrue(provider.catalogVariants.contains(tinsel))
+                XCTAssertNil(CardPricing.price(for: card, variant: tinsel, magicTreatments: []).value)
+                XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: tinsel).isEmpty)
+                XCTAssertNil(ProductFinish.printing(for: tinsel), "A flat Holofoil quote is not exact Tinsel proof")
+            case "ex7-78":
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: .normal, printRun: nil), 89455)
+            default: XCTFail("Unreviewed case in retained fixture")
+            }
+        }
+    }
+
+    func testReportedSpinarakGradedIdentityRequiresExactFinishGradeAndQualifier() throws {
+        let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns",
+            collectorNumber: "78", catalogID: "ex7-78", finish: .normal)
+        let query = Dictionary(uniqueKeysWithValues: JustTCGV2GradedClient.requestQuery(identity: identity,
+            game: .pokemon, setSlug: "team-rocket-returns-pokemon", companies: [.cgc], grades: ["10.0"]))
+        XCTAssertEqual(query["grading_company"], "CGC")
+        XCTAssertEqual(query["grade"], "10")
+        XCTAssertEqual(query["set"], "team-rocket-returns-pokemon")
+        XCTAssertEqual(query["regions"], "NA")
+        let body = #"{"id":"synthetic-spinarak","name":"Spinarak","number":"78/109","game":{"id":"pokemon"},"set":{"id":"team-rocket-returns-pokemon","name":"EX Team Rocket Returns"}}"#
+        let card = try JSONDecoder().decode(JustTCGV2Card.self, from: Data(body.utf8))
+        XCTAssertTrue(identity.matches(card, game: .pokemon, expectedSetSlug: "team-rocket-returns-pokemon"))
+        XCTAssertFalse(identity.matches(card, game: .pokemon, expectedSetSlug: "team-rocket-pokemon"))
+        let owned = GradedSlabEvidence(company: .cgc, grade: .init(value: "10", label: "Gem Mint"),
+            certificationNumber: nil, labelCardText: [], printedFinish: .normal)
+        let exact = GradedVariant(id: "synthetic-cgc10", company: .cgc, grade: owned.grade,
+            printing: "Normal", marketPriceUSD: 40, updatedAt: nil)
+        XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [exact], for: owned), exact)
+        for grade in [CardGrade(value: "9", label: "Mint"), .init(value: "10", label: "Pristine"),
+                      .init(value: "10", label: "Gem Mint", qualifier: "OC")] {
+            let wrong = GradedVariant(id: "synthetic-other-grade", company: .cgc, grade: grade,
+                printing: "Normal", marketPriceUSD: 99, updatedAt: nil)
+            XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [wrong], for: owned))
+        }
+        let reverse = GradedVariant(id: "synthetic-reverse", company: .cgc, grade: owned.grade,
+            printing: "Reverse Holofoil", marketPriceUSD: 99, updatedAt: nil)
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [reverse], for: owned))
+    }
+
+    func testReportedCosmosChoicesUseOnlyTheirExactReviewedProduct() throws {
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        for entry in try reportedParallelCases() {
+            let source = try XCTUnwrap(entry["source"] as? [String: Any])
+            let provider = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: source))
+            let product = try XCTUnwrap(entry["product"] as? [String: Any])
+            let productID = try XCTUnwrap(product["productId"] as? Int)
+            let card = IdentifiedCard.pokemon(provider, setCode: "")
+            XCTAssertTrue(VariantResolver.options(for: card.variantEvidence).contains(cosmos), provider.id)
+            XCTAssertEqual(VariantResolver.resolve(card.variantEvidence, finishLock: cosmos),
+                .resolved(.init(variant: cosmos, resolution: .finishLock)), provider.id)
+            for run: PokemonPrintRun? in [nil, .unlimited] {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: cosmos, printRun: run), productID, provider.id)
+                XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: card, variant: cosmos, pokemonPrintRun: run),
+                    [.tcgplayerID(String(productID))], provider.id)
+            }
+            for run: PokemonPrintRun in [.firstEdition, .shadowless] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: card, variant: cosmos, printRun: run), provider.id)
+            }
+            XCTAssertNil(CardPricing.price(for: card, variant: cosmos, magicTreatments: []).value,
+                "The retained catalog has no USD Cosmos quote; flat Holo/Reverse cannot substitute")
+            XCTAssertNotEqual(CardPricing.tcgplayerProductID(for: card, variant: .normal, printRun: nil), productID)
+            XCTAssertNotEqual(CardPricing.tcgplayerProductID(for: card, variant: .reverse, printRun: nil), productID)
+
+            var conflict = source
+            var details = source["variants_detailed"] as? [[String: Any]] ?? []
+            details.append(["type": "holo", "foil": "cosmos", "size": "standard", "thirdParty": ["tcgplayer": 999999]])
+            conflict["variants_detailed"] = details
+            let conflicting = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: conflict))
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: .pokemon(conflicting, setCode: ""), variant: cosmos, printRun: nil))
+            if PokemonReviewedParallelCatalog.entry(cardID: provider.id) != nil {
+                for field in ["name", "localId"] {
+                    var wrong = source
+                    wrong[field] = field == "name" ? "Unrelated Card" : "999"
+                    let mismatched = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: wrong))
+                    XCTAssertNil(CardPricing.tcgplayerProductID(for: .pokemon(mismatched, setCode: ""), variant: cosmos, printRun: nil))
+                }
+            }
+        }
+    }
+
+    func testReportedCosmosChecklistProjectionRepairsCachedSlotsIdempotently() async throws {
+        let loaded = await PokemonChecklistStore.shared.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        for parallel in PokemonReviewedParallelCatalog.entries {
+            let set = try XCTUnwrap(snapshot.entry(forProviderID: parallel.setID))
+            let rows = try XCTUnwrap(snapshot.checklist(for: set.set.catalogID))
+            let old = rows.filter { !($0.providerID == parallel.catalogID && $0.masterSetVariant == PokemonReviewedParallelCatalog.variant) }
+            let repaired = PokemonChecklistReviewedProjection.cards(old)
+            XCTAssertTrue(repaired.contains { $0.providerID == parallel.catalogID
+                && $0.masterSetVariant == PokemonReviewedParallelCatalog.variant && $0.isExpandedMasterSetVariant }, parallel.catalogID)
+            XCTAssertEqual(PokemonChecklistReviewedProjection.cards(repaired), repaired)
+            XCTAssertEqual(Set(repaired.map(\.providerID)), Set(old.map(\.providerID)))
+            XCTAssertEqual(Set(repaired.filter { $0.providerID != parallel.catalogID && $0.masterSetVariant?.id == "cosmos" }
+                .map(\.providerID)), Set(rows.filter { $0.providerID != parallel.catalogID && $0.masterSetVariant?.id == "cosmos" }
+                .map(\.providerID)))
+        }
+    }
+
+    func testReportedCosmosRefreshListingRejectsOtherPhysicalProductsAndAmbiguousConditions() throws {
+        for entry in try reportedParallelCases() {
+            let product = try XCTUnwrap(entry["product"] as? [String: Any])
+            let productID = String(try XCTUnwrap(product["productId"] as? Int))
+            let id = try XCTUnwrap(entry["catalogID"] as? String)
+            let target = MarketPriceTarget(priceKey: id + ":cosmos", game: .pokemon, printingID: id,
+                variantID: "cosmos", itemKind: .rawCard, marketVariantID: nil,
+                lookupCandidates: [.tcgplayerID(productID)], currentAmount: nil, lastCheckedAt: nil,
+                exactPhysicalProductID: productID)
+            let nm = #"{"uuid":"synthetic-nm","condition":"Near Mint","printing":"Holofoil","price":2.34}"#
+            let lp = #"{"uuid":"synthetic-lp","condition":"Lightly Played","printing":"Holofoil","price":1.20}"#
+            func result(product: String, listings: String) throws -> JustTCGRefreshCoordinator.ExactLookupResult {
+                let response = try JSONDecoder().decode(JustTCGBatchResponse.self,
+                    from: Data("{\"data\":[{\"uuid\":\"synthetic-card\",\"tcgplayerId\":\"\(product)\",\"variants\":[\(listings)]}]}".utf8))
+                return JustTCGRefreshCoordinator.exactListing(lookup: .tcgplayerID(productID), owners: [target], response: response)
+            }
+            guard case let .matched(_, listing) = try result(product: productID, listings: lp + "," + nm) else {
+                return XCTFail("Exact Cosmos product must admit its single Near Mint listing: \(id)")
+            }
+            XCTAssertEqual(listing.variantId, "synthetic-nm")
+            for wrongProduct in ["684431", "685555", "686505", "534142", "534143"] where wrongProduct != productID {
+                if case .matched = try result(product: wrongProduct, listings: nm) { XCTFail("Wrong physical product priced \(id)") }
+            }
+            if case .matched = try result(product: productID, listings: lp) { XCTFail("Played listing priced \(id)") }
+            if case .matched = try result(product: productID, listings: nm + "," + nm) { XCTFail("Ambiguous listing priced \(id)") }
+        }
+    }
+
     @MainActor
     func testPokemonCatalogRetainsNewerMarketDataAcrossDirectAndCheckpointWrites() throws {
         let checkedAt = Date.now

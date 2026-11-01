@@ -45,6 +45,15 @@ native acceptance remain pending. The
 confirms retirement on November 2. This source/simulator evidence does not
 establish physical-device installation, CloudKit or release acceptance.
 
+## 2026-11-01 — exact Cosmos and graded regression cases
+
+The [case matrix](../audits/catalog-pricing-cases-2026-11-01.md) records four
+reviewed Cosmos product bindings, cached finish-choice repairs, reuse of the
+existing Genesect product mapping when the daily feed is unavailable, and
+explicit identity-review/Tinsel/graded-provider gaps. It owns this candidate's
+test results and current live/device limits; the feed-activation gate above
+remains open.
+
 ## Priority 1 contract
 
 | Condition | Required behavior |
