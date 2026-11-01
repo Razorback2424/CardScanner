@@ -5715,7 +5715,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         // These are the app's cataloged English scopes, not claims of exhaustive
         // Grand Master promo coverage. See the researched collector contract.
         let examples: [(String, Int, Int)] = [
-            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 149, 164),
+            // GO's 163 raw rows already lose ten gold/rainbow aliases under
+            // the existing checklist rule; the distinct Ditto adds one slot.
+            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 149, 154),
             ("cel25", 25, 25), ("cel25cc", 25, 25),
             ("sv10", 415, 436), ("swsh9", 310, 315)
         ]
