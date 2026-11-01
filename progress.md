@@ -16,8 +16,9 @@ zero failures/skips. Core/offline verification reproduced 83 Pokémon passes
 and 33 Yu-Gi-Oh fixture passes. The census output is byte-identical to the retained
 912-source/2,569-row run, with zero structural errors. The
 [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md) records findings,
-exact scopes and evidence limits. #8/#9 needed no further source changes. No PR
-was merged, signed catalog published or physical-device/release gate closed.
+exact scopes and evidence limits. #8/#9 needed no further source changes at the
+time. The stack was later merged through PR #10. No signed catalog was published
+or activated, and physical-device/release gates remain open.
 
 # 2026-11-01 — Correct and consolidate catalog PR review findings
 
@@ -43,13 +44,14 @@ a Pokémon print-run axis to a Magic import. The shared validation boundary now
 rejects that contradiction before either adapter path writes, preserving the
 failed-row evidence and valid Pokémon imports. Both catalog-core suites run on
 the working Xcode 27.1 validation runner alongside the native regression gate.
-All PRs remain unmerged; no signed catalog or release publication is performed.
+PRs #8–#10 were later merged into main; no signed catalog or release publication
+was performed.
 
 # 2026-11-01 — Five-game catalog coverage and printing identity audit
 
-Work on `fix/catalog-coverage-audit-2026-11-01` from `main@a2b11ade` is delivered
-through [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), unmerged
-as requested. The [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md)
+Work on `fix/catalog-coverage-audit-2026-11-01` from `main@a2b11ade` was delivered
+through [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), later
+merged into main. The [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md)
 records evidence, exact changed identities, regression results and unresolved
 coverage across Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh.
 
@@ -127,6 +129,41 @@ Review follow-ups:
 
 Those initial tests reproduced their covered defects before the fixes. This is
 simulator evidence only and does not cover the later review corrections above.
+
+# 2026-10-31 — Second-pass production review slices S2–S7a
+
+Implements the later 2026-10-31 production review on
+`refinement/production-review-2026-10-31` from `main@b592c91`, originally pushed
+one commit per slice. The branch was later merged into main in the 2026-11-01
+branch closeout. The review found no new crash or data-loss defect.
+Its findings R1–R10, the slice table and every per-slice count are in the
+[master review](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-31-production-review-second-pass).
+
+- S2 `3808d8d`: scanner bookkeeping no longer redraws every scanner observer;
+  reload availability publishes only when it flips.
+- S3 `228d52f`: the price-check share bitmap renders after asking-price typing
+  pauses, never with a superseded price.
+- S4 `b60c250`: decoded artwork caches are bounded by bytes, not 60 entries.
+- S5 `3ba8801`: the listing-photo picker reads only cards with a saved photo.
+- S6 `6f37dce`: card detail reuses the session's shared Browse catalog.
+- S7a `8b8ee92`: signposts and the [device runbook](docs/plans/hang-inspection-plan.md#2026-10-31-review-measurement-batch)
+  for the measure-first findings R5, R8 and R9.
+
+A combined run of the fourteen touched test classes at `8b8ee92` passed 494
+of 496 tests with 1 self-skip. The test runner exited once, during a Browse
+search test, while the rebooted simulator's system daemons were being killed;
+that class then passed 69 of 69 alone.
+
+The S1 artwork work (R1) was active in the main checkout, so this branch was
+built from a separate worktree on a dedicated iPhone 17 Pro / iOS 27.0
+simulator with Xcode 27.1. Evidence stays under
+`/Volumes/T7/CodexBuild/production-review-2026-10-31/`. A ProfileLocal
+(`ReleaseLocal`) device build of `8b8ee92` was signed with the existing team
+profile and installed on the owner's iPhone at their request; no trace has been
+recorded yet. Typing in the share sheet and the picker, detail and scanner
+screens were not exercised in the UI. Device measurements M1–M9, and therefore
+S8–S10, remain open. No physical-device, provider, CloudKit, archive or release
+readiness is claimed.
 
 # 2026-10-31 — Card sharing post-merge artwork recovery
 

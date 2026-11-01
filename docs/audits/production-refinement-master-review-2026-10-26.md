@@ -1,5 +1,10 @@
 # Production refinement master review
 
+**2026-10-31 second pass:** a later review's findings R1–R10 and slices S2–S7a are
+recorded in the [second-pass section](#2026-10-31-production-review-second-pass)
+on `refinement/production-review-2026-10-31`. Device measurements gating R5, R8
+and R9 are pending.
+
 **2026-10-31 closeout:** the [refinement follow-up](#2026-10-31-refinement-follow-up-verification-and-accuracy-fixes)
 is complete on `refinement/review-followup-2026-10-31` at `5344635`, verified
 on `origin`. Steps 1–4 are closed for the scoped simulator verification,
@@ -945,3 +950,66 @@ Owner checks remain open: a 30-card Lorcana session without main-thread lock
 waits, mature-collection launch-to-refresh timing, consistent coverage after a
 backdated sale, and an iOS 18 device upgrade from the App Store build. No
 physical-device, provider, CloudKit, archive or release readiness is claimed.
+
+## 2026-10-31 production review (second pass)
+
+**Status:** S2–S7a implemented on `refinement/production-review-2026-10-31`
+from `main` at `b592c91`, dated 2026-10-31. Each slice was committed and pushed
+separately; no PR or merge. The owner's device measurement batch is pending.
+
+A read-only review of launch, the scan → identify → save path, persistence,
+Collection, card detail, Portfolio, sharing, Price Check, images, refresh,
+StoreKit and listing photos found no new crash or data-loss defect. Its ten
+findings are numbered R1–R10 here so they do not collide with the M/P/V ids
+above. Line numbers in the review referred to `b592c91`.
+
+| ID | Finding | Disposition |
+| --- | --- | --- |
+| R1 | Scan rail, session stack, review sheet and Price Check images used plain `AsyncImage`: no app cache, no fallback URLs, full-size decodes | S1, implemented separately on `refinement/scan-artwork-2026-10-31` |
+| R2 | Four private `@Published` scanner bookkeeping values redrew every scanner observer; they only feed `canReloadCatalogs` | S2 |
+| R3 | The price-check share sheet re-rendered its 1080 × 1350 bitmap on the main thread for every asking-price keystroke | S3 |
+| R4 | Share was a dead end without artwork | Already fixed by `50ea0fe` before this pass |
+| R5 | The card-detail chart model is rebuilt in `body` on every drag point, and `rangeEnd: now` makes two models never equal | Measure (M4), then conditional S8 |
+| R6 | Collection tiles' 128 px accent copies shared the 60-entry decoded-image caches with full-size tiles | S4 |
+| R7 | The listing-photo picker loaded every collected card on the main thread to find the few with photos | S5 |
+| R8 | Price Check saves quotes on the main thread, and its coordinator is recreated on each Scan appearance | Measure (M9), then S10 stop-and-report |
+| R9 | Quantity +/− waits for a full background write on every tap | Measure (M8), then conditional S9 |
+| R10 | Graded finish choices and set links built a throwaway `BrowseCatalog` | S6 |
+
+Two suspects were checked and cleared: correcting a whole slab's finish keeps its
+collection key, and the StoreKit flow handles Ask to Buy, revocation and retry.
+
+### Implemented slices
+
+Tests ran with Xcode 27.1 on a dedicated iPhone 17 Pro / iOS 27.0 simulator, from
+a separate worktree, because the S1 work was active in the main checkout.
+
+| Slice | Commit | Scope and verification |
+| --- | --- | --- |
+| S2 | `3808d8d` | The four bookkeeping values became plain properties updating one published flag that changes only when reload availability flips. Scanner, One Piece, scan-metrics and suppression suites: 241 passed, 0 failed, 0 skipped, including two new `objectWillChange`-count tests. |
+| S3 | `228d52f` | When only the asking price changed, the share bitmap is cleared and rendered after a 200 ms pause; the preview still follows every keystroke. Adds the `CardShare.render` signpost. Share suites: 25 passed, 0 failed, 0 skipped. The debug review route opens with Share enabled at once; typing was not exercised because simulator input access was not granted. |
+| S4 | `b60c250` | Both decoded-image memory caches are bounded only by their 48 MiB byte limit; the collection store's zero fallback cost now uses a pixel estimate. Browse, orphan-sweep and detail-render suites: 84 passed, 0 failed, 0 skipped. |
+| S5 | `3ba8801` | The picker reads only cards with a photo key or a legacy filename; eligibility rules are unchanged and live in `ListingPhotoCardSource`. Collector Tools plus the new predicate test: 11 passed, 0 failed, 1 self-skipped. A first run on the freshly created simulator failed three local StoreKit tests at product loading; they passed on rerun with and without the change. |
+| S6 | `6f37dce` | `ContentView` publishes its session catalog as `sharedBrowseCatalog`; graded finish loading and set links use it first, with the previous fallbacks retained. Browse, Browse-presentation and activity-history suites: 167 passed, 0 failed, 0 skipped. |
+| S7a | `8b8ee92` | Adds `CardDetail.chartModel`, `CardDetail.quantityWrite` and `PriceCheck.quoteSave` signposts and the device runbook. Activity-history and quote-cache suites: 125 passed, 0 failed, 0 skipped. The Release simulator build succeeds and still omits `OnePieceOwnerCatalog`. |
+
+Combined verification at `8b8ee92` ran the fourteen test classes the slices
+touched in one simulator session: 496 tests, 494 passed and 1 self-skipped
+(`testLocalStoreKitInterruptedPurchaseReconcilesAfterIssueResolution`). The test
+runner exited once, during `BrowseFeatureTests.testRecoverySearchDoesNotRequestSealedProducts`,
+while the freshly rebooted simulator's own system daemons were being killed on
+timeout. No app crash report was written, and Xcode restarted the runner and
+finished the remaining tests. Rerun alone, `BrowseFeatureTests` passed 69 of 69,
+including that test. An earlier attempt never started its tests because the
+simulator's launch service died (Mach error -308), so the simulator was restarted
+before the counted run.
+
+### Measurement batch and decisions
+
+The device runbook (M1–M9) and its decision rules are in the
+[hang inspection plan](../plans/hang-inspection-plan.md#2026-10-31-review-measurement-batch).
+No device numbers exist yet, so S8–S10 have not started. The S2, S3 and S4
+benefits are unmeasured on hardware. Evidence is external under
+`/Volumes/T7/CodexBuild/production-review-2026-10-31/`; logs and result bundles
+are not repository artifacts. No physical-device, provider, CloudKit, archive or
+release readiness is claimed.

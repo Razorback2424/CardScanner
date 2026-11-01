@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SwiftData
 import XCTest
@@ -2810,6 +2811,40 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertFalse(String(decoding: bytes, as: UTF8.self).contains(cardName))
         XCTAssertFalse(String(decoding: bytes, as: UTF8.self).contains(encounterID.uuidString))
         XCTAssertTrue(model.unresolvedScans.isEmpty, "Stage 0 preserves baseline behavior")
+    }
+
+    func testCatalogReloadAvailabilityPublishesOnlyWhenItFlips() async throws {
+        let model = try makeModel(variants: [.normal])
+        // The helper opens a scanner session, which itself blocks reloads.
+        model.viewDisappeared()
+        await assertEventually { model.canReloadCatalogs }
+        var changes = 0
+        let observation = model.objectWillChange.sink { _ in changes += 1 }
+        defer { observation.cancel() }
+
+        model.setIdentificationInFlightForTesting(true)
+        XCTAssertFalse(model.canReloadCatalogs)
+        XCTAssertEqual(changes, 1)
+        model.setIdentificationInFlightForTesting(true)
+        XCTAssertEqual(changes, 1, "Unchanged availability must not redraw observers")
+        model.setIdentificationInFlightForTesting(false)
+        XCTAssertTrue(model.canReloadCatalogs)
+        XCTAssertEqual(changes, 2)
+    }
+
+    func testIdentificationInsideActiveSessionDoesNotPublish() async throws {
+        let model = try makeModel(variants: [.normal])
+        await assertEventually { model.isScannerSessionActiveForTesting }
+        XCTAssertFalse(model.canReloadCatalogs)
+        var changes = 0
+        let observation = model.objectWillChange.sink { _ in changes += 1 }
+        defer { observation.cancel() }
+
+        model.setIdentificationInFlightForTesting(true)
+        model.setIdentificationInFlightForTesting(false)
+        XCTAssertEqual(changes, 0, "Session bookkeeping must not redraw the scanner")
+        XCTAssertFalse(model.canReloadCatalogs)
+        model.viewDisappeared()
     }
 
     func testPurposeAndSubjectChangesFilePendingChoices() async throws {

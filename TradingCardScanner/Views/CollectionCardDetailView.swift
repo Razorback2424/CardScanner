@@ -161,6 +161,7 @@ struct CollectionDetailArtworkSource<Content: View>: View {
 
 private struct CollectionCardDetailContent: View {
     @Environment(\.cardGameRuntimes) private var runtimes
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .largeTitle) private var titleFontSize: CGFloat = 32
@@ -944,7 +945,7 @@ private struct CollectionCardDetailContent: View {
         guard let summary = gradedFinishSummary else { return }
         isLoadingGradedFinishes = true
         defer { if !Task.isCancelled { isLoadingGradedFinishes = false } }
-        let catalog = runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        let catalog = sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
         do {
             let details = try await catalog.details(for: summary)
             guard !Task.isCancelled, summary == gradedFinishSummary else { return }
@@ -1147,7 +1148,11 @@ private struct CollectionCardDetailContent: View {
     }
 
     private func makePriceHistoryModel() -> PriceHistoryChartModel {
-        PriceHistoryChartModel.market(points: marketHistory, range: history.range)
+        let signpost = PerformanceSignpost.beginInterval("CardDetail.chartModel", id: PerformanceSignpost.makeID(),
+                                                         "points=\(marketHistory.count)")
+        let model = PriceHistoryChartModel.market(points: marketHistory, range: history.range)
+        PerformanceSignpost.endInterval("CardDetail.chartModel", signpost, "samples=\(model.samples.count)")
+        return model
     }
 
     private var marketHistoryRequest: CardMarketHistoryRequest { .init(card: card) }
@@ -1546,8 +1551,13 @@ private struct CollectionCardDetailContent: View {
         guard let token = generation.currentToken() else { return }
         let shouldContinue = generation.continuation(for: token)
         isOwnershipWritePending = true
+        // Tap to updated quantity, for the device measurement batch.
+        let signpost = PerformanceSignpost.beginInterval("CardDetail.quantityWrite", id: PerformanceSignpost.makeID(),
+                                                         "from=\(observedQuantity) to=\(newQuantity)")
         Task { @MainActor in
             defer { isOwnershipWritePending = false }
+            var outcome = "superseded"
+            defer { PerformanceSignpost.endInterval("CardDetail.quantityWrite", signpost, outcome) }
             do {
                 let expectedCurrent: Int
                 if let saved = quantityState.savedQuantity(for: input) {
@@ -1556,6 +1566,7 @@ private struct CollectionCardDetailContent: View {
                     await refreshDisplayedQuantity(for: input)
                     guard generation.isCurrent(token), quantityInput == input else { return }
                     guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
+                        outcome = "unavailable"
                         errorMessage = "The current quantity could not be loaded. Try again in a moment."
                         return
                     }
@@ -1569,11 +1580,15 @@ private struct CollectionCardDetailContent: View {
                 }
                 guard generation.isCurrent(token), quantityInput == input else { return }
                 quantityState.update(savedQuantity, for: input)
+                outcome = "saved"
             } catch is CancellationError {
                 // A canceled or retired-storage action must not publish success.
+                outcome = "cancelled"
             } catch {
+                outcome = "error"
                 guard generation.isCurrent(token) else { return }
                 if case CollectionStoreError.staleQuantity = error {
+                    outcome = "stale"
                     await refreshDisplayedQuantity(for: input)
                 }
                 errorMessage = error.localizedDescription
@@ -2285,6 +2300,7 @@ private struct CardPrintingDetailsView<SetDestination: View>: View {
 
 private struct CollectionSetDestination: View {
     @Environment(\.cardGameRuntimes) private var runtimes
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     let game: CardGame
     let setName: String
     let setCode: String
@@ -2322,7 +2338,7 @@ private struct CollectionSetDestination: View {
 
     private func load() async {
         failure = nil
-        let catalog = catalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        let catalog = catalog ?? sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
         self.catalog = catalog
         do {
             let sets = try await catalog.sets(for: game)
@@ -3631,10 +3647,10 @@ enum CollectionArtworkStore {
     /// again. The ordinary `save` call mints a fresh UUID filename for every
     /// write, so an entry can never go stale under its key. Deterministic
     /// fixtures may pass a filename, which replaces that file and clears the
-    /// decoded cache before it is read again.
+    /// decoded cache before it is read again. It is bounded by decoded bytes,
+    /// not entry count, so small accent-sampling copies do not evict tiles.
     private static let imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
-        cache.countLimit = 60
         cache.totalCostLimit = 48 * 1024 * 1024
         return cache
     }()
@@ -3761,7 +3777,8 @@ enum CollectionArtworkStore {
                 from: source,
                 targetPixelSize: targetPixelSize
               ) else { return nil }
-        let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
+            ?? max(Int(image.size.width * image.scale * image.size.height * image.scale * 4), 1)
         imageCache.setObject(image, forKey: cacheKey, cost: cost)
         return image
     }

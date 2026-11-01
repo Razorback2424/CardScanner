@@ -1621,7 +1621,9 @@ final class ScannerViewModel: ObservableObject {
     /// session UI at a time so an unanswered finish choice cannot be overwritten
     /// by a later card whose request happened to finish first.
     private var identificationQueue: [ScanRequest] = []
-    @Published private var isProcessingIdentification = false
+    private var isProcessingIdentification = false {
+        didSet { refreshCatalogReloadBlock() }
+    }
     private var identificationTask: Task<Void, Never>?
     private var activeIdentificationRequestID: UUID?
     private var activeIdentificationRequest: ScanRequest?
@@ -1701,23 +1703,38 @@ final class ScannerViewModel: ObservableObject {
     /// one at depth one.
     private var activeScannerBulkWriteCoordinator: DerivedStateWriteCoordinator?
     private var scannerBulkWriteActive = false
-    @Published private var isScannerSessionActive = false
+    private var isScannerSessionActive = false {
+        didSet { refreshCatalogReloadBlock() }
+    }
     /// A completion from an ended session must never publish into the next one.
     /// This token remains stable while finalization drains, then changes before
     /// the old projections are cleared.
     private var scannerSessionID = UUID()
-    @Published private var sessionFinalizationTask: Task<Void, Never>?
+    private var sessionFinalizationTask: Task<Void, Never>? {
+        didSet { refreshCatalogReloadBlock() }
+    }
     /// Counts are keyed by session because a timed-out old writer may finish
     /// after a new session has started; one session's defer must not decrement
     /// another session's in-flight count.
-    @Published private var pendingWriteCounts: [UUID: Int] = [:]
+    private var pendingWriteCounts: [UUID: Int] = [:] {
+        didSet { refreshCatalogReloadBlock() }
+    }
+    /// The only published projection of the bookkeeping above. It changes only
+    /// when the answer flips, so identification and saves inside a session do
+    /// not redraw every observer of this model.
+    @Published private var hasCatalogReloadBlockingWork = false
 
     /// A catalog reload replaces consumers; never interrupt recognition,
     /// printing confirmation or an outstanding collection commit.
     var canReloadCatalogs: Bool {
-        !isScannerSessionActive && !isProcessingIdentification && sessionFinalizationTask == nil
+        !hasCatalogReloadBlockingWork
             && pendingChoice == nil && pendingPrintRunChoice == nil && pendingIdentityChoice == nil
-            && pendingWriteCounts.values.allSatisfy { $0 == 0 }
+    }
+
+    private func refreshCatalogReloadBlock() {
+        let blocked = isScannerSessionActive || isProcessingIdentification || sessionFinalizationTask != nil
+            || pendingWriteCounts.values.contains { $0 != 0 }
+        if blocked != hasCatalogReloadBlockingWork { hasCatalogReloadBlockingWork = blocked }
     }
     private static let sessionFinalizationDrainTimeout: TimeInterval = 2
     /// A tab can be revisited while the previous session is waiting for its

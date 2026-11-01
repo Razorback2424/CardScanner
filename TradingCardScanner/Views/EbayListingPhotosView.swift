@@ -1562,19 +1562,40 @@ private struct ListingFilesExporter: UIViewControllerRepresentable {
     }
 }
 
+/// Cards that can supply a saved photo: a device-local override, or a legacy
+/// synced filename that launch migration has not moved yet.
+enum ListingPhotoCardSource {
+    /// `rows` must be newest first; the first row per key wins, as in Collection.
+    static func latestFilenames(_ rows: [LocalArtworkOverride]) -> [String: String] {
+        Dictionary(rows.map { ($0.collectionKey, $0.filename) }, uniquingKeysWith: { first, _ in first })
+    }
+
+    /// Reads only cards that can have a photo, instead of the whole collection.
+    static func descriptor(latest: [String: String]) -> FetchDescriptor<CollectedCard> {
+        let photoKeys = latest.compactMap { $0.value.isEmpty ? nil : $0.key }.sorted()
+        return FetchDescriptor(
+            predicate: #Predicate { photoKeys.contains($0.collectionKey) || $0.userArtworkFilename != nil },
+            sortBy: [SortDescriptor(\.dateAdded, order: .reverse)]
+        )
+    }
+
+    /// Nil when the card has no usable photo, including when a newer empty
+    /// override has cleared a legacy filename.
+    static func filename(for card: CollectedCard, latest: [String: String]) -> String? {
+        guard let filename = latest[card.collectionKey] ?? card.userArtworkFilename,
+              !filename.isEmpty else { return nil }
+        return filename
+    }
+}
+
 private struct ListingCollectionPicker: View {
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \CollectedCard.dateAdded, order: .reverse) private var cards: [CollectedCard]
     @Query(sort: \LocalArtworkOverride.updatedAt, order: .reverse) private var artwork: [LocalArtworkOverride]
     @State private var search = ""
     @State private var loadingKey: String?
     @State private var selectionTask: Task<Void, Never>?
     @State private var errorMessage: String?
     let onSelect: (String, String, Data) -> Void
-
-    private var filenames: [String: String] {
-        Dictionary(artwork.map { ($0.collectionKey, $0.filename) }, uniquingKeysWith: { first, _ in first })
-    }
 
     var body: some View {
         NavigationStack {
@@ -1583,32 +1604,9 @@ private struct ListingCollectionPicker: View {
                     Text("Choose a card with a photo saved on this device. This adds its saved photo as the front; you can replace it or add a back.")
                         .font(.subheadline).foregroundStyle(.secondary)
                 }
-                let localFiles = filenames
-                let eligible = cards.filter {
-                    !(localFiles[$0.collectionKey] ?? $0.userArtworkFilename ?? "").isEmpty
-                        && (search.isEmpty || $0.name.localizedCaseInsensitiveContains(search)
-                            || $0.setName.localizedCaseInsensitiveContains(search))
-                }
-                if eligible.isEmpty {
-                    ContentUnavailableView("No Saved Card Photos", systemImage: "rectangle.stack",
-                        description: Text("Add a photo to a card in Collection, or use Camera, Photos or Files in Listing Photos."))
-                }
-                ForEach(eligible) { card in
-                    Button {
-                        select(card, filename: localFiles[card.collectionKey] ?? card.userArtworkFilename)
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(card.name).foregroundStyle(.primary)
-                                Text([card.setName, card.cardNumber, card.variantLabel].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · "))
-                                    .font(.caption).foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            if loadingKey == card.collectionKey { ProgressView() }
-                            else { Image(systemName: "plus.circle").accessibilityHidden(true) }
-                        }.frame(minHeight: 44)
-                    }
-                    .disabled(loadingKey != nil)
+                ListingPhotoCardRows(latest: ListingPhotoCardSource.latestFilenames(artwork), search: search,
+                                     loadingKey: loadingKey) { card, filename in
+                    select(card, filename: filename)
                 }
                 if let errorMessage { Text(errorMessage).foregroundStyle(.red) }
             }
@@ -1637,6 +1635,54 @@ private struct ListingCollectionPicker: View {
             }
             onSelect(title, subtitle, data)
             dismiss()
+        }
+    }
+}
+
+/// The picker's rows. The query is rebuilt from the photo keys so the picker
+/// never loads the whole collection on the main thread.
+private struct ListingPhotoCardRows: View {
+    @Query private var cards: [CollectedCard]
+    let latest: [String: String]
+    let search: String
+    let loadingKey: String?
+    let select: (CollectedCard, String?) -> Void
+
+    init(latest: [String: String], search: String, loadingKey: String?,
+         select: @escaping (CollectedCard, String?) -> Void) {
+        _cards = Query(ListingPhotoCardSource.descriptor(latest: latest))
+        self.latest = latest
+        self.search = search
+        self.loadingKey = loadingKey
+        self.select = select
+    }
+
+    var body: some View {
+        let eligible = cards.filter {
+            ListingPhotoCardSource.filename(for: $0, latest: latest) != nil
+                && (search.isEmpty || $0.name.localizedCaseInsensitiveContains(search)
+                    || $0.setName.localizedCaseInsensitiveContains(search))
+        }
+        if eligible.isEmpty {
+            ContentUnavailableView("No Saved Card Photos", systemImage: "rectangle.stack",
+                description: Text("Add a photo to a card in Collection, or use Camera, Photos or Files in Listing Photos."))
+        }
+        ForEach(eligible) { card in
+            Button {
+                select(card, ListingPhotoCardSource.filename(for: card, latest: latest))
+            } label: {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(card.name).foregroundStyle(.primary)
+                        Text([card.setName, card.cardNumber, card.variantLabel].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    if loadingKey == card.collectionKey { ProgressView() }
+                    else { Image(systemName: "plus.circle").accessibilityHidden(true) }
+                }.frame(minHeight: 44)
+            }
+            .disabled(loadingKey != nil)
         }
     }
 }

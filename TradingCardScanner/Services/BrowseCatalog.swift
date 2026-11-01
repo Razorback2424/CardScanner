@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import PokemonCatalogCore
 
@@ -2735,6 +2736,19 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var seen: Set<String> = []
         return values.filter { seen.insert($0.id).inserted }
+    }
+}
+
+private struct SharedBrowseCatalogKey: EnvironmentKey {
+    static let defaultValue: BrowseCatalog? = nil
+}
+
+extension EnvironmentValues {
+    /// The app session's one Browse catalog, so detail routes reuse its warm
+    /// caches instead of starting a catalog of their own.
+    var sharedBrowseCatalog: BrowseCatalog? {
+        get { self[SharedBrowseCatalogKey.self] }
+        set { self[SharedBrowseCatalogKey.self] = newValue }
     }
 }
 
