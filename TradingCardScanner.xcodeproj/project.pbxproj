@@ -22,6 +22,7 @@
 		A0020032 /* ImportedItemKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020032 /* ImportedItemKindTests.swift */; };
 		A00200B0 /* QuoteCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200B0 /* QuoteCacheTests.swift */; };
 		A0020031 /* MagicPhysicalObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020031 /* MagicPhysicalObjectTests.swift */; };
+		A0020901 /* MagicTokenPairingSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020901 /* MagicTokenPairingSessionTests.swift */; };
 		A0010069 /* MagicPhysicalObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010069 /* MagicPhysicalObjects.swift */; };
 		A0020030 /* MagicContentKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020030 /* MagicContentKindTests.swift */; };
 		A0010068 /* MagicContentKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010068 /* MagicContentKind.swift */; };
@@ -58,6 +59,7 @@
 		A001011F /* PokemonCatalogRollout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011F /* PokemonCatalogRollout.swift */; };
 		A0010121 /* MagicCatalogRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010121 /* MagicCatalogRelease.swift */; };
 		A0010122 /* MagicCatalogRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010122 /* MagicCatalogRegistry.swift */; };
+		A0010901 /* MagicTokenPairingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010901 /* MagicTokenPairingSession.swift */; };
 		A0010199 /* MagicRecognitionProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010199 /* MagicRecognitionProfile.swift */; };
 		A001019A /* MagicHistoricalIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001019A /* MagicHistoricalIndex.swift */; };
 		A001019C /* MagicHistoricalRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001019C /* MagicHistoricalRecognition.swift */; };
@@ -389,6 +391,7 @@
 		B0020032 /* ImportedItemKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedItemKindTests.swift; sourceTree = "<group>"; };
 		B00200B0 /* QuoteCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCacheTests.swift; sourceTree = "<group>"; };
 		B0020031 /* MagicPhysicalObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicPhysicalObjectTests.swift; sourceTree = "<group>"; };
+		B0020901 /* MagicTokenPairingSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTokenPairingSessionTests.swift; sourceTree = "<group>"; };
 		B0010069 /* MagicPhysicalObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicPhysicalObjects.swift; sourceTree = "<group>"; };
 		B0020030 /* MagicContentKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicContentKindTests.swift; sourceTree = "<group>"; };
 		B0010068 /* MagicContentKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicContentKind.swift; sourceTree = "<group>"; };
@@ -425,6 +428,7 @@
 		B001011F /* PokemonCatalogRollout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogRollout.swift; sourceTree = "<group>"; };
 		B0010121 /* MagicCatalogRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogRelease.swift; sourceTree = "<group>"; };
 		B0010122 /* MagicCatalogRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogRegistry.swift; sourceTree = "<group>"; };
+		B0010901 /* MagicTokenPairingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTokenPairingSession.swift; sourceTree = "<group>"; };
 		B0010199 /* MagicRecognitionProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicRecognitionProfile.swift; sourceTree = "<group>"; };
 		B001019A /* MagicHistoricalIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicHistoricalIndex.swift; sourceTree = "<group>"; };
 		B001019C /* MagicHistoricalRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../Games/Magic/MagicHistoricalRecognition.swift"; sourceTree = "<group>"; };
@@ -934,6 +938,7 @@
 				B001011F /* PokemonCatalogRollout.swift */,
 				B0010121 /* MagicCatalogRelease.swift */,
 				B0010122 /* MagicCatalogRegistry.swift */,
+				B0010901 /* MagicTokenPairingSession.swift */,
 				B0010199 /* MagicRecognitionProfile.swift */,
 				B001019A /* MagicHistoricalIndex.swift */,
 				B001019C /* MagicHistoricalRecognition.swift */,
@@ -1131,6 +1136,7 @@
 				B0020032 /* ImportedItemKindTests.swift */,
 				B00200B0 /* QuoteCacheTests.swift */,
 				B0020031 /* MagicPhysicalObjectTests.swift */,
+				B0020901 /* MagicTokenPairingSessionTests.swift */,
 				B0020030 /* MagicContentKindTests.swift */,
 				B0020029 /* CollectionItemKindTests.swift */,
 				B0029001 /* CardShareContentTests.swift */,
@@ -1411,6 +1417,7 @@
 				A001011F /* PokemonCatalogRollout.swift in Sources */,
 				A0010121 /* MagicCatalogRelease.swift in Sources */,
 				A0010122 /* MagicCatalogRegistry.swift in Sources */,
+				A0010901 /* MagicTokenPairingSession.swift in Sources */,
 				A0010199 /* MagicRecognitionProfile.swift in Sources */,
 				A001019A /* MagicHistoricalIndex.swift in Sources */,
 				A001019C /* MagicHistoricalRecognition.swift in Sources */,
@@ -1644,6 +1651,7 @@
 				A0020032 /* ImportedItemKindTests.swift in Sources */,
 				A00200B0 /* QuoteCacheTests.swift in Sources */,
 				A0020031 /* MagicPhysicalObjectTests.swift in Sources */,
+				A0020901 /* MagicTokenPairingSessionTests.swift in Sources */,
 				A0020030 /* MagicContentKindTests.swift in Sources */,
 				A0020029 /* CollectionItemKindTests.swift in Sources */,
 				A0029001 /* CardShareContentTests.swift in Sources */,

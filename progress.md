@@ -1,3 +1,17 @@
+# 2026-11-01 — Design and engine for double-sided Magic token scanning
+
+On `claude/mtg-token-scanner-g4un9y`, the [token scanning plan](docs/plans/magic-token-scanning.md)
+defines token scope from repository data. Its evidence includes TCGplayer Guild
+Kit/Event Deck listings showing one face on up to three cards and printed
+numbers reused for different faces. The previously unused number-only token model was replaced
+with set-qualified face identity, an order-independent physical key,
+per-set coverage gating, merged listings and a validated catalog wire format.
+A new pure `MagicTokenPairingSession` implements flip-to-resolve, sibling-face
+suppression, moved-on parking, single-sided declaration and observed-pair
+confirmation. Tests were added for both. **Not built or run:** the authoring
+environment had no Xcode or Swift toolchain, and Scryfall/TCGCSV were unreachable.
+No scanner, persistence, pricing or UI integration; no device or provider evidence.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
