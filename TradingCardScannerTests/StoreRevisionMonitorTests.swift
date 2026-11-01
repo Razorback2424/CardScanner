@@ -6,6 +6,125 @@ import XCTest
 
 @MainActor
 final class StoreRevisionMonitorTests: XCTestCase {
+    func testUnchangedBulkCompletionIsAcknowledgedBeforeOrdinarySave() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let debounce = MonitorDebounceGate(), computations = MonitorDebounceGate()
+        await debounce.release()
+        await computations.release()
+        let portfolio = PortfolioEngine(computationProvider: { container, epoch, now, timeZone in
+            await computations.wait()
+            return await PortfolioComputationActor(modelContainer: container)
+                .compute(epoch: epoch, liveInstant: now, timeZoneIdentifier: timeZone)
+        })
+        let writes = DerivedStateWriteCoordinator(), revision = StoreRevisionStore()
+        let window = host(container: container, refresh: PriceRefreshController(),
+            signal: PriceRefreshCompletionSignal(), writes: writes, scene: MonitorScene(),
+            portfolio: portfolio, revision: revision, debounce: { await debounce.wait() })
+        defer { window.isHidden = true; window.rootViewController = nil }
+        defer { Task { await debounce.release(); await computations.release() } }
+        try await waitForGate(computations, atLeast: 1)
+        for _ in 0..<80 where portfolio.isRecomputing { try await Task.sleep(for: .milliseconds(25)) }
+        XCTAssertFalse(portfolio.isRecomputing)
+        try await Task.sleep(for: .milliseconds(100))
+        await debounce.blockAgain()
+        let baselineRevision = revision.revision
+        let before = await debounce.count
+
+        writes.beginBulkWrite()
+        writes.endBulkWrite() // Deliberately no durable input change.
+        XCTAssertEqual(writes.generation, 1)
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(revision.revision, baselineRevision)
+        let afterBulk = await debounce.count
+        XCTAssertEqual(afterBulk, before, "An unchanged completed generation still bypasses debounce")
+
+        let price = PriceRecord(key: "noop-bulk#normal", game: .lorcana,
+            printingID: "noop-bulk", variantID: PhysicalVariant.normal.id)
+        price.unitMarketPriceUSD = 1
+        container.mainContext.insert(price)
+        try container.mainContext.save()
+        try await waitForGate(debounce, atLeast: before + 1)
+        XCTAssertEqual(revision.revision, baselineRevision,
+            "The no-op bulk apply must acknowledge its generation, restoring ordinary debounce")
+        await debounce.release()
+        for _ in 0..<80 where revision.revision == baselineRevision {
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        XCTAssertEqual(revision.revision, baselineRevision + 1)
+    }
+
+    func testSupersededBulkApplyRemainsPendingUntilSameGenerationRetrySettles() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let debounce = MonitorDebounceGate(), computations = MonitorDebounceGate()
+        await debounce.release()
+        await computations.release()
+        let portfolio = PortfolioEngine(computationProvider: { container, epoch, now, timeZone in
+            await computations.wait()
+            return await PortfolioComputationActor(modelContainer: container)
+                .compute(epoch: epoch, liveInstant: now, timeZoneIdentifier: timeZone)
+        })
+        let writes = DerivedStateWriteCoordinator(), revision = StoreRevisionStore()
+        let signal = PriceRefreshCompletionSignal()
+        let window = host(container: container, refresh: PriceRefreshController(),
+            signal: signal, writes: writes, scene: MonitorScene(), portfolio: portfolio,
+            revision: revision, debounce: { await debounce.wait() })
+        defer { window.isHidden = true; window.rootViewController = nil }
+        defer { Task { await debounce.release(); await computations.release() } }
+        try await waitForGate(computations, atLeast: 1)
+        for _ in 0..<80 where portfolio.isRecomputing { try await Task.sleep(for: .milliseconds(25)) }
+        XCTAssertFalse(portfolio.isRecomputing)
+        try await Task.sleep(for: .milliseconds(100))
+        await debounce.blockAgain()
+        await computations.blockAgain()
+        let beforeDebounce = await debounce.count
+        let beforeComputation = await computations.count
+        writes.beginBulkWrite()
+        let price = PriceRecord(key: "superseded-bulk#normal", game: .lorcana,
+            printingID: "superseded-bulk", variantID: PhysicalVariant.normal.id)
+        price.unitMarketPriceUSD = 1
+        container.mainContext.insert(price)
+        try container.mainContext.save()
+        writes.endBulkWrite()
+        try await waitForGate(computations, atLeast: beforeComputation + 1)
+        XCTAssertTrue(portfolio.isRecomputing, "The first bulk apply is suspended in derived work")
+
+        signal.advance() // Cancels/supersedes the observation, not the bulk generation.
+        try await Task.sleep(for: .milliseconds(150))
+        await computations.releaseCurrent()
+        try await waitForGate(computations, atLeast: beforeComputation + 2)
+        XCTAssertEqual(writes.generation, 1, "The retry belongs to the same completed bulk generation")
+        let retryDebounce = await debounce.count
+        XCTAssertEqual(retryDebounce, beforeDebounce,
+            "A superseded apply cannot consume the pending bulk generation before its retry")
+        await computations.release()
+        for _ in 0..<80 where portfolio.isRecomputing { try await Task.sleep(for: .milliseconds(25)) }
+        XCTAssertFalse(portfolio.isRecomputing)
+        try await Task.sleep(for: .milliseconds(100))
+        let settledRevision = revision.revision
+
+        price.unitMarketPriceUSD = 2
+        try container.mainContext.save()
+        try await waitForGate(debounce, atLeast: beforeDebounce + 1)
+        XCTAssertEqual(revision.revision, settledRevision,
+            "After the retry settles, ordinary saves must wait for debounce again")
+        await debounce.release()
+        for _ in 0..<80 where revision.revision == settledRevision {
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        XCTAssertEqual(revision.revision, settledRevision + 1)
+    }
+
+    private func waitForGate(_ gate: MonitorDebounceGate, atLeast expected: Int) async throws {
+        for _ in 0..<80 {
+            if await gate.count >= expected { break }
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        let actual = await gate.count
+        XCTAssertGreaterThanOrEqual(actual, expected)
+    }
+
     func testNestedBulkCompletionBypassesDebounceAndOrdinaryBurstsStillCoalesce() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -575,6 +694,7 @@ private actor MonitorDebounceGate {
     private(set) var count = 0
     private var continuations: [CheckedContinuation<Void, Never>] = []
     private var released = false
+    func blockAgain() { released = false }
     func wait() async {
         count += 1
         guard !released else { return }
