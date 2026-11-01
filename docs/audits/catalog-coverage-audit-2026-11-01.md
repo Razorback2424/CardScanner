@@ -356,6 +356,16 @@ The exact One Piece alternatives awaiting adoption are:
 | OP01-120 alternate artwork | `915c6133-40be-4e95-9287-23014d5f0ec0` |
 | OP01-120 manga artwork | `1eb727b5-eadd-4e50-89c6-a8bd7b7a05c8` |
 
+The installed owner envelope is signed revision 2. The existing
+[owner-update preparation script](../../scripts/prepare_one_piece_owner_update.py)
+allows mapping-only updates and rejects added physical printing IDs. Closing
+this gap requires an approved additive release that preserves these permanent
+IDs, passes the normal validation/signature checks and is bundled and installed
+with the matching trusted public pin. Owner-local adoption does not inherently
+require a hosted production rollout. These three reviewed alternatives also
+lack exact market mappings, so their adoption would establish printing-choice
+coverage without establishing price coverage.
+
 Magic's broader retained data contains 291 List/base joins and 1,922 promo/base
 joins. These are discovery candidates, not individually verified physical
 aliases and not permission to generate universal `PLST`, `s` or `p` mappings.

@@ -334,8 +334,13 @@ final class PokemonCatalogSliceCTests: XCTestCase {
 
     func testBirthdayPikachuDoesNotInventTheSupplierDenominator() throws {
         let registry = PokemonCatalogRegistry.bundledSeed
-        XCTAssertFalse(registry.membershipRecognition(forProviderSetID: "cel25cc")?.members
-            .contains { $0.providerCardID == "cel25cc-CC008" } ?? true)
+        XCTAssertNil(registry.membershipRecognition(forProviderSetID: "cel25cc"),
+                     "Partial historical aliases must stay outside ordinary descriptors")
+        let membership = try XCTUnwrap(registry.membershipDescriptors.first {
+            $0.providerSetID == "cel25cc"
+        }?.membershipRecognition)
+        XCTAssertEqual(membership.members.count, 24)
+        XCTAssertFalse(membership.members.contains { $0.providerCardID == "cel25cc-CC008" })
         XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["24"]))
         let invented = PokemonPrintedNumberEvidence(localID: "24", denominator: 53, scheme: .officialSet)
         XCTAssertFalse(PokemonHistoricalIdentityResolver.membershipIdentities(for: invented, in: registry)
