@@ -1,8 +1,8 @@
 # Card coverage gaps and research priorities
 
 **Reviewed:** 2026-11-01 sweep; the 2026-10-15 review and original research baseline are retained below.
-**Candidate:** `a2b11ad` on `refinement/catalog-coverage-2026-11-01`.
-**Status:** two Pokémon fixes implemented; Celebrations recognition is handled in stacked PR #9; no worldwide completeness or device certification.
+**Candidate:** `refinement/celebrations-classic-membership-2026-11-01`, stacked on `refinement/catalog-coverage-2026-11-01` (from `a2b11ad`).
+**Status:** three Pokémon fixes implemented across two pull requests; review corrections hold Birthday Pikachu and reject incomplete live reprint families; native follow-up verification pending; no worldwide completeness or device certification.
 
 ## Five-game coverage sweep — 2026-11-01
 
@@ -20,24 +20,59 @@ and the bundled Yu-Gi-Oh, Lorcana and One Piece catalogs.
 
 ### Celebrations follow-up in stacked PR #9
 
-**C1 — Celebrations Classic Collection resolves as the original card.** Twenty-four
+**C1 — Celebrations Classic Collection resolved as the original card.** Twenty-four
 `cel25cc` reprints print their original fractions: Charizard reads `4/102`, not
-a `/25` number. The set has no membership recognition (only the 30th
-Celebration Classic Collection has one), so a scan resolves silently to the
-vintage original. 22 of 25 match a same-name original in the bundled checklist
+a `/25` number. Before this change, only the 30th Celebration Classic
+Collection had membership recognition, so a scan could resolve silently to
+the vintage original. 22 fraction cases match a same-name original in the bundled checklist
 alone. Two further fraction cases reach originals through the live directory:
 Impostor Oak (a one-letter spelling difference) and Umbreon ☆ (POP 5).
 Birthday Pikachu (`cel25cc-CC008`) prints standalone `24`; it requires a
 separate recognition route and is not covered by fraction matching.
 
-The initial proposal to add all 25 as signed descriptor members is superseded
-by [PR #9](https://github.com/Razorback2424/CardScanner/pull/9)'s separate
-historical-membership approach. Only the 24 verified fractions are eligible;
-the publisher requires complete provider-card membership and cannot accept a
-partial 24-of-25 descriptor. Keeping these scan aliases separate also preserves
-Browse artwork authorization and provider numbering. Charizard `4/102` can
-offer three printings because the 30th Classic Collection also reprints it.
-The 30th-c rows themselves do not change.
+**Fix.** `PokemonCatalogRegistry.historicalMembershipDescriptors` lists the 24
+verified printed fractions. The historical resolver unions them with signed membership,
+so each collision becomes an explicit printing choice and a cached original is
+re-resolved. The list is deliberately **not** a registry descriptor, for two
+reasons:
+
+- A descriptor would disable Limitless artwork for the set, because only
+  expansion descriptors are authorized. TCGdex has no images for these 25 cards,
+  and Limitless serves all of them (`CEL_CC1`…`CEL_CC25`). Browse would lose
+  this set's artwork.
+- `cel25cc` is in the publisher's ignored-historical list, so its recognition is
+  governed by app code, like the `TG`/`GG`/`SV` subset maps, rather than by
+  the signed catalog. The publisher requires complete provider-card membership
+  and cannot accept this partial 24-of-25 recognition list.
+
+Browse, import, pricing, artwork, publisher input and the 30th Classic
+Collection are therefore unchanged, and no signed revision is needed. A future
+signed `cel25cc` descriptor would take precedence. Charizard `4/102` now offers
+three printings: Base Set, Celebrations Classic and 30th Classic.
+
+Review follow-ups (2026-11-01):
+
+- **Numbering.** A selected reprint keeps TCGdex's numbering (`CC016`), the
+  number Browse stores. Writing the printed `15` into the record made price
+  refresh reject every TCGdex response as an identity mismatch, and made
+  artwork derive the main-set Limitless key `CEL_015` instead of `CEL_CC16`.
+  The printed number remains only on the choice and in the scan evidence. The
+  30th Classic Collection, whose membership is signed, still keeps its printed
+  number as before.
+- **Incomplete families.** A reprint that is the only offline match is no longer
+  accepted. The bundled checklist lacks POP Series 5, so Umbreon `17/17` used
+  to resolve silently as the reprint. Such a scan now goes to the live
+  directory. The live path also rejects an automatic unique reviewed reprint
+  if the original's directory entry or card is missing, or its name conflicts.
+  Complete families offer both printings; explicit selection stays available.
+- **Oak spelling.** Providers name the reprint "Imposter" and the Base Set
+  original "Impostor", and exact-name preference let either OCR spelling settle
+  on one printing. A single reviewed name equivalence, following the existing
+  δ-suffix precedent for Classic reprints, now offers both.
+- **Verified standalone footer.** Birthday Pikachu prints `24` with no
+  denominator. Its `24/53` supplier field is excluded from membership, while
+  all 25 provider records remain available in Browse. This corrects the earlier
+  claim that every card could enter the fraction route.
 
 The 24 fractions below were checked against the physical-card evidence retained
 by the follow-up review. Supplier fields alone do not establish printed
@@ -90,10 +125,40 @@ apart, and two runs of the refresh actor with a pre-staged Holo sighting. With
 the guard temporarily removed, the actor rekeyed the holding from
 `sma-SV49#normal` to `sma-SV49#holo`; with it, the row is unchanged. The
 reconciliation, pricing and Browse selection passed **592 tests, zero failures
-or skips**. Build output is under
-`/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source,
-data and simulator checks only. No physical card was scanned, and C1 is not
-implemented.
+or skips**.
+
+For C1, new regressions cover the resolver collision (Claydol `15/106`), the
+three-way Charizard `4/102` choice, unchanged 30th-only numbers, and that the
+membership stays out of registry descriptors. They also cover the bundled
+offline path: every member matches a bundled `cel25cc` card's provider ID and
+canonical name, the original now becomes a choice, and the chosen reprint
+materializes as `cel25cc-CC016` with code `CEL`. A 22-class selection passed
+**581 tests, zero failures or skips**: historical capture/request, the
+Pokémon registry, coordinator, release store, update and parity suites,
+scanner view model, unresolved scans, normalization and Browse.
+
+The review follow-ups add five checks:
+
+- A selected reprint keeps `CC016` both offline and live.
+- Its stored price identity matches TCGdex's exact provider record, as the
+  refresh adapter requires.
+- Its artwork derives `CEL_CC16`, not `CEL_015`.
+- Offline Umbreon `17/17` stays unresolved, while the live directory offers POP
+  Series 5 and the reprint together.
+- Both Oak spellings offer Base Set and the reprint, and the equivalence leaves
+  other Oak titles alone.
+
+With the four source fixes stashed and the tests kept, these tests reproduced
+every reported defect: the `15` record, the refresh identity mismatch, the
+`CEL_015` key, the silent Umbreon reprint, and single-printing Oak results for
+both spellings. The live Umbreon test also passed before the fix, because that
+path was already correct; it guards that behavior. With the fixes, a 30-class
+selection passed **1,050 tests, zero failures or skips**. It combines the
+22 classes above with the reconciliation, pricing, product-fallback and
+refresh suites, and includes the 30th Classic tests that keep its printed
+numbers. Build output is under
+`/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source, data
+and simulator checks only. No physical card was scanned.
 
 ## Four-game review — 2026-10-15
 

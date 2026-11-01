@@ -1186,7 +1186,7 @@ enum PokemonHistoricalIdentityResolver {
         guard case .officialSet = number.scheme else { return [] }
         let localID = canonicalLocalID(number.localID)
         var numberedMembers: [PokemonCatalogCardIdentity] = []
-        for descriptor in registry.descriptors {
+        for descriptor in registry.membershipDescriptors {
             guard let recognition = descriptor.membershipRecognition else { continue }
             for member in recognition.members {
                 guard member.printedDenominator == number.denominator,

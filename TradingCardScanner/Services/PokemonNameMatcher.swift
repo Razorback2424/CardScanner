@@ -48,8 +48,15 @@ enum PokemonNameMatcher {
         if canonical.hasSuffix(" δ") {
             return String(canonical.dropLast(2)).trimmingCharacters(in: .whitespaces)
         }
-        return canonical
+        return reviewedEquivalents[canonical] ?? canonical
     }
+
+    /// Reviewed spellings that cannot distinguish two printings sharing one
+    /// footer. Providers name the Celebrations reprint of Base Set `73/102`
+    /// "Imposter"; the original is "Impostor". Either OCR reading must offer both.
+    private static let reviewedEquivalents = [
+        "imposter professor oak": "impostor professor oak"
+    ]
 
     private static func compact(_ canonical: String) -> String {
         canonical.filter { !$0.isWhitespace }
