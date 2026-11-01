@@ -26,7 +26,16 @@ jobs:
       - name: Test offline ingestion and mapping policies
         run: python3 -m unittest discover -s scripts/tests -v
       - name: Test Yu-Gi-Oh membership and printing families
-        run: python3 -m unittest discover -s scripts/fixtures/yugioh -v
+        run: PYTHONPATH=scripts python3 -m unittest discover -s scripts/fixtures/yugioh -v
+      - name: Check retained catalog integrity and report coverage gaps
+        run: python3 scripts/audit_catalog_coverage.py --repo . --output "$RUNNER_TEMP/catalog-coverage"
+      - name: Retain the catalog census
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-coverage-census
+          path: ${{ runner.temp }}/catalog-coverage
+          retention-days: 14
 
   ios-catalog:
     runs-on: macos-15
@@ -53,14 +62,18 @@ jobs:
           set -o pipefail
           xcodebuild test \
             -project TradingCardScanner.xcodeproj \
-            -scheme TradingCardScanner -configuration DebugLocal \
+            -scheme TradingCardScanner -configuration Debug \
             -destination "platform=iOS Simulator,id=$CATALOG_TEST_DEVICE" \
             -derivedDataPath "$RUNNER_TEMP/catalog-derived-data" \
             -resultBundlePath "$RUNNER_TEMP/catalog-tests.xcresult" \
             -parallel-testing-enabled NO \
             -only-testing:TradingCardScannerTests/ScanParserTests \
             -only-testing:TradingCardScannerTests/VariantResolverTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogPromoPadWidthTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
+            -only-testing:TradingCardScannerTests/PricingTests \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \
+            -only-testing:TradingCardScannerTests/CatalogNormalizationTests \
             -only-testing:TradingCardScannerTests/YuGiOhRecognitionTests \
             -only-testing:TradingCardScannerTests/YuGiOhResolutionTests \
             -only-testing:TradingCardScannerTests/OnePieceIntegrationTests \
