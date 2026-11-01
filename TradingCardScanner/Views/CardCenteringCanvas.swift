@@ -56,6 +56,10 @@ struct CardCenteringCanvas: View {
     @State private var hasInteracted = false
     @State private var interaction: Interaction?
     @State private var pinch: PinchStart?
+    @State private var pinchMagnification: CGFloat = 1
+    /// The finger the drag gesture tracks, so a pinch can pan with it.
+    @State private var dragLocation: CGPoint?
+    @State private var dragTranslation: CGSize = .zero
     @State private var loupe: LoupeState?
     @State private var lastTap: TapRecord?
     @State private var snapFeedback = 0
@@ -63,7 +67,13 @@ struct CardCenteringCanvas: View {
 
     private static let tapSlop: CGFloat = 4
     private static let snapRadius: CGFloat = 10
-    private static let lineHitRadius: CGFloat = 22
+    /// Zoomed out, ten points span many photo pixels; past this the search
+    /// would reach edges the person is not aiming at.
+    private static let maximumSnapRadiusPixels = 40.0
+    /// Unselected lines take a narrow band, so a zoomed-in photo still has
+    /// room to pan; the selected line and every grip take a wider one.
+    private static let lineHitRadius: CGFloat = 14
+    private static let generousHitBonus: CGFloat = 10
     private static let endHitRadius: CGFloat = 26
 
     var body: some View {
@@ -308,6 +318,9 @@ struct CardCenteringCanvas: View {
         let zoom: CGFloat
         let pan: CGSize
         let anchor: CGPoint
+        /// Where the tracked finger was, so moving both fingers pans.
+        let finger: CGPoint?
+        let magnification: CGFloat
     }
 
     private struct TapRecord {
@@ -328,6 +341,9 @@ struct CardCenteringCanvas: View {
         /// the line for a slide, the swinging end for a pivot.
         let grab: CardCenteringPoint
         var lastSnap: CardCenteringPoint?
+        /// For a slide, how far the snapped line sits from the starting line
+        /// along its normal, so the next search can favour the same edge.
+        var snapNormal: Double?
         var isSquare: Bool
     }
 
@@ -335,8 +351,9 @@ struct CardCenteringCanvas: View {
         /// Down but not yet far enough to be a drag; it may still be a tap.
         case pending(CardCenteringGuideSelection?)
         case guide(GuideDrag)
-        case pan(CGSize)
-        /// A pinch took over; the rest of this drag is ignored.
+        /// The pan when it began, and the drag translation at that moment.
+        case pan(CGSize, from: CGSize)
+        /// A pinch took over; the drag finger pans with it until it ends.
         case cancelled
     }
 
@@ -347,28 +364,60 @@ struct CardCenteringCanvas: View {
     private func magnifyGesture(size: CGSize, base: CardCenteringProjection) -> some Gesture {
         MagnifyGesture(minimumScaleDelta: 0)
             .onChanged { value in
+                pinchMagnification = value.magnification
                 if pinch == nil {
                     hasInteracted = true
                     cancelGuideDrag()
-                    pinch = PinchStart(zoom: zoom, pan: pan, anchor: value.startLocation)
+                    pinch = PinchStart(zoom: zoom, pan: pan, anchor: value.startLocation,
+                                       finger: dragLocation, magnification: value.magnification)
                 }
-                guard let pinch else { return }
-                let newZoom = min(max(pinch.zoom * value.magnification, minimumZoom(base, size: size)), maximumZoom(base))
-                let anchor = pinch.anchor, middle = center(size)
-                let ratio = newZoom / pinch.zoom
-                zoom = newZoom
-                pan = CGSize(
-                    width: anchor.x - middle.x - ratio * (anchor.x - middle.x - pinch.pan.width),
-                    height: anchor.y - middle.y - ratio * (anchor.y - middle.y - pinch.pan.height)
-                )
-                isAtCardFit = false
+                applyPinch(size: size, base: base)
             }
             .onEnded { _ in
                 pinch = nil
+                // A finger still down carries on as a one-finger pan.
+                if case .cancelled? = interaction, dragLocation != nil {
+                    interaction = .pan(pan, from: dragTranslation)
+                }
                 withAnimation(reduceMotion ? nil : .snappy(duration: 0.25)) {
                     pan = clampedPan(pan, zoom: zoom, size: size, base: base)
                 }
             }
+    }
+
+    /// Zooms about the pinch's start point and follows the tracked finger, so
+    /// two fingers moving together pan the photo.
+    private func applyPinch(size: CGSize, base: CardCenteringProjection) {
+        guard let pinch else { return }
+        let newZoom = min(
+            max(pinch.zoom * pinchMagnification / max(pinch.magnification, 1e-6), minimumZoom(base, size: size)),
+            maximumZoom(base)
+        )
+        let anchor = pinch.anchor, middle = center(size)
+        let ratio = newZoom / pinch.zoom
+        let moved = pinch.finger.flatMap { start in
+            dragLocation.map { CGSize(width: $0.x - start.x, height: $0.y - start.y) }
+        } ?? .zero
+        zoom = newZoom
+        pan = CGSize(
+            width: anchor.x - middle.x - ratio * (anchor.x - middle.x - pinch.pan.width) + moved.width,
+            height: anchor.y - middle.y - ratio * (anchor.y - middle.y - pinch.pan.height) + moved.height
+        )
+        isAtCardFit = false
+    }
+
+    /// Restarts the pinch from where it is, for when the tracked finger lifts
+    /// or is first seen mid-pinch, so the photo does not jump.
+    private func rebasePinch() {
+        guard let pinch else { return }
+        let moved = pinch.finger.flatMap { start in
+            dragLocation.map { CGSize(width: $0.x - start.x, height: $0.y - start.y) }
+        } ?? .zero
+        self.pinch = PinchStart(
+            zoom: zoom, pan: pan,
+            anchor: CGPoint(x: pinch.anchor.x + moved.width, y: pinch.anchor.y + moved.height),
+            finger: dragLocation, magnification: pinchMagnification
+        )
     }
 
     private func dragGesture(size: CGSize, base: CardCenteringProjection) -> some Gesture {
@@ -378,7 +427,17 @@ struct CardCenteringCanvas: View {
     }
 
     private func dragChanged(_ value: DragGesture.Value, size: CGSize, base: CardCenteringProjection) {
-        guard pinch == nil else { return }
+        let isFirstSample = dragLocation == nil
+        dragLocation = value.location
+        dragTranslation = value.translation
+        if let pinch {
+            if isFirstSample || pinch.finger == nil {
+                rebasePinch()
+            } else {
+                applyPinch(size: size, base: base)
+            }
+            return
+        }
         let projection = projected(base, in: size)
         if interaction == nil {
             hasInteracted = true
@@ -391,16 +450,17 @@ struct CardCenteringCanvas: View {
                 selection = hit
                 interaction = .guide(drag)
             } else {
-                interaction = .pan(pan)
+                interaction = .pan(pan, from: .zero)
             }
         }
         switch interaction {
         case var .guide(drag)?:
             updateGuideDrag(&drag, location: value.location, projection: projection, size: size)
             interaction = .guide(drag)
-        case let .pan(start)?:
+        case let .pan(start, from)?:
             pan = clampedPan(
-                CGSize(width: start.width + value.translation.width, height: start.height + value.translation.height),
+                CGSize(width: start.width + value.translation.width - from.width,
+                       height: start.height + value.translation.height - from.height),
                 zoom: zoom, size: size, base: base
             )
             isAtCardFit = false
@@ -410,6 +470,12 @@ struct CardCenteringCanvas: View {
     }
 
     private func dragEnded(_ value: DragGesture.Value, size: CGSize, base: CardCenteringProjection) {
+        if pinch != nil {
+            // Keep the pinch going on the other finger without a jump.
+            dragLocation = nil
+            rebasePinch()
+        }
+        dragLocation = nil
         defer {
             interaction = nil
             withAnimation(reduceMotion ? nil : .easeOut(duration: 0.15)) { loupe = nil }
@@ -502,6 +568,7 @@ struct CardCenteringCanvas: View {
             startMeasurement: measurement,
             grab: CardCenteringPoint(x: held.x - finger.x, y: held.y - finger.y),
             lastSnap: nil,
+            snapNormal: nil,
             isSquare: abs(measurement.innerTiltDegrees ?? 0) < CardCenteringMeasurement.innerTiltDetentDegrees
         )
     }
@@ -516,9 +583,10 @@ struct CardCenteringCanvas: View {
         let target = CardCenteringPoint(x: finger.x + drag.grab.x, y: finger.y + drag.grab.y)
         let guide = drag.selection.guide
         guard let line = drag.startMeasurement.segment(for: guide) else { return }
-        let radius = Double(Self.snapRadius / projection.scale)
+        let radius = min(Double(Self.snapRadius / projection.scale), Self.maximumSnapRadiusPixels)
         var edited = drag.startMeasurement
         var snapped: CardCenteringPoint?
+        var snapNormal: Double?
         let focus: CardCenteringPoint
 
         if let end = drag.selection.end {
@@ -555,10 +623,12 @@ struct CardCenteringCanvas: View {
                 start: CardCenteringPoint(x: line.start.x + normal.x * offset, y: line.start.y + normal.y * offset),
                 end: CardCenteringPoint(x: line.end.x + normal.x * offset, y: line.end.y + normal.y * offset),
                 pivots: false,
-                radius: radius
+                radius: radius,
+                preferredOffset: drag.snapNormal.map { $0 - offset }
             ) {
                 point = CardCenteringPoint(x: target.x + normal.x * snap.offset, y: target.y + normal.y * snap.offset)
                 snapped = point
+                snapNormal = offset + snap.offset
             }
             edited.moveGuide(guide, through: point)
             let settled = edited.segment(for: guide) ?? line
@@ -569,15 +639,22 @@ struct CardCenteringCanvas: View {
         }
 
         onEdit(edited)
+        // One tick per edge landed on. A slide compares positions across the
+        // line, since sliding the finger along a held edge moves the point.
         if let snapped {
-            let moved = drag.lastSnap.map { hypot($0.x - snapped.x, $0.y - snapped.y) * Double(projection.scale) } ?? .infinity
+            let moved = if let snapNormal {
+                drag.snapNormal.map { abs($0 - snapNormal) * Double(projection.scale) } ?? .infinity
+            } else {
+                drag.lastSnap.map { hypot($0.x - snapped.x, $0.y - snapped.y) * Double(projection.scale) } ?? .infinity
+            }
             if moved > 2 { snapFeedback &+= 1 }
         }
         drag.lastSnap = snapped
+        drag.snapNormal = snapNormal
         loupe = LoupeState(
             focus: focus,
             position: loupePosition(for: location, in: size),
-            scale: min(projection.scale * 3, max(projection.scale * 1.5, 6))
+            scale: Self.loupeScale(for: projection.scale)
         )
     }
 
@@ -585,7 +662,8 @@ struct CardCenteringCanvas: View {
         start: CardCenteringPoint,
         end: CardCenteringPoint,
         pivots: Bool,
-        radius: Double
+        radius: Double,
+        preferredOffset: Double? = nil
     ) -> CardCenteringEdgeSnapper.Snap? {
         guard let lumaField else { return nil }
         return CardCenteringEdgeSnapper.snap(
@@ -595,8 +673,15 @@ struct CardCenteringCanvas: View {
             radius: radius,
             field: lumaField,
             photoRotationDegrees: rotationDegrees,
-            imageSize: CardCenteringSize(width: Double(measurement.imageWidth), height: Double(measurement.imageHeight))
+            imageSize: CardCenteringSize(width: Double(measurement.imageWidth), height: Double(measurement.imageHeight)),
+            preferredOffset: preferredOffset
         )
+    }
+
+    /// Screen points per photo pixel in the loupe: always enough to see
+    /// single pixels, and at least twice the view it magnifies.
+    static func loupeScale(for viewScale: CGFloat) -> CGFloat {
+        max(viewScale * 2, 5)
     }
 
     private static func normal(from start: CardCenteringPoint, to end: CardCenteringPoint) -> CardCenteringPoint {
@@ -638,11 +723,11 @@ struct CardCenteringCanvas: View {
             guard let handles = CardCenteringGuideHandles(
                 guide: guide, measurement: measurement, projection: projection, visible: visible
             ) else { continue }
-            var distance = min(
-                Self.distance(from: location, toSegment: handles.start, handles.end),
-                hypot(location.x - handles.grip.x, location.y - handles.grip.y) - 6
+            let line = Self.distance(from: location, toSegment: handles.start, handles.end)
+            let distance = min(
+                guide == selection?.guide ? line - Self.generousHitBonus : line,
+                hypot(location.x - handles.grip.x, location.y - handles.grip.y) - Self.generousHitBonus
             )
-            if guide == selection?.guide { distance -= 4 }
             if distance <= Self.lineHitRadius, distance < (best?.distance ?? .infinity) {
                 best = (guide, distance)
             }
@@ -757,12 +842,12 @@ enum CardCenteringGuideRenderer {
             (.outer, measurement.geometryOuterQuad, .red),
             (.inner, measurement.geometryInnerQuad, .cyan)
         ]
+        // Every line is one solid stroke with no halo or glow, so its edge is
+        // unambiguous: the coloured line itself is the guide.
         let dimmed = selection != nil
         for (_, quad, color) in frames {
             guard let quad else { continue }
-            let path = Self.path(quad, projection)
-            context.stroke(path, with: .color(.black.opacity(0.45)), lineWidth: 3.5)
-            context.stroke(path, with: .color(color.opacity(dimmed ? 0.7 : 1)), lineWidth: 1.5)
+            context.stroke(Self.path(quad, projection), with: .color(color.opacity(dimmed ? 0.6 : 1)), lineWidth: 1)
         }
 
         if let selection, let line = measurement.segment(for: selection.guide) {
@@ -780,9 +865,7 @@ enum CardCenteringGuideRenderer {
                     context.stroke(dashed, with: .color(.white.opacity(0.8)), style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
                 }
             }
-            context.stroke(path, with: .color(color.opacity(0.35)), lineWidth: 10)
-            context.stroke(path, with: .color(.black.opacity(0.5)), lineWidth: 4.5)
-            context.stroke(path, with: .color(color), lineWidth: 2.5)
+            context.stroke(path, with: .color(color), lineWidth: 1.5)
         }
 
         guard showsHandles else { return }
@@ -836,11 +919,13 @@ private struct CardCenteringPhoto: View {
     let rotationDegrees: Double
     let base: CardCenteringProjection
     let projection: CardCenteringProjection
+    /// Draws each photo pixel as a hard-edged square, for the loupe.
+    var pixelated = false
 
     var body: some View {
         let width = CGFloat(max(measurement.imageWidth, 1)), height = CGFloat(max(measurement.imageHeight, 1))
-        Image(uiImage: image)
-            .resizable()
+        let photo = Image(uiImage: image).resizable()
+        (pixelated ? photo.interpolation(.none) : photo)
             .frame(width: width * base.scale, height: height * base.scale)
             .rotationEffect(.degrees(rotationDegrees))
             .scaleEffect(projection.scale / base.scale)
@@ -850,7 +935,8 @@ private struct CardCenteringPhoto: View {
 }
 
 /// A magnified view of the photo around the line being dragged, centred on
-/// it, so the edge stays visible under the finger.
+/// it, so the edge stays visible under the finger. It shows photo pixels as
+/// squares, so the line can be set against a single pixel.
 private struct CardCenteringLoupe: View {
     static let diameter: CGFloat = 128
 
@@ -875,7 +961,8 @@ private struct CardCenteringLoupe: View {
                 measurement: measurement,
                 rotationDegrees: rotationDegrees,
                 base: base,
-                projection: projection
+                projection: projection,
+                pixelated: true
             )
             Canvas { context, size in
                 CardCenteringGuideRenderer.draw(

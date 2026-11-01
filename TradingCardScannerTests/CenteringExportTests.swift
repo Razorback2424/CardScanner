@@ -861,6 +861,56 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertEqual(pivot.offset, -8, accuracy: 0.75, "the swinging end lands on the edge")
     }
 
+    func testSnappingFindsAnEdgeSlightlyOffTheGuideAngle() throws {
+        // Over this long side, 0.3° moves the edge about 5 px from end to end.
+        // The step is modest, so smeared across that drift it would be too
+        // faint to snap to at the guide's own angle.
+        let field = try lumaField(size: CGSize(width: 600, height: 1100)) { context in
+            context.setFillColor(UIColor(white: 0.55, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 600, height: 1100))
+            context.setFillColor(UIColor(white: 0.42, alpha: 1).cgColor)
+            context.move(to: CGPoint(x: 0, y: 0))
+            context.addLine(to: CGPoint(x: 197.4, y: 0))
+            context.addLine(to: CGPoint(x: 202.6, y: 1100))
+            context.addLine(to: CGPoint(x: 0, y: 1100))
+            context.fillPath()
+        }
+        let snap = try XCTUnwrap(CardCenteringEdgeSnapper.snap(
+            start: .init(x: 192, y: 20), end: .init(x: 192, y: 1080), pivotsOnStart: false,
+            radius: 20, field: field, photoRotationDegrees: 0,
+            imageSize: .init(width: 600, height: 1100)
+        ))
+        // The normal points left, so the edge at the middle is 8 px away.
+        XCTAssertEqual(snap.offset, -8, accuracy: 0.75, "the guide rests where it crosses the edge at its middle")
+    }
+
+    func testSnappingStaysOnTheEdgeItHolds() throws {
+        // Two edges either side of the guide; the stronger one is further.
+        let field = try lumaField(size: CGSize(width: 400, height: 560)) { context in
+            context.setFillColor(UIColor(white: 0.5, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 400, height: 560))
+            context.setFillColor(UIColor(white: 0.62, alpha: 1).cgColor)
+            context.fill(CGRect(x: 192, y: 0, width: 208, height: 560))
+            context.setFillColor(UIColor(white: 0.95, alpha: 1).cgColor)
+            context.fill(CGRect(x: 212, y: 0, width: 188, height: 560))
+        }
+        func snap(preferred: Double?) throws -> Double {
+            try XCTUnwrap(CardCenteringEdgeSnapper.snap(
+                start: .init(x: 200, y: 40), end: .init(x: 200, y: 520), pivotsOnStart: false,
+                radius: 20, field: field, photoRotationDegrees: 0,
+                imageSize: .init(width: 400, height: 560), preferredOffset: preferred
+            )).offset
+        }
+        // The normal points left: the faint edge is at +8, the strong at -12.
+        XCTAssertEqual(try snap(preferred: nil), -12, accuracy: 0.5)
+        XCTAssertEqual(try snap(preferred: 8), 8, accuracy: 0.5, "a held edge is not dropped for a stronger one")
+    }
+
+    func testLoupeAlwaysShowsSinglePixels() {
+        XCTAssertGreaterThanOrEqual(CardCenteringCanvas.loupeScale(for: 0.2), 5)
+        XCTAssertEqual(CardCenteringCanvas.loupeScale(for: 6), 12)
+    }
+
     func testSnappingFollowsTheStraightenedPhoto() throws {
         // A vertical edge through the centre appears horizontal once the photo
         // is turned a quarter turn under the guides.
@@ -926,6 +976,42 @@ final class CenteringExportTests: XCTestCase {
         model.undo()
         XCTAssertEqual(model.measurement?.inner, original.inner)
         XCTAssertFalse(model.canUndo)
+    }
+
+    @MainActor
+    func testUndoStepsThroughExactValuesAndCanvasEditsInOrder() throws {
+        let model = CardCenteringViewModel()
+        let original = CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: .axisAligned(.init(left: 40, top: 40, right: 360, bottom: 520)),
+            innerQuad: .axisAligned(.init(left: 60, top: 60, right: 340, bottom: 500)),
+            warnings: [], innerReference: .printedBorder, confidence: .legacyConfident)
+        model.measurement = original
+
+        model.nudge(CardCenteringGuideSelection(guide: .init(frame: .inner, side: .left)), by: 2)
+        model.updateInner(\.top, to: 70, within: 41...499)
+        XCTAssertEqual(model.measurement?.inner.left, 62)
+        XCTAssertEqual(model.measurement?.inner.top, 70)
+
+        model.undo()
+        XCTAssertEqual(model.measurement?.inner.top, 60, "an Exact Values edit is its own undo step")
+        XCTAssertEqual(model.measurement?.inner.left, 62)
+        model.undo()
+        XCTAssertEqual(model.measurement?.inner, original.inner)
+    }
+
+    @MainActor
+    func testCanvasEditEndsThePrecisionUndoSession() throws {
+        let model = CardCenteringViewModel()
+        model.measurement = CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: .axisAligned(.init(left: 40, top: 40, right: 360, bottom: 520)),
+            innerQuad: .axisAligned(.init(left: 60, top: 60, right: 340, bottom: 500)),
+            warnings: [], innerReference: .printedBorder, confidence: .legacyConfident)
+
+        model.updatePrecisionSide(.left, frame: .inner, position: 64)
+        XCTAssertTrue(model.canUndoPrecisionEdit)
+        model.nudge(CardCenteringGuideSelection(guide: .init(frame: .inner, side: .top)), by: 1)
+        XCTAssertFalse(model.canUndoPrecisionEdit, "precision Undo may not restore guides from before a later drag")
+        XCTAssertFalse(model.canResetPrecisionEdits)
     }
 
     @MainActor
