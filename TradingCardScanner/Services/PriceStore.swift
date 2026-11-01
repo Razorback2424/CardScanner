@@ -741,21 +741,23 @@ struct PriceStore {
         guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
               record.lastCheckedAt == evidence.checkedAt else { return }
         if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
-            // Expiry preserves the provider's last-sale clock. A later fetch
-            // of an older upstream snapshot cannot withdraw a newer sale.
-            if let incomingSale = evidence.lifecycle.lastSaleAt ?? evidence.sourceUpdatedAt {
-                let observation = PriceObservationLog(context: context, index: index).newestObservation(instrumentKey: key)
-                let newerObservedSale = observation.flatMap { value -> Date? in
-                    guard value.isSourceStamped,
-                          InventoryLedger.matchesExactGradedObservation(value, variantID: evidence.variantID, recordKey: key)
-                    else { return nil }
-                    return value.effectiveAt
-                }
-                let knownSale = [record.source == .justTCG ? record.sourceUpdatedAt : nil,
-                    record.exactGradedQuoteEvidence?.lifecycle.lastSaleAt,
-                    record.exactGradedQuoteEvidence?.sourceUpdatedAt, newerObservedSale].compactMap { $0 }.max()
-                if let knownSale, incomingSale < knownSale { return }
+            // A price-observation clock and a most-recent-sale clock describe
+            // different facts. Only matching clock fields can establish stale
+            // evidence; same-sale expiry may have a later update timestamp.
+            let prior = record.exactGradedQuoteEvidence
+            if let incomingSale = evidence.lifecycle.lastSaleAt,
+               let knownSale = prior?.lifecycle.lastSaleAt, incomingSale < knownSale { return }
+            let observation = PriceObservationLog(context: context, index: index).newestObservation(instrumentKey: key)
+            let observedUpdate = observation.flatMap { value -> Date? in
+                guard value.isSourceStamped,
+                      InventoryLedger.matchesExactGradedObservation(value, variantID: evidence.variantID, recordKey: key)
+                else { return nil }
+                return value.effectiveAt
             }
+            let knownUpdate = [record.source == .justTCG ? record.sourceUpdatedAt : nil,
+                prior?.sourceUpdatedAt, observedUpdate].compactMap { $0 }.max()
+            if let incomingUpdate = evidence.sourceUpdatedAt,
+               let knownUpdate, incomingUpdate < knownUpdate { return }
             PriceObservationLog(context: context, index: index).recordInvalidation(
                 instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
         }

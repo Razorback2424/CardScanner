@@ -334,7 +334,7 @@ struct InventoryLedger {
         }
         if let record, record.exactGradedQuoteIsWithdrawn(at: date) {
             // A lifecycle describes the exact quote known at checkedAt. A
-            // later validated sale observation may arrive before its mutable
+            // later validated price observation may arrive before its mutable
             // record; the older lifecycle cannot withdraw that newer evidence.
             guard let evidence = record.exactGradedQuoteEvidence,
                   let observation,
@@ -343,9 +343,11 @@ struct InventoryLedger {
                   observation.receivedAt <= date,
                   record.invalidatedAt.map({ observation.receivedAt > $0 }) ?? true,
                   let amount = observation.effectiveUSDAmount else { return .unpriced }
-            let knownSale = [evidence.lifecycle.lastSaleAt, evidence.sourceUpdatedAt,
+            // Observation.effectiveAt is a provider price-update clock, not
+            // the separate last_sale_at lifecycle field.
+            let knownUpdate = [evidence.sourceUpdatedAt,
                 record.source == .justTCG ? record.sourceUpdatedAt : nil].compactMap { $0 }.max()
-            if observation.isSourceStamped, let knownSale, observation.effectiveAt <= knownSale {
+            if observation.isSourceStamped, let knownUpdate, observation.effectiveAt <= knownUpdate {
                 return .unpriced
             }
             return InventoryValuation(unitPrice: amount, source: observation.source,

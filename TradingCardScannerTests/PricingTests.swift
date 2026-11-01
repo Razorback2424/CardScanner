@@ -47,6 +47,62 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testExpiryRejectsOlderSaleOrUpdateUsingOnlyMatchingClockFields() throws {
+        let now = Date.now
+        let sale = now.addingTimeInterval(-1000)
+        let update = now.addingTimeInterval(-500)
+        for (incomingSale, incomingUpdate) in [
+            (sale.addingTimeInterval(-1), update.addingTimeInterval(-1)),
+            (sale, update.addingTimeInterval(-1)),
+            (sale.addingTimeInterval(-1), update.addingTimeInterval(1))
+        ] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let store = PriceStore(context: container.mainContext)
+            let current = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-matching-clocks", company: .cgc,
+                grade: .init(value: "10"), printing: "Normal", marketPriceUSD: 60, updatedAt: update,
+                quoteLifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: sale,
+                    priceExpiresAt: now.addingTimeInterval(1000))), game: .pokemon, variantID: "normal",
+                    treatmentIDs: [], store: store, at: update)
+            let record = try XCTUnwrap(store.record(forKey: current.priceKey))
+            _ = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-matching-clocks", company: .cgc,
+                grade: .init(value: "10"), printing: "Normal", marketPriceUSD: nil, updatedAt: incomingUpdate,
+                quoteLifecycle: .init(status: "expired", lastPrice: 60, lastSaleAt: incomingSale,
+                    priceExpiresAt: update)), game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: now)
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+            XCTAssertFalse(record.isInvalidated)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.lastSaleAt, sale)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.sourceUpdatedAt, update)
+        }
+    }
+
+    @MainActor
+    func testSameSaleExpiryComparesSaleAndUpdateClocksSeparately() throws {
+        let now = Date.now
+        let sale = now.addingTimeInterval(-1000)
+        let currentUpdate = now.addingTimeInterval(-500)
+        for expiryUpdate in [currentUpdate, now.addingTimeInterval(-100)] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let store = PriceStore(context: container.mainContext)
+            func bind(status: String, update: Date, at checked: Date) -> GradedVariantBindingReceipt {
+                GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-mixed-clocks", company: .cgc,
+                    grade: .init(value: "10"), printing: "Normal", marketPriceUSD: status == "current" ? 60 : nil,
+                    updatedAt: update, quoteLifecycle: .init(status: status, lastPrice: status == "expired" ? 60 : nil,
+                        lastSaleAt: sale, priceExpiresAt: status == "expired" ? currentUpdate : now.addingTimeInterval(1000))),
+                    game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: checked)
+            }
+            let current = bind(status: "current", update: currentUpdate, at: currentUpdate)
+            let record = try XCTUnwrap(store.record(forKey: current.priceKey))
+            _ = bind(status: "expired", update: expiryUpdate, at: now)
+            XCTAssertNil(record.effectiveUnitMarketPriceUSD, "Same-sale expiry must not compare sale time against a later update time")
+            XCTAssertTrue(record.isInvalidated)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "expired")
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.sourceUpdatedAt, expiryUpdate)
+        }
+    }
+
+    @MainActor
     func testImportedValuationClockCannotOverrideAnExactProviderExpiry() throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])

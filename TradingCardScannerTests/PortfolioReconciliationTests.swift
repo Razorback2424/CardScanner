@@ -64,6 +64,29 @@ private actor PortfolioComputationGate {
 final class PortfolioReconciliationTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testExactObservationComparesItsUpdateClockIndependentlyOfLastSaleClock() {
+        func clock(_ value: TimeInterval) -> Date { Date(timeIntervalSince1970: value) }
+        let record = PriceRecord(key: "pokemon:justtcg:v2:independent-clocks:normal", game: .pokemon,
+            printingID: "justtcg:v2:independent-clocks", variantID: "normal")
+        record.sourceRaw = PriceSource.justTCG.rawValue
+        record.sourceUpdatedAt = clock(20)
+        record.invalidatedAt = clock(40)
+        record.exactGradedQuoteEvidence = .init(variantID: "independent-clocks",
+            lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: clock(30), priceExpiresAt: clock(40)),
+            checkedAt: clock(40), sourceUpdatedAt: clock(20))
+        func observed(update: TimeInterval) -> PriceObservation {
+            PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(60), source: .justTCG,
+                sourceVariantID: "independent-clocks", marketVariantID: "independent-clocks",
+                effectiveAt: clock(update), receivedAt: clock(50), isSourceStamped: true)
+        }
+        XCTAssertEqual(InventoryLedger.resolveValuation(observation: observed(update: 25), record: record,
+            at: clock(50)).unitPrice, money(60), "Price update 25 follows update 20; sale clock 30 is a different field")
+        for stale in [19.0, 20.0] {
+            XCTAssertNil(InventoryLedger.resolveValuation(observation: observed(update: stale), record: record,
+                at: clock(50)).unitPrice)
+        }
+    }
+
     func testGradedExpiryUsesReplayCutoffForQuoteAndAliasSelection() throws {
         let fetched = Date(timeIntervalSince1970: 1_700_000_000)
         let expires = fetched.addingTimeInterval(100)
