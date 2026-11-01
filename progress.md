@@ -1,3 +1,24 @@
+# 2026-11-01 — Retain completed Browse artwork and observe settled bulk writes
+
+Separate local polish branch `polish/catalog-image-bulk-refresh-2026-11-01`
+starts at remote `main` (`0ab3b0e`). Pricing PR #14 and its clean checkout remain
+untouched at `ce17ea0`. Two small source fixes are isolated in local commits:
+`d58e618` preserves successfully displayed artwork independently of cancelled
+pending requests, and `3ca908d` skips ordinary debounce only for an unprocessed
+completed bulk generation. Cancellation, stale completion rejection, source and
+reload switching, ordinary 300 ms save/remote coalescing, storage tokens, active
+bulk guards and apply-generation safeguards remain covered.
+
+Three deterministic baseline tests reproduced the original behavior. At source
+candidate `3ca908d44c4a6b1689cf63c509d867d83f56764e`, the final focused native
+selection passed 17/17; the relevant aggregate executed 350 tests, with 349
+passed, zero failed and one existing opt-in aged-store performance skip. Xcode
+27.1, Debug, iOS 27.0 iPhone 17 Pro simulator, unsigned. The
+[bounded review](review/catalog-image-bulk-polish-2026-11-01.md) records scope,
+before/after behavior, results and evidence limits. Real SwiftUI hosting proves
+lifecycle behavior with synthetic artwork; no measured user-visible 300 ms gain
+or physical-device certification is claimed. No PR/body was published.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
