@@ -766,12 +766,34 @@ final class ScanParserTests: XCTestCase {
             ["30th-c", "cel25cc"]
         )
         let members = PokemonCatalogRegistry.celebrationsClassicDescriptor.membershipRecognition?.members ?? []
-        XCTAssertEqual(members.count, 25)
-        XCTAssertEqual(Set(members.map(\.providerCardID)).count, 25)
+        XCTAssertEqual(members.count, 24)
+        XCTAssertEqual(
+            Set(members.map(\.providerCardID)),
+            Set((1...25).filter { $0 != 8 }.map { "cel25cc-CC" + String(format: "%03d", $0) })
+        )
         XCTAssertEqual(
             Set(members.map { "\($0.printedLocalID)/\($0.printedDenominator)" }).count,
-            25,
-            "Every reprint prints a distinct original number"
+            24,
+            "Every enabled reprint prints a distinct original fraction"
+        )
+        for member in members {
+            XCTAssertTrue(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: member.providerCardID))
+            XCTAssertTrue(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: member.providerCardID.uppercased()))
+        }
+        XCTAssertFalse(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: "cel25cc-CC008"))
+        XCTAssertFalse(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: "cel25cc-CC026"))
+        XCTAssertFalse(PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: "30th-c-001"))
+    }
+
+    func testCelebrationsBirthdayPikachuDoesNotInventAPrintedDenominator() throws {
+        XCTAssertNil(PokemonHistoricalScanParser.parse(
+            numberLines: ["24"], titleLines: ["_____'s Pikachu"]
+        ))
+        let evidence = try historicalEvidence(number: "24/53", title: "_____'s Pikachu")
+        XCTAssertFalse(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+                .contains { $0.setID == "cel25cc" },
+            "The supplier's 24/53 is not the card's standalone 24 footer"
         )
     }
 

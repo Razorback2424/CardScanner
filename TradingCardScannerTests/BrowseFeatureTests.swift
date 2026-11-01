@@ -4329,11 +4329,16 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let bundled = await PokemonChecklistStore(root: root).bundledSnapshot()
         let snapshot = try XCTUnwrap(bundled)
 
-        // Every member names one bundled Classic Collection card exactly.
+        // Every enabled member names one bundled Classic Collection card
+        // exactly; Birthday Pikachu stays in Browse without fraction membership.
         let entry = try XCTUnwrap(snapshot.entry(forProviderID: "cel25cc"))
         let rows = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
         let members = PokemonCatalogRegistry.celebrationsClassicDescriptor.membershipRecognition?.members ?? []
-        XCTAssertEqual(Set(rows.map(\.providerID)), Set(members.map(\.providerCardID)))
+        XCTAssertEqual(members.count, 24)
+        XCTAssertEqual(
+            Set(rows.map(\.providerID)),
+            Set(members.map(\.providerCardID)).union(["cel25cc-CC008"])
+        )
         for member in members {
             let row = try XCTUnwrap(rows.first { $0.providerID == member.providerCardID }, member.providerCardID)
             XCTAssertEqual(

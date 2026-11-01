@@ -325,10 +325,11 @@ extension PokemonCatalogRegistry {
     /// exactly as before. A signed descriptor for the same set takes precedence.
     static let historicalMembershipDescriptors = [celebrationsClassicDescriptor]
 
-    /// Celebrations Classic Collection prints the original card's number
-    /// (Charizard `4/102`), never a `/25` number, so without membership it
-    /// resolves as the vintage original. Numbers are from TCGplayer (TCGCSV
-    /// group 2931) and agree with pokemontcg.io `cel25c`, checked 2026-11-01.
+    /// These 24 Celebrations Classic Collection cards print their original
+    /// fractions (Charizard `4/102`), so without membership they resolve as the
+    /// vintage originals. Published card images corroborate the reviewed
+    /// fractions. Birthday Pikachu prints only `24`; its supplier's `24/53`
+    /// field is not physical evidence and is deliberately excluded.
     static let celebrationsClassicDescriptor: PokemonCatalogSetDescriptor = {
         let members: [(id: String, name: String, number: String, denominator: Int)] = [
             ("CC001", "Blastoise", "2", 102),
@@ -338,7 +339,6 @@ extension PokemonCatalogRegistry {
             ("CC005", "Dark Gyarados", "8", 82),
             ("CC006", "Here Comes Team Rocket!", "15", 82),
             ("CC007", "Rocket's Zapdos", "15", 132),
-            ("CC008", "_____'s Pikachu", "24", 53),
             ("CC009", "Cleffa", "20", 111),
             ("CC010", "Shining Magikarp", "66", 64),
             ("CC011", "Team Magma's Groudon", "9", 95),
@@ -384,6 +384,15 @@ extension PokemonCatalogRegistry {
             )
         )
     }()
+
+    /// Every enabled Celebrations fraction has a reviewed original with the
+    /// same footer. A missing original in a provider response cannot establish
+    /// that the reprint is unique; explicit printing selection remains valid.
+    static func isReviewedCelebrationsReprint(providerID: String) -> Bool {
+        celebrationsClassicDescriptor.membershipRecognition?.members.contains {
+            $0.providerCardID.caseInsensitiveCompare(providerID) == .orderedSame
+        } ?? false
+    }
 
     /// Every descriptor whose membership the historical resolver consults.
     var membershipDescriptors: [PokemonCatalogSetDescriptor] {

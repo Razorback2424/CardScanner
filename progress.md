@@ -1,3 +1,23 @@
+# 2026-11-01 — Correct live Celebrations ambiguity and Birthday recognition
+
+PR #9 review follow-up on `e9b0830`: the live automatic resolver now rejects an
+exact reviewed Celebrations reprint when an incomplete or contradictory
+original family makes it appear unique. Explicit selection retains provider
+numbers (`CC015`/`CC016`), set count 25 and the CEL artwork code. Removed Birthday
+Pikachu's nonphysical `24/53` membership; all 25 Browse records remain.
+Regressions cover missing original sets/cards, conflicting names, positive
+original/reprint selection, and the standalone-number hold. Source/data and
+whitespace checks pass; new native execution is pending the integrated CI run.
+
+# 2026-11-01 — Correct Celebrations physical-number evidence
+
+Review follow-up on PR #8 at `c1d14b8`: Birthday Pikachu prints standalone `24`,
+not the supplier's `24/53`. Corrected the coverage table and replaced the
+all-25 signed-membership proposal with the 24-fraction historical approach
+being corrected in stacked PR #9. Existing Shiny Vault runtime behavior and
+saved-holding protection are unchanged. Documentation links and whitespace are
+checked separately; no new native or physical-card test pass is claimed.
+
 # 2026-11-01 — Five-game catalog coverage sweep
 
 Branch `refinement/catalog-coverage-2026-11-01` from `main@a2b11ad`. Each game
@@ -18,7 +38,8 @@ Fixed:
 The focused selection passed **382 tests** and a wider scanner/Browse/pricing
 selection passed **385 tests**, both with zero failures or skips.
 
-Stacked follow-up on `refinement/celebrations-classic-membership-2026-11-01`:
+Initial stacked follow-up on `refinement/celebrations-classic-membership-2026-11-01`
+(historical checkpoint; the corrected 24-fraction scope is recorded above):
 the 25 Celebrations Classic Collection reprints used to resolve silently as their
 original vintage printings, for example Claydol `15/106` as Great Encounters.
 They are now an explicit printing choice. The resolver reads a code-level
@@ -35,8 +56,8 @@ Review follow-ups:
   live directory.
 - Both "Impostor" and "Imposter" Oak spellings offer both printings.
 
-The new tests reproduced every defect before the fixes. This is simulator
-evidence only.
+Those initial tests reproduced their covered defects before the fixes. This is
+simulator evidence only and does not cover the later review corrections above.
 
 # 2026-10-31 — Card sharing post-merge artwork recovery
 

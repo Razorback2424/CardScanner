@@ -136,6 +136,12 @@ actor PokemonHistoricalCatalog {
             in: identities
         ) {
         case let .unique(match):
+            // All reviewed Celebrations fractions also belong to an original.
+            // An incomplete or contradictory live family cannot prove which
+            // physical printing was scanned, even after the offline path deferred.
+            guard !PokemonCatalogRegistry.isReviewedCelebrationsReprint(providerID: match.providerID) else {
+                throw PokemonHistoricalCatalogError.unsupported
+            }
             identity = match
         case let .ambiguous(matches):
             throw PokemonHistoricalCatalogError.ambiguous(matches)

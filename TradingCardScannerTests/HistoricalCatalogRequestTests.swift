@@ -317,23 +317,42 @@ final class HistoricalCatalogRequestTests: XCTestCase {
     /// for their Celebrations Classic reprints, which use `CC` local IDs.
     private actor CelebrationsSource: PokemonHistoricalCatalogSource {
         private static let cards: [String: (localID: String, name: String, set: String, count: Int)] = [
-            "pop5-17": ("17", "Umbreon ☆", "pop5", 17),
+            "pop5-17": ("17", "Umbreon ★", "pop5", 17),
             "dp4-15": ("15", "Claydol", "dp4", 106),
             "cel25cc-CC015": ("CC015", "Umbreon ☆", "cel25cc", 25),
             "cel25cc-CC016": ("CC016", "Claydol", "cel25cc", 25)
         ]
 
+        private let directoryHasOriginalSet: Bool
+        private let originalName: String?
+
+        init(directoryHasOriginalSet: Bool = true, originalName: String? = "Umbreon ★") {
+            self.directoryHasOriginalSet = directoryHasOriginalSet
+            self.originalName = originalName
+        }
+
         func historicalSetDirectory() async throws -> [CatalogSetReference] {
-            [
-                CatalogSetReference(id: "pop5", name: "POP Series 5", cardCount: TCGdexCardCount(total: 17, official: 17)),
+            var directory = [
                 CatalogSetReference(id: "dp4", name: "Great Encounters", cardCount: TCGdexCardCount(total: 106, official: 106))
             ]
+            if directoryHasOriginalSet {
+                directory.append(CatalogSetReference(
+                    id: "pop5", name: "POP Series 5", cardCount: TCGdexCardCount(total: 17, official: 17)
+                ))
+            }
+            return directory
         }
 
         func historicalSet(id: String) async throws -> TCGdexSetCatalog {
-            let entries = Self.cards.filter { $0.value.set == id }
+            var entries = Self.cards.filter { $0.value.set == id }
+            if id == "pop5" {
+                entries.removeAll()
+                if let originalName {
+                    entries["pop5-17"] = ("17", originalName, "pop5", 17)
+                }
+            }
             let cards = entries.map { #"{ "id": "\#($0.key)", "localId": "\#($0.value.localID)", "name": "\#($0.value.name)" }"# }
-            let count = entries.first?.value.count ?? 0
+            let count = Self.cards.values.first { $0.set == id }?.count ?? 0
             return try JSONDecoder().decode(TCGdexSetCatalog.self, from: Data(#"""
                 { "id": "\#(id)", "name": "\#(id)", "cardCount": { "total": \#(count), "official": \#(count) },
                   "cards": [\#(cards.joined(separator: ","))] }
@@ -368,6 +387,46 @@ final class HistoricalCatalogRequestTests: XCTestCase {
             XCTFail("POP Series 5 Umbreon and its Celebrations reprint share 17/17")
         } catch PokemonHistoricalCatalogError.ambiguous(let matches) {
             XCTAssertEqual(matches.map(\.providerID), ["cel25cc-CC015", "pop5-17"])
+            let original = try XCTUnwrap(matches.first { $0.providerID == "pop5-17" })
+            let selected = try await catalog.card(
+                for: original,
+                matching: try celebrationsEvidence("17/17", "Umbreon ☆"),
+                registry: .bundledSeed
+            )
+            XCTAssertEqual(selected.providerID, "pop5-17")
+            XCTAssertEqual(selected.cardNumber, "17")
+        }
+    }
+
+    func testIncompleteOrContradictoryLiveOriginalCannotAutoSelectCelebrations() async throws {
+        let evidence = try celebrationsEvidence("17/17", "Umbreon ☆")
+        let reprint = try XCTUnwrap(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+                .first { $0.providerID == "cel25cc-CC015" }
+        )
+        let cases = [
+            ("missing directory entry", CelebrationsSource(directoryHasOriginalSet: false)),
+            ("missing original card", CelebrationsSource(originalName: nil)),
+            ("contradictory original name", CelebrationsSource(originalName: "Espeon"))
+        ]
+        for (scenario, source) in cases {
+            let catalog = PokemonHistoricalCatalog(service: source)
+            do {
+                _ = try await catalog.card(for: evidence, registry: .bundledSeed)
+                XCTFail("\(scenario) must not turn a known shared footer into a unique reprint")
+            } catch PokemonHistoricalCatalogError.unsupported {
+                // Incomplete provider evidence does not authorize an edition.
+            }
+
+            // An explicit choice remains available and keeps provider numbering.
+            let selected = try await catalog.card(for: reprint, matching: evidence, registry: .bundledSeed)
+            XCTAssertEqual(selected.providerID, "cel25cc-CC015", scenario)
+            XCTAssertEqual(selected.cardNumber, "CC015", scenario)
+            XCTAssertEqual(selected.setCode, "CEL", scenario)
+            guard case let .pokemon(card, _) = selected.legacyIdentity else {
+                return XCTFail("Expected a Pokémon record for \(scenario)")
+            }
+            XCTAssertEqual(card.set.cardCount.official, 25, scenario)
         }
     }
 
@@ -384,6 +443,11 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         XCTAssertEqual(selected.providerID, "cel25cc-CC016")
         XCTAssertEqual(selected.cardNumber, "CC016")
         XCTAssertEqual(selected.setCode, "CEL")
+        guard case let .pokemon(card, _) = selected.legacyIdentity else {
+            return XCTFail("Expected a Pokémon record")
+        }
+        XCTAssertEqual(card.set.id, "cel25cc")
+        XCTAssertEqual(card.set.cardCount.official, 25)
 
         // Price refresh refetches the provider card and requires the same number.
         let response = try await source.historicalCard(id: "cel25cc-CC016")
