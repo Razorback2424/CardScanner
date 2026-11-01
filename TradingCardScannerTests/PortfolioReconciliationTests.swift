@@ -64,6 +64,105 @@ private actor PortfolioComputationGate {
 final class PortfolioReconciliationTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testGradedExpiryUsesReplayCutoffForQuoteAndAliasSelection() throws {
+        let fetched = Date(timeIntervalSince1970: 1_700_000_000)
+        let expires = fetched.addingTimeInterval(100)
+        let owned = card(key: "legacy-clock")
+        owned.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        owned.variantID = "normal"
+        owned.justTCGVariantID = "synthetic-clock"
+        owned.justTCGAPIVersion = "v2"
+        let primary = PriceRecord(key: owned.priceKey, game: .pokemon,
+            printingID: owned.priceStorageID, variantID: "normal")
+        _ = primary.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "synthetic-clock", sourceUpdatedAt: fetched, fetchedAt: fetched))
+        primary.marketVariantID = "synthetic-clock"
+        primary.exactGradedQuoteEvidence = .init(variantID: "synthetic-clock",
+            lifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: fetched, priceExpiresAt: expires),
+            checkedAt: fetched, sourceUpdatedAt: fetched)
+        let legacyKey = try XCTUnwrap(owned.legacyPriceKeys.first)
+        let legacy = PriceRecord(key: legacyKey, game: .pokemon, printingID: owned.providerID, variantID: "normal")
+        _ = legacy.apply(.init(unitMarketPriceUSD: 999, currencyCode: "USD", source: .importedCSV,
+            sourceVariantID: "synthetic-import", sourceUpdatedAt: fetched, fetchedAt: fetched))
+        let observation = PriceObservation(instrumentKey: primary.key, kind: .marketUpdate,
+            amount: money(50), source: .justTCG, sourceVariantID: "synthetic-clock", marketVariantID: "synthetic-clock",
+            effectiveAt: fetched, receivedAt: fetched, isSourceStamped: true)
+        for rows in [[], [observation]] {
+            let before = PortfolioReplaySnapshotBuilder.valuationIndex(observations: rows,
+                records: [primary, legacy], asOf: expires.addingTimeInterval(-1))
+            XCTAssertEqual(before.priceStorageKey(for: owned), primary.key)
+            XCTAssertEqual(before.valuation(for: primary.key).unitPrice, money(50))
+            let after = PortfolioReplaySnapshotBuilder.valuationIndex(observations: rows,
+                records: [primary, legacy], asOf: expires)
+            XCTAssertEqual(after.priceStorageKey(for: owned), primary.key, "Expired canonical evidence must block legacy resurrection")
+            XCTAssertNil(after.valuation(for: primary.key).unitPrice)
+            let current = PortfolioReplaySnapshotBuilder.valuationIndex(observations: rows, records: [primary, legacy])
+            XCTAssertEqual(current.priceStorageKey(for: owned), primary.key)
+            XCTAssertNil(current.valuation(for: primary.key).unitPrice)
+        }
+        XCTAssertNil(primary.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(primary.effectiveUnitMarketPriceUSD(at: expires.addingTimeInterval(-1)), 50)
+        XCTAssertEqual(PriceStore.record(for: owned, in: [primary.key: primary, legacy.key: legacy])?.key, primary.key)
+    }
+
+    func testExplicitGradedWithdrawalDoesNotRewriteEarlierKnowledgeCutoff() throws {
+        let fetched = Date(timeIntervalSince1970: 1_700_000_000)
+        let withdrawn = fetched.addingTimeInterval(100)
+        let record = PriceRecord(key: "pokemon:justtcg:v2:withdrawn:normal", game: .pokemon,
+            printingID: "justtcg:v2:withdrawn", variantID: "normal")
+        _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "withdrawn", sourceUpdatedAt: fetched, fetchedAt: fetched))
+        _ = record.invalidate(at: withdrawn)
+        record.exactGradedQuoteEvidence = .init(variantID: "withdrawn",
+            lifecycle: .init(status: "expired", lastPrice: 50, lastSaleAt: fetched, priceExpiresAt: nil),
+            checkedAt: withdrawn, sourceUpdatedAt: fetched)
+        let price = PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(50),
+            source: .justTCG, sourceVariantID: "withdrawn", marketVariantID: "withdrawn",
+            effectiveAt: fetched, receivedAt: fetched, isSourceStamped: true)
+        let invalidation = PriceObservation(instrumentKey: record.key, kind: .explicitInvalidation, amount: nil,
+            source: .justTCG, sourceVariantID: "withdrawn", marketVariantID: "withdrawn",
+            effectiveAt: withdrawn, receivedAt: withdrawn, isSourceStamped: false)
+        let before = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [price, invalidation],
+            records: [record], asOf: withdrawn.addingTimeInterval(-1))
+        XCTAssertEqual(before.valuation(for: record.key).unitPrice, money(50))
+        let after = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [price, invalidation],
+            records: [record], asOf: withdrawn)
+        XCTAssertNil(after.valuation(for: record.key).unitPrice)
+    }
+
+    func testNewerExactSaleObservationCanSupersedeExpiredMutableQuoteOnlyForItsIdentity() throws {
+        let fetched = Date(timeIntervalSince1970: 1_700_000_000)
+        let withdrawn = fetched.addingTimeInterval(100)
+        let newer = withdrawn.addingTimeInterval(100)
+        let record = PriceRecord(key: "pokemon:justtcg:v2:observation-race:normal", game: .pokemon,
+            printingID: "justtcg:v2:observation-race", variantID: "normal")
+        record.marketVariantID = "observation-race"
+        record.invalidatedAt = withdrawn
+        record.exactGradedQuoteEvidence = .init(variantID: "observation-race",
+            lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: fetched, priceExpiresAt: withdrawn),
+            checkedAt: withdrawn, sourceUpdatedAt: fetched)
+        func observation(received: Date? = nil, variant: String? = "observation-race",
+                         sourceVariant: String? = "observation-race", currency: String = "USD",
+                         source: PriceSource = .justTCG) -> PriceObservation {
+            PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(60), currencyCode: currency,
+                source: source, sourceVariantID: sourceVariant, marketVariantID: variant,
+                effectiveAt: newer, receivedAt: received ?? newer, isSourceStamped: true)
+        }
+        let valid = observation()
+        let current = InventoryLedger.resolveValuation(observation: valid, record: record, at: newer)
+        XCTAssertEqual(current.unitPrice, money(60))
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [valid], records: [record], asOf: newer)
+        XCTAssertEqual(bulk.valuation(for: record.key).unitPrice, money(60))
+        for rejected in [observation(received: withdrawn), observation(variant: "wrong-grade"),
+                         observation(sourceVariant: "wrong-stamp"), observation(variant: nil),
+                         observation(currency: "EUR"), observation(source: .tcgplayer)] {
+            XCTAssertNil(InventoryLedger.resolveValuation(observation: rejected, record: record,
+                at: newer).unitPrice)
+        }
+        XCTAssertNil(InventoryLedger.resolveValuation(observation: valid, record: record,
+            at: newer.addingTimeInterval(-1)).unitPrice, "Future observations cannot revive an earlier cutoff")
+    }
+
     /// Epoch establishment resolves each position's price key through the bulk
     /// valuation index rather than `InventoryLedger`, which costs two predicate
     /// fetches per candidate key per card. The point of that change was speed,

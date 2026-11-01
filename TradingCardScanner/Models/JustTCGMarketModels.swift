@@ -475,6 +475,14 @@ struct ExactGradedQuoteEvidence: Codable, Equatable, Sendable {
     let variantID: String
     let lifecycle: JustTCGQuoteLifecycle
     let checkedAt: Date
+    let sourceUpdatedAt: Date?
+
+    init(variantID: String, lifecycle: JustTCGQuoteLifecycle, checkedAt: Date, sourceUpdatedAt: Date? = nil) {
+        self.variantID = variantID
+        self.lifecycle = lifecycle
+        self.checkedAt = checkedAt
+        self.sourceUpdatedAt = sourceUpdatedAt
+    }
 }
 
 /// Backward-compatible contents of the existing graded metadata JSON column.

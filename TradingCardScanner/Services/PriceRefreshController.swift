@@ -142,7 +142,7 @@ enum GradedVariantBinding {
         }
         if wasAccepted, let lifecycle = variant.quoteLifecycle {
             store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
-                checkedAt: fetchedAt), forKey: priceKey)
+                checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt), forKey: priceKey)
         }
         return GradedVariantBindingReceipt(
             quote: quote,

@@ -453,6 +453,7 @@ enum PortfolioReplaySnapshotBuilder {
         asOf: Date? = nil,
         reviewCards: [CollectedCard] = []
     ) -> InstrumentValuationIndex {
+        let valuationDate = asOf ?? .now
         let observationsForValuation: [PriceObservation]
         if let asOf {
             observationsForValuation = observations.filter { $0.receivedAt <= asOf }
@@ -485,17 +486,18 @@ enum PortfolioReplaySnapshotBuilder {
         for key in Set(newest.keys).union(recordsByKey.keys) {
             index[key] = InventoryLedger.resolveValuation(
                 observation: newest[key],
-                record: recordsByKey[key]
+                record: recordsByKey[key],
+                at: valuationDate
             )
         }
-        let selection = PriceRecordKeySelection(records: Array(recordsByKey.values))
+        let selection = PriceRecordKeySelection(records: Array(recordsByKey.values), at: valuationDate)
         for card in reviewCards where PokemonReviewedPhysicalObjects.requiresReview(card) {
             index[selection.priceStorageKey(for: card)] = .unpriced
         }
 
         return InstrumentValuationIndex(
             byInstrument: index,
-            recordKeySelection: PriceRecordKeySelection(records: Array(recordsByKey.values))
+            recordKeySelection: selection
         )
     }
 

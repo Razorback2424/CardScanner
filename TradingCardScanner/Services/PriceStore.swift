@@ -328,15 +328,17 @@ struct PriceRecordKeySelection: Sendable {
         invalidatedKeys: []
     )
 
-    init(records: [PriceRecord]) {
+    init(records: [PriceRecord], at date: Date = .now) {
         self.init(
             existingKeys: Set(records.map(\.key)),
             valuedKeys: Set(
                 records
-                    .filter { $0.effectiveUnitMarketPriceUSD != nil }
+                    .filter { $0.effectiveUnitMarketPriceUSD(at: date) != nil }
                     .map(\.key)
             ),
-            invalidatedKeys: Set(records.filter(\.isInvalidated).map(\.key))
+            invalidatedKeys: Set(records.filter {
+                $0.isInvalidated || $0.exactGradedQuoteIsWithdrawn(at: date)
+            }.map(\.key))
         )
     }
 
@@ -739,6 +741,21 @@ struct PriceStore {
         guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
               record.lastCheckedAt == evidence.checkedAt else { return }
         if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
+            // Expiry preserves the provider's last-sale clock. A later fetch
+            // of an older upstream snapshot cannot withdraw a newer sale.
+            if let incomingSale = evidence.lifecycle.lastSaleAt ?? evidence.sourceUpdatedAt {
+                let observation = PriceObservationLog(context: context, index: index).newestObservation(instrumentKey: key)
+                let newerObservedSale = observation.flatMap { value -> Date? in
+                    guard value.isSourceStamped,
+                          InventoryLedger.matchesExactGradedObservation(value, variantID: evidence.variantID, recordKey: key)
+                    else { return nil }
+                    return value.effectiveAt
+                }
+                let knownSale = [record.source == .justTCG ? record.sourceUpdatedAt : nil,
+                    record.exactGradedQuoteEvidence?.lifecycle.lastSaleAt,
+                    record.exactGradedQuoteEvidence?.sourceUpdatedAt, newerObservedSale].compactMap { $0 }.max()
+                if let knownSale, incomingSale < knownSale { return }
+            }
             PriceObservationLog(context: context, index: index).recordInvalidation(
                 instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
         }
@@ -939,7 +956,7 @@ struct PriceStore {
         // The canonical record is authoritative once it has explicitly been
         // invalidated. Falling through to a legacy key in that state would
         // resurrect the very value the invalidation withdrew.
-        if primary.isInvalidated { return primary }
+        if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn { return primary }
 
         // Prefer a real record value over an empty canonical placeholder. The
         // legacy value is for the same exact object and remains better evidence

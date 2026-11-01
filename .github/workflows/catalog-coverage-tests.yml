@@ -91,6 +91,9 @@ jobs:
             -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests \
             -only-testing:TradingCardScannerTests/CardShareContentTests \
             -only-testing:TradingCardScannerTests/PriceRefreshSnapshotSliceTests \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testGradedExpiryUsesReplayCutoffForQuoteAndAliasSelection \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testExplicitGradedWithdrawalDoesNotRewriteEarlierKnowledgeCutoff \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testNewerExactSaleObservationCanSupersedeExpiredMutableQuoteOnlyForItsIdentity \
             -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \
             -only-testing:TradingCardScannerTests/MagicCatalogBootstrapTests \

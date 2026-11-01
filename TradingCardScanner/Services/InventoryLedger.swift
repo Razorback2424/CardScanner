@@ -325,12 +325,27 @@ struct InventoryLedger {
     /// the same evidence.
     static func resolveValuation(
         observation: PriceObservation?,
-        record: PriceRecord?
+        record: PriceRecord?,
+        at date: Date = .now
     ) -> InventoryValuation {
-        if record?.exactGradedQuoteIsWithdrawn == true { return .unpriced }
         if [record?.key, observation?.instrumentKey].compactMap({ $0 })
             .contains(where: PokemonReviewedPhysicalObjects.requiresReview(priceKey:)) {
             return .unpriced
+        }
+        if let record, record.exactGradedQuoteIsWithdrawn(at: date) {
+            // A lifecycle describes the exact quote known at checkedAt. A
+            // later validated sale observation may arrive before its mutable
+            // record; the older lifecycle cannot withdraw that newer evidence.
+            guard let evidence = record.exactGradedQuoteEvidence,
+                  let observation,
+                  matchesExactGradedObservation(observation, variantID: evidence.variantID, recordKey: record.key),
+                  observation.receivedAt > evidence.checkedAt,
+                  observation.receivedAt <= date,
+                  record.invalidatedAt.map({ observation.receivedAt > $0 }) ?? true,
+                  let amount = observation.effectiveUSDAmount else { return .unpriced }
+            return InventoryValuation(unitPrice: amount, source: observation.source,
+                effectiveAt: observation.effectiveAt, receivedAt: observation.receivedAt,
+                observationID: observation.id)
         }
         if let observation {
             // An invalidation is authoritative. Falling through to the mutable
@@ -355,7 +370,7 @@ struct InventoryLedger {
             if let record,
                !record.isInvalidated,
                Self.recordSupersedes(record, observation: observation) {
-                return Self.valuation(for: record) ?? .unpriced
+                return Self.valuation(for: record, at: date) ?? .unpriced
             }
             if let amount = observation.effectiveUSDAmount {
                 return InventoryValuation(
@@ -373,7 +388,7 @@ struct InventoryLedger {
         if record?.isInvalidated == true { return .unpriced }
 
         guard let record,
-              let valuation = Self.valuation(for: record) else {
+              let valuation = Self.valuation(for: record, at: date) else {
             // Non-USD is unpriced *for portfolio purposes* on purpose: there is
             // no live exchange rate here, and the collection total already
             // excludes those copies and says so.
@@ -382,9 +397,19 @@ struct InventoryLedger {
         return valuation
     }
 
-    private static func valuation(for record: PriceRecord) -> InventoryValuation? {
+    static func matchesExactGradedObservation(_ observation: PriceObservation,
+                                             variantID: String, recordKey: String) -> Bool {
+        observation.kind != .explicitInvalidation
+            && observation.instrumentKey == recordKey
+            && observation.source == .justTCG
+            && observation.marketVariantID == variantID
+            && (observation.sourceVariantID.map { $0 == variantID } ?? true)
+            && observation.effectiveUSDAmount != nil
+    }
+
+    private static func valuation(for record: PriceRecord, at date: Date) -> InventoryValuation? {
         guard let money = PortfolioPriceEligibility.eligibleUnitPrice(
-            amount: record.effectiveUnitMarketPriceUSD,
+            amount: record.effectiveUnitMarketPriceUSD(at: date),
             currencyCode: record.currencyCode
         ) else { return nil }
         return InventoryValuation(

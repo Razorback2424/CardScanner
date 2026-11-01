@@ -47,6 +47,93 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testImportedValuationClockCannotOverrideAnExactProviderExpiry() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceStore(context: container.mainContext)
+        let now = Date.now
+        let printing = "justtcg:v2:synthetic-imported-clock"
+        XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 60, currencyCode: "USD", source: .importedCSV,
+            sourceVariantID: "synthetic-import", sourceUpdatedAt: now, fetchedAt: now)), game: .pokemon,
+            printingID: printing, variantID: "normal", at: now))
+        let oldSale = now.addingTimeInterval(-1000)
+        let receipt = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-imported-clock", company: .cgc,
+            grade: .init(value: "10"), printing: "Normal", marketPriceUSD: nil, updatedAt: oldSale,
+            quoteLifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: oldSale,
+                priceExpiresAt: oldSale.addingTimeInterval(100))), game: .pokemon, variantID: "normal",
+            treatmentIDs: [], store: store, at: now.addingTimeInterval(1))
+        let record = try XCTUnwrap(store.record(forKey: receipt.priceKey))
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertTrue(record.isInvalidated)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "expired")
+    }
+
+    @MainActor
+    func testLaterFetchedOldExpiryCannotWithdrawNewerSaleAndEqualSaleExpiryStillCan() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceStore(context: container.mainContext)
+        let now = Date.now
+        let oldSale = now.addingTimeInterval(-1000)
+        let newSale = now.addingTimeInterval(-100)
+        let fetched = now.addingTimeInterval(-50)
+        func bind(status: String, sale: Date, amount: Double?, at checked: Date) -> GradedVariantBindingReceipt {
+            GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-cache-race", company: .cgc,
+                grade: .init(value: "10", label: "Gem Mint"), printing: "Normal", marketPriceUSD: amount,
+                updatedAt: sale, quoteLifecycle: .init(status: status, lastPrice: status == "expired" ? 40 : nil,
+                    lastSaleAt: sale, priceExpiresAt: status == "expired" ? sale.addingTimeInterval(1) : now.addingTimeInterval(1000))),
+                game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: checked)
+        }
+        let positive = bind(status: "current", sale: newSale, amount: 60, at: fetched)
+        let record = try XCTUnwrap(store.record(forKey: positive.priceKey))
+        _ = bind(status: "expired", sale: oldSale, amount: nil, at: now)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+        XCTAssertEqual(record.sourceUpdatedAt, newSale)
+        XCTAssertEqual(record.fetchedAt, fetched)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.checkedAt, fetched)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "current")
+        XCTAssertFalse(record.isInvalidated)
+        XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+        _ = bind(status: "expired", sale: newSale, amount: nil, at: now.addingTimeInterval(1))
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertTrue(record.isInvalidated, "Expiry of the same sale is a valid later lifecycle transition")
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "expired")
+    }
+
+    @MainActor
+    func testStaleExpiryCannotSupersedeNewerExactObservationWhileMutableRecordLags() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let store = PriceStore(context: context)
+        let now = Date.now
+        let oldSale = now.addingTimeInterval(-1000)
+        let withdrawn = now.addingTimeInterval(-500)
+        let newSale = now.addingTimeInterval(-100)
+        let key = PriceRecord.key(game: .pokemon, printingID: "justtcg:v2:synthetic-observation-cache", variantID: "normal")
+        let record = PriceRecord(key: key, game: .pokemon,
+            printingID: "justtcg:v2:synthetic-observation-cache", variantID: "normal")
+        record.sourceRaw = PriceSource.justTCG.rawValue
+        record.sourceUpdatedAt = oldSale
+        record.marketVariantID = "synthetic-observation-cache"
+        record.invalidatedAt = withdrawn
+        record.exactGradedQuoteEvidence = .init(variantID: "synthetic-observation-cache",
+            lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: oldSale, priceExpiresAt: withdrawn),
+            checkedAt: withdrawn, sourceUpdatedAt: oldSale)
+        context.insert(record)
+        context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: Money(rounding: 60),
+            source: .justTCG, sourceVariantID: "synthetic-observation-cache", marketVariantID: "synthetic-observation-cache",
+            effectiveAt: newSale, receivedAt: newSale, isSourceStamped: true))
+        _ = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-observation-cache", company: .cgc,
+            grade: .init(value: "10"), printing: "Normal", marketPriceUSD: nil, updatedAt: oldSale,
+            quoteLifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: oldSale, priceExpiresAt: withdrawn)),
+            game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: now)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.checkedAt, withdrawn)
+        XCTAssertEqual(record.invalidatedAt, withdrawn)
+        XCTAssertEqual(InventoryLedger(context: context).valuation(forPriceKey: key).unitPrice, Money(rounding: 60))
+    }
+
+    @MainActor
     func testExactGradedExpiryWithdrawsValueWhileTimeoutRetainsItAndNewSaleCanRestoreIt() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("graded-lifecycle-\(UUID())")
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)

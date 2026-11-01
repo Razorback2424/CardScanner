@@ -225,7 +225,12 @@ final class PriceRecord {
     }
 
     var exactGradedQuoteIsWithdrawn: Bool {
-        exactGradedQuoteEvidence?.lifecycle.withdrawsCurrentQuote(at: .now) == true
+        exactGradedQuoteIsWithdrawn(at: .now)
+    }
+
+    func exactGradedQuoteIsWithdrawn(at date: Date) -> Bool {
+        guard let evidence = exactGradedQuoteEvidence, evidence.checkedAt <= date else { return false }
+        return evidence.lifecycle.withdrawsCurrentQuote(at: date)
     }
 
     /// Returns whether a quote predates the value currently stored on this
@@ -309,8 +314,12 @@ final class PriceRecord {
     /// property next to the mutable record makes the invalidation rule explicit
     /// for services that do not have access to the local observation log.
     var effectiveUnitMarketPriceUSD: Double? {
+        effectiveUnitMarketPriceUSD(at: .now)
+    }
+
+    func effectiveUnitMarketPriceUSD(at date: Date) -> Double? {
         guard !isInvalidated,
-              !exactGradedQuoteIsWithdrawn,
+              !exactGradedQuoteIsWithdrawn(at: date),
               !PokemonReviewedPhysicalObjects.requiresReview(priceKey: key),
               currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
