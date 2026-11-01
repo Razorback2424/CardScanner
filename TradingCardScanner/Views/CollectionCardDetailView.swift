@@ -1063,7 +1063,7 @@ private struct CollectionCardDetailContent: View {
                 || card.variantResolution == nil
                 || card.variantResolution == .catalogSilent
                 || card.variantResolution == .imported else { return nil }
-        return "The catalog hasn't confirmed this printing's finish, so its price may match a different one."
+        return "Finish unconfirmed. Its price may be for another finish."
     }
 
 
@@ -1274,33 +1274,29 @@ private struct CollectionCardDetailContent: View {
 
             if let unpricedReason, price.amount == nil {
                 VStack(alignment: .leading, spacing: 4) {
-                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
-                        .font(.subheadline.weight(.semibold))
-                    Text(unpricedReason.detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    if let coverageText = gradedMarketCoverageText {
-                        Text(coverageText)
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Label(unpricedReason.title, systemImage: "exclamationmark.circle")
+                            .font(.subheadline.weight(.semibold))
+                        Spacer(minLength: 0)
+                        UnpricedReasonWhyButton(
+                            reason: unpricedReason,
+                            coverageText: gradedMarketCoverageText
+                        )
+                    }
+                    if unpricedReason.detailIsActionable {
+                        Text(unpricedReason.detail)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     if let rawReference = ungradedReferenceRecord,
                        let amount = rawReference.effectiveUnitMarketPriceUSD {
-                        Label("Ungraded reference", systemImage: "tag")
-                            .font(.caption.weight(.semibold))
-                            .padding(.top, 4)
-                        Text("\(amount.formatted(.currency(code: rawReference.currencyCode))) · \(rawReference.source?.label ?? "Market quote")")
+                        // Labelled as ungraded so it never reads as the slab's value.
+                        Text("Ungraded: \(amount.formatted(.currency(code: rawReference.currencyCode)))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text("Shown for context only; this amount is not used as the slab’s value.")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                            .padding(.top, 2)
                     }
-                    Text("Diagnostic: \(unpricedReason.rawValue)")
-                        .font(.caption.monospaced())
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
@@ -3074,6 +3070,35 @@ struct MarketHistoryChartContent: View {
     func showAllHistory() {
         selection = nil
         range = .all
+    }
+}
+
+/// The provider-level account of a missing price, and the support code a
+/// screenshot needs, kept behind Why? so the detail page stays clean.
+private struct UnpricedReasonWhyButton: View {
+    let reason: PricingDiagnosticReason
+    let coverageText: String?
+    @State private var isShowing = false
+
+    var body: some View {
+        Button("Why?") { isShowing = true }
+            .font(.subheadline.weight(.medium))
+            .buttonStyle(.borderless)
+            .popover(isPresented: $isShowing) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(reason.detail)
+                    if let coverageText { Text(coverageText) }
+                    Text("Code: \(reason.rawValue)")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
+                .font(.subheadline)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(16)
+                .frame(idealWidth: 320)
+                .presentationCompactAdaptation(.popover)
+            }
     }
 }
 

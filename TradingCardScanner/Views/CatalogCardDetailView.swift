@@ -283,8 +283,8 @@ struct CatalogCardDetailView: View {
                         else if failedPriceVariantIDs.contains(variant.id) {
                             Text("Couldn't check price").foregroundStyle(.secondary)
                         } else if mappedPrices[variant.id] == .unavailable(nil) {
-                            Text("Price not mapped yet").foregroundStyle(.secondary)
-                        } else { Text("No published USD price").foregroundStyle(.secondary) }
+                            Text("No price yet").foregroundStyle(.secondary)
+                        } else { Text("No USD price").foregroundStyle(.secondary) }
                     }
                 }
                 Text("TCGplayer via TCGCSV · aggregate market price")
@@ -333,13 +333,6 @@ struct CatalogCardDetailView: View {
                     }
                 }
                 priceRetryButton
-                if rows.contains(where: \.isGap) {
-                    Text(summary.pokemonPrintRun.map {
-                        "Prices apply only to \($0.label). An unavailable quote is never filled from another edition."
-                    } ?? "Finishes without a US dollar market price are listed rather than hidden. A foreign-marketplace figure is never shown in their place.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)

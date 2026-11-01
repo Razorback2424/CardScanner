@@ -199,8 +199,9 @@ struct PendingSlabConversionOfferView: View {
 }
 
 /// A compact statement of the finish and the evidence behind it. Detail keeps
-/// this visible for every card; receipts reserve the stronger treatment for
-/// resolutions that need a person's attention so routine scans stay quiet.
+/// this visible for every card; receipts show it only for resolutions that
+/// need a person's attention, since the receipt's subtitle already names the
+/// finish and routine scans should stay quiet.
 enum VariantProvenancePresentation {
     static func text(
         finish: String?,
@@ -208,18 +209,27 @@ enum VariantProvenancePresentation {
     ) -> String {
         let finish = finish?.trimmingCharacters(in: .whitespacesAndNewlines)
         if resolution == .catalogSilent {
-            return "Finish not published"
+            return "Finish unconfirmed"
         }
         if let finish, !finish.isEmpty, let resolution {
             return "\(finish) · \(resolution.label)"
         }
         if let finish, !finish.isEmpty {
-            return "\(finish) · Finish provenance unavailable"
+            return finish
         }
         if let resolution {
             return resolution.label
         }
-        return "Finish provenance unavailable"
+        return "Finish unconfirmed"
+    }
+
+    /// Whether a receipt should call this out. A finish with no recorded
+    /// evidence is not news on a receipt; a missing finish always is.
+    static func needsAttention(finish: String?, resolution: VariantResolution?) -> Bool {
+        guard let resolution else {
+            return finish?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true
+        }
+        return resolution.receiptProminence != .quiet
     }
 }
 
@@ -238,10 +248,18 @@ struct VariantProvenanceLabel: View {
     }
 
     private var needsAttention: Bool {
-        resolution?.receiptProminence != .quiet
+        VariantProvenancePresentation.needsAttention(finish: finish, resolution: resolution)
     }
 
     var body: some View {
+        if style == .receipt, !needsAttention {
+            EmptyView()
+        } else {
+            label
+        }
+    }
+
+    private var label: some View {
         HStack(alignment: .firstTextBaseline, spacing: 6) {
             if style == .receipt, needsAttention {
                 Image(systemName: "questionmark.circle.fill")
@@ -265,7 +283,7 @@ struct VariantProvenanceLabel: View {
                     : AnyShapeStyle(.white.opacity(0.72)))
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Variant provenance: \(text)")
+        .accessibilityLabel("Finish: \(text)")
     }
 }
 

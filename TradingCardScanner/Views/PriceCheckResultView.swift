@@ -222,116 +222,101 @@ struct PriceCheckResultView: View {
         .background(.quaternary.opacity(0.45), in: RoundedRectangle(cornerRadius: 16))
     }
 
+    /// Each state says what happened in a few words. A line beneath appears only
+    /// when there is something to do; the provider-level reason waits behind
+    /// Why? for anyone who wants it.
     @ViewBuilder
     private var noQuoteState: some View {
         switch result.quoteState {
         case .mappingUnavailable:
-            ContentUnavailableView("Price not mapped yet", systemImage: "info.circle",
-                description: Text("This exact printing and finish needs a marketplace mapping. A market quote has not been checked."))
+            NoPriceState(
+                "No price yet",
+                systemImage: "tag",
+                why: "This exact printing and finish isn’t linked to a marketplace listing yet, so no price was checked."
+            )
         case .checking where result.isRefreshing || result.shouldAutoRefresh:
             VStack(spacing: 10) {
                 ProgressView()
-                Text("Checking current price…")
+                Text("Checking price…")
                     .font(.headline)
-                Text("We’re checking the exact card and variant.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, minHeight: 120)
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Checking current price")
         case .checking:
-            ContentUnavailableView(
-                "Price check paused",
-                systemImage: "pause.circle",
-                description: Text("Tap Refresh Price to check this exact variant.")
-            )
+            NoPriceState("Price check paused", systemImage: "pause.circle")
         case .noExactPrice:
             exactPriceUnavailableState
         case .notMatched:
-            ContentUnavailableView(
-                "Card not matched to a vendor product",
+            NoPriceState(
+                "No price found",
                 systemImage: "questionmark.folder",
-                description: Text("We couldn’t match this card to a product at the price provider. Try again later after the catalog match is updated.")
+                why: "The price provider doesn’t have a product matched to this card yet."
             )
         case .unsupportedFinish:
-            ContentUnavailableView(
-                "Finish not supported",
+            NoPriceState(
+                "No price for this finish",
                 systemImage: "tag.slash",
-                description: Text("The optional fallback provider does not have a safe mapping for this finish, so it was not asked for a price.")
+                why: "The backup price source can’t tell this finish apart from others, so it wasn’t asked."
             )
         case .unsupportedGame:
-            ContentUnavailableView(
-                "Pricing not available",
-                systemImage: "tag.slash",
-                description: Text("Price checks are not available for this game.")
-            )
+            NoPriceState("No prices for this game", systemImage: "tag.slash")
         case .unsupportedTreatment:
-            ContentUnavailableView(
-                "Treatment price unavailable",
+            NoPriceState(
+                "No price for this treatment",
                 systemImage: "tag.slash",
-                description: Text("The optional fallback provider has no direct product identity for this treatment, so a name/set search is not used to avoid borrowing another printing's price.")
+                why: "The backup price source can’t identify this treatment exactly. A guess could show another printing’s price."
             )
         case .gradedGradeNotPriced:
-            ContentUnavailableView(
-                "No graded price published",
+            NoPriceState(
+                "No price for this grade",
                 systemImage: "seal",
-                description: Text("The provider matched the card but has no price for this exact grader and grade.")
+                why: "The card was found, but no price is published for this grader and grade."
             )
         case .gradedProductNotMatched:
-            ContentUnavailableView(
-                "Graded product not matched",
+            NoPriceState(
+                "No graded price found",
                 systemImage: "questionmark.folder",
-                description: Text("The graded pricing provider could not match this card to a product.")
+                why: "The graded price source couldn’t match this card."
             )
         case .gradedCardNotTracked:
-            ContentUnavailableView(
-                "No graded data for this card",
+            NoPriceState(
+                "No graded price found",
                 systemImage: "questionmark.folder",
-                description: Text("JustTCG did not return a graded card matching this name, set, and number.")
+                why: "JustTCG has no graded card with this name, set and number."
             )
         case .gradedCardHasNoPrices:
-            ContentUnavailableView(
-                "No graded prices yet",
+            NoPriceState(
+                "No graded sales yet",
                 systemImage: "seal",
-                description: Text("JustTCG recognizes this card but has no graded listings for it yet.")
+                why: "JustTCG knows this card but has no graded listings for it yet."
             )
         case .gradedGradeNotTracked:
-            ContentUnavailableView(
-                "This grade is not listed yet",
+            NoPriceState(
+                "No price for this grade",
                 systemImage: "seal",
-                description: Text(gradedMarketContext ?? "JustTCG has other graded listings for this card, but no exact variant for this grader and grade.")
+                detail: gradedMarketContext,
+                why: gradedMarketContext == nil
+                    ? "JustTCG lists other grades for this card, but not this one."
+                    : nil
             )
         case .providerUnavailable:
-            ContentUnavailableView(
-                "Price provider unavailable",
-                systemImage: "wifi.exclamationmark",
-                description: Text("The price service could not be reached. Try again shortly.")
-            )
+            NoPriceState("Couldn’t reach prices", systemImage: "wifi.exclamationmark", detail: "Try again shortly.")
         case .fallbackDisabled:
-            fallbackSettingsState(
-                "Price fallback is off",
-                systemImage: "gearshape",
-                description: "Enable the optional fallback provider in Settings to continue."
-            )
+            NoPriceState("Backup prices are off", systemImage: "gearshape") { openSettingsButton }
         case .fallbackUnconfigured:
-            fallbackSettingsState(
-                "Price fallback needs setup",
-                systemImage: "key.horizontal",
-                description: "Add the optional fallback provider credential in Settings."
-            )
+            NoPriceState("Backup prices need a key", systemImage: "key.horizontal") { openSettingsButton }
         case let .rateLimited(retryAt):
-            ContentUnavailableView(
-                "Price check is rate limited",
+            NoPriceState(
+                "Too many price checks",
                 systemImage: "hourglass",
-                description: Text("Try again \(retryAt.formatted(date: .abbreviated, time: .shortened)).")
+                detail: "Try again \(retryAt.formatted(date: .abbreviated, time: .shortened))."
             )
         case let .budgetLimited(resetAt):
-            ContentUnavailableView(
-                "Price fallback limit reached",
+            NoPriceState(
+                "Backup price checks used up",
                 systemImage: "calendar.badge.clock",
-                description: Text("The optional fallback allowance resets \(resetAt.formatted(date: .abbreviated, time: .shortened)).")
+                detail: "Resets \(resetAt.formatted(date: .abbreviated, time: .shortened))."
             )
         case .current, .stale, .lastKnown(_):
             exactPriceUnavailableState
@@ -339,30 +324,13 @@ struct PriceCheckResultView: View {
     }
 
     private var exactPriceUnavailableState: some View {
-        ContentUnavailableView(
-            hasTreatment ? "No exact treatment price" : "No listing for this finish",
+        NoPriceState(
+            hasTreatment ? "No price for this treatment" : "No price for this finish",
             systemImage: "dollarsign.circle",
-            description: Text(
-                hasTreatment
-                    ? "No exact provider listing was available for this treatment. A direct product identity is required; name/set search is not used."
-                    : "The price provider found this card but has no listing for its exact finish."
-            )
+            why: hasTreatment
+                ? "No listing matches this treatment exactly, and a price is never borrowed from another printing."
+                : "The price provider found this card but has no listing for its exact finish."
         )
-    }
-
-    private func fallbackSettingsState(
-        _ title: String,
-        systemImage: String,
-        description: String
-    ) -> some View {
-        VStack(spacing: 12) {
-            ContentUnavailableView(
-                title,
-                systemImage: systemImage,
-                description: Text(description)
-            )
-            openSettingsButton
-        }
     }
 
     private var openSettingsButton: some View {
@@ -370,45 +338,26 @@ struct PriceCheckResultView: View {
             isShowingSettings = true
         }
         .buttonStyle(.bordered)
-        .accessibilityHint("Opens Pricing Settings so you can enable and configure the fallback provider.")
+        .accessibilityHint("Opens Pricing Settings.")
     }
 
     private func lastKnownMessage(for issue: PriceCheckRefreshIssue) -> String {
         switch issue {
-        case .mappingUnavailable:
-            return "Price mapping pending — showing last known"
-        case .noExactPrice:
-            return hasTreatment
-                ? "No exact treatment price — showing last known"
-                : "No listing for this finish — showing last known"
-        case .notMatched:
-            return "Card not matched to a vendor product — showing last known"
-        case .unsupportedFinish:
-            return "Finish not supported by the fallback provider — showing last known"
-        case .unsupportedGame:
-            return "Pricing not available for this game — showing last known"
-        case .unsupportedTreatment:
-            return "Treatment not supported by the fallback provider — showing last known"
-        case .gradedGradeNotPriced:
-            return "No graded price published — showing last known"
-        case .gradedProductNotMatched:
-            return "Graded product not matched — showing last known"
-        case .gradedCardNotTracked:
-            return "No graded data for this card — showing last known"
-        case .gradedCardHasNoPrices:
-            return "No graded listings yet — showing last known"
-        case .gradedGradeNotTracked:
-            return "This grade is not listed — showing last known"
         case .providerUnavailable:
             return "Couldn’t update — showing last known"
         case .fallbackDisabled:
-            return "Fallback is off — showing last known"
+            return "Backup prices are off — showing last known"
         case .fallbackUnconfigured:
-            return "Fallback needs setup — showing last known"
+            return "Backup prices need a key — showing last known"
         case .rateLimited:
-            return "Rate limited — showing last known"
+            return "Too many checks — showing last known"
         case .budgetLimited:
-            return "Fallback limit reached — showing last known"
+            return "Backup checks used up — showing last known"
+        case .mappingUnavailable, .noExactPrice, .notMatched, .unsupportedFinish,
+             .unsupportedGame, .unsupportedTreatment, .gradedGradeNotPriced,
+             .gradedProductNotMatched, .gradedCardNotTracked, .gradedCardHasNoPrices,
+             .gradedGradeNotTracked:
+            return "No current price — showing last known"
         }
     }
 
@@ -420,7 +369,7 @@ struct PriceCheckResultView: View {
             guard let amount = listed.marketPriceUSD else { return listed.displayName }
             return "\(listed.displayName) \(amount.formatted(.currency(code: "USD")))"
         }
-        return "Other grades currently listed on JustTCG: \(entries.joined(separator: ", "))."
+        return "Other grades: \(entries.joined(separator: ", "))"
     }
 
     private func provenance(for display: PriceDisplay) -> String {
@@ -449,5 +398,66 @@ private extension PriceCheckRefreshIssue {
         default:
             false
         }
+    }
+}
+
+/// A missing price, said briefly. `detail` is for something the person can act
+/// on; `why` holds the provider-level reason behind a Why? popover.
+private struct NoPriceState<Actions: View>: View {
+    let title: String
+    let systemImage: String
+    var detail: String?
+    var why: String?
+    @ViewBuilder var actions: () -> Actions
+    @State private var isShowingWhy = false
+
+    init(
+        _ title: String,
+        systemImage: String,
+        detail: String? = nil,
+        why: String? = nil,
+        @ViewBuilder actions: @escaping () -> Actions = { EmptyView() }
+    ) {
+        self.title = title
+        self.systemImage = systemImage
+        self.detail = detail
+        self.why = why
+        self.actions = actions
+    }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.system(size: 34, weight: .regular))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            Text(title)
+                .font(.headline)
+                .multilineTextAlignment(.center)
+            if let detail {
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            if let why {
+                Button("Why?") { isShowingWhy = true }
+                    .font(.subheadline.weight(.medium))
+                    .buttonStyle(.borderless)
+                    .accessibilityHint(why)
+                    .popover(isPresented: $isShowingWhy) {
+                        Text(why)
+                            .font(.subheadline)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(16)
+                            .frame(idealWidth: 300)
+                            .presentationCompactAdaptation(.popover)
+                    }
+            }
+            actions()
+                .padding(.top, 2)
+        }
+        .frame(maxWidth: .infinity, minHeight: 120)
+        .padding(.vertical, 8)
     }
 }

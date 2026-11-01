@@ -65,27 +65,40 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case gradedSearchIncomplete = "graded_search_incomplete"
     case gradedIdentityUnresolved = "graded_local_identity_unresolved"
 
+    /// A few plain words for a tile or a detail heading. The provider-level
+    /// account is `detail`; the support code is the raw value.
     var title: String {
         switch self {
-        case .notChecked: return "Price not checked"
-        case .identityResolvedAfterFailedCheck: return "Ready to retry pricing"
-        case .sealedProductPendingMatch: return "Product match pending"
-        case .sealedProductUnmatched: return "Product not matched"
-        case .noExactVariantPrice: return "Exact variant has no price"
-        case .gradedVariantUnavailable: return "Graded variant not found"
-        case .providerRequestFailed: return "Price provider request failed"
-        case .gradedMarketPriceNull: return "Graded market price unavailable"
-        case .gradedCardNotTracked: return "No graded data for this card"
-        case .gradedCardHasNoPrices: return "No graded prices yet"
-        case .gradedGradeNotTracked: return "Exact graded object not listed"
-        case .justTCGVariantUnresolved: return "Market variant not resolved"
-        case .invalidProviderQuote: return "Invalid provider quote rejected"
-        case .noSupportedProvider: return "No supported price provider"
-        case .missingMarketMapping: return "Price not mapped yet"
-        case .otherCurrency: return "Quote excluded from USD valuation"
-        case .physicalIdentityReview: return "Review physical card identity"
-        case .gradedSearchIncomplete: return "Graded search incomplete"
-        case .gradedIdentityUnresolved: return "Graded set identity unresolved"
+        case .notChecked: return "Not priced yet"
+        case .identityResolvedAfterFailedCheck: return "Ready to price"
+        case .sealedProductPendingMatch: return "Finding this product"
+        case .sealedProductUnmatched: return "No product match"
+        case .noExactVariantPrice: return "No price for this finish"
+        case .gradedVariantUnavailable: return "No price for this grade"
+        case .providerRequestFailed: return "Couldn’t update price"
+        case .gradedMarketPriceNull: return "No graded price right now"
+        case .gradedCardNotTracked: return "No graded price found"
+        case .gradedCardHasNoPrices: return "No graded sales yet"
+        case .gradedGradeNotTracked: return "No price for this grade"
+        case .justTCGVariantUnresolved: return "Finish not matched"
+        case .invalidProviderQuote: return "Price rejected"
+        case .noSupportedProvider: return "No price source"
+        case .missingMarketMapping: return "No price yet"
+        case .otherCurrency: return "Non-USD price only"
+        case .physicalIdentityReview: return "Check this card"
+        case .gradedSearchIncomplete: return "Graded search unfinished"
+        case .gradedIdentityUnresolved: return "Set not matched"
+        }
+    }
+
+    /// Whether `detail` tells the person something to do. Only those reasons
+    /// show it inline; the rest keep it one tap away.
+    var detailIsActionable: Bool {
+        switch self {
+        case .notChecked, .identityResolvedAfterFailedCheck, .providerRequestFailed, .physicalIdentityReview:
+            return true
+        default:
+            return false
         }
     }
 
