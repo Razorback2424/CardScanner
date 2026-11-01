@@ -343,6 +343,11 @@ struct InventoryLedger {
                   observation.receivedAt <= date,
                   record.invalidatedAt.map({ observation.receivedAt > $0 }) ?? true,
                   let amount = observation.effectiveUSDAmount else { return .unpriced }
+            let knownSale = [evidence.lifecycle.lastSaleAt, evidence.sourceUpdatedAt,
+                record.source == .justTCG ? record.sourceUpdatedAt : nil].compactMap { $0 }.max()
+            if observation.isSourceStamped, let knownSale, observation.effectiveAt <= knownSale {
+                return .unpriced
+            }
             return InventoryValuation(unitPrice: amount, source: observation.source,
                 effectiveAt: observation.effectiveAt, receivedAt: observation.receivedAt,
                 observationID: observation.id)

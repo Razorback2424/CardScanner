@@ -141,19 +141,20 @@ final class PortfolioReconciliationTests: XCTestCase {
         record.exactGradedQuoteEvidence = .init(variantID: "observation-race",
             lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: fetched, priceExpiresAt: withdrawn),
             checkedAt: withdrawn, sourceUpdatedAt: fetched)
-        func observation(received: Date? = nil, variant: String? = "observation-race",
+        func observation(received: Date? = nil, effective: Date? = nil, variant: String? = "observation-race",
                          sourceVariant: String? = "observation-race", currency: String = "USD",
                          source: PriceSource = .justTCG) -> PriceObservation {
             PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(60), currencyCode: currency,
                 source: source, sourceVariantID: sourceVariant, marketVariantID: variant,
-                effectiveAt: newer, receivedAt: received ?? newer, isSourceStamped: true)
+                effectiveAt: effective ?? newer, receivedAt: received ?? newer, isSourceStamped: true)
         }
         let valid = observation()
         let current = InventoryLedger.resolveValuation(observation: valid, record: record, at: newer)
         XCTAssertEqual(current.unitPrice, money(60))
         let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [valid], records: [record], asOf: newer)
         XCTAssertEqual(bulk.valuation(for: record.key).unitPrice, money(60))
-        for rejected in [observation(received: withdrawn), observation(variant: "wrong-grade"),
+        for rejected in [observation(received: withdrawn), observation(effective: fetched.addingTimeInterval(-1)),
+                         observation(effective: fetched), observation(variant: "wrong-grade"),
                          observation(sourceVariant: "wrong-stamp"), observation(variant: nil),
                          observation(currency: "EUR"), observation(source: .tcgplayer)] {
             XCTAssertNil(InventoryLedger.resolveValuation(observation: rejected, record: record,
