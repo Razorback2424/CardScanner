@@ -14,7 +14,7 @@ enum PokemonChecklistSnapshotVersion {
 /// Read-time repair of reviewed identities only. Source resources and provider
 /// fingerprints remain untouched, including when an unchanged probe skips a crawl.
 enum PokemonChecklistReviewedProjection {
-    static let setIDs: Set<String> = ["me02.5", "xya"]
+    static let setIDs: Set<String> = ["me02.5", "sma", "xya"]
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var emitted = Set<String>()

@@ -309,12 +309,26 @@ enum PokemonVariantRules {
         // Holofoil products and the trainers' separate Normal/Holofoil objects.
         case "xya-24a", "xya-28a", "xya-54a", "xya-55a": return [.holo]
         case "xya-92a", "xya-107a": return [.normal, .holo]
-        default: return nil
+        default:
+            // Hidden Fates Shiny Vault: TCGdex flags all 94 as Normal, while every
+            // TCGplayer product (group 2594, checked 2026-11-01) is Holofoil only.
+            guard cardID.hasPrefix("sma-SV"), let number = Int(cardID.dropFirst(6)),
+                  (1...94).contains(number), cardID == "sma-SV\(number)" else { return nil }
+            return [.holo]
         }
     }
 
     static func requiresPhysicalReview(cardID: String, variant: PhysicalVariant) -> Bool {
         reviewedVariants(cardID: cardID).map { !$0.contains(variant) } ?? false
+    }
+
+    /// A stored finish the reviewed list does not contain. Only a person
+    /// holding the card can replace it; no automatic path may rekey it.
+    static func requiresPhysicalReview(cardID: String, variantID: String?) -> Bool {
+        guard let variantID else { return false }
+        return reviewedVariants(cardID: cardID).map { reviewed in
+            !reviewed.contains { $0.id == variantID }
+        } ?? false
     }
     /// Exact rows from the retained provider-explicit eligibility table, pinned to
     /// tcgdex/cards-database 99c994747cf7519a3e51166cc932de79a88bd4b3.
@@ -461,6 +475,10 @@ enum PokemonFinishReconciliation {
         } else {
             guard storedVariantID == nil else { return nil }
         }
+        guard !PokemonVariantRules.requiresPhysicalReview(
+            cardID: card.providerID,
+            variantID: storedVariantID
+        ) else { return nil }
 
         let evidence = card.variantEvidence
         let currentEvidence = printRun == nil

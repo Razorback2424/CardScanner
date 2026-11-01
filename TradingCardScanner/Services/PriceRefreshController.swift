@@ -2375,7 +2375,13 @@ extension PokemonFinishReconciliation {
                 }
                 let canBackfill = row.variantID == nil
                     && (storedResolution == nil || storedResolution?.isAutomatic == true)
+                // A finish outside a reviewed card's list waits for the person
+                // holding the card, however it was originally chosen.
                 let canCorrect = row.variantID != nil && storedResolution?.isAutomatic == true
+                    && !PokemonVariantRules.requiresPhysicalReview(
+                        cardID: card.providerID,
+                        variantID: row.variantID
+                    )
                 guard canBackfill || canCorrect else {
                     stagePendingFinish(
                         for: row,

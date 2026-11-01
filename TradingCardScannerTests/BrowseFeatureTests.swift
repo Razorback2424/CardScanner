@@ -4280,6 +4280,49 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
+    func testBundledShinyVaultCardsResolveOfflineAsHolofoil() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("shiny-vault-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundled = await PokemonChecklistStore(root: root).bundledSnapshot()
+        let snapshot = try XCTUnwrap(bundled)
+        let cases = [
+            ("SV49/SV94", "Charizard-GX", "sma-SV49"),
+            ("SV107/SV122", "Charizard VMAX", "swsh4.5sv-SV107")
+        ]
+        for (printed, title, providerID) in cases {
+            let identifier = try XCTUnwrap(
+                PokemonHistoricalScanParser.parse(numberLines: [printed], titleLines: [title])
+            )
+            guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
+                return XCTFail("Expected historical Pokémon evidence for \(printed)")
+            }
+            let identified = try XCTUnwrap(
+                PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence),
+                printed
+            )
+            guard case let .pokemon(card, _) = identified.legacyIdentity else {
+                return XCTFail("Expected a Pokémon record for \(printed)")
+            }
+            XCTAssertEqual(card.id, providerID)
+            // Every vault product is Holofoil; TCGdex's Normal flag for Hidden
+            // Fates must not become an automatic Normal finish.
+            XCTAssertEqual(
+                VariantResolver.resolve(identified.variantEvidence),
+                .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)),
+                printed
+            )
+        }
+
+        let entry = try XCTUnwrap(snapshot.entry(forProviderID: "sma"))
+        let rows = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+        XCTAssertEqual(rows.count, 94)
+        XCTAssertTrue(rows.allSatisfy { $0.masterSetVariant == .holo && $0.isSoleSlotForCard })
+        XCTAssertEqual(PokemonVariantRules.reviewedVariants(cardID: "sma-SV94"), [.holo])
+        XCTAssertNil(PokemonVariantRules.reviewedVariants(cardID: "sma-SV95"))
+        XCTAssertNil(PokemonVariantRules.reviewedVariants(cardID: "sma-SV049"))
+        XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: "sma-SV49", variant: .normal))
+    }
+
     func testOfflineHistoricalCardPreservesAllPublishedVariantRows() throws {
         // EX-era cards resolve through the historical path, which keyed its
         // summaries by provider id alone. The `normal` and `reverse` rows of

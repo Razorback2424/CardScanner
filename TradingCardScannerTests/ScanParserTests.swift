@@ -704,6 +704,37 @@ final class ScanParserTests: XCTestCase {
         XCTAssertNotEqual(IdentityResolution.userSelectedPrinting, .catalogSelected)
     }
 
+    func testShinyVaultNumbersSelectOnlyTheirVaultSets() throws {
+        let cases: [(printed: String, localID: String, denominator: Int, setID: String)] = [
+            ("SV49/SV94", "SV49", 94, "sma"),
+            ("SV107/SV122", "SV107", 122, "swsh4.5sv"),
+            ("SV001/SV122", "SV1", 122, "swsh4.5sv")
+        ]
+        for value in cases {
+            let evidence = try historicalEvidence(number: value.printed, title: "Charizard")
+            XCTAssertEqual(evidence.number.scheme, .subset(prefix: "SV"), value.printed)
+            XCTAssertEqual(evidence.number.localID, value.localID, value.printed)
+            XCTAssertEqual(evidence.number.denominator, value.denominator, value.printed)
+            XCTAssertTrue(PokemonHistoricalIdentityResolver.canAttempt(evidence.number), value.printed)
+            XCTAssertEqual(
+                PokemonHistoricalIdentityResolver.candidateSetIDs(for: evidence, in: []),
+                [value.setID],
+                value.printed
+            )
+        }
+        // The modern code parser never reads a vault footer as a card.
+        XCTAssertNil(ScanParser.parsePokemon("SV49/SV94"))
+    }
+
+    func testBareSVBeforeOrdinaryFractionKeepsOfficialSetReading() throws {
+        // `SVI 049/198` with its last letter lost must stay recoverable by
+        // denominator and title, not become an unsupported vault number.
+        let degraded = try XCTUnwrap(PokemonHistoricalScanParser.numberEvidence(in: ["SV 049/198"]))
+        XCTAssertEqual(degraded, officialNumber("49/198"))
+        XCTAssertEqual(PokemonHistoricalScanParser.numberEvidence(in: ["SVI EN 049/198"]), degraded)
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["49/SV94"]))
+    }
+
     func testOfficialCount32DoesNotMasqueradeAsHoloSubset() throws {
         let ordinary = try historicalEvidence(number: "11/32", title: "Houndoom")
         let directory = try historicalDirectory([("ordinary32", 32, 32)])

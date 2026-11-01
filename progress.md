@@ -1,3 +1,37 @@
+# 2026-11-01 — Correct Celebrations physical-number evidence
+
+Review follow-up on PR #8 at `c1d14b8`: Birthday Pikachu prints standalone `24`,
+not the supplier's `24/53`. Corrected the coverage table and replaced the
+all-25 signed-membership proposal with the 24-fraction historical approach
+being corrected in stacked PR #9. Existing Shiny Vault runtime behavior and
+saved-holding protection are unchanged. Documentation links and whitespace are
+checked separately; no new native or physical-card test pass is claimed.
+
+# 2026-11-01 — Five-game catalog coverage sweep
+
+Branch `refinement/catalog-coverage-2026-11-01` from `main@a2b11ad`. Each game
+was traced from printed identifier to catalog identity and finish, and the
+results were compared with the live signed Pokémon revision 18 and with public
+TCGdex, TCGCSV, pokemontcg.io and Scryfall data. Findings and evidence are in
+the [coverage audit](docs/audits/card-coverage-gaps-and-research.md#five-game-coverage-sweep--2026-11-01).
+
+Fixed:
+- Shiny Vault footers `SV49/SV94` (Hidden Fates) and `SV001/SV122`
+  (Shining Fates) are now scannable. Previously they were unreadable.
+- Hidden Fates Shiny Vault cards resolve as Holofoil instead of TCGdex's
+  incorrect Normal.
+- Review follow-up: an existing automatic Normal holding could still be
+  rekeyed to Holo after two refreshes 24 hours apart. Finish reconciliation now
+  skips any stored finish that a reviewed card requires a person to check.
+
+At this original checkpoint, Celebrations Classic Collection reprints still
+resolved silently as their original vintage printings. The later PR #9
+historical-membership approach supersedes the initial signed-revision proposal;
+Birthday Pikachu remains a separate standalone-number case. The 30th Classic
+Collection is unchanged. The focused selection passed **382 tests** and a wider
+scanner/Browse/pricing selection passed **385 tests**, both with zero failures
+or skips. This is simulator evidence only.
+
 # 2026-10-31 — Card sharing post-merge artwork recovery
 
 Follow-up on `fix/card-share-artwork-recovery` from `main@3053218`.
