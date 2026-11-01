@@ -5469,3 +5469,38 @@ historical.
   retain the physical-review, Tinsel, unavailable authenticated graded replay,
   disconnected-device and unpublished-feed gaps. Private photos, collection
   export, holdings and certificate identifiers remain outside the repository.
+
+## 2026-11-01 — Graded safety and bounded physical catalog accuracy
+
+- Draft PR14 expands the same focused case pass: exact Cosmos product proof
+  reaches raw and graded binding, persisted/offline checklist lifecycle,
+  scanner reconstruction, Browse and collection reopen. Wrong products,
+  retailer stamps, language, grades and qualifiers reject independently.
+- Premium BGS/CGC labels cannot use ordinary unlabeled quotes. PSA qualifiers
+  remain qualifiers; explicit imported slab finishes and distinct unbound keys
+  survive save/reopen. v2 language and Japanese raw lookup remain exact.
+- Exact graded quote lifecycle retains current/expired/never-priced states,
+  historical price, sale and expiry in the existing metadata JSON column.
+  Explicit expiry withdraws value; timeouts retain valid quotes, later sales
+  can restore them, and stale expiry cannot overwrite newer evidence. Bound
+  refresh uses retained card/variant identifiers; discovery includes all-null
+  cards without turning unresolved responses into terminal coverage claims.
+- Bidoof ordinary Reverse/Peelable Ditto and 151 Charmander Cosmos Holo/Reverse
+  have separate physical IDs. Ambiguous legacy holdings keep identity and
+  history while current views/valuation hold them for review. GO pack scope
+  remains Master; 151 retail Cosmos remains Grand Master. No migration or
+  silent holding merge is included. TCGCSV sharing says Market price.
+- Final source `b9177dd`: **1,060 native passes, zero failures, two deliberate
+  live-feed/performance skips** (1,062 selected cases). This closes the
+  intermediate collector-scope count assertions. Python **150 passed/five
+  optional skips**; census: zero structural errors across 914 source files,
+  separate three-member/product/dated-quote counts and two physical collisions.
+  The unrelated CollectionKey assertion was reproduced on untouched `0ab3b0e`
+  and is not represented as passing.
+- The explicitly approved app-specific Keychain read ran once and found no
+  item (exit 44): no key read and zero authenticated API requests. Live
+  Spinarak diagnosis, current device acceptance, feed activation, physical
+  reviews and Tinsel USD evidence remain open. No device install, owner-store
+  mutation, signed publication, deployment, merge or expanded credential access.
+  Details and the exact limits remain in the
+  [case ledger](docs/audits/catalog-pricing-cases-2026-11-01.md).

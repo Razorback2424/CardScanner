@@ -47,12 +47,16 @@ establish physical-device installation, CloudKit or release acceptance.
 
 ## 2026-11-01 — exact Cosmos and graded regression cases
 
-The [case matrix](../audits/catalog-pricing-cases-2026-11-01.md) records four
-reviewed Cosmos product bindings, cached finish-choice repairs, reuse of the
-existing Genesect product mapping when the daily feed is unavailable, and
-explicit identity-review/Tinsel/graded-provider gaps. It owns this candidate's
-test results and current live/device limits; the feed-activation gate above
-remains open.
+The [case matrix](../audits/catalog-pricing-cases-2026-11-01.md) owns this
+candidate's results and live/device limits. It covers reviewed Cosmos choices,
+exact product proof through graded binding, saved/offline checklist lifecycle,
+premium labels and PSA qualifiers, finish-preserving slab imports, Japanese
+language, retained-ID refresh, and explicit graded quote expiry. Two reviewed
+Ditto/Cosmos collisions retain distinct physical dimensions and hold ambiguous
+legacy identities for review without migration. Daily aggregate quote coverage
+is counted separately from membership/product presence. The inactive feed,
+unavailable app-specific API key, unverified Spinarak replay, physical reviews
+and Tinsel coverage remain gates; no completeness or release claim is made.
 
 ## Priority 1 contract
 
@@ -63,6 +67,7 @@ remains open.
 | Invalid/foreign refresh response | Reject it before reference-cache replacement; preserve a prior valid quote. |
 | Missing approved product/finish mapping | Report mapping pending across Browse, details, Price Check and collection diagnostics. Do not count a provider failure or invent a provider observation/check. |
 | Provider confirms no market quote | Report an absent USD quote separately from missing mappings and transport errors; retain a prior valid quote. |
+| Provider explicitly expires an exact graded quote | Withdraw current value, retain lifecycle/history evidence, and keep transport failure distinct. Never substitute `last_price` or another slab. |
 | Provider failure | Preserve the prior quote and its retrieval timestamp; expose the unsuccessful refresh separately. |
 | Stale quote | Preserve the amount and age; never renew its market timestamp merely because a check ran. |
 | New exact handle after a failed name search | Permit a keyed lookup despite the old search miss. After a successful keyed response, respect the normal cooldown even if that lookup also missed. |
