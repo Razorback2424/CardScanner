@@ -28,12 +28,154 @@ private actor UpgradeProbeTransport: PokemonBrowseTransport {
     }
 }
 
+private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
+    let provider: TCGdexSetCatalog
+    var detailRequests = 0
+    var setRequests = 0
+    init(provider: TCGdexSetCatalog) { self.provider = provider }
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] {
+        let object: [String: Any] = ["id": provider.id, "name": provider.name,
+            "cardCount": ["total": provider.cardCount?.total ?? 1, "official": provider.cardCount?.official ?? 1]]
+        return [try JSONDecoder().decode(TCGdexBrowseSet.self, from: JSONSerialization.data(withJSONObject: object))]
+    }
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog { setRequests += 1; return provider }
+    func fetchCard(id: String) async throws -> TCGdexCard {
+        detailRequests += 1
+        throw URLError(.notConnectedToInternet)
+    }
+}
+
 final class PricingTests: XCTestCase {
     private func reportedParallelCases() throws -> [[String: Any]] {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-parallel-review",
             withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
         let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
         return try XCTUnwrap(document["cases"] as? [[String: Any]])
+    }
+
+    func testEveryReviewedDailyFeedProductRequiresItsSourceIdentityAndExactHoloRun() throws {
+        XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.setID)), ["mee", "30th", "30th-c"])
+        for entry in PokemonTCGCSVMapping.entries {
+            let localID = entry.setID == "mee" ? entry.printedNumber : String(entry.cardID.dropFirst(entry.setID.count + 1))
+            var source: [String: Any] = ["id": entry.cardID, "localId": localID, "name": entry.productName,
+                "set": ["id": entry.setID, "name": "Reviewed fixture", "cardCount": ["official": 128, "total": 196]],
+                "variants_detailed": [["type": "holo", "size": "standard"]]]
+            func card(_ object: [String: Any]) throws -> IdentifiedCard {
+                .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object)), setCode: "")
+            }
+            for run: PokemonPrintRun? in [nil, .unlimited] {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: try card(source), variant: .holo, printRun: run), entry.productID, entry.cardID)
+            }
+            for run: PokemonPrintRun in [.firstEdition, .shadowless] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(source), variant: .holo, printRun: run), entry.cardID)
+            }
+            for finish: PhysicalVariant in [.normal, .reverse, .pokemonFoilPattern("cosmos")] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(source), variant: finish, printRun: nil), entry.cardID)
+            }
+            for (field, value) in [("name", "Unrelated Fixture"), ("localId", "99999"), ("id", "fixture-unknown")] {
+                var wrong = source; wrong[field] = value
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(wrong), variant: .holo, printRun: nil), entry.cardID + field)
+            }
+            var wrongSet = source
+            wrongSet["set"] = ["id": "unrelated", "name": "Unrelated", "cardCount": ["official": 128, "total": 196]]
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(wrongSet), variant: .holo, printRun: nil))
+            source["variants_detailed"] = [["type": "holo", "thirdParty": ["tcgplayer": 999999]]]
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(source), variant: .holo, printRun: nil), entry.cardID)
+        }
+    }
+
+    @MainActor
+    func testBlisterFamilySurvivesSavedChecklistUnchangedProbeOfflineScannerBrowseAndCollectionReopen() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-parallel-review",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let family = try XCTUnwrap(document["boundedRetailFamily"] as? [String: Any])
+        let members = try XCTUnwrap(family["members"] as? [[String: Any]])
+        XCTAssertEqual(Set(members.compactMap { $0["catalogID"] as? String }), ["me03-050", "me05-040", "me02.5-097"])
+        let loaded = await PokemonChecklistStore.shared.bundledSnapshot()
+        let bundle = try XCTUnwrap(loaded)
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        for member in members {
+            let id = try XCTUnwrap(member["catalogID"] as? String)
+            let expectedProduct = try XCTUnwrap(member["productID"] as? Int)
+            let sourceEntry = try XCTUnwrap((try reportedParallelCases()).first { $0["catalogID"] as? String == id })
+            let source = try JSONDecoder().decode(TCGdexCard.self,
+                from: JSONSerialization.data(withJSONObject: XCTUnwrap(sourceEntry["source"])))
+            let entry = try XCTUnwrap(bundle.entry(forProviderID: source.set.id))
+            let rows = try XCTUnwrap(bundle.checklist(for: entry.set.catalogID))
+            let old = rows.filter { !($0.providerID == id && $0.masterSetVariant == cosmos) }
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent("blister-family-\(UUID())")
+            defer { try? FileManager.default.removeItem(at: root) }
+            let probeObject: [String: Any] = ["id": source.set.id, "name": source.set.name,
+                "cards": [["id": id, "localId": source.localId, "name": source.name]],
+                "cardCount": ["total": source.set.cardCount.total, "official": source.set.cardCount.official]]
+            let probe = try JSONDecoder().decode(TCGdexSetCatalog.self, from: JSONSerialization.data(withJSONObject: probeObject))
+            let oldCounts = PokemonChecklistReviewedProjection.entry(entry, cards: old)
+            let oldEntry = PokemonChecklistSnapshotEntry(set: oldCounts.set, providerID: entry.providerID,
+                providerFingerprint: entry.providerFingerprint,
+                providerProbeFingerprint: PokemonMasterSetChecklistBuilder.providerProbeFingerprint(of: probe),
+                officialCount: entry.officialCount, standardSlotCount: oldCounts.standardSlotCount,
+                expandedSlotCount: oldCounts.expandedSlotCount, resource: entry.resource)
+            let manifest = PokemonChecklistSnapshotManifest(schemaVersion: bundle.manifest.schemaVersion,
+                rulesVersion: bundle.manifest.rulesVersion, generatedAt: bundle.manifest.generatedAt,
+                directoryFingerprint: bundle.manifest.directoryFingerprint, entries: [oldEntry])
+            try await PokemonChecklistStore(root: root, bundle: nil).replace(.init(manifest: manifest, checklists: [entry.set.id: old]))
+            let bytes = try Data(contentsOf: root.appendingPathComponent(entry.resource))
+            let manifestBytes = try Data(contentsOf: root.appendingPathComponent("manifest.json"))
+            let reopened = PokemonChecklistStore(root: root, bundle: nil)
+            for _ in 0..<2 {
+                let loaded = await reopened.mergedChecklist(for: entry.set.catalogID)
+                let repaired = try XCTUnwrap(loaded)
+                XCTAssertEqual(repaired.filter { $0.providerID == id && $0.masterSetVariant == cosmos }.count, 1)
+                XCTAssertEqual(repaired.count, old.count + 1)
+                let directory = await reopened.mergedEntries()
+                let projected = try XCTUnwrap(directory.first { $0.providerID == source.set.id })
+                XCTAssertEqual(projected.expandedSlotCount, repaired.count)
+                XCTAssertEqual(projected.standardSlotCount, repaired.filter { !$0.isExpandedMasterSetVariant }.count)
+                XCTAssertEqual(projected.set.cardCount, repaired.count)
+                XCTAssertEqual(projected.providerFingerprint, oldEntry.providerFingerprint)
+                XCTAssertEqual(projected.providerProbeFingerprint, oldEntry.providerProbeFingerprint)
+                await reopened.discardDecodedChecklists()
+            }
+            let offline = await PokemonOfflineCatalog(store: reopened).card(providerSetID: source.set.id,
+                localID: source.localId, expectedOfficialCount: source.set.cardCount.official)
+            let offlineCard = try XCTUnwrap(offline)
+            let identified = IdentifiedCard.pokemon(offlineCard, setCode: entry.set.code)
+            XCTAssertTrue(VariantResolver.options(for: identified.variantEvidence).contains(cosmos))
+            XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: identified, variant: cosmos), [.tcgplayerID(String(expectedProduct))])
+            XCTAssertNil(CardPricing.price(for: identified, variant: cosmos, magicTreatments: []).value)
+            let code = ["me03": "POR", "me05": "PBL", "me02.5": "ASC"][source.set.id]!
+            let identifier = try XCTUnwrap(PokemonScanProfile.bundledSeed.parse("\(code) EN \(source.localId)/\(source.set.cardCount.official)"))
+            guard case let .pokemon(_, number, _, definition) = identifier.legacyIdentity else { return XCTFail("Expected photographed footer route") }
+            XCTAssertEqual(definition.tcgdexSetID, source.set.id)
+            XCTAssertEqual(Int(number), Int(source.localId))
+            let transport = BlisterFamilyProbeTransport(provider: probe)
+            let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+                pokemonTransport: transport, checklistStore: reopened)
+            await catalog.refreshCatalogNow()
+            let detailRequests = await transport.detailRequests
+            let setRequests = await transport.setRequests
+            XCTAssertEqual(setRequests, 1)
+            XCTAssertEqual(detailRequests, 0, "An unchanged probe must keep the saved source bytes")
+            let page = try await catalog.cards(in: entry.set, cursor: nil)
+            XCTAssertTrue(page.items.contains { $0.providerID == id && $0.masterSetVariant == cosmos })
+            XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent(entry.resource)), bytes)
+            XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")), manifestBytes)
+            let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+            let key = try autoreleasepool {
+                let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+                return try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                    try CollectionStore(context: context).add(identified,
+                        resolved: .init(variant: cosmos, resolution: .userConfirmed)).collectionKey
+                }
+            }
+            let reloaded = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let saved = try XCTUnwrap(CollectionStore(context: reloaded.mainContext).card(forKey: key))
+            XCTAssertEqual(saved.providerID, id)
+            XCTAssertEqual(saved.variant, cosmos)
+            XCTAssertEqual(saved.quantity, 1)
+            XCTAssertNil(PriceStore(context: reloaded.mainContext).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD)
+        }
     }
 
     func testReportedUnpricedIdentitiesKeepReviewAndCurrencySafeguards() throws {

@@ -174,8 +174,11 @@ struct GradedCardIdentity: Hashable, Sendable {
         guard matches(card, game: game, expectedSetSlug: expectedSetSlug),
               variant.type?.caseInsensitiveCompare("graded") == .orderedSame
         else { return false }
+        let isJapanese = vendorGame(for: game) == .pokemonJapan
+        guard Self.matchesLanguage(variant.language, isJapanese: isJapanese,
+            requireExplicit: isJapanese && card is JustTCGV2Card) else { return false }
         if let finish, !Self.matchesFinish(finish, printing: variant.printing, printRun: pokemonPrintRun,
-                                         isJapanese: vendorGame(for: game) == .pokemonJapan) {
+                                         isJapanese: isJapanese, language: variant.language) {
             return false
         }
 
@@ -184,9 +187,31 @@ struct GradedCardIdentity: Hashable, Sendable {
         return ProductEdition.from(pokemonPrintRun).admits(printing: printing)
     }
 
-    static func matchesFinish(_ finish: PhysicalVariant, printing: String?, printRun: PokemonPrintRun? = nil, isJapanese: Bool = false) -> Bool {
-        guard let printing, case let .printings(allowed) = ProductFinish.requirement(for: finish, printRun: printRun, isJapanese: isJapanese) else { return false }
-        return allowed.contains { $0.caseInsensitiveCompare(printing) == .orderedSame }
+    static func matchesLanguage(_ language: String?, isJapanese: Bool, requireExplicit: Bool = false) -> Bool {
+        guard let language else { return !requireExplicit }
+        let normalized = language.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return (isJapanese ? ["japanese", "ja", "jp", "jpn"] : ["english", "en", "eng"]).contains(normalized)
+    }
+
+    static func matchesFinish(_ finish: PhysicalVariant, printing: String?, printRun: PokemonPrintRun? = nil,
+                              isJapanese: Bool = false, language: String? = nil,
+                              catalogID: String? = nil, verifiedProductID: String? = nil) -> Bool {
+        if language != nil, !matchesLanguage(language, isJapanese: isJapanese, requireExplicit: true) { return false }
+        if finish == PokemonReviewedParallelCatalog.variant {
+            guard !isJapanese, printRun == nil || printRun == .unlimited,
+                  let catalogID, let reviewed = PokemonReviewedParallelCatalog.entry(cardID: catalogID),
+                  verifiedProductID == String(reviewed.productID), let printing else { return false }
+            return ProductEdition.from(printRun).printings(finish: "Holofoil").contains {
+                $0.caseInsensitiveCompare(printing) == .orderedSame
+            }
+        }
+        // v2 prints bare Holofoil plus a separate language; persisted/v1
+        // evidence still uses the language suffix when no separate field exists.
+        guard let printing, case let .printings(allowed) = ProductFinish.requirement(for: finish,
+            printRun: printRun, isJapanese: language == nil && isJapanese) else { return false }
+        let comparable = language != nil && isJapanese && printing.hasSuffix(" - Japanese")
+            ? String(printing.dropLast(" - Japanese".count)) : printing
+        return allowed.contains { $0.caseInsensitiveCompare(comparable) == .orderedSame }
     }
 
 }
@@ -344,7 +369,15 @@ struct ReviewedPokemonProductIdentity: GradedProductIdentity {
     }
 
     init?(identity: GradedCardIdentity) throws {
-        guard let id = identity.catalogID, let records = Self.byID[id], let entry = records.first else { return nil }
+        guard let id = identity.catalogID else { return nil }
+        let records: [Entry]
+        if let subset = Self.byID[id] { records = subset }
+        else if identity.finish == PokemonReviewedParallelCatalog.variant,
+                let parallel = PokemonReviewedParallelCatalog.entry(cardID: id) {
+            records = [Entry(catalogID: id, name: parallel.name, setName: parallel.setName,
+                printedNumber: parallel.printedNumber, productID: parallel.productID, finish: PokemonReviewedParallelCatalog.variant)]
+        } else { return nil }
+        guard let entry = records.first else { return nil }
         var number = identity.collectorNumber.trimmingCharacters(in: .whitespacesAndNewlines)
         // TCGdex's literal provider key is percent-encoded. Translate only this
         // reviewed card's local symbol, preserving any stated denominator.
@@ -372,7 +405,16 @@ struct ReviewedPokemonProductIdentity: GradedProductIdentity {
         selectedEntries.contains { entry in card.externalIDs?.tcgplayer == String(entry.productID)
             && card.game?.id == ProductCatalogIdentity.Game.pokemon.rawValue
             && !(card.id ?? card.uuid ?? "").isEmpty
-            && card.name.map { CatalogIdentityNormalization.namesMatch(imported: entry.name, catalog: $0) } == true }
+            && card.name.map { name in
+                if entry.finish == PokemonReviewedParallelCatalog.variant {
+                    let candidate = CatalogIdentityNormalization.canonicalText(name)
+                    return candidate == CatalogIdentityNormalization.canonicalText(entry.name)
+                        || candidate == CatalogIdentityNormalization.canonicalText(entry.name + " - " + entry.printedNumber + " (Cosmos Holo)")
+                }
+                return CatalogIdentityNormalization.namesMatch(imported: entry.name, catalog: name)
+            } == true
+            && (entry.finish != PokemonReviewedParallelCatalog.variant
+                || (card.printedNumber.map { ProductCatalogIdentity.numbersMatch(entry.printedNumber, $0) } ?? true)) }
     }
 
     func admits(_ variant: JustTCGVariant, productID: String?, requestedFinish: PhysicalVariant?) -> Bool {
@@ -380,7 +422,8 @@ struct ReviewedPokemonProductIdentity: GradedProductIdentity {
               requestedFinish == nil || requestedFinish == entry.finish,
               variant.type?.caseInsensitiveCompare("graded") == .orderedSame,
               variant.language == nil || ["en", "english"].contains(variant.language!.lowercased()) else { return false }
-        return GradedCardIdentity.matchesFinish(entry.finish, printing: variant.printing, printRun: printRun)
+        return GradedCardIdentity.matchesFinish(entry.finish, printing: variant.printing, printRun: printRun,
+            language: variant.language, catalogID: entry.catalogID, verifiedProductID: productID)
     }
 }
 
@@ -422,6 +465,7 @@ struct JustTCGV2GradedClient: Sendable {
         guard let vendorGame = identity.vendorGame(for: game) else { return [] }
         var query: [(String, String)] = [
             ("game", vendorGame.rawValue),
+            ("language", vendorGame == .pokemonJapan ? "Japanese" : "English"),
             ("q", identity.name),
             ("graded", "only"),
             // JustTCG v2 returns the NA market by default. Spell it out so
@@ -675,6 +719,8 @@ struct JustTCGV2GradedClient: Sendable {
                     grade: grading.cardGrade,
                     canonical: grading.canonical,
                     printing: variant.printing,
+                    language: variant.language,
+                    verifiedProductID: exactProduct != nil ? card.externalIDs?.tcgplayer : nil,
                     // `null` is a real answer: the vendor does not manufacture a
                     // number for every grader/grade permutation, and an absent
                     // price must read as "no reliable market price" rather than
@@ -686,6 +732,11 @@ struct JustTCGV2GradedClient: Sendable {
         }
         if exactProduct != nil, Set(variants.map(\.id)).count != variants.count { return .incompleteSearch }
         if !variants.isEmpty { return .matched(variants) }
+        if matchingCards.contains(where: { ($0.variants ?? []).contains { $0.type?.lowercased() == "graded" } }) {
+            // Published slab rows rejected for identity/language evidence are
+            // not proof that this known card has no graded listings.
+            return .localIdentityUnresolved
+        }
         return matchingCards.isEmpty
             ? .noProductMatch
             : .cardFoundWithoutGradedVariants

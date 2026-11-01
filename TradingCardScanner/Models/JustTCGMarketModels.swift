@@ -625,6 +625,12 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
     /// Exact provider display when available, e.g. `CGC Authentic`.
     let canonical: String?
     let printing: String?
+    /// v2 separates language from its bare printing name. Keep that evidence
+    /// until binding; losing it can reject Japanese or accept a foreign lane.
+    let language: String?
+    /// Only populated after an exact reviewed product response passes the
+    /// card and physical-variant checks. It is not an imported marketplace ID.
+    let verifiedProductID: String?
     let marketPriceUSD: Double?
     let updatedAt: Date?
 
@@ -635,6 +641,8 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         grade: CardGrade,
         canonical: String? = nil,
         printing: String? = nil,
+        language: String? = nil,
+        verifiedProductID: String? = nil,
         marketPriceUSD: Double?,
         updatedAt: Date?
     ) {
@@ -644,8 +652,19 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         self.grade = grade
         self.canonical = canonical
         self.printing = printing
+        self.language = language
+        self.verifiedProductID = verifiedProductID
         self.marketPriceUSD = marketPriceUSD
         self.updatedAt = updatedAt
+    }
+
+    /// The existing persisted finish field uses the v1 language-qualified
+    /// spelling. Preserve equivalent Japanese evidence without a model change.
+    var persistedPrinting: String? {
+        guard let printing, let language,
+              GradedCardIdentity.matchesLanguage(language, isJapanese: true, requireExplicit: true)
+        else { return printing }
+        return printing.hasSuffix(" - Japanese") ? printing : printing + " - Japanese"
     }
 
     var displayName: String {

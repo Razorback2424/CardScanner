@@ -230,6 +230,100 @@ final class ScannedGradedResolverTests: XCTestCase {
         let ordinary = variant(id: "ordinary", company: .cgc, grade: .init(value: "10"))
         XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [ordinary],
             for: slab(company: .cgc, value: "10", label: "Gem Mint")), ordinary)
+        let describedOrdinary = variant(id: "ordinary-described", company: .cgc, grade: .init(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [describedOrdinary],
+            for: slab(company: .cgc, value: "10")), describedOrdinary)
+    }
+
+    @MainActor
+    func testJapaneseV2LanguageIsCheckedAtBindingAndSurvivesSavedQuoteReload() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let source = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"M2-001","localId":"001","name":"Pikachu","set":{"id":"M2","name":"M2","cardCount":{"official":100,"total":100}},"variants":{"normal":false,"holo":true,"reverse":false,"firstEdition":false}}"#.utf8))
+        let key = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            let store = CollectionStore(context: context)
+            let mutation = try store.addScannedGraded(underlying: .pokemon(source, setCode: "M2"), company: .cgc,
+                grade: .init(value: "10", label: "Gem Mint"), certificationNumber: "SYNTHETIC-JP-001",
+                resolved: .init(variant: .holo, resolution: .userConfirmed))
+            let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+            let prices = PriceStore(context: context)
+            for language in ["English", "Japanese"] {
+                let variant = GradedVariant(id: "synthetic-ja-10", company: .cgc, grade: row.cardGrade!,
+                    printing: "Holofoil", language: language, marketPriceUSD: 40, updatedAt: nil)
+                let receipt = try GradedVariantBinding.apply(variant, to: row, store: prices, context: context,
+                    variantID: row.variantID, treatmentIDs: [], at: .now)
+                XCTAssertEqual(receipt.wasAccepted, language == "Japanese")
+                if language == "English" { XCTAssertNil(row.justTCGVariantID) }
+            }
+            XCTAssertTrue(prices.save())
+            return row.collectionKey
+        }
+        let reloaded = ModelContext(container)
+        let row = try XCTUnwrap(CollectionStore(context: reloaded).card(forKey: key))
+        let quote = try XCTUnwrap(PriceStore(context: reloaded).record(forKey: row.priceKey))
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(row.variant, .holo)
+        XCTAssertEqual(quote.gradedPrinting, "Holofoil - Japanese")
+        XCTAssertEqual(quote.effectiveUnitMarketPriceUSD, 40)
+        XCTAssertTrue(GradedCardIdentity.matchesFinish(.holo, printing: quote.gradedPrinting, isJapanese: true))
+        XCTAssertFalse(GradedCardIdentity.matchesFinish(.holo, printing: quote.gradedPrinting))
+    }
+
+    @MainActor
+    func testReviewedCosmosBindingRejectsOtherProductsGradesQualifiersAndKeepsDurableProof() throws {
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        for proof in PokemonReviewedParallelCatalog.entries where ["me03", "me05", "me02.5"].contains(proof.setID) {
+            let container = try ProductionRowFixtures.makeContainer()
+            let source = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: [
+                "id": proof.catalogID, "localId": String(proof.printedNumber.split(separator: "/")[0]), "name": proof.name,
+                "set": ["id": proof.setID, "name": proof.setName, "cardCount": ["official": Int(proof.printedNumber.split(separator: "/")[1])!, "total": 250]],
+                "variants_detailed": [["type": "holo", "foil": "cosmos", "size": "standard"]]]))
+            let key = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                let store = CollectionStore(context: context)
+                let mutation = try store.addScannedGraded(underlying: .pokemon(source, setCode: ""), company: .cgc,
+                    grade: .init(value: "10", label: "Gem Mint"), certificationNumber: nil,
+                    resolved: .init(variant: cosmos, resolution: .userConfirmed))
+                let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+                let prices = PriceStore(context: context)
+                let wrong: [GradedVariant] = [
+                    .init(id: "synthetic-cosmos", company: .cgc, grade: row.cardGrade!, printing: "Holofoil",
+                        marketPriceUSD: 99, updatedAt: nil),
+                    .init(id: "synthetic-cosmos", company: .cgc, grade: row.cardGrade!, printing: "Holofoil",
+                        verifiedProductID: "685555", marketPriceUSD: 99, updatedAt: nil),
+                    .init(id: "synthetic-cosmos", company: .cgc, grade: .init(value: "9"), printing: "Holofoil",
+                        verifiedProductID: String(proof.productID), marketPriceUSD: 99, updatedAt: nil),
+                    .init(id: "synthetic-cosmos", company: .cgc, grade: .init(value: "10", qualifier: "OC"), printing: "Holofoil",
+                        verifiedProductID: String(proof.productID), marketPriceUSD: 99, updatedAt: nil),
+                    .init(id: "synthetic-cosmos", company: .cgc, grade: row.cardGrade!, printing: "Reverse Holofoil",
+                        verifiedProductID: String(proof.productID), marketPriceUSD: 99, updatedAt: nil)
+                ]
+                for candidate in wrong {
+                    let receipt = try GradedVariantBinding.apply(candidate, to: row, store: prices, context: context,
+                        variantID: row.variantID, treatmentIDs: [], at: .now)
+                    XCTAssertFalse(receipt.wasAccepted)
+                    XCTAssertNil(row.justTCGVariantID)
+                    XCTAssertNil(prices.record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD)
+                }
+                let exact = GradedVariant(id: "synthetic-cosmos", company: .cgc, grade: row.cardGrade!,
+                    printing: "Holofoil", language: "English", verifiedProductID: String(proof.productID),
+                    marketPriceUSD: 40, updatedAt: nil)
+                let receipt = try GradedVariantBinding.apply(exact, to: row, store: prices, context: context,
+                    variantID: row.variantID, treatmentIDs: [], at: .now)
+                XCTAssertTrue(receipt.wasAccepted)
+                XCTAssertTrue(prices.save())
+                return row.collectionKey
+            }
+            let context = ModelContext(container)
+            let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: key))
+            let quote = try XCTUnwrap(PriceStore(context: context).record(forKey: row.priceKey))
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(row.variant, cosmos)
+            XCTAssertEqual(row.tcgplayerProductID, String(proof.productID))
+            XCTAssertEqual(quote.effectiveUnitMarketPriceUSD, 40)
+            XCTAssertTrue(GradedCardIdentity.matchesFinish(cosmos, printing: quote.gradedPrinting,
+                catalogID: proof.catalogID, verifiedProductID: row.tcgplayerProductID))
+            XCTAssertFalse(GradedCardIdentity.matchesFinish(cosmos, printing: quote.gradedPrinting,
+                catalogID: proof.catalogID, verifiedProductID: "685555"))
+        }
     }
 
     func testFlattenedImportedQualifierCannotUseOrdinaryUnlabeledQuote() throws {

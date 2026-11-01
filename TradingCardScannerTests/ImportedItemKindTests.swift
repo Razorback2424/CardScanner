@@ -488,6 +488,36 @@ final class ImportedItemKindTests: XCTestCase {
         XCTAssertEqual(plan.entries.filter { $0.variant == nil }.count, 1)
     }
 
+    @MainActor
+    func testImportedGradedFinishesAndQualifiersDoNotMergeAfterDiskReopen() throws {
+        let plan = try CollectionCSV.parse(portfolioCSV([
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,Normal,CGC 10 Gem Mint,1,40.00,false",
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,Reverse Holofoil,CGC 10 Gem Mint,1,90.00,false",
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,,CGC 10 Gem Mint,1,20.00,false",
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,Normal,PSA 8 OC,1,20.00,false",
+            "Pokemon,Team Rocket Returns,Spinarak,78/109,Common,Normal,PSA 8,1,30.00,false"
+        ]))
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("graded-import-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+        try autoreleasepool {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            _ = try CollectionCSV.apply(plan, to: container.mainContext)
+            try container.mainContext.save()
+        }
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 5)
+        XCTAssertEqual(Set(rows.map(\.collectionKey)).count, 5)
+        XCTAssertTrue(rows.allSatisfy { $0.quantity == 1 && $0.itemKind == .gradedCard })
+        let cgc = rows.filter { $0.gradingCompany == .cgc }
+        XCTAssertEqual(Set(cgc.compactMap(\.variant)), [.normal, .reverse])
+        XCTAssertEqual(cgc.filter { $0.variant == nil }.count, 1)
+        XCTAssertEqual(rows.filter { $0.gradingCompany == .psa && $0.gradingQualifier == "OC" }.count, 1)
+        XCTAssertEqual(rows.filter { $0.gradingCompany == .psa && $0.gradingQualifier == nil }.count, 1)
+    }
+
     func testMalformedGradeIsSkippedWithoutDroppingSiblingRows() throws {
         let plan = try CollectionCSV.parse(portfolioCSV([
             "Pokemon,SV: 151,Charizard ex,199/165,Rare,,PSA 10,1,900.00,false",

@@ -1579,5 +1579,63 @@
       "productURL": "https://tcgcsv.com/tcgplayer/3/2289/products",
       "contentSHA256": "a30ab2be54da8abefacb30ce08a72c60892e2defb61ddb13226f20f4220e454c"
     }
-  ]
+  ],
+  "boundedRetailFamily": {
+    "name": "Enhanced 2-Pack Blister Pack [Gengar, Marshadow, Team Rocket's Mimikyu]",
+    "retailProductID": 714361,
+    "retailProductURL": "https://mp-search-api.tcgplayer.com/v1/product/714361/details",
+    "retailContents": "Expand your collection with foil Pokémon TCG cards featuring Gengar, Marshadow, and Team Rocket's Mimikyu—plus a plastic coin and two Pokémon TCG booster packs!\r\n<br><br><em>(Pokemon TCG booster packs and contents vary by product.)</em>",
+    "members": [
+      {
+        "catalogID": "me03-050",
+        "variantID": "cosmos",
+        "productID": 709697
+      },
+      {
+        "catalogID": "me05-040",
+        "variantID": "cosmos",
+        "productID": 714065
+      },
+      {
+        "catalogID": "me02.5-097",
+        "variantID": "cosmos",
+        "productID": 714066
+      }
+    ],
+    "publicAggregateQuoteObservation": {
+      "sourceURL": "https://tcgcsv.com/tcgplayer/3/2289/prices",
+      "upstreamBuild": "2026-10-31T20:05:59+0000",
+      "capturedAt": "2026-11-01T19:58:18.944198+00:00",
+      "boundary": "Recorded aggregate market observation only, not condition-specific, not an app/provider acceptance or a holding valuation.",
+      "rows": [
+        {
+          "productId": 709697,
+          "lowPrice": 5.41,
+          "midPrice": 7.89,
+          "highPrice": 25.0,
+          "marketPrice": 7.43,
+          "directLowPrice": null,
+          "subTypeName": "Holofoil"
+        },
+        {
+          "productId": 714065,
+          "lowPrice": 0.1,
+          "midPrice": 0.35,
+          "highPrice": 5.0,
+          "marketPrice": 0.32,
+          "directLowPrice": null,
+          "subTypeName": "Holofoil"
+        },
+        {
+          "productId": 714066,
+          "lowPrice": 0.15,
+          "midPrice": 0.68,
+          "highPrice": 83.0,
+          "marketPrice": 0.59,
+          "directLowPrice": null,
+          "subTypeName": "Holofoil"
+        }
+      ]
+    }
+  }
 }

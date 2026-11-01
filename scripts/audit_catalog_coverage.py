@@ -166,6 +166,19 @@ def validate_pokemon_parallel_proof(document):
         require(row['sourceURL'] == 'https://api.tcgdex.net/v2/en/cards/' + identity
             and row['productURL'] == 'https://tcgcsv.com/tcgplayer/3/' + str(product['groupId']) + '/products',
             f'Pokemon parallel source scope mismatch: {identity}')
+    family = document.get('boundedRetailFamily')
+    if family:
+        members = unique(family['members'], lambda row: row['catalogID'], 'Pokemon bounded retail member')
+        require(set(members) == {'me03-050', 'me05-040', 'me02.5-097'}, 'Unexpected bounded blister membership')
+        for identity, member in members.items():
+            require(member['variantID'] == 'cosmos' and member['productID'] == entries[identity]['product']['productId']
+                and entries[identity]['source']['name'] in family['name'], 'Bounded blister product identity mismatch')
+        prices = unique(family['publicAggregateQuoteObservation']['rows'], lambda row: row['productId'], 'Pokemon recorded family quote')
+        require(set(prices) == {row['productID'] for row in members.values()}, 'Bounded blister quote membership mismatch')
+        for price in prices.values():
+            require(price['subTypeName'] == 'Holofoil' and (price['marketPrice'] is None
+                or isinstance(price['marketPrice'], (int, float)) and 0 <= price['marketPrice'] < float('inf')),
+                'Invalid recorded family aggregate quote')
     return entries
 
 

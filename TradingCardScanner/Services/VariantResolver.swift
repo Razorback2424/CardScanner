@@ -291,12 +291,12 @@ struct PokemonVariantRule: Equatable, Sendable {
 /// bindings, never a generic Cosmos-to-Holofoil alias or a saved collection edit.
 enum PokemonReviewedParallelCatalog {
     struct Entry: Sendable {
-        let catalogID, setID, name, printedNumber: String
+        let catalogID, setID, setName, name, printedNumber: String
         let productID: Int
 
         func matches(name: String, setID: String, number: String) -> Bool {
             self.setID == setID
-                && CatalogIdentityNormalization.namesMatch(imported: self.name, catalog: name)
+                && CatalogIdentityNormalization.canonicalText(self.name) == CatalogIdentityNormalization.canonicalText(name)
                 && ProductCatalogIdentity.numbersMatch(printedNumber, number)
         }
 
@@ -309,10 +309,11 @@ enum PokemonReviewedParallelCatalog {
 
     static let variant = PhysicalVariant.pokemonFoilPattern("cosmos")
     static let entries: [Entry] = [
-        Entry(catalogID: "me05-040", setID: "me05", name: "Marshadow", printedNumber: "040/084", productID: 714065),
-        Entry(catalogID: "me02.5-097", setID: "me02.5", name: "Team Rocket's Mimikyu", printedNumber: "097/217", productID: 714066),
-        Entry(catalogID: "sv04.5-007", setID: "sv04.5", name: "Charmander", printedNumber: "007/091", productID: 641613),
-        Entry(catalogID: "sv04.5-008", setID: "sv04.5", name: "Charmeleon", printedNumber: "008/091", productID: 641614)
+        Entry(catalogID: "me05-040", setID: "me05", setName: "Pitch Black", name: "Marshadow", printedNumber: "040/084", productID: 714065),
+        Entry(catalogID: "me02.5-097", setID: "me02.5", setName: "Ascended Heroes", name: "Team Rocket's Mimikyu", printedNumber: "097/217", productID: 714066),
+        Entry(catalogID: "me03-050", setID: "me03", setName: "Perfect Order", name: "Gengar", printedNumber: "050/088", productID: 709697),
+        Entry(catalogID: "sv04.5-007", setID: "sv04.5", setName: "Paldean Fates", name: "Charmander", printedNumber: "007/091", productID: 641613),
+        Entry(catalogID: "sv04.5-008", setID: "sv04.5", setName: "Paldean Fates", name: "Charmeleon", printedNumber: "008/091", productID: 641614)
     ]
 
     static func entry(cardID: String) -> Entry? { entries.first { $0.catalogID == cardID } }

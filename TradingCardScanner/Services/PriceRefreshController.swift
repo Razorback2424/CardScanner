@@ -25,12 +25,14 @@ enum GradedVariantBinding {
         treatmentIDs: [String],
         at fetchedAt: Date
     ) throws -> GradedVariantBindingReceipt {
-        let finishMatches = row.variant.map {
-            GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: row.pokemonPrintRun,
-                isJapanese: ProductCatalogIdentity.game(for: row.cardGame,
-                    catalogID: row.catalogProviderID ?? row.underlyingPrintingID) == .pokemonJapan)
-        } ?? (row.justTCGVariantID == variant.id)
-        guard finishMatches else {
+        let catalogID = row.catalogProviderID ?? row.underlyingPrintingID
+        guard let company = row.gradingCompany, let grade = row.cardGrade,
+              ScannedGradedResolver.matchingVariant(in: [variant],
+                for: .init(company: company, grade: grade, certificationNumber: nil, labelCardText: []),
+                finish: row.variant, printRun: row.pokemonPrintRun,
+                isJapanese: ProductCatalogIdentity.game(for: row.cardGame, catalogID: catalogID) == .pokemonJapan,
+                boundVariantID: row.variant == nil ? row.justTCGVariantID : nil,
+                catalogID: catalogID) != nil else {
             return GradedVariantBindingReceipt(quote: .unavailable(.justTCG), priceKey: row.priceKey, wasAccepted: false)
         }
         if let run = row.pokemonPrintRun,
@@ -54,6 +56,7 @@ enum GradedVariantBinding {
         }
         row.justTCGVariantID = variant.id
         row.justTCGCardID = variant.cardID ?? row.justTCGCardID
+        row.tcgplayerProductID = variant.verifiedProductID ?? row.tcgplayerProductID
         row.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
         row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
 
@@ -133,7 +136,7 @@ enum GradedVariantBinding {
                 record.justTCGFetchedAt = fetchedAt
             }
             record.marketVariantID = variant.id
-            record.gradedPrinting = variant.printing
+            record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         }
         return GradedVariantBindingReceipt(
@@ -1605,7 +1608,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     requiresFullResponse: intent == .manual || !candidate.target.hasPrice
                         || candidate.target.needsArtwork,
                     exactPhysicalProductID: candidate.exactPhysicalProductID,
-                    pokemonPrintRun: candidate.target.pokemonPrintRun
+                    pokemonPrintRun: candidate.target.pokemonPrintRun,
+                    isJapanese: ProductCatalogIdentity.game(for: candidate.target.game,
+                        catalogID: candidate.card?.providerID ?? candidate.target.catalogPrintingID ?? candidate.target.printingID) == .pokemonJapan
                 )
             )
         }
@@ -1880,7 +1885,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 finish: target.variantID.map(PhysicalVariant.resolving),
                 printRun: target.pokemonPrintRun,
                 isJapanese: target.gradedIdentity?.vendorGame(for: target.game) == .pokemonJapan,
-                boundVariantID: target.marketVariantID
+                boundVariantID: target.marketVariantID,
+                catalogID: target.gradedIdentity?.catalogID ?? target.catalogPrintingID
             )
         }
 

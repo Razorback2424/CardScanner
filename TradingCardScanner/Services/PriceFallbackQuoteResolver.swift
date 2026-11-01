@@ -304,7 +304,8 @@ final class PriceFallbackQuoteResolver {
             lastCheckedAt: nil,
             magicTreatmentIDsRaw: treatmentIDs,
             exactPhysicalProductID: exactPhysicalProductID,
-            pokemonPrintRun: pokemonPrintRun
+            pokemonPrintRun: pokemonPrintRun,
+            isJapanese: ProductCatalogIdentity.game(for: game, catalogID: catalogID ?? printingID) == .pokemonJapan
         )
 
         if let lookup = target.lookup {
