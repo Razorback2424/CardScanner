@@ -45,7 +45,9 @@ struct YuGiOhRecognitionAdapter: GameRecognitionAdapter {
             }
         }
         let known = family.reduce(into: Set<Int>()) { $0.formUnion($1.card.passcodes) }
-        if !passcodes.isEmpty && !known.isEmpty && known.isDisjoint(with: passcodes) {
+        // One agreeing observation cannot erase another positive contradiction.
+        // Repeated identical passcodes collapse in the set and remain usable.
+        if !passcodes.isEmpty && !known.isEmpty && !passcodes.isSubset(of: known) {
             return .rejected(.init(reason: "Passcode conflicts with printed code", blocksFallbackRecognition: true))
         }
         let editionLines = footer.filter { $0.boundingBox.map { $0.minX < 0.5 } ?? true }

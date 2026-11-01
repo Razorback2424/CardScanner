@@ -2235,6 +2235,61 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
     }
 
+    func testOnePieceImportRejectsUnknownItemKindsAndConflictingRawMetadataWithoutWrites() throws {
+        let registry = try registry()
+        let adapter = OnePieceImportAdapter(registry: registry)
+        let policy = CardGameRegistry(descriptors: [.init(game: .onePiece, displayName: "Fixture", sortOrder: 0,
+            capabilities: [.collectionWrite])])
+        let (_, container) = try model(registry: registry)
+        CollectionStore.configureGames(policy, for: container)
+        let headers = "game,provider_id,card_name,card_number,finish,quantity"
+        let values = "one-piece,\(uuid(1).uuidString.lowercased()),Shanks,OP01-120,normal,1"
+        for (column, value) in [
+            ("item_kind", "future-kind"),
+            ("magic_content_kind", "token"),
+            ("grading_company", "PSA"),
+            ("certification_number", "fixture-cert"),
+            ("justtcg_api_version", "v2"),
+            ("source_identity_conflict", "true")
+        ] {
+            let plan = try CollectionCSV.parse(Data((headers + "," + column + "\n"
+                + values + "," + value + "\n").utf8))
+            let entry = try XCTUnwrap(plan.entries.first)
+            if column == "item_kind" {
+                XCTAssertEqual(entry.itemKind, .rawCard)
+                XCTAssertEqual(entry.sourceItemKindRaw, "future-kind")
+            }
+            XCTAssertThrowsError(try adapter.validate(entry), column)
+            let result = try CollectionCSV.apply(plan, to: container.mainContext, gameRegistry: policy,
+                gameImportAdapters: try .init(adapters: [adapter]))
+            XCTAssertEqual(result.importedQuantity, 0, column)
+            XCTAssertEqual(result.failedRows.count, 1, column)
+        }
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
+    func testOnePieceImportAdapterPreservesLanguageEvidenceAndEnglishAliases() throws {
+        let adapter = OnePieceImportAdapter(registry: try registry())
+        let text = "game,provider_id,card_name,card_number,finish,quantity\n"
+            + "one-piece,\(uuid(1).uuidString.lowercased()),Shanks,OP01-120,normal,1\n"
+        var entry = try XCTUnwrap(CollectionCSV.parse(Data(text.utf8)).entries.first)
+        XCTAssertNoThrow(try adapter.validate(entry))
+        for language in ["en", "EN", "English", "eng"] {
+            entry.sourceLanguage = language
+            XCTAssertNoThrow(try adapter.validate(entry), language)
+        }
+        // The CSV parser already excludes non-English rows. Retained/constructed
+        // entries still need to preserve the same boundary at adapter validation.
+        entry.sourceLanguage = "ja"
+        XCTAssertThrowsError(try adapter.validate(entry))
+        entry.sourceLanguage = nil
+        entry.magicTreatmentQualifiers = ["future-treatment": "foil"]
+        XCTAssertThrowsError(try adapter.validate(entry))
+    }
+
     func testEnglishScopeExcludesForeignPrintingsFromAllAcquisitionAndPricingSurfaces() async throws {
         let registry = try registry(withMarketMapping: true, language: "ja")
         let adapter = OnePieceCatalogAdapter(registry: registry)

@@ -63,6 +63,10 @@ struct GameImportAdapterRegistry: Sendable {
     func adapter(for game: CardGame) -> (any GameImportAdapter)? { adapters[game] }
     func validate(_ entry: CollectionCSVEntry) throws {
         guard !entry.conflictingSourceIdentity else { throw GameImportValidationError.contradictoryIdentity }
+        // A Pokemon print run cannot qualify another game's ownership or price identity.
+        guard entry.game == .pokemon || entry.pokemonPrintRun == nil else {
+            throw GameImportValidationError.contradictoryIdentity
+        }
         if let adapter = adapters[entry.game] {
             try adapter.validate(entry)
             return

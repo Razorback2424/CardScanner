@@ -1,3 +1,72 @@
+# 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
+
+Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
+individually and together. Two additional P2 findings in #10 allowed source
+normalization or first-value alias lookup to conceal contradictory identity,
+language, grading or cross-game metadata. The CSV parser now retains a conflict
+marker before that evidence can disappear. Regression cases reproduced invalid
+ownership/ledger writes before the fix and now require zero writes; agreeing
+aliases, empty treatment fields, valid One Piece imports, split Magic quantities
+and Pokémon print runs remain covered. Failed-entry export/retry preserves rejection.
+
+Local Xcode 27.1 simulator verification: 754 native tests, 753 passed and one
+existing opt-in performance skip; a final 26-test import selection passed with
+zero failures/skips. Core/offline verification reproduced 83 Pokémon passes
+(one opt-in skip), 18 Magic passes, 148 Python passes (five prerequisite skips)
+and 33 Yu-Gi-Oh fixture passes. The census output is byte-identical to the retained
+912-source/2,569-row run, with zero structural errors. The
+[dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md) records findings,
+exact scopes and evidence limits. #8/#9 needed no further source changes. No PR
+was merged, signed catalog published or physical-device/release gate closed.
+
+# 2026-11-01 — Correct and consolidate catalog PR review findings
+
+PR #10 now builds on corrected PR #9 (which builds on PR #8). The consolidated
+candidate preserves provider CC numbering and set count 25, holds Birthday
+Pikachu outside fraction recognition, and rejects incomplete live reprint
+families. Historical Celebrations aliases stay outside the signed publisher
+and ordinary registry descriptors, preserving complete-membership validation
+and Browse artwork authorization. The degraded `SV 049/198` guard and both
+saved-finish physical-review guards from PR #8 are retained.
+
+ULST imports use their real numeric collectors, with exact UUID/response checks
+unchanged. CSV source evidence survives alternate format paths before One Piece
+validation. Regression additions exercise these reviewed failures, production
+publisher input and image-less checklist persistence. The corrected stack at
+`dd0faea` passed 599 native tests, 83 Pokémon core tests (one opt-in skip),
+18 Magic core tests, 148 Python tests (five prerequisite skips) and 33 separate
+Yu-Gi-Oh fixtures. The [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md)
+links the exact run and records all results and limits. A stale Birthday test
+lookup was corrected to inspect historical membership; the full rerun passed.
+An independent integration check also found that shared metadata could attach
+a Pokémon print-run axis to a Magic import. The shared validation boundary now
+rejects that contradiction before either adapter path writes, preserving the
+failed-row evidence and valid Pokémon imports. Both catalog-core suites run on
+the working Xcode 27.1 validation runner alongside the native regression gate.
+All PRs remain unmerged; no signed catalog or release publication is performed.
+
+# 2026-11-01 — Five-game catalog coverage and printing identity audit
+
+Work on `fix/catalog-coverage-audit-2026-11-01` from `main@a2b11ade` is delivered
+through [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), unmerged
+as requested. The [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md)
+records evidence, exact changed identities, regression results and unresolved
+coverage across Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh.
+
+Verified work covers Shiny Vault recognition and finish evidence, omitted promo
+prefixes, exact Magic promo/late-printing/startup routes, List import identity,
+Yu-Gi-Oh mixed-canonical code families and passcode conflicts, One Piece import
+boundaries and Lorcana ingestion review boundaries. The new offline census
+retains source hashes and distinguishes intentional holds from structural
+errors. CI exercises the affected native paths and offline pipelines; exact
+final counts and any blockers are kept in the dated audit.
+
+This does not certify every physical card. Modern Magic original-footer
+reprints and One Piece signed-seed lag remain wrong-printing risks. Other
+Pokémon finishes and denominator-free identifiers require reviewed evidence;
+unreviewed physical records stay held. No production catalog was signed,
+published or activated. Existing physical-device and release gates remain open.
+
 # 2026-11-01 — Correct live Celebrations ambiguity and Birthday recognition
 
 PR #9 review follow-up on `e9b0830`: the live automatic resolver now rejects an
@@ -7,7 +76,7 @@ numbers (`CC015`/`CC016`), set count 25 and the CEL artwork code. Removed Birthd
 Pikachu's nonphysical `24/53` membership; all 25 Browse records remain.
 Regressions cover missing original sets/cards, conflicting names, positive
 original/reprint selection, and the standalone-number hold. Source/data and
-whitespace checks pass; new native execution is pending the integrated CI run.
+whitespace checks pass; the integrated `dd0faea` run above verifies these paths.
 
 # 2026-11-01 — Correct Celebrations physical-number evidence
 

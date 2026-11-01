@@ -13,8 +13,10 @@ import Foundation
 /// Generated from `https://api.scryfall.com/sets` on 2026-08-23, applying the
 /// same filter `ScryfallService` applies to the live response, so the snapshot
 /// and the refresh agree about what is scannable. Regenerate it whenever the
-/// filter changes; a stale snapshot only ever costs the newest sets a few
-/// seconds of unrecognisability on a cold launch.
+/// filter changes; a stale snapshot leaves the newest sets unrecognizable on
+/// a cold launch until the live refresh succeeds.
+/// SLZ was reconciled with the bundled seed and its exact provider footer on
+/// 2026-11-01; Scryfall supplies no printed denominator for that release.
 ///
 /// Latest release date represented: 2026-11-13.
 enum MagicSetSnapshot {
@@ -330,6 +332,7 @@ enum MagicSetSnapshot {
         ("SLP", nil),
         ("SLU", nil),
         ("SLX", nil),
+        ("SLZ", nil),
         ("SNC", 281),
         ("SOA", nil),
         ("SOC", nil),

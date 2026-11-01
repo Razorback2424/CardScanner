@@ -16,6 +16,8 @@ final class MagicCatalogBootstrapTests: XCTestCase {
                 "Legacy scanner definition (definition.code) drifted in Magic rev1 seed"
             )
         }
+        XCTAssertEqual(Set(MagicSetSnapshot.definitions.map { $0.code.lowercased() }), Set(actual.keys),
+            "A scan-enabled seed release must also be available before the live refresh")
         XCTAssertEqual(registry.scannerDefinitions.count, 353)
         XCTAssertEqual(registry.browseSets.count, 662)
         XCTAssertEqual(
@@ -23,6 +25,15 @@ final class MagicCatalogBootstrapTests: XCTestCase {
             247
         )
         XCTAssertNotNil(registry.descriptor(forCode: "SLZ"))
+    }
+
+    func testCompiledVocabularyRecognizesTheReviewedZetaFooter() throws {
+        let definition = try XCTUnwrap(MagicSetSnapshot.definitions.first { $0.code == "SLZ" })
+        XCTAssertNil(definition.printedSize, "The provider's card count is not a printed denominator")
+        let profile = MagicScanProfile(definitions: MagicSetSnapshot.definitions)
+        XCTAssertEqual(profile.parse(["C 0001", "SLZ • EN"]),
+            .magic(setCode: "SLZ", collectorNumber: "1", language: "en"))
+        XCTAssertNil(profile.parse(["C 0001", "SLZ FR"]))
     }
 
     func testBundledSeedRoutesTokenAndArtCardChildrenFromOneRegistry() {

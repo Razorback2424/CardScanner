@@ -1,0 +1,112 @@
+name: Catalog coverage regressions
+
+on:
+  pull_request:
+    paths:
+      - "TradingCardScanner/**"
+      - "TradingCardScannerTests/**"
+      - "TradingCardScanner.xcodeproj/**"
+      - "*CatalogCore/**"
+      - "Config/*Catalog*.xcconfig"
+      - "TestFixtures/TradingCards/**"
+      - "publisher/catalog-input.json"
+      - "scripts/**"
+      - ".github/workflows/catalog-coverage-tests.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-coverage-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  offline-ingestion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test offline ingestion and mapping policies
+        run: python3 -m unittest discover -s scripts/tests -v
+      - name: Test Yu-Gi-Oh membership and printing families
+        run: PYTHONPATH=scripts python3 -m unittest discover -s scripts/fixtures/yugioh -v
+      - name: Check retained catalog integrity and report coverage gaps
+        run: python3 scripts/audit_catalog_coverage.py --repo . --output "$RUNNER_TEMP/catalog-coverage"
+      - name: Retain the catalog census
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-coverage-census
+          path: ${{ runner.temp }}/catalog-coverage
+          retention-days: 14
+
+  ios-catalog:
+    runs-on: xcode-27
+    timeout-minutes: 35
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test publisher contracts and catalog cores on the recorded toolchain
+        run: |
+          set -euo pipefail
+          swift test --package-path PokemonCatalogCore
+          swift test --package-path MagicCatalogCore
+      - name: Select an available iPhone simulator
+        run: |
+          xcodebuild -version
+          python3 - <<'PY'
+          import json, os, subprocess
+          devices = json.loads(subprocess.check_output(['xcrun', 'simctl', 'list', 'devices', 'available', '-j']))['devices']
+          ordered = sorted(devices.items(), key=lambda item: (item[0].endswith('.iOS-27-0'), item[0]), reverse=True)
+          phones = [device for runtime, group in ordered
+                    if '.iOS-' in runtime for device in group if device['name'].startswith('iPhone')]
+          if not phones:
+              raise SystemExit('No iPhone simulator is installed')
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('CATALOG_TEST_DEVICE=' + phones[0]['udid'] + '\n')
+          PY
+      - name: Run scanner, catalog, printing and variant regressions
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project TradingCardScanner.xcodeproj \
+            -scheme TradingCardScanner -configuration Debug \
+            -destination "platform=iOS Simulator,id=$CATALOG_TEST_DEVICE" \
+            -derivedDataPath "$RUNNER_TEMP/catalog-derived-data" \
+            -resultBundlePath "$RUNNER_TEMP/catalog-tests.xcresult" \
+            -parallel-testing-enabled NO \
+            -only-testing:TradingCardScannerTests/ScanParserTests \
+            -only-testing:TradingCardScannerTests/HistoricalCatalogRequestTests \
+            -only-testing:TradingCardScannerTests/VariantResolverTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogPromoPadWidthTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogRegistryTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogParityTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
+            -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
+            -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
+            -only-testing:TradingCardScannerTests/PricingTests \
+            -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
+            -only-testing:TradingCardScannerTests/MagicContentKindTests \
+            -only-testing:TradingCardScannerTests/MagicCatalogBootstrapTests \
+            -only-testing:TradingCardScannerTests/CatalogNormalizationTests \
+            -only-testing:TradingCardScannerTests/YuGiOhRecognitionTests \
+            -only-testing:TradingCardScannerTests/YuGiOhResolutionTests \
+            -only-testing:TradingCardScannerTests/OnePieceIntegrationTests \
+            -only-testing:TradingCardScannerTests/ImportedItemKindTests \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testCSVExportAppendsCatalogProviderWithoutReorderingOriginalColumns \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testCSVRoundTripKeepsDistinctCertificatesApart \
+            -only-testing:TradingCardScannerTests/MagicTreatmentTests/testCollectionCSVRoundTripsTreatmentIdentityAndCollectionKey \
+            -only-testing:TradingCardScannerTests/LorcanaOwnershipTests/testConflictingDuplicateRowsRetainEvidenceThroughFailedExport \
+            -only-testing:TradingCardScannerTests/LorcanaOwnershipTests/testFailedCSVRowCanBeCorrectedAndRetriedWithoutDuplicatingCommittedCopies \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$RUNNER_TEMP/catalog-native-tests.log"
+      - name: Retain native test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-native-results
+          path: |
+            ${{ runner.temp }}/catalog-tests.xcresult
+            ${{ runner.temp }}/catalog-native-tests.log
+          retention-days: 14

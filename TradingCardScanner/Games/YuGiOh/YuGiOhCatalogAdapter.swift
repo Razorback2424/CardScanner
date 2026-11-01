@@ -57,12 +57,35 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
         let code = try code(for: prepareLookupIdentifier(identifier))
         guard let family = catalog.printingsByCode[code], let first = family.first else { return .catalogIncomplete(nil) }
-        let summary = CanonicalCardSummary(id: first.card.id.uuidString.lowercased(), game: game,
+        // A printed code can cover source records whose canonical links have
+        // not been reconciled (or distinct token artworks). The picker groups
+        // them by that exact code; it must not claim they share the first UUID.
+        let summaryID = Set(family.map { $0.card.id }).count == 1
+            ? first.card.id.uuidString.lowercased() : Self.choiceGroupID(for: code)
+        let summary = CanonicalCardSummary(id: summaryID, game: game,
             name: first.card.name, printedIdentifier: code, language: "en")
         let candidates = family.map(candidate)
         guard family.contains(where: { $0.explicitSelectionSupported && candidate($0).selectionEvidence(among: candidates) != .insufficient }) else { return .catalogIncomplete(summary) }
         if family.count == 1 && catalog.autoEligibleCodes.contains(code) { return .resolved(try resolution(forPrintingID: first.id)) }
         return .needsPrintingChoice(canonical: summary, candidates: candidates)
+    }
+
+    static func choiceGroupID(for code: String) -> String { "yugioh-code:" + code }
+
+    /// Grouping never changes a canonical or physical-printing ownership ID.
+    /// Exact current candidate membership is still checked by resolve(_:for:).
+    static func choiceBelongsToCodeFamily(_ candidate: PhysicalPrintingCandidate,
+                                         summary: CanonicalCardSummary, identifier: ScanIdentifier) -> Bool {
+        guard identifier.game == .yuGiOh, identifier.namespace == "printed-set-code",
+              identifier.fields.count == 1, identifier.fields[0].key == "code" else { return false }
+        let code = identifier.fields[0].value
+        return YuGiOhCatalog.validCode(code)
+            && identifier.displayIdentifier == code && identifier.suppressionIdentity == "code:" + code
+            && summary.game == .yuGiOh && candidate.game == .yuGiOh
+            && summary.id == choiceGroupID(for: code)
+            && summary.printedIdentifier == code && candidate.printedIdentifier == code
+            && summary.language == "en" && candidate.language == "en"
+            && UUID(uuidString: candidate.canonicalCardID)?.uuidString.lowercased() == candidate.canonicalCardID
     }
     func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
         let code = try code(for: prepareLookupIdentifier(identifier))

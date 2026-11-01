@@ -1,8 +1,15 @@
 # Card coverage gaps and research priorities
 
-**Reviewed:** 2026-11-01 sweep; the 2026-10-15 review and original research baseline are retained below.
-**Candidate:** `refinement/celebrations-classic-membership-2026-11-01`, stacked on `refinement/catalog-coverage-2026-11-01` (from `a2b11ad`).
-**Status:** three Pokémon fixes implemented across two pull requests; review corrections hold Birthday Pikachu and reject incomplete live reprint families; native follow-up verification pending; no worldwide completeness or device certification.
+**Current review:** the [November 1 five-game audit](catalog-coverage-audit-2026-11-01.md)
+and its PR-review follow-up supersede the inventory and defect status below.
+PR #10 incorporates the corrected PR #8/#9 stack. It includes Yu-Gi-Oh, exact
+recognition/import/finish fixes, a repeatable census and unresolved printing
+ambiguity. The October records remain dated research, not current completion
+or release claims.
+
+**Retained sweep:** PR #8/#9 from `a2b11ad`, with corrected physical evidence.
+The original branch-specific boundaries and test counts below remain historical;
+the dated audit owns the consolidated implementation and current verification.
 
 ## Five-game coverage sweep — 2026-11-01
 

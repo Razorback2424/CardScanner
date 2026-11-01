@@ -648,7 +648,7 @@ enum ScanText {
 ///
 /// Ordinary cards use the set's official denominator. Named subsets instead
 /// print their own prefix and size (`H11/H32`, `TG01/TG30`, `GG01/GG70`,
-/// `RC01/RC25`), so their denominator must never be compared with a set count.
+/// `RC01/RC25`, `SV1/SV94`), so their denominator must never be compared with a set count.
 enum PokemonPrintedNumberScheme: Equatable, Hashable, Sendable {
     case officialSet
     case subset(prefix: String)
@@ -909,7 +909,7 @@ struct PokemonScanProfile: Sendable {
         self.promoRegex = try! NSRegularExpression(
             pattern: promoAlternation.isEmpty
                 ? "(?!)"
-                : #"(?<![A-Z0-9])("# + promoAlternation + #")\s*(?:EN\s*)?([0-9OIL]{2,3})(?![A-Z0-9/])"#,
+                : #"(?<![A-Z0-9])("# + promoAlternation + #")\s*(?:EN\s*)?([0-9OIL]{2,3})(?![A-Z0-9]|\s*/)"#,
             options: []
         )
         let energyCodes = registry.descriptors.filter { $0.recognitionKind == .energy && $0.scanEnabled }

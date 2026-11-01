@@ -569,12 +569,11 @@ struct ScryfallService: Sendable {
         let directory = try JSONDecoder().decode(ScryfallSetDirectory.self, from: data)
         return directory.data.compactMap { set in
             let code = set.code.uppercased()
-            // Three characters is the common printed footer code, but not the
-            // only one: The List prints PLST and Mystery Booster playtest cards
-            // print CMB1/CMB2. Restricting to exactly three made those
-            // unscannable for no reason. The set-type filter above is what keeps
-            // the wider length from flooding the vocabulary with Scryfall's
-            // internal token and art-series codes.
+            // Three characters is the common printed footer code, but Mystery
+            // Booster playtest cards also use CMB1/CMB2. Provider codes such as
+            // PLST do not establish physical footer coverage: many List cards
+            // retain the original printing's code and need reviewed alias-family
+            // evidence. The set-type filter excludes internal token/art codes.
             guard !set.digital,
                   (set.releasedAt ?? "") >= Self.modernFooterStart,
                   !Self.unprintedSetTypes.contains(set.setType ?? ""),
@@ -1105,6 +1104,40 @@ enum PokemonHistoricalIdentityResolution: Equatable, Sendable {
 /// Pure, strict historical matching policy. Network and caching live outside
 /// this type so every collision can be tested with deterministic fixtures.
 enum PokemonHistoricalIdentityResolver {
+    // Each reviewed Celebrations reprint shares its footer with this exact
+    // original. Incomplete or contradictory catalog data cannot establish a
+    // unique reprint; both automatic paths must require an explicit choice.
+    private static let reviewedReprintOriginalIDs: [String: String] = [
+        "cel25cc-cc001": "base1-2",
+        "cel25cc-cc002": "base1-4",
+        "cel25cc-cc003": "base1-15",
+        "cel25cc-cc004": "base1-73",
+        "cel25cc-cc005": "base5-8",
+        "cel25cc-cc006": "base5-15",
+        "cel25cc-cc007": "gym2-15",
+        "cel25cc-cc009": "neo1-20",
+        "cel25cc-cc010": "neo3-66",
+        "cel25cc-cc011": "ex4-9",
+        "cel25cc-cc012": "ex7-86",
+        "cel25cc-cc013": "ex12-88",
+        "cel25cc-cc014": "ex15-93",
+        "cel25cc-cc015": "pop5-17",
+        "cel25cc-cc016": "dp4-15",
+        "cel25cc-cc017": "pl2-109",
+        "cel25cc-cc018": "pl3-145",
+        "cel25cc-cc019": "hgss1-107",
+        "cel25cc-cc020": "bw1-113",
+        "cel25cc-cc021": "bw1-114",
+        "cel25cc-cc022": "bw4-54",
+        "cel25cc-cc023": "xy1-97",
+        "cel25cc-cc024": "xy6-76",
+        "cel25cc-cc025": "sm2-60"
+    ]
+
+    static func reviewedOriginalProviderID(forReprintID providerID: String) -> String? {
+        reviewedReprintOriginalIDs[providerID.lowercased()]
+    }
+
     /// Subset denominators describe a gallery or holo sequence rather than the
     /// containing set. They therefore cannot be derived from `cardCount` and
     /// remain an explicit numbering-scheme mapping.
@@ -1304,10 +1337,10 @@ enum PokemonHistoricalIdentityResolver {
 
 /// One entry in a Scryfall `/cards/collection` request.
 ///
-/// Scryfall accepts either `set` + `collector_number` or `set` + `name`. The
-/// second form exists here for sets whose printed collector numbers are not what
-/// Scryfall files them under — The List numbers its cards `MM2-48`, carrying the
-/// original set's code, while every marketplace export writes plain `48`.
+/// Scryfall accepts `set` + `collector_number`, `set` + `name`, or an exact ID.
+/// A name response does not establish a complete physical-printing family.
+/// PLST imports require a composite collector such as `MM2-48` or an exact
+/// UUID; ULST has its own numeric collectors and uses exact set/number lookup.
 struct ScryfallCardIdentifier: Encodable, Hashable, Sendable {
     /// Scryfall's collection endpoint accepts an exact card id as well as the
     /// set/collector-number form. Exact ids are the only safe identifier for

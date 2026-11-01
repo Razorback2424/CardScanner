@@ -278,7 +278,8 @@ enum PokemonOfflineCardFactory {
         case let .unique(identity):
             // Bundled checklists omit many originals (POP Series, Wizards
             // promos), so a reprint that is the only offline match cannot prove
-            // that no original shares its printed number. The live directory decides.
+            // that no original shares its printed number. The live path must
+            // also preserve ambiguity if its original-family response is incomplete.
             guard !PokemonHistoricalIdentityResolver.isMembershipIdentity(
                 identity,
                 for: evidence.number,

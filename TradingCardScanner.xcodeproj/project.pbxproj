@@ -197,6 +197,7 @@
 		A0020022 /* CenteringExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020022 /* CenteringExportTests.swift */; };
 		A0020023 /* CatalogNormalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020023 /* CatalogNormalizationTests.swift */; };
 		A0020024 /* BrowseFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020024 /* BrowseFeatureTests.swift */; };
+		C2A55E9A34B6491AA7E72301 /* PokemonClassicCollectionArtworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A55E9A34B6491AA7E72302 /* PokemonClassicCollectionArtworkTests.swift */; };
 		A0020150 /* BrowsePriceHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020150 /* BrowsePriceHistoryTests.swift */; };
 		A0020151 /* SwiftDataConcurrencyCharacterizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */; };
 		A0020152 /* DetailDeletionRenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020152 /* DetailDeletionRenderTests.swift */; };
@@ -566,6 +567,7 @@
 		B0020022 /* CenteringExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringExportTests.swift; sourceTree = "<group>"; };
 		B0020023 /* CatalogNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogNormalizationTests.swift; sourceTree = "<group>"; };
 		B0020024 /* BrowseFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFeatureTests.swift; sourceTree = "<group>"; };
+		C2A55E9A34B6491AA7E72302 /* PokemonClassicCollectionArtworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonClassicCollectionArtworkTests.swift; sourceTree = "<group>"; };
 		B0020150 /* BrowsePriceHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryTests.swift; sourceTree = "<group>"; };
 		B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataConcurrencyCharacterizationTests.swift; sourceTree = "<group>"; };
 		B0020152 /* DetailDeletionRenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailDeletionRenderTests.swift; sourceTree = "<group>"; };
@@ -1139,6 +1141,7 @@
 				B0020113 /* EbayQuadrantCropperTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
+				C2A55E9A34B6491AA7E72302 /* PokemonClassicCollectionArtworkTests.swift */,
 				BBC10002 /* BrowsePresentationTests.swift */,
 				B0090303 /* PokemonTCGCSVPriceTests.swift */,
 				B0090304 /* TCGCSV30th.json */,
@@ -1648,6 +1651,7 @@
 				A0020113 /* EbayQuadrantCropperTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
+				C2A55E9A34B6491AA7E72301 /* PokemonClassicCollectionArtworkTests.swift in Sources */,
 				ABC10002 /* BrowsePresentationTests.swift in Sources */,
 				A0090303 /* PokemonTCGCSVPriceTests.swift in Sources */,
 				A0020150 /* BrowsePriceHistoryTests.swift in Sources */,

@@ -56,6 +56,8 @@
       {"providerCardID":"30th-c-029","canonicalName":"lugia","printedLocalID":"149","printedDenominator":147},
       {"providerCardID":"30th-c-030","canonicalName":"magikarp","printedLocalID":"203","printedDenominator":193}
     ]}},
+    {"providerSetID":"dpp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"DP","catalogLocalIDPrefix":"DP","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
+    {"providerSetID":"hgssp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"HGSS","catalogLocalIDPrefix":"HGSS","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
     {"providerSetID":"bwp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"BW","catalogLocalIDPrefix":"BW","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
     {"providerSetID":"xyp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"XY","catalogLocalIDPrefix":"XY","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
     {"providerSetID":"smp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"SM","catalogLocalIDPrefix":"SM","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},

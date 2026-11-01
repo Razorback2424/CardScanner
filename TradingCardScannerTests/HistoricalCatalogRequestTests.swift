@@ -117,6 +117,37 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         }
     }
 
+    private actor CelebrationsUmbreonSource: PokemonHistoricalCatalogSource {
+        let directoryHasOriginalSet: Bool
+        let originalName: String?
+        private(set) var cardRequests = 0
+
+        init(directoryHasOriginalSet: Bool = true, originalName: String? = "Umbreon ★") {
+            self.directoryHasOriginalSet = directoryHasOriginalSet
+            self.originalName = originalName
+        }
+
+        func historicalSetDirectory() async throws -> [CatalogSetReference] {
+            directoryHasOriginalSet ? [CatalogSetReference(id: "pop5", name: "POP Series 5",
+                cardCount: TCGdexCardCount(total: 17, official: 17))] : []
+        }
+
+        func historicalSet(id: String) async throws -> TCGdexSetCatalog {
+            // Relevant identity projected from the retained live POP Series 5
+            // inventory. The original is not present in the bundled snapshot.
+            let cards = originalName.map { [["id": "pop5-17", "localId": "17", "name": $0]] } ?? []
+            let object: [String: Any] = ["id": "pop5", "name": "POP Series 5",
+                "cardCount": ["total": 17, "official": 17], "cards": cards]
+            return try JSONDecoder().decode(TCGdexSetCatalog.self, from: JSONSerialization.data(withJSONObject: object))
+        }
+
+        func historicalCard(id: String) async throws -> TCGdexCard {
+            cardRequests += 1
+            guard id == "cel25cc-CC015" else { throw URLError(.badServerResponse) }
+            return try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"cel25cc-CC015","localId":"CC015","name":"Umbreon ☆","set":{"id":"cel25cc","name":"Celebrations Classic Collection","cardCount":{"total":25,"official":25}},"variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false}}"#.utf8))
+        }
+    }
+
     private func evidence(title: String) throws -> PokemonHistoricalScanEvidence {
         let identifier = try XCTUnwrap(
             PokemonHistoricalScanParser.parse(numberLines: ["19/102"], titleLines: [title])
@@ -231,6 +262,47 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         XCTAssertEqual(platinumCard.id, "pl1-47")
         XCTAssertEqual(platinumCard.localId, "47")
         XCTAssertEqual(platinumCard.set.id, "pl1")
+    }
+
+    func testLiveOriginalUmbreonAndCelebrationsRemakeRemainSeparateChoices() async throws {
+        let catalog = PokemonHistoricalCatalog(service: CelebrationsUmbreonSource())
+        let evidence = PokemonHistoricalScanEvidence(number: .init(localID: "17", denominator: 17,
+            scheme: .officialSet), titleCandidates: ["Umbreon ☆"])
+        do {
+            _ = try await catalog.card(for: evidence, registry: .bundledSeed)
+            XCTFail("The live original must prevent a unique Celebrations result")
+        } catch PokemonHistoricalCatalogError.ambiguous(let candidates) {
+            XCTAssertEqual(Set(candidates.map(\.providerID)), ["pop5-17", "cel25cc-CC015"])
+        }
+    }
+
+    func testIncompleteOrContradictoryLiveOriginalCannotAutoSelectCelebrations() async throws {
+        let evidence = PokemonHistoricalScanEvidence(number: .init(localID: "17", denominator: 17,
+            scheme: .officialSet), titleCandidates: ["Umbreon ☆"])
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let selected = try XCTUnwrap(PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: registry)
+            .first { $0.providerID == "cel25cc-CC015" })
+        for source in [CelebrationsUmbreonSource(directoryHasOriginalSet: false),
+                       CelebrationsUmbreonSource(originalName: nil),
+                       CelebrationsUmbreonSource(originalName: "Espeon")] {
+            let catalog = PokemonHistoricalCatalog(service: source)
+            do {
+                _ = try await catalog.card(for: evidence, registry: registry)
+                XCTFail("A partial original family cannot establish a unique reprint")
+            } catch PokemonHistoricalCatalogError.unsupported {
+                // No invented original metadata and no automatic reprint choice.
+            }
+            let automaticRequests = await source.cardRequests
+            XCTAssertEqual(automaticRequests, 0)
+            let explicit = try await catalog.card(for: selected, matching: evidence, registry: registry)
+            XCTAssertEqual(explicit.providerID, "cel25cc-CC015")
+            XCTAssertEqual(explicit.setCode, "CEL")
+            guard case let .pokemon(card, _) = explicit.legacyIdentity else { return XCTFail("Expected Pokémon") }
+            XCTAssertEqual(card.localId, "CC015")
+            XCTAssertEqual(card.set.cardCount.official, 25)
+            let selectedRequests = await source.cardRequests
+            XCTAssertEqual(selectedRequests, 1)
+        }
     }
 
     func testSelectedClassicPikachuFetchesProviderCardAndKeepsPrintedNumber() async throws {
@@ -395,38 +467,6 @@ final class HistoricalCatalogRequestTests: XCTestCase {
             )
             XCTAssertEqual(selected.providerID, "pop5-17")
             XCTAssertEqual(selected.cardNumber, "17")
-        }
-    }
-
-    func testIncompleteOrContradictoryLiveOriginalCannotAutoSelectCelebrations() async throws {
-        let evidence = try celebrationsEvidence("17/17", "Umbreon ☆")
-        let reprint = try XCTUnwrap(
-            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
-                .first { $0.providerID == "cel25cc-CC015" }
-        )
-        let cases = [
-            ("missing directory entry", CelebrationsSource(directoryHasOriginalSet: false)),
-            ("missing original card", CelebrationsSource(originalName: nil)),
-            ("contradictory original name", CelebrationsSource(originalName: "Espeon"))
-        ]
-        for (scenario, source) in cases {
-            let catalog = PokemonHistoricalCatalog(service: source)
-            do {
-                _ = try await catalog.card(for: evidence, registry: .bundledSeed)
-                XCTFail("\(scenario) must not turn a known shared footer into a unique reprint")
-            } catch PokemonHistoricalCatalogError.unsupported {
-                // Incomplete provider evidence does not authorize an edition.
-            }
-
-            // An explicit choice remains available and keeps provider numbering.
-            let selected = try await catalog.card(for: reprint, matching: evidence, registry: .bundledSeed)
-            XCTAssertEqual(selected.providerID, "cel25cc-CC015", scenario)
-            XCTAssertEqual(selected.cardNumber, "CC015", scenario)
-            XCTAssertEqual(selected.setCode, "CEL", scenario)
-            guard case let .pokemon(card, _) = selected.legacyIdentity else {
-                return XCTFail("Expected a Pokémon record for \(scenario)")
-            }
-            XCTAssertEqual(card.set.cardCount.official, 25, scenario)
         }
     }
 

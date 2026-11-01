@@ -7,6 +7,121 @@ import Foundation
 /// The bug these protect against is silent: scanning a Clue token added
 /// Invisible Woman, with no error and a plausible-looking result.
 final class MagicContentKindTests: XCTestCase {
+    func testLateAlaraPrintingUsesOnlyItsReviewedModernFooter() {
+        let adapter = MagicRecognitionAdapter(profile: .init(definitions: [.init(code: "DTK", printedSize: 264)]))
+        let expected = GameRecognitionOutcome.identified(ScanSubject(identifier:
+            .magic(setCode: "ALA", collectorNumber: "250", language: "en")))
+        XCTAssertTrue(adapter.customWords.contains("ALA"))
+        for texts in [["250 M", "ALA • EN"], ["250 M", "ALA", "EN"], ["025O M ALA EN"]] {
+            XCTAssertEqual(adapter.identify(texts.map { .init(text: $0) }), expected)
+        }
+        for texts in [["249 M", "ALA EN"], ["250a M", "ALA EN"], ["T 250", "ALA EN"],
+                      ["250/249 M", "ALA EN"], ["250 M EN", "ALA FR"],
+                      ["250 M ALA EN", "ALA FR"], ["ALA EN"]] {
+            guard case let .rejected(rejection) = adapter.identify(texts.map { .init(text: $0) }) else {
+                XCTFail("An unreviewed ALA footer must not become a modern printing: \(texts)")
+                continue
+            }
+            XCTAssertTrue(rejection.blocksFallbackRecognition)
+        }
+        XCTAssertEqual(adapter.identify([.init(text: "250 M"), .init(text: "ALA FR")]), .nothing)
+        XCTAssertEqual(adapter.identify([.init(text: "173/249"), .init(text: "© 2008 Wizards of the Coast")]),
+            .nothing, "Original ALA footers must remain eligible for the existing historical route")
+        XCTAssertEqual(adapter.identify([.init(text: "250 M ALA EN"), .init(text: "135/264 DTK EN")]), .ambiguous)
+        let detached = [RecognizedLine(text: "ALA EN", boundingBox: CGRect(x: 0.1, y: 0.1, width: 0.2, height: 0.03)),
+            RecognizedLine(text: "250 M", boundingBox: CGRect(x: 0.85, y: 0.1, width: 0.05, height: 0.03))]
+        guard case let .rejected(rejection) = adapter.identify(detached) else {
+            return XCTFail("The exact exception must still respect collector geometry")
+        }
+        XCTAssertTrue(rejection.blocksFallbackRecognition)
+    }
+
+    func testLateAlaraPrintingValidatesItsPrintingDateAndExactProviderIdentity() async throws {
+        let recorder = MagicAdapterTestRecorder()
+        MagicAdapterTestProtocol.recorder = recorder
+        defer { MagicAdapterTestProtocol.recorder = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MagicAdapterTestProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let adapter = MagicCatalogAdapter(source: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session))
+        let identity = ScanIdentifier.magic(setCode: "ALA", collectorNumber: "250", language: "en")
+        recorder.setCardChanges(["id": "2e181878-d9fb-44d5-98ce-2899793ab2e7", "name": "Rafiq of the Many",
+            "released_at": "2022-04-29", "frame_effects": ["showcase"], "finishes": ["nonfoil"]])
+        guard case let .resolved(resolution) = try await adapter.lookup(identity) else {
+            return XCTFail("A modern printing in an older set must resolve")
+        }
+        XCTAssertEqual(resolution.card.providerID, "2e181878-d9fb-44d5-98ce-2899793ab2e7")
+        XCTAssertEqual(recorder.paths, ["/cards/ala/250/en"])
+        recorder.setCardChanges(["released_at": "2008-10-03"])
+        do { _ = try await adapter.lookup(identity); XCTFail("The exact exception cannot bypass the printing-date gate") }
+        catch ScryfallError.unsupportedPrinting {}
+        for change in [["collector_number": "249"], ["set": "plst"], ["lang": "fr"]] {
+            recorder.setCardChanges(change)
+            do { _ = try await adapter.lookup(identity); XCTFail("Provider identity still has to match: \(change)") }
+            catch ScryfallError.identityMismatch {}
+        }
+    }
+
+    func testDragonfuryMarkerCannotFallThroughToAnOrdinaryPrinting() {
+        let adapter = MagicRecognitionAdapter(profile: .init(definitions: [.init(code: "DTK", printedSize: 264)]))
+        let rejected: [[String]] = [
+            ["136/264 C Tarkir Dragonfury", "DTK EN"],
+            ["135/265 C Tarkir Dragonfury", "DTK EN"],
+            ["135/264 C Tarkir Dragonfury", "DTK FR"],
+            ["Tarkir Dragonfury", "DTK EN"],
+            ["136/264 C Tarkir", "Dragonfury", "DTK EN"],
+            // Four observations exceed the reviewed three-observation window.
+            // Keep the known promo unresolved instead of borrowing the base ID.
+            ["135/264 C", "Tarkir", "Dragonfury", "DTK EN"]
+        ]
+        for texts in rejected {
+            guard case let .rejected(rejection) = adapter.identify(texts.map { .init(text: $0) }) else {
+                XCTFail("Incomplete or conflicting promo evidence must not identify a base card: \(texts)")
+                continue
+            }
+            XCTAssertTrue(rejection.blocksFallbackRecognition)
+        }
+        XCTAssertEqual(adapter.identify([.init(text: "136/264 C"), .init(text: "DTK EN")]),
+            .identified(ScanSubject(identifier: .magic(setCode: "DTK", collectorNumber: "136", language: "en"))))
+    }
+
+    func testReviewedPromoMappingsSurviveSplitReleaseLabels() {
+        let adapter = MagicRecognitionAdapter(profile: .init(definitions: [.init(code: "DTK", printedSize: 264)]))
+        for number in ["135", "138", "187", "248"] {
+            for texts in [["\(number)/264 C Tarkir", "Dragonfury", "DTK EN"],
+                          ["\(number)/264 C Tarkir\n  Dragonfury", "DTK EN"]] {
+                XCTAssertEqual(adapter.identify(texts.map { .init(text: $0) }),
+                    .identified(ScanSubject(identifier: .magic(setCode: "PTKDF", collectorNumber: number, language: "en"))))
+            }
+        }
+        for (label, rarity, number) in [("Bring-a-Friend", "U", "1"), ("Welcome Back", "P", "2")] {
+            let texts = ["001/001 \(rarity) \(label)", "PRM ★ EN © 2020 Wizards"]
+            XCTAssertEqual(adapter.identify(texts.map { .init(text: $0) }),
+                .identified(ScanSubject(identifier: .magic(setCode: "PLG20", collectorNumber: number, language: "en"))))
+        }
+    }
+
+    func testReviewedPromosRejectConflictingLanguageAcrossFooterWindows() {
+        let adapter = MagicRecognitionAdapter(profile: .init(definitions: [.init(code: "DTK", printedSize: 264)]))
+        let rejected = [
+            ["135/264 C Tarkir Dragonfury", "DTK FR", "EN"],
+            ["135/264 C Tarkir Dragonfury", "DTK EN", "DTK FR"],
+            ["135/264 C Tarkir Dragonfury DTK EN", "artist", "DTK", "FR"],
+            ["135/264 C Tarkir", "Dragonfury DTK EN", "DTK FR"],
+            ["001/001 U Bring-a-Friend PRM EN © 2020", "PRM FR"],
+            ["001/001 P Welcome Back PRM EN © 2020", "PRM", "FR"],
+            ["001/001 U Bring-a-Friend", "PRM FR © 2020", "EN"]
+        ]
+        for texts in rejected {
+            guard case let .rejected(rejection) = adapter.identify(texts.map { .init(text: $0) }) else {
+                XCTFail("English evidence cannot override a conflicting promo footer: \(texts)")
+                continue
+            }
+            XCTAssertTrue(rejection.blocksFallbackRecognition)
+        }
+    }
+
     func testModernMagicDiskCacheAvoidsAnotherRequestAndPreservesPriceAge() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("MagicResolved-\(UUID())")
         defer { try? FileManager.default.removeItem(at: root); MagicAdapterTestProtocol.recorder = nil }

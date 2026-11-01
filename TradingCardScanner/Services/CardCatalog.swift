@@ -242,7 +242,10 @@ actor CardCatalog {
     private static func choiceBelongsToSummary(_ candidate: PhysicalPrintingCandidate,
                                               canonical: CanonicalCardSummary, identifier: ScanIdentifier) -> Bool {
         if candidate.canonicalCardID == canonical.id { return true }
-        // Only the explicit historical title-choice route may span oracle IDs.
+        if YuGiOhCatalogAdapter.choiceBelongsToCodeFamily(candidate, summary: canonical, identifier: identifier) {
+            return true
+        }
+        // The explicit historical title-choice route may span oracle IDs.
         // Group IDs never replace the exact printing's ownership identity.
         guard identifier.game == .magic, identifier.namespace == "historical-live",
               canonical.game == .magic, candidate.game == .magic,

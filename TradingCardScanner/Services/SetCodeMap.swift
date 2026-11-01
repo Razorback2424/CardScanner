@@ -39,6 +39,8 @@ enum PokemonPromoCodeMap {
     /// cards do not print an expansion denominator and must never enter the
     /// modern expansion parser's `code + number/total` contract.
     static let definitions: [String: PokemonPromoSetDefinition] = [
+        "DP": .init(printedPrefix: "DP", tcgdexSetID: "dpp", catalogLocalIDPrefix: "DP", localIDPadWidth: 2),
+        "HGSS": .init(printedPrefix: "HGSS", tcgdexSetID: "hgssp", catalogLocalIDPrefix: "HGSS", localIDPadWidth: 2),
         "BW": .init(printedPrefix: "BW", tcgdexSetID: "bwp", catalogLocalIDPrefix: "BW", localIDPadWidth: 2),
         "XY": .init(printedPrefix: "XY", tcgdexSetID: "xyp", catalogLocalIDPrefix: "XY", localIDPadWidth: 2),
         "SM": .init(printedPrefix: "SM", tcgdexSetID: "smp", catalogLocalIDPrefix: "SM", localIDPadWidth: 2),
