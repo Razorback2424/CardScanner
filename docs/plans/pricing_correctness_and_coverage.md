@@ -9,6 +9,42 @@ catalog coverage authorities remain responsible for individual printing joins.
 The committed Lorcana Browse scaffolding is retained; this follow-up adds no
 mapping data, physical UUIDs, provider credentials, or ownership migrations.
 
+## 2026-11-01 — stale collection quotes after manual refresh
+
+The supplied Misty screenshot retained a $6.85 TCGCSV quote received October 28
+after a November 1 check. The current checkout additionally had an empty
+`TCGCSV_PRICE_BASE_URL`; both trusted hosts returned HTTP 404 for the feed.
+Daily ingestion was succeeding while publication was disabled. The November 1
+candidate contains the exact reviewed Misty Holofoil product `716159` at $6.03,
+source build `2026-10-31T20:05:59+0000`.
+
+Collection refresh now forwards manual intent to the shared set-price source,
+coalesces one request per set across the whole pass, and cannot inherit a saved
+fallback from an overlapping automatic request. A failed explicit source check
+preserves the quote and records failure separately. Unchanged build checks
+cannot extend the original server capture's 24-hour freshness, including caches
+written by earlier app versions. Stale catalog amounts remain eligible for
+fallback on a manual check; eligible metered work bypasses the weekly local
+cooldown and requests full responses while retaining vendor budget limits.
+
+The focused iPhone 17 Pro / iOS 27 simulator selection passes **169 tests, zero
+failures** across Pokémon TCGCSV, pricing, refresh lifecycle and structural writes.
+The nine feed publisher tests and hosting configuration check pass. Artifacts
+are retained outside the repository on external storage.
+The opt-in `testLivePublishedMistyRefresh` requires a short-lived sandbox receipt
+and verifies the built app's endpoint, real feed, preserved capture date and
+replacement of a stale saved amount in an isolated collection.
+
+**Operational status:** the prepared candidate's 1,335 file hashes validate with
+no missing products. [Publication run 41315945682](https://github.com/Razorback2424/CardScanner/actions/runs/41315945682)
+was cancelled before deployment by GitHub's macOS 14 runner brownout. The
+one-line publisher runner update to `macos-latest` is included in this requested
+commit/push. Publication, daily activation, app endpoint configuration and live
+native acceptance remain pending. The
+[runner retirement notice](https://github.com/actions/runner-images/issues/13518)
+confirms retirement on November 2. This source/simulator evidence does not
+establish physical-device installation, CloudKit or release acceptance.
+
 ## Priority 1 contract
 
 | Condition | Required behavior |

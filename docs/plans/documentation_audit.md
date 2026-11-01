@@ -1,12 +1,21 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-10-31
+**Audit date:** 2026-10-02; review evidence updated 2026-11-01
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-31
+## Current authority boundary — updated 2026-11-01
+
+**Manual stale-price refresh — 2026-11-01:** the
+[pricing correctness follow-up](pricing_correctness_and_coverage.md#2026-11-01--stale-collection-quotes-after-manual-refresh)
+records the lost source-retry intent, indefinitely revalidated capture cache,
+missing production feed and prepared publisher runner repair. The final focused
+simulator selection passes 169/169 and publisher contracts pass 9/9. The
+October 29 capability review's feed-activation gap remains operationally open;
+successful ingestion alone does not establish publication or an app endpoint.
+The pricing follow-up owns subsequent activation and native readback evidence.
 
 **Card sharing post-merge review — 2026-10-31:**
 [PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at 15:41:17
