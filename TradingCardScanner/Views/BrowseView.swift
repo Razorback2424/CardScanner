@@ -3305,6 +3305,9 @@ final class CatalogImageLoader: ObservableObject {
         let targetPixelSize: Int?
     }
     private var request: Request?
+    /// Completed artwork belongs to its source even after pending work is
+    /// cancelled when the view disappears.
+    private var displayedRequest: Request?
     private var generation = 0
     private let fetch: @Sendable (URL, Int?) async throws -> UIImage
 
@@ -3317,7 +3320,8 @@ final class CatalogImageLoader: ObservableObject {
     deinit { task?.cancel() }
 
     func matchesSource(_ url: URL?, reloadToken: Int) -> Bool {
-        request?.url == url && request?.reloadToken == reloadToken
+        let source = image == nil ? request : displayedRequest
+        return source?.url == url && source?.reloadToken == reloadToken
     }
 
     func cancel() {
@@ -3331,14 +3335,23 @@ final class CatalogImageLoader: ObservableObject {
     func load(_ url: URL?, targetPixelSize: Int?, reloadToken: Int = 0) {
         let next = Request(url: url, reloadToken: reloadToken, targetPixelSize: targetPixelSize)
         guard next != request else { return }
-        let retainsArtwork = request?.url == url && request?.reloadToken == reloadToken
+        let retainsArtwork = displayedRequest?.url == url && displayedRequest?.reloadToken == reloadToken
         request = next
         generation &+= 1
         let expectedGeneration = generation
         task?.cancel()
-        if !retainsArtwork { image = nil }
+        task = nil
+        if !retainsArtwork {
+            image = nil
+            displayedRequest = nil
+        }
         failed = false
         phase = .idle
+        if displayedRequest == next, image != nil {
+            isLoading = false
+            phase = .loaded
+            return
+        }
         guard let url else {
             isLoading = false
             return
@@ -3350,6 +3363,7 @@ final class CatalogImageLoader: ObservableObject {
             do {
                 let image = try await fetch(url, targetPixelSize)
                 guard !Task.isCancelled, self?.generation == expectedGeneration else { return }
+                self?.displayedRequest = next
                 self?.image = image
                 self?.phase = .loaded
             } catch {
