@@ -2,6 +2,544 @@ import CoreGraphics
 import UIKit
 import Vision
 
+extension UIImage {
+    var centeringRasterOrientation: CardCenteringRasterOrientation {
+        let exif: Int
+        switch imageOrientation {
+        case .up: exif = 1
+        case .upMirrored: exif = 2
+        case .down: exif = 3
+        case .downMirrored: exif = 4
+        case .leftMirrored: exif = 5
+        case .right: exif = 6
+        case .rightMirrored: exif = 7
+        case .left: exif = 8
+        @unknown default: exif = 1
+        }
+        return CardCenteringRasterOrientation(rawSize: .init(width: Double(cgImage?.width ?? 0),
+            height: Double(cgImage?.height ?? 0)), exif: exif)
+    }
+}
+
+/// Bounded native strips; no camera-sized Float/Lab buffers. Geometry remains
+/// oriented-native until acceptance. Used by the disabled development path
+/// and the native detail loupe; it cannot establish physical boundary truth.
+enum CardCenteringNativeRefiner {
+    enum Strategy: String, Codable {
+        case legacySinglePeak = "native_v1_single_peak"
+        case coherentCandidates = "native_v2_coherent_candidates"
+        case coherentDistinctTracks = "native_v2b_distinct_tracks"
+    }
+
+    struct Seed: Codable {
+        let side: CardCenteringPrecisionSide
+        let geometryOrientedNative: [CardCenteringPoint]
+        let source: String
+    }
+    struct Crop {
+        let image: UIImage
+        let originOrientedNative: CardCenteringPoint
+        let width: Int
+        let height: Int
+        let rgba: [UInt8]
+
+        func color(at p: CardCenteringPoint) -> (Double, Double, Double)? {
+            // Continuous raster edge convention; interpolate pixel centres.
+            let x = p.x - originOrientedNative.x - 0.5
+            let y = p.y - originOrientedNative.y - 0.5
+            guard x >= 0, y >= 0, x < Double(width - 1), y < Double(height - 1) else { return nil }
+            let ix = Int(x), iy = Int(y), fx = x - Double(Int(x)), fy = y - Double(Int(y))
+            func channel(_ c: Int) -> Double {
+                func value(_ xx: Int, _ yy: Int) -> Double { Double(rgba[(yy * width + xx) * 4 + c]) }
+                return (value(ix, iy) * (1 - fx) + value(ix + 1, iy) * fx) * (1 - fy)
+                    + (value(ix, iy + 1) * (1 - fx) + value(ix + 1, iy + 1) * fx) * fy
+            }
+            return (channel(0), channel(1), channel(2))
+        }
+    }
+
+    static func crop(source: UIImage, orientedRect: CGRect) -> Crop? {
+        guard let raw = source.cgImage, !orientedRect.isNull, !orientedRect.isInfinite else { return nil }
+        let orientation = source.centeringRasterOrientation
+        let corners = [CardCenteringPoint(x: orientedRect.minX, y: orientedRect.minY),
+            .init(x: orientedRect.maxX, y: orientedRect.minY), .init(x: orientedRect.maxX, y: orientedRect.maxY),
+            .init(x: orientedRect.minX, y: orientedRect.maxY)].map(orientation.rawPoint(fromOriented:))
+        guard corners.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return nil }
+        let box = CGRect(x: floor(corners.map(\.x).min()!), y: floor(corners.map(\.y).min()!),
+            width: ceil(corners.map(\.x).max()!) - floor(corners.map(\.x).min()!),
+            height: ceil(corners.map(\.y).max()!) - floor(corners.map(\.y).min()!))
+            .intersection(CGRect(x: 0, y: 0, width: raw.width, height: raw.height))
+        guard box.width > 2, box.height > 2, box.width * box.height <= 2_000_000,
+              let cropped = raw.cropping(to: box) else { return nil }
+        let cropOrientation = CardCenteringRasterOrientation(rawSize: .init(width: Double(cropped.width), height: Double(cropped.height)), exif: orientation.exif)
+        let size = cropOrientation.orientedSize
+        let image = UIImage(cgImage: cropped, scale: 1, orientation: source.imageOrientation)
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+        let rendered = UIGraphicsImageRenderer(size: CGSize(width: size.width, height: size.height), format: format).image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: size.width, height: size.height))
+            image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        }
+        guard let cg = rendered.cgImage else { return nil }
+        let rawCorners = [CardCenteringPoint(x: box.minX, y: box.minY), .init(x: box.maxX, y: box.minY),
+            .init(x: box.maxX, y: box.maxY), .init(x: box.minX, y: box.maxY)].map(orientation.orientedPoint(fromRaw:))
+        let origin = CardCenteringPoint(x: rawCorners.map(\.x).min()!, y: rawCorners.map(\.y).min()!)
+        var bytes = [UInt8](repeating: 0, count: cg.width * cg.height * 4)
+        guard let context = CGContext(data: &bytes, width: cg.width, height: cg.height, bitsPerComponent: 8,
+            bytesPerRow: cg.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        context.draw(cg, in: CGRect(x: 0, y: 0, width: cg.width, height: cg.height))
+        return Crop(image: rendered, originOrientedNative: origin, width: cg.width, height: cg.height, rgba: bytes)
+    }
+
+    struct Result {
+        let inner: CardCenteringQuad?
+        let evidence: [CardCenteringNativeSideEvidence]
+    }
+
+    private struct Line {
+        let a: Double, b: Double, c: Double
+        init(_ p: CardCenteringPoint, _ q: CardCenteringPoint) {
+            let length = max(hypot(q.x - p.x, q.y - p.y), 1e-12)
+            a = -(q.y - p.y) / length; b = (q.x - p.x) / length; c = a * p.x + b * p.y
+        }
+        var coefficients: [Double] { [a, b, c] }
+        func intersection(_ line: Line) -> CardCenteringPoint? {
+            let det = a * line.b - line.a * b
+            guard det.isFinite, abs(det) > 1e-9 else { return nil }
+            let p = CardCenteringPoint(x: (c * line.b - line.c * b) / det, y: (a * line.c - line.a * c) / det)
+            return p.x.isFinite && p.y.isFinite ? p : nil
+        }
+    }
+
+    static func refine(source: UIImage, outer: CardCenteringQuad, inner: CardCenteringQuad,
+                       strategy: Strategy = .legacySinglePeak, coarseSeeds: [Seed] = []) -> Result {
+        switch strategy {
+        case .legacySinglePeak: return refineV1(source: source, outer: outer, inner: inner)
+        case .coherentCandidates, .coherentDistinctTracks:
+            return refineCoherent(source: source, outer: outer, inner: inner, coarseSeeds: coarseSeeds, strategy: strategy)
+        }
+    }
+
+    private static func refineV1(source: UIImage, outer: CardCenteringQuad, inner: CardCenteringQuad,
+                                 frames: [String] = ["outer", "inner"]) -> Result {
+        var evidence: [CardCenteringNativeSideEvidence] = []
+        var lines = (0..<4).map { Line(inner.points[$0], inner.points[($0 + 1) % 4]) }
+        var changed = false
+        for frame in frames {
+            let quad = frame == "inner" ? inner : outer
+            for side in CardCenteringPrecisionSide.allCases {
+                if Task.isCancelled { return Result(inner: nil, evidence: evidence) }
+                let p = quad.points[side.index], q = quad.points[(side.index + 1) % 4]
+                let length = hypot(q.x - p.x, q.y - p.y)
+                guard length > 24 else { continue }
+                let tx = (q.x - p.x) / length, ty = (q.y - p.y) / length
+                let nx = -ty, ny = tx
+                let rect = CGRect(x: min(p.x, q.x) - 16, y: min(p.y, q.y) - 16,
+                    width: abs(p.x - q.x) + 32, height: abs(p.y - q.y) + 32)
+                var observed: [(t: Double, offset: Double, point: CardCenteringPoint)] = []
+                var alternatives: [Double] = []
+                var sampleEvidence: [CardCenteringNativeSampleEvidence] = []
+                var disposition = "unrefined", reason: String? = "native_strip_unavailable_or_over_memory_limit"
+                var residual: Double?, coverage = 0.0, coefficients: [Double]?
+                if let strip = crop(source: source, orientedRect: rect) {
+                    for index in 0..<25 {
+                        let t = 0.12 + 0.76 * Double(index) / 24
+                        let origin = CardCenteringPoint(x: p.x + (q.x - p.x) * t, y: p.y + (q.y - p.y) * t)
+                        func point(_ normal: Double, _ tangent: Double = 0) -> CardCenteringPoint {
+                            .init(x: origin.x + nx * normal + tx * tangent, y: origin.y + ny * normal + ty * tangent)
+                        }
+                        let offsets = (0...80).map { -10.0 + Double($0) * 0.25 }
+                        let scores = offsets.map { offset -> Double in
+                            var values: [Double] = []
+                            for tangent in [-2.0, 0, 2] {
+                                guard let a = strip.color(at: point(offset - 0.9, tangent)),
+                                      let b = strip.color(at: point(offset + 0.9, tangent)) else { continue }
+                                values.append(sqrt(pow(a.0 - b.0, 2) + pow(a.1 - b.1, 2) + pow(a.2 - b.2, 2)))
+                            }
+                            return values.count == 3 ? median(values) : 0
+                        }
+                        let baseline = median(scores), mad = median(scores.map { abs($0 - baseline) })
+                        let peaks = (1..<(scores.count - 1)).filter {
+                            scores[$0] >= scores[$0 - 1] && scores[$0] > scores[$0 + 1]
+                                && scores[$0] >= max(10, baseline + max(3, 1.5 * mad))
+                        }.sorted { scores[$0] > scores[$1] }
+                        guard let best = peaks.first, abs(offsets[best]) < 9 else {
+                            sampleEvidence.append(.init(progress: t, pointOrientedNative: nil, contrastRGB: peaks.first.map { scores[$0] },
+                                luminancePolarity: nil, transitionHalfHeightWidthNativePixels: nil,
+                                profileBaselineRGB: baseline, profileMADRGB: mad, competingPeakSeparationNativePixels: nil,
+                                disposition: "weak_missing_or_search_boundary"))
+                            continue
+                        }
+                        let rival = peaks.dropFirst().first { abs(offsets[$0] - offsets[best]) >= 2.5 && scores[$0] >= scores[best] * (frame == "outer" ? 0.4 : 0.75) }
+                        var lo = best, hi = best
+                        while lo > 0 && scores[lo - 1] >= scores[best] * 0.5 { lo -= 1 }
+                        while hi < scores.count - 1 && scores[hi + 1] >= scores[best] * 0.5 { hi += 1 }
+                        let firstColor = strip.color(at: point(offsets[best] - 0.9))!
+                        let lastColor = strip.color(at: point(offsets[best] + 0.9))!
+                        let polarity = 0.2126 * (lastColor.0 - firstColor.0) + 0.7152 * (lastColor.1 - firstColor.1) + 0.0722 * (lastColor.2 - firstColor.2)
+                        sampleEvidence.append(.init(progress: t, pointOrientedNative: point(offsets[best]), contrastRGB: scores[best],
+                            luminancePolarity: polarity, transitionHalfHeightWidthNativePixels: Double(hi - lo + 1) * 0.25,
+                            profileBaselineRGB: baseline, profileMADRGB: mad,
+                            competingPeakSeparationNativePixels: rival.map { abs(offsets[$0] - offsets[best]) },
+                            disposition: rival == nil ? "local_transition" : "competing_transitions"))
+                        if let rival {
+                            alternatives.append(abs(offsets[rival] - offsets[best]))
+                            continue
+                        }
+                        // A subpixel peak is one locally measured transition,
+                        // independent of the aggregate depth proposal.
+                        let denominator = scores[best - 1] - 2 * scores[best] + scores[best + 1]
+                        let fraction = abs(denominator) > 1e-9
+                            ? max(-0.5, min(0.5, 0.5 * (scores[best - 1] - scores[best + 1]) / denominator)) : 0
+                        let offset = offsets[best] + fraction * 0.25
+                        observed.append((t, offset, point(offset)))
+                    }
+                    reason = alternatives.count >= 5 ? "competing_native_transitions" : "insufficient_spatial_support"
+                    if frame == "inner", observed.count >= 15 {
+                        // Deterministic pair consensus with separated points;
+                        // adjacent correlated samples cannot establish a slope.
+                        var best: [(t: Double, offset: Double, point: CardCenteringPoint)] = []
+                        for i in observed.indices {
+                            for j in observed.indices where j > i && observed[j].t - observed[i].t >= 0.30 {
+                                let slope = (observed[j].offset - observed[i].offset) / (observed[j].t - observed[i].t)
+                                let inliers = observed.filter { abs($0.offset - observed[i].offset - slope * ($0.t - observed[i].t)) <= 1.5 }
+                                if inliers.count > best.count { best = inliers }
+                            }
+                        }
+                        if let first = best.first, let last = best.last {
+                            coverage = last.t - first.t
+                            let bins = Set(best.map { min(4, Int(($0.t - 0.12) / 0.76 * 5)) })
+                            let meanT = best.map(\.t).reduce(0, +) / Double(best.count)
+                            let meanOffset = best.map(\.offset).reduce(0, +) / Double(best.count)
+                            let variance = best.reduce(0) { $0 + pow($1.t - meanT, 2) }
+                            let slope = best.reduce(0) { $0 + ($1.t - meanT) * ($1.offset - meanOffset) } / max(variance, 1e-9)
+                            let intercept = meanOffset - slope * meanT
+                            let rms = sqrt(best.reduce(0) { $0 + pow($1.offset - intercept - slope * $1.t, 2) } / Double(best.count))
+                            residual = rms
+                            if best.count >= 15, coverage >= 0.56, bins.count >= 4, rms <= 1.1,
+                               abs(slope / length) <= tan(2 * .pi / 180),
+                               abs(intercept + slope * 0.12) <= 8, abs(intercept + slope * 0.88) <= 8 {
+                                let start = CardCenteringPoint(x: p.x + nx * intercept, y: p.y + ny * intercept)
+                                let end = CardCenteringPoint(x: q.x + nx * (intercept + slope), y: q.y + ny * (intercept + slope))
+                                let line = Line(start, end)
+                                lines[side.index] = line; coefficients = line.coefficients
+                                disposition = "accepted_local_fit"; reason = nil; changed = true
+                                observed = best
+                            } else { reason = "unstable_or_unsupported_native_fit" }
+                        }
+                    } else if frame == "outer" {
+                        // Existing robust outer transition semantics remain in
+                        // charge. Strongest native gradient cannot choose a cut
+                        // edge versus rim/shadow. Retain alternatives for review.
+                        disposition = "observed_only"
+                        reason = alternatives.count >= 5 ? "card_edge_and_shadow_may_overlap" : "outer_semantics_preserved"
+                        if let first = observed.first, let last = observed.last { coverage = last.t - first.t }
+                    }
+                }
+                evidence.append(.init(version: 1, frame: frame, side: side.rawValue,
+                    disposition: disposition, reason: reason, rawSampleCount: sampleEvidence.count,
+                    acceptedSampleCount: observed.count, spatialCoverage: coverage,
+                    fitResidualNativePixels: residual, rejectedSampleCount: sampleEvidence.count - observed.count,
+                    alternativeSeparationNativePixels: alternatives.count >= 5 ? median(alternatives) : nil,
+                    observedPointsOrientedNative: observed.map(\.point), lineCoefficientsOrientedNative: coefficients,
+                    samples: sampleEvidence, derivativeRadiusNativePixels: 0.9))
+            }
+        }
+        guard changed, let tl = lines[0].intersection(lines[3]), let tr = lines[0].intersection(lines[1]),
+              let br = lines[2].intersection(lines[1]), let bl = lines[2].intersection(lines[3]) else { return Result(inner: nil, evidence: evidence) }
+        let fitted = CardCenteringQuad(topLeft: tl, topRight: tr, bottomRight: br, bottomLeft: bl)
+        let size = source.centeringRasterOrientation.orientedSize
+        let validation = CardCenteringMeasurement(imageWidth: Int(size.width), imageHeight: Int(size.height),
+            outerQuad: outer, innerQuad: fitted, warnings: [])
+        guard validation.hasValidFrameGeometry else {
+            return Result(inner: nil, evidence: evidence.map {
+                .init(version: $0.version, frame: $0.frame, side: $0.side, disposition: "rejected_quad", reason: "invalid_native_intersections",
+                    rawSampleCount: $0.rawSampleCount, acceptedSampleCount: $0.acceptedSampleCount, spatialCoverage: $0.spatialCoverage,
+                    fitResidualNativePixels: $0.fitResidualNativePixels, rejectedSampleCount: $0.rejectedSampleCount,
+                    alternativeSeparationNativePixels: $0.alternativeSeparationNativePixels,
+                    observedPointsOrientedNative: $0.observedPointsOrientedNative, lineCoefficientsOrientedNative: $0.lineCoefficientsOrientedNative,
+                    samples: $0.samples, derivativeRadiusNativePixels: $0.derivativeRadiusNativePixels)
+            })
+        }
+        return Result(inner: fitted, evidence: evidence)
+    }
+
+    private static func median(_ values: [Double]) -> Double {
+        guard !values.isEmpty else { return 0 }
+        let sorted = values.sorted(); return sorted[sorted.count / 2]
+    }
+}
+
+extension CardCenteringNativeRefiner {
+    private struct Peak {
+        let progress: Double
+        let offset: Double
+        let point: CardCenteringPoint
+        let contrast: Double
+        let baseline: Double
+        let mad: Double
+    }
+
+    private struct CoherentFit {
+        let line: Line
+        let points: [Peak]
+        let source: String
+        let samples: [CardCenteringNativeSampleEvidence]
+        let coverage: Double
+        let rms: Double
+        let contrast: Double
+        let rejectionReasons: [String]
+
+        var diagnostic: CardCenteringNativeLineCandidateEvidence {
+            .init(seedSource: source, lineCoefficientsOrientedNative: line.coefficients,
+                observedSampleCount: points.count, spatialCoverage: coverage,
+                fitResidualNativePixels: rms, medianContrastRGB: contrast, rejectionReasons: rejectionReasons)
+        }
+    }
+
+    /// v2 fixes two v1 implementation limits without changing fit/release
+    /// tolerances: competing local peaks survive until spatial consensus, and
+    /// existing coarse-profile alternatives can supply a separate bounded ROI.
+    /// An unsupported original seed is never evidence that the real boundary
+    /// itself is ambiguous. This remains a DEBUG opt-in engineering path.
+    private static func refineCoherent(source: UIImage, outer: CardCenteringQuad,
+                                       inner: CardCenteringQuad, coarseSeeds: [Seed], strategy: Strategy) -> Result {
+        let distinctTracks = strategy == .coherentDistinctTracks
+        var evidence = refineV1(source: source, outer: outer, inner: inner, frames: ["outer"]).evidence
+        var lines = (0..<4).map { Line(inner.points[$0], inner.points[($0 + 1) % 4]) }
+        var changed = false
+        for side in CardCenteringPrecisionSide.allCases {
+            if Task.isCancelled { return Result(inner: nil, evidence: evidence) }
+            let i = side.index, j = (i + 1) % 4
+            let selected = Seed(side: side, geometryOrientedNative: [inner.points[i], inner.points[j]], source: "selected_inner_proposal")
+            let op = outer.points[i], oq = outer.points[j]
+            let outerLength = hypot(oq.x - op.x, oq.y - op.y)
+            guard outerLength > 24 else { continue }
+            let onx = -(oq.y - op.y) / outerLength, ony = (oq.x - op.x) / outerLength
+            func extend(_ seed: Seed) -> (CardCenteringPoint, CardCenteringPoint)? {
+                guard seed.geometryOrientedNative.count == 2 else { return nil }
+                if seed.source == "selected_inner_proposal" { return (seed.geometryOrientedNative[0], seed.geometryOrientedNative[1]) }
+                let line = Line(seed.geometryOrientedNative[0], seed.geometryOrientedNative[1])
+                let denominator = line.a * onx + line.b * ony
+                guard abs(denominator) > 1e-8 else { return nil }
+                func projected(_ point: CardCenteringPoint) -> CardCenteringPoint {
+                    let d = (line.c - line.a * point.x - line.b * point.y) / denominator
+                    return .init(x: point.x + d * onx, y: point.y + d * ony)
+                }
+                return (projected(op), projected(oq))
+            }
+            func depth(_ seed: Seed) -> Double {
+                guard let p = extend(seed) else { return .infinity }
+                return hypot((p.0.x + p.1.x - op.x - oq.x) / 2, (p.0.y + p.1.y - op.y - oq.y) / 2)
+            }
+            // Bound work, not the acceptance thresholds. Original selected
+            // geometry always remains a seed; shallow alternatives come from
+            // the unchanged existing profile proposal ledger.
+            var seeds = [selected]
+            for candidate in coarseSeeds.filter({ $0.side == side }).sorted(by: { depth($0) < depth($1) }) {
+                guard let p = extend(candidate) else { continue }
+                let line = Line(p.0, p.1)
+                let duplicate = seeds.contains { seed in
+                    guard let q = extend(seed) else { return false }
+                    return max(abs(line.a * q.0.x + line.b * q.0.y - line.c),
+                               abs(line.a * q.1.x + line.b * q.1.y - line.c)) < 12
+                }
+                if !duplicate { seeds.append(candidate) }
+                if seeds.count == 7 { break }
+            }
+            var candidates: [CoherentFit] = []
+            var availableStrips = 0
+            for seed in seeds {
+                if Task.isCancelled { return Result(inner: nil, evidence: evidence) }
+                guard let (p, q) = extend(seed), [p.x, p.y, q.x, q.y].allSatisfy(\.isFinite) else { continue }
+                let length = hypot(q.x - p.x, q.y - p.y)
+                guard length > 24 else { continue }
+                let tx = (q.x - p.x) / length, ty = (q.y - p.y) / length, nx = -ty, ny = tx
+                func point(_ t: Double, _ offset: Double, _ tangent: Double = 0) -> CardCenteringPoint {
+                    .init(x: p.x + (q.x - p.x) * t + nx * offset + tx * tangent,
+                          y: p.y + (q.y - p.y) * t + ny * offset + ty * tangent)
+                }
+                let a = point(0.12, 0), b = point(0.88, 0)
+                guard let strip = crop(source: source, orientedRect: CGRect(x: min(a.x, b.x) - 16,
+                    y: min(a.y, b.y) - 16, width: abs(a.x - b.x) + 32, height: abs(a.y - b.y) + 32)) else { continue }
+                availableStrips += 1
+                var buckets: [[Peak]] = []
+                var samples: [CardCenteringNativeSampleEvidence] = []
+                for index in 0..<25 {
+                    let t = 0.12 + 0.76 * Double(index) / 24
+                    let offsets = (0...80).map { -10.0 + Double($0) * 0.25 }
+                    let scores = offsets.map { offset -> Double in
+                        var values: [Double] = []
+                        for tangent in [-2.0, 0, 2] {
+                            guard let c = strip.color(at: point(t, offset - 0.9, tangent)),
+                                  let d = strip.color(at: point(t, offset + 0.9, tangent)) else { continue }
+                            values.append(sqrt(pow(c.0 - d.0, 2) + pow(c.1 - d.1, 2) + pow(c.2 - d.2, 2)))
+                        }
+                        return values.count == 3 ? median(values) : 0
+                    }
+                    let baseline = median(scores), mad = median(scores.map { abs($0 - baseline) })
+                    let indices = (1..<(scores.count - 1)).filter {
+                        abs(offsets[$0]) < 9 && scores[$0] >= scores[$0 - 1] && scores[$0] > scores[$0 + 1]
+                            && scores[$0] >= max(10, baseline + max(3, 1.5 * mad))
+                    }.sorted { scores[$0] == scores[$1] ? offsets[$0] < offsets[$1] : scores[$0] > scores[$1] }.prefix(4)
+                    let peaks = indices.map { k -> Peak in
+                        let denominator = scores[k - 1] - 2 * scores[k] + scores[k + 1]
+                        let fraction = abs(denominator) > 1e-9
+                            ? max(-0.5, min(0.5, 0.5 * (scores[k - 1] - scores[k + 1]) / denominator)) : 0
+                        let offset = offsets[k] + fraction * 0.25
+                        return Peak(progress: t, offset: offset, point: point(t, offset), contrast: scores[k], baseline: baseline, mad: mad)
+                    }
+                    buckets.append(peaks)
+                    samples.append(.init(progress: t, pointOrientedNative: peaks.first?.point,
+                        contrastRGB: peaks.first?.contrast, luminancePolarity: nil,
+                        transitionHalfHeightWidthNativePixels: nil, profileBaselineRGB: baseline,
+                        profileMADRGB: mad, competingPeakSeparationNativePixels: nil,
+                        disposition: peaks.isEmpty ? "no_local_transition" : "peaks_retained_for_spatial_consensus",
+                        candidatePeaks: peaks.map { .init(normalOffsetNativePixels: $0.offset, pointOrientedNative: $0.point, contrastRGB: $0.contrast) }))
+                }
+                func observations(_ intercept: Double, _ slope: Double) -> [Peak] {
+                    buckets.compactMap { bucket in
+                        var winner: Peak?, distance = Double.infinity
+                        for peak in bucket {
+                            let error = abs(peak.offset - intercept - slope * peak.progress)
+                            if error < distance { winner = peak; distance = error }
+                        }
+                        return distance <= 1.5 ? winner : nil
+                    }
+                }
+                func fit(_ initialIntercept: Double, _ initialSlope: Double) -> CoherentFit? {
+                    var intercept = initialIntercept, slope = initialSlope
+                    var points: [Peak] = []
+                    for _ in 0..<2 {
+                        points = observations(intercept, slope)
+                        guard points.count >= 5 else { return nil }
+                        let mt = points.map(\.progress).reduce(0, +) / Double(points.count)
+                        let mo = points.map(\.offset).reduce(0, +) / Double(points.count)
+                        let variance = points.reduce(0) { $0 + pow($1.progress - mt, 2) }
+                        guard variance > 1e-8 else { return nil }
+                        slope = points.reduce(0) { $0 + ($1.progress - mt) * ($1.offset - mo) } / variance
+                        intercept = mo - slope * mt
+                    }
+                    let start = point(0, intercept), end = point(1, intercept + slope)
+                    let line = Line(start, end)
+                    let rms = sqrt(points.reduce(0) { $0 + pow(line.a * $1.point.x + line.b * $1.point.y - line.c, 2) } / Double(points.count))
+                    let coverage = points.last!.progress - points.first!.progress
+                    let bins = Set(points.map { min(4, Int(($0.progress - 0.12) / 0.76 * 5)) }).count
+                    var reasons: [String] = []
+                    if points.count < 15 { reasons.append("sample_count_below_15") }
+                    if coverage < 0.56 { reasons.append("coverage_below_0.56") }
+                    if bins < 4 { reasons.append("fewer_than_4_spatial_bins") }
+                    if rms > 1.1 { reasons.append("residual_above_1.1_native_pixels") }
+                    if abs(slope / length) > tan(2 * .pi / 180) { reasons.append("slope_change_above_2_degrees") }
+                    if max(abs(intercept + slope * 0.12), abs(intercept + slope * 0.88)) > 8 {
+                        reasons.append("fit_reaches_8_native_pixel_acceptance_band")
+                    }
+                    return CoherentFit(line: line, points: points, source: seed.source, samples: samples,
+                        coverage: coverage, rms: rms, contrast: median(points.map(\.contrast)), rejectionReasons: reasons)
+                }
+                var seedFits: [CoherentFit] = []
+                let anchors = stride(from: 0, through: 24, by: 3).map { $0 }
+                for ia in anchors {
+                    for ib in anchors where ib > ia && Double(ib - ia) * 0.76 / 24 >= 0.30 {
+                        for a in buckets[ia] {
+                            for b in buckets[ib] {
+                                let slope = (b.offset - a.offset) / (b.progress - a.progress)
+                                let intercept = a.offset - slope * a.progress
+                                guard max(abs(intercept + slope * 0.12), abs(intercept + slope * 0.88)) <= 10,
+                                      let proposed = fit(intercept, slope) else { continue }
+                                merge(proposed, into: &seedFits, compareObservations: distinctTracks)
+                            }
+                        }
+                    }
+                }
+                for fit in seedFits {
+                    merge(fit, into: &candidates, limit: distinctTracks ? 42 : 6, compareObservations: distinctTracks)
+                }
+            }
+            candidates.sort(by: preferred)
+            let eligible = candidates.filter { $0.rejectionReasons.isEmpty }
+            let best = eligible.first ?? candidates.first
+            let rivals: [CoherentFit]
+            if let first = eligible.first {
+                rivals = eligible.dropFirst().filter { $0.points.count >= first.points.count - 2 && $0.contrast >= first.contrast * 0.75 }
+            } else { rivals = [] }
+            let accepted = !eligible.isEmpty && rivals.isEmpty
+            let reason = accepted ? nil : !rivals.isEmpty ? "competing_coherent_native_lines"
+                : availableStrips == 0 ? "native_strip_unavailable_or_over_memory_limit"
+                : best == nil ? "no_spatially_supported_native_line" : "native_fit_quality_gate"
+            if accepted, let best { lines[i] = best.line; changed = true }
+            evidence.append(.init(version: 2, frame: "inner", side: side.rawValue,
+                disposition: accepted ? "accepted_local_fit" : "unrefined", reason: reason,
+                rawSampleCount: best?.samples.count ?? (availableStrips == 0 ? 0 : 25),
+                acceptedSampleCount: best?.points.count ?? 0, spatialCoverage: best?.coverage ?? 0,
+                fitResidualNativePixels: best?.rms,
+                rejectedSampleCount: (best?.samples.count ?? (availableStrips == 0 ? 0 : 25)) - (best?.points.count ?? 0),
+                alternativeSeparationNativePixels: rivals.first.flatMap { rival in best.map { separation($0, rival) } },
+                observedPointsOrientedNative: best?.points.map(\.point) ?? [],
+                lineCoefficientsOrientedNative: accepted ? best?.line.coefficients : nil,
+                samples: best?.samples, derivativeRadiusNativePixels: 0.9,
+                configuration: strategy.rawValue, seedSource: best?.source,
+                candidateLines: candidates.map(\.diagnostic)))
+        }
+        guard changed, let tl = lines[0].intersection(lines[3]), let tr = lines[0].intersection(lines[1]),
+              let br = lines[2].intersection(lines[1]), let bl = lines[2].intersection(lines[3]) else { return Result(inner: nil, evidence: evidence) }
+        let quad = CardCenteringQuad(topLeft: tl, topRight: tr, bottomRight: br, bottomLeft: bl)
+        let size = source.centeringRasterOrientation.orientedSize
+        guard CardCenteringMeasurement(imageWidth: Int(size.width), imageHeight: Int(size.height),
+            outerQuad: outer, innerQuad: quad, warnings: []).hasValidFrameGeometry else {
+            return Result(inner: nil, evidence: evidence.map { original in
+                guard original.frame == "inner", original.disposition == "accepted_local_fit" else { return original }
+                return .init(version: 2, frame: original.frame, side: original.side, disposition: "rejected_quad",
+                    reason: "invalid_native_intersections", rawSampleCount: original.rawSampleCount,
+                    acceptedSampleCount: original.acceptedSampleCount, spatialCoverage: original.spatialCoverage,
+                    fitResidualNativePixels: original.fitResidualNativePixels, rejectedSampleCount: original.rejectedSampleCount,
+                    alternativeSeparationNativePixels: original.alternativeSeparationNativePixels,
+                    observedPointsOrientedNative: original.observedPointsOrientedNative, lineCoefficientsOrientedNative: nil,
+                    samples: original.samples, derivativeRadiusNativePixels: 0.9, configuration: strategy.rawValue,
+                    seedSource: original.seedSource, candidateLines: original.candidateLines)
+            })
+        }
+        return Result(inner: quad, evidence: evidence)
+    }
+
+    private static func preferred(_ a: CoherentFit, _ b: CoherentFit) -> Bool {
+        if a.rejectionReasons.isEmpty != b.rejectionReasons.isEmpty { return a.rejectionReasons.isEmpty }
+        if a.points.count != b.points.count { return a.points.count > b.points.count }
+        if a.rms != b.rms { return a.rms < b.rms }
+        if a.contrast != b.contrast { return a.contrast > b.contrast }
+        return a.source < b.source
+    }
+
+    private static func separation(_ a: CoherentFit, _ b: CoherentFit) -> Double {
+        a.points.map { abs(b.line.a * $0.point.x + b.line.b * $0.point.y - b.line.c) }.max() ?? .infinity
+    }
+
+    private static func sharesObservedTrack(_ a: CoherentFit, _ b: CoherentFit) -> Bool {
+        var ia = 0, ib = 0, shared = 0
+        while ia < a.points.count && ib < b.points.count {
+            let pa = a.points[ia], pb = b.points[ib]
+            if abs(pa.progress - pb.progress) < 1e-8 {
+                if hypot(pa.point.x - pb.point.x, pa.point.y - pb.point.y) <= 1 { shared += 1 }
+                ia += 1; ib += 1
+            } else if pa.progress < pb.progress { ia += 1 } else { ib += 1 }
+        }
+        // Repeated hypotheses using the same native observations are fit
+        // sensitivity, not independent competing physical boundaries.
+        return Double(shared) >= 0.70 * Double(min(a.points.count, b.points.count))
+    }
+
+    private static func merge(_ fit: CoherentFit, into fits: inout [CoherentFit], limit: Int = 6,
+                              compareObservations: Bool = false) {
+        if let index = fits.firstIndex(where: {
+            max(separation($0, fit), separation(fit, $0)) < 2.5 || (compareObservations && sharesObservedTrack($0, fit))
+        }) {
+            if preferred(fit, fits[index]) { fits[index] = fit }
+        } else { fits.append(fit) }
+        fits.sort(by: preferred)
+        if fits.count > limit { fits.removeLast(fits.count - limit) }
+    }
+}
+
 enum CardCenteringAnalyzerError: LocalizedError {
     case unreadableImage
     case renderFailed
@@ -23,6 +561,7 @@ struct CardCenteringAnalysis {
     /// rotation lets tests and evidence compare the detector's estimate with
     /// the transform it chose to apply.
     let detectedSkewDegrees: Double?
+    let nativeSourceData: Data?
     /// The rotation the measurement was taken at. Non-zero when the analyzer
     /// straightened the card itself, so the screen's rotation control can show
     /// what was applied instead of claiming zero.
@@ -33,13 +572,15 @@ struct CardCenteringAnalysis {
         measurement: CardCenteringMeasurement,
         coordinateMapping: CardCenteringCoordinateMapping? = nil,
         appliedRotationDegrees: Double = 0,
-        detectedSkewDegrees: Double? = nil
+        detectedSkewDegrees: Double? = nil,
+        nativeSourceData: Data? = nil
     ) {
         self.image = image
         self.measurement = measurement
         self.coordinateMapping = coordinateMapping
         self.appliedRotationDegrees = appliedRotationDegrees
         self.detectedSkewDegrees = detectedSkewDegrees
+        self.nativeSourceData = nativeSourceData
     }
 }
 
@@ -135,6 +676,8 @@ struct CardCenteringAnalysisDiagnostic: Codable, Equatable {
     let proposedOuterQuad: CardCenteringQuad?
     let refinedOuterQuad: CardCenteringQuad?
     let outerRefinementAccepted: Bool
+    /// Also included in jointSelection wall time; do not add twice to total.
+    var nativeLocalRefinementSeconds: Double? = nil
 }
 
 struct CardCenteringProfileFailureDiagnostic: Codable, Equatable {
@@ -336,6 +879,10 @@ enum CardCenteringAnalyzer {
         var frontBottomCandidateGenerationEnabled = true
         var jointSelectionEnabled = false
         var useReferenceCalculations = false
+        /// Development-only until corpus, timing, native registration and
+        /// independent visual gates pass. Never enables automatic reporting.
+        var nativeLocalRefinementEnabled = false
+        var nativeRefinementStrategy: CardCenteringNativeRefiner.Strategy = .legacySinglePeak
 
         func analyze(_ data: Data, rotationDegrees: Double = 0) throws -> CardCenteringAnalysis {
             try CardCenteringAnalyzer.$activeDiagnostics.withValue(DiagnosticContext(options: self)) {
@@ -601,6 +1148,19 @@ enum CardCenteringAnalyzer {
         )
     }
 
+    /// Exposes the actual production raster renderer for independent landmark
+    /// tests, without detector decisions or an inverse-of-the-same-formula test.
+    static func prepareRasterForCoordinateTest(_ source: UIImage, rotationDegrees: Double,
+                                               maxDimension: CGFloat) -> (UIImage, CardCenteringCoordinateMapping)? {
+        guard let unrotated = prepare(source, rotationDegrees: 0, padding: .black, maxDimension: maxDimension),
+              let raw = unrotated.cgImage,
+              let presented = prepare(unrotated, rotationDegrees: rotationDegrees, padding: .black, maxDimension: maxDimension),
+              let cg = presented.cgImage else { return nil }
+        return (presented, CardCenteringCoordinateMapping(orientedSourceSize: source.centeringRasterOrientation.orientedSize,
+            workingSize: .init(width: Double(cg.width), height: Double(cg.height)), appliedRotationDegrees: rotationDegrees,
+            unrotatedWorkingSize: .init(width: Double(raw.width), height: Double(raw.height))))
+    }
+
     /// DEBUG-only entry point for REQ-050. It keeps the normal working
     /// resolution and production pipeline intact while injecting numerical
     /// parameters for a sensitivity sweep.
@@ -637,7 +1197,8 @@ enum CardCenteringAnalyzer {
         var stageTimings = StageTimingAccumulator()
         let decodeStart = CFAbsoluteTimeGetCurrent()
 #endif
-        let detectionRotationDegrees = correctingSkew ? 0 : rotationDegrees
+        try Task.checkCancellation()
+        let detectionRotationDegrees = 0.0
         guard let source = UIImage(data: data),
               let prepared = prepare(
                   source,
@@ -653,21 +1214,18 @@ enum CardCenteringAnalyzer {
         let width = preparedCGImage.width
         let height = preparedCGImage.height
         guard width > 20, height > 20 else { throw CardCenteringAnalyzerError.renderFailed }
+        try Task.checkCancellation()
 #if DEBUG
         let candidateLedger = CandidateLedger(workingWidth: width, workingHeight: height)
         Self.activeDiagnostics?.ledger = candidateLedger
         defer { Self.activeDiagnostics?.ledger = nil }
-        let detectorSourceScale = min(1, workingMaxDimension / max(source.size.width, source.size.height))
         let detectorMapping = CardCenteringCoordinateMapping(
-            orientedSourceSize: CardCenteringSize(
-                width: source.size.width * source.scale,
-                height: source.size.height * source.scale
-            ),
+            orientedSourceSize: source.centeringRasterOrientation.orientedSize,
             workingSize: CardCenteringSize(width: Double(width), height: Double(height)),
             appliedRotationDegrees: detectionRotationDegrees,
             unrotatedWorkingSize: CardCenteringSize(
-                width: source.size.width * detectorSourceScale,
-                height: source.size.height * detectorSourceScale
+                width: Double(width),
+                height: Double(height)
             )
         )
 #endif
@@ -726,6 +1284,7 @@ enum CardCenteringAnalyzer {
         let scalarNeeded = visionOutline == nil
             || visionOutline?.innerQuad == nil
             || visionOutline.map({ scalarValidationNeeded($0, width: width, height: height) }) == true
+        try Task.checkCancellation()
         let scalar = scalarNeeded
             ? try scalarDetection(
                 from: detectionImage,
@@ -742,6 +1301,7 @@ enum CardCenteringAnalyzer {
         let outerStart = CFAbsoluteTimeGetCurrent()
 #endif
         var outline = preferredOutline(vision: visionOutline, scalar: scalar)
+        try Task.checkCancellation()
         let proposedOuterQuad = outline?.quad ?? .axisAligned(CardCenteringEdges(
             left: 0,
             top: 0,
@@ -821,7 +1381,7 @@ enum CardCenteringAnalyzer {
         let presentationStart = CFAbsoluteTimeGetCurrent()
 #endif
         let presentationImage: UIImage
-        if correctingSkew, abs(presentationRotationDegrees) >= 0.000_1 {
+        if abs(presentationRotationDegrees) >= 0.000_1 {
             presentationImage = prepare(
                 prepared,
                 rotationDegrees: presentationRotationDegrees,
@@ -838,7 +1398,7 @@ enum CardCenteringAnalyzer {
             throw CardCenteringAnalyzerError.renderFailed
         }
         let rotationMapping: CardCenteringCoordinateMapping?
-        if correctingSkew, abs(presentationRotationDegrees) >= 0.000_1 {
+        if abs(presentationRotationDegrees) >= 0.000_1 {
             rotationMapping = CardCenteringCoordinateMapping(
                 orientedSourceSize: CardCenteringSize(width: Double(width), height: Double(height)),
                 workingSize: CardCenteringSize(
@@ -852,16 +1412,12 @@ enum CardCenteringAnalyzer {
             rotationMapping = nil
         }
 
-        let sourceScale = min(1, workingMaxDimension / max(source.size.width, source.size.height))
         let unrotatedWorkingSize = CardCenteringSize(
-            width: source.size.width * sourceScale,
-            height: source.size.height * sourceScale
+            width: Double(width),
+            height: Double(height)
         )
-        let coordinateMapping = CardCenteringCoordinateMapping(
-            orientedSourceSize: CardCenteringSize(
-                width: source.size.width * source.scale,
-                height: source.size.height * source.scale
-            ),
+        var coordinateMapping = CardCenteringCoordinateMapping(
+            orientedSourceSize: source.centeringRasterOrientation.orientedSize,
             workingSize: CardCenteringSize(
                 width: Double(presentationCGImage.width),
                 height: Double(presentationCGImage.height)
@@ -869,6 +1425,8 @@ enum CardCenteringAnalyzer {
             appliedRotationDegrees: presentationRotationDegrees,
             unrotatedWorkingSize: unrotatedWorkingSize
         )
+        coordinateMapping.rawRasterSize = source.centeringRasterOrientation.rawSize
+        coordinateMapping.rawEXIFOrientation = source.centeringRasterOrientation.exif
 
         let detectedOuterQuad = outline?.quad ?? .axisAligned(outer)
 #if DEBUG
@@ -1099,6 +1657,45 @@ enum CardCenteringAnalyzer {
         if detectedInnerQuad == nil, !notes.contains(where: { $0.contains("inner reference") }) {
             notes.append("No gradeable inner reference was found — adjust the inner guides manually before reading the result.")
         }
+        var nativeEvidence: [CardCenteringNativeSideEvidence]? = nil
+        try Task.checkCancellation()
+#if DEBUG
+        var nativeLocalRefinementSeconds: Double? = nil
+        if Self.activeDiagnostics?.options.nativeLocalRefinementEnabled == true,
+           let selected = detectedInnerQuad {
+            let nativeStart = CFAbsoluteTimeGetCurrent()
+            let nativeMapping = CardCenteringCoordinateMapping(
+                orientedSourceSize: source.centeringRasterOrientation.orientedSize,
+                workingSize: CardCenteringSize(width: Double(width), height: Double(height)))
+            let coarseSeeds = candidateLedger.diagnostic(nativeMapping: nativeMapping,
+                selectedOuterSource: selectedOuterSource, selectedInnerSource: innerSource).candidates.compactMap { candidate -> CardCenteringNativeRefiner.Seed? in
+                guard innerSource == .profile || innerSource == .scalarInner,
+                      candidate.family == "inner", candidate.source == "profile.normalized_gradient",
+                      candidate.rejectionReason != "outside_gradeable_shallow_band",
+                      candidate.nativeGeometry.count == 2,
+                      let side = CardCenteringPrecisionSide(rawValue: candidate.side) else { return nil }
+                return .init(side: side, geometryOrientedNative: candidate.nativeGeometry,
+                    source: "existing_coarse_profile_alternative")
+            }
+            let refined = CardCenteringNativeRefiner.refine(source: source,
+                outer: nativeMapping.nativeQuad(fromWorking: detectedOuterQuad),
+                inner: nativeMapping.nativeQuad(fromWorking: selected),
+                strategy: Self.activeDiagnostics?.options.nativeRefinementStrategy ?? .legacySinglePeak,
+                coarseSeeds: coarseSeeds)
+            nativeLocalRefinementSeconds = CFAbsoluteTimeGetCurrent() - nativeStart
+            nativeEvidence = refined.evidence
+            if let accepted = refined.inner {
+                detectedInnerQuad = nativeMapping.workingQuad(fromNative: accepted)
+            }
+            let ambiguousSides = refined.evidence.filter { $0.alternativeSeparationNativePixels != nil && $0.frame == "outer" }.map(\.side)
+            if !ambiguousSides.isEmpty {
+                notes.append("Card edge and shadow may overlap on the \(ambiguousSides.joined(separator: ", ")) side. Review those outer guides using Card edge detail.")
+            }
+            if refined.inner == nil {
+                notes.append("Native edge refinement was not supported. The original guides still need review.")
+            }
+        }
+#endif
         let finalOuterQuad: CardCenteringQuad
         let finalInnerQuad: CardCenteringQuad?
         // Outer and inner geometry are selected in one detector pass. After
@@ -1158,6 +1755,8 @@ enum CardCenteringAnalyzer {
             rectification: finalRectification
         )
         measurement.refreshWarnings()
+        measurement.nativeRefinementEvidence = nativeEvidence
+        try Task.checkCancellation()
 #if DEBUG
         stageTimings.resultConstruction += CFAbsoluteTimeGetCurrent() - resultStart
 #endif
@@ -1179,7 +1778,8 @@ enum CardCenteringAnalyzer {
             selectedSleeveAmbiguity: outline?.sleeveAmbiguity ?? 0,
             proposedOuterQuad: proposedOuterQuad,
             refinedOuterQuad: refinedOuterQuad,
-            outerRefinementAccepted: outerRefinementAccepted
+            outerRefinementAccepted: outerRefinementAccepted,
+            nativeLocalRefinementSeconds: nativeLocalRefinementSeconds
         ))
         candidateLedgerDiagnosticSink?(candidateLedger.diagnostic(
             nativeMapping: detectorMapping,
@@ -1192,7 +1792,8 @@ enum CardCenteringAnalyzer {
             measurement: measurement,
             coordinateMapping: coordinateMapping,
             appliedRotationDegrees: presentationRotationDegrees,
-            detectedSkewDegrees: outline?.skewDegrees
+            detectedSkewDegrees: outline?.skewDegrees,
+            nativeSourceData: data
         )
     }
 
@@ -1949,8 +2550,8 @@ enum CardCenteringAnalyzer {
         // CGImage dimensions here and then drawing the oriented UIImage stretches
         // the card before edge detection. Work from UIImage's display size so the
         // pixels and the orientation describe the same rectangle.
-        let originalWidth = image.size.width
-        let originalHeight = image.size.height
+        let originalWidth = CGFloat(image.centeringRasterOrientation.orientedSize.width)
+        let originalHeight = CGFloat(image.centeringRasterOrientation.orientedSize.height)
         guard originalWidth.isFinite, originalHeight.isFinite,
               originalWidth > 0, originalHeight > 0,
               maxDimension.isFinite, maxDimension > 0, rotationDegrees.isFinite else { return nil }
@@ -1960,22 +2561,25 @@ enum CardCenteringAnalyzer {
             return image
         }
         let scale = min(1, maxDimension / max(originalWidth, originalHeight))
-        let size = CGSize(width: originalWidth * scale, height: originalHeight * scale)
+        // Round the unrotated raster once. The mapping uses these actual,
+        // independent axis sizes, including noninteger resize rounding.
+        let size = CGSize(width: (originalWidth * scale).rounded(), height: (originalHeight * scale).rounded())
         let radians = CGFloat(rotationDegrees * .pi / 180)
         let rotatedBounds = CGRect(origin: .zero, size: size).applying(CGAffineTransform(rotationAngle: radians)).standardized
 
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = true
-        return UIGraphicsImageRenderer(size: rotatedBounds.size, format: format).image { context in
+        let canvas = CGSize(width: ceil(rotatedBounds.width), height: ceil(rotatedBounds.height))
+        return UIGraphicsImageRenderer(size: canvas, format: format).image { context in
             // Whatever surrounds the card, not white. Rotation leaves wedges in
             // the corners of the enlarged canvas, and filling them with a fixed
             // colour makes them foreground against any darker background — so
             // the silhouette grew to the whole canvas and the straightened pass
             // measured worse than the crooked one it was correcting.
             padding.setFill()
-            context.fill(CGRect(origin: .zero, size: rotatedBounds.size))
-            context.cgContext.translateBy(x: rotatedBounds.width / 2, y: rotatedBounds.height / 2)
+            context.fill(CGRect(origin: .zero, size: canvas))
+            context.cgContext.translateBy(x: canvas.width / 2, y: canvas.height / 2)
             context.cgContext.rotate(by: radians)
             image.draw(in: CGRect(x: -size.width / 2, y: -size.height / 2, width: size.width, height: size.height))
         }
