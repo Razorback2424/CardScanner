@@ -87,6 +87,7 @@ jobs:
             -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
             -only-testing:TradingCardScannerTests/JustTCGContractTests \
+            -only-testing:TradingCardScannerTests/ProductFallbackTests \
             -only-testing:TradingCardScannerTests/ScannedGradedResolverTests \
             -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests \
             -only-testing:TradingCardScannerTests/CardShareContentTests \

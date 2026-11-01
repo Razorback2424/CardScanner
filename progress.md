@@ -5534,3 +5534,24 @@ historical.
 - Focused run: **197 total, 196 passed, one deliberate performance skip,
   zero failures**. Final aggregate at `b5eb58b`: **1,071 total, 1,069 passed,
   two deliberate skips, zero failures**. No schema or credential change.
+
+## 2026-11-01 — Unsigned CI retry-test repair
+
+- Inspected failed native CI job `124986000282` on `27512fa`: one of 827 cases
+  failed before retry assertions because the test wrote an OS Keychain fixture
+  in an unsigned simulator (`errSecMissingEntitlement`, -34018). Earlier signed
+  local passes did not close this CI gate.
+- `145012f` injects credential availability into the graded picker model for
+  tests, while production retains its live gate. Removed fixture Keychain
+  read/store/restore; retained every retry/overlap/terminal/cancellation assertion
+  and added unavailable-gate/no-transport coverage. CI remains unsigned.
+- The exact formerly failing case passes in a fresh local unsigned build:
+  **one executed, one passed, zero skipped/failed**. The broader unsigned run
+  exposed nine equivalent fixture failures in fallback helpers. `4584913`
+  removes their Keychain dependencies using a synthetic-key override, preserving
+  production defaults and every pricing/matching/backoff assertion; all **53
+  fallback tests pass unsigned**. This class is also selected in unsigned CI.
+  Final unsigned aggregate at `4584913`: **1,071 total, 1,069 passed, two
+  deliberate skips, zero failures**. All 33 required workflow selections are
+  covered. Exact-head remote verification is tracked on PR14 checks; the local
+  unsigned result does not override the earlier CI failure.

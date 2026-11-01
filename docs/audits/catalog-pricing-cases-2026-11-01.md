@@ -189,6 +189,45 @@ skip, zero failures**. **Final source `b5eb58bec60020fc40309c92ed85aaca7bb20ae4`
 zero failures.** All 32 workflow selections and the four broader classes ran;
 the mixed-clock observation regression is included in CI.
 
+## Unsigned CI credential-fixture discrepancy
+
+Native CI run **41352656989**, job **124986000282**, failed on head `27512fa`:
+`JustTCGContractTests.testGradedPickerRetriesTransientAndIncompleteSearchesWithoutRetryingTerminalResults`
+threw `storeFailed(-34018)` at line 239 before retry assertions. The job used
+`CODE_SIGNING_ALLOWED=NO` and executed 827 cases with one unexpected failure;
+offline ingestion and publisher/core steps passed. The installed Apple SDK
+identifies this status as `errSecMissingEntitlement`. The signed local aggregate
+did not establish unsigned CI acceptance.
+
+Commit `145012f` removes the test's OS Keychain read/store/restore fixture.
+`GradedVariantModel` accepts optional credential availability: nil retains the
+live production gate, while the test injects availability and already uses an
+intercepted transport with a synthetic key. Every existing retry, overlap,
+terminal-result and cancellation assertion remains. An unavailable-gate case
+also proves that no transport request occurs. CI signing flags and test
+selection are unchanged; no assertion or test is skipped to resolve this.
+
+A fresh local build with `CODE_SIGNING_ALLOWED=NO` executed the formerly failing
+test: **one passed, zero skips/failures**. The broader unsigned aggregate at
+`145012f` then found nine identical entitlement failures in three existing
+`ProductFallbackTests` fixture helpers: **1,071 total, 1,060 passed, nine failed,
+two deliberate skips**. These helpers failed before their pricing/backoff
+assertions, outside the previously selected CI subset.
+
+`4584913` removes those helpers' Keychain operations and supplies synthetic keys
+to the intercepted fallback client. Nil override preserves the production
+presence cache and live key retrieval; an explicit empty override stops before
+transport. All existing pricing, matching and backoff assertions remain, and
+all **53 fallback tests passed unsigned**. The fallback class is now selected in
+the unsigned CI workflow as well. **Final unsigned aggregate at source
+`458491315f335098badd05fa35c05937200c6659`: 1,071 total = 1,069 passed + two
+deliberate live-feed/performance skips, zero failures.** The effective local
+selection exactly covers all 33 required workflow selections plus the broader
+classes; adding fallback to CI does not omit any locally verified case.
+Earlier signed passes are separate evidence. Exact-head remote acceptance is
+tracked in [PR14 checks](https://github.com/Razorback2424/CardScanner/pull/14/checks)
+and is not inferred from the local result.
+
 ## Remaining gates
 
 The initial app-specific Keychain read was denied by automatic approval review
