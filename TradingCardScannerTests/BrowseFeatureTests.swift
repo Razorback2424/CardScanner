@@ -4323,6 +4323,61 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: "sma-SV49", variant: .normal))
     }
 
+    func testBundledCelebrationsClassicReprintsAreChoicesOffline() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("celebrations-classic-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundled = await PokemonChecklistStore(root: root).bundledSnapshot()
+        let snapshot = try XCTUnwrap(bundled)
+
+        // Every member names one bundled Classic Collection card exactly.
+        let entry = try XCTUnwrap(snapshot.entry(forProviderID: "cel25cc"))
+        let rows = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+        let members = PokemonCatalogRegistry.celebrationsClassicDescriptor.membershipRecognition?.members ?? []
+        XCTAssertEqual(Set(rows.map(\.providerID)), Set(members.map(\.providerCardID)))
+        for member in members {
+            let row = try XCTUnwrap(rows.first { $0.providerID == member.providerCardID }, member.providerCardID)
+            XCTAssertEqual(
+                CatalogIdentityNormalization.canonicalText(row.name),
+                member.canonicalName,
+                member.providerCardID
+            )
+        }
+
+        // Claydol 15/106 used to resolve silently to Great Encounters offline.
+        let identifier = try XCTUnwrap(
+            PokemonHistoricalScanParser.parse(numberLines: ["15/106"], titleLines: ["Claydol"])
+        )
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
+            return XCTFail("Expected historical Pokémon evidence")
+        }
+        XCTAssertNil(
+            PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence),
+            "The original and its Celebrations reprint must be a printing choice"
+        )
+        let candidates = PokemonOfflineCardFactory.candidates(in: snapshot, number: evidence.number)
+        XCTAssertEqual(
+            Set(candidates.filter { CatalogIdentityNormalization.canonicalText($0.name) == "claydol" }
+                .map(\.providerID)),
+            ["cel25cc-CC016", "dp4-15"]
+        )
+        let reprint = try XCTUnwrap(candidates.first { $0.providerID == "cel25cc-CC016" })
+        let identified = try XCTUnwrap(
+            PokemonOfflineCardFactory.card(
+                in: snapshot,
+                candidate: reprint,
+                number: evidence.number,
+                registry: .bundledSeed
+            )
+        )
+        guard case let .pokemon(card, setCode) = identified.legacyIdentity else {
+            return XCTFail("Expected a Pokémon record")
+        }
+        XCTAssertEqual(card.id, "cel25cc-CC016")
+        XCTAssertEqual(card.set.id, "cel25cc")
+        XCTAssertEqual(card.localId, "15")
+        XCTAssertEqual(setCode, "CEL")
+    }
+
     func testOfflineHistoricalCardPreservesAllPublishedVariantRows() throws {
         // EX-era cards resolve through the historical path, which keyed its
         // summaries by provider id alone. The `normal` and `reverse` rows of

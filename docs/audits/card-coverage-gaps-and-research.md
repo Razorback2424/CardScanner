@@ -1,8 +1,8 @@
 # Card coverage gaps and research priorities
 
 **Reviewed:** 2026-11-01 sweep; the 2026-10-15 review and original research baseline are retained below.
-**Candidate:** `a2b11ad` on `refinement/catalog-coverage-2026-11-01`.
-**Status:** two Pokémon fixes implemented; one silent-misidentification defect awaits an owner decision; no worldwide completeness or device certification.
+**Candidate:** `refinement/celebrations-classic-membership-2026-11-01`, stacked on `refinement/catalog-coverage-2026-11-01` (from `a2b11ad`).
+**Status:** three Pokémon fixes implemented across two pull requests; no worldwide completeness or device certification.
 
 ## Five-game coverage sweep — 2026-11-01
 
@@ -18,9 +18,9 @@ and the bundled Yu-Gi-Oh, Lorcana and One Piece catalogs.
 | S1 | Shiny Vault cards were unscannable. Hidden Fates prints `SV49/SV94` and Shining Fates prints `SV001/SV122` (all 216 TCGplayer products agree). The historical parser knew only the `H`, `TG`, `GG` and `RC` subset prefixes, so these footers produced no reading. | `SV` is a subset prefix that must appear on both sides. 94 maps to `sma` and 122 to `swsh4.5sv`. A bare `SV` before an ordinary fraction keeps its old official-set reading, so `SVI 049/198` with the `I` lost stays recoverable by denominator and title. |
 | S2 | Hidden Fates Shiny Vault finishes were wrong. TCGdex flags all 94 cards `normal`, while every TCGplayer product is Holofoil only. Once S1 made the cards scannable, they would have been auto-recorded as Normal with no price. | A reviewed-variant override sets `sma-SV1`…`sma-SV94` to Holofoil, and the Browse read-time projection now includes `sma`, following the Yellow A precedent. An existing Normal holding is flagged for physical review and is never rekeyed automatically. Shining Fates Shiny Vault was already Holo and is unchanged. |
 
-### Awaiting owner decision
+### Fixed in the stacked branch
 
-**C1 — Celebrations Classic Collection resolves as the original card.** The 25
+**C1 — Celebrations Classic Collection resolved as the original card.** The 25
 `cel25cc` reprints print their original numbers: Charizard reads `4/102`, not
 a `/25` number. The set has no membership recognition (only the 30th
 Celebration Classic Collection has one), so a scan resolves silently to the
@@ -29,15 +29,24 @@ alone. The other three reach originals through the live directory: Impostor Oak
 (a one-letter spelling difference), Umbreon ☆ (POP 5) and _____'s Pikachu
 (Wizards promo 24).
 
-The proposed fix mirrors `30th-c`: a non-scannable `cel25cc` descriptor that
-lists all 25 members, so each collision becomes an explicit printing choice.
-It changes registry authority, and about a dozen registry consumers read it:
-Browse order and codes, the collection normalizer, price refresh and cache
-staleness. It must also be added to both the bundled seed and
-`publisher/catalog-input.json`, and production uses `remote-authority`, so it
-reaches users only through a newly signed revision. Charizard `4/102` would then
-offer three printings, because the 30th Classic Collection also reprints it. The
-30th-c rows themselves would not change.
+**Fix.** `PokemonCatalogRegistry.historicalMembershipDescriptors` lists all 25
+printed numbers. The historical resolver unions them with signed membership,
+so each collision becomes an explicit printing choice and a cached original is
+re-resolved. The list is deliberately **not** a registry descriptor, for two
+reasons:
+
+- A descriptor would disable Limitless artwork for the set, because only
+  expansion descriptors are authorized. TCGdex has no images for these 25 cards,
+  and Limitless serves all of them (`CEL_CC1`…`CEL_CC25`). Browse would lose
+  this set's artwork.
+- `cel25cc` is in the publisher's ignored-historical list, so its recognition is
+  governed by app code, like the `TG`/`GG`/`SV` subset maps, rather than by
+  the signed catalog.
+
+Browse, import, pricing, artwork, publisher input and the 30th Classic
+Collection are therefore unchanged, and no signed revision is needed. A future
+signed `cel25cc` descriptor would take precedence. Charizard `4/102` now offers
+three printings: Base Set, Celebrations Classic and 30th Classic.
 
 Printed numbers below come from TCGplayer (TCGCSV group 2931). pokemontcg.io's
 `cel25c` numbers agree independently on every numerator; each denominator is
@@ -80,10 +89,19 @@ bundled resolution of `SV49/SV94` and `SV107/SV122` to Holofoil; and the
 `PokemonChecklistBrowseTests`, `PricingTests`, `JustTCGContractTests`) passed
 **382 tests, zero failures or skips** on the iOS simulator. A separate run of
 12 scanner, Browse, normalization, unresolved-scan and price-refresh classes
-passed **385 tests, zero failures or skips**. Build output is under
-`/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source,
-data and simulator checks only. No physical card was scanned, and C1 is not
-implemented.
+passed **385 tests, zero failures or skips**.
+
+For C1, new regressions cover the resolver collision (Claydol `15/106`), the
+three-way Charizard `4/102` choice, unchanged 30th-only numbers, and that the
+membership stays out of registry descriptors. They also cover the bundled
+offline path: every member matches a bundled `cel25cc` card's provider ID and
+canonical name, the original now becomes a choice, and the chosen reprint
+materializes as `cel25cc-CC016` with code `CEL`. A 22-class selection passed
+**581 tests, zero failures or skips**: historical capture/request, the
+Pokémon registry, coordinator, release store, update and parity suites,
+scanner view model, unresolved scans, normalization and Browse. Build output is
+under `/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source,
+data and simulator checks only. No physical card was scanned.
 
 ## Four-game review — 2026-10-15
 

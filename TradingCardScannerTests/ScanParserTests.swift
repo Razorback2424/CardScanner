@@ -680,6 +680,78 @@ final class ScanParserTests: XCTestCase {
         XCTAssertEqual(matches.map(\.providerID), ["30th-c-011", "pl1-47"])
     }
 
+    func testCelebrationsClassicReprintIsAChoiceBesideItsOriginal() throws {
+        let evidence = try historicalEvidence(number: "15/106", title: "Claydol")
+        let directory = try historicalDirectory([("dp4", 106, 106)])
+        let candidateSetIDs = PokemonHistoricalIdentityResolver.candidateSetIDs(
+            for: evidence,
+            in: directory,
+            registry: .bundledSeed
+        )
+        XCTAssertEqual(candidateSetIDs, ["cel25cc", "dp4"])
+
+        let members = PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+        let reprint = try XCTUnwrap(members.first)
+        XCTAssertEqual(members.count, 1)
+        XCTAssertEqual(reprint.providerID, "cel25cc-CC016")
+        XCTAssertEqual(reprint.localID, "15")
+        XCTAssertEqual(reprint.choiceLabel, "Celebrations Classic · 2021")
+
+        let original = historicalCard("dp4-15", set: "dp4", number: "15", name: "Claydol")
+        guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+            evidence,
+            candidateSetIDs: candidateSetIDs,
+            in: [original, reprint]
+        ) else {
+            return XCTFail("A Celebrations reprint must never resolve silently as its original")
+        }
+        XCTAssertEqual(matches.map(\.providerID), ["cel25cc-CC016", "dp4-15"])
+    }
+
+    func testCharizardFourOfOneHundredTwoOffersBothClassicReprints() throws {
+        let evidence = try historicalEvidence(number: "4/102", title: "Charizard")
+        XCTAssertEqual(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: .bundledSeed)
+                .map(\.providerID).sorted(),
+            ["30th-c-001", "cel25cc-CC002"]
+        )
+        // Other 30th Classic numbers are unchanged by Celebrations membership.
+        let pikachu = try historicalEvidence(number: "58/102", title: "Pikachu")
+        XCTAssertEqual(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: pikachu, in: .bundledSeed)
+                .map(\.providerID),
+            ["30th-c-014"]
+        )
+        // A `/25` Celebrations main-set number never selects a reprint.
+        let celebrations = try historicalEvidence(number: "4/25", title: "Charizard")
+        XCTAssertTrue(
+            PokemonHistoricalIdentityResolver.membershipIdentities(for: celebrations, in: .bundledSeed).isEmpty
+        )
+    }
+
+    func testCelebrationsClassicMembershipStaysOutOfRegistryDescriptors() {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        // Browse, import, pricing and artwork read descriptors; they must keep
+        // treating Celebrations Classic Collection exactly as before.
+        XCTAssertNil(registry.descriptor(forProviderSetID: "cel25cc"))
+        XCTAssertFalse(registry.isScanDisabled(forProviderSetID: "cel25cc"))
+        XCTAssertNil(registry.printedCode(forProviderSetID: "cel25cc"))
+        XCTAssertEqual(registry.membershipPrintedCode(forProviderSetID: "cel25cc"), "CEL")
+        XCTAssertEqual(registry.membershipPrintedCode(forProviderSetID: "30th-c"), "30C")
+        XCTAssertEqual(
+            registry.membershipDescriptors.map(\.providerSetID).sorted(),
+            ["30th-c", "cel25cc"]
+        )
+        let members = PokemonCatalogRegistry.celebrationsClassicDescriptor.membershipRecognition?.members ?? []
+        XCTAssertEqual(members.count, 25)
+        XCTAssertEqual(Set(members.map(\.providerCardID)).count, 25)
+        XCTAssertEqual(
+            Set(members.map { "\($0.printedLocalID)/\($0.printedDenominator)" }).count,
+            25,
+            "Every reprint prints a distinct original number"
+        )
+    }
+
     func testPrintingChoicesUseSetAndReleaseYearAndRecordTheirOwnProvenance() {
         let platinum = PokemonCatalogCardIdentity(
             providerID: "pl1-47",

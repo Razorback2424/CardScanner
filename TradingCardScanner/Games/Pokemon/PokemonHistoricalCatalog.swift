@@ -205,7 +205,7 @@ actor PokemonHistoricalCatalog {
         materializedCard.recoveredArtwork = card.recoveredArtwork
         return .pokemon(
             materializedCard,
-            setCode: registrySnapshot.printedCode(forProviderSetID: card.set.id)
+            setCode: registrySnapshot.membershipPrintedCode(forProviderSetID: card.set.id)
                 ?? card.set.id.uppercased()
         )
     }

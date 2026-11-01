@@ -12,12 +12,18 @@ Fixed:
 - Hidden Fates Shiny Vault cards resolve as Holofoil instead of TCGdex's
   incorrect Normal.
 
-Awaiting the owner: Celebrations Classic Collection reprints still resolve
-silently as their original vintage printings. The fix needs registry
-membership and a newly signed revision. The 30th Classic Collection is
-unchanged. The focused selection passed **382 tests** and a wider
-scanner/Browse/pricing selection passed **385 tests**, both with zero failures
-or skips. This is simulator evidence only.
+The focused selection passed **382 tests** and a wider scanner/Browse/pricing
+selection passed **385 tests**, both with zero failures or skips.
+
+Stacked follow-up on `refinement/celebrations-classic-membership-2026-11-01`:
+the 25 Celebrations Classic Collection reprints used to resolve silently as their
+original vintage printings, for example Claydol `15/106` as Great Encounters.
+They are now an explicit printing choice. The resolver reads a code-level
+membership list. It is not a registry descriptor, because a descriptor would
+switch off this set's only artwork source. Browse, publisher input, the signed
+catalog and the 30th Classic Collection are unchanged. A 22-class historical,
+registry, scanner and Browse selection passed **581 tests, zero failures or
+skips**. This is simulator evidence only.
 
 # 2026-10-31 — Card sharing post-merge artwork recovery
 

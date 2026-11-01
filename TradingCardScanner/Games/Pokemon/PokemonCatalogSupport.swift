@@ -333,7 +333,7 @@ enum PokemonOfflineCardFactory {
         registry: PokemonCatalogRegistry
     ) -> Set<String> {
         let localID = PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
-        return Set(registry.descriptors.compactMap { descriptor in
+        return Set(registry.membershipDescriptors.compactMap { descriptor in
             guard let recognition = descriptor.membershipRecognition,
                   recognition.members.contains(where: {
                       $0.printedDenominator == number.denominator
