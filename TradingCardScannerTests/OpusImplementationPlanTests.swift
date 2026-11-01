@@ -2733,6 +2733,44 @@ final class CardCenteringInvariantTests: XCTestCase {
         }
     }
 
+    /// Rotation turns the photo beneath both guides and the steppers only
+    /// translate an edge, so neither can change the angle between the red and
+    /// cyan frames. The detector must therefore hand over an inner frame that
+    /// runs parallel to the card edge on every side once perspective is removed.
+    func testDetectedInnerFrameRunsParallelToTheCardEdge() throws {
+        func direction(_ start: CardCenteringPoint, _ end: CardCenteringPoint) -> Double {
+            atan2(end.y - start.y, end.x - start.x)
+        }
+        func degreesBetween(_ first: Double, _ second: Double) -> Double {
+            var result = (first - second).truncatingRemainder(dividingBy: .pi)
+            if result > .pi / 2 { result -= .pi }
+            if result < -.pi / 2 { result += .pi }
+            return abs(result) * 180 / .pi
+        }
+        func sideMismatch(_ outer: CardCenteringQuad, _ inner: CardCenteringQuad) -> [Double] {
+            [
+                degreesBetween(direction(inner.topLeft, inner.topRight), direction(outer.topLeft, outer.topRight)),
+                degreesBetween(direction(inner.topRight, inner.bottomRight), direction(outer.topRight, outer.bottomRight)),
+                degreesBetween(direction(inner.bottomLeft, inner.bottomRight), direction(outer.bottomLeft, outer.bottomRight)),
+                degreesBetween(direction(inner.topLeft, inner.bottomLeft), direction(outer.topLeft, outer.bottomLeft))
+            ]
+        }
+
+        var checked = 0
+        for name in fixtureNames {
+            let measurement = try CardCenteringAnalyzer.analyze(try fixtureData(name)).measurement
+            guard let inner = measurement.geometryInnerQuad else { continue }
+            let rectification = try XCTUnwrap(measurement.rectification, name)
+            let mismatch = sideMismatch(
+                rectification.rectifiedQuad(from: measurement.geometryOuterQuad),
+                rectification.rectifiedQuad(from: inner)
+            )
+            XCTAssertLessThanOrEqual(mismatch.max() ?? .infinity, 0.01, name)
+            checked += 1
+        }
+        XCTAssertGreaterThan(checked, 0)
+    }
+
     func testREQ018DeclinedMeasurementDoesNotExposeARatio() {
         let outer = CardCenteringQuad(
             topLeft: CardCenteringPoint(x: 0, y: 0),

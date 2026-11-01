@@ -430,6 +430,36 @@ struct CardCenteringRectification: Codable, Equatable {
         )
     }
 
+    /// Maps a rectified card-space point back into the photographed
+    /// coordinates the guides are drawn in.
+    func sourcePoint(fromRectified point: CardCenteringPoint) -> CardCenteringPoint {
+        Self.map(point, coefficients: inverseCoefficients)
+    }
+
+    func sourceQuad(fromRectified quad: CardCenteringQuad) -> CardCenteringQuad {
+        CardCenteringQuad(
+            topLeft: sourcePoint(fromRectified: quad.topLeft),
+            topRight: sourcePoint(fromRectified: quad.topRight),
+            bottomRight: sourcePoint(fromRectified: quad.bottomRight),
+            bottomLeft: sourcePoint(fromRectified: quad.bottomLeft)
+        )
+    }
+
+    /// The adjugate of the forward matrix in the same eight-term form. A
+    /// singular transform yields no coefficients, which `map` rejects.
+    private var inverseCoefficients: [Double] {
+        guard coefficients.count == 8 else { return [] }
+        let c = coefficients
+        let adjugate = [
+            c[4] - c[5] * c[7], c[2] * c[7] - c[1], c[1] * c[5] - c[2] * c[4],
+            c[5] * c[6] - c[3], c[0] - c[2] * c[6], c[2] * c[3] - c[0] * c[5],
+            c[3] * c[7] - c[4] * c[6], c[1] * c[6] - c[0] * c[7], c[0] * c[4] - c[1] * c[3]
+        ]
+        let scale = adjugate[8]
+        guard scale.isFinite, abs(scale) > 1e-12 else { return [] }
+        return adjugate.prefix(8).map { $0 / scale }
+    }
+
     private static let identityCoefficients = [
         1.0, 0, 0,
         0, 1.0, 0,
@@ -853,6 +883,34 @@ struct CardCenteringMeasurement: Equatable {
         return true
     }
 
+    /// Redraws the inner frame with each edge parallel to its card edge in the
+    /// rectified card, at that side's measured border distance.
+    ///
+    /// Detector inner sources fit each edge's slope independently of the card
+    /// edge, and a back-template fit can disagree with it by a couple of
+    /// degrees. No guide control can change a slope — the steppers translate
+    /// an edge and rotation turns the photo beneath both frames — so that
+    /// disagreement could never be aligned away. Each border is the distance at
+    /// the inner edge's midpoint either way, so the ratios are unchanged.
+    mutating func squareInnerFrameToCardEdge() {
+        guard usesQuadGeometry, hasValidFrameGeometry,
+              let rectification, let current = geometryInnerQuad else { return }
+        let border = measurementBorderDistances(to: current)
+        let size = rectification.targetSize
+        let left = border.left, top = border.top
+        let right = size.width - border.right, bottom = size.height - border.bottom
+        guard left < right, top < bottom else { return }
+        let squared = CardCenteringQuad(
+            topLeft: rectification.sourcePoint(fromRectified: CardCenteringPoint(x: left, y: top)),
+            topRight: rectification.sourcePoint(fromRectified: CardCenteringPoint(x: right, y: top)),
+            bottomRight: rectification.sourcePoint(fromRectified: CardCenteringPoint(x: right, y: bottom)),
+            bottomLeft: rectification.sourcePoint(fromRectified: CardCenteringPoint(x: left, y: bottom))
+        )
+        guard squared.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
+        innerQuad = squared
+        inner = squared.projectedEdges
+    }
+
     var geometryOuterQuad: CardCenteringQuad {
         usesQuadGeometry ? outerQuad : .axisAligned(outer)
     }
@@ -983,7 +1041,11 @@ struct CardCenteringMeasurement: Equatable {
             requireConfirmationAfterManualEditIfNeeded()
             return
         }
-        let startingQuad = geometryInnerQuad ?? .axisAligned(inner)
+        // Without an inner frame, start from the card edge's own lines moved to
+        // the positions the steppers show, so a new cyan edge inherits the red
+        // edge's angle instead of the image axes.
+        let startingQuad = geometryInnerQuad ?? [\CardCenteringEdges.left, \.top, \.right, \.bottom]
+            .reduce(geometryOuterQuad) { quad, side in quad.movingEdge(side, to: inner[keyPath: side]) ?? quad }
         guard let edited = startingQuad.movingEdge(keyPath, to: value) else { return }
         innerQuad = edited
         inner = edited.projectedEdges
@@ -1003,5 +1065,332 @@ struct CardCenteringMeasurement: Equatable {
         let total = first + second
         guard total > 0 else { return "—" }
         return String(format: "%.1f / %.1f", 100 * first / total, 100 * second / total)
+    }
+}
+
+// MARK: - Direct guide editing
+
+/// One side of a guide frame.
+enum CardCenteringSide: String, CaseIterable, Hashable {
+    case left, top, right, bottom
+
+    /// Left and right guides run top to bottom.
+    var isVertical: Bool { self == .left || self == .right }
+
+    /// The side's position in the quad's clockwise line order.
+    fileprivate var clockwiseIndex: Int {
+        switch self {
+        case .top: 0
+        case .right: 1
+        case .bottom: 2
+        case .left: 3
+        }
+    }
+}
+
+/// One of the eight guide lines: a side of the red card edge or of the cyan
+/// inner frame.
+struct CardCenteringGuide: Hashable {
+    enum Frame: Hashable {
+        case outer
+        case inner
+    }
+
+    var frame: Frame
+    var side: CardCenteringSide
+
+    static let all: [CardCenteringGuide] = [Frame.outer, .inner].flatMap { frame in
+        CardCenteringSide.allCases.map { CardCenteringGuide(frame: frame, side: $0) }
+    }
+}
+
+/// An end of a guide in reading order: the top end of a left or right guide
+/// and the left end of a top or bottom one is `.start`.
+enum CardCenteringGuideEnd: Hashable {
+    case start
+    case end
+
+    var opposite: CardCenteringGuideEnd { self == .start ? .end : .start }
+}
+
+extension CardCenteringQuad {
+    /// A side's endpoints in reading order.
+    func segment(_ side: CardCenteringSide) -> (start: CardCenteringPoint, end: CardCenteringPoint) {
+        switch side {
+        case .left: (topLeft, bottomLeft)
+        case .top: (topLeft, topRight)
+        case .right: (topRight, bottomRight)
+        case .bottom: (bottomLeft, bottomRight)
+        }
+    }
+
+    /// Replaces one side's line with the line through `point` along
+    /// `direction`, re-solving that side's two corners against the
+    /// neighbouring lines. Nil when the result would collapse a side.
+    func replacingLine(
+        _ side: CardCenteringSide,
+        through point: CardCenteringPoint,
+        direction: CardCenteringPoint
+    ) -> CardCenteringQuad? {
+        let length = (direction.x * direction.x + direction.y * direction.y).squareRoot()
+        guard length.isFinite, length > 1e-9, point.x.isFinite, point.y.isFinite,
+              points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return nil }
+        var corners = points
+        let index = side.clockwiseIndex
+        let previous = (corners[(index + 3) % 4], corners[index])
+        let next = (corners[(index + 1) % 4], corners[(index + 2) % 4])
+        let replacement = (point, CardCenteringPoint(x: point.x + direction.x, y: point.y + direction.y))
+        guard let start = Self.intersection(previous, replacement),
+              let end = Self.intersection(replacement, next) else { return nil }
+        corners[index] = start
+        corners[(index + 1) % 4] = end
+        let result = CardCenteringQuad(
+            topLeft: corners[0], topRight: corners[1], bottomRight: corners[2], bottomLeft: corners[3]
+        )
+        guard [result.topLength, result.rightLength, result.bottomLength, result.leftLength]
+            .allSatisfy({ $0.isFinite && $0 > .ulpOfOne }) else { return nil }
+        return result
+    }
+
+    /// The quad turned about `pivot`, clockwise positive in the image's y-down
+    /// coordinates.
+    func rotated(by radians: Double, about pivot: CardCenteringPoint) -> CardCenteringQuad {
+        let cosine = cos(radians), sine = sin(radians)
+        func turn(_ point: CardCenteringPoint) -> CardCenteringPoint {
+            let dx = point.x - pivot.x, dy = point.y - pivot.y
+            return CardCenteringPoint(x: pivot.x + cosine * dx - sine * dy, y: pivot.y + sine * dx + cosine * dy)
+        }
+        return CardCenteringQuad(
+            topLeft: turn(topLeft), topRight: turn(topRight),
+            bottomRight: turn(bottomRight), bottomLeft: turn(bottomLeft)
+        )
+    }
+
+    private static func intersection(
+        _ lhs: (CardCenteringPoint, CardCenteringPoint),
+        _ rhs: (CardCenteringPoint, CardCenteringPoint)
+    ) -> CardCenteringPoint? {
+        let a1 = lhs.1.y - lhs.0.y, b1 = lhs.0.x - lhs.1.x
+        let a2 = rhs.1.y - rhs.0.y, b2 = rhs.0.x - rhs.1.x
+        let c1 = a1 * lhs.0.x + b1 * lhs.0.y
+        let c2 = a2 * rhs.0.x + b2 * rhs.0.y
+        let determinant = a1 * b2 - a2 * b1
+        guard determinant.isFinite, abs(determinant) > 1e-12 else { return nil }
+        let point = CardCenteringPoint(
+            x: (c1 * b2 - c2 * b1) / determinant,
+            y: (a1 * c2 - a2 * c1) / determinant
+        )
+        return point.x.isFinite && point.y.isFinite ? point : nil
+    }
+}
+
+extension CardCenteringMeasurement {
+    /// The most the inner frame may tilt against the card edge. Real print
+    /// tilt is a fraction of a degree, so anything larger is a mis-drag.
+    static let maximumInnerTiltDegrees = 5.0
+    /// The most one card-edge side may turn in a single edit.
+    static let maximumOuterTurnDegrees = 10.0
+
+    func segment(for guide: CardCenteringGuide) -> (start: CardCenteringPoint, end: CardCenteringPoint)? {
+        switch guide.frame {
+        case .outer: geometryOuterQuad.segment(guide.side)
+        case .inner: geometryInnerQuad?.segment(guide.side)
+        }
+    }
+
+    func borderDistance(_ side: CardCenteringSide) -> Double {
+        switch side {
+        case .left: leftBorderDistance
+        case .top: topBorderDistance
+        case .right: rightBorderDistance
+        case .bottom: bottomBorderDistance
+        }
+    }
+
+    /// The inner frame's tilt against the card edge in the rectified card,
+    /// averaged over its four sides; clockwise positive. Zero once the frame
+    /// is squared to the card edge.
+    var innerTiltDegrees: Double? {
+        guard let inner = geometryInnerQuad else { return nil }
+        let space = innerEditSpace
+        let outer = space?.rectifiedQuad(from: geometryOuterQuad) ?? geometryOuterQuad
+        let measured = space?.rectifiedQuad(from: inner) ?? inner
+        var total = 0.0
+        for side in CardCenteringSide.allCases {
+            let card = outer.segment(side), print = measured.segment(side)
+            var difference = atan2(print.end.y - print.start.y, print.end.x - print.start.x)
+                - atan2(card.end.y - card.start.y, card.end.x - card.start.x)
+            while difference > .pi / 2 { difference -= .pi }
+            while difference <= -.pi / 2 { difference += .pi }
+            total += difference
+        }
+        let degrees = total / 4 * 180 / .pi
+        return degrees.isFinite ? degrees : nil
+    }
+
+    /// Slides one guide, keeping its angle, so its line passes through
+    /// `point`. Inner sides slide in the rectified card, so a cyan side keeps
+    /// its angle to the red one however the photo leans.
+    mutating func moveGuide(_ guide: CardCenteringGuide, through point: CardCenteringPoint) {
+        guard point.x.isFinite, point.y.isFinite else { return }
+        switch guide.frame {
+        case .outer:
+            let quad = geometryOuterQuad
+            let line = quad.segment(guide.side)
+            guard let edited = quad.replacingLine(
+                guide.side, through: point, direction: Self.vector(from: line.start, to: line.end)
+            ) else { return }
+            applyOuterEdit(edited)
+        case .inner:
+            guard let quad = geometryInnerQuad else { return }
+            let space = innerEditSpace
+            let working = space?.rectifiedQuad(from: quad) ?? quad
+            let line = working.segment(guide.side)
+            guard let edited = working.replacingLine(
+                guide.side,
+                through: space?.rectifiedPoint(from: point) ?? point,
+                direction: Self.vector(from: line.start, to: line.end)
+            ) else { return }
+            applyInnerEdit(space?.sourceQuad(fromRectified: edited) ?? edited)
+        }
+    }
+
+    /// Moves one guide by `pixels` along the image axis it controls: x for the
+    /// left and right sides, y for the top and bottom.
+    mutating func nudgeGuide(_ guide: CardCenteringGuide, by pixels: Double) {
+        guard pixels.isFinite, let line = segment(for: guide) else { return }
+        let middle = CardCenteringPoint(x: (line.start.x + line.end.x) / 2, y: (line.start.y + line.end.y) / 2)
+        moveGuide(guide, through: guide.side.isVertical
+            ? CardCenteringPoint(x: middle.x + pixels, y: middle.y)
+            : CardCenteringPoint(x: middle.x, y: middle.y + pixels))
+    }
+
+    /// Turns one guide about its `fixed` end, clockwise positive.
+    ///
+    /// A card-edge side turns on its own, since perspective gives every side
+    /// of the photographed card its own angle. The inner frame turns as one
+    /// rectangle in the rectified card, because a print is tilted as a piece;
+    /// its tilt is held within `maximumInnerTiltDegrees`.
+    mutating func turnGuide(
+        _ guide: CardCenteringGuide,
+        about fixed: CardCenteringGuideEnd,
+        byDegrees degrees: Double
+    ) {
+        guard degrees.isFinite, let line = segment(for: guide) else { return }
+        switch guide.frame {
+        case .outer:
+            let limit = Self.maximumOuterTurnDegrees
+            let radians = min(limit, max(-limit, degrees)) * .pi / 180
+            let direction = Self.vector(from: line.start, to: line.end)
+            let turned = CardCenteringPoint(
+                x: direction.x * cos(radians) - direction.y * sin(radians),
+                y: direction.x * sin(radians) + direction.y * cos(radians)
+            )
+            guard let edited = geometryOuterQuad.replacingLine(
+                guide.side, through: fixed == .start ? line.start : line.end, direction: turned
+            ) else { return }
+            applyOuterEdit(edited)
+        case .inner:
+            guard let quad = geometryInnerQuad else { return }
+            let space = innerEditSpace
+            let working = space?.rectifiedQuad(from: quad) ?? quad
+            let workingLine = working.segment(guide.side)
+            let current = innerTiltDegrees ?? 0
+            let limit = Self.maximumInnerTiltDegrees
+            let target = min(limit, max(-limit, current + degrees))
+            let turned = working.rotated(
+                by: (target - current) * .pi / 180,
+                about: fixed == .start ? workingLine.start : workingLine.end
+            )
+            applyInnerEdit(space?.sourceQuad(fromRectified: turned) ?? turned)
+        }
+    }
+
+    /// Swings one end of a guide toward `point` while its other end stays put.
+    mutating func pivotGuide(
+        _ guide: CardCenteringGuide,
+        movingEnd: CardCenteringGuideEnd,
+        toward point: CardCenteringPoint
+    ) {
+        guard point.x.isFinite, point.y.isFinite, let line = segment(for: guide) else { return }
+        // Measure the swing in the space the guide turns in.
+        let space = guide.frame == .inner ? innerEditSpace : nil
+        func working(_ point: CardCenteringPoint) -> CardCenteringPoint {
+            space?.rectifiedPoint(from: point) ?? point
+        }
+        let pivot = working(movingEnd == .start ? line.end : line.start)
+        let moving = working(movingEnd == .start ? line.start : line.end)
+        let target = working(point)
+        let reach = Self.vector(from: pivot, to: target)
+        guard (reach.x * reach.x + reach.y * reach.y).squareRoot() > 1 else { return }
+        var radians = atan2(reach.y, reach.x) - atan2(moving.y - pivot.y, moving.x - pivot.x)
+        while radians > .pi { radians -= 2 * .pi }
+        while radians <= -.pi { radians += 2 * .pi }
+        turnGuide(guide, about: movingEnd.opposite, byDegrees: radians * 180 / .pi)
+    }
+
+    /// Starts an inner frame where none was found: inset from each card edge
+    /// by a typical printed border and square to it in the rectified card.
+    mutating func placeDefaultInnerFrame(insetFraction: Double = 0.05) {
+        guard geometryInnerQuad == nil, insetFraction > 0, insetFraction < 0.25 else { return }
+        if usesQuadGeometry {
+            guard let space = innerEditSpace else { return }
+            let size = space.targetSize
+            let inset = min(size.width, size.height) * insetFraction
+            let placed = space.sourceQuad(fromRectified: CardCenteringQuad(
+                topLeft: CardCenteringPoint(x: inset, y: inset),
+                topRight: CardCenteringPoint(x: size.width - inset, y: inset),
+                bottomRight: CardCenteringPoint(x: size.width - inset, y: size.height - inset),
+                bottomLeft: CardCenteringPoint(x: inset, y: size.height - inset)
+            ))
+            guard placed.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
+            innerQuad = placed
+            inner = placed.projectedEdges
+        } else {
+            let inset = Int((Double(min(outer.right - outer.left, outer.bottom - outer.top)) * insetFraction).rounded())
+            inner = CardCenteringEdges(
+                left: outer.left + inset, top: outer.top + inset,
+                right: outer.right - inset, bottom: outer.bottom - inset
+            )
+            innerQuad = .axisAligned(inner)
+        }
+        innerReference = .artWindow
+        requireConfirmationAfterManualEditIfNeeded()
+    }
+
+    /// The rectified card the inner frame is edited in, when the card edge
+    /// can be rectified.
+    private var innerEditSpace: CardCenteringRectification? {
+        guard usesQuadGeometry, let rectification, rectification.isNumericallyValid else { return nil }
+        return rectification
+    }
+
+    private mutating func applyOuterEdit(_ edited: CardCenteringQuad) {
+        guard edited.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
+        if usesQuadGeometry {
+            outerQuad = edited
+            outer = edited.projectedEdges
+            rectification = CardCenteringRectification(outerQuad: edited)
+        } else {
+            outer = edited.projectedEdges
+            outerQuad = .axisAligned(outer)
+        }
+        requireConfirmationAfterManualEditIfNeeded()
+    }
+
+    private mutating func applyInnerEdit(_ edited: CardCenteringQuad) {
+        guard edited.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
+        if usesQuadGeometry {
+            innerQuad = edited
+            inner = edited.projectedEdges
+        } else {
+            inner = edited.projectedEdges
+            innerQuad = .axisAligned(inner)
+        }
+        requireConfirmationAfterManualEditIfNeeded()
+    }
+
+    private static func vector(from start: CardCenteringPoint, to end: CardCenteringPoint) -> CardCenteringPoint {
+        CardCenteringPoint(x: end.x - start.x, y: end.y - start.y)
     }
 }

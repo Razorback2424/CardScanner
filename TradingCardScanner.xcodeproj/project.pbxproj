@@ -212,6 +212,8 @@
 		A0010041 /* CardCenteringMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010041 /* CardCenteringMeasurement.swift */; };
 		A0010042 /* CardCenteringAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010042 /* CardCenteringAnalyzer.swift */; };
 		A0010043 /* CardCenteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010043 /* CardCenteringView.swift */; };
+		A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E01 /* CardCenteringEdgeSnapper.swift */; };
+		A00C0E02 /* CardCenteringCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E02 /* CardCenteringCanvas.swift */; };
 		A0010044 /* CenteringCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010044 /* CenteringCameraView.swift */; };
 		A0010113 /* EbayQuadrantCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010113 /* EbayQuadrantCropper.swift */; };
 		A0010114 /* EbayListingPhotoExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010114 /* EbayListingPhotoExport.swift */; };
@@ -579,6 +581,8 @@
 		B0010041 /* CardCenteringMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringMeasurement.swift; sourceTree = "<group>"; };
 		B0010042 /* CardCenteringAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringAnalyzer.swift; sourceTree = "<group>"; };
 		B0010043 /* CardCenteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringView.swift; sourceTree = "<group>"; };
+		B00C0E01 /* CardCenteringEdgeSnapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringEdgeSnapper.swift; sourceTree = "<group>"; };
+		B00C0E02 /* CardCenteringCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringCanvas.swift; sourceTree = "<group>"; };
 		B0010044 /* CenteringCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringCameraView.swift; sourceTree = "<group>"; };
 		B0010113 /* EbayQuadrantCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayQuadrantCropper.swift; sourceTree = "<group>"; };
 		B0010114 /* EbayListingPhotoExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayListingPhotoExport.swift; sourceTree = "<group>"; };
@@ -972,6 +976,7 @@
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
 				B0010042 /* CardCenteringAnalyzer.swift */,
+				B00C0E01 /* CardCenteringEdgeSnapper.swift */,
 				E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */,
 				86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */,
 				B0010046 /* CollectionCSV.swift */,
@@ -1044,6 +1049,7 @@
 				B00100B3 /* PriceCheckResultView.swift */,
 				B0010035 /* CollectionFilters.swift */,
 				B0010043 /* CardCenteringView.swift */,
+				B00C0E02 /* CardCenteringCanvas.swift */,
 				B0010044 /* CenteringCameraView.swift */,
 				B0010115 /* ProView.swift */,
 				B0010116 /* EbayListingPhotosView.swift */,
@@ -1544,6 +1550,8 @@
 				A0010042 /* CardCenteringAnalyzer.swift in Sources */,
 				C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */,
 				A0010043 /* CardCenteringView.swift in Sources */,
+				A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */,
+				A00C0E02 /* CardCenteringCanvas.swift in Sources */,
 				A0010044 /* CenteringCameraView.swift in Sources */,
 				A0010113 /* EbayQuadrantCropper.swift in Sources */,
 				A0010114 /* EbayListingPhotoExport.swift in Sources */,

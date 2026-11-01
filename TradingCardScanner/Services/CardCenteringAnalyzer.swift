@@ -1157,6 +1157,12 @@ enum CardCenteringAnalyzer {
             confidence: resolvedConfidence,
             rectification: finalRectification
         )
+#if DEBUG
+        // REQ-049 evidence describes the detector's own inner edges, so read
+        // it before they are squared to the card edge.
+        let detectorPositionalConsistency = measurement.positionalConsistency
+#endif
+        measurement.squareInnerFrameToCardEdge()
         measurement.refreshWarnings()
 #if DEBUG
         stageTimings.resultConstruction += CFAbsoluteTimeGetCurrent() - resultStart
@@ -1164,7 +1170,7 @@ enum CardCenteringAnalyzer {
 #if DEBUG
         analysisDiagnosticSink?(CardCenteringAnalysisDiagnostic(
             stageTimings: stageTimings.snapshot(),
-            positionalConsistency: measurement.positionalConsistency,
+            positionalConsistency: detectorPositionalConsistency,
             scalarOuterAgreesWithVision: scalarOuterAgreesWithVision,
             scalarPinned: scalar?.pinned,
             outlineHasInner: outlineHasInner,

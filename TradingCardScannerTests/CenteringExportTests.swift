@@ -87,6 +87,328 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertEqual(value.topBottomCentering, String(format: "%.1f / %.1f", ratio.firstPercentage, ratio.secondPercentage))
     }
 
+    func testSquaringTheInnerFrameMatchesTheCardEdgeWithoutChangingBorders() throws {
+        // A leaning card whose fitted inner frame disagrees with the card edge
+        // by a couple of degrees, as a back-template fit can.
+        let outer = CardCenteringQuad(
+            topLeft: .init(x: 110, y: 80), topRight: .init(x: 890, y: 125),
+            bottomRight: .init(x: 840, y: 1125), bottomLeft: .init(x: 140, y: 1080)
+        )
+        let inner = CardCenteringQuad(
+            topLeft: .init(x: 180, y: 160), topRight: .init(x: 815, y: 215),
+            bottomRight: .init(x: 770, y: 990), bottomLeft: .init(x: 205, y: 940)
+        )
+        var value = CardCenteringMeasurement(imageWidth: 1000, imageHeight: 1400,
+            outerQuad: outer, innerQuad: inner, warnings: [], innerReference: .printedBorder,
+            confidence: .legacyConfident)
+        XCTAssertTrue(value.hasValidFrameGeometry)
+        let borders = [value.leftBorderDistance, value.rightBorderDistance,
+                       value.topBorderDistance, value.bottomBorderDistance]
+        let ratios = [value.leftRightCentering, value.topBottomCentering]
+
+        value.squareInnerFrameToCardEdge()
+
+        let squaredBorders = [value.leftBorderDistance, value.rightBorderDistance,
+                              value.topBorderDistance, value.bottomBorderDistance]
+        for (squared, original) in zip(squaredBorders, borders) {
+            XCTAssertEqual(squared, original, accuracy: 1e-6)
+        }
+        XCTAssertEqual([value.leftRightCentering, value.topBottomCentering], ratios)
+        XCTAssertTrue(value.hasValidFrameGeometry)
+        XCTAssertEqual(value.inner, try XCTUnwrap(value.innerQuad).projectedEdges)
+        // The rectified card is axis-aligned, so a parallel inner edge has
+        // matching coordinates at both of its ends.
+        let rectification = try XCTUnwrap(value.rectification)
+        let squared = rectification.rectifiedQuad(from: try XCTUnwrap(value.innerQuad))
+        XCTAssertEqual(squared.topLeft.y, squared.topRight.y, accuracy: 1e-6)
+        XCTAssertEqual(squared.bottomLeft.y, squared.bottomRight.y, accuracy: 1e-6)
+        XCTAssertEqual(squared.topLeft.x, squared.bottomLeft.x, accuracy: 1e-6)
+        XCTAssertEqual(squared.topRight.x, squared.bottomRight.x, accuracy: 1e-6)
+    }
+
+    func testManualInnerFrameWithoutAReferenceInheritsTheCardEdgeAngles() throws {
+        // A card turned about two degrees, with no detected inner frame.
+        let outer = CardCenteringQuad(
+            topLeft: .init(x: 120, y: 100), topRight: .init(x: 820, y: 124),
+            bottomRight: .init(x: 786, y: 1104), bottomLeft: .init(x: 86, y: 1080)
+        )
+        var value = CardCenteringMeasurement(imageWidth: 1000, imageHeight: 1400,
+            outerQuad: outer, innerQuad: nil, warnings: [], innerReference: .none)
+        value.setManualInnerEdge(\.left, to: value.inner.left + 40)
+
+        let inner = try XCTUnwrap(value.geometryInnerQuad)
+        func direction(_ start: CardCenteringPoint, _ end: CardCenteringPoint) -> Double {
+            atan2(end.y - start.y, end.x - start.x)
+        }
+        XCTAssertEqual(direction(inner.topLeft, inner.topRight), direction(outer.topLeft, outer.topRight), accuracy: 1e-9)
+        XCTAssertEqual(direction(inner.topRight, inner.bottomRight), direction(outer.topRight, outer.bottomRight), accuracy: 1e-9)
+        XCTAssertEqual(direction(inner.bottomLeft, inner.bottomRight), direction(outer.bottomLeft, outer.bottomRight), accuracy: 1e-9)
+        XCTAssertEqual(direction(inner.topLeft, inner.bottomLeft), direction(outer.topLeft, outer.bottomLeft), accuracy: 1e-9)
+        XCTAssertEqual(value.inner.left, 126)
+    }
+
+    /// A leaning card with its inner frame squared to the card edge.
+    private func leaningSquaredMeasurement() -> CardCenteringMeasurement {
+        let outer = CardCenteringQuad(
+            topLeft: .init(x: 110, y: 80), topRight: .init(x: 890, y: 125),
+            bottomRight: .init(x: 840, y: 1125), bottomLeft: .init(x: 140, y: 1080)
+        )
+        let inner = CardCenteringQuad(
+            topLeft: .init(x: 180, y: 160), topRight: .init(x: 815, y: 215),
+            bottomRight: .init(x: 770, y: 990), bottomLeft: .init(x: 205, y: 940)
+        )
+        var value = CardCenteringMeasurement(imageWidth: 1000, imageHeight: 1400,
+            outerQuad: outer, innerQuad: inner, warnings: [], innerReference: .printedBorder,
+            confidence: .legacyConfident)
+        value.squareInnerFrameToCardEdge()
+        return value
+    }
+
+    func testDraggingAnInnerGuideKeepsItSquareToTheCardEdge() throws {
+        var value = leaningSquaredMeasurement()
+        let before = [value.topBorderDistance, value.rightBorderDistance, value.bottomBorderDistance]
+        let line = try XCTUnwrap(value.segment(for: .init(frame: .inner, side: .left)))
+        let target = CardCenteringPoint(x: (line.start.x + line.end.x) / 2 + 9, y: (line.start.y + line.end.y) / 2)
+
+        value.moveGuide(.init(frame: .inner, side: .left), through: target)
+
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), 0, accuracy: 1e-6)
+        let rectification = try XCTUnwrap(value.rectification)
+        let rectified = rectification.rectifiedQuad(from: try XCTUnwrap(value.innerQuad))
+        XCTAssertEqual(rectified.topLeft.x, rectification.rectifiedPoint(from: target).x, accuracy: 1e-6)
+        XCTAssertEqual(rectified.bottomLeft.x, rectification.rectifiedPoint(from: target).x, accuracy: 1e-6)
+        let after = [value.topBorderDistance, value.rightBorderDistance, value.bottomBorderDistance]
+        for (moved, original) in zip(after, before) {
+            XCTAssertEqual(moved, original, accuracy: 1e-6, "only the dragged side changes")
+        }
+        XCTAssertTrue(value.hasValidFrameGeometry)
+        XCTAssertTrue(value.canReportRatios, "an edit after confirmation keeps the reading live")
+    }
+
+    func testArrowNudgesMoveAGuideOnePixel() {
+        var value = CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: .axisAligned(.init(left: 40, top: 40, right: 360, bottom: 520)),
+            innerQuad: .axisAligned(.init(left: 60, top: 62, right: 340, bottom: 500)),
+            warnings: [], innerReference: .printedBorder, confidence: .legacyConfident)
+        let right = value.rightBorderDistance, top = value.topBorderDistance
+
+        value.nudgeGuide(.init(frame: .inner, side: .left), by: 1)
+        value.nudgeGuide(.init(frame: .outer, side: .top), by: -1)
+
+        XCTAssertEqual(value.leftBorderDistance, 21, accuracy: 1e-6)
+        XCTAssertEqual(value.rightBorderDistance, right, accuracy: 1e-6)
+        XCTAssertEqual(value.topBorderDistance, top + 1, accuracy: 1e-6)
+        XCTAssertEqual(value.inner.left, 61)
+        XCTAssertEqual(value.outer.top, 39)
+    }
+
+    func testTiltingTheInnerFrameTurnsItAsOnePieceAboutTheHeldEnd() throws {
+        var value = leaningSquaredMeasurement()
+        let rectification = try XCTUnwrap(value.rectification)
+        let heldEnd = rectification.rectifiedPoint(from: try XCTUnwrap(value.innerQuad).topRight)
+
+        value.turnGuide(.init(frame: .inner, side: .right), about: .start, byDegrees: 0.25)
+
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), 0.25, accuracy: 1e-6)
+        XCTAssertTrue(value.hasReportableInnerTilt)
+        let turned = rectification.rectifiedQuad(from: try XCTUnwrap(value.innerQuad))
+        XCTAssertEqual(turned.topRight.x, heldEnd.x, accuracy: 1e-6)
+        XCTAssertEqual(turned.topRight.y, heldEnd.y, accuracy: 1e-6)
+        // A clockwise tilt widens the left border at the top and narrows it at
+        // the bottom, so the reading changes along the card.
+        let samples = try XCTUnwrap(value.positionalConsistency?.samples)
+        let top = try XCTUnwrap(samples.first?.leftRight.firstPercentage)
+        let bottom = try XCTUnwrap(samples.last?.leftRight.firstPercentage)
+        XCTAssertGreaterThan(top, bottom)
+
+        value.squareInnerFrameToCardEdge()
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), 0, accuracy: 1e-6)
+        XCTAssertFalse(value.hasReportableInnerTilt)
+    }
+
+    func testInnerTiltIsHeldWithinTheMaximum() throws {
+        var value = leaningSquaredMeasurement()
+        value.turnGuide(.init(frame: .inner, side: .top), about: .start, byDegrees: 30)
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), CardCenteringMeasurement.maximumInnerTiltDegrees, accuracy: 1e-6)
+        value.turnGuide(.init(frame: .inner, side: .top), about: .start, byDegrees: 1)
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), CardCenteringMeasurement.maximumInnerTiltDegrees, accuracy: 1e-6)
+    }
+
+    func testSwingingAnInnerEndPointsTheSideAtTheFinger() throws {
+        var value = CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: .axisAligned(.init(left: 40, top: 40, right: 360, bottom: 520)),
+            innerQuad: .axisAligned(.init(left: 60, top: 60, right: 340, bottom: 500)),
+            warnings: [], innerReference: .printedBorder, confidence: .legacyConfident)
+        // Swing the bottom of the right side 2 px left over its 440 px length.
+        value.pivotGuide(.init(frame: .inner, side: .right), movingEnd: .end, toward: .init(x: 338, y: 500))
+
+        let expected = atan2(2.0, 440.0) * 180 / .pi
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), expected, accuracy: 1e-6)
+        let quad = try XCTUnwrap(value.innerQuad)
+        XCTAssertEqual(quad.topRight.x, 340, accuracy: 1e-6)
+        XCTAssertEqual(quad.topRight.y, 60, accuracy: 1e-6)
+    }
+
+    func testTurningACardEdgeSideKeepsItsFarEndAndIsLimited() throws {
+        var value = leaningSquaredMeasurement()
+        let original = value.geometryOuterQuad
+
+        value.turnGuide(.init(frame: .outer, side: .left), about: .start, byDegrees: 1)
+
+        let turned = value.geometryOuterQuad
+        XCTAssertEqual(turned.topLeft.x, original.topLeft.x, accuracy: 1e-6)
+        XCTAssertEqual(turned.topLeft.y, original.topLeft.y, accuracy: 1e-6)
+        XCTAssertNotEqual(turned.bottomLeft.x, original.bottomLeft.x, accuracy: 1)
+        XCTAssertEqual(turned.topRight, original.topRight)
+        XCTAssertEqual(turned.bottomRight, original.bottomRight)
+        func angle(_ quad: CardCenteringQuad) -> Double {
+            atan2(quad.bottomLeft.y - quad.topLeft.y, quad.bottomLeft.x - quad.topLeft.x) * 180 / .pi
+        }
+        XCTAssertEqual(angle(turned) - angle(original), 1, accuracy: 1e-6)
+
+        value.turnGuide(.init(frame: .outer, side: .left), about: .start, byDegrees: 45)
+        XCTAssertEqual(angle(value.geometryOuterQuad) - angle(turned), CardCenteringMeasurement.maximumOuterTurnDegrees, accuracy: 1e-6)
+        XCTAssertEqual(value.rectification, CardCenteringRectification(outerQuad: value.geometryOuterQuad))
+    }
+
+    func testAddingAnInnerFrameStartsSquareInsideTheCardAndAwaitsConfirmation() throws {
+        let outer = CardCenteringQuad(
+            topLeft: .init(x: 120, y: 100), topRight: .init(x: 820, y: 124),
+            bottomRight: .init(x: 786, y: 1104), bottomLeft: .init(x: 86, y: 1080)
+        )
+        var value = CardCenteringMeasurement(imageWidth: 1000, imageHeight: 1400,
+            outerQuad: outer, innerQuad: nil, warnings: [], innerReference: .none)
+        XCTAssertNil(value.geometryInnerQuad)
+
+        value.placeDefaultInnerFrame()
+
+        XCTAssertNotNil(value.geometryInnerQuad)
+        XCTAssertTrue(value.hasValidFrameGeometry)
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), 0, accuracy: 1e-6)
+        XCTAssertEqual(value.leftBorderDistance, value.rightBorderDistance, accuracy: 1e-6)
+        XCTAssertEqual(value.confidence.state, .manualConfirmationRequired)
+        XCTAssertFalse(value.canReportRatios, "a placed frame is not a reading until confirmed")
+        XCTAssertTrue(value.confirmFrames())
+        XCTAssertTrue(value.canReportRatios)
+    }
+
+    private func lumaField(
+        size: CGSize,
+        draw: (CGContext) -> Void
+    ) throws -> CardCenteringLumaField {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let image = UIGraphicsImageRenderer(size: size, format: format).image { draw($0.cgContext) }
+        return try XCTUnwrap(CardCenteringLumaField(
+            image: try XCTUnwrap(image.cgImage),
+            measurementSize: CardCenteringSize(width: size.width, height: size.height)
+        ))
+    }
+
+    func testSnappingFindsTheNearbyEdgeAtSubpixelPrecision() throws {
+        let field = try lumaField(size: CGSize(width: 400, height: 560)) { context in
+            context.setFillColor(UIColor(white: 0.85, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 400, height: 560))
+            context.setFillColor(UIColor(white: 0.2, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 120, height: 560))
+        }
+        // A guide 10 px left of the edge; its normal points left.
+        let snap = try XCTUnwrap(CardCenteringEdgeSnapper.snap(
+            start: .init(x: 110, y: 40), end: .init(x: 110, y: 520), pivotsOnStart: false,
+            radius: 20, field: field, photoRotationDegrees: 0,
+            imageSize: .init(width: 400, height: 560)
+        ))
+        XCTAssertEqual(snap.offset, -10, accuracy: 0.5)
+        XCTAssertGreaterThan(snap.contrast, 50)
+
+        let pivot = try XCTUnwrap(CardCenteringEdgeSnapper.snap(
+            start: .init(x: 120, y: 40), end: .init(x: 112, y: 520), pivotsOnStart: true,
+            radius: 20, field: field, photoRotationDegrees: 0,
+            imageSize: .init(width: 400, height: 560)
+        ))
+        XCTAssertEqual(pivot.offset, -8, accuracy: 0.75, "the swinging end lands on the edge")
+    }
+
+    func testSnappingFollowsTheStraightenedPhoto() throws {
+        // A vertical edge through the centre appears horizontal once the photo
+        // is turned a quarter turn under the guides.
+        let field = try lumaField(size: CGSize(width: 400, height: 400)) { context in
+            context.setFillColor(UIColor(white: 0.9, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 400, height: 400))
+            context.setFillColor(UIColor(white: 0.15, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 200, height: 400))
+        }
+        let snap = try XCTUnwrap(CardCenteringEdgeSnapper.snap(
+            start: .init(x: 60, y: 212), end: .init(x: 340, y: 212), pivotsOnStart: false,
+            radius: 20, field: field, photoRotationDegrees: 90,
+            imageSize: .init(width: 400, height: 400)
+        ))
+        XCTAssertEqual(snap.offset, -12, accuracy: 0.5)
+    }
+
+    func testSnappingIgnoresTextureAndFaintEdges() throws {
+        var state: UInt32 = 12345
+        let noise = try lumaField(size: CGSize(width: 300, height: 300)) { context in
+            for y in stride(from: 0, to: 300, by: 3) {
+                for x in stride(from: 0, to: 300, by: 3) {
+                    state = state &* 1_103_515_245 &+ 12345
+                    context.setFillColor(UIColor(white: CGFloat(state >> 24) / 255, alpha: 1).cgColor)
+                    context.fill(CGRect(x: x, y: y, width: 3, height: 3))
+                }
+            }
+        }
+        XCTAssertNil(CardCenteringEdgeSnapper.snap(
+            start: .init(x: 150, y: 20), end: .init(x: 150, y: 280), pivotsOnStart: false,
+            radius: 15, field: noise, photoRotationDegrees: 0, imageSize: .init(width: 300, height: 300)
+        ))
+
+        let faint = try lumaField(size: CGSize(width: 300, height: 300)) { context in
+            context.setFillColor(UIColor(white: 0.5, alpha: 1).cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 300, height: 300))
+            context.setFillColor(UIColor(white: 0.52, alpha: 1).cgColor)
+            context.fill(CGRect(x: 150, y: 0, width: 150, height: 300))
+        }
+        XCTAssertNil(CardCenteringEdgeSnapper.snap(
+            start: .init(x: 145, y: 20), end: .init(x: 145, y: 280), pivotsOnStart: false,
+            radius: 15, field: faint, photoRotationDegrees: 0, imageSize: .init(width: 300, height: 300)
+        ))
+    }
+
+    @MainActor
+    func testHeldArrowPressesUndoInOneStep() throws {
+        let model = CardCenteringViewModel()
+        let original = CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: .axisAligned(.init(left: 40, top: 40, right: 360, bottom: 520)),
+            innerQuad: .axisAligned(.init(left: 60, top: 60, right: 340, bottom: 500)),
+            warnings: [], innerReference: .printedBorder, confidence: .legacyConfident)
+        model.measurement = original
+        let left = CardCenteringGuideSelection(guide: .init(frame: .inner, side: .left))
+
+        for _ in 0..<5 { model.nudge(left, by: 1) }
+        XCTAssertEqual(model.measurement?.inner.left, 65)
+        model.nudge(CardCenteringGuideSelection(guide: .init(frame: .inner, side: .top)), by: 1)
+
+        model.undo()
+        XCTAssertEqual(model.measurement?.inner.left, 65)
+        XCTAssertEqual(model.measurement?.inner.top, 60)
+        model.undo()
+        XCTAssertEqual(model.measurement?.inner, original.inner)
+        XCTAssertFalse(model.canUndo)
+    }
+
+    @MainActor
+    func testStepTiltingBackThroughZeroLandsSquare() throws {
+        let model = CardCenteringViewModel()
+        model.measurement = leaningSquaredMeasurement()
+        let end = CardCenteringGuideSelection(guide: .init(frame: .inner, side: .right), end: .end)
+
+        model.nudge(end, by: 1)
+        XCTAssertEqual(try XCTUnwrap(model.measurement?.innerTiltDegrees), 0.05, accuracy: 1e-6)
+        model.nudge(end, by: -1)
+        XCTAssertEqual(try XCTUnwrap(model.measurement?.innerTiltDegrees), 0, accuracy: 1e-9)
+    }
+
     func testMalformedGeometryNeverCrashesOrBecomesReportable() {
         let goodOuter = CardCenteringQuad.axisAligned(.init(left: 20, top: 20, right: 220, bottom: 316))
         let goodInner = CardCenteringQuad.axisAligned(.init(left: 30, top: 30, right: 210, bottom: 306))

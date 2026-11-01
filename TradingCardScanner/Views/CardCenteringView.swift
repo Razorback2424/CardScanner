@@ -62,6 +62,15 @@ final class CardCenteringViewModel: ObservableObject {
     @Published var rotationDegrees = 0.0
     @Published var isAnalyzing = false
     @Published var errorMessage: String?
+    /// The photo's luma, for snapping a dragged guide to an edge. Nil until it
+    /// has been built in the background, and snapping waits for it.
+    @Published private(set) var lumaField: CardCenteringLumaField?
+    @Published private(set) var canUndo = false
+
+    /// The guides as the detector placed them, for Reset Guides.
+    private var detectedMeasurement: CardCenteringMeasurement?
+    private var undoStack: [CardCenteringMeasurement] = []
+    private var lastUndoKey: (key: String, time: Date)?
 
     private var hasLoadedSource = false
     private var loadGeneration = 0
@@ -83,7 +92,10 @@ final class CardCenteringViewModel: ObservableObject {
             innerQuad: state == "missing" ? nil : .axisAligned(.init(left: 64, top: 60, right: 296, bottom: 444)),
             warnings: [], innerReference: state == "missing" ? .none : .printedBorder,
             confidence: .manualConfirmationRequired(preserving: analysis.confidence, reason: "Review frames"))
-        if state == "confirmed" || state == "rotated" || state == "zoom" { fixture.confirmFrames() }
+        if state == "confirmed" || state == "rotated" || state == "zoom" || state == "tilted" { fixture.confirmFrames() }
+        if state == "tilted" {
+            fixture.turnGuide(.init(frame: .inner, side: .right), about: .start, byDegrees: 0.25)
+        }
         if state == "invalid" { fixture.setManualInnerEdge(\.left, to: 20) }
         if state == "rotated" || state == "zoom" { rotationDegrees = 7 }
         measurement = fixture
@@ -212,6 +224,9 @@ final class CardCenteringViewModel: ObservableObject {
         analysisGeneration &+= 1
         imageRevision &+= 1
         measurement = nil
+        detectedMeasurement = nil
+        lumaField = nil
+        clearUndo()
         isAnalyzing = true
         errorMessage = nil
         rotationDegrees = 0
@@ -273,6 +288,96 @@ final class CardCenteringViewModel: ObservableObject {
     func confirmFrames() {
         guard var measurement, measurement.confirmFrames() else { return }
         self.measurement = measurement
+    }
+
+    var canResetGuides: Bool {
+        detectedMeasurement != nil && detectedMeasurement != measurement
+    }
+
+    /// Saves the current guides before an edit. Repeated presses of the same
+    /// arrow within a moment share one undo step, so holding an arrow down
+    /// undoes in one go.
+    func recordUndoPoint(coalescing key: String? = nil) {
+        guard let measurement else { return }
+        let now = Date()
+        defer { lastUndoKey = key.map { ($0, now) } }
+        if let key, let lastUndoKey, lastUndoKey.key == key, now.timeIntervalSince(lastUndoKey.time) < 1.2 {
+            return
+        }
+        undoStack.append(measurement)
+        if undoStack.count > 50 { undoStack.removeFirst() }
+        canUndo = true
+    }
+
+    func undo() {
+        guard let previous = undoStack.popLast() else { return }
+        measurement = previous
+        lastUndoKey = nil
+        canUndo = !undoStack.isEmpty
+    }
+
+    private func clearUndo() {
+        undoStack = []
+        lastUndoKey = nil
+        canUndo = false
+    }
+
+    /// Takes the guides a drag produced.
+    func applyGuideEdit(_ edited: CardCenteringMeasurement) {
+        var edited = edited
+        edited.refreshWarnings()
+        measurement = edited
+    }
+
+    /// One arrow press: 1 px for a slide, 0.05° for a turn.
+    func nudge(_ selection: CardCenteringGuideSelection, by steps: Double) {
+        guard var measurement, steps.isFinite else { return }
+        if let end = selection.end {
+            recordUndoPoint(coalescing: "turn \(selection.guide) \(end)")
+            measurement.turnGuide(selection.guide, about: end.opposite, byDegrees: steps * 0.05)
+            // Stepping back through zero lands exactly square.
+            if selection.guide.frame == .inner,
+               abs(measurement.innerTiltDegrees ?? 0) < CardCenteringMeasurement.innerTiltDetentDegrees / 2 {
+                measurement.squareInnerFrameToCardEdge()
+            }
+        } else {
+            recordUndoPoint(coalescing: "nudge \(selection.guide)")
+            measurement.nudgeGuide(selection.guide, by: steps)
+        }
+        applyGuideEdit(measurement)
+    }
+
+    func squareInnerFrame() {
+        guard var measurement else { return }
+        recordUndoPoint()
+        measurement.squareInnerFrameToCardEdge()
+        applyGuideEdit(measurement)
+    }
+
+    func addInnerFrame() {
+        guard var measurement else { return }
+        recordUndoPoint()
+        measurement.placeDefaultInnerFrame()
+        applyGuideEdit(measurement)
+    }
+
+    func resetGuides() {
+        guard let detectedMeasurement, canResetGuides else { return }
+        recordUndoPoint()
+        measurement = detectedMeasurement
+    }
+
+    private func buildLumaField(for image: UIImage, measurement: CardCenteringMeasurement, revision: Int) {
+        lumaField = nil
+        guard let cgImage = image.cgImage else { return }
+        let size = CardCenteringSize(width: Double(measurement.imageWidth), height: Double(measurement.imageHeight))
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            let field = CardCenteringLumaField(image: cgImage, measurementSize: size)
+            DispatchQueue.main.async {
+                guard let self, self.imageRevision == revision else { return }
+                self.lumaField = field
+            }
+        }
     }
 
 #if DEBUG
@@ -405,6 +510,11 @@ final class CardCenteringViewModel: ObservableObject {
                         detectedSkewDegrees: analysis.detectedSkewDegrees
                     )
 #endif
+                    self.detectedMeasurement = self.measurement
+                    self.clearUndo()
+                    if let measurement = self.measurement {
+                        self.buildLumaField(for: analysis.image, measurement: measurement, revision: self.imageRevision)
+                    }
                 case let .failure(error):
                     self.errorMessage = error.localizedDescription
 #if DEBUG
@@ -444,11 +554,12 @@ struct CardCenteringView: View {
 private struct GuidedCardCenteringView: View {
     @StateObject private var model = CardCenteringViewModel()
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @FocusState private var focusedEdgeField: EdgeField?
-    @State private var zoom: CGFloat = 1
-    @State private var lastZoom: CGFloat = 1
-    @State private var panOffset: CGSize = .zero
-    @State private var lastPanOffset: CGSize = .zero
+    @State private var selection: CardCenteringGuideSelection?
+    @State private var isStraightening = false
+    @State private var isShowingExactValues = false
+    @State private var bottomPanelHeight: CGFloat = 0
     @State private var isShowingCamera = false
     @State private var isShowingSettings = false
     @State private var isShowingFileImporter = false
@@ -456,6 +567,9 @@ private struct GuidedCardCenteringView: View {
         || ProcessInfo.processInfo.arguments.contains("CenteringOuterControls")
     @State private var isInnerExpanded = ProcessInfo.processInfo.arguments.contains("CenteringExpanded")
         || ProcessInfo.processInfo.arguments.contains("CenteringInnerControls")
+#if DEBUG
+    @State private var debugPanelRoute: String?
+#endif
     /// The rendered export, prepared ahead of the tap so `ShareLink` can own the
     /// presentation. `ShareLink` anchors itself correctly as a popover in wide
     /// windows and as a sheet in narrow ones, which a hand-rolled
@@ -483,60 +597,31 @@ private struct GuidedCardCenteringView: View {
         Group {
             if let image = model.image, let measurement = model.measurement {
                 VStack(spacing: 0) {
-                    GeometryReader { proxy in
-                        imageReview(image, measurement: measurement)
-                            .frame(width: proxy.size.width, height: proxy.size.height)
-                    }
-                    .frame(height: dynamicTypeSize.isAccessibilitySize ? 180 : 300)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-
+                    ratioStrip(measurement)
                     Divider()
-
-                    ScrollViewReader { reader in
-                        ScrollView {
-                            VStack(spacing: 18) {
-                                resultSummary(measurement)
-                                Text("Guided estimate only. Not professional grading or a predicted grade.")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                                rotationControls
-                                    .id("rotation-controls")
-                                guideControls(measurement)
-                                    .id("guide-controls")
-
-                                if let errorMessage = model.errorMessage {
-                                    Text(errorMessage)
-                                        .font(.footnote)
-                                        .foregroundStyle(.red)
-                                }
-                            }
-                            .padding(16)
-                            .padding(.bottom, 16)
-                            .contentWidthLimit(.standard)
-                        }
-                        .scrollIndicators(.visible)
-                        .safeAreaPadding(.bottom, 80)
+                    ZStack(alignment: .bottom) {
+                        CardCenteringCanvas(
+                            image: image,
+                            measurement: measurement,
+                            rotationDegrees: model.rotationDegrees,
+                            imageRevision: model.imageRevision,
+                            lumaField: model.lumaField,
+                            selection: $selection,
+                            onBeginEdit: { model.recordUndoPoint() },
+                            onEdit: { model.applyGuideEdit($0) },
+                            onAccessibilityNudge: { amount in
+                                if let selection { model.nudge(selection, by: amount) }
+                            },
+                            initialZoomMultiplier: initialZoomMultiplier,
+                            bottomInset: bottomPanelHeight,
+                            onFrameChange: { frame in
 #if DEBUG
-                        .onAppear {
-                            let arguments = ProcessInfo.processInfo.arguments
-                            guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
-                                  arguments.indices.contains(routeIndex + 1) else { return }
-                            let target: String
-                            switch arguments[routeIndex + 1] {
-                            case "CenteringExpanded": target = "guide-controls"
-                            case "CenteringRotation": target = "rotation-controls"
-                            case "CenteringOuterControls": target = "outer-guides"
-                            case "CenteringInnerControls": target = "inner-guides"
-                            default: return
-                            }
-                            DispatchQueue.main.async {
-                                withAnimation(nil) {
-                                    reader.scrollTo(target, anchor: .top)
-                                }
-                            }
-                        }
+                                model.recordDebugImageFrame(frame)
 #endif
+                            }
+                        )
+                        bottomPanel(measurement)
+                            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomPanelHeight = $0 }
                     }
                 }
             } else {
@@ -578,13 +663,6 @@ private struct GuidedCardCenteringView: View {
         .navigationTitle("Centering")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    focusedEdgeField = nil
-                }
-            }
-
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Settings", systemImage: "gearshape") {
                     isShowingSettings = true
@@ -625,18 +703,10 @@ private struct GuidedCardCenteringView: View {
             }
         }
         .onChange(of: model.imageRevision) {
-            zoom = 1
-            lastZoom = 1
-            panOffset = .zero
-            lastPanOffset = .zero
+            selection = nil
+            isStraightening = false
 #if DEBUG
-            let args = ProcessInfo.processInfo.arguments
-            if let index = args.firstIndex(of: "-ui_debug_state"), args.indices.contains(index + 1), args[index + 1] == "zoom" {
-                zoom = 2
-                lastZoom = 2
-                panOffset = CGSize(width: 12, height: 9)
-                lastPanOffset = panOffset
-            }
+            applyDebugPanelRoute()
 #endif
         }
         .onChange(of: model.selectedPhoto) {
@@ -655,7 +725,9 @@ private struct GuidedCardCenteringView: View {
                   arguments.indices.contains(routeIndex + 1) else { return }
             let route = arguments[routeIndex + 1]
             guard route.hasPrefix("Centering") else { return }
+            debugPanelRoute = route
             model.loadDebugFixtureIfNeeded()
+            applyDebugPanelRoute()
         }
 #endif
         .overlay {
@@ -675,10 +747,10 @@ private struct GuidedCardCenteringView: View {
                 rotationDegrees: model.rotationDegrees
             )
         ) {
-            // Guide steppers can emit a burst of values while a control is
-            // held. Coalesce that burst, and key the task by every input
-            // that changes the pixels so a rotation or a new image cannot
-            // leave the previous export attached to ShareLink.
+            // A guide drag emits a burst of values. Coalesce that burst, and
+            // key the task by every input that changes the pixels so a
+            // rotation or a new image cannot leave the previous export
+            // attached to ShareLink.
             exportURL = nil
             model.retireExportFile()
             guard let snapshot = model.exportSnapshot() else { return }
@@ -706,6 +778,9 @@ private struct GuidedCardCenteringView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $isShowingExactValues) {
+            exactValuesSheet
+        }
         .fullScreenCover(isPresented: $isShowingCamera) {
             CenteringCameraView { data in
                 model.loadCapturedPhoto(data)
@@ -724,213 +799,401 @@ private struct GuidedCardCenteringView: View {
         }
     }
 
+    private var initialZoomMultiplier: CGFloat {
+#if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1),
+           arguments[index + 1] == "zoom" {
+            return 2
+        }
+#endif
+        return 1
+    }
+
+#if DEBUG
+    /// The screenshot routes that once scrolled to a control now open the
+    /// panel that holds it, once the fixture has been measured.
+    private func applyDebugPanelRoute() {
+        guard model.measurement != nil, let route = debugPanelRoute else { return }
+        switch route {
+        case "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls":
+            isShowingExactValues = true
+        case "CenteringRotation":
+            isStraightening = true
+        default:
+            break
+        }
+        // `-ui_debug_selection inner.right.end` picks up a guide, by an end
+        // when one is named, so the selected controls can be captured.
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_selection"), arguments.indices.contains(index + 1) {
+            let parts = arguments[index + 1].split(separator: ".").map(String.init)
+            if parts.count >= 2, let side = CardCenteringSide(rawValue: parts[1]) {
+                selection = CardCenteringGuideSelection(
+                    guide: .init(frame: parts[0] == "outer" ? .outer : .inner, side: side),
+                    end: parts.count > 2 ? (parts[2] == "start" ? .start : .end) : nil
+                )
+            }
+        }
+    }
+#endif
+
     private func photoButton(_ title: String) -> some View {
         PhotosPicker(selection: $model.selectedPhoto, matching: .images) {
             Label(title, systemImage: "photo.on.rectangle")
         }
     }
 
-    private func imageReview(_ image: UIImage, measurement: CardCenteringMeasurement) -> some View {
-        CardCenteringImage(
-            image: image,
-            measurement: measurement,
-            rotationDegrees: model.rotationDegrees,
-            onFrameChange: { frame in
-#if DEBUG
-                model.recordDebugImageFrame(frame)
-#endif
-            }
-        )
-            .scaleEffect(zoom)
-            .offset(panOffset)
-            .frame(maxWidth: .infinity)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .contentShape(Rectangle())
-            .gesture(
-                MagnifyGesture()
-                    .onChanged { value in
-                        zoom = min(6, max(1, lastZoom * value.magnification))
-                    }
-                    .onEnded { _ in
-                        lastZoom = zoom
-                        if zoom == 1 { panOffset = .zero; lastPanOffset = .zero }
-                    }
+    // MARK: Reading
+
+    private func ratioStrip(_ measurement: CardCenteringMeasurement) -> some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: 8))
+            : AnyLayout(HStackLayout(spacing: 12))
+        return layout {
+            CenteringMetric(
+                title: "Left / Right",
+                value: measurement.leftRightCentering,
+                detail: ratioDetail(measurement, horizontal: true)
             )
-            .simultaneousGesture(
-                DragGesture()
-                    .onChanged { value in
-                        guard zoom > 1 else { return }
-                        panOffset = CGSize(
-                            width: lastPanOffset.width + value.translation.width,
-                            height: lastPanOffset.height + value.translation.height
-                        )
-                    }
-                    .onEnded { _ in
-                        if zoom > 1 {
-                            lastPanOffset = panOffset
-                        } else {
-                            panOffset = .zero
-                            lastPanOffset = .zero
-                        }
-                    }
+            CenteringMetric(
+                title: "Top / Bottom",
+                value: measurement.topBottomCentering,
+                detail: ratioDetail(measurement, horizontal: false)
             )
-            .onTapGesture(count: 2) {
-                withAnimation(.snappy) {
-                    zoom = zoom > 1 ? 1 : 2
-                    lastZoom = zoom
-                    if zoom == 1 {
-                        panOffset = .zero
-                        lastPanOffset = .zero
-                    }
-                }
-            }
-            .accessibilityLabel(
-                measurement.geometryInnerQuad == nil
-                    ? "Card image with outer red guides; inner guide unavailable"
-                    : measurement.requiresManualFrameConfirmation
-                        ? "Card image with unconfirmed red outer and cyan inner guides"
-                        : "Card image with outer red guides and inner cyan guides"
-            )
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.leftRightCentering)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.topBottomCentering)
     }
 
-    private func resultSummary(_ measurement: CardCenteringMeasurement) -> some View {
-        VStack(spacing: 14) {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(spacing: 12) {
-                    CenteringMetric(title: "Left / Right", value: measurement.leftRightCentering)
-                    CenteringMetric(title: "Top / Bottom", value: measurement.topBottomCentering)
-                }
+    /// Border widths, or how the ratio changes along the card when the print
+    /// is tilted.
+    private func ratioDetail(_ measurement: CardCenteringMeasurement, horizontal: Bool) -> String {
+        guard measurement.canReportRatios else { return "Confirm frames to read" }
+        if measurement.hasReportableInnerTilt,
+           let samples = measurement.positionalConsistency?.samples,
+           let first = samples.first, let last = samples.last {
+            func ratio(_ pair: CardCenteringRatioPair) -> String {
+                String(format: "%.0f/%.0f", pair.firstPercentage, pair.secondPercentage)
+            }
+            return horizontal
+                ? "\(ratio(first.leftRight)) top → \(ratio(last.leftRight)) bottom"
+                : "\(ratio(first.topBottom)) left → \(ratio(last.topBottom)) right"
+        }
+        return horizontal
+            ? "\(measurement.leftBorder) · \(measurement.rightBorder) px"
+            : "\(measurement.topBorder) · \(measurement.bottomBorder) px"
+    }
+
+    // MARK: Controls
+
+    private func bottomPanel(_ measurement: CardCenteringMeasurement) -> some View {
+        VStack(spacing: 8) {
+            if isStraightening {
+                straightenControls
+            } else if let selection, measurement.segment(for: selection.guide) != nil {
+                selectedGuideControls(selection, measurement: measurement)
             } else {
-                HStack(spacing: 12) {
-                    CenteringMetric(title: "Left / Right", value: measurement.leftRightCentering)
-                    CenteringMetric(title: "Top / Bottom", value: measurement.topBottomCentering)
-                }
+                standardControls(measurement)
             }
 
-            HStack {
-                borderValue("L", measurement.leftBorder, declined: measurement.isDeclined)
-                borderValue("R", measurement.rightBorder, declined: measurement.isDeclined)
-                borderValue("T", measurement.topBorder, declined: measurement.isDeclined)
-                borderValue("B", measurement.bottomBorder, declined: measurement.isDeclined)
-            }
-
-            if measurement.isDeclined {
-                VStack(alignment: .leading, spacing: 6) {
-                    Label(measurement.hasValidFrameGeometry ? "Review frames" : "Reading unavailable",
-                          systemImage: "rectangle.dashed")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Text(measurement.hasValidFrameGeometry
-                         ? "Check the red card edge and cyan inner frame before reading centering."
-                         : "Adjust the guides to place the inner frame inside the card edges.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    Text("Use the guide controls below, then confirm both frames.")
-                        .font(.footnote.weight(.medium))
-                }
+            Text("Guided estimate only. Not professional grading or a predicted grade.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            }
 
-            if !measurement.warnings.isEmpty && measurement.canReportRatios {
-                Label(measurement.warnings.joined(separator: " "), systemImage: "exclamationmark.triangle.fill")
+            if let errorMessage = model.errorMessage {
+                Text(errorMessage)
                     .font(.footnote)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.red)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
+        .padding(.bottom, 8)
+        .contentWidthLimit(.standard)
+        .frame(maxWidth: .infinity)
+        .background(.regularMaterial)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: selection)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: isStraightening)
+    }
 
-            Divider()
-
-            if let exportURL, measurement.canReportRatios {
-                ShareLink(item: exportURL) {
-                    Label("Export Image", systemImage: "square.and.arrow.up")
+    private func standardControls(_ measurement: CardCenteringMeasurement) -> some View {
+        VStack(spacing: 8) {
+            if measurement.hasReportableInnerTilt, let tilt = measurement.innerTiltDegrees {
+                tiltRow(tilt)
+            }
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(guidance(for: measurement))
+                        .font(.subheadline)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if !measurement.warnings.isEmpty && measurement.canReportRatios {
+                        Label(measurement.warnings.joined(separator: " "), systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .frame(maxWidth: .infinity)
-            } else {
-                // Keep the export row in the layout while a guide edit is
-                // preparing the next file. Removing it briefly changes the
-                // ScrollView's content height and makes the steppers move
-                // under a rapid series of taps.
-                Button("Export Image", systemImage: "square.and.arrow.up") {}
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                if measurement.geometryInnerQuad == nil {
+                    Button("Add Frame", systemImage: "plus") {
+                        model.addInnerFrame()
+                    }
                     .buttonStyle(.borderedProminent)
-                    .frame(maxWidth: .infinity)
-                    .disabled(true)
+                    .buttonBorderShape(.capsule)
+                    .accessibilityLabel("Add an inner frame")
+                } else if !measurement.canReportRatios {
+                    Button("Confirm", systemImage: "checkmark") {
+                        model.confirmFrames()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .disabled(!measurement.hasValidFrameGeometry)
+                    .accessibilityLabel("Confirm frames")
+                    .accessibilityHint("Accepts the reviewed outer card edges and inner reference together.")
+                }
+
+                moreMenu(measurement)
             }
         }
-        .padding(14)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private func borderValue(_ label: String, _ value: Int, declined: Bool) -> some View {
-        VStack(spacing: 2) {
-            Text(label).font(.caption).foregroundStyle(.secondary)
-            Text(declined ? "—" : "\(value) px")
-                .font(.subheadline.monospacedDigit())
+    /// The print's tilt against the card edge, kept clear of the photo so it
+    /// never covers an edge being lined up.
+    private func tiltRow(_ tilt: Double) -> some View {
+        HStack(spacing: 10) {
+            Label {
+                Text("Print tilted \(abs(tilt), specifier: "%.2f")° \(tilt > 0 ? "clockwise" : "counterclockwise")")
+                    .monospacedDigit()
+            } icon: {
+                Image(systemName: tilt > 0 ? "rotate.right" : "rotate.left")
+            }
+            .font(.subheadline.weight(.semibold))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Button("Square", systemImage: "square.dashed") {
+                model.squareInnerFrame()
+            }
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.capsule)
+            .accessibilityLabel("Square the inner frame to the card edge")
         }
-        .frame(maxWidth: .infinity)
     }
 
-    private var rotationControls: some View {
-        VStack(alignment: .leading, spacing: 12) {
+    private func guidance(for measurement: CardCenteringMeasurement) -> String {
+        if measurement.geometryInnerQuad == nil {
+            return "No inner frame found. Add one to begin."
+        }
+        if !measurement.hasValidFrameGeometry {
+            return "Keep each cyan line inside the red edge."
+        }
+        if !measurement.canReportRatios {
+            return "Check both frames, then confirm."
+        }
+        return model.lumaField == nil
+            ? "Drag any line to adjust it."
+            : "Drag any line. It snaps to edges."
+    }
+
+    private func moreMenu(_ measurement: CardCenteringMeasurement) -> some View {
+        Menu {
+            Button("Undo", systemImage: "arrow.uturn.backward") {
+                model.undo()
+            }
+            .disabled(!model.canUndo)
+            if measurement.hasReportableInnerTilt {
+                Button("Square Inner Frame", systemImage: "square") {
+                    model.squareInnerFrame()
+                }
+            }
+            Button("Straighten Photo", systemImage: "rotate.right") {
+                selection = nil
+                isStraightening = true
+            }
+            Button("Exact Values…", systemImage: "slider.horizontal.3") {
+                isShowingExactValues = true
+            }
+            Divider()
+            Button("Reset Guides", systemImage: "arrow.counterclockwise", role: .destructive) {
+                selection = nil
+                model.resetGuides()
+            }
+            .disabled(!model.canResetGuides)
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.body.weight(.semibold))
+                .frame(width: 44, height: 44)
+                .background(Color(.tertiarySystemFill), in: Circle())
+        }
+        .menuOrder(.fixed)
+        .accessibilityLabel("More options")
+    }
+
+    private func selectedGuideControls(
+        _ selection: CardCenteringGuideSelection,
+        measurement: CardCenteringMeasurement
+    ) -> some View {
+        let guide = selection.guide
+        let frameName = guide.frame == .outer ? "Card edge" : "Inner frame"
+        let side = guide.side.rawValue
+        let isTurning = selection.end != nil
+        let caption: String
+        let value: String
+        let hint: String
+        let decrease: (symbol: String, label: String)
+        let increase: (symbol: String, label: String)
+        if isTurning {
+            decrease = ("rotate.left", "Turn 0.05 degrees counterclockwise")
+            increase = ("rotate.right", "Turn 0.05 degrees clockwise")
+            if guide.frame == .inner {
+                caption = "Inner frame · print tilt"
+                let tilt = measurement.innerTiltDegrees ?? 0
+                value = measurement.hasReportableInnerTilt
+                    ? String(format: "%.2f° %@", abs(tilt), tilt > 0 ? "clockwise" : "counterclockwise")
+                    : "Square"
+                hint = "The arrows tilt 0.05°. Ease back toward square and it snaps."
+            } else {
+                caption = "Card edge · \(side) side angle"
+                value = borderValue(guide.side, measurement)
+                hint = "The far end stays put. The arrows turn this side 0.05°."
+            }
+        } else {
+            caption = "\(frameName) · \(side) border"
+            value = borderValue(guide.side, measurement)
+            decrease = guide.side.isVertical ? ("chevron.left", "Move 1 pixel left") : ("chevron.up", "Move 1 pixel up")
+            increase = guide.side.isVertical ? ("chevron.right", "Move 1 pixel right") : ("chevron.down", "Move 1 pixel down")
+            hint = guide.frame == .inner
+                ? "Drag an end grip to tilt the frame. The arrows move 1 px."
+                : "Drag an end grip to turn this side. The arrows move 1 px."
+        }
+
+        return VStack(spacing: 6) {
+            HStack(spacing: 10) {
+                nudgeButton(decrease.symbol, label: decrease.label) {
+                    model.nudge(selection, by: -1)
+                }
+                VStack(spacing: 1) {
+                    Text(caption)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Text(value)
+                        .font(.headline.monospacedDigit())
+                        .contentTransition(.numericText())
+                }
+                .frame(maxWidth: .infinity)
+                .accessibilityElement(children: .combine)
+                nudgeButton(increase.symbol, label: increase.label) {
+                    model.nudge(selection, by: 1)
+                }
+                Button("Done") {
+                    self.selection = nil
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+            }
+            Text(hint)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+        }
+    }
+
+    /// The selected side's border, once the frames are confirmed: before
+    /// that no measurement is presented as a reading.
+    private func borderValue(_ side: CardCenteringSide, _ measurement: CardCenteringMeasurement) -> String {
+        guard measurement.canReportRatios else { return "Not confirmed" }
+        return "\(Int(measurement.borderDistance(side).rounded())) px"
+    }
+
+    private var straightenControls: some View {
+        VStack(spacing: 8) {
             HStack {
-                Text("Rotation").font(.headline)
+                Text("Straighten Photo").font(.headline)
                 Spacer()
                 Text("\(model.rotationDegrees, specifier: "%.2f")°")
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
+                    .contentTransition(.numericText())
             }
-
-            ViewThatFits(in: .horizontal) {
-                rotationButtons
-                VStack(spacing: 8) {
-                    HStack { rotationButton("−1", -1); rotationButton("+1", 1) }
-                    HStack { rotationButton("−0.1", -0.1); rotationButton("+0.1", 0.1) }
-                    HStack { rotationButton("−0.01", -0.01); rotationButton("+0.01", 0.01) }
+            HStack(spacing: 10) {
+                nudgeButton("rotate.left", label: "Rotate the photo 0.1 degrees counterclockwise") {
+                    model.adjustRotation(by: -0.1)
+                }
+                Slider(
+                    value: Binding(
+                        get: { model.rotationDegrees },
+                        set: { model.adjustRotation(by: $0 - model.rotationDegrees) }
+                    ),
+                    in: -15...15
+                ) {
+                    Text("Photo rotation")
+                }
+                nudgeButton("rotate.right", label: "Rotate the photo 0.1 degrees clockwise") {
+                    model.adjustRotation(by: 0.1)
                 }
             }
-
             HStack {
                 Button("Reset") { model.resetRotation() }
                     .disabled(model.rotationDegrees == 0)
                 Spacer()
-                Text("Rotates photo only")
-                    .font(.footnote)
+                Text("Turns the photo under the lines")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
+                Spacer()
+                Button("Done") { isStraightening = false }
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
             }
         }
-        .padding(14)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private var rotationButtons: some View {
-        HStack(spacing: 8) {
-            rotationButton("−1", -1)
-            rotationButton("−0.1", -0.1)
-            rotationButton("−0.01", -0.01)
-            rotationButton("+0.01", 0.01)
-            rotationButton("+0.1", 0.1)
-            rotationButton("+1", 1)
+    private func nudgeButton(_ systemImage: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.body.weight(.semibold))
+                .frame(width: 44, height: 44)
+                .background(Color(.tertiarySystemFill), in: Circle())
         }
+        .buttonStyle(.plain)
+        .foregroundStyle(.tint)
+        .buttonRepeatBehavior(.enabled)
+        .accessibilityLabel(label)
     }
 
-    private func rotationButton(_ title: String, _ amount: Double) -> some View {
-        Button {
-            model.adjustRotation(by: amount)
-        } label: {
-            Text(title).fixedSize(horizontal: true, vertical: false)
+    private var exactValuesSheet: some View {
+        NavigationStack {
+            ScrollView {
+                if let measurement = model.measurement {
+                    guideControls(measurement)
+                        .padding(16)
+                }
+            }
+            .navigationTitle("Exact Values")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { isShowingExactValues = false }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        focusedEdgeField = nil
+                    }
+                }
+            }
         }
-            .buttonStyle(.bordered)
-            .font(.caption.monospacedDigit())
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .accessibilityLabel("Rotate by \(amount) degrees")
+        .presentationDetents([.medium, .large])
+        .presentationBackgroundInteraction(.enabled(upThrough: .medium))
     }
-
     private func guideControls(_ measurement: CardCenteringMeasurement) -> some View {
         VStack(spacing: 14) {
-            Text("Adjust Guides")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
             Text(
                 measurement.geometryInnerQuad == nil
                     ? "Red marks the card edge. Adjust the inner frame manually."
@@ -1047,13 +1310,24 @@ private struct GuidedCardCenteringView: View {
 private struct CenteringMetric: View {
     let title: String
     let value: String
+    var detail: String?
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 2) {
             Text(title).font(.caption).foregroundStyle(.secondary)
-            Text(value).font(.title3.bold().monospacedDigit())
+            Text(value)
+                .font(.title3.bold().monospacedDigit())
+                .contentTransition(.numericText())
+            if let detail {
+                Text(detail)
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 }
 
