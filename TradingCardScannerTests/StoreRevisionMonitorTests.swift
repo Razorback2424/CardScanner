@@ -6,6 +6,60 @@ import XCTest
 
 @MainActor
 final class StoreRevisionMonitorTests: XCTestCase {
+    func testNestedBulkCompletionBypassesDebounceAndOrdinaryBurstsStillCoalesce() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let projection = CollectionProjectionStore()
+        let revision = StoreRevisionStore()
+        let writes = DerivedStateWriteCoordinator()
+        let debounce = MonitorDebounceGate()
+        defer { Task { await debounce.release() } }
+        writes.beginBulkWrite()
+        writes.beginBulkWrite()
+        let signal = PriceRefreshCompletionSignal(), refresh = PriceRefreshController()
+        refresh.registerCompletionSignal(signal)
+        let window = host(container: container, refresh: refresh, signal: signal,
+            writes: writes, scene: MonitorScene(), projection: projection,
+            revision: revision, debounce: { await debounce.wait() })
+        defer { window.isHidden = true; window.rootViewController = nil }
+        writes.endBulkWrite()
+        XCTAssertEqual(writes.generation, 0)
+        XCTAssertTrue(writes.isBulkWriteInFlight)
+        XCTAssertNil(projection.snapshot)
+        writes.endBulkWrite()
+        for _ in 0..<80 where projection.snapshot == nil {
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        let bulkWaits = await debounce.count
+        XCTAssertNotNil(projection.snapshot,
+            "Completed bulk state publishes while ordinary debounce remains blocked")
+        // Allow the initial apply to settle before sending ordinary notifications.
+        try await Task.sleep(for: .milliseconds(100))
+        let settledRevision = revision.revision
+        XCTAssertEqual(projection.revision, 1, "The completed bulk interval publishes one settled projection")
+        let price = PriceRecord(key: "debounce-fixture#normal", game: .lorcana,
+            printingID: "debounce-fixture", variantID: PhysicalVariant.normal.id)
+        container.mainContext.insert(price)
+        for value in 1...5 {
+            price.unitMarketPriceUSD = Double(value)
+            try container.mainContext.save()
+            NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        }
+        for _ in 0..<80 {
+            if await debounce.count > bulkWaits { break }
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        let ordinaryWaits = await debounce.count
+        XCTAssertGreaterThan(ordinaryWaits, bulkWaits)
+        XCTAssertEqual(revision.revision, settledRevision, "Ordinary changes wait for debounce")
+        await debounce.release()
+        for _ in 0..<80 where revision.revision == settledRevision {
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(revision.revision, settledRevision + 1, "Save and remote bursts publish one settled revision")
+    }
+
     func testFirstObservationReconcilesSameCountOwnershipChanges() async throws {
         for replacement in [false, true] {
             let container = try ModelContainer(for: CollectionStorageModelSchema.full,
@@ -48,6 +102,58 @@ final class StoreRevisionMonitorTests: XCTestCase {
         }
     }
 
+    func testBulkStartingDuringDebounceDefersUntilItsCompletion() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let projection = CollectionProjectionStore()
+        let writes = DerivedStateWriteCoordinator(), debounce = MonitorDebounceGate()
+        defer { Task { await debounce.release() } }
+        let signal = PriceRefreshCompletionSignal(), refresh = PriceRefreshController()
+        let window = host(container: container, refresh: refresh, signal: signal,
+            writes: writes, scene: MonitorScene(), projection: projection,
+            debounce: { await debounce.wait() })
+        defer { window.isHidden = true; window.rootViewController = nil }
+        for _ in 0..<80 {
+            if await debounce.count > 0 { break }
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        let before = await debounce.count
+        XCTAssertGreaterThan(before, 0)
+        writes.beginBulkWrite()
+        await debounce.releaseCurrent()
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertNil(projection.snapshot, "A newly active bulk interval prevents publication")
+        writes.endBulkWrite()
+        for _ in 0..<80 where projection.snapshot == nil {
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        XCTAssertNotNil(projection.snapshot,
+            "The completed interval publishes without releasing another debounce wait")
+    }
+
+    func testCancelledDebounceCannotPublish() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let projection = CollectionProjectionStore(), debounce = MonitorDebounceGate()
+        defer { Task { await debounce.release() } }
+        let window = host(container: container, refresh: PriceRefreshController(),
+            signal: PriceRefreshCompletionSignal(), writes: DerivedStateWriteCoordinator(),
+            scene: MonitorScene(), projection: projection,
+            debounce: { await debounce.wait() })
+        for _ in 0..<80 {
+            if await debounce.count > 0 { break }
+            try await Task.sleep(for: .milliseconds(25))
+        }
+        let count = await debounce.count
+        XCTAssertGreaterThan(count, 0)
+        window.isHidden = true
+        window.rootViewController = nil
+        try await Task.sleep(for: .milliseconds(50))
+        await debounce.release()
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertNil(projection.snapshot, "A cancelled observation cannot publish after its wait resumes")
+    }
+
     func testFirstObservationReconcilesACollectionSavedAfterLaunchProjection() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -74,6 +180,7 @@ final class StoreRevisionMonitorTests: XCTestCase {
     }
 
     func testOwnershipEditReplaysBeforeAnActivePriceRefreshFinishes() async throws {
+        for usesBulkInterval in [false, true] {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
         let context = container.mainContext
@@ -113,8 +220,9 @@ final class StoreRevisionMonitorTests: XCTestCase {
         let signal = PriceRefreshCompletionSignal()
         refresh.registerCompletionSignal(signal)
         portfolio.start(context: context)
+        let writes = DerivedStateWriteCoordinator()
         let window = host(container: container, refresh: refresh, signal: signal,
-                          writes: DerivedStateWriteCoordinator(), scene: MonitorScene(), portfolio: portfolio)
+                          writes: writes, scene: MonitorScene(), portfolio: portfolio)
         defer { window.isHidden = true; window.rootViewController = nil }
         for _ in 0..<100 where signal.generation == 0 || portfolio.isRecomputing {
             try await Task.sleep(for: .milliseconds(50))
@@ -134,6 +242,10 @@ final class StoreRevisionMonitorTests: XCTestCase {
         }
         let started = await gate.started
         XCTAssertTrue(started)
+        if usesBulkInterval {
+            writes.beginBulkWrite()
+            writes.beginBulkWrite()
+        }
         card.quantity += 1
         let editOperationID = UUID()
         context.insert(InventoryEvent(operationID: editOperationID, leg: nil, kind: .acquire, source: .catalog,
@@ -142,6 +254,13 @@ final class StoreRevisionMonitorTests: XCTestCase {
         context.insert(CollectionActivity(card: card, source: .catalog, quantity: 1,
                                           ledgerOperationIDs: [editOperationID]))
         try context.save()
+        if usesBulkInterval {
+            writes.endBulkWrite()
+            try await Task.sleep(for: .milliseconds(350))
+            XCTAssertEqual(portfolio.holdings.first?.quantity, 1,
+                "A new nested bulk interval must withhold ownership replay during the active refresh")
+            writes.endBulkWrite()
+        }
         for _ in 0..<100 {
             if await computations.value > before && !portfolio.isRecomputing { break }
             try await Task.sleep(for: .milliseconds(50))
@@ -157,6 +276,7 @@ final class StoreRevisionMonitorTests: XCTestCase {
         }
         let afterPass = await computations.value
         XCTAssertEqual(afterPass, before + 2, "Ownership replay plus the controller's terminal replay")
+        }
     }
 
     func testForegroundReconsidersUnchangedTargetsAndDefersThroughBulkWrites() async throws {
@@ -276,15 +396,19 @@ final class StoreRevisionMonitorTests: XCTestCase {
     private func host(container: ModelContainer, refresh: PriceRefreshController,
                       signal: PriceRefreshCompletionSignal, writes: DerivedStateWriteCoordinator,
                       scene: MonitorScene, portfolio: PortfolioEngine? = nil,
-                      projection: CollectionProjectionStore? = nil) -> UIWindow {
+                      projection: CollectionProjectionStore? = nil,
+                      revision: StoreRevisionStore? = nil,
+                      debounce: @escaping @Sendable () async throws -> Void = {
+                          try await Task.sleep(for: .milliseconds(300))
+                      }) -> UIWindow {
         let portfolio = portfolio ?? PortfolioEngine()
         let storage = CollectionStorageGeneration()
         storage.installReady(storeID: UUID())
         refresh.registerPortfolio(portfolio)
         let monitor = StoreRevisionMonitor(portfolio: portfolio, projectionStore: projection ?? CollectionProjectionStore(),
-                                           priceSnapshot: PriceSnapshotStore(), revisionStore: StoreRevisionStore(),
+                                           priceSnapshot: PriceSnapshotStore(), revisionStore: revision ?? StoreRevisionStore(),
                                            refresh: refresh, storageGeneration: storage,
-                                           hasStartedPortfolio: true, completionSignal: signal)
+                                           hasStartedPortfolio: true, completionSignal: signal, debounce: debounce)
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = UIHostingController(rootView: MonitorHarness(scene: scene, monitor: monitor)
             .environment(\.modelContext, container.mainContext).environmentObject(writes))
@@ -445,4 +569,23 @@ private struct MonitorHarness: View {
 private actor MonitorAttemptCount {
     private(set) var value = 0
     func increment() { value += 1 }
+}
+
+private actor MonitorDebounceGate {
+    private(set) var count = 0
+    private var continuations: [CheckedContinuation<Void, Never>] = []
+    private var released = false
+    func wait() async {
+        count += 1
+        guard !released else { return }
+        await withCheckedContinuation { continuations.append($0) }
+    }
+    func release() {
+        released = true
+        releaseCurrent()
+    }
+    func releaseCurrent() {
+        continuations.forEach { $0.resume() }
+        continuations.removeAll()
+    }
 }
