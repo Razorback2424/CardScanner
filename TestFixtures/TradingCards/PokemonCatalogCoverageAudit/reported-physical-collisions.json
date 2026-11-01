@@ -1,5 +1,9 @@
 {
   "capturedAt": "2026-11-01",
+  "scopeEvidence": {
+    "sourceURL": "https://www.pokemon.com/uk/news/pokemon-go-expansion-more-iconic-and-powerful-pokemon-revealed",
+    "boundary": "The official expansion announcement describes peelable Ditto among the Pokemon GO expansion cards. Combined with the exact numbered common products below, this supports the bounded pack-scope classification; it does not prove every Pokemon GO physical variant."
+  },
   "cases": [
     {
       "catalogID": "swsh10.5-059",

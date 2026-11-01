@@ -5715,7 +5715,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         // These are the app's cataloged English scopes, not claims of exhaustive
         // Grand Master promo coverage. See the researched collector contract.
         let examples: [(String, Int, Int)] = [
-            ("sv03.5", 360, 378), ("sv08.5", 447, 472),
+            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 149, 164),
             ("cel25", 25, 25), ("cel25cc", 25, 25),
             ("sv10", 415, 436), ("swsh9", 310, 315)
         ]
@@ -5742,9 +5742,21 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             if id == "sv03.5" {
                 XCTAssertTrue(master.contains { $0.collectorNumber == "207" }, "Secret rares remain in Master")
                 XCTAssertFalse(cards.contains { ["sv03.5-004", "sv03.5-005"].contains($0.providerID) && $0.masterSetVariant == .holo })
-                XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant?.id == "cosmos" && $0.isExpandedMasterSetVariant })
+                for finish in [PokemonReviewedPhysicalObjects.cosmosHolo, PokemonReviewedPhysicalObjects.cosmosReverse] {
+                    XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant == finish && $0.isExpandedMasterSetVariant })
+                }
+                XCTAssertFalse(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant?.id == "cosmos" })
                 XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-205" && $0.masterSetVariant?.id == "gold" && $0.isExpandedMasterSetVariant },
                               "The UPC metal Mew is distinct from the pack Mew")
+            }
+            if id == "swsh10.5" {
+                let bidoof = master.filter { $0.providerID == "swsh10.5-059" }
+                XCTAssertEqual(Set(bidoof.compactMap(\.masterSetVariant)), [.normal,
+                    PokemonReviewedPhysicalObjects.plainReverse, PokemonReviewedPhysicalObjects.peelableDitto])
+                for finish in [PokemonReviewedPhysicalObjects.plainReverse, PokemonReviewedPhysicalObjects.peelableDitto] {
+                    XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(finish))
+                    XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(finish, setProviderID: "sv03.5"))
+                }
             }
         }
         let again = await store.mergedEntries()
