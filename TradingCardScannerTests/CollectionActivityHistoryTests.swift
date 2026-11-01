@@ -2512,6 +2512,73 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertTrue(confirmed.repairs.first?.requiresConfirmation == true)
     }
 
+    func testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview() async throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        // A Hidden Fates vault card saved as Normal before the reviewed
+        // Holofoil finish existed, with automatic provenance and a fully
+        // covering acquisition: exactly the row reconciliation could rewrite.
+        let card = shinyVaultCard()
+        _ = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            source: .scan
+        )
+        let normalKey = card.collectionKey(variant: .normal)
+        let row = try XCTUnwrap(store.card(forKey: normalKey))
+        XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: card.providerID, variantID: row.variantID))
+        XCTAssertNil(PokemonFinishReconciliation.repair(
+            storedVariantID: row.variantID, storedResolution: row.variantResolution,
+            itemKind: row.itemKind, printRun: row.pokemonPrintRun, card: card
+        ))
+
+        let targets = try PriceRefreshTargets.make(context: context, usesPriceFallback: false, includeImported: true)
+        let target = try XCTUnwrap(targets.first { $0.id == row.priceKey })
+        let firstSeenAt = Date(timeIntervalSince1970: 1_700_000_000)
+        for offset in [0, 25 * 60 * 60] as [TimeInterval] {
+            let assessment = PokemonFinishReconciliation.assess(
+                targets: [target], card: card, rows: [row],
+                refreshID: UUID(), at: firstSeenAt.addingTimeInterval(offset)
+            )
+            XCTAssertTrue(assessment.repairs.isEmpty)
+            XCTAssertTrue(assessment.pendingPatches.isEmpty, "No Holofoil sighting may be staged")
+        }
+
+        // A sighting staged before this rule cannot complete through the
+        // refresh actor's persisted write path either.
+        row.pendingCatalogFinishID = PhysicalVariant.holo.id
+        row.pendingCatalogFinishFirstSeenAt = Date.now.addingTimeInterval(-25 * 60 * 60)
+        row.pendingCatalogFinishRefreshID = UUID()
+        try context.save()
+        let modelContainer = try XCTUnwrap(container)
+        let worker = PriceRefreshModelActor(modelContainer: modelContainer)
+        await worker.setPokemonFetchOverrideForTesting { _ in card }
+        for _ in 0..<2 {
+            let outcome = await worker.run(
+                PriceRefreshRequest(
+                    usesPriceFallback: false,
+                    includeImported: true,
+                    forceUnsupportedRetry: true,
+                    sortOldestFirst: false,
+                    maximumTargetCount: nil,
+                    markRecentlyCheckedIfEmpty: false
+                ),
+                progress: { _ in },
+                shouldContinue: nil
+            )
+            guard case let .completed(result) = outcome else {
+                return XCTFail("Expected the refresh actor to complete")
+            }
+            XCTAssertEqual(result.repairedFinishes, 0)
+        }
+
+        let rows = try ModelContext(modelContainer).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.collectionKey), [normalKey])
+        XCTAssertEqual(rows.first?.variantID, PhysicalVariant.normal.id)
+        XCTAssertEqual(rows.first?.variantResolution, .uniqueInCatalog)
+        XCTAssertEqual(rows.first?.quantity, 1)
+    }
+
     func testPriceRefreshActorPricesUnderTheConfirmedCatalogFinishKey() async throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
@@ -3431,6 +3498,26 @@ final class CollectionActivityHistoryTests: XCTestCase {
             variantsDetailed: nil
         )
         return .pokemon(card, setCode: "30TH")
+    }
+
+    /// TCGdex's upstream record: Normal, although every product is Holofoil.
+    private func shinyVaultCard() -> IdentifiedCard {
+        let card = TCGdexCard(
+            id: "sma-SV49",
+            localId: "SV49",
+            name: "Charizard-GX",
+            image: "https://assets.tcgdex.net/en/sm/sma/SV49",
+            rarity: "Shiny rare",
+            set: TCGdexSetBrief(
+                id: "sma",
+                name: "Hidden Fates Shiny Vault",
+                cardCount: TCGdexCardCount(total: 94, official: 94)
+            ),
+            variants: TCGdexVariants(firstEdition: false, holo: false, normal: true, reverse: false, wPromo: nil),
+            pricing: nil,
+            variantsDetailed: nil
+        )
+        return .pokemon(card, setCode: "SMA")
     }
 
     private func catalogRepair(

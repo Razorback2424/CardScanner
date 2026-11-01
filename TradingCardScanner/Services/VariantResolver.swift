@@ -321,6 +321,15 @@ enum PokemonVariantRules {
     static func requiresPhysicalReview(cardID: String, variant: PhysicalVariant) -> Bool {
         reviewedVariants(cardID: cardID).map { !$0.contains(variant) } ?? false
     }
+
+    /// A stored finish the reviewed list does not contain. Only a person
+    /// holding the card can replace it; no automatic path may rekey it.
+    static func requiresPhysicalReview(cardID: String, variantID: String?) -> Bool {
+        guard let variantID else { return false }
+        return reviewedVariants(cardID: cardID).map { reviewed in
+            !reviewed.contains { $0.id == variantID }
+        } ?? false
+    }
     /// Exact rows from the retained provider-explicit eligibility table, pinned to
     /// tcgdex/cards-database 99c994747cf7519a3e51166cc932de79a88bd4b3.
     /// Trainers and ex cards cannot inherit both patterns merely by having reverse.
@@ -466,6 +475,10 @@ enum PokemonFinishReconciliation {
         } else {
             guard storedVariantID == nil else { return nil }
         }
+        guard !PokemonVariantRules.requiresPhysicalReview(
+            cardID: card.providerID,
+            variantID: storedVariantID
+        ) else { return nil }
 
         let evidence = card.variantEvidence
         let currentEvidence = printRun == nil

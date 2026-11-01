@@ -11,6 +11,9 @@ Fixed:
   (Shining Fates) are now scannable. Previously they were unreadable.
 - Hidden Fates Shiny Vault cards resolve as Holofoil instead of TCGdex's
   incorrect Normal.
+- Review follow-up: an existing automatic Normal holding could still be
+  rekeyed to Holo after two refreshes 24 hours apart. Finish reconciliation now
+  skips any stored finish that a reviewed card requires a person to check.
 
 The focused selection passed **382 tests** and a wider scanner/Browse/pricing
 selection passed **385 tests**, both with zero failures or skips.
