@@ -7,8 +7,9 @@ performance fix performed by this planning change.
 **2026-11-01 local checkpoint:** the
 [bounded image/bulk-observation review](../../review/catalog-image-bulk-polish-2026-11-01.md)
 records completed-artwork reappearance and settled bulk-generation fixes at
-`3ca908d`, with 17 focused passes and 349 aggregate passes (one existing opt-in
-skip). This is deterministic lifecycle/scheduling evidence; new hang traces,
+`3ca908d`, with 19 focused passes after test-only review follow-up `8d01aab` and
+349 aggregate passes (one existing opt-in skip). This is deterministic
+lifecycle/scheduling evidence; new hang traces,
 physical-device performance and action-to-visible-result measurements remain
 open under this protocol.
 

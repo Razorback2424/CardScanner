@@ -3,6 +3,8 @@
 **Date:** 2026-11-01 UTC. **Status:** verified local candidate; unpublished.
 **Base:** current remote `main`, `0ab3b0e6c59bb8561f3ee4610bccd0f311bb716b`.
 **Source candidate:** `3ca908d44c4a6b1689cf63c509d867d83f56764e`.
+**Review-follow-up test candidate:** `8d01aab42c2dcd1720e3858a622a260f251eecb6`;
+production files are identical to the source candidate.
 **Branch:** `polish/catalog-image-bulk-refresh-2026-11-01`.
 
 Pricing PR #14 remains separate and open at
@@ -46,7 +48,7 @@ isolated in commit `3ca908d`.
   redundant fetch, cancelled-upgrade image loss and completed bulk work blocked
   by the injected debounce gate. An earlier test-helper actor-isolation compile
   error was corrected before this baseline ran.
-- Final focused native selection: **17 passed, zero failed, zero skipped**.
+- Initial focused native selection: **17 passed, zero failed, zero skipped**.
   Six image tests cover completed reappearance, real SwiftUI disappearance and
   remounting, interrupted restart, requested-size upgrades, source/reload-token
   switches, fallback behavior and stale completions. Eleven monitor tests cover
@@ -54,6 +56,17 @@ isolated in commit `3ca908d`.
   observation, ordinary save/remote bursts, one settled projection/revision,
   foreground eligibility and ownership replay during active price refresh both
   with and without a new nested bulk interval.
+- Independent review follow-up: **19 passed, zero failed, zero skipped** at the
+  test candidate above. The two additional cases are
+  `testUnchangedBulkCompletionIsAcknowledgedBeforeOrdinarySave` (unchanged bulk
+  completion emits no new revision and its next ordinary save is gated by
+  debounce) and
+  `testSupersededBulkApplyRemainsPendingUntilSameGenerationRetrySettles`
+  (derived computation is suspended, the observation is superseded, the same
+  bulk generation retries without debounce, and ordinary debounce returns after
+  that retry settles). Only tests changed; production source required no repair.
+  No further aggregate was run; the 350-case aggregate below remains evidence
+  for the unchanged production files, while the new tests have focused evidence.
 - The first post-fix focused run passed all image tests; two monitor assertions
   incorrectly counted later ordinary-save observations as the bulk observation.
   The final tests instead prove bulk publication while ordinary debounce remains
@@ -74,6 +87,7 @@ Local result bundles:
 - `/Volumes/T7/ScanStash-Polish-before-retry.xcresult`
 - `/Volumes/T7/ScanStash-Polish-focused-final.xcresult`
 - `/Volumes/T7/ScanStash-Polish-aggregate.xcresult`
+- `/Volumes/T7/ScanStash-Polish-review-focused.xcresult`
 
 Native counts above come from the completed `xcodebuild` test logs. Structured
 `xcresulttool` summary extraction encountered a local Library/Caches write error;
@@ -81,6 +95,7 @@ the result bundles and complete logs remain available. Logs are retained locally
 at `/tmp/scanstash-polish-before-retry.log`,
 `/tmp/scanstash-polish-focused-final.log` and
 `/tmp/scanstash-polish-aggregate.log`; raw logs are not committed.
+The review-follow-up focused log is `/tmp/scanstash-polish-review-focused.log`.
 
 ## Evidence limits
 

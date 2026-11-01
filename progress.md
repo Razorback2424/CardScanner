@@ -10,7 +10,7 @@ reload switching, ordinary 300 ms save/remote coalescing, storage tokens, active
 bulk guards and apply-generation safeguards remain covered.
 
 Three deterministic baseline tests reproduced the original behavior. At source
-candidate `3ca908d44c4a6b1689cf63c509d867d83f56764e`, the final focused native
+candidate `3ca908d44c4a6b1689cf63c509d867d83f56764e`, the initial focused native
 selection passed 17/17; the relevant aggregate executed 350 tests, with 349
 passed, zero failed and one existing opt-in aged-store performance skip. Xcode
 27.1, Debug, iOS 27.0 iPhone 17 Pro simulator, unsigned. The
@@ -18,6 +18,13 @@ passed, zero failed and one existing opt-in aged-store performance skip. Xcode
 before/after behavior, results and evidence limits. Real SwiftUI hosting proves
 lifecycle behavior with synthetic artwork; no measured user-visible 300 ms gain
 or physical-device certification is claimed. No PR/body was published.
+
+Independent review requested two additional acknowledgement regressions.
+Test-only commit `8d01aab42c2dcd1720e3858a622a260f251eecb6` verifies no-op bulk
+completion restores ordinary debounce, and a superseded apply leaves its bulk
+generation pending until a same-generation retry settles. The final focused
+selection passed 19/19 with zero failures/skips. Production files remain exactly
+those of `3ca908d`; no additional aggregate or performance measurement was run.
 
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
