@@ -151,7 +151,7 @@ implementation. Commit `72bcbeb` addresses them within the same quote path:
   any source UUID, USD eligibility and local chronology must agree. Stale,
   future-at-cutoff, foreign and wrong-identity observations do not revive it.
   Follow-up `bd26f35` also rejects a later receipt with a provably older or
-  identical provider sale clock; receipt order cannot turn a cached old sale
+  identical provider price-update clock; receipt order cannot turn a cached old sale
   into a new sale.
 - A later fetch of an expired upstream snapshot cannot withdraw a newer known
   sale with a later provider sale/update clock. The comparison includes exact
@@ -169,6 +169,25 @@ are selected by the required catalog CI workflow. **Final source
 1,068 total = 1,066 passed + two deliberate live-feed/performance skips,
 zero failures.** The aggregate includes all 31 workflow selections plus
 item-kind, TCGCSV, fallback and full portfolio reconciliation classes.
+
+Review of `4ca368a` then reproduced a mixed-clock defect before source changes:
+one test failed seven assertions when a current quote had different sale and
+update times, then genuine expiry retained its sale time with an equal or newer
+update. The old comparator pooled unlike clocks and kept the old quote.
+`b5eb58b` compares `last_sale_at` only with known sale time, and `updated_at`
+only with known price-update times. A missing field is not inferred from the
+other clock. Exact-observation recovery likewise compares its update clock only
+with known update clocks. Genuine same-sale expiry works, while older sale or
+update evidence still rejects.
+
+The official OpenAPI describes `updated_at` as price-observation time and
+`last_sale_at` as most-recent-sale time; the synthetic regressions deliberately
+keep those roles distinct. They are contract tests, not live provider evidence.
+Focused pricing/portfolio run: **197 total, 196 passed, one opt-in performance
+skip, zero failures**. **Final source `b5eb58bec60020fc40309c92ed85aaca7bb20ae4`:
+1,071 total = 1,069 passed + two deliberate live-feed/performance skips,
+zero failures.** All 32 workflow selections and the four broader classes ran;
+the mixed-clock observation regression is included in CI.
 
 ## Remaining gates
 

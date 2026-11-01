@@ -5513,7 +5513,7 @@ historical.
   fall back to an old imported value.
 - Newer exact JustTCG USD sale observations can supersede an older mutable
   withdrawal; mismatched UUIDs, stale/future receipts, foreign currency and
-  provably old provider sale clocks cannot revive it. Later-fetched stale
+  provably old provider price-update clocks cannot revive it. Later-fetched stale
   expiry responses cannot withdraw newer known provider sales. Imported-value
   timestamps are excluded from provider-clock comparison.
 - Source `72bcbeb` passed 1,066 of 1,068 selected native cases, with two deliberate
@@ -5522,3 +5522,15 @@ historical.
   **1,068 total, 1,066 passed, two deliberate skips, zero failures**.
 - The existing JSON envelope gains an optional provider timestamp; no SwiftData
   field, holding migration, credential access, device install or publication.
+
+## 2026-11-01 — Separate provider clock fields
+
+- Reproduced the remaining mixed-clock defect against `4ca368a` before editing
+  source: one test failed seven assertions. A genuine same-sale expiry was
+  rejected when sale time was compared against a different update-time field.
+- `b5eb58b` compares sale with sale, and price-update with price-update. Equal
+  or newer updates allow genuine same-sale expiry; old sale/update snapshots
+  still reject. Exact-observation recovery also avoids cross-field comparison.
+- Focused run: **197 total, 196 passed, one deliberate performance skip,
+  zero failures**. Final aggregate at `b5eb58b`: **1,071 total, 1,069 passed,
+  two deliberate skips, zero failures**. No schema or credential change.
