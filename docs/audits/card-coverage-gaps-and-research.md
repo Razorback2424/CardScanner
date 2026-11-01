@@ -16,7 +16,7 @@ and the bundled Yu-Gi-Oh, Lorcana and One Piece catalogs.
 | ID | Defect | Fix |
 | --- | --- | --- |
 | S1 | Shiny Vault cards were unscannable. Hidden Fates prints `SV49/SV94` and Shining Fates prints `SV001/SV122` (all 216 TCGplayer products agree). The historical parser knew only the `H`, `TG`, `GG` and `RC` subset prefixes, so these footers produced no reading. | `SV` is a subset prefix that must appear on both sides. 94 maps to `sma` and 122 to `swsh4.5sv`. A bare `SV` before an ordinary fraction keeps its old official-set reading, so `SVI 049/198` with the `I` lost stays recoverable by denominator and title. |
-| S2 | Hidden Fates Shiny Vault finishes were wrong. TCGdex flags all 94 cards `normal`, while every TCGplayer product is Holofoil only. Once S1 made the cards scannable, they would have been auto-recorded as Normal with no price. | A reviewed-variant override sets `sma-SV1`…`sma-SV94` to Holofoil, and the Browse read-time projection now includes `sma`, following the Yellow A precedent. An existing Normal holding is flagged for physical review and is never rekeyed automatically. Shining Fates Shiny Vault was already Holo and is unchanged. |
+| S2 | Hidden Fates Shiny Vault finishes were wrong. TCGdex flags all 94 cards `normal`, while every TCGplayer product is Holofoil only. Once S1 made the cards scannable, they would have been auto-recorded as Normal with no price. | A reviewed-variant override sets `sma-SV1`…`sma-SV94` to Holofoil, and the Browse read-time projection now includes `sma`, following the Yellow A precedent. An existing Normal holding is flagged for physical review. Automatic finish reconciliation now skips any stored finish outside a reviewed card's list, in both the refresh assessment and its write-boundary recheck, so it cannot rekey that holding. This also applies to the existing Yellow A and Ascended Heroes reviewed cards, matching their documented "never an automatic remap" intent. Shining Fates Shiny Vault was already Holo and is unchanged. |
 
 ### Awaiting owner decision
 
@@ -80,7 +80,16 @@ bundled resolution of `SV49/SV94` and `SV107/SV122` to Holofoil; and the
 `PokemonChecklistBrowseTests`, `PricingTests`, `JustTCGContractTests`) passed
 **382 tests, zero failures or skips** on the iOS simulator. A separate run of
 12 scanner, Browse, normalization, unresolved-scan and price-refresh classes
-passed **385 tests, zero failures or skips**. Build output is under
+passed **385 tests, zero failures or skips**.
+
+A review follow-up adds a persisted regression. It seeds a Hidden Fates vault
+holding stored as Normal with automatic provenance and a fully covering
+acquisition, then checks the shared repair policy, two assessments 25 hours
+apart, and two runs of the refresh actor with a pre-staged Holo sighting. With
+the guard temporarily removed, the actor rekeyed the holding from
+`sma-SV49#normal` to `sma-SV49#holo`; with it, the row is unchanged. The
+reconciliation, pricing and Browse selection passed **592 tests, zero failures
+or skips**. Build output is under
 `/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source,
 data and simulator checks only. No physical card was scanned, and C1 is not
 implemented.
