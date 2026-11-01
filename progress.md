@@ -164,6 +164,21 @@ recorded yet. Typing in the share sheet and the picker, detail and scanner
 screens were not exercised in the UI. Device measurements M1–M9, and therefore
 S8–S10, remain open. No physical-device, provider, CloudKit, archive or release
 readiness is claimed.
+# 2026-11-01 — Manual price refresh and missing daily feed
+
+The [pricing correctness follow-up](docs/plans/pricing_correctness_and_coverage.md#2026-11-01--stale-collection-quotes-after-manual-refresh)
+records collection manual-retry propagation, per-set request sharing, overlap
+handling, original-capture expiry and durable failed-check reporting. Focused
+simulator verification passes 169/169; feed publisher tests pass 9/9 and the
+hosting configuration validates. The real provider and today's hash-validated
+feed candidate both carry Misty Holofoil at $6.03, rather than the supplied
+October 28 saved $6.85.
+
+Production feed URLs still returned 404. The requested publication was cancelled
+by GitHub's retiring macOS 14 runner before deployment. The one-line workflow
+repair is included in the requested commit/push. Publication/daily activation,
+app endpoint configuration and live native acceptance remain pending. Existing
+physical-device, CloudKit and release gates remain separate.
 
 # 2026-10-31 — Card sharing post-merge artwork recovery
 

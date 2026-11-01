@@ -480,6 +480,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         priceKeysWritten.removeAll()
         pendingRowPatches.removeAll()
         skippedRowPatchCount = 0
+        let marketPrices = self.marketPrices?.forRefresh(retry: request.intent == .manual)
 
         func stage(
             _ accepted: Bool,
@@ -660,6 +661,12 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             await progress(.catalog(completed: completed, total: order.count))
         }
 
+        func needsFreshQuote(_ lookup: PriceLookup) -> Bool {
+            if PriceRefreshController.needsFallback(lookup, identifiedCatalogCard: true) { return true }
+            if request.intent == .manual, case let .price(price) = lookup { return price.isStale() }
+            return false
+        }
+
         func priceTarget(_ target: PriceTarget, card: IdentifiedCard, at now: Date) async {
             guard pricedTargetIDs.insert(target.id).inserted else { return }
             let variant = target.variantID.map(PhysicalVariant.resolving)
@@ -670,17 +677,14 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 pokemonPrintRun: target.pokemonPrintRun,
                 at: now
             )
-            if PriceRefreshController.needsFallback(lookup, identifiedCatalogCard: true),
+            if needsFreshQuote(lookup),
                let marketPrices,
                let bulkQuote = try? await marketPrices.fallback(
                    cardID: card.providerID, game: target.game, variant: variant,
                    printRun: target.pokemonPrintRun
                ) { lookup = bulkQuote }
             guard storageContinuation?() ?? true, !Task.isCancelled else { return }
-            if PriceRefreshController.needsFallback(
-                lookup,
-                identifiedCatalogCard: true
-            ) {
+            if needsFreshQuote(lookup) {
                 fallbackSubjects.append(
                     PriceRefreshController.FallbackCandidate(target: target, card: card)
                 )
@@ -1003,6 +1007,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         let fallbackResult = await runFallback(
             fallbackSubjects,
             usesPriceFallback: request.usesPriceFallback,
+            marketPrices: marketPrices,
+            intent: request.intent,
             progress: progress,
             store: store
         )
@@ -1010,6 +1016,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             priced += fallbackResult.priced
         }
         changedPrices = changedPrices || fallbackResult.changedPrices
+        failed += fallbackResult.failed
         persistenceFailed = persistenceFailed || fallbackResult.persistenceFailed
 
         guard storageContinuation?() ?? true, !Task.isCancelled else {
@@ -1364,9 +1371,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
     private func runFallback(
         _ candidates: [PriceRefreshController.FallbackCandidate],
         usesPriceFallback: Bool,
+        marketPrices: PokemonMarketPriceResolver?,
+        intent: PriceRefreshRequest.Intent,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void,
         store: PriceStore
-    ) async -> (priced: Int, persistenceFailed: Bool, changedPrices: Bool) {
+    ) async -> (priced: Int, persistenceFailed: Bool, changedPrices: Bool, failed: Int) {
         let fallbackState = PerformanceSignpost.beginInterval(
             "priceRefresh.runFallback",
             id: PerformanceSignpost.makeID(),
@@ -1382,11 +1391,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         }
         guard storageContinuation?() ?? true, !Task.isCancelled else {
             fallbackOutcome = "cancelled"
-            return (0, false, false)
+            return (0, false, false, 0)
         }
         guard !candidates.isEmpty else {
             await progress(.fallbackIdle)
-            return (0, false, false)
+            return (0, false, false, 0)
         }
 
         // An already established mapped identity remains priceable during a
@@ -1395,17 +1404,30 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var csvWriteCount = 0
         var csvChanged = false
         var csvPersistenceFailed = false
+        var csvFailures = Set<String>()
         var deduplicatedCandidates: [PriceRefreshController.FallbackCandidate] = []
         for candidate in PriceRefreshController.collapsingDuplicates(candidates) {
             guard storageContinuation?() ?? true, !Task.isCancelled else { break }
             let target = candidate.target
-            if target.itemKind == .rawCard, target.importedIdentity == nil,
-               let marketPrices,
-               let quote = try? await marketPrices.fallback(
-                   cardID: candidate.card?.providerID ?? target.catalogPrintingID ?? target.printingID,
-                   game: target.game, variant: target.variantID.map(PhysicalVariant.resolving),
-                   printRun: target.pokemonPrintRun
-               ) {
+            var csvQuote: PriceLookup?
+            if target.itemKind == .rawCard, target.importedIdentity == nil, let marketPrices {
+                do {
+                    csvQuote = try await marketPrices.fallback(
+                        cardID: candidate.card?.providerID ?? target.catalogPrintingID ?? target.printingID,
+                        game: target.game, variant: target.variantID.map(PhysicalVariant.resolving),
+                        printRun: target.pokemonPrintRun
+                    )
+                } catch {
+                    guard storageContinuation?() ?? true, !Task.isCancelled else { break }
+                    csvFailures.insert(target.id)
+                    if store.recordFailure(game: target.game, printingID: target.printingID,
+                        variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw) {
+                        rememberPriceKey(target.id)
+                        csvWriteCount += 1
+                    } else { csvPersistenceFailed = true }
+                }
+            }
+            if let quote = csvQuote {
                 guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
                 if store.store(
@@ -1438,11 +1460,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         }
         guard !eligibleCandidates.isEmpty else {
             await progress(.fallbackDisabled(pending: deduplicatedCandidates.count))
-            return (csvPriced, csvPersistenceFailed, csvChanged)
+            return (csvPriced, csvPersistenceFailed, csvChanged, csvFailures.count)
         }
         guard PriceVendorCredentials.hasKey else {
             await progress(.fallbackUnconfigured(pending: eligibleCandidates.count))
-            return (csvPriced, csvPersistenceFailed, csvChanged)
+            return (csvPriced, csvPersistenceFailed, csvChanged, csvFailures.count)
         }
         fallbackOutcome = "running"
 
@@ -1538,7 +1560,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             let external = candidate.externalLookups
             guard identities.fallbackCheckIsDue(
                 forKey: key,
-                minimumInterval: PriceRefreshController.fallbackRefreshInterval,
+                minimumInterval: intent == .manual ? 0 : PriceRefreshController.fallbackRefreshInterval,
                 using: identityIndex,
                 hasDirectLookup: !external.isEmpty
             ) else {
@@ -1580,7 +1602,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     lastCheckedAt: candidate.target.lastCheckedAt,
                     justTCGFetchedAt: candidate.target.justTCGFetchedAt,
                     magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
-                    requiresFullResponse: !candidate.target.hasPrice
+                    requiresFullResponse: intent == .manual || !candidate.target.hasPrice
                         || candidate.target.needsArtwork,
                     exactPhysicalProductID: candidate.exactPhysicalProductID,
                     pokemonPrintRun: candidate.target.pokemonPrintRun
@@ -1604,7 +1626,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 targets,
                 game: game,
                 lane: .background,
-                useDelta: useDelta,
+                useDelta: intent == .automatic && useDelta,
                 onProgress: { report in
                     await progress(.fallback(
                         completed: completedBeforeGame + report.targetsChecked,
@@ -1744,7 +1766,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             ))
         }
         fallbackOutcome = stoppedByAllowance ? "stopped" : (Task.isCancelled ? "cancelled" : "completed")
-        return (priced + csvPriced, persistenceFailed || csvPersistenceFailed, changedPrices || csvChanged)
+        let unresolvedFailures = csvFailures.filter { store.record(forKey: $0)?.lastFailureAt != nil }.count
+        return (priced + csvPriced, persistenceFailed || csvPersistenceFailed, changedPrices || csvChanged, unresolvedFailures)
     }
 
     private func recordActiveFallbackChecks(

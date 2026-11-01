@@ -537,17 +537,179 @@ struct CardCenteringView: View {
             } else if collectorTools.ownership == .loading {
                 ProgressView("Checking purchases…")
             } else {
-                ContentUnavailableView {
-                    Label("Guided Card Centering", systemImage: "square.dashed.inset.filled")
-                } description: {
-                    Text("Collector Tools includes unlimited guided centering and annotated output, plus unlimited batch listing photos. Guided estimates are not professional grading or a predicted grade.")
-                } actions: {
-                    Button("View Collector Tools and price") { isShowingOffer = true }
+                CenteringIntroLayout {
+                    CenteringIntroHeader(isScanning: false, title: "Card Centering")
+                    Button { isShowingOffer = true } label: {
+                        Label("Unlock with Collector Tools", systemImage: "sparkles")
+                            .font(.body.weight(.semibold))
+                            .frame(maxWidth: .infinity, minHeight: 30)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .controlSize(.large)
                 }
             }
         }
         .navigationTitle("Centering")
+        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isShowingOffer) { CollectorToolsOfferView() }
+    }
+}
+
+/// Centres short intro content in the screen, and scrolls it when Dynamic
+/// Type makes it taller than the screen.
+private struct CenteringIntroLayout<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 28) {
+                    content()
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 28)
+                .frame(maxWidth: 480)
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+/// The animated guide card with a title beneath it; the opening of every
+/// centering state that has no photo yet.
+private struct CenteringIntroHeader: View {
+    let isScanning: Bool
+    let title: String
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        VStack(spacing: 22) {
+            // Smaller at accessibility sizes, so the larger buttons stay in reach.
+            CenteringGuideArt(cardWidth: dynamicTypeSize.isAccessibilitySize ? 92 : 132, isScanning: isScanning)
+                .accessibilityHidden(true)
+            HStack(spacing: 10) {
+                if isScanning { ProgressView() }
+                Text(title)
+                    .font(.title2.weight(.bold))
+                    .contentTransition(.opacity)
+            }
+            .multilineTextAlignment(.center)
+            .accessibilityElement(children: .combine)
+        }
+    }
+}
+
+/// Where centering begins: the card, and three ways to bring one in. How the
+/// tool works lives behind the toolbar's help button, so the screen itself
+/// stays just the choice.
+private struct CenteringStartScreen<PhotoPicker: View>: View {
+    let isAnalyzing: Bool
+    let errorMessage: String?
+    let onTakePhoto: () -> Void
+    let onChooseFile: () -> Void
+    @ViewBuilder let photoPicker: () -> PhotoPicker
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        CenteringIntroLayout {
+            CenteringIntroHeader(
+                isScanning: isAnalyzing,
+                title: isAnalyzing ? "Finding Card Edges" : "Check Card Centering"
+            )
+
+            if let errorMessage, !isAnalyzing {
+                Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.red)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.red.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
+            if !isAnalyzing {
+                sources
+                    .transition(.opacity)
+            }
+        }
+        .animation(.smooth(duration: 0.35), value: isAnalyzing)
+        .animation(.smooth(duration: 0.35), value: errorMessage)
+    }
+
+    private var sources: some View {
+        VStack(spacing: 10) {
+            Button(action: onTakePhoto) {
+                Label("Take Photo", systemImage: "camera.fill")
+                    .font(.body.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 30)
+            }
+            .buttonStyle(.borderedProminent)
+
+            let secondary = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(spacing: 10))
+                : AnyLayout(HStackLayout(spacing: 10))
+            secondary {
+                photoPicker()
+                    .buttonStyle(.bordered)
+                Button(action: onChooseFile) {
+                    Label("Files", systemImage: "folder")
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityLabel("Choose File")
+            }
+        }
+        .buttonBorderShape(.capsule)
+        .controlSize(.large)
+    }
+}
+
+/// The how-to and the estimate caveat, kept off the start screen until asked.
+private struct CenteringGuideSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    step("viewfinder", "Shoot straight on", "Flat and evenly lit, with the whole card in frame.")
+                    step("square.dashed", "Confirm both frames", "Drag any guide that's off the outer edge or the inner border.")
+                    step("square.and.arrow.up", "Share the result", "Export an annotated image with both ratios.")
+                    Divider()
+                    Label("Guided estimate only. Not professional grading or a predicted grade.", systemImage: "info.circle")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(20)
+            }
+            .navigationTitle("How It Works")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
+        }
+    }
+
+    private func step(_ systemImage: String, _ title: String, _ detail: String) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: systemImage)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 36, height: 36)
+                .background(Color.accentColor.opacity(0.14), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.subheadline.weight(.semibold))
+                Text(detail).font(.subheadline).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -562,6 +724,7 @@ private struct GuidedCardCenteringView: View {
     @State private var bottomPanelHeight: CGFloat = 0
     @State private var isShowingCamera = false
     @State private var isShowingSettings = false
+    @State private var isShowingGuide = false
     @State private var isShowingFileImporter = false
     @State private var isOuterExpanded = ProcessInfo.processInfo.arguments.contains("CenteringExpanded")
         || ProcessInfo.processInfo.arguments.contains("CenteringOuterControls")
@@ -625,45 +788,29 @@ private struct GuidedCardCenteringView: View {
                     }
                 }
             } else {
-                ScrollView {
-                    VStack(spacing: 18) {
-                        if model.isAnalyzing {
-                            ProgressView("Finding card edges…")
-                                .frame(maxWidth: .infinity, minHeight: 360)
-                        } else {
-                            ContentUnavailableView {
-                                Label("Check Card Centering", systemImage: "square.dashed.inset.filled")
-                            } description: {
-                                Text("Choose a clear, straight-on card photo or scan. Review and confirm both frames. Guided estimates are not professional grading or a predicted grade.")
-                            } actions: {
-                                VStack(spacing: 10) {
-                                    Button("Take Photo", systemImage: "camera") {
-                                        isShowingCamera = true
-                                    }
-                                    photoButton("Choose Photo")
-                                    Button("Choose File", systemImage: "folder") {
-                                        isShowingFileImporter = true
-                                    }
-                                }
-                            }
-                            .frame(minHeight: 460)
-                        }
-
-                        if let errorMessage = model.errorMessage {
-                            Text(errorMessage)
-                                .font(.footnote)
-                                .foregroundStyle(.red)
-                        }
+                CenteringStartScreen(
+                    isAnalyzing: model.isAnalyzing,
+                    errorMessage: model.errorMessage,
+                    onTakePhoto: { isShowingCamera = true },
+                    onChooseFile: { isShowingFileImporter = true }
+                ) {
+                    PhotosPicker(selection: $model.selectedPhoto, matching: .images) {
+                        Label("Photos", systemImage: "photo.on.rectangle")
+                            .frame(maxWidth: .infinity, minHeight: 30)
                     }
-                    .padding(16)
-                    .contentWidthLimit(.standard)
+                    .accessibilityLabel("Choose Photo")
                 }
             }
         }
         .navigationTitle("Centering")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button("How It Works", systemImage: "questionmark.circle") {
+                    isShowingGuide = true
+                }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel("How It Works")
                 Button("Settings", systemImage: "gearshape") {
                     isShowingSettings = true
                 }
@@ -702,6 +849,11 @@ private struct GuidedCardCenteringView: View {
                 }
             }
         }
+        .sheet(isPresented: $isShowingGuide) {
+            CenteringGuideSheet()
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
         .onChange(of: model.imageRevision) {
             selection = nil
             isStraightening = false
@@ -724,14 +876,17 @@ private struct GuidedCardCenteringView: View {
             guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
                   arguments.indices.contains(routeIndex + 1) else { return }
             let route = arguments[routeIndex + 1]
-            guard route.hasPrefix("Centering") else { return }
+            // CenteringStart opens the tool on its start screen, with no fixture.
+            guard route.hasPrefix("Centering"), route != "CenteringStart" else { return }
             debugPanelRoute = route
             model.loadDebugFixtureIfNeeded()
             applyDebugPanelRoute()
         }
 #endif
         .overlay {
-            if model.isAnalyzing, model.image != nil {
+            // Before the first measurement the start screen shows its own
+            // scanning state; this dims only an image being re-measured.
+            if model.isAnalyzing, model.image != nil, model.measurement != nil {
                 ZStack {
                     Color.black.opacity(0.25).ignoresSafeArea()
                     ProgressView("Measuring…")

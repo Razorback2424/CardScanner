@@ -37,7 +37,11 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     private let now: @Sendable () -> Date
     private let spacing: TimeInterval
     private var snapshots: [String: PokemonTCGCSVSnapshot] = [:]
-    private var tasks: [String: Task<PokemonTCGCSVSnapshot, Error>] = [:]
+    private struct PendingSnapshot {
+        let task: Task<PokemonTCGCSVSnapshot, Error>
+        let retry: Bool
+    }
+    private var tasks: [String: PendingSnapshot] = [:]
     private var failures: [String: Date] = [:]
     private var build: (value: String, checkedAt: Date)?
     private var buildTask: Task<String, Error>?
@@ -65,13 +69,20 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         }
         try Task.checkCancellation()
         let cached = load(key)
-        if !retry, let cached, isFresh(cached.validatedAt),
+        if !retry, let cached, isFresh(cached),
            build == nil || build?.value == cached.feedBuild { return cached }
-        if let task = tasks[key] {
-            return try await waitFor(task)
+        if let pending = tasks[key] {
+            if retry, !pending.retry {
+                // An ordinary request may finish with its saved fallback.
+                // A manual waiter must still perform an explicit source check.
+                _ = try? await waitFor(pending.task)
+                try Task.checkCancellation()
+                return try await snapshot(setID: key, retry: true)
+            }
+            return try await waitFor(pending.task)
         }
         if !retry, let failure = failures[key], now().timeIntervalSince(failure) < 15 * 60 {
-            if let cached, isFresh(cached.validatedAt) { return cached }
+            if let cached, isFresh(cached) { return cached }
             throw PokemonTCGCSVError.retryLater
         }
         let task = Task {
@@ -87,12 +98,12 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
                     self.failures[key] = self.now()
                     // A newer publication does not invalidate the saved quote.
                     // Recheck freshness after the request; never extend its dates.
-                    if let cached, self.isFresh(cached.validatedAt) { return cached }
+                    if !retry, let cached, self.isFresh(cached) { return cached }
                 }
                 throw error
             }
         }
-        tasks[key] = task
+        tasks[key] = PendingSnapshot(task: task, retry: retry)
         return try await waitFor(task)
     }
 
@@ -116,6 +127,10 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     private func isFresh(_ date: Date) -> Bool {
         let age = now().timeIntervalSince(date)
         return age >= 0 && age < 24 * 60 * 60
+    }
+
+    private func isFresh(_ snapshot: PokemonTCGCSVSnapshot) -> Bool {
+        isFresh(snapshot.fetchedAt) && isFresh(snapshot.validatedAt)
     }
 
     private func load(_ key: String) -> PokemonTCGCSVSnapshot? {
@@ -157,6 +172,9 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
 
     private func download(setID: String, groupID: Int, feedBuild: String) async throws -> PokemonTCGCSVSnapshot {
         if var previous = load(setID), previous.feedBuild == feedBuild {
+            // Checking an unchanged marker cannot renew the server's capture.
+            // This also repairs caches revalidated indefinitely by older builds.
+            guard isFresh(previous.fetchedAt) else { throw PriceQuoteError.providerUnavailable }
             previous.validatedAt = now()
             return previous
         } else {
@@ -289,6 +307,12 @@ struct PokemonMarketPriceResolver: Sendable {
     let source: any PokemonTCGCSVPriceSource
     init(source: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared) { self.source = source }
 
+    /// Share one publication check per set for the whole collection pass,
+    /// including a second attempt through its fallback lane.
+    func forRefresh(retry: Bool) -> Self {
+        Self(source: PokemonTCGCSVRefreshSource(source: source, retry: retry))
+    }
+
     func fallback(
         cardID: String, game: CardGame, variant: PhysicalVariant?, printRun: PokemonPrintRun?,
         retry: Bool = false
@@ -307,5 +331,27 @@ struct PokemonMarketPriceResolver: Sendable {
         )
         if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
         return (try? await fallback(cardID: card.providerID, game: card.game, variant: variant, printRun: printRun)) ?? catalog
+    }
+}
+
+private actor PokemonTCGCSVRefreshSource: PokemonTCGCSVPriceSource {
+    let source: any PokemonTCGCSVPriceSource
+    let retry: Bool
+    private var tasks: [String: Task<PokemonTCGCSVSnapshot, Error>] = [:]
+
+    init(source: any PokemonTCGCSVPriceSource, retry: Bool) {
+        self.source = source
+        self.retry = retry
+    }
+
+    func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
+        let key = setID.lowercased()
+        let task: Task<PokemonTCGCSVSnapshot, Error>
+        if let pending = tasks[key] { task = pending }
+        else {
+            task = Task { try await source.snapshot(setID: key, retry: self.retry) }
+            tasks[key] = task
+        }
+        return try await task.valueForCurrentWaiter()
     }
 }

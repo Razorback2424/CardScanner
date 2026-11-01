@@ -612,7 +612,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertTrue(server.requests.allSatisfy { $0.value(forHTTPHeaderField: "User-Agent")?.contains("ScanStash") == true })
     }
 
-    func testUnchangedBuildRevalidatesWithoutRedownloadingOrRestampingQuote() async throws {
+    func testUnchangedBuildCannotRenewAnExpiredServerCapture() async throws {
         let server = try server()
         TCGCSVTestURLProtocol.server = server
         defer { TCGCSVTestURLProtocol.server = nil }
@@ -620,11 +620,19 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: root) }
         let service = makeService(server: server, root: root)
         let original = try await service.snapshot(setID: "30th", retry: false)
+        let file = root.appendingPathComponent("30th.json")
+        let savedBytes = try Data(contentsOf: file)
         server.advance(25 * 60 * 60)
-        let validated = try await service.snapshot(setID: "30th", retry: false)
-        XCTAssertEqual(server.requests.count, 4)
-        XCTAssertEqual(validated.fetchedAt, original.fetchedAt)
-        XCTAssertGreaterThan(validated.validatedAt, original.validatedAt)
+        do { _ = try await service.snapshot(setID: "30th", retry: false); XCTFail("Expired capture was renewed") }
+        catch PriceQuoteError.providerUnavailable {}
+        XCTAssertEqual(server.requests.count, 5, "Recheck a possible rollover once, without downloading unchanged bodies")
+        XCTAssertEqual(try Data(contentsOf: file), savedBytes)
+        // A legacy cache may claim it was just validated despite an old capture.
+        var legacy = original
+        legacy.validatedAt = server.now
+        try JSONEncoder().encode(legacy).write(to: file)
+        do { _ = try await makeService(server: server, root: root).snapshot(setID: "30th"); XCTFail("Legacy validation revived an expired capture") }
+        catch PriceQuoteError.providerUnavailable {}
     }
 
     func testPublicationRolloverRefreshesCachedMarkerForAnUncachedSet() async throws {
@@ -741,9 +749,10 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         do { _ = try await service.snapshot(setID: "30th-c", retry: false); XCTFail("Expected backoff") } catch {}
         XCTAssertEqual(server.requests.count, requestCount)
         server.fail = false
+        server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
         let restored = try await service.snapshot(setID: "30th-c", retry: true)
         XCTAssertEqual(restored.valuesByCardID, first.valuesByCardID)
-        XCTAssertEqual(restored.fetchedAt, first.fetchedAt)
+        XCTAssertGreaterThan(restored.fetchedAt, first.fetchedAt)
     }
 
     func testNewBuildOutageKeepsFreshSnapshotThroughBackoffRetryAndRecovery() async throws {
@@ -763,11 +772,16 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         server.fail = true
         let requestsBefore = server.requests.count
         for (retry, expectedRequests) in [(false, 1), (false, 1), (true, 2), (false, 2)] {
-            let result = try await service.snapshot(setID: "30th-c", retry: retry)
-            XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
-            XCTAssertEqual(result.feedBuild, saved.feedBuild)
-            XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
-            XCTAssertEqual(result.validatedAt, saved.validatedAt)
+            if retry {
+                do { _ = try await service.snapshot(setID: "30th-c", retry: true); XCTFail("Manual failure returned a cached success") }
+                catch {}
+            } else {
+                let result = try await service.snapshot(setID: "30th-c", retry: false)
+                XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
+                XCTAssertEqual(result.feedBuild, saved.feedBuild)
+                XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
+                XCTAssertEqual(result.validatedAt, saved.validatedAt)
+            }
             XCTAssertEqual(try Data(contentsOf: cacheURL), savedBytes)
             XCTAssertEqual(server.requests.count - requestsBefore, expectedRequests,
                 "Ordinary requests respect backoff; manual retry can attempt recovery")
@@ -780,7 +794,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertNotEqual(try Data(contentsOf: cacheURL), savedBytes)
     }
 
-    func testManualRetryMarkerOutageKeepsFreshSnapshotWithoutRestampingIt() async throws {
+    func testManualRetryReportsMarkerOutageAndKeepsTheSavedSnapshot() async throws {
         let server = try server()
         TCGCSVTestURLProtocol.server = server
         defer { TCGCSVTestURLProtocol.server = nil }
@@ -791,12 +805,38 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         server.advance(2 * 60 * 60)
         server.publish(build: "2026-09-30T00:00:00Z")
         server.fail = true
-        let result = try await service.snapshot(setID: "30th-c", retry: true)
-        XCTAssertEqual(result.valuesByCardID, saved.valuesByCardID)
-        XCTAssertEqual(result.feedBuild, saved.feedBuild)
+        do { _ = try await service.snapshot(setID: "30th-c", retry: true); XCTFail("Manual failure returned a cached success") }
+        catch {}
+        let result = try await service.snapshot(setID: "30th-c", retry: false)
         XCTAssertEqual(result.fetchedAt, saved.fetchedAt)
         XCTAssertEqual(result.validatedAt, saved.validatedAt)
         XCTAssertEqual(server.requests.count, 4, "Only the publication check failed")
+    }
+
+    func testManualRetryCannotInheritAnOrdinaryRequestsCachedFailureFallback() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        let saved = try await service.snapshot(setID: "30th-c")
+        server.advance(7_200)
+        server.publish(build: "2026-09-30T00:00:00Z")
+        _ = try await service.snapshot(setID: "30th")
+        server.fail = true
+        server.delay = 0.1
+        let count = server.requests.count
+        let automatic = Task { try await service.snapshot(setID: "30th-c", retry: false) }
+        for _ in 0..<200 where server.requests.count == count {
+            try await Task.sleep(for: .milliseconds(1))
+        }
+        XCTAssertGreaterThan(server.requests.count, count)
+        do { _ = try await service.snapshot(setID: "30th-c", retry: true); XCTFail("Manual request inherited the saved fallback") }
+        catch {}
+        let ordinary = try await automatic.value
+        XCTAssertEqual(ordinary.fetchedAt, saved.fetchedAt)
+        XCTAssertEqual(server.requests.count, count + 2, "The manual check retries after the ordinary fallback")
     }
 
     func testLaggingPublicationFilesKeepFreshSnapshotWithoutAcceptingTheNewBuild() async throws {
@@ -1189,6 +1229,156 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
     }
 
     @MainActor
+    func testLivePublishedMistyRefresh() async throws {
+        // A short-lived receipt in the simulator test sandbox opts into real
+        // provider acceptance; ordinary regressions remain deterministic.
+        struct Acceptance: Decodable { let expiresAt: Date; let build: String; let amount: Double }
+        let receipt = FileManager.default.temporaryDirectory.appendingPathComponent("price-feed-live-acceptance.json")
+        guard let data = try? Data(contentsOf: receipt),
+              let acceptance = try? JSONDecoder().decode(Acceptance.self, from: data),
+              acceptance.expiresAt > .now, acceptance.expiresAt.timeIntervalSinceNow < 3_600 else {
+            throw XCTSkip("Live feed acceptance requires an unexpired local receipt")
+        }
+        XCTAssertNotNil(TCGCSVPriceMirror.baseURL, "The built app must configure the published mirror")
+        let source = PokemonTCGCSVPriceService()
+        let snapshot = try await source.snapshot(setID: "30th-c", retry: true)
+        XCTAssertEqual(snapshot.feedBuild, acceptance.build)
+        XCTAssertLessThan(Date.now.timeIntervalSince(snapshot.fetchedAt), 86_400)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let row = CollectedCard(collectionKey: "30th-c-005#holo", game: .pokemon, providerID: "30th-c-005",
+            name: "Misty", setName: "30th Classic Collection", setCode: "30C", cardNumber: "005",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+        context.insert(row)
+        let oldDate = Date.now.addingTimeInterval(-4 * 86_400)
+        XCTAssertTrue(PriceStore(context: context).store(.price(.init(unitMarketPriceUSD: 6.85,
+            currencyCode: "USD", source: .tcgCSV, sourceVariantID: "holofoil", sourceUpdatedAt: nil,
+            fetchedAt: oldDate)), game: .pokemon, printingID: row.priceStorageID, variantID: "holo", at: oldDate))
+        try context.save()
+        let actor = PriceRefreshModelActor(modelContainer: container)
+        await actor.setPokemonFetchOverrideForTesting { printing in
+            .pokemon(try Self.card(printing.printingID), setCode: "30C")
+        }
+        await actor.setTCGCSVSourceForTesting(source)
+        let result = await actor.run(PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false, intent: .manual), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(report) = result else { return XCTFail("Expected completed live refresh") }
+        XCTAssertEqual(report.priced, 1)
+        XCTAssertEqual(report.failed, 0)
+        XCTAssertFalse(report.persistenceFailed)
+        let record = try XCTUnwrap(PriceStore(context: ModelContext(container)).record(forKey: row.priceKey))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, acceptance.amount)
+        XCTAssertEqual(record.source, .tcgCSV)
+        XCTAssertEqual(record.fetchedAt, snapshot.fetchedAt)
+        XCTAssertEqual(record.display.state(), .current)
+        print("LIVE_MISTY_PRICE=\(acceptance.amount); build=\(snapshot.feedBuild); capture=\(snapshot.fetchedAt)")
+    }
+
+    @MainActor
+    func testManualCollectionRefreshReplacesMistyQuoteAndChecksEachSetOnlyOnce() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let prices = PriceStore(context: context)
+        let oldDate = Date.now.addingTimeInterval(-4 * 86_400)
+        for id in ["30th-c-005", "30th-c-014"] {
+            let row = CollectedCard(collectionKey: "\(id)#holo", game: .pokemon, providerID: id,
+                name: id == "30th-c-005" ? "Misty" : "Pikachu", setName: "30th Classic Collection",
+                setCode: "30C", cardNumber: String(id.suffix(3)), rarity: nil, imageURL: nil,
+                thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+            context.insert(row)
+            XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 6.85, currencyCode: "USD",
+                source: .tcgCSV, sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: oldDate)),
+                game: .pokemon, printingID: id, variantID: "holo", at: oldDate))
+        }
+        try context.save()
+        let fixtures = try server().routes
+        let server = TCGCSVTestServer(routes: fixtures,
+            now: Date(timeIntervalSince1970: floor(Date.now.timeIntervalSince1970) - 7_200))
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        _ = try await service.snapshot(setID: "30th-c")
+        server.advance(7_200)
+        server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
+        try server.setPrice(productID: 716159, groupID: 24837, amount: 5.97)
+        let actor = PriceRefreshModelActor(modelContainer: container)
+        await actor.setPokemonFetchOverrideForTesting { printing in
+            .pokemon(try Self.card(printing.printingID), setCode: "30C")
+        }
+        await actor.setTCGCSVSourceForTesting(service)
+        let result = await actor.run(PriceRefreshRequest(
+            usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false,
+            intent: .manual
+        ), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
+        XCTAssertEqual(report.priced, 2)
+        XCTAssertEqual(report.failed, 0)
+        XCTAssertTrue(report.changedPrices)
+        let read = PriceStore(context: ModelContext(container))
+        let record = try XCTUnwrap(read.record(forKey: PriceRecord.key(game: .pokemon,
+            printingID: "30th-c-005", variantID: "holo")))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 5.97)
+        XCTAssertEqual(record.fetchedAt, server.now)
+        XCTAssertEqual(record.display.state(), .current)
+        XCTAssertEqual(server.requests.count, 6, "Two cards share one new marker/products/prices request set")
+    }
+
+    @MainActor
+    func testManualCollectionFeedFailurePreservesPriceAndRecordsFailedCheck() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let row = CollectedCard(collectionKey: "30th-c-005#holo", game: .pokemon, providerID: "30th-c-005",
+            name: "Misty", setName: "30th Classic Collection", setCode: "30C", cardNumber: "005",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+        context.insert(row)
+        let oldDate = Date.now.addingTimeInterval(-4 * 86_400)
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 6.85, currencyCode: "USD",
+            source: .tcgCSV, sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: oldDate)),
+            game: .pokemon, printingID: row.priceStorageID, variantID: "holo", at: oldDate))
+        try context.save()
+        let routes = try server().routes
+        let server = TCGCSVTestServer(routes: routes,
+            now: Date(timeIntervalSince1970: floor(Date.now.timeIntervalSince1970) - 3_600))
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: server, root: root)
+        _ = try await service.snapshot(setID: "30th-c")
+        server.fail = true
+        let actor = PriceRefreshModelActor(modelContainer: container)
+        await actor.setPokemonFetchOverrideForTesting { printing in
+            .pokemon(try Self.card(printing.printingID), setCode: "30C")
+        }
+        await actor.setTCGCSVSourceForTesting(service)
+        let started = Date.now
+        let result = await actor.run(PriceRefreshRequest(
+            usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false,
+            intent: .manual
+        ), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
+        XCTAssertEqual(report.priced, 0)
+        XCTAssertEqual(report.failed, 1)
+        XCTAssertFalse(report.persistenceFailed)
+        let record = try XCTUnwrap(PriceStore(context: ModelContext(container)).record(forKey: row.priceKey))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 6.85)
+        XCTAssertEqual(record.fetchedAt, oldDate)
+        XCTAssertGreaterThanOrEqual(try XCTUnwrap(record.lastCheckedAt), started)
+        XCTAssertNotNil(record.lastFailureAt)
+        XCTAssertEqual(record.display.state(), .stale)
+        XCTAssertEqual(server.requests.count, 4, "Fallback does not retry the same failed set within a pass")
+    }
+
+    @MainActor
     func testCollectionRefreshUsesBulkWhenCatalogIsDownAndPaidFallbackDisabled() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -1415,6 +1605,17 @@ private final class TCGCSVTestServer: @unchecked Sendable {
     }
     func publish(build: String) {
         lock.withLock { routeData["/last-updated.txt"] = Data(build.utf8) }
+    }
+    func setPrice(productID: Int, groupID: Int, amount: Double) throws {
+        try lock.withLock {
+            let path = "/tcgplayer/3/\(groupID)/prices"
+            var document = try JSONSerialization.jsonObject(with: routeData[path]!) as! [String: Any]
+            var rows = document["results"] as! [[String: Any]]
+            let index = try XCTUnwrap(rows.firstIndex { $0["productId"] as? Int == productID })
+            rows[index]["marketPrice"] = amount
+            document["results"] = rows
+            routeData[path] = try JSONSerialization.data(withJSONObject: document)
+        }
     }
     func response(_ request: URLRequest) -> (Int, Data) {
         lock.withLock {

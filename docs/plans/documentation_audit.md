@@ -17,8 +17,8 @@ physical-printing coverage. The signed One Piece owner seed still lacks three
 reviewed alternatives; modern Magic stamped/original-footer ambiguity remains
 open. Pokémon remote-descriptor adoption, held printings, physical-camera
 acceptance and release gates are not closed by [PR #10](https://github.com/Razorback2424/CardScanner/pull/10),
-which remains unmerged. Final regression evidence is maintained in that dated
-audit rather than copied from earlier runs.
+which was later merged after this source/test review. Final regression evidence
+is maintained in that dated audit rather than copied from earlier runs.
 
 **Catalog review correction — 2026-11-01:** the
 [coverage audit](../audits/card-coverage-gaps-and-research.md#celebrations-follow-up-in-stacked-pr-9)
@@ -27,6 +27,15 @@ The earlier all-25 signed-membership proposal is superseded by the separate
 24-fraction historical approach in PR #9. Browse retention does not imply
 standalone-number scan support. PR #8's runtime and recorded test results are
 unchanged by this documentation correction.
+
+**Manual stale-price refresh — 2026-11-01:** the
+[pricing correctness follow-up](pricing_correctness_and_coverage.md#2026-11-01--stale-collection-quotes-after-manual-refresh)
+records the lost source-retry intent, indefinitely revalidated capture cache,
+missing production feed and macOS runner correction. The final focused
+simulator selection passes 169/169 and publisher contracts pass 9/9. The
+October 29 capability review's feed-activation gap remains operationally open;
+successful ingestion alone does not establish publication or an app endpoint.
+The pricing follow-up owns subsequent activation and native readback evidence.
 
 **Card sharing post-merge review — 2026-10-31:**
 [PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at 15:41:17
