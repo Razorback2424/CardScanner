@@ -327,6 +327,10 @@ struct InventoryLedger {
         observation: PriceObservation?,
         record: PriceRecord?
     ) -> InventoryValuation {
+        if [record?.key, observation?.instrumentKey].compactMap({ $0 })
+            .contains(where: PokemonReviewedPhysicalObjects.requiresReview(priceKey:)) {
+            return .unpriced
+        }
         if let observation {
             // An invalidation is authoritative. Falling through to the mutable
             // PriceRecord would resurrect exactly the price the log withdrew.

@@ -319,6 +319,74 @@ enum PokemonReviewedParallelCatalog {
     static func entry(cardID: String) -> Entry? { entries.first { $0.catalogID == cardID } }
 }
 
+/// Two reviewed cards whose distinct provider objects cannot share a finish
+/// key. New selections retain all distinguishing axes. Ambiguous legacy keys
+/// stay unchanged and are held by requiresPhysicalReview, never migrated.
+enum PokemonReviewedPhysicalObjects {
+    static func requiresReview(priceKey: String) -> Bool {
+        // Only canonical keys for these two reviewed collisions are covered.
+        // Imported aliases are checked with their card identity at read time.
+        for id in ["swsh10.5-059", "sv03.5-004"] {
+            let prefix = "pokemon:\(id)"
+            guard priceKey.hasPrefix(prefix) else { continue }
+            let tail = String(priceKey.dropFirst(prefix.count))
+            guard tail.first == ":" || tail.first == "@",
+                  let separator = tail.firstIndex(of: ":") else { continue }
+            return PokemonVariantRules.requiresPhysicalReview(cardID: id,
+                variantID: String(tail[tail.index(after: separator)...]))
+        }
+        return false
+    }
+
+    static func requiresReview(_ card: CollectedCard) -> Bool {
+        guard card.cardGame == .pokemon,
+              let id = card.underlyingPrintingID,
+              ["swsh10.5-059", "sv03.5-004"].contains(id) else { return false }
+        return PokemonVariantRules.requiresPhysicalReview(cardID: id, variantID: card.variantID)
+    }
+
+    static let plainReverse = PhysicalVariant(id: "pokemonObject|reverse||", label: "Reverse")
+    static let peelableDitto = PhysicalVariant(id: "pokemonObject|reverse||peelable-ditto", label: "Reverse · Peelable Ditto")
+    static let cosmosHolo = PhysicalVariant(id: "pokemonObject|holo|cosmos|", label: "Cosmos Holo")
+    static let cosmosReverse = PhysicalVariant(id: "pokemonObject|reverse|cosmos|", label: "Cosmos Reverse")
+    static let all = [plainReverse, peelableDitto, cosmosHolo, cosmosReverse]
+
+    static func variants(cardID: String) -> [PhysicalVariant]? {
+        switch cardID {
+        case "swsh10.5-059": return [.normal, plainReverse, peelableDitto]
+        case "sv03.5-004": return [.normal, .reverse, cosmosHolo, cosmosReverse] + [
+            PokemonCatalogStampVariant.make(base: .normal, stamps: ["gamestop"]),
+            PokemonCatalogStampVariant.make(base: .reverse, stamps: ["eb-games"])
+        ].compactMap { $0 }
+        default: return nil
+        }
+    }
+
+    static func variant(for detail: TCGdexDetailedVariant, on card: TCGdexCard) -> PhysicalVariant? {
+        guard detail.isStandardEnglish, !detail.isFirstEdition, detail.genericStamps.isEmpty else { return nil }
+        let subtype = detail.subtype?.lowercased() ?? ""
+        let pattern = detail.foil?.lowercased() ?? ""
+        switch card.id {
+        case "swsh10.5-059":
+            guard card.set.id == "swsh10.5", CatalogIdentityNormalization.canonicalText(card.name) == "bidoof",
+                  CatalogIdentityNormalization.localNumber(card.localId) == "59", card.set.cardCount.official == 78,
+                  detail.type == "reverse", pattern.isEmpty else { return nil }
+            if subtype.isEmpty || subtype == "unlimited" { return plainReverse }
+            return subtype == "peelable-ditto" ? peelableDitto : nil
+        case "sv03.5-004":
+            guard card.set.id == "sv03.5", CatalogIdentityNormalization.canonicalText(card.name) == "charmander",
+                  CatalogIdentityNormalization.localNumber(card.localId) == "4", card.set.cardCount.official == 165,
+                  pattern == "cosmos", subtype.isEmpty || subtype == "unlimited" else { return nil }
+            switch detail.type {
+            case "holo": return cosmosHolo
+            case "reverse": return cosmosReverse
+            default: return nil
+            }
+        default: return nil
+        }
+    }
+}
+
 /// The small supplemental layer this app owns.
 ///
 /// TCGdex models identity superbly and publishes normal/holo/reverse, but it does
@@ -332,6 +400,7 @@ enum PokemonVariantRules {
     /// establish a plain reverse or a promotional stamp on these identities.
     /// This is checklist evidence, not a claim that an unlisted object cannot exist.
     static func reviewedVariants(cardID: String) -> [PhysicalVariant]? {
+        if let objects = PokemonReviewedPhysicalObjects.variants(cardID: cardID) { return objects }
         switch cardID {
         case "me02.5-155":
             return [.holo, .pokeBall, .pokemonFoilPattern("energy")] + [

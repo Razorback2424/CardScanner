@@ -288,6 +288,7 @@ final class PriceRecord {
     /// for services that do not have access to the local observation log.
     var effectiveUnitMarketPriceUSD: Double? {
         guard !isInvalidated,
+              !PokemonReviewedPhysicalObjects.requiresReview(priceKey: key),
               currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
     }

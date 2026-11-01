@@ -464,7 +464,8 @@ enum CollectionCSV {
             .compactMapValues(PriceStore.authoritativeRecord(in:))
         return diagnosticExport(
             cards.filter { card in
-                PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
+                PokemonReviewedPhysicalObjects.requiresReview(card)
+                    || PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
             },
             priceRecords: priceRecords,
             diagnostic: { card, record in
@@ -523,7 +524,7 @@ enum CollectionCSV {
                 String(card.quantity),
                 diagnostic(card, record),
                 priceStatus(record),
-                record?.effectiveUnitMarketPriceUSD.map { String($0) } ?? "",
+                PokemonReviewedPhysicalObjects.requiresReview(card) ? "" : (record?.effectiveUnitMarketPriceUSD.map { String($0) } ?? ""),
                 record?.source?.label ?? "",
                 record?.sourceVariantID ?? "",
                 record?.lastCheckedAt.map { formatter.string(from: $0) } ?? "",

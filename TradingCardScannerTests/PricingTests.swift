@@ -46,6 +46,110 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 }
 
 final class PricingTests: XCTestCase {
+    private func collisionSources() throws -> [TCGdexCard] {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-physical-collisions",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let root = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        return try XCTUnwrap(root["cases"] as? [[String: Any]]).map {
+            try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: XCTUnwrap($0["source"])))
+        }
+    }
+
+    func testReviewedPhysicalObjectsKeepDittoSubtypeAndBothCosmosBasesDistinct() throws {
+        let objects = PokemonReviewedPhysicalObjects.self
+        for source in try collisionSources() {
+            let identified = IdentifiedCard.pokemon(source, setCode: "")
+            let finishes = try XCTUnwrap(objects.variants(cardID: source.id))
+            XCTAssertEqual(source.catalogVariants, finishes)
+            XCTAssertEqual(Set(finishes.map(\.id)).count, finishes.count)
+            for finish in finishes {
+                XCTAssertEqual(PhysicalVariant.resolving(finish.id), finish)
+                let data = try JSONEncoder().encode(finish)
+                XCTAssertEqual(try JSONDecoder().decode(PhysicalVariant.self, from: data), finish)
+            }
+            if source.id == "swsh10.5-059" {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: objects.plainReverse, printRun: nil), 276982)
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: objects.peelableDitto, printRun: nil), 277788)
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .reverse, printRun: nil))
+                XCTAssertNil(CardPricing.price(for: identified, variant: .reverse, magicTreatments: []).value)
+                XCTAssertEqual(source.detailedVariant(for: objects.plainReverse)?.subtype, nil)
+                XCTAssertEqual(source.detailedVariant(for: objects.peelableDitto)?.subtype, "peelable-ditto")
+            } else {
+                XCTAssertEqual(source.detailedVariant(for: objects.cosmosHolo)?.type, "holo")
+                XCTAssertEqual(source.detailedVariant(for: objects.cosmosReverse)?.type, "reverse")
+                XCTAssertNil(source.detailedVariant(for: .pokemonFoilPattern("cosmos")))
+                XCTAssertNil(CardPricing.price(for: identified, variant: .pokemonFoilPattern("cosmos"), magicTreatments: []).value)
+            }
+            for finish in [objects.plainReverse, objects.peelableDitto, objects.cosmosHolo, objects.cosmosReverse] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: finish, printRun: .firstEdition))
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: finish, printRun: .shadowless))
+            }
+        }
+    }
+
+    @MainActor
+    func testAmbiguousPhysicalObjectsKeepOwnershipAndQuotesButAreUnpricedAfterStoreReopen() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("physical-review-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+        let now = Date(timeIntervalSince1970: 1_790_000_000)
+        try autoreleasepool {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let context = container.mainContext
+            for source in try collisionSources() {
+                let old: PhysicalVariant = source.id == "swsh10.5-059" ? .reverse : .pokemonFoilPattern("cosmos")
+                for imported in [false, true] {
+                    let id = imported ? "csv:\(source.id)" : source.id
+                    let row = CollectedCard(collectionKey: "\(id):\(old.id)", game: .pokemon, providerID: id,
+                        name: source.name, setName: source.set.name, setCode: source.set.id,
+                        cardNumber: source.localId, rarity: nil, imageURL: nil, thumbnailURL: nil,
+                        variant: old, variantResolution: .userConfirmed)
+                    row.catalogProviderID = source.id
+                    context.insert(row)
+                    let store = PriceStore(context: context)
+                    XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 12, currencyCode: "USD",
+                        source: .tcgplayer, sourceVariantID: "legacy", sourceUpdatedAt: now, fetchedAt: now)),
+                        game: .pokemon, printingID: row.priceStorageID, variantID: old.id, at: now))
+                    XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: old.id,
+                        storedResolution: .userConfirmed, itemKind: .rawCard, printRun: nil,
+                        card: .pokemon(source, setCode: "")))
+                }
+            }
+            try context.save()
+        }
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let cards = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        let records = try reopened.mainContext.fetch(FetchDescriptor<PriceRecord>())
+        let observations = try reopened.mainContext.fetch(FetchDescriptor<PriceObservation>())
+        XCTAssertEqual(cards.count, 4)
+        XCTAssertEqual(records.count, 4)
+        XCTAssertTrue(records.allSatisfy { $0.unitMarketPriceUSD == 12 && !$0.isInvalidated })
+        XCTAssertEqual(observations.count, 4)
+        let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(observations: observations,
+            records: records, reviewCards: cards)
+        let reader = await PriceSnapshotModelActor.makeBackground(modelContainer: reopened)
+        let snapshot = await reader.snapshot()
+        let projection = await CollectionProjectionActor.makeBackground(modelContainer: reopened)
+        let rows = await projection.snapshot()
+        let presentation = PriceSnapshotStore()
+        presentation.replace(with: snapshot)
+        for card in cards {
+            XCTAssertTrue(PokemonReviewedPhysicalObjects.requiresReview(card))
+            XCTAssertEqual(card.variantResolution, .userConfirmed)
+            XCTAssertEqual(card.quantity, 1)
+            XCTAssertNil(valuations.valuation(for: valuations.priceStorageKey(for: card)).unitPrice)
+            XCTAssertNil(snapshot.prices[card.priceKey]?.amount)
+            XCTAssertNil(rows.rowsByCollectionKey[card.collectionKey]?.price.amount)
+            XCTAssertEqual(snapshot.diagnosticsByCollectionKey[card.collectionKey]?.unpricedReason, .physicalIdentityReview)
+            presentation.apply([.init(key: card.priceKey, display: .init(amount: 99, currencyCode: "USD", source: .tcgplayer,
+                sourceUpdatedAt: now, fetchedAt: now))])
+            XCTAssertNil(presentation.display(for: card.priceKey)?.amount)
+        }
+        let csv = CollectionCSV.exportUnpriced(cards, priceRecords: records)
+        XCTAssertEqual(csv.text.split(separator: "\n").count, 5)
+    }
+
     private func reportedParallelCases() throws -> [[String: Any]] {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-parallel-review",
             withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))

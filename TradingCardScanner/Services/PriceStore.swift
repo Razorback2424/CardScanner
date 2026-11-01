@@ -159,6 +159,7 @@ enum PricingDiagnostics {
     /// A retained quote's valuation eligibility is independent of the latest
     /// refresh attempt. Keep the general diagnostic's attempt-first precedence.
     static func valuationExclusionReason(for card: CollectedCard, record: PriceRecord?) -> PricingDiagnosticReason? {
+        if PokemonReviewedPhysicalObjects.requiresReview(card) { return .physicalIdentityReview }
         guard record?.effectiveUnitMarketPriceUSD == nil else { return nil }
         if let record, record.unitMarketPriceUSD != nil,
            record.currencyCode.caseInsensitiveCompare("USD") != .orderedSame {
@@ -171,6 +172,7 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if PokemonReviewedPhysicalObjects.requiresReview(card) { return .physicalIdentityReview }
         if let record, record.lastFailureAt != nil {
             if record.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue { return .invalidProviderQuote }
             if card.itemKind == .rawCard, card.catalogProviderID != nil,

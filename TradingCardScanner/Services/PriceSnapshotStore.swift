@@ -89,6 +89,10 @@ final class PriceSnapshotStore: ObservableObject {
         let latestByKey = Dictionary(deltas.map { ($0.key, $0.display) },
             uniquingKeysWith: { _, latest in latest })
         for (key, display) in latestByKey {
+            if PokemonReviewedPhysicalObjects.requiresReview(priceKey: key)
+                || (collectionKeysByPriceKey[key] ?? []).contains(where: {
+                    nextDiagnostics[$0]?.unpricedReason == .physicalIdentityReview
+                }) { continue }
             if nextPrices[key] != display {
                 nextPrices[key] = display
                 changedCount += 1
@@ -250,16 +254,17 @@ actor PriceSnapshotModelActor: BackgroundModelActor {
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
         let keySelection = PriceRecordKeySelection(records: Array(recordsByKey.values))
-        let prices = recordsByKey.mapValues(\.display)
+        var prices = recordsByKey.mapValues(\.display)
         let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
         var diagnostics: [String: PriceSnapshotDiagnostics] = [:]
         var priceStorageKeys: [String: String] = [:]
         for card in cards {
             let priceStorageKey = keySelection.priceStorageKey(for: card)
             let record = recordsByKey[priceStorageKey]
+            if PokemonReviewedPhysicalObjects.requiresReview(card) { prices[priceStorageKey] = .unknown }
             priceStorageKeys[card.collectionKey] = priceStorageKey
             diagnostics[card.collectionKey] = PriceSnapshotDiagnostics(
-                unpricedReason: record?.effectiveUnitMarketPriceUSD == nil
+                unpricedReason: PokemonReviewedPhysicalObjects.requiresReview(card) || record?.effectiveUnitMarketPriceUSD == nil
                     ? PricingDiagnostics.unpricedReason(for: card, record: record)
                     : nil,
                 artworkReason: ArtworkDiagnostics.reason(

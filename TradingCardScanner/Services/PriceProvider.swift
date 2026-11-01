@@ -184,6 +184,9 @@ enum CardPricing {
     ) -> [TCGdexDetailedVariant] {
         (card.variantsDetailed ?? []).filter {
             guard $0.isStandardEnglish else { return false }
+            if let object = PokemonReviewedPhysicalObjects.variant(for: $0, on: card) {
+                return variant == object && printRun != .firstEdition && printRun != .shadowless
+            }
             if printRun == .firstEdition {
                 return $0.isFirstEdition && $0.genericStamps.isEmpty
                     && (variant == .firstEdition || $0.physicalVariant == variant)

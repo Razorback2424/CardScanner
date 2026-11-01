@@ -242,7 +242,8 @@ enum PortfolioReplaySnapshotBuilder {
         let valuations = valuationIndex(
             observations: rows,
             records: records,
-            asOf: through
+            asOf: through,
+            reviewCards: cards
         )
         let otherCurrencyInstruments = Set(
             recordsForValuation(
@@ -449,7 +450,8 @@ enum PortfolioReplaySnapshotBuilder {
     static func valuationIndex(
         observations: [PriceObservation],
         records: [PriceRecord],
-        asOf: Date? = nil
+        asOf: Date? = nil,
+        reviewCards: [CollectedCard] = []
     ) -> InstrumentValuationIndex {
         let observationsForValuation: [PriceObservation]
         if let asOf {
@@ -485,6 +487,10 @@ enum PortfolioReplaySnapshotBuilder {
                 observation: newest[key],
                 record: recordsByKey[key]
             )
+        }
+        let selection = PriceRecordKeySelection(records: Array(recordsByKey.values))
+        for card in reviewCards where PokemonReviewedPhysicalObjects.requiresReview(card) {
+            index[selection.priceStorageKey(for: card)] = .unpriced
         }
 
         return InstrumentValuationIndex(

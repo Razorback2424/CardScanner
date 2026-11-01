@@ -143,6 +143,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// The `variants_detailed` entry describing one physical object, if TCGdex
     /// published one for it.
     func detailedVariant(for variant: PhysicalVariant) -> TCGdexDetailedVariant? {
+        guard !PokemonVariantRules.requiresPhysicalReview(cardID: id, variant: variant) else { return nil }
+        if PokemonReviewedPhysicalObjects.all.contains(variant) {
+            return variantsDetailed?.first { PokemonReviewedPhysicalObjects.variant(for: $0, on: self) == variant }
+        }
         if PokemonCatalogStampVariant.decode(variant.id) != nil {
             return variantsDetailed?.first { $0.isStandardEnglish && $0.stampedPhysicalVariant?.id == variant.id }
         }
