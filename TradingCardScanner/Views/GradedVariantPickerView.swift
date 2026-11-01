@@ -10,13 +10,16 @@ final class GradedVariantModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let client: JustTCGV2GradedClient
+    /// Nil keeps the live production gate; tests can avoid OS credential state.
+    private let credentialsAvailable: Bool?
 
-    init(transport: JustTCGTransport) {
+    init(transport: JustTCGTransport, credentialsAvailable: Bool? = nil) {
         self.client = JustTCGV2GradedClient(transport: transport,
             magicCardLoader: JustTCGV2GradedClient.loadMagicCard)
+        self.credentialsAvailable = credentialsAvailable
     }
 
-    var isConfigured: Bool { PriceVendorCredentials.hasKey }
+    var isConfigured: Bool { credentialsAvailable ?? PriceVendorCredentials.hasKey }
 
     /// Grouped grader-first, which is also how the picker navigates: choosing a
     /// grader then a grade keeps each screen to a handful of 44pt rows rather

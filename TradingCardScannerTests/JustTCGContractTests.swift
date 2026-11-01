@@ -231,12 +231,6 @@ final class JustTCGContractTests: XCTestCase {
 
     @MainActor
     func testGradedPickerRetriesTransientAndIncompleteSearchesWithoutRetryingTerminalResults() async throws {
-        let previousKey = PriceVendorCredentials.key
-        defer {
-            if let previousKey { try? PriceVendorCredentials.store(previousKey) }
-            else { PriceVendorCredentials.remove() }
-        }
-        try PriceVendorCredentials.store("graded-picker-fixture-key")
         let suite = "GradedPickerRetry-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -247,8 +241,9 @@ final class JustTCGContractTests: XCTestCase {
         var settings = JustTCGTransport.Configuration()
         settings.baseURL = URL(string: "https://justtcg.test")!
         settings.minimumRequestInterval = 0
-        let model = GradedVariantModel(transport: .init(configuration: settings, session: session,
-            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "fixture-key"))
+        let transport = JustTCGTransport(configuration: settings, session: session,
+            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "fixture-key")
+        let model = GradedVariantModel(transport: transport, credentialsAvailable: true)
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "pokemon-subset-product-proof",
             withExtension: "json", subdirectory: "TradingCards/SetPricingAudit"))
         let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
@@ -264,6 +259,16 @@ final class JustTCGContractTests: XCTestCase {
         func body() throws -> String {
             String(decoding: try JSONSerialization.data(withJSONObject: ["data": [vendor]]), as: UTF8.self)
         }
+
+        let unconfigured = GradedVariantModel(transport: transport, credentialsAvailable: false)
+        RecordingURLProtocol.reset(body: try body())
+        await unconfigured.load(identity: identity, game: .pokemon)
+        XCTAssertFalse(unconfigured.isConfigured)
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty, "An unavailable credential gate must stop before transport")
+        XCTAssertTrue(unconfigured.variants.isEmpty)
+        XCTAssertNil(unconfigured.errorMessage)
+        XCTAssertFalse(unconfigured.canRetry)
+        XCTAssertTrue(model.isConfigured)
 
         RecordingURLProtocol.reset(status: 503)
         await model.load(identity: identity, game: .pokemon)
