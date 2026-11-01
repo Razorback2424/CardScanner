@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from build_lorcana_market_catalog import build, validate_previous, reviewed_finishes
+from build_lorcana_market_catalog import ORIGINAL_GROUPS, build, validate_previous, reviewed_finishes
 
 
 class MarketCatalogTests(unittest.TestCase):
@@ -15,7 +15,8 @@ class MarketCatalogTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.row = dict(id='lorcanajson:en:1', name='Ariel - On Human Legs', setCode='1', sourceSetCode='1',
             setName='The First Chapter', foilTypes=['None','Silver'], rarity='Uncommon', layout='normal',
-            imageURL='https://example.com/ariel.jpg', footer=dict(collectorNumber='1',denominator='204',language='en',printedSetMarker='1'))
+            imageURL='https://api.lorcana.ravensburger.com/images/en/set1/1_fixture.jpg',
+            footer=dict(collectorNumber='1',denominator='204',language='en',printedSetMarker='1'))
         self.product = dict(productId=494102,categoryId=71,groupId=22937,name=self.row['name'],extendedData=[dict(name='Number',value='1/204')])
         self.products=[self.product]
         self.prices=[dict(productId=494102,subTypeName=x,marketPrice=None) for x in ['Normal','Cold Foil']]
@@ -55,6 +56,49 @@ class MarketCatalogTests(unittest.TestCase):
         self.product['groupId']=22937
         self.product['extendedData'][0]['value']='2/204'
         self.assertEqual(self.run_build()[2]['mappingCount'],0)
+
+    def testOrdinaryPhysicalPolicyRejectsOtherScopesAndTreatments(self):
+        baseline = copy.deepcopy(self.row)
+        for changes in [
+            {'setCode': '99', 'sourceSetCode': '99'},
+            {'sourceSetCode': '2'},
+            {'distribution': 'D23'},
+            {'layout': 'token'},
+            {'rarity': 'Iconic'},
+            {'foilTypes': ['None', 'Silver', 'Silver']},
+            {'imageURL': 'https://api.lorcana.ravensburger.com/images/en/set2/1_fixture.jpg'},
+        ]:
+            with self.subTest(changes=changes):
+                self.row.clear(); self.row.update(copy.deepcopy(baseline)); self.row.update(changes)
+                self.assertIsNone(reviewed_finishes(self.row))
+                self.assertEqual(self.run_build()[2]['mappingCount'], 0)
+        self.row.clear(); self.row.update(copy.deepcopy(baseline))
+        self.row['footer']['printedSetMarker'] = '2'
+        self.assertIsNone(reviewed_finishes(self.row))
+        self.assertEqual(self.run_build()[2]['mappingCount'], 0)
+
+    def testOriginalExpansionCannotBorrowAnotherSelectedMarketGroup(self):
+        self.groupID = self.product['groupId'] = 23303
+        with self.assertRaises(ValueError): self.run_build()
+
+    def testAdoptedOriginalPrintingsRetainTheirExactFinishAndGroupMappings(self):
+        seed = Path(__file__).resolve().parents[2] / 'TradingCardScanner/LorcanaCatalogSeed'
+        sources = {row['id']: row for row in json.loads((seed / 'discovery.json').read_bytes())['cards']}
+        market = json.loads((seed / 'market.json').read_bytes())
+        checked = 0
+        for printing in market['physicalPrintings']:
+            mappings = printing.get('marketMappings') or []
+            if not mappings or printing['providerSetCode'] not in ORIGINAL_GROUPS:
+                continue
+            with self.subTest(printing=printing['id']):
+                rows = [sources[alias['id']] for alias in printing['sourceAliases'] if alias['id'] in sources]
+                self.assertEqual(len(rows), 1)
+                row = rows[0]
+                self.assertEqual(sorted(reviewed_finishes(row)),
+                    sorted((mapping['finish'], mapping['providerVariantID']) for mapping in mappings))
+                self.assertEqual({mapping['groupID'] for mapping in mappings}, {ORIGINAL_GROUPS[row['setCode']]})
+                checked += 1
+        self.assertGreater(checked, 0)
     def testPreviouslyAllocatedIdentityCannotBeRemovedOrChanged(self):
         m,_,_=self.run_build();changed=copy.deepcopy(m)
         changed['physicalPrintings'][0]['identity']['size']='oversized'
@@ -154,6 +198,13 @@ class MarketCatalogTests(unittest.TestCase):
         self.assertEqual(self.run_build(ledger,review_later=True)[0],manifest)
         self.row['setCode']=self.row['sourceSetCode']=self.row['footer']['printedSetMarker']='12'
         self.assertIsNone(reviewed_finishes(self.row,True))
+
+    def testEveryLaterOrdinaryExpansionRequiresExplicitReviewMode(self):
+        for code in map(str, range(9, 15)):
+            with self.subTest(code=code):
+                self.later(code=code, number='1', denominator='207' if code == '13' else '204')
+                self.assertEqual(self.run_build()[2]['mappingCount'], 0)
+                self.assertEqual(self.run_build(review_later=True)[2]['mappingCount'], 2)
 
     def testLaterPolicyRejectsCrossScopeDistributionAndAdditionalFoilPatterns(self):
         self.later()

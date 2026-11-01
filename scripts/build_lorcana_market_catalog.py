@@ -24,6 +24,10 @@ ENCHANTED_FINISH = 'https://www.disneylorcana.com/en-US/news/enchanted-reveal'
 ENCHANTED_MARKET_NAMES = {('8', '219', 'The Sword of Shan-Yu'): 'The Sword of Shan Yu'}
 LATER_REVIEW = 'docs/research/lorcana-expansion-candidate-review-2026-10-23.md'
 LATER_RARITIES = 'https://www.disneylorcana.com/en-US/news/2025/08/2025-8-stunning-new-rarities'
+# Exact groups retained by the adopted sets 1–8 mapping review. Selecting a
+# source file cannot authorize a different expansion's title/number matches.
+ORIGINAL_GROUPS = {'1': 22937, '2': 23303, '3': 23367, '4': 23474,
+                   '5': 23536, '6': 23746, '7': 24011, '8': 24258}
 LATER_GROUPS = {'9': 24348, '10': 24414, '11': 24500, '12': 24617, '13': 24666, '14': 24740}
 DISNEY100_REFERENCE = 'https://www.disneylorcana.com/en-US/news/s2-announcement'
 # source ID: (printed number, printed expansion, exact product, source title).
@@ -95,21 +99,25 @@ def reviewed_finishes(row, review_later_expansions=False, review_disney100=False
         if special and special[0] <= number <= special[1] and row['foilTypes'] == [special[2]]:
             return [('foil', 'Holofoil')]
         return None
-    if not f or f['language'] != 'en' or f['denominator'] != '204' or not re.fullmatch(r'[0-9]+', f['collectorNumber']):
+    # Ordinary 204-card numbering alone does not establish a reviewed expansion
+    # or physical treatment. In particular, later sets must not reach this path
+    # when their separate review option is off.
+    if (not f or f['language'] != 'en' or f['denominator'] != '204'
+            or not re.fullmatch(r'[0-9]+', f['collectorNumber'])
+            or code not in ORIGINAL_GROUPS or row['sourceSetCode'] != code or f['printedSetMarker'] != code
+            or row.get('distribution') is not None or row['layout'] not in {'normal', 'landscape'}
+            or len(row['foilTypes']) != len(set(row['foilTypes']))
+            or not row['imageURL'].startswith(f"https://api.lorcana.ravensburger.com/images/en/set{code}/{f['collectorNumber']}_")):
         return None
     number = int(f['collectorNumber'])
-    if 1 <= number <= 204 and set(row['foilTypes']) == {'None', 'Silver'}:
+    if (1 <= number <= 204 and set(row['foilTypes']) == {'None', 'Silver'}
+            and row['rarity'] in {'Common', 'Uncommon', 'Rare', 'Super Rare', 'Legendary'}):
         return [('normal', 'Normal'), ('foil', 'Cold Foil')]
     # Only the eight reconciled original Enchanted runs. Later Magma/Tinsel,
     # promos, multiple foil treatments and alternate distributions need their own policy.
-    code = row['setCode']
-    if code not in {str(i) for i in range(1, 9)} or row['sourceSetCode'] != code or f['printedSetMarker'] != code:
-        return None
     maximum = 216 if code in {'1', '2'} else 222
     pattern = 'Lava' if code in {'1', '2', '3', '4'} else 'VerticalWave'
-    if (205 <= number <= maximum and row['rarity'] == 'Enchanted' and row['layout'] in {'normal', 'landscape'}
-            and row['foilTypes'] == [pattern] and row.get('distribution') is None
-            and row['imageURL'].startswith(f'https://api.lorcana.ravensburger.com/images/en/set{code}/{number}_')):
+    if 205 <= number <= maximum and row['rarity'] == 'Enchanted' and row['foilTypes'] == [pattern]:
         return [('foil', 'Holofoil')]
     return None
 
@@ -133,6 +141,8 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
     catalogs = {}
     receipts = []
     for group in json.loads((sources / 'groups-selected.json').read_bytes()):
+        if group['code'] in ORIGINAL_GROUPS and group['groupID'] != ORIGINAL_GROUPS[group['code']]:
+            raise ValueError('Original expansion source group differs from reviewed identity')
         if review_later_expansions and group['code'] in LATER_GROUPS and group['groupID'] != LATER_GROUPS[group['code']]:
             raise ValueError('Later expansion source group differs from reviewed identity')
         if review_disney100 and group['code'] == 'P1' and group['groupID'] != 23305:

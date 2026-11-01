@@ -2304,6 +2304,19 @@ final class YuGiOhRecognitionTests: XCTestCase {
         guard case let .rejected(rejection) = adapter.identify([.init(text: "RA02-EN037"), .init(text: "12345678")]) else { return XCTFail() }
         XCTAssertTrue(rejection.blocksFallbackRecognition)
     }
+    func testMatchingPasscodeCannotEraseAContradictoryReading() throws {
+        let adapter = YuGiOhRecognitionAdapter(catalog: try YuGiOhFixture.catalog())
+        for readings in [["66011101", "12345678"], ["12345678", "66011101"]] {
+            guard case let .rejected(rejection) = adapter.identify(
+                [.init(text: "RA02-EN037")] + readings.map { .init(text: $0) }
+            ) else { return XCTFail("A matching passcode must not erase contradictory evidence") }
+            XCTAssertTrue(rejection.blocksFallbackRecognition)
+        }
+        guard case .identified = adapter.identify([.init(text: "RA02-EN037"),
+            .init(text: "66011101"), .init(text: "66011101")]) else {
+            return XCTFail("Repeated matching observations are not a conflict")
+        }
+    }
     func testAmbiguousLimitedFragmentsNeverBecomeFirst() {
         for token in ["EDITION", "LIM EDITION", "MIT EDITION", "ITE EDITION", "T EDITION", "S EDITION", "I EDITION", "TED EDITION"] {
             XCTAssertEqual(YuGiOhRecognitionAdapter.edition(token), .unreadable, token)
@@ -2335,6 +2348,64 @@ final class YuGiOhRecognitionTests: XCTestCase {
 
 @MainActor
 final class YuGiOhResolutionTests: XCTestCase {
+    func testEveryBundledSupportedCodeFamilyReachesSharedCatalog() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let shared = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        var multiCanonicalCodes: Set<String> = []
+        for (code, family) in catalog.printingsByCode.sorted(by: { $0.key < $1.key })
+            where YuGiOhCatalog.validCode(code) {
+            let identifier = try YuGiOhRecognitionAdapter.identifier(code: code, generation: catalog.generation)
+            let outcome = try await shared.lookupOutcome(for: identifier)
+            if Set(family.map { $0.card.id }).count > 1 {
+                multiCanonicalCodes.insert(code)
+                guard case let .needsPrintingChoice(summary, candidates) = outcome else {
+                    return XCTFail("Mixed canonical links require an explicit choice: \(code)")
+                }
+                XCTAssertEqual(summary.id, YuGiOhCatalogAdapter.choiceGroupID(for: code))
+                XCTAssertEqual(Set(candidates.map(\.id)), Set(family.map(\.idString)))
+                for candidate in candidates where candidate.acquisitionUnavailableReason == nil {
+                    let resolution = try await shared.resolvePrintingChoice(candidate, for: identifier)
+                    XCTAssertEqual(resolution.card.physicalPrintingID, candidate.id)
+                    XCTAssertEqual(resolution.card.canonicalCardID, candidate.canonicalCardID)
+                    do {
+                        try await shared.validateAcquisition(identifier, printingID: candidate.id, automatic: true)
+                        XCTFail("A family picker cannot be bypassed: \(code)")
+                    } catch CatalogLookupError.invalidPrintingChoice {}
+                }
+            }
+        }
+        XCTAssertTrue(["CH02-EN004", "LOD-050", "OP09-EN026"].allSatisfy(multiCanonicalCodes.contains))
+    }
+
+    func testCodeFamilyGroupingCannotAuthorizeAForgedPrinting() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let shared = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: "CH02-EN004", generation: catalog.generation)
+        guard case let .needsPrintingChoice(summary, candidates) = try await shared.lookupOutcome(for: identifier) else {
+            return XCTFail("Expected the exact code family")
+        }
+        let original = try XCTUnwrap(candidates.first)
+        for mutation in ["code", "canonical", "language", "generation"] {
+            let forged = PhysicalPrintingCandidate(id: original.id, game: original.game,
+                canonicalCardID: mutation == "canonical" ? UUID().uuidString.lowercased() : original.canonicalCardID,
+                language: mutation == "language" ? "ja" : original.language,
+                catalogGeneration: mutation == "generation" ? "yugioh-en-other" : original.catalogGeneration,
+                name: original.name, printedIdentifier: mutation == "code" ? "LOD-050" : original.printedIdentifier,
+                releaseLabel: original.releaseLabel, treatmentLabel: original.treatmentLabel,
+                distributionLabel: original.distributionLabel, releaseDate: original.releaseDate,
+                thumbnailURL: original.thumbnailURL, artworkID: original.artworkID,
+                distinctionLabels: original.distinctionLabels)
+            do {
+                _ = try await shared.resolvePrintingChoice(forged, for: identifier)
+                XCTFail("Grouping must not authorize a forged \(mutation)")
+            } catch CatalogLookupError.invalidPrintingChoice {} catch CatalogLookupError.staleCatalog {}
+        }
+        let wrongCode = try YuGiOhRecognitionAdapter.identifier(code: "LOD-050", generation: catalog.generation)
+        XCTAssertFalse(YuGiOhCatalogAdapter.choiceBelongsToCodeFamily(original, summary: summary, identifier: wrongCode))
+    }
+
     func testGameWideEditionPolicyIsIndependentOfReleaseAndRarity() async throws {
         let catalog = try YuGiOhCatalog.bundled.get(), adapter = YuGiOhCatalogAdapter(catalog: catalog)
         for code in ["MP24-EN372", "DUNE-EN051", "PSV-001"] {

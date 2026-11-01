@@ -6,7 +6,9 @@ struct OnePieceImportAdapter: GameImportAdapter {
     var generation: String? { registry.generation }
 
     func validate(_ entry: CollectionCSVEntry) throws {
-        guard entry.game == game, entry.itemKind == .rawCard else {
+        guard !entry.conflictingSourceIdentity else { throw GameImportValidationError.contradictoryIdentity }
+        guard entry.game == game, entry.itemKind == .rawCard,
+              entry.sourceItemKindRaw == nil || entry.sourceItemKindRaw == CollectionItemKind.rawCard.rawValue else {
             throw GameImportValidationError.unsupportedItemKind
         }
         guard
@@ -17,8 +19,11 @@ struct OnePieceImportAdapter: GameImportAdapter {
         }
         guard entry.catalogProviderID == nil || entry.catalogProviderID == entry.providerID,
               entry.cardNumber.isEmpty || entry.cardNumber == card.cardNumber,
-              entry.pokemonPrintRun == nil, entry.magicTreatmentIDsRaw.isEmpty,
-              entry.justTCGCardID == nil, entry.justTCGVariantID == nil else {
+              entry.sourceLanguage == nil || normalizedLanguage(entry.sourceLanguage!) == card.language,
+              entry.pokemonPrintRun == nil, entry.magicTreatmentIDsRaw.isEmpty, entry.magicTreatmentQualifiers.isEmpty,
+              entry.magicContentKindRaw == MagicContentKind.regular.rawValue,
+              entry.justTCGCardID == nil, entry.justTCGVariantID == nil, entry.justTCGAPIVersion == nil,
+              entry.gradingCompany == nil, entry.grade == nil, entry.certificationNumber == nil else {
             throw GameImportValidationError.contradictoryIdentity
         }
         guard let variant = entry.variant else { throw GameImportValidationError.missingFinish }
@@ -44,5 +49,10 @@ struct OnePieceImportAdapter: GameImportAdapter {
                 tcgplayerURL: nil, setReleaseOrder: card.setReleaseOrder, updatesProviderPurchaseURL: false)
         }
         return matches
+    }
+
+    private func normalizedLanguage(_ value: String) -> String {
+        let lower = value.lowercased()
+        return ["english", "eng"].contains(lower) ? "en" : lower
     }
 }
