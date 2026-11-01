@@ -1,3 +1,24 @@
+# 2026-11-01 — Five-game catalog coverage sweep
+
+Branch `refinement/catalog-coverage-2026-11-01` from `main@a2b11ad`. Each game
+was traced from printed identifier to catalog identity and finish, and the
+results were compared with the live signed Pokémon revision 18 and with public
+TCGdex, TCGCSV, pokemontcg.io and Scryfall data. Findings and evidence are in
+the [coverage audit](docs/audits/card-coverage-gaps-and-research.md#five-game-coverage-sweep--2026-11-01).
+
+Fixed:
+- Shiny Vault footers `SV49/SV94` (Hidden Fates) and `SV001/SV122`
+  (Shining Fates) are now scannable. Previously they were unreadable.
+- Hidden Fates Shiny Vault cards resolve as Holofoil instead of TCGdex's
+  incorrect Normal.
+
+Awaiting the owner: Celebrations Classic Collection reprints still resolve
+silently as their original vintage printings. The fix needs registry
+membership and a newly signed revision. The 30th Classic Collection is
+unchanged. The focused selection passed **382 tests** and a wider
+scanner/Browse/pricing selection passed **385 tests**, both with zero failures
+or skips. This is simulator evidence only.
+
 # 2026-10-31 — Card sharing post-merge artwork recovery
 
 Follow-up on `fix/card-share-artwork-recovery` from `main@3053218`.

@@ -1112,7 +1112,9 @@ enum PokemonHistoricalIdentityResolver {
         "H": [32: ["ecard2", "ecard3"]],
         "TG": [30: ["swsh9tg", "swsh10tg", "swsh11tg", "swsh12tg"]],
         "GG": [70: ["swsh12.5gg"]],
-        "RC": [25: ["bw11"], 32: ["g1"]]
+        "RC": [25: ["bw11"], 32: ["g1"]],
+        // Shiny Vault: Hidden Fates `SV1/SV94`, Shining Fates `SV001/SV122`.
+        "SV": [94: ["sma"], 122: ["swsh4.5sv"]]
     ]
 
     /// Whether the printed numbering shape is one this resolver understands.

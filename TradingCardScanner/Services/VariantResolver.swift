@@ -309,7 +309,12 @@ enum PokemonVariantRules {
         // Holofoil products and the trainers' separate Normal/Holofoil objects.
         case "xya-24a", "xya-28a", "xya-54a", "xya-55a": return [.holo]
         case "xya-92a", "xya-107a": return [.normal, .holo]
-        default: return nil
+        default:
+            // Hidden Fates Shiny Vault: TCGdex flags all 94 as Normal, while every
+            // TCGplayer product (group 2594, checked 2026-11-01) is Holofoil only.
+            guard cardID.hasPrefix("sma-SV"), let number = Int(cardID.dropFirst(6)),
+                  (1...94).contains(number), cardID == "sma-SV\(number)" else { return nil }
+            return [.holo]
         }
     }
 

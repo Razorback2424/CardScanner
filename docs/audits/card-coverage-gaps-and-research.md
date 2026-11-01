@@ -1,10 +1,91 @@
 # Card coverage gaps and research priorities
 
-**Reviewed:** 2026-10-15; original research baseline retained below.
-**Candidate:** `35473ed` plus existing local changes.
-**Status:** specialty coverage fixes and a four-game discrepancy review; no worldwide completeness or device certification.
+**Reviewed:** 2026-11-01 sweep; the 2026-10-15 review and original research baseline are retained below.
+**Candidate:** `a2b11ad` on `refinement/catalog-coverage-2026-11-01`.
+**Status:** two Pokémon fixes implemented; one silent-misidentification defect awaits an owner decision; no worldwide completeness or device certification.
 
-## Latest four-game review — 2026-10-15
+## Five-game coverage sweep — 2026-11-01
+
+This pass followed each game from printed identifier to catalog identity and
+finish, then compared the result with the live signed catalog and independent
+public data: TCGdex, TCGplayer listings via TCGCSV, pokemontcg.io, Scryfall,
+and the bundled Yu-Gi-Oh, Lorcana and One Piece catalogs.
+
+### Fixed in this branch
+
+| ID | Defect | Fix |
+| --- | --- | --- |
+| S1 | Shiny Vault cards were unscannable. Hidden Fates prints `SV49/SV94` and Shining Fates prints `SV001/SV122` (all 216 TCGplayer products agree). The historical parser knew only the `H`, `TG`, `GG` and `RC` subset prefixes, so these footers produced no reading. | `SV` is a subset prefix that must appear on both sides. 94 maps to `sma` and 122 to `swsh4.5sv`. A bare `SV` before an ordinary fraction keeps its old official-set reading, so `SVI 049/198` with the `I` lost stays recoverable by denominator and title. |
+| S2 | Hidden Fates Shiny Vault finishes were wrong. TCGdex flags all 94 cards `normal`, while every TCGplayer product is Holofoil only. Once S1 made the cards scannable, they would have been auto-recorded as Normal with no price. | A reviewed-variant override sets `sma-SV1`…`sma-SV94` to Holofoil, and the Browse read-time projection now includes `sma`, following the Yellow A precedent. An existing Normal holding is flagged for physical review and is never rekeyed automatically. Shining Fates Shiny Vault was already Holo and is unchanged. |
+
+### Awaiting owner decision
+
+**C1 — Celebrations Classic Collection resolves as the original card.** The 25
+`cel25cc` reprints print their original numbers: Charizard reads `4/102`, not
+a `/25` number. The set has no membership recognition (only the 30th
+Celebration Classic Collection has one), so a scan resolves silently to the
+vintage original. 22 of 25 match a same-name original in the bundled checklist
+alone. The other three reach originals through the live directory: Impostor Oak
+(a one-letter spelling difference), Umbreon ☆ (POP 5) and _____'s Pikachu
+(Wizards promo 24).
+
+The proposed fix mirrors `30th-c`: a non-scannable `cel25cc` descriptor that
+lists all 25 members, so each collision becomes an explicit printing choice.
+It changes registry authority, and about a dozen registry consumers read it:
+Browse order and codes, the collection normalizer, price refresh and cache
+staleness. It must also be added to both the bundled seed and
+`publisher/catalog-input.json`, and production uses `remote-authority`, so it
+reaches users only through a newly signed revision. Charizard `4/102` would then
+offer three printings, because the 30th Classic Collection also reprints it. The
+30th-c rows themselves would not change.
+
+Printed numbers below come from TCGplayer (TCGCSV group 2931). pokemontcg.io's
+`cel25c` numbers agree independently on every numerator; each denominator is
+the original set's official count.
+
+| Provider ID | Name | Printed | Provider ID | Name | Printed |
+| --- | --- | --- | --- | --- | --- |
+| `cel25cc-CC001` | Blastoise | 2/102 | `cel25cc-CC014` | Gardevoir ex | 93/101 |
+| `cel25cc-CC002` | Charizard | 4/102 | `cel25cc-CC015` | Umbreon ☆ | 17/17 |
+| `cel25cc-CC003` | Venusaur | 15/102 | `cel25cc-CC016` | Claydol | 15/106 |
+| `cel25cc-CC004` | Imposter Professor Oak | 73/102 | `cel25cc-CC017` | Luxray GL LV.X | 109/111 |
+| `cel25cc-CC005` | Dark Gyarados | 8/82 | `cel25cc-CC018` | Garchomp C LV.X | 145/147 |
+| `cel25cc-CC006` | Here Comes Team Rocket! | 15/82 | `cel25cc-CC019` | Donphan | 107/123 |
+| `cel25cc-CC007` | Rocket's Zapdos | 15/132 | `cel25cc-CC020` | Reshiram | 113/114 |
+| `cel25cc-CC008` | _____'s Pikachu | 24/53 | `cel25cc-CC021` | Zekrom | 114/114 |
+| `cel25cc-CC009` | Cleffa | 20/111 | `cel25cc-CC022` | Mewtwo EX | 54/99 |
+| `cel25cc-CC010` | Shining Magikarp | 66/64 | `cel25cc-CC023` | Xerneas EX | 97/146 |
+| `cel25cc-CC011` | Team Magma's Groudon | 9/95 | `cel25cc-CC024` | M Rayquaza EX | 76/108 |
+| `cel25cc-CC012` | Rocket's Admin. | 86/109 | `cel25cc-CC025` | Tapu Lele GX | 60/145 |
+| `cel25cc-CC013` | Mew ex | 88/92 | | | |
+
+### Confirmed boundaries (no change made)
+
+| Area | Finding |
+| --- | --- |
+| Pokémon prefix-only numbers | Arceus `AR1`–`AR9`, `SH1`–`SH12`, Rotom `RT1`–`RT6`, Call of Legends `SL1`–`SL11`, the HGSS Alph lithographs (`ONE`…`FOUR`) and the Unown letters print no denominator, so the number reader cannot see them. These cards go unrecognized; they are not misidentified. |
+| Pokémon promos | Wizards and Nintendo promos print a bare number and are not scannable. **Do not add a `DP` promo prefix:** it matches 260 Yu-Gi-Oh Duelist Pack codes (`DP03-EN001`…), which would make those frames cross-game ambiguous. An `HGSS` prefix has no collision but needs a registry entry and a signed revision. |
+| Pokémon set table | Live signed revision 18 (2026-10-31) matches the bundled set table exactly: 23 expansions, the 30th Classic Collection, MEE and six promo prefixes. The denominator-only guess cannot choose a set whose denominator any checklisted set shares, and the read title must still agree with the card name. |
+| Magic | The compiled vocabulary lacks two released sets, `SLZ` (2026-09-02) and `PFRA` (2026-10-02), plus five future ones. The live directory refresh covers them once the device is online. Long-code promos (`PLG21`/`22`/`24`/`25`, `PTSNC`) remain in the [long-code ledger](../research/catalog-variant-coverage-2026-10-15/magic-long-code-sets.csv). |
+| Yu-Gi-Oh | Recognition requires a bundled code. 12 of 37,869 codes cannot match the code pattern, and 11,245 are incomplete and route to a printing choice or discovery rather than an automatic add. European `LOB-E001`-style codes are absent and go unrecognized. Of Yu-Gi-Oh set prefixes, only `DDS`, `JMP` and `SOI` are also Magic codes. No Yu-Gi-Oh code matches a Pokémon promo, energy or subset pattern. |
+| Lorcana | Sets after 8 remain discovery-only on the owner's [expansion hold](../research/lorcana-expansion-candidate-review-2026-10-23.md). Those cards go to Needs Attention instead of being misidentified. |
+| One Piece | The production configuration has `ONE_PIECE_CATALOG_ROLLOUT_MODE = disabled` and collection writes off. The existing [edge-case audit](one-piece-variants-catalog-edge-cases.md) still governs. |
+
+### Verification
+
+New regressions cover four things: Shiny Vault parsing and set selection; the
+degraded `SV 049/198` reading, which keeps its official-set result; offline
+bundled resolution of `SV49/SV94` and `SV107/SV122` to Holofoil; and the
+94-row Holo Browse projection. The focused Debug selection (`ScanParserTests`,
+`PokemonChecklistBrowseTests`, `PricingTests`, `JustTCGContractTests`) passed
+**382 tests, zero failures or skips** on the iOS simulator. A separate run of
+12 scanner, Browse, normalization, unresolved-scan and price-refresh classes
+passed **385 tests, zero failures or skips**. Build output is under
+`/Volumes/T7/CodexBuild/catalog-coverage-2026-11-01/`. These are source,
+data and simulator checks only. No physical card was scanned, and C1 is not
+implemented.
+
+## Four-game review — 2026-10-15
 
 The [current evidence and discrepancy ledgers](../research/catalog-variant-coverage-2026-10-15/README.md)
 record a fresh directory/product comparison across Pokémon, Magic, One Piece and
