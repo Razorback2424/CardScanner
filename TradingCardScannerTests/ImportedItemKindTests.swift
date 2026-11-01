@@ -115,10 +115,13 @@ final class ImportedItemKindTests: XCTestCase {
         let adapters = try GameImportAdapterRegistry(adapters: [adapter])
         let policy = CardGameRegistry(descriptors: [.init(game: .onePiece, displayName: "One Piece", sortOrder: 0,
             capabilities: [.collectionWrite])])
-        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
-            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
-        CollectionStore.configureGames(policy, for: container)
-        CollectionStore.configureCatalogAdapters(try .init(adapters: [catalog]), legacyCorrectionGames: [], for: container)
+        func makeContainer() throws -> ModelContainer {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            CollectionStore.configureGames(policy, for: container)
+            CollectionStore.configureCatalogAdapters(try .init(adapters: [catalog]), legacyCorrectionGames: [], for: container)
+            return container
+        }
 
         let invalidEvidence: [[(String, String)]] = [
             [("item_kind", "gradedCard")],
@@ -126,13 +129,22 @@ final class ImportedItemKindTests: XCTestCase {
             [("item_kind", "future-kind")],
             [("source_identity_conflict", "true")],
             [("grading_company", "PSA"), ("grade", "10")],
+            [("grade", "10")],
+            [("grading_company", "future-grader")],
+            [("grading_qualifier", "OC")],
             [("certification_number", "fixture-cert")],
             [("justtcg_card_id", "fixture-card")],
             [("justtcg_variant_id", "fixture-variant")],
             [("justtcg_api_version", "v2")],
             [("pokemon_print_run", "unlimited")],
+            [("pokemon_print_run", "future-run")],
             [("magic_content_kind", "token")],
-            [("magic_treatment_ids", "[\"surgefoil\"]")]
+            [("magic_treatment_ids", "[\"surgefoil\"]")],
+            [("magic_treatment_ids", "[\"etched\"]")],
+            [("magic_treatment_ids", "not-json")],
+            [("magic_treatment_qualifiers", "{\"surgefoil\":\"fixture\"}")],
+            [("language", "en"), ("source_language", "fr")],
+            [("language", "en"), ("Language", "fr")]
         ]
         for idColumn in ["provider_id", "tcgdex_id", "scryfall_uuid"] {
             let columns = [
@@ -146,10 +158,15 @@ final class ImportedItemKindTests: XCTestCase {
                 let entry = try XCTUnwrap(plan.entries.first, label)
                 XCTAssertEqual(plan.entries.count, 1, label)
                 XCTAssertThrowsError(try adapter.validate(entry), label)
+                let container = try makeContainer()
                 let result = try CollectionCSV.apply(plan, to: container.mainContext,
                     gameRegistry: policy, gameImportAdapters: adapters)
                 XCTAssertEqual(result.importedQuantity, 0, label)
                 XCTAssertEqual(result.failedRows.count, 1, label)
+                let failedCSV = CollectionCSV.exportFailedEntries(result.failedEntries).text
+                let retry = try CollectionCSV.parse(Data(failedCSV.utf8))
+                XCTAssertEqual(retry.entries.count, 1, label)
+                XCTAssertThrowsError(try adapter.validate(XCTUnwrap(retry.entries.first)), label)
                 let fresh = ModelContext(container)
                 XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty, label)
                 XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectionActivity>()).isEmpty, label)
@@ -161,14 +178,41 @@ final class ImportedItemKindTests: XCTestCase {
             }
         }
 
+        // Aliases are alternate names for the same source identity, rather
+        // than permission to ignore a second, contradictory printing UUID.
+        for idColumn in ["provider_id", "tcgdex_id", "scryfall_uuid"] {
+            let plan = try CollectionCSV.parse(sourceCSV([
+                ("game", "one-piece"), ("provider_id", printingID),
+                (idColumn, "66334969-8762-4141-b78b-2fed7165a53c"),
+                ("card_name", card.name), ("card_number", "OP13-117"),
+                ("finish", "foil"), ("quantity", "1"), ("foil_quantity", "1")
+            ]))
+            let container = try makeContainer()
+            let result = try CollectionCSV.apply(plan, to: container.mainContext,
+                gameRegistry: policy, gameImportAdapters: adapters)
+            XCTAssertEqual(result.importedQuantity, 0, idColumn)
+            XCTAssertEqual(result.failedRows.count, plan.entries.count, idColumn)
+            let fresh = ModelContext(container)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty, idColumn)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<InventoryEvent>()).isEmpty, idColumn)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectionActivity>()).isEmpty, idColumn)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceRecord>()).isEmpty, idColumn)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceObservation>()).isEmpty, idColumn)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<ReferenceQuote>()).isEmpty, idColumn)
+            XCTAssertTrue(try fresh.fetch(FetchDescriptor<ProductIdentity>()).isEmpty, idColumn)
+        }
+
         // The exact retained raw printing still imports through the formerly
         // unsafe alias; rejecting every scryfall_uuid row would hide the bug.
         let valid = try CollectionCSV.parse(sourceCSV([
-            ("game", "one-piece"), ("scryfall_uuid", printingID), ("card_name", card.name),
+            ("game", "one-piece"), ("scryfall_uuid", " \(printingID.uppercased()) "), ("card_name", card.name),
+            ("provider_id", printingID),
             ("card_number", "OP13-117"), ("quantity", "0"), ("foil_quantity", "2"),
-            ("item_kind", "rawCard"), ("language", "ENG")
+            ("item_kind", "rawCard"), ("language", "ENG"), ("source_language", "English"),
+            ("magic_treatment_ids", "[]"), ("magic_treatment_qualifiers", "{}")
         ]))
         XCTAssertNoThrow(try adapter.validate(XCTUnwrap(valid.entries.first)))
+        let container = try makeContainer()
         let imported = try CollectionCSV.apply(valid, to: container.mainContext,
             gameRegistry: policy, gameImportAdapters: adapters)
         XCTAssertEqual(imported.importedQuantity, 2)

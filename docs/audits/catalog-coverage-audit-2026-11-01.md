@@ -3,7 +3,8 @@
 **Baseline:** `main@a2b11ade7ce37888ea4ca3debb8923b11a79b3bc`.
 **Delivery:** [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), unmerged.
 **Review follow-up:** corrected PR #8 → #9 → #10 stack, verified at `dd0faea`;
-599 native tests pass. Exact core/offline results and limits are recorded below.
+599 native tests pass in that earlier CI run. The additional CSV follow-up below
+has separate local verification; exact results and limits are recorded below.
 **Scope:** Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh; recognition,
 catalog resolution, physical-printing choice, finishes, import, offline data
 and catalog ingestion. This is a dated audit and regression record, not an
@@ -47,6 +48,27 @@ The saved-finish behavior is also reconciled with PR #8: a stored finish outside
 the reviewed list requires physical review even when its earlier provenance was
 automatic. Both assessment and write-boundary checks remain in force. The
 integrated suite includes the persisted holding/key/quantity regression.
+
+### Additional adversarial CSV review — 2026-11-01
+
+The current #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`) heads were
+reviewed individually and as a stack. No additional source defect was found
+in #8 or #9's scoped changes. Two further **P2** import defects in #10 were
+reproduced with a native parse/validate/apply regression:
+
+| Finding | Consequence and correction |
+| --- | --- |
+| Normalization erased contradictory One Piece source metadata | A bare `grade=10`, unknown grading company, standalone grading qualifier, orphan Magic treatment qualifier or unknown Pokémon print-run string could disappear before validation, permitting raw ownership and ledger writes. Inspect source cells before typed decoding/filtering and retain a conflict marker. Reject malformed/nonempty One Piece treatment metadata; keep empty export metadata valid. An explicit Pokémon print-run column on another game is contradictory even when its value is unknown. |
+| First-value lookup ignored conflicting aliases and repeated normalized headers | An exact `provider_id` could conceal another printing in `tcgdex_id`/`scryfall_uuid`; `language=en` could conceal `source_language=fr`. Compare every supplied provider/language alias, including repeated headers, before lookup discards evidence. Equivalent English aliases, UUID case and surrounding whitespace remain accepted. |
+
+These corrections are in #10; #8 and #9 retain their existing branches. The
+strengthened regression uses a fresh in-memory store per case and requires zero
+collection, inventory, activity and pricing writes for rejected source rows.
+It also retains a successful two-copy One Piece import with agreeing aliases
+and empty treatment fields, plus the existing split-quantity Magic and valid
+Pokémon print-run regressions. The existing failed-entry export carries the
+conflict marker so normalized evidence cannot silently become retryable raw
+ownership. This does not repair previously imported holdings automatically.
 
 The audit follows each representation separately: provider/discovery record,
 reviewed catalog membership, printed OCR identity, shared catalog outcome,
@@ -381,6 +403,29 @@ physical sets. The new census separately reports manifest display-count
 differences; those do not establish missing payload rows.
 
 ## Verification and repeatability
+
+### Additional adversarial CSV follow-up
+
+Against `0c49781` plus the additional source/test corrections above, local
+Xcode 27.1 verification on the iOS 27 simulator recorded:
+
+| Verification | Observed result |
+| --- | --- |
+| Expanded integrated native selection, including the existing workflow selection and full Lorcana ownership, Magic treatment and portfolio reconciliation classes | **754 total: 753 passed, one existing opt-in performance skip**, zero failures |
+| Final import selection after adding failed-export/retry assertions, including exact Yu-Gi-Oh imports | **26 passed**, zero failures/skips |
+| Pokémon core package | **84 total: 83 passed, one opt-in live-CDN skip**, zero failures |
+| Magic core package | **18 passed**, zero failures |
+| Python ingestion and census suite | **153 total: 148 passed, five publisher-prerequisite skips**, zero failures |
+| Separate Yu-Gi-Oh builder/family fixtures | **33 passed**, zero failures |
+| Repeated retained census | **912 sources, 2,569 review/informational rows, zero structural errors**; summary and discrepancy output byte-identical to the retained run |
+
+The additional native skip is `PortfolioReconciliationTests.testAgedStoreBaseline`,
+which requires `PERF_BASELINE=1`; it is not a pass. The expanded regression failed
+against the unchanged PR source before the fix and reproduced actual invalid
+ownership/ledger writes. Local logs and result bundles remain outside the
+repository. External SSD storage had insufficient free capacity, so these builds
+used temporary internal storage. No physical-device, live-provider, signing,
+publication or release acceptance was performed.
 
 ### Consolidated review follow-up
 

@@ -640,6 +640,9 @@ enum CollectionCSV {
                 entry.sourceLanguage = nonempty(value(["language", "lang", "source_language"], in: row))
                 entry.conflictingSourceIdentity = entry.conflictingSourceIdentity
                     || value(["source_identity_conflict"], in: row)?.lowercased() == "true"
+                    || conflictingSourceAliases(headers: headers, values: values)
+                    || (entry.game != .pokemon && nonempty(row["pokemon_print_run"]) != nil)
+                    || (entry.game == .onePiece && contradictoryOnePieceSourceMetadata(in: row))
                 return entry
             }
             if parsed.isEmpty {
@@ -686,6 +689,47 @@ enum CollectionCSV {
         )
         plan.fingerprint = fingerprint(for: plan.entries)
         return plan
+    }
+
+    /// Inspect every supplied alias, including repeated normalized headers,
+    /// before first-value lookup can erase a contradictory source identity.
+    private static func conflictingSourceAliases(headers: [String], values: [String]) -> Bool {
+        for aliases in [["provider_id", "scryfall_uuid", "tcgdex_id"],
+                        ["language", "lang", "source_language"]] {
+            let readings = zip(headers, values).compactMap { header, raw -> String? in
+                guard aliases.contains(header),
+                      let supplied = nonempty(raw.trimmingCharacters(in: .whitespacesAndNewlines)) else { return nil }
+                if aliases.contains("language") {
+                    let language = supplied.lowercased()
+                    return ["en", "eng", "english"].contains(language) ? "en" : language
+                }
+                return UUID(uuidString: supplied)?.uuidString.lowercased() ?? supplied
+            }
+            if Set(readings).count > 1 { return true }
+        }
+        return false
+    }
+
+    /// One Piece currently accepts raw cards only. Check the source cells:
+    /// enum decoding, finish filtering and qualifier pruning can otherwise
+    /// discard evidence before the installed adapter validates the row.
+    private static func contradictoryOnePieceSourceMetadata(in row: [String: String]) -> Bool {
+        if ImportedGradeParser.isGraded(value(["grade"], in: row))
+            || ["grading_company", "grade_label", "grading_qualifier", "certification_number"]
+                .contains(where: { nonempty(row[$0]) != nil }) {
+            return true
+        }
+        if let raw = nonempty(row["magic_treatment_ids"]),
+           (try? JSONDecoder().decode([String].self, from: Data(raw.utf8)))?.isEmpty != true {
+            return true
+        }
+        for key in ["magic_treatment_qualifiers", "treatment_qualifiers"] {
+            if let raw = nonempty(row[key]),
+               (try? JSONDecoder().decode([String: String].self, from: Data(raw.utf8)))?.isEmpty != true {
+                return true
+            }
+        }
+        return false
     }
 
     /// A duplicate key cannot erase conflicting evidence before the installed

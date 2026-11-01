@@ -1,3 +1,24 @@
+# 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
+
+Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
+individually and together. Two additional P2 findings in #10 allowed source
+normalization or first-value alias lookup to conceal contradictory identity,
+language, grading or cross-game metadata. The CSV parser now retains a conflict
+marker before that evidence can disappear. Regression cases reproduced invalid
+ownership/ledger writes before the fix and now require zero writes; agreeing
+aliases, empty treatment fields, valid One Piece imports, split Magic quantities
+and Pokémon print runs remain covered. Failed-entry export/retry preserves rejection.
+
+Local Xcode 27.1 simulator verification: 754 native tests, 753 passed and one
+existing opt-in performance skip; a final 26-test import selection passed with
+zero failures/skips. Core/offline verification reproduced 83 Pokémon passes
+(one opt-in skip), 18 Magic passes, 148 Python passes (five prerequisite skips)
+and 33 Yu-Gi-Oh fixture passes. The census output is byte-identical to the retained
+912-source/2,569-row run, with zero structural errors. The
+[dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md) records findings,
+exact scopes and evidence limits. #8/#9 needed no further source changes. No PR
+was merged, signed catalog published or physical-device/release gate closed.
+
 # 2026-11-01 — Correct and consolidate catalog PR review findings
 
 PR #10 now builds on corrected PR #9 (which builds on PR #8). The consolidated
