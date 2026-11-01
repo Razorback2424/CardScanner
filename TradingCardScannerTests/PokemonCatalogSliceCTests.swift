@@ -135,6 +135,24 @@ private enum SliceCFixture {
 
 @MainActor
 final class PokemonCatalogSliceCTests: XCTestCase {
+    func testBundledDPPromosAndHGSSPromosMatchPublisherAuthority() throws {
+        let input = try JSONDecoder().decode(PokemonCatalogHumanInputFile.self, from: Data(contentsOf:
+            XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))))
+        let registry = PokemonCatalogRegistry.bundledSeed
+        for (setID, prefix) in [("dpp", "DP"), ("hgssp", "HGSS")] {
+            let row = try XCTUnwrap(input.sets.first { $0.providerSetID == setID })
+            let descriptor = try XCTUnwrap(registry.promo(forPrefix: prefix))
+            XCTAssertEqual(descriptor.providerSetID, setID)
+            XCTAssertEqual(row.recognitionKind, descriptor.recognitionKind)
+            XCTAssertEqual(row.printedPrefix, descriptor.printedPrefix)
+            XCTAssertEqual(row.catalogLocalIDPrefix, descriptor.catalogLocalIDPrefix)
+            XCTAssertEqual(row.localIDPadWidth, descriptor.localIDPadWidth)
+            XCTAssertEqual(row.scanEnabled, descriptor.scanEnabled)
+            XCTAssertEqual(row.rulesVersion, descriptor.rulesVersion)
+            XCTAssertNil(row.claimedOfficialCount)
+        }
+    }
+
     func testBundledAndRefreshedEnergyDescriptorsMatchExplicitPublisherAuthority() throws {
         let input = try JSONDecoder().decode(PokemonCatalogHumanInputFile.self, from: Data(contentsOf:
             XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))))
@@ -202,6 +220,130 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         )
         XCTAssertEqual(registry.printedCode(forProviderSetID: "30th-c"), "30C")
         XCTAssertFalse(classic.scanEnabled)
+    }
+
+    func testBundledCelebrationsMembershipMatchesReviewedPublisherRows() throws {
+        let input = try JSONDecoder().decode(PokemonCatalogHumanInputFile.self, from: Data(contentsOf:
+            XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))))
+        let publisher = try XCTUnwrap(input.sets.first { $0.providerSetID == "cel25cc" })
+        let bundled = try XCTUnwrap(PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: "cel25cc"))
+        let members = try XCTUnwrap(bundled.membershipRecognition?.members)
+        XCTAssertEqual(members.count, 24)
+        XCTAssertEqual(Set(members.map(\.providerCardID)), Set((1...25).filter { $0 != 8 }.map {
+            "cel25cc-CC" + String(format: "%03d", $0)
+        }))
+        XCTAssertEqual(members.sorted { $0.providerCardID < $1.providerCardID },
+                       publisher.membershipRecognition?.members.sorted { $0.providerCardID < $1.providerCardID })
+        XCTAssertEqual(bundled.recognitionKind, .notScannable)
+        XCTAssertFalse(bundled.scanEnabled)
+        XCTAssertEqual(publisher.recognitionKind, bundled.recognitionKind)
+        XCTAssertEqual(publisher.scanEnabled, bundled.scanEnabled)
+        XCTAssertEqual(publisher.parentProviderSetID, bundled.parentProviderSetID)
+        XCTAssertEqual(bundled.parentProviderSetID, "cel25")
+        XCTAssertNil(bundled.officialCount, "The reprints do not share one printed denominator")
+    }
+
+    func testEveryReviewedCelebrationsFractionPreservesIdentityAndRequiresTheOriginalCandidate() async throws {
+        // Each printed fraction was checked on its exact product image, joined
+        // to the official checklist and independently checked against the original.
+        // Birthday Pikachu CC008 prints only 24 and is intentionally excluded.
+        let reviewed: [(id: String, footer: String, original: String)] = [
+            ("CC001", "2/102", "base1-2"), ("CC002", "4/102", "base1-4"),
+            ("CC003", "15/102", "base1-15"), ("CC004", "73/102", "base1-73"),
+            ("CC005", "8/82", "base5-8"), ("CC006", "15/82", "base5-15"),
+            ("CC007", "15/132", "gym2-15"), ("CC009", "20/111", "neo1-20"),
+            ("CC010", "66/64", "neo3-66"), ("CC011", "9/95", "ex4-9"),
+            ("CC012", "86/109", "ex7-86"), ("CC013", "88/92", "ex12-88"),
+            ("CC014", "93/101", "ex15-93"), ("CC015", "17/17", "pop5-17"),
+            ("CC016", "15/106", "dp4-15"), ("CC017", "109/111", "pl2-109"),
+            ("CC018", "145/147", "pl3-145"), ("CC019", "107/123", "hgss1-107"),
+            ("CC020", "113/114", "bw1-113"), ("CC021", "114/114", "bw1-114"),
+            ("CC022", "54/99", "bw4-54"), ("CC023", "97/146", "xy1-97"),
+            ("CC024", "76/108", "xy6-76"), ("CC025", "60/145", "sm2-60")
+        ]
+        let store = PokemonChecklistStore()
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        let entry = try XCTUnwrap(snapshot.entry(forProviderID: "cel25cc"))
+        let checklist = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+        XCTAssertEqual(checklist.count, 25, "The unsupported scan shape remains available in Browse")
+        let registry = PokemonCatalogRegistry.bundledSeed
+        for row in reviewed {
+            let providerID = "cel25cc-" + row.id
+            XCTAssertEqual(PokemonHistoricalIdentityResolver.reviewedOriginalProviderID(forReprintID: providerID), row.original)
+            XCTAssertEqual(PokemonHistoricalIdentityResolver.reviewedOriginalProviderID(forReprintID: providerID.uppercased()), row.original)
+            let summary = try XCTUnwrap(checklist.first { $0.providerID == providerID })
+            let identifier = try XCTUnwrap(PokemonHistoricalScanParser.parse(
+                numberLines: [row.footer], titleLines: [summary.name]))
+            guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
+                return XCTFail("Expected historical evidence for \(row.footer)")
+            }
+            let members = PokemonHistoricalIdentityResolver.membershipIdentities(for: evidence, in: registry)
+                .filter { $0.setID == "cel25cc" }
+            XCTAssertEqual(members.map(\.providerID), [providerID], row.footer)
+            let candidate = try XCTUnwrap(members.first)
+            XCTAssertEqual(candidate.choiceLabel, "Celebrations Classic · 2021")
+            XCTAssertEqual(summary.collectorNumber, row.id, "The provider's synthetic identity stays unchanged")
+            XCTAssertNil(PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence, registry: registry),
+                         "A shared footer cannot choose the reprint automatically: \(row.footer)")
+
+            // Model an incomplete or unavailable original checklist separately
+            // for every reviewed mapping, including pop5-17 which is absent today.
+            let partial = PokemonChecklistSnapshot(manifest: snapshot.manifest,
+                checklists: snapshot.checklists.mapValues { $0.filter { $0.providerID != row.original } })
+            XCTAssertNil(PokemonOfflineCardFactory.historicalCard(in: partial, evidence: evidence, registry: registry),
+                         "Missing \(row.original) must not make \(providerID) unique")
+            let selected = try XCTUnwrap(PokemonOfflineCardFactory.card(in: partial, candidate: candidate,
+                number: evidence.number, registry: registry))
+            XCTAssertEqual(selected.providerID, providerID)
+            guard case let .pokemon(card, _) = selected.legacyIdentity else { return XCTFail("Expected Pokémon") }
+            XCTAssertEqual(card.id, providerID)
+            XCTAssertEqual(card.localId, evidence.number.localID)
+            XCTAssertEqual(card.set.cardCount.official, evidence.number.denominator)
+            XCTAssertEqual(selected.variantEvidence.catalogVariants, [.holo])
+
+            let wrongNumber = PokemonPrintedNumberEvidence(localID: evidence.number.localID,
+                denominator: evidence.number.denominator + 1, scheme: .officialSet)
+            XCTAssertFalse(PokemonHistoricalIdentityResolver.membershipIdentities(for: wrongNumber, in: registry)
+                .contains { $0.providerID == providerID }, row.footer)
+        }
+    }
+
+    func testCelebrationsOriginalAndRemakeChoicesSurviveBothOakSpellings() async throws {
+        let store = PokemonChecklistStore()
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        let registry = PokemonCatalogRegistry.bundledSeed
+        for (number, names, expected) in [
+            ("2", ["Blastoise"], Set(["base1-2", "cel25cc-CC001"])),
+            ("73", ["Impostor Professor Oak", "Imposter Professor Oak"], Set(["base1-73", "cel25cc-CC004"]))
+        ] {
+            for name in names {
+                let evidence = PokemonHistoricalScanEvidence(number: .init(localID: number, denominator: 102,
+                    scheme: .officialSet), titleCandidates: [name])
+                let candidates = PokemonOfflineCardFactory.candidates(in: snapshot, number: evidence.number, registry: registry)
+                guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(evidence,
+                    candidateSetIDs: candidates.map(\.setID), in: candidates) else {
+                    return XCTFail("Expected original and remake alternatives for \(name)")
+                }
+                XCTAssertEqual(Set(matches.map(\.providerID)), expected)
+            }
+        }
+        XCTAssertEqual(PokemonNameMatcher.matches(
+            ["Impostor Professor Oak's Revenge", "Imposter Professor Oak's Revenge"],
+            readings: ["Imposter Professor Oak's Revenge"]), [1], "The alias applies only to the exact whole title")
+    }
+
+    func testBirthdayPikachuDoesNotInventTheSupplierDenominator() throws {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        XCTAssertFalse(registry.membershipRecognition(forProviderSetID: "cel25cc")?.members
+            .contains { $0.providerCardID == "cel25cc-CC008" } ?? true)
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["24"]))
+        let invented = PokemonPrintedNumberEvidence(localID: "24", denominator: 53, scheme: .officialSet)
+        XCTAssertFalse(PokemonHistoricalIdentityResolver.membershipIdentities(for: invented, in: registry)
+            .contains { $0.setID == "cel25cc" })
+        let synthetic = PokemonPrintedNumberEvidence(localID: "CC008", denominator: 25, scheme: .officialSet)
+        XCTAssertTrue(PokemonHistoricalIdentityResolver.membershipIdentities(for: synthetic, in: registry).isEmpty)
     }
 
     func testFirstLaunchClassicChoiceRequiresChecklistBeforeOfflineResolution() async throws {

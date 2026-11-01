@@ -1,12 +1,24 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-10-31
+**Audit date:** 2026-10-02; review evidence updated 2026-11-01
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-31
+## Current authority boundary — updated 2026-11-01
+
+**Catalog coverage and printing identity — 2026-11-01:** the
+[five-game audit](../audits/catalog-coverage-audit-2026-11-01.md) records
+evidence-backed scanner/import/finish repairs against `main@a2b11ade`, a
+repeatable retained-data census and explicit unresolved cases. It supersedes
+October inventory counts and assumptions that a provider record proves
+physical-printing coverage. The signed One Piece owner seed still lacks three
+reviewed alternatives; modern Magic stamped/original-footer ambiguity remains
+open. Pokémon remote-descriptor adoption, held printings, physical-camera
+acceptance and release gates are not closed by [PR #10](https://github.com/Razorback2424/CardScanner/pull/10),
+which remains unmerged. Final regression evidence is maintained in that dated
+audit rather than copied from earlier runs.
 
 **Card sharing post-merge review — 2026-10-31:**
 [PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at 15:41:17

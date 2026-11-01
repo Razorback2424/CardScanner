@@ -272,6 +272,9 @@ enum PokemonOfflineCardFactory {
             in: Array(identitiesByProviderID.values)
         ) {
         case let .unique(identity):
+            if PokemonHistoricalIdentityResolver.reviewedOriginalProviderID(forReprintID: identity.providerID) != nil {
+                return nil
+            }
             guard let value = summariesByProviderID[identity.providerID.lowercased()] else {
                 return nil
             }

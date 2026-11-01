@@ -1,5 +1,11 @@
 # Card coverage gaps and research priorities
 
+**Current review:** the [November 1 five-game audit](catalog-coverage-audit-2026-11-01.md)
+supersedes the inventory and defect status below. It includes Yu-Gi-Oh, exact
+recognition/import/finish fixes, a repeatable census and unresolved printing
+ambiguity. The October records remain dated research, not current completion
+or release claims.
+
 **Reviewed:** 2026-10-15; original research baseline retained below.
 **Candidate:** `35473ed` plus existing local changes.
 **Status:** specialty coverage fixes and a four-game discrepancy review; no worldwide completeness or device certification.

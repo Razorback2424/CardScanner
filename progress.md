@@ -1,3 +1,25 @@
+# 2026-11-01 — Five-game catalog coverage and printing identity audit
+
+Work on `fix/catalog-coverage-audit-2026-11-01` from `main@a2b11ade` is delivered
+through [PR #10](https://github.com/Razorback2424/CardScanner/pull/10), unmerged
+as requested. The [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md)
+records evidence, exact changed identities, regression results and unresolved
+coverage across Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh.
+
+Verified work covers Shiny Vault recognition and finish evidence, omitted promo
+prefixes, exact Magic promo/late-printing/startup routes, List import identity,
+Yu-Gi-Oh mixed-canonical code families and passcode conflicts, One Piece import
+boundaries and Lorcana ingestion review boundaries. The new offline census
+retains source hashes and distinguishes intentional holds from structural
+errors. CI exercises the affected native paths and offline pipelines; exact
+final counts and any blockers are kept in the dated audit.
+
+This does not certify every physical card. Modern Magic original-footer
+reprints and One Piece signed-seed lag remain wrong-printing risks. Other
+Pokémon finishes and denominator-free identifiers require reviewed evidence;
+unreviewed physical records stay held. No production catalog was signed,
+published or activated. Existing physical-device and release gates remain open.
+
 # 2026-10-31 — Card sharing post-merge artwork recovery
 
 Follow-up on `fix/card-share-artwork-recovery` from `main@3053218`.

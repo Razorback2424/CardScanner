@@ -307,11 +307,66 @@ struct PokemonCatalogRegistry: Sendable {
             )
         )
 
+        // Celebrations (2021) retains the original printed fractions, while
+        // TCGdex assigns CC### identities. These exact reviewed memberships
+        // join the original printings as alternatives; they never replace them.
+        // Source joins are retained in PokemonCatalogCoverageAudit fixtures.
+        let celebrationsClassicMembers: [(id: String, name: String, number: String, denominator: Int)] = [
+            ("CC001", "blastoise", "2", 102),
+            ("CC002", "charizard", "4", 102),
+            ("CC003", "venusaur", "15", 102),
+            ("CC004", "imposter professor oak", "73", 102),
+            ("CC005", "dark gyarados", "8", 82),
+            ("CC006", "here comes team rocket", "15", 82),
+            ("CC007", "rocket s zapdos", "15", 132),
+            // CC008 (Birthday Pikachu) prints only 24. The supplier's 24/53
+            // is not a physical footer and cannot authorize a fraction route.
+            ("CC009", "cleffa", "20", 111),
+            ("CC010", "shining magikarp", "66", 64),
+            ("CC011", "team magma s groudon", "9", 95),
+            ("CC012", "rocket s admin", "86", 109),
+            ("CC013", "mew ex", "88", 92),
+            ("CC014", "gardevoir ex", "93", 101),
+            ("CC015", "umbreon", "17", 17),
+            ("CC016", "claydol", "15", 106),
+            ("CC017", "luxray gl lv x", "109", 111),
+            ("CC018", "garchomp c lv x", "145", 147),
+            ("CC019", "donphan", "107", 123),
+            ("CC020", "reshiram", "113", 114),
+            ("CC021", "zekrom", "114", 114),
+            ("CC022", "mewtwo ex", "54", 99),
+            ("CC023", "xerneas ex", "97", 146),
+            ("CC024", "m rayquaza ex", "76", 108),
+            ("CC025", "tapu lele gx", "60", 145)
+        ]
+        let celebrationsClassic = PokemonCatalogSetDescriptor(
+            providerSetID: "cel25cc",
+            displayName: "Celebrations Classic Collection",
+            releaseDate: "2021-10-08",
+            releaseOrder: nil,
+            recognitionKind: .notScannable,
+            printedCode: nil,
+            officialCount: nil,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: false,
+            logoURL: nil,
+            symbolURL: nil,
+            parentProviderSetID: "cel25",
+            membershipRecognition: PokemonCatalogMembershipRecognition(
+                members: celebrationsClassicMembers.map { member in
+                    .init(providerCardID: "cel25cc-\(member.id)", canonicalName: member.name,
+                          printedLocalID: member.number, printedDenominator: member.denominator)
+                }
+            )
+        )
+
         let release = PokemonCatalogRelease(
             schemaVersion: PokemonCatalogRelease.currentSchemaVersion,
             revision: 0,
             generatedAt: Date(timeIntervalSince1970: 0),
-            sets: expansions + promos + [classic, Self.energyDescriptor]
+            sets: expansions + promos + [classic, celebrationsClassic, Self.energyDescriptor]
         )
         return PokemonCatalogRegistry(release: release)
     }()

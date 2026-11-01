@@ -41,10 +41,10 @@ jobs:
           retention-days: 14
 
   ios-catalog:
-    runs-on: macos-15
+    runs-on: xcode-27
     timeout-minutes: 35
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
       - name: Select an available iPhone simulator
@@ -53,7 +53,8 @@ jobs:
           python3 - <<'PY'
           import json, os, subprocess
           devices = json.loads(subprocess.check_output(['xcrun', 'simctl', 'list', 'devices', 'available', '-j']))['devices']
-          phones = [device for runtime, group in sorted(devices.items(), reverse=True)
+          ordered = sorted(devices.items(), key=lambda item: (item[0].endswith('.iOS-27-0'), item[0]), reverse=True)
+          phones = [device for runtime, group in ordered
                     if '.iOS-' in runtime for device in group if device['name'].startswith('iPhone')]
           if not phones:
               raise SystemExit('No iPhone simulator is installed')
@@ -74,6 +75,8 @@ jobs:
             -only-testing:TradingCardScannerTests/HistoricalCatalogRequestTests \
             -only-testing:TradingCardScannerTests/VariantResolverTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogPromoPadWidthTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogRegistryTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogParityTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
             -only-testing:TradingCardScannerTests/PricingTests \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \

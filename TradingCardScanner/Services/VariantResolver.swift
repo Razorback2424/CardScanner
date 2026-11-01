@@ -294,10 +294,17 @@ struct PokemonVariantRule: Equatable, Sendable {
 ///
 ///     TCGdex card + our set-specific variant metadata = possible physical variants
 enum PokemonVariantRules {
+    /// The official Hidden Fates checklist identifies SV1–SV94 as Shiny Vault
+    /// foil. All 94 exact number/name joins in TCGplayer group 2594 are Holofoil;
+    /// TCGdex currently supplies a generated Normal placeholder for this set.
+    /// Keep this bounded to reviewed identities, including the provider's padding.
+    private static let hiddenFatesShinyVaultIDs = Set((1...94).map { "sma-SV\($0)" })
+
     /// Reviewed public TCGdex objects (2026-10-20). Broad booleans do not
     /// establish a plain reverse or a promotional stamp on these identities.
     /// This is checklist evidence, not a claim that an unlisted object cannot exist.
     static func reviewedVariants(cardID: String) -> [PhysicalVariant]? {
+        if hiddenFatesShinyVaultIDs.contains(cardID) { return [.holo] }
         switch cardID {
         case "me02.5-155":
             return [.holo, .pokeBall, .pokemonFoilPattern("energy")] + [

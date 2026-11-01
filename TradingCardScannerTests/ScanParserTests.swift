@@ -188,6 +188,8 @@ final class ScanParserTests: XCTestCase {
 
     func testBlackStarPromoPrefixesResolveWithoutInventingADenominator() {
         let fixtures: [(text: String, setID: String, localID: String, display: String)] = [
+            ("DP01", "dpp", "DP01", "DP 01"),
+            ("HGSS 01", "hgssp", "HGSS01", "HGSS 01"),
             ("BW01", "bwp", "BW01", "BW 01"),
             ("XY 01", "xyp", "XY01", "XY 01"),
             ("SM01", "smp", "SM01", "SM 01"),
@@ -215,6 +217,36 @@ final class ScanParserTests: XCTestCase {
             XCTAssertEqual(prefix, "MEP")
             XCTAssertEqual(parsedLocalID, localID)
             XCTAssertEqual(definition.tcgdexSetID, "mep")
+        }
+    }
+
+    func testDPPromosAndHGSSPromosPreserveEveryPublishedCollectorID() throws {
+        // TCGdex English set inventories captured 2026-11-01 contain DP01–DP56
+        // and HGSS01–HGSS25. The provider prefix is part of each local ID.
+        for (prefix, setID, count) in [("DP", "dpp", 56), ("HGSS", "hgssp", 25)] {
+            for number in 1...count {
+                let localID = prefix + String(format: "%02d", number)
+                for footer in [localID, "\(prefix) \(String(format: "%02d", number))"] {
+                    let identifier = try XCTUnwrap(ScanParser.parsePokemon(footer), footer)
+                    guard case let .pokemonPromo(parsedPrefix, parsedLocalID, definition) = identifier.legacyIdentity else {
+                        return XCTFail("Expected exact promo identity for \(footer)")
+                    }
+                    XCTAssertEqual(parsedPrefix, prefix)
+                    XCTAssertEqual(parsedLocalID, localID)
+                    XCTAssertEqual(definition.tcgdexSetID, setID)
+                }
+            }
+        }
+        for footer in ["DP00", "HGSS00", "DP01a", "HGSS01a", "DP FR 01", "HGSS FR 01", "ADP01", "AHGSS01"] {
+            XCTAssertNil(ScanParser.parsePokemon(footer), footer)
+        }
+    }
+
+    func testPromoPrefixesDoNotDiscardASeparatedDenominator() {
+        for prefix in PokemonPromoCodeMap.codes {
+            for footer in ["\(prefix) 001/198", "\(prefix) 001 /198", "\(prefix) 001 / 198"] {
+                XCTAssertNil(ScanParser.parsePokemon(footer), footer)
+            }
         }
     }
 
@@ -431,6 +463,51 @@ final class ScanParserTests: XCTestCase {
             PokemonHistoricalIdentityResolver.candidateSetIDs(for: evidence, in: []),
             ["ecard2", "ecard3"]
         )
+    }
+
+    func testEveryBundledShinyVaultCardResolvesFromItsPrintedSubsetNumber() async throws {
+        // Official checklists: sm115_web_cardlist_en.pdf and
+        // swsh45_web_cardlist_en.pdf under assets.pokemon.com/assets/cms2/pdf/
+        // trading-card-game/checklist/. SV is part of both printed numbers;
+        // dropping it can select an unrelated ordinary expansion card.
+        let store = PokemonChecklistStore()
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        for (setID, denominator, expectedCards) in [("sma", 94, 94), ("swsh4.5sv", 122, 122)] {
+            let entry = try XCTUnwrap(snapshot.entry(forProviderID: setID))
+            let cards = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+            XCTAssertEqual(Set(cards.map(\.providerID)).count, expectedCards)
+            for card in cards {
+                let footer = "\(card.collectorNumber)/SV\(denominator)"
+                let identifier = try XCTUnwrap(PokemonHistoricalScanParser.parse(
+                    numberLines: [footer], titleLines: [card.name]), footer)
+                guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
+                    return XCTFail("Expected Shiny Vault evidence for \(footer)")
+                }
+                XCTAssertEqual(evidence.number.scheme, .subset(prefix: "SV"))
+                XCTAssertTrue(PokemonHistoricalIdentityResolver.canAttempt(evidence.number))
+                XCTAssertEqual(PokemonHistoricalIdentityResolver.candidateSetIDs(
+                    for: evidence, in: []), [setID])
+                XCTAssertEqual(PokemonOfflineCardFactory.historicalCard(
+                    in: snapshot, evidence: evidence)?.providerID, card.providerID, footer)
+            }
+        }
+    }
+
+    func testShinyVaultSubsetEvidenceDoesNotAuthorizeOtherNumberingSchemes() throws {
+        for footer in ["SV1/TG94", "SV1/GG94", "TG1/SV94", "SVP001/SV94", "SV0/SV94"] {
+            XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: [footer]), footer)
+        }
+        for footer in ["SV1/SV93", "SV1/SV95", "SV001/SV121", "SV001/SV123", "SV1/SV198"] {
+            let number = try XCTUnwrap(PokemonHistoricalScanParser.numberEvidence(in: [footer]), footer)
+            XCTAssertFalse(PokemonHistoricalIdentityResolver.canAttempt(number), footer)
+            XCTAssertTrue(PokemonHistoricalIdentityResolver.candidateSetIDs(for: number, in: []).isEmpty, footer)
+        }
+        let ordinary = try XCTUnwrap(PokemonHistoricalScanParser.numberEvidence(in: ["1/94"]))
+        XCTAssertEqual(ordinary.scheme, .officialSet)
+        XCTAssertTrue(PokemonHistoricalIdentityResolver.candidateSetIDs(for: ordinary, in: []).isEmpty)
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["SV001/SV122", "SV1/SV94"]),
+            "Different Shiny Vault sets in one frame must remain ambiguous")
     }
 
     func testHistoricalParserTreatsOrdinaryNumberAsOfficialSetScheme() throws {

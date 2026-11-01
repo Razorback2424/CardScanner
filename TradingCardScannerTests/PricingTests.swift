@@ -542,6 +542,102 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")), manifestBefore)
     }
 
+    func testEveryHiddenFatesShinyVaultIdentityUsesReviewedHoloEvidence() async throws {
+        let store = PokemonChecklistStore()
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        let entry = try XCTUnwrap(snapshot.entry(forProviderID: "sma"))
+        let rows = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+        XCTAssertEqual(rows.count, 94)
+        XCTAssertEqual(Set(rows.map(\.providerID)), Set((1...94).map { "sma-SV\($0)" }))
+        for row in rows {
+            let detail = try hiddenFatesNormalPlaceholder(id: row.providerID, name: row.name)
+            let card = IdentifiedCard.pokemon(detail, setCode: "SMA")
+            XCTAssertEqual(detail.catalogVariants, [.holo], row.providerID)
+            XCTAssertEqual(card.variantEvidence.catalogVariants, [.holo], row.providerID)
+            XCTAssertEqual(VariantResolver.resolve(card.variantEvidence),
+                           .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)), row.providerID)
+            XCTAssertEqual(row.masterSetVariant, .holo, row.providerID)
+            XCTAssertTrue(row.isSoleSlotForCard, row.providerID)
+            XCTAssertFalse(row.isExpandedMasterSetVariant, row.providerID)
+            XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: row.providerID, variant: .normal))
+            XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: row.providerID, variant: .holo))
+            XCTAssertEqual(PokemonFinishReconciliation.repair(storedVariantID: "normal",
+                storedResolution: .uniqueInCatalog, itemKind: .rawCard, printRun: nil, card: card),
+                .init(variant: .holo, resolution: .uniqueInCatalog))
+            for provenance in [VariantResolution.userConfirmed, .finishLock, .printedLabel, .imported] {
+                XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: "normal",
+                    storedResolution: provenance, itemKind: .rawCard, printRun: nil, card: card))
+            }
+        }
+        for unreviewed in ["sma-SV0", "sma-SV95", "sma-SV01", "sma-1", "sm115-1", "swsh4.5sv-SV001"] {
+            XCTAssertNil(PokemonVariantRules.reviewedVariants(cardID: unreviewed), unreviewed)
+        }
+    }
+
+    func testHiddenFatesRepairsPersistedNormalSlotsWithoutRewritingSources() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("hidden-fates-upgrade-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root)
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        let entry = try XCTUnwrap(snapshot.entry(forProviderID: "sma"))
+        let current = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+        let old = current.map { row in
+            var value = row
+            value.masterSetVariant = .normal
+            return value
+        }
+        let manifest = PokemonChecklistSnapshotManifest(schemaVersion: snapshot.manifest.schemaVersion,
+            rulesVersion: snapshot.manifest.rulesVersion, generatedAt: snapshot.manifest.generatedAt,
+            directoryFingerprint: snapshot.manifest.directoryFingerprint, entries: [entry])
+        try await store.replace(.init(manifest: manifest, checklists: [entry.set.id: old]))
+        let resource = root.appendingPathComponent(entry.resource)
+        let before = try Data(contentsOf: resource)
+        let manifestURL = root.appendingPathComponent("manifest.json")
+        let manifestBefore = try Data(contentsOf: manifestURL)
+        let upgraded = PokemonChecklistStore(root: root)
+        for _ in 0..<2 {
+            let loaded = await upgraded.mergedChecklist(for: entry.set.catalogID)
+            let repaired = try XCTUnwrap(loaded)
+            XCTAssertEqual(repaired.count, 94)
+            XCTAssertEqual(Set(repaired.map(\.providerID)), Set(old.map(\.providerID)))
+            XCTAssertTrue(repaired.allSatisfy { $0.masterSetVariant == .holo && $0.isSoleSlotForCard && !$0.isExpandedMasterSetVariant })
+            XCTAssertEqual(PokemonChecklistReviewedProjection.cards(repaired), repaired)
+            let entries = await upgraded.mergedEntries()
+            let metadata = try XCTUnwrap(entries.first { $0.providerID == "sma" })
+            XCTAssertEqual(metadata.set.cardCount, 94)
+            XCTAssertEqual(metadata.standardSlotCount, 94)
+            XCTAssertEqual(metadata.expandedSlotCount, 94)
+            XCTAssertEqual(metadata.officialCount, entry.officialCount)
+            XCTAssertEqual(metadata.providerFingerprint, entry.providerFingerprint)
+            XCTAssertEqual(metadata.providerProbeFingerprint, entry.providerProbeFingerprint)
+            await upgraded.discardDecodedChecklists()
+        }
+        XCTAssertEqual(try Data(contentsOf: resource), before)
+        XCTAssertEqual(try Data(contentsOf: manifestURL), manifestBefore)
+    }
+
+    func testHiddenFatesUsesOnlyARealHoloQuoteAndRejectsTheOldNormalFinish() throws {
+        let detail = try hiddenFatesNormalPlaceholder(id: "sma-SV1", name: "Scyther",
+            pricing: ["tcgplayer": ["normal": ["marketPrice": 999], "holofoil": ["marketPrice": 7]]])
+        let card = IdentifiedCard.pokemon(detail, setCode: "SMA")
+        XCTAssertNil(CardPricing.price(for: card, variant: .normal, magicTreatments: []).value)
+        XCTAssertEqual(CardPricing.price(for: card, variant: .holo, magicTreatments: []).value, 7)
+        let missingQuote = IdentifiedCard.pokemon(try hiddenFatesNormalPlaceholder(id: "sma-SV1", name: "Scyther",
+            pricing: ["tcgplayer": ["normal": ["marketPrice": 999]]]), setCode: "SMA")
+        XCTAssertNil(CardPricing.price(for: missingQuote, variant: .holo, magicTreatments: []).value)
+    }
+
+    private func hiddenFatesNormalPlaceholder(id: String, name: String, pricing: [String: Any] = [:]) throws -> TCGdexCard {
+        let object: [String: Any] = ["id": id, "localId": String(id.dropFirst("sma-".count)), "name": name,
+            "set": ["id": "sma", "name": "Hidden Fates Shiny Vault", "cardCount": ["total": 94, "official": 94]],
+            "variants": ["firstEdition": false, "holo": false, "normal": true, "reverse": false],
+            "variants_detailed": [["type": "normal", "size": "standard", "variantId": "generated"]],
+            "pricing": pricing]
+        return try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object))
+    }
+
     func testYellowARepairsBundledAndOldOfflineChecklistSlotsWithoutRewritingSource() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("yellow-a-upgrade-\(UUID())")
         let store = PokemonChecklistStore(root: root)

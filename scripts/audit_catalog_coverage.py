@@ -456,7 +456,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8')
     with (args.output / 'discrepancies.csv').open('w', newline='', encoding='utf-8') as stream:
-        writer = csv.DictWriter(stream, fieldnames=['game', 'code', 'identity', 'scope', 'disposition', 'detail'])
+        writer = csv.DictWriter(stream, fieldnames=['game', 'code', 'identity', 'scope', 'disposition', 'detail'], lineterminator='\n')
         writer.writeheader()
         writer.writerows(discrepancies)
     print(json.dumps(dict(games=list(summary['games']), sourceFiles=len(summary['sources']),

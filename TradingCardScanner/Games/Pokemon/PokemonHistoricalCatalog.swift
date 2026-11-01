@@ -136,6 +136,9 @@ actor PokemonHistoricalCatalog {
             in: identities
         ) {
         case let .unique(match):
+            guard PokemonHistoricalIdentityResolver.reviewedOriginalProviderID(forReprintID: match.providerID) == nil else {
+                throw PokemonHistoricalCatalogError.unsupported
+            }
             identity = match
         case let .ambiguous(matches):
             throw PokemonHistoricalCatalogError.ambiguous(matches)

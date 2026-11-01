@@ -370,6 +370,17 @@ final class PokemonCatalogRegistryTests: XCTestCase {
 // MARK: - Promo pad-width parity tests
 
 final class PokemonCatalogPromoPadWidthTests: XCTestCase {
+    func testDPAndHGSSUseTheirExactTwoDigitProviderPrefixes() {
+        for (prefix, setID) in [("DP", "dpp"), ("HGSS", "hgssp")] {
+            let definition = PokemonCatalogRegistry.bundledSeed.pokemonPromoSetDefinition(forPrefix: prefix)
+            XCTAssertEqual(definition?.tcgdexSetID, setID)
+            XCTAssertEqual(definition?.catalogLocalIDPrefix, prefix)
+            XCTAssertEqual(definition?.localIDPadWidth, 2)
+            XCTAssertEqual(definition?.catalogLocalID(number: 1), prefix + "01")
+            XCTAssertEqual(definition?.catalogLocalID(number: 25), prefix + "25")
+        }
+    }
+
     func testBWPadWidth2() {
         let seed = PokemonCatalogRegistry.bundledSeed
         let def = seed.pokemonPromoSetDefinition(forPrefix: "BW")
