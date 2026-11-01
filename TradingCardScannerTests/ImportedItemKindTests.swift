@@ -206,6 +206,68 @@ final class ImportedItemKindTests: XCTestCase {
     }
 
     @MainActor
+    func testMagicCSVRejectsPokemonPrintRunBeforeLegacyOrInstalledAdapterWrites() throws {
+        let registries = [
+            ("legacy", try GameImportAdapterRegistry(adapters: [])),
+            ("installed", try GameImportAdapterRegistry(adapters: [AcceptingMagicImportAdapter()]))
+        ]
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        for idColumn in ["scryfall_uuid", "provider_id"] {
+            let plan = try CollectionCSV.parse(sourceCSV([
+                ("game", "magic"), (idColumn, "d104b2d6-f8f1-4ae3-88d5-1f86f092e21c"),
+                ("name", "Fixture Magic Card"), ("set_code", "NEO"), ("collector_number", "1"),
+                ("quantity", "1"), ("finish", "nonfoil"), ("pokemon_print_run", "unlimited")
+            ]))
+            XCTAssertEqual(plan.entries.count, 1, idColumn)
+            let entry = try XCTUnwrap(plan.entries.first)
+            XCTAssertEqual(entry.game, .magic)
+            XCTAssertEqual(entry.pokemonPrintRun, .unlimited)
+            for (path, adapters) in registries {
+                let label = "\(idColumn):\(path)"
+                let result = try CollectionCSV.apply(plan, to: container.mainContext,
+                    gameImportAdapters: adapters)
+                XCTAssertEqual(result.importedQuantity, 0, label)
+                XCTAssertEqual(result.failedRows.count, 1, label)
+                XCTAssertEqual(result.failedRows.first?.entry.pokemonPrintRun, .unlimited, label)
+                XCTAssertEqual(result.failedRows.first?.detail,
+                    GameImportValidationError.contradictoryIdentity.localizedDescription, label)
+                let fresh = ModelContext(container)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectedCard>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<CollectionActivity>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<InventoryEvent>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceRecord>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<PriceObservation>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<ReferenceQuote>()).isEmpty, label)
+                XCTAssertTrue(try fresh.fetch(FetchDescriptor<ProductIdentity>()).isEmpty, label)
+            }
+        }
+    }
+
+    @MainActor
+    func testPokemonCSVRetainsItsValidPrintRunWhenApplied() throws {
+        let plan = try CollectionCSV.parse(sourceCSV([
+            ("game", "pokemon"), ("provider_id", "base1-4"), ("name", "Charizard"),
+            ("set_name", "Base Set"), ("card_number", "4/102"), ("quantity", "1"),
+            ("finish", "holo"), ("pokemon_print_run", "unlimited")
+        ]))
+        let entry = try XCTUnwrap(plan.entries.first)
+        XCTAssertEqual(entry.pokemonPrintRun, .unlimited)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let result = try CollectionCSV.apply(plan, to: container.mainContext)
+        XCTAssertEqual(result.importedQuantity, 1)
+        XCTAssertTrue(result.failedRows.isEmpty)
+        let fresh = ModelContext(container)
+        let rows = try fresh.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.cardGame, .pokemon)
+        XCTAssertEqual(rows.first?.pokemonPrintRun, .unlimited)
+        XCTAssertEqual(rows.first?.collectionKey, entry.collectionKey)
+        XCTAssertEqual(rows.first?.priceStorageID, "base1-4@unlimited")
+    }
+
+    @MainActor
     func testMagicScryfallExportKeepsBothFinishQuantitiesAndTreatments() throws {
         let printingID = "d104b2d6-f8f1-4ae3-88d5-1f86f092e21c"
         let plan = try CollectionCSV.parse(sourceCSV([
@@ -512,4 +574,10 @@ final class ImportedItemKindTests: XCTestCase {
             )
         )
     }
+}
+
+private struct AcceptingMagicImportAdapter: GameImportAdapter {
+    let game: CardGame = .magic
+    func validate(_ entry: CollectionCSVEntry) throws {}
+    func metadata(for requests: [GameImportRequest]) async -> [String: ImportedCatalogMetadata] { [:] }
 }

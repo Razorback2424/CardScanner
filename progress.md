@@ -13,6 +13,11 @@ unchanged. CSV source evidence survives alternate format paths before One Piece
 validation. Regression additions exercise these reviewed failures, production
 publisher input and image-less checklist persistence. New native/core results
 will be recorded in the [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md).
+An independent integration check also found that shared metadata could attach
+a Pokémon print-run axis to a Magic import. The shared validation boundary now
+rejects that contradiction before either adapter path writes, preserving the
+failed-row evidence and valid Pokémon imports. Both catalog-core suites run on
+the working Xcode 27.1 validation runner alongside the native regression gate.
 All PRs remain unmerged; no signed catalog or release publication is performed.
 
 # 2026-11-01 — Five-game catalog coverage and printing identity audit

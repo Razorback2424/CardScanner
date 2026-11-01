@@ -47,6 +47,11 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
+      - name: Test publisher contracts and catalog cores on the recorded toolchain
+        run: |
+          set -euo pipefail
+          swift test --package-path PokemonCatalogCore
+          swift test --package-path MagicCatalogCore
       - name: Select an available iPhone simulator
         run: |
           xcodebuild -version

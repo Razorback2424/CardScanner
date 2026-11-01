@@ -41,6 +41,7 @@ One Piece CSV bypass identified during review:
 | Birthday Pikachu's supplier `24/53` was not a physical fraction | Remove that alias, retain all 25 Browse records and hold the standalone `24` scan route. |
 | A non-scannable descriptor disabled image fallback after a successful image-less checklist rebuild | Keep historical aliases outside ordinary descriptors. Rebuild, persist and reload all 25 image-less cards, then assert their exact small/full CEL_CC artwork fallbacks. Explicit artwork denial still applies. |
 | Alternate CSV formats erased source evidence before One Piece validation | Preserve source kind, language, conflict, grading and marketplace metadata across format paths. Full parse/apply tests require zero writes for contradictory records and retain valid One Piece/Magic imports. |
+| Shared CSV metadata could attach a Pokémon print-run axis to a Magic identity | Reject that contradictory axis before both installed-adapter and legacy import paths. Tests preserve failed-row evidence, require zero writes and retain valid Pokémon print-run imports. |
 
 The saved-finish behavior is also reconciled with PR #8: a stored finish outside
 the reviewed list requires physical review even when its earlier provenance was
@@ -376,6 +377,10 @@ differences; those do not establish missing payload rows.
 New native and core checks are pending. Their exact commit and results will be
 recorded here after CI completes. The earlier results below are retained as
 historical evidence and do not validate the new corrections by themselves.
+The catalog coverage workflow now runs both core suites on its recorded Xcode
+27.1 runner before the iOS regressions, including the production-input publisher
+tests. Separate core workflow attempts cancelled before execution are not
+counted as passes.
 
 ### Initial PR #10 verification — historical
 
