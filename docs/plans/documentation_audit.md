@@ -8,6 +8,14 @@ history.
 
 ## Current authority boundary — updated 2026-10-31
 
+**Catalog review correction — 2026-11-01:** the
+[coverage audit](../audits/card-coverage-gaps-and-research.md#celebrations-follow-up-in-stacked-pr-9)
+corrects Birthday Pikachu from supplier `24/53` to its physical standalone `24`.
+The earlier all-25 signed-membership proposal is superseded by the separate
+24-fraction historical approach in PR #9. Browse retention does not imply
+standalone-number scan support. PR #8's runtime and recorded test results are
+unchanged by this documentation correction.
+
 **Card sharing post-merge review — 2026-10-31:**
 [PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at 15:41:17
 UTC as `3053218`; its earlier draft status did not close any manual gate.

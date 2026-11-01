@@ -1,3 +1,12 @@
+# 2026-11-01 — Correct Celebrations physical-number evidence
+
+Review follow-up on PR #8 at `c1d14b8`: Birthday Pikachu prints standalone `24`,
+not the supplier's `24/53`. Corrected the coverage table and replaced the
+all-25 signed-membership proposal with the 24-fraction historical approach
+being corrected in stacked PR #9. Existing Shiny Vault runtime behavior and
+saved-holding protection are unchanged. Documentation links and whitespace are
+checked separately; no new native or physical-card test pass is claimed.
+
 # 2026-11-01 — Five-game catalog coverage sweep
 
 Branch `refinement/catalog-coverage-2026-11-01` from `main@a2b11ad`. Each game
@@ -15,10 +24,11 @@ Fixed:
   rekeyed to Holo after two refreshes 24 hours apart. Finish reconciliation now
   skips any stored finish that a reviewed card requires a person to check.
 
-Awaiting the owner: Celebrations Classic Collection reprints still resolve
-silently as their original vintage printings. The fix needs registry
-membership and a newly signed revision. The 30th Classic Collection is
-unchanged. The focused selection passed **382 tests** and a wider
+At this original checkpoint, Celebrations Classic Collection reprints still
+resolved silently as their original vintage printings. The later PR #9
+historical-membership approach supersedes the initial signed-revision proposal;
+Birthday Pikachu remains a separate standalone-number case. The 30th Classic
+Collection is unchanged. The focused selection passed **382 tests** and a wider
 scanner/Browse/pricing selection passed **385 tests**, both with zero failures
 or skips. This is simulator evidence only.
 

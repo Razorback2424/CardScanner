@@ -2,7 +2,7 @@
 
 **Reviewed:** 2026-11-01 sweep; the 2026-10-15 review and original research baseline are retained below.
 **Candidate:** `a2b11ad` on `refinement/catalog-coverage-2026-11-01`.
-**Status:** two Pokémon fixes implemented; one silent-misidentification defect awaits an owner decision; no worldwide completeness or device certification.
+**Status:** two Pokémon fixes implemented; Celebrations recognition is handled in stacked PR #9; no worldwide completeness or device certification.
 
 ## Five-game coverage sweep — 2026-11-01
 
@@ -18,30 +18,31 @@ and the bundled Yu-Gi-Oh, Lorcana and One Piece catalogs.
 | S1 | Shiny Vault cards were unscannable. Hidden Fates prints `SV49/SV94` and Shining Fates prints `SV001/SV122` (all 216 TCGplayer products agree). The historical parser knew only the `H`, `TG`, `GG` and `RC` subset prefixes, so these footers produced no reading. | `SV` is a subset prefix that must appear on both sides. 94 maps to `sma` and 122 to `swsh4.5sv`. A bare `SV` before an ordinary fraction keeps its old official-set reading, so `SVI 049/198` with the `I` lost stays recoverable by denominator and title. |
 | S2 | Hidden Fates Shiny Vault finishes were wrong. TCGdex flags all 94 cards `normal`, while every TCGplayer product is Holofoil only. Once S1 made the cards scannable, they would have been auto-recorded as Normal with no price. | A reviewed-variant override sets `sma-SV1`…`sma-SV94` to Holofoil, and the Browse read-time projection now includes `sma`, following the Yellow A precedent. An existing Normal holding is flagged for physical review. Automatic finish reconciliation now skips any stored finish outside a reviewed card's list, in both the refresh assessment and its write-boundary recheck, so it cannot rekey that holding. This also applies to the existing Yellow A and Ascended Heroes reviewed cards, matching their documented "never an automatic remap" intent. Shining Fates Shiny Vault was already Holo and is unchanged. |
 
-### Awaiting owner decision
+### Celebrations follow-up in stacked PR #9
 
-**C1 — Celebrations Classic Collection resolves as the original card.** The 25
-`cel25cc` reprints print their original numbers: Charizard reads `4/102`, not
+**C1 — Celebrations Classic Collection resolves as the original card.** Twenty-four
+`cel25cc` reprints print their original fractions: Charizard reads `4/102`, not
 a `/25` number. The set has no membership recognition (only the 30th
 Celebration Classic Collection has one), so a scan resolves silently to the
 vintage original. 22 of 25 match a same-name original in the bundled checklist
-alone. The other three reach originals through the live directory: Impostor Oak
-(a one-letter spelling difference), Umbreon ☆ (POP 5) and _____'s Pikachu
-(Wizards promo 24).
+alone. Two further fraction cases reach originals through the live directory:
+Impostor Oak (a one-letter spelling difference) and Umbreon ☆ (POP 5).
+Birthday Pikachu (`cel25cc-CC008`) prints standalone `24`; it requires a
+separate recognition route and is not covered by fraction matching.
 
-The proposed fix mirrors `30th-c`: a non-scannable `cel25cc` descriptor that
-lists all 25 members, so each collision becomes an explicit printing choice.
-It changes registry authority, and about a dozen registry consumers read it:
-Browse order and codes, the collection normalizer, price refresh and cache
-staleness. It must also be added to both the bundled seed and
-`publisher/catalog-input.json`, and production uses `remote-authority`, so it
-reaches users only through a newly signed revision. Charizard `4/102` would then
-offer three printings, because the 30th Classic Collection also reprints it. The
-30th-c rows themselves would not change.
+The initial proposal to add all 25 as signed descriptor members is superseded
+by [PR #9](https://github.com/Razorback2424/CardScanner/pull/9)'s separate
+historical-membership approach. Only the 24 verified fractions are eligible;
+the publisher requires complete provider-card membership and cannot accept a
+partial 24-of-25 descriptor. Keeping these scan aliases separate also preserves
+Browse artwork authorization and provider numbering. Charizard `4/102` can
+offer three printings because the 30th Classic Collection also reprints it.
+The 30th-c rows themselves do not change.
 
-Printed numbers below come from TCGplayer (TCGCSV group 2931). pokemontcg.io's
-`cel25c` numbers agree independently on every numerator; each denominator is
-the original set's official count.
+The 24 fractions below were checked against the physical-card evidence retained
+by the follow-up review. Supplier fields alone do not establish printed
+denominators: Birthday Pikachu's supplier value `24/53` is not printed on the
+[card image](https://tcgplayer-cdn.tcgplayer.com/product/250325_200w.jpg).
 
 | Provider ID | Name | Printed | Provider ID | Name | Printed |
 | --- | --- | --- | --- | --- | --- |
@@ -52,7 +53,7 @@ the original set's official count.
 | `cel25cc-CC005` | Dark Gyarados | 8/82 | `cel25cc-CC018` | Garchomp C LV.X | 145/147 |
 | `cel25cc-CC006` | Here Comes Team Rocket! | 15/82 | `cel25cc-CC019` | Donphan | 107/123 |
 | `cel25cc-CC007` | Rocket's Zapdos | 15/132 | `cel25cc-CC020` | Reshiram | 113/114 |
-| `cel25cc-CC008` | _____'s Pikachu | 24/53 | `cel25cc-CC021` | Zekrom | 114/114 |
+| `cel25cc-CC008` | _____'s Pikachu | standalone 24 — held | `cel25cc-CC021` | Zekrom | 114/114 |
 | `cel25cc-CC009` | Cleffa | 20/111 | `cel25cc-CC022` | Mewtwo EX | 54/99 |
 | `cel25cc-CC010` | Shining Magikarp | 66/64 | `cel25cc-CC023` | Xerneas EX | 97/146 |
 | `cel25cc-CC011` | Team Magma's Groudon | 9/95 | `cel25cc-CC024` | M Rayquaza EX | 76/108 |
