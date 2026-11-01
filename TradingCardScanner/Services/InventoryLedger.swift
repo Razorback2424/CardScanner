@@ -327,6 +327,7 @@ struct InventoryLedger {
         observation: PriceObservation?,
         record: PriceRecord?
     ) -> InventoryValuation {
+        if record?.exactGradedQuoteIsWithdrawn == true { return .unpriced }
         if [record?.key, observation?.instrumentKey].compactMap({ $0 })
             .contains(where: PokemonReviewedPhysicalObjects.requiresReview(priceKey:)) {
             return .unpriced

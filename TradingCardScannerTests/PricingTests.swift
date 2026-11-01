@@ -46,6 +46,96 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 }
 
 final class PricingTests: XCTestCase {
+    @MainActor
+    func testExactGradedExpiryWithdrawsValueWhileTimeoutRetainsItAndNewSaleCanRestoreIt() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("graded-lifecycle-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+        let now = Date.now
+        let expires = now.addingTimeInterval(500)
+        let current = JustTCGQuoteLifecycle(status: "current", lastPrice: nil, lastSaleAt: now,
+            priceExpiresAt: expires)
+        let expired = JustTCGQuoteLifecycle(status: "expired", lastPrice: 50, lastSaleAt: now,
+            priceExpiresAt: expires)
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let key = try autoreleasepool {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let store = PriceStore(context: container.mainContext)
+            func bind(_ lifecycle: JustTCGQuoteLifecycle, price: Double?, at date: Date) -> GradedVariantBindingReceipt {
+                GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-lifecycle", company: .cgc,
+                    grade: grade, printing: "Normal", marketPriceUSD: price, updatedAt: now,
+                    quoteLifecycle: lifecycle), game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: date)
+            }
+            let first = bind(current, price: 50, at: now)
+            XCTAssertTrue(first.wasAccepted)
+            let record = try XCTUnwrap(store.record(forKey: first.priceKey))
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertTrue(store.recordFailure(game: .pokemon, printingID: record.printingID,
+                variantID: "normal", at: now.addingTimeInterval(1)))
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, current)
+            let next = bind(expired, price: nil, at: now.addingTimeInterval(2))
+            XCTAssertTrue(next.wasAccepted)
+            XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+            XCTAssertTrue(record.isInvalidated)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.lastPrice, 50)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.lastSaleAt, now)
+            XCTAssertNil(InventoryLedger(context: container.mainContext).valuation(forPriceKey: first.priceKey).unitPrice)
+            let log = try container.mainContext.fetch(FetchDescriptor<PriceObservation>())
+            XCTAssertEqual(log.count, 2)
+            XCTAssertEqual(log.filter { $0.kind == .explicitInvalidation }.count, 1)
+            XCTAssertTrue(store.save())
+            return first.priceKey
+        }
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let store = PriceStore(context: reopened.mainContext)
+        let record = try XCTUnwrap(store.record(forKey: key))
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, expired)
+        XCTAssertNil(record.gradedMarketCoverage)
+        let restored = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-lifecycle", company: .cgc,
+            grade: grade, printing: "Normal", marketPriceUSD: 60, updatedAt: now.addingTimeInterval(3),
+            quoteLifecycle: current), game: .pokemon, variantID: "normal", treatmentIDs: [], store: store,
+            at: now.addingTimeInterval(3))
+        XCTAssertTrue(restored.wasAccepted)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+        XCTAssertFalse(record.isInvalidated)
+        let staleExpiry = ExactGradedQuoteEvidence(variantID: "synthetic-lifecycle", lifecycle: expired,
+            checkedAt: now.addingTimeInterval(2))
+        store.recordExactGradedQuoteEvidence(staleExpiry, forKey: key)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, current)
+        let alreadyExpired = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-past-expiry", company: .cgc,
+            grade: grade, printing: "Normal", marketPriceUSD: 99, updatedAt: now,
+            quoteLifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: now.addingTimeInterval(-1000),
+                priceExpiresAt: now.addingTimeInterval(-1))), game: .pokemon, variantID: "normal",
+            treatmentIDs: [], store: store, at: now)
+        let expiredRecord = try XCTUnwrap(store.record(forKey: alreadyExpired.priceKey))
+        XCTAssertNil(expiredRecord.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(expiredRecord.justTCGFetchedAt, "An elapsed quote cannot stamp a new current quote check")
+    }
+
+    func testLifecycleMetadataPreservesLegacyCoverageAndPublishedExpiryIsNeverCurrent() throws {
+        let record = PriceRecord(key: "pokemon:justtcg:v2:synthetic:normal", game: .pokemon,
+            printingID: "justtcg:v2:synthetic", variantID: "normal")
+        let coverage = GradedMarketCoverage(status: .gradeNotListed)
+        record.gradedMarketCoverageJSON = String(data: try JSONEncoder().encode(coverage), encoding: .utf8)
+        XCTAssertEqual(record.gradedMarketCoverage?.status, .gradeNotListed)
+        record.exactGradedQuoteEvidence = .init(variantID: "synthetic", lifecycle: .init(status: "current",
+            lastPrice: nil, lastSaleAt: .now.addingTimeInterval(-1000), priceExpiresAt: .now.addingTimeInterval(-1)), checkedAt: .now)
+        record.unitMarketPriceUSD = 40
+        XCTAssertEqual(record.gradedMarketCoverage?.status, .gradeNotListed)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(InventoryLedger.resolveValuation(observation: nil, record: record).unitPrice)
+        record.gradedMarketCoverage = nil
+        XCTAssertNotNil(record.exactGradedQuoteEvidence)
+        XCTAssertNil(record.gradedMarketCoverage)
+        record.exactGradedQuoteEvidence = .init(variantID: "synthetic", lifecycle: .init(status: "unpriced",
+            lastPrice: nil, lastSaleAt: nil, priceExpiresAt: nil), checkedAt: .now)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+    }
+
     private func collisionSources() throws -> [TCGdexCard] {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-physical-collisions",
             withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))

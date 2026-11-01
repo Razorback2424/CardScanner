@@ -64,6 +64,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case physicalIdentityReview = "physical_identity_review_needed"
     case gradedSearchIncomplete = "graded_search_incomplete"
     case gradedIdentityUnresolved = "graded_local_identity_unresolved"
+    case gradedMarketPriceExpired = "graded_market_price_expired"
+    case gradedMarketNeverPriced = "graded_market_never_priced"
 
     /// A few plain words for a tile or a detail heading. The provider-level
     /// account is `detail`; the support code is the raw value.
@@ -87,7 +89,9 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .otherCurrency: return "Non-USD price only"
         case .physicalIdentityReview: return "Check this card"
         case .gradedSearchIncomplete: return "Graded search unfinished"
-        case .gradedIdentityUnresolved: return "Set not matched"
+        case .gradedIdentityUnresolved: return "Graded identity not matched"
+        case .gradedMarketPriceExpired: return "Graded price expired"
+        case .gradedMarketNeverPriced: return "No recorded sale for this slab"
         }
     }
 
@@ -141,7 +145,11 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedSearchIncomplete:
             return "The bounded provider search did not finish. This is not evidence that the card or grade is absent. A later refresh can retry."
         case .gradedIdentityUnresolved:
-            return "The app could not resolve the vendor set for this print run. No card request was made; provider coverage remains unverified."
+            return "The app could not verify the set, language or physical printing needed for this graded identity. Provider coverage remains unverified."
+        case .gradedMarketPriceExpired:
+            return "The provider withdrew the current price after the slab's recent-sale window expired. Its historical sale is retained for reference and excluded from current value."
+        case .gradedMarketNeverPriced:
+            return "The exact slab variant exists, but the provider reports no recorded sale for it. Other grades and historical amounts are never substituted."
         }
     }
 
@@ -160,6 +168,10 @@ enum PricingDiagnostics {
     /// refresh attempt. Keep the general diagnostic's attempt-first precedence.
     static func valuationExclusionReason(for card: CollectedCard, record: PriceRecord?) -> PricingDiagnosticReason? {
         if PokemonReviewedPhysicalObjects.requiresReview(card) { return .physicalIdentityReview }
+        if let lifecycle = record?.exactGradedQuoteEvidence?.lifecycle {
+            if lifecycle.isExpired(at: .now) { return .gradedMarketPriceExpired }
+            if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
+        }
         guard record?.effectiveUnitMarketPriceUSD == nil else { return nil }
         if let record, record.unitMarketPriceUSD != nil,
            record.currencyCode.caseInsensitiveCompare("USD") != .orderedSame {
@@ -183,6 +195,10 @@ enum PricingDiagnostics {
                 return .identityResolvedAfterFailedCheck
             }
             return .providerRequestFailed
+        }
+        if let lifecycle = record?.exactGradedQuoteEvidence?.lifecycle {
+            if lifecycle.isExpired(at: .now) { return .gradedMarketPriceExpired }
+            if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
         }
         if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
            reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved { return reason }
@@ -718,6 +734,17 @@ struct PriceStore {
         if let record = record(forKey: key) { update(record) }
     }
 
+    func recordExactGradedQuoteEvidence(_ evidence: ExactGradedQuoteEvidence, forKey key: String) {
+        if enqueue(keys: [key], { $0.recordExactGradedQuoteEvidence(evidence, forKey: key) }) { return }
+        guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
+              record.lastCheckedAt == evidence.checkedAt else { return }
+        if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
+            PriceObservationLog(context: context, index: index).recordInvalidation(
+                instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
+        }
+        record.exactGradedQuoteEvidence = evidence
+    }
+
     func migratePriceSide(
         from oldKey: String, to newKey: String, game: CardGame,
         printingID: String, variantID: String?, treatmentIDs: [String]
@@ -1106,7 +1133,7 @@ struct PriceStore {
 
         if let marketVariantID {
             record.marketVariantID = marketVariantID
-            record.gradedMarketCoverageJSON = nil
+            record.gradedMarketCoverage = nil
         }
         return true
     }
@@ -1317,7 +1344,7 @@ struct PriceStore {
         ) else { return false }
         if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
         guard record.effectiveUnitMarketPriceUSD == nil else {
-            record.gradedMarketCoverageJSON = nil
+            record.gradedMarketCoverage = nil
             if let reason = record.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
                reason.isGradedCoverageResult {
                 record.lastFailureReasonRaw = nil

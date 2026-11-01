@@ -468,6 +468,7 @@ struct JustTCGV2GradedClient: Sendable {
             ("language", vendorGame == .pokemonJapan ? "Japanese" : "English"),
             ("q", identity.name),
             ("graded", "only"),
+            ("include_null_prices", "true"),
             // JustTCG v2 returns the NA market by default. Spell it out so
             // the quote remains USD if the endpoint's default ever changes.
             ("regions", "NA"),
@@ -588,7 +589,25 @@ struct JustTCGV2GradedClient: Sendable {
         grades: Set<String> = [],
         lane: JustTCGRequestLane = .interactive
     ) async throws -> GradedVariantLookupResult {
+        try await lookup(identity: identity, game: game, companies: companies, grades: grades,
+            lane: lane, retainedCardID: nil, retainedVariantID: nil)
+    }
+
+    /// A prior exact binding supplies a stable identifier, never a new name
+    /// search. The response still has to prove the current local identity.
+    func lookupRetained(identity: GradedCardIdentity, game: CardGame, cardID: String?, variantID: String,
+                        lane: JustTCGRequestLane = .background) async throws -> GradedVariantLookupResult {
+        let cardID = cardID.flatMap { $0.isEmpty ? nil : $0 }
+        guard !variantID.isEmpty else { return .localIdentityUnresolved }
+        return try await lookup(identity: identity, game: game, companies: [], grades: [], lane: lane,
+            retainedCardID: cardID, retainedVariantID: variantID)
+    }
+
+    private func lookup(identity: GradedCardIdentity, game: CardGame, companies: Set<GradingCompany>,
+                        grades: Set<String>, lane: JustTCGRequestLane,
+                        retainedCardID: String?, retainedVariantID: String?) async throws -> GradedVariantLookupResult {
         try Task.checkCancellation()
+        let isRetained = retainedVariantID != nil
         guard let vendorGame = identity.vendorGame(for: game) else {
             throw CardGameSupportError.unsupportedGame(game)
         }
@@ -616,7 +635,7 @@ struct JustTCGV2GradedClient: Sendable {
             }
         }
         let setSlug: String?
-        if exactProduct != nil {
+        if exactProduct != nil || isRetained {
             // A product spans vendor grouping conventions; a display-name set
             // filter can exclude this exact printing (anthologies, promos).
             setSlug = nil
@@ -639,17 +658,22 @@ struct JustTCGV2GradedClient: Sendable {
             }
             setSlug = Self.resolvedSetSlug(identity: identity, game: game, directory: directory)
         }
-        if identity.pokemonPrintRun != nil, setSlug == nil, exactProduct == nil {
+        if !isRetained, identity.pokemonPrintRun != nil, setSlug == nil, exactProduct == nil {
             // A known print run without a trustworthy vendor set projection is
             // ambiguous. Do not issue a browse request whose first result could
             // become an authoritative slab binding.
             return .localIdentityUnresolved
         }
         var cards: [JustTCGV2Card] = []
-        let productQueries: [String?] = exactProduct?.productIDs.map(Optional.some) ?? [nil]
+        let productQueries: [String?] = isRetained ? [nil] : (exactProduct?.productIDs.map(Optional.some) ?? [nil])
         for productID in productQueries {
-            let query = Self.requestQuery(identity: identity, game: game, setSlug: setSlug,
+            var query = Self.requestQuery(identity: identity, game: game, setSlug: setSlug,
                 verifiedProductID: productID, companies: companies, grades: grades)
+            if isRetained {
+                query.removeAll { ["q", "set", "tcgplayer_id"].contains($0.0) }
+                if let retainedCardID { query.append(("card_id", retainedCardID)) }
+                else if let retainedVariantID { query.append(("variant_id", retainedVariantID)) }
+            }
             var productCards: [JustTCGV2Card] = []
             var cursor: String?
             var visited = Set<String>()
@@ -663,6 +687,7 @@ struct JustTCGV2GradedClient: Sendable {
                 } catch let error as JustTCGTransport.TransportError {
                     switch error {
                     case .budgetReached, .monthlyBudgetReached: return .incompleteSearch
+                    case .badResponse(status: 404) where isRetained: return .localIdentityUnresolved
                     case .badResponse(status: 404) where productID != nil && pageIndex == 0:
                         break productPages
                     default: throw error
@@ -683,6 +708,14 @@ struct JustTCGV2GradedClient: Sendable {
             }
         }
 
+        if isRetained {
+            guard cards.count == 1, let card = cards.first,
+                  card.game?.id?.caseInsensitiveCompare(vendorGame.rawValue) == .orderedSame,
+                  retainedCardID.map({ (card.uuid ?? card.id) == $0 }) ?? true else {
+                return .localIdentityUnresolved
+            }
+        }
+
         // Only cards that are demonstrably the one asked for.
         let matchingCards = cards.filter {
             exactProduct?.matches($0) ?? identity.matches($0, game: game, expectedSetSlug: setSlug)
@@ -695,6 +728,7 @@ struct JustTCGV2GradedClient: Sendable {
             pokemonPrintRun: identity.pokemonPrintRun)
         for card in matchingCards {
             for variant in card.variants ?? [] {
+                if isRetained, retainedCardID == nil, variant.variantId != retainedVariantID { continue }
                 let matchesVariant = exactProduct.map {
                     $0.admits(variant, productID: card.externalIDs?.tcgplayer, requestedFinish: nil)
                 }
@@ -726,12 +760,14 @@ struct JustTCGV2GradedClient: Sendable {
                     // price must read as "no reliable market price" rather than
                     // as zero.
                     marketPriceUSD: variant.marketPriceUSD,
-                    updatedAt: variant.updatedAt
+                    updatedAt: variant.updatedAt,
+                    quoteLifecycle: variant.quoteLifecycle
                 ))
             }
         }
         if exactProduct != nil, Set(variants.map(\.id)).count != variants.count { return .incompleteSearch }
         if !variants.isEmpty { return .matched(variants) }
+        if isRetained { return .localIdentityUnresolved }
         if matchingCards.contains(where: { ($0.variants ?? []).contains { $0.type?.lowercased() == "graded" } }) {
             // Published slab rows rejected for identity/language evidence are
             // not proof that this known card has no graded listings.

@@ -101,7 +101,8 @@ enum GradedVariantBinding {
         store: PriceStore,
         at fetchedAt: Date
     ) -> GradedVariantBindingReceipt {
-        let quote: PriceLookup = if let amount = variant.marketPriceUSD {
+        let quote: PriceLookup = if let amount = variant.marketPriceUSD,
+            variant.quoteLifecycle?.withdrawsCurrentQuote(at: fetchedAt) != true {
             .price(
                 NormalizedPrice(
                     unitMarketPriceUSD: amount,
@@ -132,12 +133,16 @@ enum GradedVariantBinding {
         )
         store.updateRecordMetadata(forKey: priceKey) { record in
             guard record.fetchedAt.map({ $0 <= fetchedAt }) ?? true else { return }
-            if wasAccepted, variant.marketPriceUSD != nil, record.fetchedAt == fetchedAt {
+            if wasAccepted, case .price = quote, record.fetchedAt == fetchedAt {
                 record.justTCGFetchedAt = fetchedAt
             }
             record.marketVariantID = variant.id
             record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        }
+        if wasAccepted, let lifecycle = variant.quoteLifecycle {
+            store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
+                checkedAt: fetchedAt), forKey: priceKey)
         }
         return GradedVariantBindingReceipt(
             quote: quote,
@@ -1833,7 +1838,10 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var byCard: [String: [PriceTarget]] = [:]
         for slab in slabs {
             guard let identity = slab.gradedIdentity else { continue }
-            byCard[identity.groupingKey(game: slab.game), default: []].append(slab)
+            let handle = slab.marketVariantID.map { variant in
+                slab.justTCGCardID.flatMap { $0.isEmpty ? nil : $0 }.map { "card:\($0)" } ?? "variant:\(variant)"
+            } ?? "unbound"
+            byCard[identity.groupingKey(game: slab.game) + "|" + handle, default: []].append(slab)
         }
 
         let client = JustTCGV2GradedClient(transport: sharedTransport,
@@ -1993,6 +2001,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 let lookup: GradedVariantLookupResult
                 if let gradedLookupOverride {
                     lookup = try await gradedLookupOverride(identity, game)
+                } else if let handle = group.first?.marketVariantID {
+                    lookup = try await client.lookupRetained(identity: identity, game: game,
+                        cardID: group.first?.justTCGCardID, variantID: handle, lane: .background)
                 } else {
                     lookup = try await client.lookup(identity: identity, game: game, lane: .background)
                 }

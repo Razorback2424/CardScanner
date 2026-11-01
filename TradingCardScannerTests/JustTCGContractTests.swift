@@ -25,6 +25,95 @@ private actor EditionPriceProbe {
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testRetainedGradedIdentifiersSkipDiscoveryButStillVerifyEveryBindingAxis() async throws {
+        let client = try gradedFixtureClient(directory: .init())
+        let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns", collectorNumber: "78",
+            catalogID: "ex7-78", finish: .normal)
+        let slab = GradedSlabEvidence(company: .cgc, grade: .init(value: "10", label: "Gem Mint"),
+            certificationNumber: nil, labelCardText: [])
+        let variant: [String: Any] = ["id": "synthetic-retained-10", "type": "graded", "printing": "Normal", "language": "English",
+            "grading": ["company": "CGC", "grade": 10, "grade_label": "Gem Mint"],
+            "markets": [["currency": "USD", "price": 50, "price_status": "current"]]]
+        let card: [String: Any] = ["id": "synthetic-retained-card", "name": "Spinarak", "number": "78",
+            "game": ["id": "pokemon"], "set": ["id": "team-rocket-returns-pokemon", "name": "Team Rocket Returns"], "variants": [variant]]
+        func lookup(_ source: [String: Any], cardID: String?) async throws -> GradedVariantLookupResult {
+            RecordingURLProtocol.reset(body: String(decoding: try JSONSerialization.data(withJSONObject: ["data": [source]]), as: UTF8.self))
+            return try await client.lookupRetained(identity: identity, game: .pokemon,
+                cardID: cardID, variantID: "synthetic-retained-10")
+        }
+        for cardID: String? in [nil, "synthetic-retained-card"] {
+            guard case let .matched(values) = try await lookup(card, cardID: cardID) else { return XCTFail("Exact retained handle must bind") }
+            XCTAssertEqual(values.count, 1)
+            XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: values, for: slab, finish: .normal,
+                boundVariantID: "synthetic-retained-10", catalogID: "ex7-78")?.marketPriceUSD, 50)
+            let urls = RecordingURLProtocol.recorded()
+            XCTAssertEqual(urls.count, 1)
+            let query = try XCTUnwrap(URLComponents(url: XCTUnwrap(urls.first), resolvingAgainstBaseURL: false)?.queryItems)
+            XCTAssertEqual(query.first { $0.name == (cardID == nil ? "variant_id" : "card_id") }?.value,
+                cardID ?? "synthetic-retained-10")
+            XCTAssertFalse(query.contains { ["q", "set", "tcgplayer_id"].contains($0.name) })
+            XCTAssertFalse(urls.contains { $0.path.contains("sets") })
+        }
+        for (field, value) in [("name", "Gengar"), ("number", "79"), ("id", "wrong-card")] {
+            var wrong = card; wrong[field] = value
+            let result = try await lookup(wrong, cardID: "synthetic-retained-card")
+            XCTAssertEqual(result, .localIdentityUnresolved)
+        }
+        for (field, value) in [("language", "French"), ("id", "different-variant")] {
+            var wrongVariant = variant; wrongVariant[field] = value
+            var wrong = card; wrong["variants"] = [wrongVariant]
+            let result = try await lookup(wrong, cardID: nil)
+            XCTAssertEqual(result, .localIdentityUnresolved)
+        }
+        for grading: [String: Any] in [["company": "CGC", "grade": 9],
+                                       ["company": "CGC", "grade": 10, "qualifier": "OC"]] {
+            var wrongVariant = variant; wrongVariant["grading"] = grading
+            var wrong = card; wrong["variants"] = [wrongVariant]
+            guard case let .matched(values) = try await lookup(wrong, cardID: "synthetic-retained-card") else { continue }
+            XCTAssertNil(ScannedGradedResolver.matchingVariant(in: values, for: slab, finish: .normal,
+                boundVariantID: "synthetic-retained-10", catalogID: "ex7-78"))
+        }
+        RecordingURLProtocol.reset(body: #"{"error":"not found"}"#, status: 404)
+        let missing = try await client.lookupRetained(identity: identity, game: .pokemon,
+            cardID: nil, variantID: "missing-handle")
+        XCTAssertEqual(missing, .localIdentityUnresolved)
+    }
+
+    func testLifecycleSeparatesCurrentExpiredNeverPricedAndForeignHistory() throws {
+        for status in ["current", "expired", "unpriced"] {
+            let body: [String: Any] = ["markets": [["currency": "EUR", "price": 999, "price_status": "current"],
+                ["currency": "USD", "price": status == "current" ? (40 as Any) : NSNull(),
+                 "price_status": status, "last_price": 35,
+                 "last_sale_at": 1_790_000_000, "price_expires_at": 1_797_776_000]]]
+            let variant = try JSONDecoder().decode(JustTCGVariant.self, from: JSONSerialization.data(withJSONObject: body))
+            XCTAssertEqual(variant.marketPriceUSD, status == "current" ? 40 : nil)
+            let lifecycle = try XCTUnwrap(variant.quoteLifecycle)
+            XCTAssertEqual(lifecycle.status, status)
+            XCTAssertEqual(lifecycle.lastPrice, 35)
+            XCTAssertEqual(lifecycle.lastSaleAt, Date(timeIntervalSince1970: 1_790_000_000))
+            XCTAssertEqual(lifecycle.priceExpiresAt, Date(timeIntervalSince1970: 1_797_776_000))
+            XCTAssertEqual(lifecycle.wasNeverPriced, status == "unpriced")
+        }
+        let v1 = try JSONDecoder().decode(JustTCGVariant.self, from: Data(#"{"price":null,"priceStatus":"expired","lastKnownPrice":250,"lastUpdated":1790000000}"#.utf8))
+        XCTAssertNil(v1.marketPriceUSD)
+        XCTAssertEqual(v1.quoteLifecycle?.lastPrice, 250)
+        XCTAssertEqual(v1.quoteLifecycle?.status, "expired")
+        let foreignOnly = try JSONDecoder().decode(JustTCGVariant.self, from: Data(#"{"markets":[{"currency":"EUR","price_status":"expired","last_price":999}]}"#.utf8))
+        XCTAssertNil(foreignOnly.quoteLifecycle)
+        let legacy = try JSONDecoder().decode(JustTCGVariant.self, from: Data(#"{"price":40}"#.utf8))
+        XCTAssertEqual(legacy.marketPriceUSD, 40)
+        XCTAssertNil(legacy.quoteLifecycle)
+    }
+
+    func testGradedDiscoveryRequestsAllNullCardsSoAbsenceDoesNotMeanNoProduct() {
+        let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78", finish: .normal)
+        for product: String? in [nil, "89455"] {
+            let query = Dictionary(uniqueKeysWithValues: JustTCGV2GradedClient.requestQuery(identity: identity,
+                game: .pokemon, setSlug: "pokemon-team-rocket-returns", verifiedProductID: product))
+            XCTAssertEqual(query["include_null_prices"], "true")
+        }
+    }
+
     func testRawDirectProductLookupKeepsJapanesePrintingSeparateFromEnglish() throws {
         let response = try JSONDecoder().decode(JustTCGBatchResponse.self, from: Data(#"{"data":[{"uuid":"synthetic-card","tcgplayerId":"123","variants":[{"uuid":"en","condition":"Near Mint","printing":"Holofoil","language":"English","price":999},{"uuid":"ja","condition":"Near Mint","printing":"Holofoil - Japanese","language":"Japanese","price":40}]}]}"#.utf8))
         func target(_ id: String, japanese: Bool? = nil) -> MarketPriceTarget {
@@ -70,6 +159,10 @@ final class JustTCGContractTests: XCTestCase {
             }
             guard case let .matched(variants) = try await lookup(base), let exact = variants.first else { return XCTFail("Exact Cosmos product must be admitted") }
             XCTAssertEqual(exact.verifiedProductID, productID)
+            let retained = try await client.lookupRetained(identity: identity, game: .pokemon,
+                cardID: "synthetic-cosmos-card", variantID: "synthetic-cosmos-10")
+            guard case let .matched(retainedVariants) = retained else { return XCTFail("Retained Cosmos must use the same exact proof") }
+            XCTAssertEqual(retainedVariants.first?.verifiedProductID, productID)
             let owned = GradedSlabEvidence(company: .cgc, grade: .init(value: "10", label: "Gem Mint"),
                 certificationNumber: nil, labelCardText: [], printedFinish: .pokemonFoilPattern("cosmos"))
             XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: variants, for: owned, catalogID: id), exact)
@@ -78,6 +171,9 @@ final class JustTCGContractTests: XCTestCase {
             for wrongProduct in ["675909", "704797", "684431", "685555", "686505"] {
                 var wrong = base; wrong["external_ids"] = ["tcgplayer": wrongProduct]
                 if case .matched = try await lookup(wrong) { XCTFail("Ordinary/stamped product admitted for \(id)") }
+                let retainedWrong = try await client.lookupRetained(identity: identity, game: .pokemon,
+                    cardID: "synthetic-cosmos-card", variantID: "synthetic-cosmos-10")
+                XCTAssertEqual(retainedWrong, .localIdentityUnresolved)
             }
             for (field, value) in [("name", source.name + " (GameStop)"), ("number", "999/999")] {
                 var wrong = base; wrong[field] = value

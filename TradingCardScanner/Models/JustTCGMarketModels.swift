@@ -324,6 +324,8 @@ struct JustTCGVariant: Decodable, Sendable {
     /// v1 only. v2 moves the number into `markets` — read `marketPriceUSD`
     /// rather than this, which is nil for every v2 response.
     let price: Double?
+    let priceStatus: String?
+    let lastKnownPrice: Double?
     /// v2 only. Per-region market blocks.
     let markets: [JustTCGMarket]?
     let currency: String?
@@ -360,6 +362,7 @@ struct JustTCGVariant: Decodable, Sendable {
     /// at all — the picker showed grades with nothing beside them and no slab
     /// could ever contribute to a total.
     var marketPrice: (amount: Double, currency: String)? {
+        if let status = quoteLifecycle?.status, status != "current" { return nil }
         if let price {
             // v1 normally omits `currency` because its flat price is USD. If
             // it is present, however, it is authoritative and must not be
@@ -391,6 +394,22 @@ struct JustTCGVariant: Decodable, Sendable {
         return usdMarket?.updatedAt.map { Date(timeIntervalSince1970: $0) }
     }
 
+    var quoteLifecycle: JustTCGQuoteLifecycle? {
+        let value: JustTCGQuoteLifecycle
+        if priceStatus != nil || lastKnownPrice != nil {
+            value = .init(status: priceStatus, lastPrice: lastKnownPrice, lastSaleAt: nil, priceExpiresAt: nil)
+        } else if let market = usdMarket {
+            value = .init(status: market.priceStatus, lastPrice: market.lastPrice,
+                lastSaleAt: market.lastSaleAt.flatMap(Self.providerDate),
+                priceExpiresAt: market.priceExpiresAt.flatMap(Self.providerDate))
+        } else { return nil }
+        return value.hasEvidence ? value : nil
+    }
+
+    private static func providerDate(_ value: Double) -> Date? {
+        value.isFinite ? Date(timeIntervalSince1970: value) : nil
+    }
+
     private var usdMarket: JustTCGMarket? {
         markets?.first {
             guard let currency = $0.currency else { return true }
@@ -407,7 +426,7 @@ struct JustTCGVariant: Decodable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case id, uuid, type, condition, printing, language, tcgplayerSkuId
-        case price, currency, lastUpdated, grading, markets, priceHistory
+        case price, currency, lastUpdated, grading, markets, priceHistory, priceStatus, lastKnownPrice
         case priceChange24hr, priceChange7d, minPrice7d, maxPrice7d
         case covPrice7d, priceChangesCount7d
     }
@@ -420,12 +439,50 @@ struct JustTCGMarket: Decodable, Sendable {
     let price: Double?
     let updatedAt: Double?
     let priceHistory: [JustTCGHistoryPoint]?
+    let priceStatus: String?
+    let lastPrice: Double?
+    let lastSaleAt: Double?
+    let priceExpiresAt: Double?
 
     enum CodingKeys: String, CodingKey {
         case region, currency, price
         case updatedAt = "updated_at"
         case priceHistory = "price_history"
+        case priceStatus = "price_status"
+        case lastPrice = "last_price"
+        case lastSaleAt = "last_sale_at"
+        case priceExpiresAt = "price_expires_at"
     }
+}
+
+/// Provider lifecycle evidence is separate from the quote amount. Historical
+/// `last_price` is never a current value and an HTTP failure creates no evidence.
+struct JustTCGQuoteLifecycle: Codable, Hashable, Sendable {
+    let status: String?
+    let lastPrice: Double?
+    let lastSaleAt: Date?
+    let priceExpiresAt: Date?
+
+    var hasEvidence: Bool { status != nil || lastPrice != nil || lastSaleAt != nil || priceExpiresAt != nil }
+    func isExpired(at date: Date) -> Bool {
+        status == "expired" || (status == "current" && priceExpiresAt.map { $0 <= date } == true)
+    }
+    var wasNeverPriced: Bool { status == "unpriced" }
+    func withdrawsCurrentQuote(at date: Date) -> Bool { isExpired(at: date) || wasNeverPriced }
+}
+
+struct ExactGradedQuoteEvidence: Codable, Equatable, Sendable {
+    let variantID: String
+    let lifecycle: JustTCGQuoteLifecycle
+    let checkedAt: Date
+}
+
+/// Backward-compatible contents of the existing graded metadata JSON column.
+/// Legacy coverage objects still decode; no persistent model field is added.
+struct GradedRecordEvidence: Codable {
+    var version = 1
+    var coverage: GradedMarketCoverage?
+    var quote: ExactGradedQuoteEvidence?
 }
 
 /// Provider timestamps, never the time the app happened to check a price.
@@ -633,6 +690,7 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
     let verifiedProductID: String?
     let marketPriceUSD: Double?
     let updatedAt: Date?
+    let quoteLifecycle: JustTCGQuoteLifecycle?
 
     init(
         id: String,
@@ -644,7 +702,8 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         language: String? = nil,
         verifiedProductID: String? = nil,
         marketPriceUSD: Double?,
-        updatedAt: Date?
+        updatedAt: Date?,
+        quoteLifecycle: JustTCGQuoteLifecycle? = nil
     ) {
         self.id = id
         self.cardID = cardID
@@ -656,6 +715,7 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         self.verifiedProductID = verifiedProductID
         self.marketPriceUSD = marketPriceUSD
         self.updatedAt = updatedAt
+        self.quoteLifecycle = quoteLifecycle
     }
 
     /// The existing persisted finish field uses the v1 language-qualified
