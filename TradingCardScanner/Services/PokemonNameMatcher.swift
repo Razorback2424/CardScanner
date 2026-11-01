@@ -9,8 +9,8 @@ enum PokemonNameMatcher {
     }
 
     /// Returns matching name indices. Any exact or punctuation/spacing variant
-    /// suppresses fuzzy matches, so a near spelling cannot compete with a name
-    /// that OCR read exactly.
+    /// of a name with at least three characters suppresses fuzzy matches, so a
+    /// near spelling cannot compete with a name that OCR read exactly.
     static func matches(_ names: [String], readings: [String]) -> [Int] {
         let normalizedNames = names.map(normalizedName)
         let normalizedReadings = readings
@@ -25,9 +25,17 @@ enum PokemonNameMatcher {
                 reading == name || compact(reading) == compactName
             }
         }
-        if !exact.isEmpty { return exact }
+        // A one- or two-letter title (`N`, `AZ`) can also be stray OCR from a
+        // different card. It may identify that card, but it must not suppress
+        // a longer name OCR read approximately: keep both so the result stays
+        // ambiguous instead of silently choosing the short title.
+        if exact.contains(where: { compact(normalizedNames[$0]).count >= 3 }) { return exact }
+        guard !exact.isEmpty else { return fuzzyMatches(normalizedNames, readings: normalizedReadings) }
+        return Array(Set(exact + fuzzyMatches(normalizedNames, readings: normalizedReadings))).sorted()
+    }
 
-        return normalizedNames.indices.filter { index in
+    private static func fuzzyMatches(_ normalizedNames: [String], readings normalizedReadings: [String]) -> [Int] {
+        normalizedNames.indices.filter { index in
             let name = compact(normalizedNames[index])
             guard name.count >= 5 else { return false }
             let maximumDistance = name.count <= 7 ? 1 : 2

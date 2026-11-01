@@ -329,6 +329,18 @@ final class ScanParserTests: XCTestCase {
         XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Mew", readings: ["New"]))
     }
 
+    /// `N` may be read exactly, but as stray OCR it must not suppress a longer
+    /// title from the same footer that OCR read only approximately.
+    func testShortExactTitleCannotHideAnApproximateLongerTitle() {
+        let names = ["N", "Steven's Advice"]
+        XCTAssertEqual(PokemonNameMatcher.matches(names, readings: ["N"]), [0])
+        XCTAssertEqual(PokemonNameMatcher.matches(names, readings: ["n", "Steven's Advicc"]), [0, 1])
+        XCTAssertEqual(PokemonNameMatcher.matches(names, readings: ["Steven's Advice", "n"]), [0, 1])
+        XCTAssertEqual(PokemonNameMatcher.matches(names, readings: ["Steven's Advice"]), [1])
+        XCTAssertEqual(PokemonNameMatcher.matches(["AZ", "Azelf"], readings: ["az"]), [0])
+        XCTAssertTrue(PokemonNameMatcher.matches(["Nidoking"], readings: ["n"]).isEmpty)
+    }
+
     func testDeltaSpeciesTitleDoesNotEliminateItsClassicReprint() {
         for reading in ["Metagross", "Metagross δ", "Metagros δ"] {
             XCTAssertEqual(

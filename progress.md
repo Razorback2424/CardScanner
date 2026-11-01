@@ -1,3 +1,16 @@
+# 2026-11-01 — Make short Pokémon titles (N, AZ) scannable
+
+Follow-up coverage sweep (no provider network, no Swift toolchain in the
+session). Historical title capture discarded every title under three
+characters, so Supporter `N` (bw3-92, bw3-101, bw5-96, xy10-105, xy10-105a,
+30th-c-021) and `AZ` (xy4-91, xy4-117) could never produce title evidence; the
+bundled 30th Classic `n` 101/101 membership was unreachable. Only these exact
+reviewed titles are now retained, and a short exact reading no longer
+suppresses a fuzzy match for a longer title, so stray OCR stays ambiguous.
+New regressions cover the parser, matcher and bundled-checklist resolution.
+**Not compiled or run here**; CI must confirm. Details and residual risks are
+in the [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md#follow-up-sweep--short-titles-2026-11-01).
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)

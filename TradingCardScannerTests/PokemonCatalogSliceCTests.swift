@@ -332,6 +332,50 @@ final class PokemonCatalogSliceCTests: XCTestCase {
             readings: ["Imposter Professor Oak's Revenge"]), [1], "The alias applies only to the exact whole title")
     }
 
+    /// N and AZ print nothing else in the title band. Their title evidence must
+    /// reach the bundled checklist, and the 30th Classic N must stay a choice.
+    func testShortSupporterTitlesResolveFromTheBundledChecklist() async throws {
+        let store = PokemonChecklistStore()
+        let loaded = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        let registry = PokemonCatalogRegistry.bundledSeed
+
+        func resolution(_ localID: String, _ denominator: Int,
+                        titles: [String]) -> PokemonHistoricalIdentityResolution {
+            let number = PokemonPrintedNumberEvidence(localID: localID, denominator: denominator,
+                                                      scheme: .officialSet)
+            guard case let .pokemonHistorical(evidence)? = PokemonHistoricalScanParser.parse(
+                number: number, titleLines: ["TRAINER"] + titles + ["Supporter"])?.legacyIdentity else {
+                XCTFail("\(titles) \(localID)/\(denominator) produced no title evidence")
+                return .unsupported
+            }
+            let candidates = PokemonOfflineCardFactory.candidates(in: snapshot, number: number, registry: registry)
+            return PokemonHistoricalIdentityResolver.resolve(evidence,
+                candidateSetIDs: candidates.map(\.setID), in: candidates)
+        }
+
+        for (localID, denominator, title, expected) in [
+            ("92", 101, "N", "bw3-92"), ("96", 108, "N", "bw5-96"), ("105", 124, "N", "xy10-105"),
+            ("91", 119, "AZ", "xy4-91"), ("117", 119, "AZ", "xy4-117")
+        ] {
+            guard case let .unique(card) = resolution(localID, denominator, titles: [title]) else {
+                return XCTFail("Expected \(expected) for \(title) \(localID)/\(denominator)")
+            }
+            XCTAssertEqual(card.providerID, expected)
+        }
+
+        guard case let .ambiguous(classic) = resolution("101", 101, titles: ["N"]) else {
+            return XCTFail("The original and 30th Classic N share 101/101")
+        }
+        XCTAssertEqual(Set(classic.map(\.providerID)), ["bw3-101", "30th-c-021"])
+
+        // Stray "N" OCR beside a misread Steven's Advice must not choose N.
+        guard case let .ambiguous(stray) = resolution("92", 101, titles: ["N", "Steven's Advicc"]) else {
+            return XCTFail("A short exact reading cannot hide an approximate longer title")
+        }
+        XCTAssertEqual(Set(stray.map(\.providerID)), ["bw3-92", "ex5-92"])
+    }
+
     func testBirthdayPikachuDoesNotInventTheSupplierDenominator() throws {
         let registry = PokemonCatalogRegistry.bundledSeed
         XCTAssertNil(registry.membershipRecognition(forProviderSetID: "cel25cc"),
