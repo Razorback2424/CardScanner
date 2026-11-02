@@ -793,17 +793,26 @@ for a final one.
 
 ### C4 — persist the sort price cache
 
+**2026-11-02 correction:** positive hints now use per-slot
+`SortPriceHint(price, checkedAt)` under `sortprices-v2|`, retaining the producer's
+original receipt date. Only a slot whose own date is within 24 hours is resolved.
+Stale positives remain retryable hints; stale detail, bulk and saved TCGCSV
+fallbacks cannot become fresh because an envelope was saved again. Narrow
+write-back preserves each unrequested slot's date. This supersedes the original
+envelope-only freshness design; see the
+[owned-price correctness contract](pricing_correctness_and_coverage.md#one-owned-price-and-honest-sort-dates--2026-11-02).
+
 Resolves the relaunch cost. Add to `CatalogCacheStore`
 ([`BrowseCatalog.swift:802`](../../TradingCardScanner/Services/BrowseCatalog.swift:802)):
 
 ```swift
 private static let sortPriceMaxAge: TimeInterval = 24 * 60 * 60
-func sortPrices(for setID: String) -> Cached<[String: Double]>?
-func storeSortPrices(_ prices: [String: Double], for setID: String)
+func sortPrices(for setID: String) -> Cached<[String: SortPriceHint]>?
+func storeSortPrices(_ prices: [String: SortPriceHint], for setID: String)
 ```
 
 Stored under a `SortPrices/` subdirectory keyed by `filename(for:)` on
-`"sortprices|\(setID)"`, with the existing `trim(_:maximumBytes:)` applied at a
+`"sortprices-v2|\(setID)"`, with the existing `trim(_:maximumBytes:)` applied at a
 5 MB budget. Load into `sortPriceCache` when a set's price request starts; write
 back when its stream finishes.
 
@@ -816,9 +825,12 @@ not. Say so in the source comment.
 page, so a request routinely covers fewer slots than the stored map. Storing
 that narrower map would truncate a fully priced set to one page on every cold
 open — the exact relaunch cost this cache removes. Merge the run's prices into
-the stored map, and carry forward only a **fresh** envelope: re-storing a stale
-map would reset its age without re-pricing the slots the request never looked
-at. Pinned by `testNarrowerSortPriceRequestDoesNotTruncateTheStoredMap`.
+the stored map, carrying forward each retained hint's original `checkedAt`.
+Resolve a hint only while its own evidence date is within 24 hours. Stale
+positives and failed refreshes remain retryable hints; envelope write time
+never renews them. Pinned by
+`testNarrowerSortPriceRequestDoesNotTruncateTheStoredMap` and the stale
+detail/bulk/TCGCSV and failed-cold-refresh regressions.
 
 **The producer owns stream termination.** `produceSortPrices` has several early
 returns (cancellation, a task-group throw). Any of them that skips

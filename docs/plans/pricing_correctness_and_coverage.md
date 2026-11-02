@@ -1,5 +1,99 @@
 # Pricing correctness before coverage expansion
 
+## One owned price and honest sort dates — 2026-11-02
+
+**Validation base:** `51b97bc`; implemented locally with focused native and
+simulator evidence. Seven unrelated baseline test failures remain, as below.
+The supplied plan's seven findings are confirmed in the current source: the set
+grid, catalog detail and Collection read independent prices; alias promotion can
+bypass the selected record's guards; owned values wait on catalog quotes;
+variant-only state can conflate local entries; Pokémon detail drops cache bypass;
+sort producers discard their evidence dates; the unpriced export omits valued
+cards needed for this investigation. Collection refresh's `priceTarget` has the
+same alias-promotion defect. A new native regression failed before the fix:
+an older catalog quote replaced the selected $713 legacy value with $0.42 under
+the previously absent primary key.
+
+The validated implementation contract is:
+
+- The ownership projection carries the exact key and `PriceDisplay` selected
+  by Collection, including legacy aliases and physical-review exclusions.
+  Browse overlays owned values on catalog ordering hints for tile prices,
+  accessibility, sorting and the priced count. An unpriced owned entry remains
+  unpriced. Graded, stamped and sealed entries do not supply a raw-slot value.
+- A pure reducer preserves each local entry. The newest valued entry supplies
+  a slot's single amount; differing entries remain individually attributed in
+  the Owned section. Collection identity and selected key govern reconciliation,
+  rather than finish alone. Matcher-only finish aliases are display-only.
+- Catalog detail reconciles exact finish/treatment matches through the serialized
+  writer. The complete selected-record decision is also replayed in Collection
+  refresh's fresh checkpoint. An older source quote or a quote missing source
+  dates cannot bypass a newer saved alias through an empty primary key.
+  Catalog adds, their deferred fallback quotes and stored-row scan price staging
+  use the same guard, so adding a copy cannot bypass the detail reconciliation.
+- **Review correction (High):** alias promotion must also preserve invalidation
+  and receipt-order guards. A pre-invalidation quote cannot create a primary
+  value when the selected alias is invalidated. A delayed response cannot
+  bypass a later receipt. New evidence after the correction can recover normally.
+- **Review correction (Medium):** distinguish proven older source data from
+  missing source-date evidence. The latter's age is unknown; the caption must
+  never substitute the fetch time and claim it is older market data.
+- Saved prices remain visible during loading, failure and unavailable results.
+  Attribution and stale state use `PriceDisplay`; history names JustTCG and is
+  identified as history separately from the saved Collection valuation.
+- Stale owned values force a detail fetch. Forcing callers wait out ordinary
+  tasks, then start or join a cache-bypassing task; ordinary callers may share
+  a forcing task. Apply this to both detail tasks and shared Pokémon payloads.
+- Every positive sort producer carries its original evidence receipt date.
+  Persist per-slot `SortPriceHint(price, checkedAt)` under `sortprices-v2|`.
+  Old positive quotes remain retryable hints, including after failed refresh,
+  narrow write-back and reopening. Saving an envelope does not renew its slots.
+- The all-card price-evidence export includes valued and stale-valued entries,
+  the selected key, retained source/receipt dates and latest attempt evidence.
+
+**Freshness scope:** set-grid fetching updates catalog ordering hints. It does
+not refresh owned valuations. Owned prices change on catalog-detail reconciliation
+or Collection refresh, so a successful set fetch may coexist with a stale or
+unpriced owned slot. The grid shows the selected amount; detailed provenance is
+on the detail surfaces. Set loading/pending-state redesign and unowned Price
+Check unification remain deferred. No schema migration or new persisted quote
+fields are needed.
+
+Verification covers alias retention/promotion, invalidation during a queued
+write, delayed receipts, distinct date captions, projection agreement, owned
+grid inputs, stale detail/bulk/TCGCSV producers, forced-task sharing and the
+valued-card export. The final focused run passed **294 tests with one expected
+skip and zero failures** (295 executed), including the removed-owner checkpoint
+regressions and catalog-add alias retention. At the owner's request, subsequent broad runs
+exclude `CardCenteringGroundTruthTests`, `CardCenteringInvariantTests` and
+`CenteringProfileDumpTests`; the superseded unrestricted run was stopped during
+the corpus diagnostics.
+
+The broad run executed 3,016 methods, with 19 skips and ten failed methods
+(32 XCTest failure reports). It exposed two removed-owner refresh regressions,
+now fixed and covered by all five passing `RefreshStructuralWriteTests`, plus
+a stale grading-key expectation corrected to include the existing finish field.
+The seven remaining methods reproduce unchanged on `51b97bc`: three unsigned
+Keychain tests (`-34018`), three scanner-state tests and a SwiftData notification
+key-shape assertion. The isolated baseline control reproduced all seven with
+28 failure reports. No production grading behavior was changed to satisfy a
+test. This is focused feature verification, not a green full-suite claim.
+
+The production set grid, catalog detail and Collection detail were captured for
+native and legacy-alias records with both older and newer incoming evidence.
+All twelve captures agree: $713.30 is retained for older evidence; $816.38 is
+selected for newer evidence. Catalog attribution and expanded Collection Price
+details agree on the source date. Failed, unavailable and undated checks retain
+the saved amount, with distinct captions and no price spinner. Captures remain
+outside the repository under `/private/tmp/pricing-ui/`; no personal collection
+was seeded or exported. The largest accessibility text size exposed caption
+truncation; the final captures confirm full wrapped captions and history heading
+at Accessibility XXXL. Retry retains the saved-price explanation after another
+check. The detailed visual loop is recorded in `progress.md`.
+
+No phone, live-provider, CloudKit or release gate is inferred. The ASC 284 phone
+case still requires an installed build and the new evidence export.
+
 ## Reconciled PR #14 — 2026-11-02
 
 Starting head `ce17ea0acb8999bbdfb754a1c7b4f1145edf96ba` matched the review.

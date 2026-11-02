@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-11-02
 
+**Owned-price and sort-date correction — 2026-11-02:** the
+[pricing correctness contract](pricing_correctness_and_coverage.md#one-owned-price-and-honest-sort-dates--2026-11-02)
+supersedes the October refinement plan's claim of no demonstrated false
+timestamping and C4's envelope-only sort-price freshness design. Source review
+and the failing legacy-refresh regression confirm the defects. The current
+contract explicitly preserves cross-key invalidation/receipt guards, separates
+missing source dates from proven older data, and limits set-grid fetching to
+catalog hints. Implementation evidence is recorded there; release gates remain
+separate.
+
 **Repository consolidation — 2026-11-02:** all remaining PRs (#19, #18, #20)
 are squash-merged. The exact final integration tree passed hosted #20 CI. The
 [consolidation receipt](../audits/repository-consolidation-2026-11-02.md) records

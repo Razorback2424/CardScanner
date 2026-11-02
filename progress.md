@@ -98,7 +98,7 @@ Two native cases add repeat/refocus/field-change and removal coverage. Candidate
 execution is pending; production commit behavior is unchanged. An initial
 missing-brace correction superseded a canceled build with zero native cases.
 No physical-device verification or merge is claimed. The
-[centering ledger](docs/audits/centering-guided-repair.md#localized-done-investigation--2026-11-01-open)
+[centering ledger](docs/audits/centering-guided-repair.md#historical-localized-done-investigation--2026-11-01)
 retains provenance, counts, timing limits and current status.
 
 # 2026-11-02 — Isolated combined validation candidate
@@ -5860,3 +5860,70 @@ passed. The final CI-selection/docs head is rerun and reported in
 See the [evidence record](docs/audits/pokemon-finish-evidence-2026-11-02.md)
 for exact scope, source hashes, confidence/cache boundaries and remaining holds.
 No real collection, device, feed, release, portfolio/token or centering mutation.
+
+# 2026-11-02 — One owned price and honest sort-price dates
+
+Validated the supplied plan against `51b97bc` and implemented the
+[revised pricing contract](docs/plans/pricing_correctness_and_coverage.md#one-owned-price-and-honest-sort-dates--2026-11-02).
+The selected Collection record now drives owned Browse prices and sorting.
+Cross-key reconciliation preserves newer source dates, missing-date uncertainty,
+invalidation and receipt ordering. Catalog adds and stored-row scan price staging
+use the same guard. Sort hints retain individual evidence dates across stale
+fallbacks, failures, narrow saves and reopening. The all-card evidence export
+includes selected keys and source/receipt dates.
+
+The original legacy-refresh reproduction failed before the fix. Final focused
+verification passed **294 / 295 executed**, with one expected skip and zero
+failures, including both removed-owner checkpoint regressions and catalog-add
+alias retention. A stale grading-key expectation was corrected to include the
+existing finish field. Intermediate fixture/compiler failures were corrected
+before this final run.
+
+The broader run, with the owner's requested centering-corpus exclusions,
+executed 3,016 methods: 19 skipped and 10 failed methods (32 failure reports).
+Two refresh methods were repaired and pass in the focused rerun; the grading
+expectation also passes. The remaining seven methods reproduce on unchanged
+`51b97bc`: three Keychain cases (`-34018` in the unsigned simulator), three
+scanner cases, and one SwiftData notification-shape assertion. That baseline
+control executed seven methods with the same 28 failure reports. Full-suite and
+device/provider/release readiness are not claimed.
+
+UI loop: early 2.5/5-second captures caught the opening overlay; 10-second
+captures reached the deterministic `OwnedPriceReview` fixture. Inspected the
+production native-card grid, catalog detail and Collection detail: each keeps
+$713.30 when the incoming quote is older. Catalog attribution and Collection's
+expanded Price details both show the same October 31 source date. The screenshot
+matrix continues with newer incoming data and legacy aliases; captures remain
+outside the repository under `/private/tmp/pricing-ui/`.
+
+UI loop follow-up: the native incoming-newer case shows $816.38 on all three
+surfaces with the newer November 2 source date. The legacy-alias saved-newer
+case keeps $713.30 on all three surfaces. Inspected all six new captures; no
+clipped price/caption or incorrect loading state was present.
+
+UI loop follow-up: legacy-alias promotion with newer evidence shows $816.38 on
+the grid and both details, with the newer source date. All twelve primary
+matrix captures are inspected and consistent. Terminal-state and large-text
+checks remain for the final visual pass.
+
+UI loop follow-up: failure, unavailable and missing-source-date states all keep
+$713.30 without a price spinner. The largest Dynamic Type check exposed caption
+truncation; attribution, retention explanations and the history subtitle now
+request their full wrapped height. Rebuilding for the final accessibility pass.
+
+Accessibility follow-up: the complete missing-date explanation now wraps at
+Accessibility XXXL without an ellipsis, with Retry still reachable. Applied
+the same wrapped-height rule to the adjacent history heading; final build and
+capture follow. Native pricing behavior remains covered by the green 295-case
+focused selection.
+
+Final UI pass: inspected the complete missing-date caption and the two-line
+history heading at Accessibility XXXL; neither truncates. Retry is reachable
+and retains the saved-price explanation after another check. The simulator is
+restored to standard text size for the final capture. HIG gate: **PASS** for
+platform patterns, clarity, system typography, tested accessibility semantics,
+interaction cost and price/history attribution. No remaining issue in the
+changed price presentation; full VoiceOver/device/release certification is not
+inferred. Final simulator build, local Markdown links and `git diff --check`
+pass. Removed only the clean temporary baseline checkout created for this task;
+its native control results remain in the task evidence.
