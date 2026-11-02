@@ -21,32 +21,90 @@ final class CenteringNativePrecisionTests: XCTestCase {
         }
     }
 
-    @MainActor func testUndoCannotRestoreApprovalAcrossRotationResetOrChangedPhoto() throws {
-        for exactValues in [false, true] {
-            let model = CardCenteringViewModel()
-            model.image = synthetic()
-            model.measurement = fixture()
-            model.confirmFrames()
-            XCTAssertNotNil(model.exportSnapshot())
-            if exactValues {
-                model.updateInner(\.left, to: 65, within: 1...200)
-            } else {
-                model.recordUndoPoint()
-                model.applyGuideEdit(try XCTUnwrap(model.measurement))
-            }
-            model.recordUndoPoint()
+    @MainActor func testResetGuidesAndUndoCannotRestoreApprovalAfterRotationReset() async throws {
+        try await assertDetectedGuideResetRequiresReconfirmation { model in
             model.adjustRotation(by: 0.01)
             model.resetRotation()
+        }
+    }
+
+    @MainActor func testResetGuidesAndUndoCannotRestoreApprovalAfterChangedPhoto() async throws {
+        try await assertDetectedGuideResetRequiresReconfirmation { model in
+            model.image = self.synthetic()
+        }
+    }
+
+    @MainActor private func assertDetectedGuideResetRequiresReconfirmation(
+        invalidate: @MainActor (CardCenteringViewModel) -> Void
+    ) async throws {
+        for exactValues in [false, true] {
+            let model = CardCenteringViewModel()
+            // Load through production analysis so Reset Guides has a real
+            // detector snapshot. Assigning measurement directly leaves it nil.
+            model.loadCapturedPhoto(try XCTUnwrap(synthetic().pngData()))
+            let deadline = Date().addingTimeInterval(10)
+            while model.isAnalyzing && Date() < deadline {
+                try await Task.sleep(for: .milliseconds(20))
+            }
+            XCTAssertFalse(model.isAnalyzing)
+            XCTAssertNil(model.errorMessage)
+            let detected = try XCTUnwrap(model.measurement)
+            XCTAssertTrue(detected.hasValidFrameGeometry)
+            XCTAssertFalse(model.canResetGuides, "The loaded guides must match the detector snapshot")
+            XCTAssertFalse(model.canUndo)
+
+            model.confirmFrames()
+            let approved = try XCTUnwrap(model.measurement)
+            XCTAssertNotNil(model.exportSnapshot())
+            if exactValues {
+                model.updateInner(\.left, to: approved.inner.left + 5, within: 1...(approved.imageWidth - 1))
+            } else {
+                model.recordUndoPoint()
+                var edited = approved
+                edited.nudgeGuide(.init(frame: .inner, side: .left), by: 5)
+                model.applyGuideEdit(edited)
+            }
+            let edited = try XCTUnwrap(model.measurement)
+            XCTAssertNotEqual(edited.geometryInnerQuad, detected.geometryInnerQuad,
+                              "Reset must undo a real guide change, including the canvas path")
+            XCTAssertEqual(edited.geometryOuterQuad, detected.geometryOuterQuad)
+            XCTAssertTrue(edited.canReportRatios)
+            model.recordUndoPoint()
+
+            invalidate(model)
+            var invalidatedEdit = edited
+            invalidatedEdit.invalidateFrameConfirmationForPhotoRotation()
+            var invalidatedDetected = detected
+            invalidatedDetected.invalidateFrameConfirmationForPhotoRotation()
+            var invalidatedApproved = approved
+            invalidatedApproved.invalidateFrameConfirmationForPhotoRotation()
+            XCTAssertEqual(model.measurement, invalidatedEdit)
+            XCTAssertNil(model.exportSnapshot())
+
+            // Undo reaches a formerly approved snapshot, which must now be
+            // invalidated too. Keep the changed geometry so Reset really runs.
             model.undo()
-            model.undo()
+            XCTAssertEqual(model.measurement, invalidatedEdit)
+            XCTAssertTrue(model.canResetGuides)
             model.resetGuides()
+            XCTAssertEqual(model.measurement, invalidatedDetected,
+                           "Reset must restore the detector geometry with its approval invalidated")
+            XCTAssertEqual(model.measurement?.geometryInnerQuad, detected.geometryInnerQuad)
+            XCTAssertEqual(model.measurement?.geometryOuterQuad, detected.geometryOuterQuad)
+            XCTAssertFalse(model.canResetGuides)
             XCTAssertFalse(try XCTUnwrap(model.measurement).canReportRatios)
             XCTAssertNil(model.exportSnapshot())
-            model.confirmFrames()
-            XCTAssertNotNil(model.exportSnapshot())
-            model.recordUndoPoint()
-            model.image = synthetic()
+
+            // A repeated Reset is a no-op; the first Undo must recover the
+            // edited geometry, and the second the original approved geometry.
+            model.resetGuides()
             model.undo()
+            XCTAssertEqual(model.measurement, invalidatedEdit)
+            XCTAssertFalse(try XCTUnwrap(model.measurement).canReportRatios)
+            XCTAssertNil(model.exportSnapshot())
+            model.undo()
+            XCTAssertEqual(model.measurement, invalidatedApproved)
+            XCTAssertFalse(model.canUndo)
             XCTAssertFalse(try XCTUnwrap(model.measurement).canReportRatios)
             XCTAssertNil(model.exportSnapshot())
             model.confirmFrames()
