@@ -360,6 +360,95 @@ final class PortfolioEligibilityIntegrationTests: XCTestCase {
         }
     }
 
+    func testLegacySyncedQuoteWithoutDeadlineReceiptIsWithdrawnOnlyWhenReconciledLocally() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("legacy-synced-expiry-\(UUID()).store")
+        var container: ModelContainer? = try open(url)
+        let key = try seed(try XCTUnwrap(container), syncedOnly: true)
+        let receipt = epoch.addingTimeInterval(86400 + 3600)
+        let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+        do {
+            let context = ModelContext(try XCTUnwrap(container))
+            // Older builds saved the positive local observation but no local
+            // receipt proving that its lifecycle was learned at the same time.
+            context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(50),
+                source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
+                effectiveAt: epoch, receivedAt: receipt, isSourceStamped: true))
+            try context.save()
+            let beforeRepair = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                through: deadline.addingTimeInterval(1), timeZone: zone)
+            XCTAssertEqual(beforeRepair.valuation.value, .zero)
+            XCTAssertEqual(beforeRepair.replay.live?.attribution.currentValue, money(50))
+        }
+        container = nil
+        let learnedAfter = Date.now
+        var withdrawalAt: Date?
+        for _ in 0..<3 {
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, .zero)
+            XCTAssertEqual(engine.summary?.isAuthoritative, true)
+            XCTAssertEqual(engine.summary?.attribution?.pricingAdjustment, money(-50))
+            XCTAssertEqual(engine.summary?.attribution?.market, .zero)
+            XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+            let context = ModelContext(reopened)
+            let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, 2)
+            let withdrawal = try XCTUnwrap(observations.first { $0.kind == .eligibilityExpiry })
+            XCTAssertGreaterThanOrEqual(withdrawal.receivedAt, learnedAfter)
+            XCTAssertEqual(withdrawal.effectiveAt, withdrawal.receivedAt)
+            if let withdrawalAt { XCTAssertEqual(withdrawal.receivedAt, withdrawalAt) }
+            withdrawalAt = withdrawal.receivedAt
+            let earlier = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                through: deadline.addingTimeInterval(1), timeZone: zone)
+            XCTAssertEqual(earlier.replay.live?.attribution.currentValue, money(50),
+                "A legacy row cannot prove that this device knew the deadline before expiry")
+        }
+        let reopened = try open(url)
+        _ = await recompute(reopened, at: try XCTUnwrap(withdrawalAt).addingTimeInterval(86400))
+        let context = ModelContext(reopened)
+        let day = PortfolioCalendar.day(containing: try XCTUnwrap(withdrawalAt), in: zone)
+        let close = try XCTUnwrap(context.fetch(FetchDescriptor<PortfolioDailyClose>()).first { $0.date == day })
+        XCTAssertEqual(close.closeValue, .zero)
+        XCTAssertEqual(close.pricingAdjustment, money(-50))
+        XCTAssertEqual(close.marketContribution, .zero)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), 2)
+    }
+
+    func testLegacySyncedExpiryRepairRejectsNewerOrMismatchedExactEvidence() async throws {
+        for scenario in ["newer-update", "wrong-source-variant", "wrong-market-variant", "wrong-currency",
+                         "wrong-provider", "different-amount", "unstamped"] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("legacy-synced-control-\(UUID()).store")
+            let container = try open(url)
+            let key = try seed(container, syncedOnly: true)
+            let context = ModelContext(container)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            let observation = PriceObservation(instrumentKey: key, kind: .marketUpdate,
+                amount: money(scenario == "different-amount" ? 60 : 50),
+                currencyCode: scenario == "wrong-currency" ? "EUR" : "USD",
+                source: scenario == "wrong-provider" ? .tcgplayer : .justTCG,
+                sourceVariantID: scenario == "wrong-source-variant" ? "other" : "eligibility-slab",
+                marketVariantID: scenario == "wrong-market-variant" ? "other" : "eligibility-slab",
+                effectiveAt: scenario == "newer-update" ? epoch.addingTimeInterval(1) : epoch,
+                receivedAt: receipt, isSourceStamped: scenario != "unstamped")
+            context.insert(observation)
+            try context.save()
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            let fresh = ModelContext(reopened)
+            let observations = PriceObservationLog(context: fresh).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, 1, scenario)
+            XCTAssertFalse(observations.contains { $0.kind == .eligibilityExpiry }, scenario)
+            if scenario == "newer-update" || scenario == "unstamped" {
+                XCTAssertEqual(engine.summary?.currentValue, money(50), scenario)
+                XCTAssertEqual(engine.summary?.isAuthoritative, true, scenario)
+            } else if scenario != "wrong-currency" {
+                XCTAssertEqual(engine.summary?.currentValue, .zero, scenario)
+                XCTAssertNotEqual(engine.summary?.isAuthoritative, true, scenario)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PortfolioDailyClose>()), 0, scenario)
+            }
+        }
+    }
+
     func testPassiveExpiryPublishesAnExplainedCloseAndSurvivesReopen() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("eligibility-\(UUID()).store")
         var container: ModelContainer? = try open(url)
