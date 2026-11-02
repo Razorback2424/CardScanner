@@ -1,3 +1,84 @@
+# 2026-11-02 — Local centering removal-race follow-up (PR #19)
+
+From failed PR head `7d15be1`, replaced direct native-view removal and the
+auxiliary controller arrangement with SwiftUI-owned fixture views. A Debug
+hook holds the real production removal completion; its per-completion guard
+prevents duplicate delivery while Done/blur stay synchronous. Native tests
+prove A is pending before B, same-field suppression, valid different-field
+delivery, later sessions and context validity at delivery. Final simulator
+checks: 15 focused passed; native 46 passed / 1 skipped; affected 131 passed /
+1 skipped; combined 1,513 passed / 2 skipped. Exact stdout/bundle method
+records reconcile with no missing/duplicate cases, unexpected skips, restarts
+or runtime warnings; Python evidence checks pass 9/9. Earlier failed bundles
+remain retained; the runtime allocator abort's trigger is not proven to be
+hierarchy setup. The patch is uncommitted in an isolated checkout, with source
+hashes and receipts in the [centering ledger](docs/audits/centering-guided-repair.md#local-removal-race-repair-and-verification--2026-11-02).
+Remote #19 remains draft at failed `7d15be1`; final-commit CI is pending.
+
+# 2026-11-02 — Explicit centering Done boundary and native follow-up (PR #19)
+
+Rechecked remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520` and draft
+head `47279260010de4d6d1c4ab1c9062115334e0ae4d`. The actual logs from run
+41384336534 establish lost/misattributed drafts under rapid refocus and Done
+delivery while SwiftUI focus is stale false. Combined: 1,500 passed, one failed
+method, two skipped; the native class and affected suites fail the same method.
+The earlier queued/pending statement below is a historical checkpoint.
+
+The precision field now captures an explicit per-edit commit boundary and
+keeps dismissal separate. Native end callbacks retain their own draft/context;
+ordinary blur and removal still commit. Locale parsing, full precision,
+unchanged/invalid handling and no update while typing are preserved. Seven
+additional native regressions and an explicit focused sequencing selection were
+executed at `ecb4d6a7d6cf108a06a4c7a5a1cacecb216f086a`. Run 41444747470 passes
+all nine sequencing methods and the native class (41 passed / 1 skipped).
+Affected XCTest reports 126 passed / 1 skipped, but an interleaved method line
+fails the exact-method gate. Combined XCTest completes 1,508 passed / 2 skipped;
+the job is then cancelled during result finalization and native upload fails.
+Two earlier focused localized attempts remain failed: required readiness events
+completed within two seconds, but their polling tasks resumed after the deadline.
+Eight new view-update publication warnings also require correction. These are
+not a successful workflow or a retained native result bundle.
+
+The follow-up keeps the two-second deadline and all original assertions, uses
+every required event's timestamp for readiness, and adds deadline-rejection
+coverage. Native removal consumes its immutable context before deferring only
+its model publication beyond SwiftUI reconciliation; per-field session fences
+protect replacement editors. Done and ordinary blur remain synchronous. The
+recorder reconciles exact method records from finalized result bundles, keeps
+all failures, consolidates redundant focused launches without omitting a case,
+and uploads completed comparisons before the original combined selection.
+The exact current-head validation receipt and artifact links are maintained in
+[draft PR #19](https://github.com/Razorback2424/CardScanner/pull/19); no earlier
+commit's result is substituted for final-head execution.
+One fresh pre-fix reproduction rerun again failed the rapid-refocus method in
+all three broader selections (combined: 1,500 passed / 1 failed / 2 skipped);
+its logs and native artifact `13142235545` are retained separately. No merge, deployment,
+physical-device installation or collection change. See the
+[current centering ledger](docs/audits/centering-guided-repair.md#explicit-done-boundary-repair--2026-11-02)
+for actual attempts, limits and final validation.
+
+# 2026-11-01 — Isolated localized Done investigation (historical checkpoint)
+
+From remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`, draft PR #19
+adds observational event diagnostics and bounded native comparisons for the
+localized centering Done timeout. It is separate from portfolio/token repairs.
+The original job's complete log confirms 1,498 native passes, two skips and one
+failure, but lacks the event order needed to establish its cause. The unchanged
+instrumented baseline passed three focused runs, the 33-case native class,
+118 affected cases and the 1,501-case combined selection. Its traces demonstrate
+eight coalesced initial unchanged-Done blurs in 18 cases and 14 callbacks after
+case teardown. All 18 edited drafts committed once within 70–645 ms; the
+historical edited-Done timeout remains unreproduced.
+
+The fixture correction observes actual focus/blur/draft/commit state and owns
+teardown, preserving the original Combine expectation and two-second deadline.
+Two native cases add repeat/refocus/field-change and removal coverage. Candidate
+execution is pending; production commit behavior is unchanged. An initial
+missing-brace correction superseded a canceled build with zero native cases.
+No physical-device verification or merge is claimed. The
+[centering ledger](docs/audits/centering-guided-repair.md#localized-done-investigation--2026-11-01-open)
+retains provenance, counts, timing limits and current status.
+
 # 2026-11-02 — Isolated combined validation candidate
 
 This local candidate combines the independently reviewed branch repairs; it is
