@@ -1716,6 +1716,44 @@ private struct GuidedCardCenteringView: View {
     }
 }
 
+/// An opt-in, per-host diagnostic sink. No global observer or logging is installed
+/// by the app. Tests supply synthetic input and retain events on one monotonic
+/// clock, without adding tasks, waiting, or changing focus from the observer.
+@MainActor
+final class CardCenteringPrecisionTrace {
+    struct Event {
+        let uptimeNanoseconds: UInt64
+        let name: String
+        let field: String
+        let focused: Bool?
+        let draft: String?
+        let value: Double?
+        let detail: String?
+    }
+
+    let receive: (Event) -> Void
+
+    init(receive: @escaping (Event) -> Void) { self.receive = receive }
+
+    func record(_ name: String, field: String = "fixture", focused: Bool? = nil,
+                draft: String? = nil, value: Double? = nil, detail: String? = nil) {
+        receive(Event(uptimeNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                      name: name, field: field, focused: focused, draft: draft,
+                      value: value, detail: detail))
+    }
+}
+
+private struct CardCenteringPrecisionTraceKey: EnvironmentKey {
+    static let defaultValue: CardCenteringPrecisionTrace? = nil
+}
+
+extension EnvironmentValues {
+    var centeringPrecisionTrace: CardCenteringPrecisionTrace? {
+        get { self[CardCenteringPrecisionTraceKey.self] }
+        set { self[CardCenteringPrecisionTraceKey.self] = newValue }
+    }
+}
+
 /// Keep partially typed localized numbers intact. Formatting a value binding
 /// on every keystroke can replace the draft before its decimal digits arrive.
 struct CardCenteringPrecisionNumberField: View {
@@ -1726,6 +1764,7 @@ struct CardCenteringPrecisionNumberField: View {
     let focusReset: Int
     let update: (Double) -> Void
     @Environment(\.locale) private var locale
+    @Environment(\.centeringPrecisionTrace) private var diagnosticTrace
     @FocusState private var isFocused: Bool
     @State private var draft = ""
     @State private var inputReason: String?
@@ -1740,30 +1779,55 @@ struct CardCenteringPrecisionNumberField: View {
         value.formatted(.number.precision(.fractionLength(2)).locale(locale))
     }
 
+    private func trace(_ name: String, draft observedDraft: String? = nil, detail: String? = nil) {
+        diagnosticTrace?.record(name, field: accessibilityName, focused: isFocused,
+                                draft: observedDraft ?? draft, value: value, detail: detail)
+    }
+
+    private var draftBinding: Binding<String> {
+        let original = $draft
+        guard diagnosticTrace != nil else { return original }
+        return Binding(get: { original.wrappedValue }, set: { text, transaction in
+            trace("draft.binding-set", draft: text)
+            original.transaction(transaction).wrappedValue = text
+            trace("draft.binding-returned")
+        })
+
     private func commit() {
+        trace("commit.enter")
         // Merely focusing a rounded display must not quantize the authoritative
         // Double line position when the person leaves without changing it.
-        guard draft != formattedValue else { inputReason = nil; return }
+        guard draft != formattedValue else {
+            trace("commit.unchanged-display")
+            inputReason = nil; return
+        }
         guard let parsed = Self.parsedValue(draft, locale: locale) else {
+            trace("commit.parse-invalid")
             inputReason = "Enter a finite number using your region’s decimal separator."
             draft = formattedValue
             return
         }
+        trace("commit.parse-valid", detail: "parsed=\(parsed)")
         inputReason = nil
         draft = formattedValue
-        if parsed != value { update(parsed) }
+        if parsed != value {
+            trace("commit.update-call", detail: "parsed=\(parsed)")
+            update(parsed)
+            trace("commit.update-returned")
+        }
+        trace("commit.exit")
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label).font(.subheadline)
-            TextField(label, text: $draft)
+            TextField(label, text: draftBinding)
                 .focused($isFocused)
                 .keyboardType(.numbersAndPunctuation)
                 .textFieldStyle(.roundedBorder)
                 .monospacedDigit()
                 .accessibilityLabel(accessibilityName)
-                .onSubmit { isFocused = false }
+                .onSubmit { trace("submit.delivered"); isFocused = false }
             Stepper(label, onIncrement: { update(value + step) }, onDecrement: { update(value - step) })
                 .labelsHidden()
                 .disabled(isFocused)
@@ -1774,11 +1838,20 @@ struct CardCenteringPrecisionNumberField: View {
                     .font(.footnote).foregroundStyle(.primary)
             }
         }
-        .onAppear { draft = formattedValue }
-        .onChange(of: value) { _, _ in if !isFocused { draft = formattedValue } }
-        .onChange(of: isFocused) { wasFocused, focused in if wasFocused && !focused { commit() } }
-        .onChange(of: focusReset) { _, _ in isFocused = false }
-        .onDisappear { if isFocused { commit() } }
+        .onAppear { draft = formattedValue; trace("view.appear") }
+        .onChange(of: value) { old, new in
+            trace("value.observed", detail: "old=\(old) new=\(new)")
+            if !isFocused { draft = formattedValue }
+        }
+        .onChange(of: isFocused) { wasFocused, focused in
+            trace("focus.observed", detail: "old=\(wasFocused) new=\(focused)")
+            if wasFocused && !focused { commit() }
+        }
+        .onChange(of: focusReset) { old, new in
+            trace("done.delivered", detail: "old=\(old) new=\(new)")
+            isFocused = false
+        }
+        .onDisappear { trace("view.disappear"); if isFocused { commit() } }
     }
 }
 

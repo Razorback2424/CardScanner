@@ -58,54 +58,146 @@ final class CenteringNativePrecisionTests: XCTestCase {
         @Published var value = 119.005754
         @Published var focusReset = 0
         var updates: [Double] = []
+        var trace: CardCenteringPrecisionTrace?
     }
     private struct InputProbeView: View {
         @ObservedObject var probe: InputProbe
         var body: some View {
             CardCenteringPrecisionNumberField(label: "Native position", accessibilityName: "Input probe",
                 value: probe.value, step: 0.1, focusReset: probe.focusReset) {
-                    probe.updates.append($0); probe.value = $0
+                    probe.trace?.record("model.update-enter", value: $0)
+                    probe.updates.append($0)
+                    probe.trace?.record("model.publish-before", value: $0)
+                    probe.value = $0
+                    probe.trace?.record("model.publish-returned", value: probe.value,
+                                        detail: "updates=\(probe.updates.count)")
                 }
         }
     }
 
+    @MainActor private final class InputTraceLog {
+        let caseID: String
+        let origin = DispatchTime.now().uptimeNanoseconds
+        var ended = false
+        var events: [(CardCenteringPrecisionTrace.Event, Bool)] = []
+        lazy var trace = CardCenteringPrecisionTrace { [weak self] event in
+            guard let self else { return }
+            events.append((event, ended))
+            if ended {
+                // This is diagnostic only in the baseline: changing teardown or
+                // adding a wait here would alter the race under investigation.
+                print("CENTERING_INPUT_LATE_CALLBACK case=\(caseID) event=\(event.name) uptime_ns=\(event.uptimeNanoseconds)")
+            }
+        }
+
+        init(_ caseID: String) { self.caseID = caseID }
+
+        func dump() {
+            let lines = events.map { event, late in
+                let milliseconds = Double(event.uptimeNanoseconds - origin) / 1_000_000
+                return "CENTERING_INPUT_TRACE case=\(caseID) uptime_ns=\(event.uptimeNanoseconds) ms=\(String(format: "%.3f", milliseconds)) event=\(event.name) field=\(event.field.debugDescription) focus=\(event.focused.map { String($0) } ?? "nil") draft=\(event.draft?.debugDescription ?? "nil") value=\(event.value.map { String($0) } ?? "nil") late=\(late) \(event.detail ?? "")"
+            }.joined(separator: "\n")
+            // Buffer during UI interaction; printing each keystroke could itself
+            // disturb main-actor scheduling. The attachment retains exact order.
+            print(lines)
+            let attachment = XCTAttachment(string: lines)
+            attachment.name = "Centering input trace \(caseID)"
+            attachment.lifetime = .keepAlways
+            XCTContext.runActivity(named: "Input events \(caseID)") { $0.add(attachment) }
+        }
+    }
+
     @MainActor func testTypedLocalizedDraftPreservesAllDigitsAndCommitsOnlyOnDone() async throws {
-        for (identifier, text, expected) in [("fr_FR", "119,11", 119.11), ("fr_FR", "-0,25", -0.25), ("en_US", "123.45", 123.45)] {
+        var traces: [InputTraceLog] = []
+        var observations: [NSObjectProtocol] = []
+        defer {
+            observations.forEach { NotificationCenter.default.removeObserver($0) }
+            traces.forEach { $0.dump() }
+        }
+        for (index, item) in [("fr_FR", "119,11", 119.11), ("fr_FR", "-0,25", -0.25), ("en_US", "123.45", 123.45)].enumerated() {
+            let (identifier, text, expected) = item
+            let caseID = "\(index + 1):\(identifier)/\(expected >= 0 ? "+" : "")\(text)"
+            let log = InputTraceLog(caseID)
+            traces.append(log)
+            log.trace.record("case.begin")
             let probe = InputProbe()
-            let host = UIHostingController(rootView: InputProbeView(probe: probe).environment(\.locale, Locale(identifier: identifier)))
+            probe.trace = log.trace
+            let host = UIHostingController(rootView: InputProbeView(probe: probe)
+                .environment(\.locale, Locale(identifier: identifier))
+                .environment(\.centeringPrecisionTrace, log.trace))
             let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
             let window = UIWindow(windowScene: scene)
             window.frame = CGRect(x: 0, y: 0, width: 393, height: 852)
             window.rootViewController = host; window.makeKeyAndVisible()
             host.loadViewIfNeeded(); host.view.setNeedsLayout(); host.view.layoutIfNeeded()
-            defer { window.isHidden = true }
+            weak var observedInput: UITextField?
+            defer {
+                log.trace.record("teardown.begin", focused: observedInput?.isFirstResponder,
+                                 draft: observedInput?.text)
+                window.isHidden = true // Deliberately retain baseline cleanup for comparison.
+                log.trace.record("teardown.hidden", focused: observedInput?.isFirstResponder,
+                                 detail: "key=\(window.isKeyWindow) rootAttached=\(window.rootViewController != nil)")
+                log.ended = true
+            }
+            log.trace.record("host.laid-out")
             try await Task.sleep(for: .milliseconds(80))
             func field(in view: UIView) -> UITextField? {
                 if let value = view as? UITextField { return value }
                 return view.subviews.compactMap { field(in: $0) }.first
             }
             let input = try XCTUnwrap(field(in: host.view))
-            XCTAssertTrue(input.becomeFirstResponder())
+            observedInput = input
+            for name in [UITextField.textDidBeginEditingNotification, UITextField.textDidEndEditingNotification,
+                         UITextField.textDidChangeNotification] {
+                observations.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { [weak input, weak log] note in
+                    MainActor.assumeIsolated {
+                        guard let input, let log, let source = note.object as? UITextField, source === input else { return }
+                        log.trace.record("uikit.\(name.rawValue)", focused: input.isFirstResponder, draft: input.text)
+                    }
+                })
+            }
+            log.trace.record("uikit.initial-focus-call", focused: input.isFirstResponder, draft: input.text)
+            let initialFocus = input.becomeFirstResponder()
+            log.trace.record("uikit.initial-focus-returned", focused: input.isFirstResponder, detail: "success=\(initialFocus)")
+            XCTAssertTrue(initialFocus, caseID)
             try await Task.sleep(for: .milliseconds(40))
+            log.trace.record("done.unchanged-request", focused: input.isFirstResponder, draft: input.text)
             probe.focusReset += 1
             try await Task.sleep(for: .milliseconds(40))
-            XCTAssertTrue(probe.updates.isEmpty, "Focus/Done without editing must preserve the unrounded Double")
-            XCTAssertEqual(probe.value, 119.005754, accuracy: 1e-12)
-            XCTAssertTrue(input.becomeFirstResponder())
+            XCTAssertTrue(probe.updates.isEmpty, "Focus/Done without editing must preserve the unrounded Double: \(caseID)")
+            XCTAssertEqual(probe.value, 119.005754, accuracy: 1e-12, caseID)
+            log.trace.record("uikit.refocus-call", focused: input.isFirstResponder, draft: input.text)
+            let refocus = input.becomeFirstResponder()
+            log.trace.record("uikit.refocus-returned", focused: input.isFirstResponder, detail: "success=\(refocus)")
+            XCTAssertTrue(refocus, caseID)
             try await Task.sleep(for: .milliseconds(40))
+            log.trace.record("uikit.selection-call", focused: input.isFirstResponder, draft: input.text)
             input.selectedTextRange = input.textRange(from: input.beginningOfDocument, to: input.endOfDocument)
+            log.trace.record("uikit.insert-call", focused: input.isFirstResponder, draft: input.text, detail: "input=\(text.debugDescription)")
             input.insertText(text)
+            log.trace.record("uikit.insert-returned", focused: input.isFirstResponder, draft: input.text)
             try await Task.sleep(for: .milliseconds(40))
-            XCTAssertEqual(input.text, text, "Every typed digit must survive while focused: \(identifier)")
-            XCTAssertTrue(probe.updates.isEmpty, "An unfinished draft must not move the guide")
-            let committed = expectation(description: "Done commits the localized draft: \(identifier)")
-            let commitObservation = probe.$value.dropFirst().sink { _ in committed.fulfill() }
+            log.trace.record("fixture.before-done", focused: input.isFirstResponder, draft: input.text)
+            XCTAssertEqual(input.text, text, "Every typed digit must survive while focused: \(caseID)")
+            XCTAssertTrue(probe.updates.isEmpty, "An unfinished draft must not move the guide: \(caseID)")
+            let committed = expectation(description: "Done commits the localized draft: \(caseID)")
+            let commitObservation = probe.$value.dropFirst().sink { value in
+                log.trace.record("publication.received", value: value, detail: "storedBeforeWillSet=\(probe.value)")
+                log.trace.record("expectation.fulfill-call")
+                committed.fulfill()
+                log.trace.record("expectation.fulfill-returned")
+            }
+            log.trace.record("observer.installed")
+            log.trace.record("done.edited-request", focused: input.isFirstResponder, draft: input.text)
             probe.focusReset += 1 // The production keyboard toolbar's Done action.
+            log.trace.record("expectation.wait-enter")
             await fulfillment(of: [committed], timeout: 2)
+            log.trace.record("expectation.wait-returned", value: probe.value, detail: "updates=\(probe.updates.count)")
             commitObservation.cancel()
-            XCTAssertEqual(try XCTUnwrap(probe.updates.last), expected, accuracy: 1e-10)
-            XCTAssertEqual(probe.value, expected, accuracy: 1e-10)
-            XCTAssertEqual(input.text, expected.formatted(.number.precision(.fractionLength(2)).locale(Locale(identifier: identifier))))
+            log.trace.record("observer.cancelled")
+            XCTAssertEqual(try XCTUnwrap(probe.updates.last), expected, accuracy: 1e-10, caseID)
+            XCTAssertEqual(probe.value, expected, accuracy: 1e-10, caseID)
+            XCTAssertEqual(input.text, expected.formatted(.number.precision(.fractionLength(2)).locale(Locale(identifier: identifier))), caseID)
         }
     }
 
