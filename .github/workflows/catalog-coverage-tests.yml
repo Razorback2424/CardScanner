@@ -86,6 +86,8 @@ jobs:
             -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
             -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
+            -only-testing:TradingCardScannerTests/BrowseFeatureTests \
+            -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
             -only-testing:TradingCardScannerTests/CenteringNativePrecisionTests \
             -only-testing:TradingCardScannerTests/CenteringExportTests \
             -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \

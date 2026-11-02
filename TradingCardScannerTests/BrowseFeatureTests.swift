@@ -608,6 +608,59 @@ final class CatalogSetArtworkTests: XCTestCase {
 
 final class BrowseFeatureTests: XCTestCase {
     @MainActor
+    func testCompletedArtworkSurvivesDisappearAndReappear() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/reappear.png")!
+        let artwork = UIImage()
+        loader.load(url, targetPixelSize: 128)
+        await gate.waitForCount(1)
+        await gate.finish(0, image: artwork)
+        await waitForImageLoader(loader)
+        loader.cancel() // CatalogCachedImage.onDisappear
+        XCTAssertTrue(loader.matchesSource(url, reloadToken: 0))
+        XCTAssertTrue(loader.image === artwork)
+        loader.load(url, targetPixelSize: 128)
+        for _ in 0..<30 { await Task.yield() }
+        XCTAssertTrue(loader.image === artwork)
+        let count = await gate.count
+        XCTAssertEqual(count, 1, "A completed derivative needs no replacement request on reappearance")
+        if count > 1 { await gate.finish(1, image: artwork) }
+        await waitForImageLoader(loader)
+    }
+
+    @MainActor
+    func testInterruptedArtworkRestartsAndCancelledUpgradeRetainsDisplayedDerivative() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/interrupted.png")!
+        let stale = UIImage(), artwork = UIImage(), upgraded = UIImage()
+        loader.load(url, targetPixelSize: 128)
+        await gate.waitForCount(1)
+        loader.cancel()
+        loader.load(url, targetPixelSize: 128)
+        await gate.waitForCount(2)
+        await gate.finish(1, image: artwork)
+        await waitForImageLoader(loader)
+        await gate.finish(0, image: stale)
+        for _ in 0..<30 { await Task.yield() }
+        XCTAssertTrue(loader.image === artwork)
+
+        loader.load(url, targetPixelSize: 512)
+        await gate.waitForCount(3)
+        loader.cancel()
+        XCTAssertTrue(loader.matchesSource(url, reloadToken: 0))
+        loader.load(url, targetPixelSize: 512)
+        await gate.waitForCount(4)
+        XCTAssertTrue(loader.image === artwork, "An interrupted upgrade must keep the old derivative visible")
+        await gate.finish(3, image: upgraded)
+        await waitForImageLoader(loader)
+        await gate.finish(2, image: stale)
+        for _ in 0..<30 { await Task.yield() }
+        XCTAssertTrue(loader.image === upgraded)
+    }
+
+    @MainActor
     func testArtworkResizeRetainsSourceAndRejectsSupersededCompletions() async throws {
         let gate = DetailImageLoadGate()
         let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
@@ -696,6 +749,42 @@ final class BrowseFeatureTests: XCTestCase {
         await waitForImageLoader(loader)
         XCTAssertTrue(loader.image === artwork)
         XCTAssertFalse(loader.failed)
+    }
+
+    @MainActor
+    func testHostedCompletedArtworkSurvivesDisappearReappear() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/hosted-reappear.png")!
+        var disappeared = false
+        func view() -> AnyView {
+            AnyView(CatalogCachedImage(candidates: [.remote(url)], targetPixelSize: 128,
+                imageLoader: loader).frame(width: 90, height: 130)
+                .onDisappear { disappeared = true })
+        }
+        let controller = UIHostingController(rootView: view())
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await gate.waitForCount(1)
+        let artwork = UIGraphicsImageRenderer(size: CGSize(width: 90, height: 130)).image { context in
+            UIColor.blue.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 90, height: 130))
+        }
+        await gate.finish(0, image: artwork)
+        await waitForImageLoader(loader)
+        controller.rootView = AnyView(Color.clear)
+        for _ in 0..<40 where !disappeared { try await Task.sleep(for: .milliseconds(25)) }
+        XCTAssertTrue(disappeared)
+        XCTAssertTrue(loader.matchesSource(url, reloadToken: 0))
+        controller.rootView = view()
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertTrue(loader.image === artwork)
+        let count = await gate.count
+        XCTAssertEqual(count, 1)
+        if count > 1 { await gate.finish(1, image: artwork) }
+        await waitForImageLoader(loader)
     }
 
     @MainActor
