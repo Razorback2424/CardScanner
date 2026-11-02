@@ -80,6 +80,26 @@ def expected_tests(selections: tuple[str, ...]) -> set[str]:
     return expected
 
 
+def focused_sequencing_tests() -> tuple[str, ...]:
+    native_tests = expected_tests((NATIVE,))
+    required = {
+        f"{NATIVE}/testPrecisionDoneUsesLatestDraftOnceAcrossRapidRefocusAndFieldChanges",
+        f"{NATIVE}/testPrecisionFocusedRemovalPreservesValidInvalidAndUntouchedDraftBehavior",
+    }
+    missing = required - native_tests
+    if missing:
+        raise ValueError(f"Missing preserved sequencing regressions: {sorted(missing)}")
+    # Discover the additional sequencing cases from the same source revision
+    # that is built. Each explicit selection gets its own completion gate;
+    # a passing aggregate cannot hide a missing or skipped new method.
+    return tuple(sorted(
+        required | {
+            name for name in native_tests
+            if name.split("/", 1)[1].startswith(("testPrecisionDone", "testPrecisionEditing"))
+        }
+    ))
+
+
 def execution_summary(log: str, expected: set[str]) -> dict:
     completed = [
         {"test": f"{match[1]}/{match[2]}", "status": match[3], "seconds": float(match[4])}
@@ -149,6 +169,7 @@ def record(args: argparse.Namespace) -> int:
         raise ValueError(f"Refusing to overwrite prior evidence: {manifest_path}")
     plan = [
         ("focused-1", (EXACT,)), ("focused-2", (EXACT,)), ("focused-3", (EXACT,)),
+        ("focused-sequencing", focused_sequencing_tests()),
         ("native-class", (NATIVE,)), ("affected-suites", AFFECTED_CLASSES),
     ]
     manifest = {
@@ -157,7 +178,7 @@ def record(args: argparse.Namespace) -> int:
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "toolchain": subprocess.check_output(["xcodebuild", "-version"], text=True).strip(),
         "simulator_policy": "Existing selected simulator, reused across attempts; this recorder never erases, shuts down, or resets it.",
-        "attempt_policy": "Three exact-test attempts, one full class, one affected selection; every attempt is retained regardless of success.",
+        "attempt_policy": "Three localized exact-test attempts, one focused sequencing selection, one full class, one affected selection; every attempt is retained regardless of success.",
         "planned_attempts": [name for name, _ in plan],
         "attempts": [],
     }

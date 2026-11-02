@@ -879,7 +879,7 @@ private struct GuidedCardCenteringView: View {
     @State private var isStraightening = false
     @State private var isShowingExactValues = false
     @State private var bottomPanelHeight: CGFloat = 0
-    @State private var precisionFocusReset = 0
+    @State private var precisionCommitAction = CardCenteringPrecisionCommitAction()
     @State private var isShowingCamera = false
     @State private var isShowingSettings = false
     @State private var isShowingGuide = false
@@ -1516,8 +1516,8 @@ private struct GuidedCardCenteringView: View {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done") {
+                        precisionCommitAction.commitActiveAndDismiss()
                         focusedEdgeField = nil
-                        precisionFocusReset &+= 1
                     }
                 }
             }
@@ -1592,12 +1592,18 @@ private struct GuidedCardCenteringView: View {
             }
             .pickerStyle(.menu)
             if let line = model.precisionMeasurement?.precisionLine(precisionSide, frame: precisionFrame) {
-                precisionNumber(precisionSide.isVertical ? "Horizontal position (native px)" : "Vertical position (native px)", value: line.position, step: 0.1) {
+                precisionNumber(precisionSide.isVertical ? "Horizontal position (native px)" : "Vertical position (native px)", value: line.position, step: 0.1, currentValue: {
+                    guard model.imageRevision == revision else { return nil }
+                    return model.precisionMeasurement?.precisionLine(side, frame: frame)?.position
+                }) {
                     guard model.imageRevision == revision else { return }
                     model.updatePrecisionSide(side, frame: frame, position: $0)
                 }
                 .id("precision-position")
-                precisionNumber("Angle (degrees)", value: line.angle, step: 0.01) {
+                precisionNumber("Angle (degrees)", value: line.angle, step: 0.01, currentValue: {
+                    guard model.imageRevision == revision else { return nil }
+                    return model.precisionMeasurement?.precisionLine(side, frame: frame)?.angle
+                }) {
                     guard model.imageRevision == revision else { return }
                     model.updatePrecisionSide(side, frame: frame, angle: $0)
                 }
@@ -1623,11 +1629,12 @@ private struct GuidedCardCenteringView: View {
         .padding(.top, 10)
     }
 
-    private func precisionNumber(_ label: String, value: Double, step: Double, update: @escaping (Double) -> Void) -> some View {
+    private func precisionNumber(_ label: String, value: Double, step: Double,
+                                 currentValue: @escaping () -> Double?, update: @escaping (Double) -> Void) -> some View {
         CardCenteringPrecisionNumberField(label: label,
             accessibilityName: "\(precisionFrame.label) \(precisionSide.rawValue) \(label)",
-            value: value, step: step, focusReset: precisionFocusReset, update: update)
-            .id("\(precisionFrame.rawValue)-\(precisionSide.rawValue)-\(label)")
+            value: value, step: step, currentValue: currentValue, commitAction: precisionCommitAction, update: update)
+            .id("\(model.imageRevision)-\(precisionFrame.rawValue)-\(precisionSide.rawValue)-\(label)")
     }
 
     @ViewBuilder private var nativeDetail: some View {
@@ -1754,20 +1761,33 @@ extension EnvironmentValues {
     }
 }
 
-/// Keep partially typed localized numbers intact. Formatting a value binding
-/// on every keystroke can replace the draft before its decimal digits arrive.
+/// The toolbar invokes this boundary synchronously. An observed SwiftUI focus
+/// change cannot identify which editing session an earlier Done belonged to.
+@MainActor
+final class CardCenteringPrecisionCommitAction {
+    fileprivate weak var activeEditor: CardCenteringPrecisionEditor?
+
+    func commitActiveAndDismiss() {
+        // Publishing may focus another field. Keep both commit and dismissal
+        // attached to the editor captured by this action.
+        let editor = activeEditor
+        editor?.done()
+    }
+}
+
+/// Keep partially typed localized numbers intact. Only this precision input
+/// owns a native editing session; the surrounding controls remain SwiftUI.
 struct CardCenteringPrecisionNumberField: View {
     let label: String
     let accessibilityName: String
     let value: Double
     let step: Double
-    let focusReset: Int
+    let currentValue: () -> Double?
+    let commitAction: CardCenteringPrecisionCommitAction
     let update: (Double) -> Void
     @Environment(\.locale) private var locale
     @Environment(\.centeringPrecisionTrace) private var diagnosticTrace
-    @FocusState private var isFocused: Bool
-    @State private var draft = ""
-    @State private var inputReason: String?
+    @StateObject private var editor = CardCenteringPrecisionEditor()
 
     static func parsedValue(_ text: String, locale: Locale) -> Double? {
         guard let value = try? FloatingPointFormatStyle<Double>.number.locale(locale).parseStrategy.parse(text),
@@ -1775,87 +1795,344 @@ struct CardCenteringPrecisionNumberField: View {
         return value
     }
 
-    private var formattedValue: String {
-        value.formatted(.number.precision(.fractionLength(2)).locale(locale))
-    }
-
-    private func trace(_ name: String, draft observedDraft: String? = nil, detail: String? = nil) {
-        diagnosticTrace?.record(name, field: accessibilityName, focused: isFocused,
-                                draft: observedDraft ?? draft, value: value, detail: detail)
-    }
-
-    private var draftBinding: Binding<String> {
-        let original = $draft
-        guard diagnosticTrace != nil else { return original }
-        return Binding(get: { original.wrappedValue }, set: { text, transaction in
-            trace("draft.binding-set", draft: text)
-            original.transaction(transaction).wrappedValue = text
-            trace("draft.binding-returned")
-        })
-    }
-
-    private func commit() {
-        trace("commit.enter")
-        // Merely focusing a rounded display must not quantize the authoritative
-        // Double line position when the person leaves without changing it.
-        guard draft != formattedValue else {
-            trace("commit.unchanged-display")
-            inputReason = nil; return
-        }
-        guard let parsed = Self.parsedValue(draft, locale: locale) else {
-            trace("commit.parse-invalid")
-            inputReason = "Enter a finite number using your region’s decimal separator."
-            draft = formattedValue
-            trace("draft.restored-invalid")
-            return
-        }
-        trace("commit.parse-valid", detail: "parsed=\(parsed)")
-        inputReason = nil
-        draft = formattedValue
-        trace("draft.restored-before-update")
-        if parsed != value {
-            trace("commit.update-call", detail: "parsed=\(parsed)")
-            update(parsed)
-            trace("commit.update-returned")
-        }
-        trace("commit.exit")
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label).font(.subheadline)
-            TextField(label, text: draftBinding)
-                .focused($isFocused)
-                .keyboardType(.numbersAndPunctuation)
-                .textFieldStyle(.roundedBorder)
-                .monospacedDigit()
-                .accessibilityLabel(accessibilityName)
-                .onSubmit { trace("submit.delivered"); isFocused = false }
+            CardCenteringPrecisionNativeField(label: label, value: value, editor: editor,
+                context: .init(field: accessibilityName, locale: locale, currentValue: currentValue,
+                               update: update, trace: diagnosticTrace), commitAction: commitAction)
+                .fixedSize(horizontal: false, vertical: true)
             Stepper(label, onIncrement: { update(value + step) }, onDecrement: { update(value - step) })
                 .labelsHidden()
-                .disabled(isFocused)
+                .disabled(editor.isEditing)
                 .accessibilityLabel(accessibilityName)
                 .accessibilityValue("\(value)")
-            if let inputReason {
+            if let inputReason = editor.inputReason {
                 Label(inputReason, systemImage: "exclamationmark.triangle")
                     .font(.footnote).foregroundStyle(.primary)
             }
         }
-        .onAppear { draft = formattedValue; trace("view.appear") }
-        .onChange(of: value) { old, new in
-            trace("value.observed", detail: "old=\(old) new=\(new)")
-            if !isFocused { draft = formattedValue; trace("draft.formatted") }
+        .onChange(of: editor.isEditing) { _, focused in editor.observeFocus(focused) }
+    }
+}
+
+@MainActor
+fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject, UITextFieldDelegate {
+    struct Context {
+        let field: String
+        let locale: Locale
+        let currentValue: () -> Double?
+        let update: (Double) -> Void
+        let trace: CardCenteringPrecisionTrace?
+
+        func formatted(_ value: Double) -> String {
+            value.formatted(.number.precision(.fractionLength(2)).locale(locale))
         }
-        .onChange(of: isFocused) { wasFocused, focused in
-            trace("focus.observed", detail: "old=\(wasFocused) new=\(focused)")
-            if wasFocused && !focused { commit() }
+    }
+
+    private final class Session {
+        let id: UInt64
+        let inputID: ObjectIdentifier
+        let context: Context
+        let initialDisplay: String
+        var consumed = false
+
+        init(id: UInt64, input: CardCenteringPrecisionTextInput, context: Context, initialDisplay: String) {
+            self.id = id; self.inputID = ObjectIdentifier(input)
+            self.context = context; self.initialDisplay = initialDisplay
         }
-        .onChange(of: focusReset) { old, new in
-            trace("done.delivered", detail: "old=\(old) new=\(new)")
-            isFocused = false
-            trace("done.focus-reset-returned")
+    }
+
+    private struct Snapshot {
+        let session: Session
+        let input: CardCenteringPrecisionTextInput
+        let draft: String
+    }
+
+    @Published private(set) var isEditing = false
+    @Published private(set) var inputReason: String?
+    private weak var input: CardCenteringPrecisionTextInput?
+    private weak var commitAction: CardCenteringPrecisionCommitAction?
+    private var context: Context?
+    private var session: Session?
+    private var nextSessionID: UInt64 = 0
+    private var lastConsumedSessionID: UInt64 = 0
+    private var observedFocus = false
+    private var removed = false
+    private var displayedValue: Double?
+
+    func configure(_ input: CardCenteringPrecisionTextInput, value: Double,
+                   context: Context, commitAction: CardCenteringPrecisionCommitAction) {
+        if let previous = self.input, previous !== input {
+            // A replacement native control cannot inherit the departing
+            // control's still-open editing context.
+            detach(previous)
         }
-        .onDisappear { trace("view.disappear"); if isFocused { commit() } }
+        self.input = input
+        self.context = context
+        self.commitAction = commitAction
+        guard !removed else { return }
+        if displayedValue != value {
+            record("value.observed", detail: "old=\(String(describing: displayedValue)) new=\(value)")
+            displayedValue = value
+        }
+        // A's publication can arrive after B has already started. Native
+        // editing ownership, not a delayed SwiftUI focus value, protects B.
+        if !input.isFirstResponder, session == nil {
+            input.text = context.formatted(context.currentValue() ?? value)
+            record("draft.formatted")
+        }
+    }
+
+    func appear(_ input: CardCenteringPrecisionTextInput) {
+        guard self.input === input else { return }
+        removed = false
+        observedFocus = input.isFirstResponder
+        if session == nil, let context, let value = context.currentValue() {
+            input.text = context.formatted(value)
+        }
+        record("view.appear")
+    }
+
+    func observeFocus(_ focused: Bool) {
+        guard !removed else { return }
+        let old = observedFocus
+        observedFocus = focused
+        record("focus.observed", detail: "old=\(old) new=\(focused)")
+    }
+
+    func begin(_ input: CardCenteringPrecisionTextInput, initialDisplay: String? = nil) {
+        guard !removed, self.input === input, let context else { return }
+        nextSessionID &+= 1
+        let editing = Session(id: nextSessionID, input: input, context: context,
+                              initialDisplay: initialDisplay ?? input.text ?? "")
+        session = editing
+        commitAction?.activeEditor = self
+        record("editing.begin", detail: "session=\(editing.id)")
+        isEditing = true
+    }
+
+    func changed(_ input: CardCenteringPrecisionTextInput) {
+        guard !removed, self.input === input, input.isFirstResponder else { return }
+        // If UIKit refused dismissal after Done, subsequent typing belongs to
+        // a fresh edit, never to the consumed snapshot.
+        if session == nil || session?.consumed == true {
+            let baseline = context.flatMap { context in context.currentValue().map(context.formatted) }
+            begin(input, initialDisplay: baseline)
+        }
+        record("draft.native-observed", detail: "session=\(session?.id ?? 0)")
+    }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let input = textField as? CardCenteringPrecisionTextInput, input.isFirstResponder,
+           session == nil || session?.consumed == true {
+            // Capture the pre-edit display if a previous Done could not dismiss
+            // UIKit. Capturing from editingChanged would mistake B for untouched.
+            begin(input)
+        }
+        return true
+    }
+
+    private func snapshot(_ input: CardCenteringPrecisionTextInput) -> Snapshot? {
+        guard !removed, self.input === input, let session,
+              session.inputID == ObjectIdentifier(input) else { return nil }
+        return Snapshot(session: session, input: input, draft: input.text ?? "")
+    }
+
+    func captureEndEditing(_ input: CardCenteringPrecisionTextInput) -> (() -> Void)? {
+        guard let ended = snapshot(input) else { return nil }
+        // The native resignation captures A before UIKit can begin B. Replay
+        // of this callback can only finish A; it never reads the live draft.
+        return { [weak self] in self?.end(ended) }
+    }
+
+    private func end(_ ended: Snapshot) {
+        commit(ended)
+        guard session === ended.session else { return }
+        session = nil
+        if !ended.input.isFirstResponder {
+            if commitAction?.activeEditor === self { commitAction?.activeEditor = nil }
+            isEditing = false
+        }
+    }
+
+    func done() {
+        guard let input, let intended = snapshot(input) else { return }
+        record("done.delivered", snapshot: intended)
+        commit(intended)
+        // An update callback may already have refocused this same native
+        // control. Its new session does not belong to this Done action.
+        guard session === intended.session else { return }
+        record("done.dismiss-requested", snapshot: intended)
+        input.resignFirstResponder()
+        record("done.focus-reset-returned", snapshot: intended)
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        record("submit.delivered")
+        done()
+        return false
+    }
+
+    func disappear(_ input: CardCenteringPrecisionTextInput) {
+        guard !removed, self.input === input else { return }
+        let departing = snapshot(input)
+        // Keep the owned snapshot, then invalidate this lifetime before any
+        // publication can reenter. Dismantling is idempotent with disappearance.
+        removed = true
+        if let departing { commit(departing) }
+        session = nil
+        if commitAction?.activeEditor === self { commitAction?.activeEditor = nil }
+        isEditing = false
+        input.resignFirstResponder()
+        record("view.disappear")
+    }
+
+    func detach(_ input: CardCenteringPrecisionTextInput) {
+        guard self.input === input else { return }
+        disappear(input)
+        input.delegate = nil
+        input.editor = nil
+        self.input = nil
+    }
+
+    private func commit(_ intended: Snapshot) {
+        let editing = intended.session
+        guard !editing.consumed else { return }
+        editing.consumed = true
+        // This also closes invalid and untouched drafts. A delayed older end
+        // cannot publish after a newer explicit boundary.
+        guard editing.id >= lastConsumedSessionID else { return }
+        lastConsumedSessionID = editing.id
+        record("commit.enter", snapshot: intended)
+        record("commit.session-consumed", snapshot: intended)
+        guard let authoritative = editing.context.currentValue() else {
+            record("commit.context-invalid", snapshot: intended)
+            return
+        }
+        let ownsDisplay = session === editing && input === intended.input
+        // Compare to the display the user actually entered, preserving the
+        // full authoritative Double when that rounded text was untouched.
+        guard intended.draft != editing.initialDisplay else {
+            if ownsDisplay { inputReason = nil }
+            record("commit.unchanged-display", snapshot: intended)
+            return
+        }
+        guard let parsed = CardCenteringPrecisionNumberField.parsedValue(intended.draft, locale: editing.context.locale) else {
+            if ownsDisplay {
+                inputReason = "Enter a finite number using your region’s decimal separator."
+                intended.input.text = editing.context.formatted(authoritative)
+            }
+            record("commit.parse-invalid", snapshot: intended)
+            record("draft.restored-invalid")
+            return
+        }
+        record("commit.parse-valid", snapshot: intended, detail: "parsed=\(parsed)")
+        if ownsDisplay {
+            inputReason = nil
+            intended.input.text = editing.context.formatted(authoritative)
+            record("draft.restored-before-update")
+        }
+        if parsed != authoritative {
+            record("commit.update-call", snapshot: intended, detail: "parsed=\(parsed)")
+            editing.context.update(parsed)
+            record("commit.update-returned", snapshot: intended)
+        }
+        // Read back accepted geometry synchronously. A parsed number may have
+        // been rejected, and immediate refocus can precede SwiftUI's next body.
+        if session === editing, input === intended.input,
+           let accepted = editing.context.currentValue() {
+            intended.input.text = editing.context.formatted(accepted)
+            record("draft.formatted")
+        }
+        record("commit.exit", snapshot: intended)
+    }
+
+    private func record(_ name: String, snapshot: Snapshot? = nil, detail: String? = nil) {
+        guard let context = snapshot?.session.context ?? context else { return }
+        let ownership = snapshot.map {
+            "session=\($0.session.id) context=\(ObjectIdentifier($0.input))"
+        }
+        context.trace?.record(name, field: context.field, focused: observedFocus,
+                              draft: snapshot?.draft ?? input?.text,
+                              value: context.currentValue(),
+                              detail: [ownership, detail].compactMap { $0 }.joined(separator: " "))
+    }
+}
+
+/// The native responder boundary supplies an immutable end event. SwiftUI's
+/// coalesced focus notifications are used only to render/observe UI state.
+@MainActor
+final class CardCenteringPrecisionTextInput: UITextField {
+    fileprivate weak var editor: CardCenteringPrecisionEditor?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil { editor?.appear(self) }
+    }
+
+    override func willMove(toWindow newWindow: UIWindow?) {
+        // Capture removal while this native view still owns its edit. A later
+        // SwiftUI disappearance notification cannot consume a refocused draft.
+        if window != nil, newWindow == nil { editor?.disappear(self) }
+        super.willMove(toWindow: newWindow)
+    }
+
+    override func becomeFirstResponder() -> Bool {
+        let alreadyFocused = isFirstResponder
+        let succeeded = super.becomeFirstResponder()
+        if succeeded && !alreadyFocused { editor?.begin(self) }
+        return succeeded
+    }
+
+    func captureEndEditing() -> (() -> Void)? { editor?.captureEndEditing(self) }
+
+    override func resignFirstResponder() -> Bool {
+        let ended = captureEndEditing()
+        let succeeded = super.resignFirstResponder()
+        if succeeded { ended?() }
+        return succeeded
+    }
+
+    @objc fileprivate func editingChanged() { editor?.changed(self) }
+}
+
+private struct CardCenteringPrecisionNativeField: UIViewRepresentable {
+    let label: String
+    let value: Double
+    let editor: CardCenteringPrecisionEditor
+    let context: CardCenteringPrecisionEditor.Context
+    let commitAction: CardCenteringPrecisionCommitAction
+
+    func makeUIView(context: Context) -> CardCenteringPrecisionTextInput {
+        let input = CardCenteringPrecisionTextInput(frame: .zero)
+        input.editor = editor
+        input.delegate = editor
+        input.keyboardType = .numbersAndPunctuation
+        input.returnKeyType = .done
+        input.borderStyle = .roundedRect
+        input.adjustsFontForContentSizeCategory = true
+        input.addTarget(input, action: #selector(CardCenteringPrecisionTextInput.editingChanged), for: .editingChanged)
+        input.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        updateUIView(input, context: context)
+        return input
+    }
+
+    func updateUIView(_ input: CardCenteringPrecisionTextInput, context: Context) {
+        input.placeholder = label
+        input.accessibilityLabel = self.context.field
+        input.font = UIFontMetrics(forTextStyle: .body).scaledFont(for:
+            .monospacedDigitSystemFont(ofSize: UIFont.systemFontSize, weight: .regular))
+        editor.configure(input, value: value, context: self.context, commitAction: commitAction)
+    }
+
+    static func dismantleUIView(_ input: CardCenteringPrecisionTextInput, coordinator: ()) {
+        input.editor?.detach(input)
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: CardCenteringPrecisionTextInput, context: Context) -> CGSize? {
+        CGSize(width: proposal.width ?? uiView.intrinsicContentSize.width,
+               height: uiView.intrinsicContentSize.height)
     }
 }
 

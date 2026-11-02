@@ -1,4 +1,26 @@
-# 2026-11-01 — Isolated localized Done investigation (open)
+# 2026-11-02 — Explicit centering Done boundary candidate (PR #19)
+
+Rechecked remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520` and draft
+head `47279260010de4d6d1c4ab1c9062115334e0ae4d`. The actual logs from run
+41384336534 establish lost/misattributed drafts under rapid refocus and Done
+delivery while SwiftUI focus is stale false. Combined: 1,500 passed, one failed
+method, two skipped; the native class and affected suites fail the same method.
+The earlier queued/pending statement below is a historical checkpoint.
+
+The precision field now captures an explicit per-edit commit boundary and
+keeps dismissal separate. Native end callbacks retain their own draft/context;
+ordinary blur and removal still commit. Locale parsing, full precision,
+unchanged/invalid handling and no update while typing are preserved. Seven
+additional native regressions and an explicit focused sequencing selection are
+prepared. Source/Python checks pass; repaired-head native execution is pending.
+One fresh pre-fix reproduction rerun again failed the rapid-refocus method in
+all three broader selections (combined: 1,500 passed / 1 failed / 2 skipped);
+its logs and native artifact `13142235545` are retained separately. No merge, deployment,
+physical-device installation or collection change. See the
+[current centering ledger](docs/audits/centering-guided-repair.md#explicit-done-boundary-repair--2026-11-02)
+for actual attempts, limits and final validation.
+
+# 2026-11-01 — Isolated localized Done investigation (historical checkpoint)
 
 From remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`, draft PR #19
 adds observational event diagnostics and bounded native comparisons for the

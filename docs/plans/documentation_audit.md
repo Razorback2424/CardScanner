@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-11-01
 
+**Centering Done event ownership — 2026-11-02:** the
+[centering repair ledger](../audits/centering-guided-repair.md#explicit-done-boundary-repair--2026-11-02)
+supersedes PR #19's earlier queued/no-execution statement. Run 41384336534 at
+`4727926` failed the rapid-refocus method in the native class, affected suites
+and combined selection; its combined method totals are 1,500 passed, one
+failed and two skipped. A focused untouched-Done failure also remains visible.
+This demonstrates a production event-sequencing defect, without attributing
+every historical French timeout to that cause. The isolated repair and exact
+native validation belong in that ledger; PR #19 remains draft and unmerged.
+
 **Exact Pokémon finish/pricing cases — 2026-11-01:** the
 [case matrix](../audits/catalog-pricing-cases-2026-11-01.md) extends the merged
 catalog repairs with reviewed Cosmos choices/product handles and an existing
