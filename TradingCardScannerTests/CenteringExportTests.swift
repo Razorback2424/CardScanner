@@ -98,8 +98,11 @@ final class CenteringNativePrecisionTests: XCTestCase {
             try await Task.sleep(for: .milliseconds(40))
             XCTAssertEqual(input.text, text, "Every typed digit must survive while focused: \(identifier)")
             XCTAssertTrue(probe.updates.isEmpty, "An unfinished draft must not move the guide")
+            let committed = expectation(description: "Done commits the localized draft: \(identifier)")
+            let commitObservation = probe.$value.dropFirst().sink { _ in committed.fulfill() }
             probe.focusReset += 1 // The production keyboard toolbar's Done action.
-            try await Task.sleep(for: .milliseconds(80))
+            await fulfillment(of: [committed], timeout: 2)
+            commitObservation.cancel()
             XCTAssertEqual(try XCTUnwrap(probe.updates.last), expected, accuracy: 1e-10)
             XCTAssertEqual(probe.value, expected, accuracy: 1e-10)
             XCTAssertEqual(input.text, expected.formatted(.number.precision(.fractionLength(2)).locale(Locale(identifier: identifier))))

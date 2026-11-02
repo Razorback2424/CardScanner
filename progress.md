@@ -21,6 +21,12 @@ a fake Keychain credential. Every ownership/identity assertion remains unchanged
 production credentials are untouched. This fixture-only follow-up must pass the
 same selected CI and final combined union before the owner's authorized squash merges.
 
+The next local run passed the Opus fixture but exposed a timing failure in the
+existing localized Exact Values UI test (three assertions in one case after its
+fixed 80 ms Done wait). The test now waits, bounded to two seconds, for its existing
+published value commit; all digit, value and no-premature-update assertions remain.
+The unchanged 112-case selection then passed 111 with one existing benchmark skip.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
