@@ -92,7 +92,7 @@ enum GradedVariantBinding {
         )
     }
 
-    private static func storeVariantQuote(
+    static func storeVariantQuote(
         _ variant: GradedVariant,
         game: CardGame,
         printingID: String,
@@ -101,8 +101,27 @@ enum GradedVariantBinding {
         store: PriceStore,
         at fetchedAt: Date
     ) -> GradedVariantBindingReceipt {
+        let priceKey = PriceRecord.key(game: game, printingID: printingID,
+            variantID: variantID, treatmentIDs: treatmentIDs)
+        let priorEvidence = store.record(forKey: priceKey)?.exactGradedQuoteEvidence
+        if let prior = priorEvidence,
+           prior.variantID == variant.id {
+            let staleSale = variant.quoteLifecycle?.lastSaleAt.map { incoming in
+                prior.lifecycle.lastSaleAt.map { incoming < $0 } ?? false
+            } ?? false
+            let staleUpdate = variant.updatedAt.map { incoming in
+                prior.sourceUpdatedAt.map { incoming < $0 } ?? false
+            } ?? false
+            if prior.checkedAt > fetchedAt || staleSale || staleUpdate {
+                return .init(quote: .unavailable(.justTCG), priceKey: priceKey, wasAccepted: false)
+            }
+        }
+        // An entry path with no lifecycle fields supplies no evidence that a
+        // known deadline disappeared. Preserve it for this exact listing.
+        let lifecycle = variant.quoteLifecycle
+            ?? (priorEvidence?.variantID == variant.id ? priorEvidence?.lifecycle : nil)
         let quote: PriceLookup = if let amount = variant.marketPriceUSD,
-            variant.quoteLifecycle?.withdrawsCurrentQuote(at: fetchedAt) != true {
+            lifecycle?.withdrawsCurrentQuote(at: fetchedAt) != true {
             .price(
                 NormalizedPrice(
                     unitMarketPriceUSD: amount,
@@ -116,12 +135,10 @@ enum GradedVariantBinding {
         } else {
             .unavailable(.justTCG)
         }
-        let priceKey = PriceRecord.key(
-            game: game,
-            printingID: printingID,
-            variantID: variantID,
-            treatmentIDs: treatmentIDs
-        )
+        if store.enqueueGradedQuote(variant, game: game, printingID: printingID, variantID: variantID,
+                                    treatmentIDs: treatmentIDs, at: fetchedAt) {
+            return .init(quote: quote, priceKey: priceKey, wasAccepted: true)
+        }
         let wasAccepted = store.store(
             quote,
             game: game,
@@ -140,9 +157,10 @@ enum GradedVariantBinding {
             record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         }
-        if wasAccepted, let lifecycle = variant.quoteLifecycle {
+        if wasAccepted, let lifecycle {
             store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
-                checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt), forKey: priceKey)
+                checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt
+                    ?? (variant.quoteLifecycle == nil ? priorEvidence?.sourceUpdatedAt : nil)), forKey: priceKey)
         }
         return GradedVariantBindingReceipt(
             quote: quote,

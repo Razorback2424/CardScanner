@@ -1,3 +1,28 @@
+# 2026-11-02 — PR #14 reconciled eligibility history and graded writers
+
+Started from reviewed `ce17ea0`; no interrupted local repair was recovered.
+Retained-set validation is a separate commit. Lifecycle/history repairs and
+their clock contract are in the [pricing plan](docs/plans/pricing_correctness_and_coverage.md#reconciled-pr-14--2026-11-02).
+All graded-add paths now retain full quote evidence; local eligibility events
+survive recovery, reopen and repeated reconciliation without changing ownership.
+Unknown semantics, failed durability and unexplained replay cannot publish
+authoritative closes. Expanded CI includes the integration and ownership suites.
+
+Native evidence retained: initial 175-test selection had one new Japanese
+fixture failure (fixed by using its production set-ID prefix). A Swift test
+closure required an explicit type after a compiler diagnostic failure. One
+build was blocked by T7 exhaustion before tests. Initial integrated execution
+reported 28 assertion failures: fixture activity history was missing, historical
+alias selection lost its earlier record key, and an old test expected publication
+despite unexplained value. Fixtures now carry coherent activity/ledger history;
+production alias selection is repaired and the publication assertion enforces
+the corrected contract. No failure was skipped or weakened.
+
+Subsequent runs: 272 executed / 271 passed / one existing skip; expanded 617
+executed / 616 passed / one existing skip, zero failures (repeated after re-add
+retention). Final ordering/unknown-kind tests and exact CI evidence are pending
+the final validation pass. Physical-device, live-provider and release gates stay open.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)

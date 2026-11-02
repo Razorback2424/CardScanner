@@ -550,7 +550,7 @@ final class PortfolioEngine: ObservableObject {
             otherCurrencyCount: valuation.otherCurrencyCount
         )
         summary.defects = computation.defects
-        summary.isAuthoritative = summary.defects.isEmpty
+        summary.isAuthoritative = computation.isAuthoritative && summary.defects.isEmpty
 
         let replay = computation.replay
         contributionIndex = replay.contributionIndex
@@ -602,12 +602,12 @@ final class PortfolioEngine: ObservableObject {
                     periodEnd: now
                 ) {
                     summary.defects.append(defect)
+                    summary.isAuthoritative = false
                 }
             }
 
-            // The current value is independently measured from the collection,
-            // so an explanation defect does not make the close itself unsafe.
-            // Keep publishing the close while surfacing the residual below.
+            // Replay closes must agree with independently measured current
+            // value before they can become durable accounting evidence.
             if summary.isAuthoritative {
                 summary.revisionNote = Self.publish(
                     replay.days,
@@ -1082,7 +1082,9 @@ final class PortfolioEngine: ObservableObject {
         let descriptor = FetchDescriptor<PriceObservation>(
             sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
         )
-        return try context.fetch(descriptor).map(observationEntry(from:))
+        return try context.fetch(descriptor)
+            .sorted { PriceObservation.isNewer($1, than: $0) }
+            .map(observationEntry(from:))
     }
 
     nonisolated static func observationEntry(from row: PriceObservation) -> ObservationEntry {

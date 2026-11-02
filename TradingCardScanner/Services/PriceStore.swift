@@ -514,10 +514,7 @@ final class PriceRefreshDataIndex {
         _ candidate: PriceObservation,
         than incumbent: PriceObservation
     ) -> Bool {
-        if candidate.receivedAt != incumbent.receivedAt {
-            return candidate.receivedAt > incumbent.receivedAt
-        }
-        return candidate.id.uuidString > incumbent.id.uuidString
+        PriceObservation.isNewer(candidate, than: incumbent)
     }
 }
 
@@ -736,10 +733,24 @@ struct PriceStore {
         if let record = record(forKey: key) { update(record) }
     }
 
+    /// Preserve the entire exact-quote decision at the fresh checkpoint, not
+    /// just its individual mutations. Intervening lifecycle evidence must be
+    /// reevaluated before a queued positive amount can erase it.
+    func enqueueGradedQuote(_ variant: GradedVariant, game: CardGame, printingID: String,
+                            variantID: String?, treatmentIDs: [String], at date: Date) -> Bool {
+        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID,
+                                  treatmentIDs: treatmentIDs)
+        return enqueue(keys: [key]) { fresh in
+            _ = GradedVariantBinding.storeVariantQuote(variant, game: game, printingID: printingID,
+                variantID: variantID, treatmentIDs: treatmentIDs, store: fresh, at: date)
+        }
+    }
+
     func recordExactGradedQuoteEvidence(_ evidence: ExactGradedQuoteEvidence, forKey key: String) {
         if enqueue(keys: [key], { $0.recordExactGradedQuoteEvidence(evidence, forKey: key) }) { return }
         guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
               record.lastCheckedAt == evidence.checkedAt else { return }
+        PriceObservationLog(context: context, index: index).recordElapsedEligibility(for: record, at: evidence.checkedAt)
         if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
             // A price-observation clock and a most-recent-sale clock describe
             // different facts. Only matching clock fields can establish stale
@@ -1102,7 +1113,9 @@ struct PriceStore {
             isClockRollbackRepair = false
         }
 
-        let observationDecision = PriceObservationLog(context: context, index: index).ingest(
+        let log = PriceObservationLog(context: context, index: index)
+        log.recordElapsedEligibility(for: record, at: coverageDate)
+        let observationDecision = log.ingest(
             lookup,
             instrumentKey: key,
             marketVariantID: marketVariantID ?? record.marketVariantID,

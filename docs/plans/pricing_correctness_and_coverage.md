@@ -1,5 +1,45 @@
 # Pricing correctness before coverage expansion
 
+## Reconciled PR #14 — 2026-11-02
+
+Starting head `ce17ea0acb8999bbdfb754a1c7b4f1145edf96ba` matched the review.
+The local observation-kind column now represents passive expiry and physical
+review without a SwiftData schema change. Ordinary provider observations still
+use local receipt time; provider `effectiveAt` never moves a prior close.
+For a previously learned future deadline, the local expiry event's `receivedAt`
+is that deadline and `effectiveAt` records when its evidence was learned. An
+already-expired response or an inherited record without local history starts
+at local knowledge time. Explicit provider withdrawals retain their intervals.
+
+The shared writer materializes an elapsed deadline before replacing either the
+positive observation or lifecycle metadata. Fresh checkpoints repeat the whole
+quote decision against intervening evidence. Manual graded adds, duplicates and
+additional copies use that writer; lifecycle-free re-adds cannot erase a known
+deadline. Retained handles reestablish the trusted set-directory ID, with exact
+product routes unchanged and unresolved directories failing closed.
+
+Physical review is appended when learned, for canonical and imported lookup
+keys, without changing quantity, physical identity or source amounts. Historical
+valuation uses those events rather than applying today's rule retroactively.
+Expiry sorts before equal-time recovery; explicit withdrawal and physical review
+dominate equal-time quotes. Log reads, refresh indexes, replay, chart ordering,
+valuation and alias selection share this precedence. Reconciliation is
+idempotent; a stored historical amount is not recovery evidence. Unknown stored
+kinds withdraw value and block authoritative recomputation. Downgrading to a
+binary that lacks these semantics is not validated by schema compatibility.
+
+Withdrawals enter pricing adjustment, never market loss. Failed reconciliation
+rolls back and marks computation non-authoritative; unexplained current/replay
+differences cannot publish closes. Integrated disk-store tests exercise expiry,
+inactive recovery/reopen, real Bidoof reverse and Charmander Cosmos legacy IDs,
+imported aliases, repeated reconciliation, equal timestamps, already-expired
+receipt, stale queued recovery, save/checkpoint failure and unknown kinds.
+
+Intermediate Xcode 27.1 / iOS 27 simulator selection: 617 executed, 616 passed,
+one existing skip, zero failures. Final ordering/unknown-kind checks and CI
+results are recorded in the handoff. Earlier fixture/compiler/space failures
+remain recorded in `progress.md`; no device, live-provider or release claim.
+
 **Date:** 2026-10-18. **Candidate:** `56d981f` plus local changes.
 **Scope:** Priority 1 correctness only. Final signed simulator verification passed:
 522 passed, four intentional opt-in skips, zero failures across 526 cases.

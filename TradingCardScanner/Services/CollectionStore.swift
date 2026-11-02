@@ -3666,12 +3666,7 @@ struct CollectionStore {
                     owner.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: owner)
-                storeMarketPrice(
-                    variant.marketPriceUSD,
-                    updatedAt: variant.updatedAt,
-                    marketVariantID: variant.id,
-                    for: owner
-                )
+                storeGradedQuote(variant, for: owner)
                 try commit()
                 return CollectionMutation(
                     collectionKey: owner.collectionKey,
@@ -3709,12 +3704,7 @@ struct CollectionStore {
                 )
             }
             markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
-            storeMarketPrice(
-                variant.marketPriceUSD,
-                updatedAt: variant.updatedAt,
-                marketVariantID: variant.id,
-                for: existing
-            )
+            storeGradedQuote(variant, for: existing)
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
@@ -3778,12 +3768,7 @@ struct CollectionStore {
         row.catalogProviderID = card.providerID
         markLiveMagicTreatmentMigrationComplete(for: card, on: row)
         context.insert(row)
-        storeMarketPrice(
-            variant.marketPriceUSD,
-            updatedAt: variant.updatedAt,
-            marketVariantID: variant.id,
-            for: row
-        )
+        storeGradedQuote(variant, for: row)
         let operationID = UUID()
         try requireAppended(
             ledger.record(
@@ -4451,6 +4436,14 @@ struct CollectionStore {
     /// current market observation. Persist it at add time under the exact vendor
     /// variant identity; adding an item must not make the price that was just
     /// shown disappear until a later refresh.
+    private func storeGradedQuote(_ variant: GradedVariant, for row: CollectedCard) {
+        _ = GradedVariantBinding.storeVariantQuote(
+            variant, game: row.cardGame, printingID: row.priceStorageID,
+            variantID: row.variantID, treatmentIDs: row.priceTreatmentIDs,
+            store: PriceStore(context: context), at: .now
+        )
+    }
+
     private func storeMarketPrice(
         _ amount: Double?,
         updatedAt: Date?,

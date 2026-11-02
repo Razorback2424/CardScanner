@@ -479,6 +479,48 @@ final class CollectionItemKindTests: XCTestCase {
         }
     }
 
+    func testBackgroundGradedPickerRetainsLifecycleAcrossDuplicateAndAdditionalCopies() async throws {
+        for certificate: String? in ["LIFECYCLE-CERT", nil] {
+            for status in ["current", "expired", "unpriced"] {
+                let container = try makePickerContainer()
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                let card = try identifiedPokemonCard()
+                let lifecycle = JustTCGQuoteLifecycle(status: status, lastPrice: status == "unpriced" ? nil : 50,
+                    lastSaleAt: .now.addingTimeInterval(-3600), priceExpiresAt: .now.addingTimeInterval(3600))
+                let quote = GradedVariant(id: "picker-market", cardID: "picker-card", company: .psa,
+                    grade: .init(value: "10"), printing: "Holofoil", marketPriceUSD: status == "current" ? 50 : nil,
+                    updatedAt: nil, quoteLifecycle: lifecycle)
+                for _ in 0..<2 {
+                    _ = try await writer.addGradedSelection(underlying: card, variant: quote,
+                        certificationNumber: certificate, setReleaseOrder: nil, pokemonPrintRun: nil,
+                        shouldContinue: { true })
+                }
+                let fresh = ModelContext(container)
+                let slab = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+                let record = try XCTUnwrap(PriceStore(context: fresh).record(forKey: slab.priceKey))
+                XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, lifecycle)
+                XCTAssertEqual(record.effectiveUnitMarketPriceUSD, status == "current" ? 50 : nil)
+                XCTAssertEqual(record.marketVariantID, quote.id)
+                XCTAssertEqual(slab.justTCGVariantID, quote.id)
+                XCTAssertEqual(slab.quantity, certificate == nil ? 2 : 1)
+                let events = try fresh.fetch(FetchDescriptor<InventoryEvent>())
+                let activities = try fresh.fetch(FetchDescriptor<CollectionActivity>())
+                XCTAssertEqual(events.count, slab.quantity)
+                XCTAssertEqual(activities.count, slab.quantity)
+                XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+                // A legacy/manual entry response without lifecycle fields is
+                // not proof that the known deadline or withdrawal disappeared.
+                _ = try await writer.addGradedSelection(underlying: card,
+                    variant: pickerVariant(amount: 50), certificationNumber: certificate,
+                    setReleaseOrder: nil, pokemonPrintRun: nil, shouldContinue: { true })
+                let reloaded = ModelContext(container)
+                let afterReadd = try XCTUnwrap(PriceStore(context: reloaded).record(forKey: slab.priceKey))
+                XCTAssertEqual(afterReadd.exactGradedQuoteEvidence?.lifecycle, lifecycle)
+                XCTAssertEqual(afterReadd.effectiveUnitMarketPriceUSD, status == "current" ? 50 : nil)
+            }
+        }
+    }
+
     private func makePickerContainer() throws -> ModelContainer {
         try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])

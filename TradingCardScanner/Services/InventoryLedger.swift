@@ -290,7 +290,7 @@ struct InventoryLedger {
         for key in keys {
             let isExplicitlyInvalidated =
                 prices.record(forKey: key)?.isInvalidated == true
-                || observations.newestObservation(instrumentKey: key)?.kind == .explicitInvalidation
+                || observations.newestObservation(instrumentKey: key)?.kind.withdrawsValue == true
             if isExplicitlyInvalidated || usableValue(forPriceKey: key) != nil {
                 return key
             }
@@ -326,9 +326,10 @@ struct InventoryLedger {
     static func resolveValuation(
         observation: PriceObservation?,
         record: PriceRecord?,
-        at date: Date = .now
+        at date: Date = .now,
+        appliesCurrentReviewRules: Bool = true
     ) -> InventoryValuation {
-        if [record?.key, observation?.instrumentKey].compactMap({ $0 })
+        if appliesCurrentReviewRules, [record?.key, observation?.instrumentKey].compactMap({ $0 })
             .contains(where: PokemonReviewedPhysicalObjects.requiresReview(priceKey:)) {
             return .unpriced
         }
@@ -357,7 +358,7 @@ struct InventoryLedger {
         if let observation {
             // An invalidation is authoritative. Falling through to the mutable
             // PriceRecord would resurrect exactly the price the log withdrew.
-            if observation.kind == .explicitInvalidation { return .unpriced }
+            if observation.kind.withdrawsValue { return .unpriced }
             // CloudKit can deliver the observation and its mutable record in
             // separate transactions. A valid observation newer than the
             // record's watermark is therefore allowed to become authoritative;
@@ -406,7 +407,7 @@ struct InventoryLedger {
 
     static func matchesExactGradedObservation(_ observation: PriceObservation,
                                              variantID: String, recordKey: String) -> Bool {
-        observation.kind != .explicitInvalidation
+        !observation.kind.withdrawsValue
             && observation.instrumentKey == recordKey
             && observation.source == .justTCG
             && observation.marketVariantID == variantID
