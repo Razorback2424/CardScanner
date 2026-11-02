@@ -194,16 +194,43 @@ final class PriceRecord {
         get {
             guard let gradedMarketCoverageJSON,
                   let data = gradedMarketCoverageJSON.data(using: .utf8) else { return nil }
-            return try? JSONDecoder().decode(GradedMarketCoverage.self, from: data)
+            return (try? JSONDecoder().decode(GradedMarketCoverage.self, from: data))
+                ?? (try? JSONDecoder().decode(GradedRecordEvidence.self, from: data))?.coverage
         }
         set {
-            guard let newValue,
-                  let data = try? JSONEncoder().encode(newValue) else {
+            let envelope = GradedRecordEvidence(coverage: newValue, quote: exactGradedQuoteEvidence)
+            guard newValue != nil || envelope.quote != nil,
+                  let data = try? JSONEncoder().encode(envelope) else {
                 gradedMarketCoverageJSON = nil
                 return
             }
             gradedMarketCoverageJSON = String(data: data, encoding: .utf8)
         }
+    }
+
+    var exactGradedQuoteEvidence: ExactGradedQuoteEvidence? {
+        get {
+            guard let data = gradedMarketCoverageJSON?.data(using: .utf8) else { return nil }
+            return (try? JSONDecoder().decode(GradedRecordEvidence.self, from: data))?.quote
+        }
+        set {
+            let envelope = GradedRecordEvidence(coverage: gradedMarketCoverage, quote: newValue)
+            guard envelope.coverage != nil || newValue != nil,
+                  let data = try? JSONEncoder().encode(envelope) else {
+                gradedMarketCoverageJSON = nil
+                return
+            }
+            gradedMarketCoverageJSON = String(data: data, encoding: .utf8)
+        }
+    }
+
+    var exactGradedQuoteIsWithdrawn: Bool {
+        exactGradedQuoteIsWithdrawn(at: .now)
+    }
+
+    func exactGradedQuoteIsWithdrawn(at date: Date) -> Bool {
+        guard let evidence = exactGradedQuoteEvidence, evidence.checkedAt <= date else { return false }
+        return evidence.lifecycle.withdrawsCurrentQuote(at: date)
     }
 
     /// Returns whether a quote predates the value currently stored on this
@@ -287,7 +314,13 @@ final class PriceRecord {
     /// property next to the mutable record makes the invalidation rule explicit
     /// for services that do not have access to the local observation log.
     var effectiveUnitMarketPriceUSD: Double? {
+        effectiveUnitMarketPriceUSD(at: .now)
+    }
+
+    func effectiveUnitMarketPriceUSD(at date: Date) -> Double? {
         guard !isInvalidated,
+              !exactGradedQuoteIsWithdrawn(at: date),
+              !PokemonReviewedPhysicalObjects.requiresReview(priceKey: key),
               currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
     }

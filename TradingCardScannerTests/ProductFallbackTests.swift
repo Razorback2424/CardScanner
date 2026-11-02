@@ -256,9 +256,6 @@ final class ProductFallbackTests: XCTestCase {
         expectedDelay: TimeInterval? = nil,
         expectedRetryAt: Date? = nil
     ) async throws {
-        try PriceVendorCredentials.store("product-fallback-test-key")
-        defer { PriceVendorCredentials.remove() }
-
         for usesFallback in [true, false] {
             let suite = "ProductFallbackTests.rateLimit.\(UUID().uuidString)"
             let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
@@ -291,7 +288,8 @@ final class ProductFallbackTests: XCTestCase {
                     configuration: configuration,
                     session: session,
                     pacer: JustTCGPacer(),
-                    budget: ProductFallbackBudget(defaults: defaults)
+                    budget: ProductFallbackBudget(defaults: defaults),
+                    apiKeyOverride: "product-fallback-test-key"
                 )
                 let subject = ProductPriceSubject(
                     game: .magic, catalogID: "fixture-printing", name: "Fixture",
@@ -611,9 +609,6 @@ final class ProductFallbackTests: XCTestCase {
         let suite = "ProductFallbackTests.directTreatment.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        try PriceVendorCredentials.store("product-fallback-test-key")
-        defer { PriceVendorCredentials.remove() }
-
         ProductPriceTestURLProtocol.reset()
         let sessionConfiguration = URLSessionConfiguration.ephemeral
         sessionConfiguration.protocolClasses = [ProductPriceTestURLProtocol.self]
@@ -624,7 +619,8 @@ final class ProductFallbackTests: XCTestCase {
             configuration: serviceConfiguration,
             session: URLSession(configuration: sessionConfiguration),
             pacer: JustTCGPacer(),
-            budget: ProductFallbackBudget(defaults: defaults)
+            budget: ProductFallbackBudget(defaults: defaults),
+            apiKeyOverride: "product-fallback-test-key"
         )
         let subject = ProductPriceSubject(
             game: .magic,
@@ -637,6 +633,13 @@ final class ProductFallbackTests: XCTestCase {
             vendorCardID: "direct-card",
             magicTreatmentIDsRaw: ["surgefoil"]
         )
+
+        let unconfigured = ProductPriceService(configuration: serviceConfiguration,
+            session: URLSession(configuration: sessionConfiguration), pacer: JustTCGPacer(),
+            budget: ProductFallbackBudget(defaults: defaults), apiKeyOverride: "")
+        let unavailable = await unconfigured.quote(for: subject, variant: .foil, lane: .interactive)
+        XCTAssertEqual(unavailable, .requestFailed)
+        XCTAssertNil(ProductPriceTestURLProtocol.requestedURL(), "An empty synthetic key must stop before transport")
 
         let outcome = await service.quote(for: subject, variant: .foil, lane: .interactive)
 
@@ -689,13 +692,9 @@ final class ProductFallbackTests: XCTestCase {
     private func fallbackQuote(products: [[String: Any]]) async throws -> ProductPriceOutcome {
         let suite = "ProductFallbackTests.matching.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        let previousKey = PriceVendorCredentials.key
         defer {
             defaults.removePersistentDomain(forName: suite)
-            if let previousKey { try? PriceVendorCredentials.store(previousKey) }
-            else { PriceVendorCredentials.remove() }
         }
-        try PriceVendorCredentials.store("product-matching-fixture-key")
         let body = try JSONSerialization.data(withJSONObject: ["data": products])
         ProductPriceTestURLProtocol.reset(body: String(decoding: body, as: UTF8.self))
         let sessionConfiguration = URLSessionConfiguration.ephemeral
@@ -709,7 +708,8 @@ final class ProductFallbackTests: XCTestCase {
         }
         let service = ProductPriceService(configuration: configuration,
             session: URLSession(configuration: sessionConfiguration), pacer: JustTCGPacer(),
-            budget: ProductFallbackBudget(defaults: defaults), setDirectoryProvider: directory)
+            budget: ProductFallbackBudget(defaults: defaults), setDirectoryProvider: directory,
+            apiKeyOverride: "product-matching-fixture-key")
         return await service.quote(for: .init(game: .pokemon, catalogID: "base1-58", name: "Pikachu",
             setName: "Base Set", cardNumber: "58/102", japaneseSetID: nil, pokemonPrintRun: nil,
             vendorCardID: nil, magicTreatmentIDsRaw: []), variant: .normal, lane: .interactive)

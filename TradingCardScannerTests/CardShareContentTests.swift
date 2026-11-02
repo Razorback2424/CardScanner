@@ -45,6 +45,7 @@ final class CardShareContentTests: XCTestCase {
     func testRawPriceIsLabelledWithProviderConditionNotTheCopy() {
         XCTAssertEqual(CardSharePrice.basis(itemKind: .rawCard, gradeLabel: nil, source: .tcgplayer), "Near Mint market")
         XCTAssertEqual(CardSharePrice.basis(itemKind: .rawCard, gradeLabel: nil, source: .justTCG), "Near Mint market")
+        XCTAssertEqual(CardSharePrice.basis(itemKind: .rawCard, gradeLabel: nil, source: .tcgCSV), "Market price")
         XCTAssertEqual(CardSharePrice.basis(itemKind: .rawCard, gradeLabel: nil, source: .scryfall), "Market price")
         XCTAssertEqual(CardSharePrice.basis(itemKind: .gradedCard, gradeLabel: "PSA 10", source: .justTCG), "PSA 10 market")
         XCTAssertEqual(CardSharePrice.basis(itemKind: .sealedProduct, gradeLabel: nil, source: .tcgplayer), "Market price")
