@@ -13,6 +13,45 @@ import XCTest
 /// verified against JustTCG, and Clue #17 on two cards is the repository's
 /// existing MSH fixture. Coverage claims are the fixture's, not the real set's.
 final class MagicTokenPairingSessionTests: XCTestCase {
+    func testAnswerAfterRemovalDoesNotSuppressNextSameFaceCopy() {
+        for remainsVisible in [false, true] {
+            var ambiguous = mshSession()
+            let clue = face("TMSH", "17")
+            _ = ambiguous.handle(.faceConfirmed(clue))
+            if !remainsVisible { _ = ambiguous.handle(.bandCleared) }
+            _ = ambiguous.handle(.choseCandidate(soldierClue.key))
+            XCTAssertEqual(ambiguous.handle(.faceConfirmed(clue)), remainsVisible ? [] : [.askForReverse(clueQuestion)])
+
+            var unknown = uncataloguedSession()
+            let first = face("TZZZ", "1"), second = face("TZZZ", "2")
+            _ = unknown.handle(.faceConfirmed(first))
+            if !remainsVisible { _ = unknown.handle(.bandCleared) }
+            _ = unknown.handle(.declaredSingleFaced)
+            XCTAssertEqual(unknown.handle(.faceConfirmed(first)), remainsVisible ? [] : [.askForReverse(openQuestion(first))])
+
+            var pair = uncataloguedSession()
+            _ = pair.handle(.faceConfirmed(first))
+            _ = pair.handle(.faceConfirmed(second))
+            if !remainsVisible { _ = pair.handle(.bandCleared) }
+            _ = pair.handle(.confirmedPair)
+            XCTAssertEqual(pair.handle(.faceConfirmed(second)), remainsVisible ? [] : [.askForReverse(openQuestion(second))])
+        }
+    }
+
+    func testLatestSideWhileDecidingDeterminesFlipAfterConfirmation() {
+        for (first, second) in [(face("TZZZ", "1"), face("TZZZ", "2")),
+                                (face("TZZZ", "2"), face("TZZZ", "1"))] {
+            var session = uncataloguedSession()
+            _ = session.handle(.faceConfirmed(first))
+            _ = session.handle(.faceConfirmed(second))
+            XCTAssertEqual(session.handle(.faceConfirmed(first)), [])
+            _ = session.handle(.confirmedPair)
+            _ = session.handle(.bandCleared)
+            XCTAssertEqual(session.handle(.faceConfirmed(second)), [.sameCard(key(first, second))])
+            _ = session.handle(.bandCleared)
+            XCTAssertEqual(session.handle(.faceConfirmed(second)), [.askForReverse(openQuestion(second))])
+        }
+    }
 
     // MARK: - Fixtures
 

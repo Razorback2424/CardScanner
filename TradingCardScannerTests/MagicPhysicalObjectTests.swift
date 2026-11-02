@@ -12,6 +12,23 @@ import XCTest
 /// Coverage claims are asserted by each fixture to exercise the rule; they are
 /// not claims about the real sets.
 final class MagicPhysicalObjectTests: XCTestCase {
+    func testReservedIdentityCharactersCannotCollideOrEnterCatalog() throws {
+        let valid = try XCTUnwrap(MagicPhysicalTokenKey(faces: [face("TMSH", "6"), face("TMSH", "18")]))
+        XCTAssertEqual(MagicPhysicalTokenKey(storageKey: valid.storageKey), valid)
+        for (set, number) in [("TMSH:6", "18"), ("TMSH", "6:TMSH:18"),
+                               ("TMSH", "6|TMSH:18"), ("TMSH|OTHER", "6"), ("", "6"), ("TMSH", "")] {
+            let invalid = face(set, number)
+            XCTAssertFalse(invalid.isValid)
+            XCTAssertNil(MagicPhysicalTokenKey(faces: [invalid]))
+            XCTAssertNil(MagicPhysicalToken(faces: [.init(id: invalid, name: "Token")]))
+            XCTAssertThrowsError(try MagicTokenProductCatalog(jsonData: catalogJSON(products: """
+            [{"faces":[{"set":"\(set)","number":"\(number)","name":"Token"}]}]
+            """)))
+        }
+        XCTAssertNil(MagicPhysicalTokenKey(storageKey: "TMSH:6:18"))
+        XCTAssertNil(MagicPhysicalTokenKey(storageKey: "TMSH:6|"))
+        XCTAssertNotEqual(MagicPhysicalTokenKey(faces: [face("TMSH", "6")]), valid)
+    }
 
     // MARK: - Token fixtures
 

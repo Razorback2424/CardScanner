@@ -133,6 +133,9 @@ struct MagicTokenPairingSession: Sendable {
 
     let catalog: MagicTokenProductCatalog
     private var state: State = .idle
+    // Camera facts outlive a pending question. A button cannot create presence.
+    private var observedInBand = false
+    private var latestFace: MagicTokenFaceID?
 
     init(catalog: MagicTokenProductCatalog) {
         self.catalog = catalog
@@ -168,6 +171,9 @@ struct MagicTokenPairingSession: Sendable {
     // MARK: - Readings
 
     private mutating func faceConfirmed(_ face: MagicTokenFaceID) -> [Effect] {
+        guard face.isValid else { return [] }
+        observedInBand = true
+        latestFace = face
         switch state {
         case .idle:
             return begin(face)
@@ -209,6 +215,8 @@ struct MagicTokenPairingSession: Sendable {
     }
 
     private mutating func otherCardConfirmed() -> [Effect] {
+        observedInBand = false
+        latestFace = nil
         switch state {
         case .idle:
             return []
@@ -221,6 +229,7 @@ struct MagicTokenPairingSession: Sendable {
     }
 
     private mutating func bandCleared() {
+        observedInBand = false
         // An open question survives an empty band: that is what a flip looks
         // like from the camera.
         guard case let .holding(key, lastSeen, _) = state else { return }
@@ -253,7 +262,8 @@ struct MagicTokenPairingSession: Sendable {
         guard case let .confirmingPair(question, reverse) = state,
               let key = MagicPhysicalTokenKey(faces: [question.face, reverse]) else { return [] }
         return [.dismissPrompt]
-            + record(key, product: catalog.product(for: key), basis: .userConfirmedObservedPair, lastSeen: reverse)
+            + record(key, product: catalog.product(for: key), basis: .userConfirmedObservedPair,
+                     lastSeen: latestFace ?? reverse)
     }
 
     private mutating func rejectedPair() -> [Effect] {
@@ -288,7 +298,7 @@ struct MagicTokenPairingSession: Sendable {
         basis: MagicTokenPairingBasis,
         lastSeen: MagicTokenFaceID
     ) -> [Effect] {
-        state = .holding(key, lastSeen: lastSeen, inBand: true)
+        state = .holding(key, lastSeen: lastSeen, inBand: observedInBand)
         return [.add(MagicTokenAcquisition(key: key, product: product, basis: basis))]
     }
 

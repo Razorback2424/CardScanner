@@ -32,6 +32,14 @@ struct MagicTokenFaceID: Hashable, Comparable, Sendable, CustomStringConvertible
 
     var description: String { "\(setCode) \(number)" }
 
+    /// Existing valid storage keys keep their spelling. Malformed identities
+    /// are rejected at every product/key boundary, never escaped or relabeled.
+    var isValid: Bool {
+        !setCode.isEmpty && !number.isEmpty
+            && !setCode.contains(where: { $0 == ":" || $0 == "|" })
+            && !number.contains(where: { $0 == ":" || $0 == "|" })
+    }
+
     /// Leading zeros are presentation and case is OCR noise. A letter prefix
     /// (`H13`, LTR's helper card) and a suffix are kept: they are identity.
     static func normalize(_ raw: String) -> String {
@@ -87,7 +95,7 @@ struct MagicPhysicalTokenKey: Hashable, Comparable, Sendable, CustomStringConver
     let faces: [MagicTokenFaceID]
 
     init?(faces: [MagicTokenFaceID]) {
-        guard (1...2).contains(faces.count) else { return nil }
+        guard (1...2).contains(faces.count), faces.allSatisfy(\.isValid) else { return nil }
         self.faces = faces.sorted()
     }
 

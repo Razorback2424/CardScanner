@@ -22,8 +22,9 @@ ordinary cards they are the same thing. For tokens they are not:
 ## Scope: what "token cards" are
 
 Evidence below comes from this repository: the bundled Scryfall snapshot
-(`TradingCardScanner/MagicTreatmentSnapshot`, 213 token sets, ~2,950 token
-records) and TCGplayer listings in
+(`TradingCardScanner/MagicTreatmentSnapshot`: 213 source token sets totaling
+2,950 cards, of which 132 sets containing 1,112 records are retained evidence)
+and TCGplayer listings in
 [`magic-product-proof.json`](../../TestFixtures/TradingCards/SetPricingAudit/magic-product-proof.json).
 
 | Kind | Examples in repo data | In scope |
@@ -178,7 +179,15 @@ a confirmation tap after every flip, taxes the common case for a rare one.
 
 ## Open evidence gates and risks
 
-- [ ] Build and run `MagicPhysicalObjectTests` and `MagicTokenPairingSessionTests`.
+The engine emits acquisition intent only. Scanner/storage integration must
+acknowledge successful and failed ownership writes before finalizing a receipt
+or suppression state, and route undo back through that state. Those adapters,
+pricing and UI integration remain deferred. Valid legacy token keys retain their
+spelling; colon/pipe-bearing identity components are rejected, not migrated.
+
+- [x] 2026-11-02: Xcode 27.1 / iOS 27 unsigned simulator executed both suites:
+      26 model and 22 engine tests passed. CI selection now includes both;
+      this does not validate the deferred integration or physical flips.
 - [ ] Physical samples: emblem and helper footers, letter-prefixed numbers,
       pre-2023 token footer grammar (current parser behaviour on these is a
       safe miss, not verified support).
