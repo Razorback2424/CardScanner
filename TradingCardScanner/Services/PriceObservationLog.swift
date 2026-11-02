@@ -382,21 +382,46 @@ struct PriceObservationLog {
                                   previous: PriceObservation? = nil) -> PriceObservation? {
         guard let evidence = record.exactGradedQuoteEvidence,
               evidence.checkedAt <= date,
+              record.marketVariantID == evidence.variantID,
               evidence.lifecycle.withdrawsCurrentQuote(at: date) else { return nil }
         let previous = previous ?? newestObservation(instrumentKey: record.key)
-        guard previous?.kind.withdrawsValue != true,
-              previous.map({ $0.receivedAt <= evidence.checkedAt }) ?? true else { return nil }
+        guard previous?.kind.withdrawsValue != true else { return nil }
+        let learnedAt: Date
+        if let previous {
+            guard previous.receivedAt <= date else { return nil }
+            if previous.isReceiptOfSyncedQuote(evidence, record: record),
+               let receipt = previous.validatedSyncedGradedQuoteReceipt {
+                guard receipt.learnedAt <= date else { return nil }
+                learnedAt = receipt.learnedAt
+            } else if previous.syncedGradedQuoteEvidenceJSON == nil,
+                      previous.matchesStoredExactQuote(evidence, record: record),
+                      InventoryLedger.resolveValuation(observation: previous, record: record, at: date).unitPrice == nil {
+                // Older builds did not persist deadline receipts. An exact
+                // match can repair today's excluded value, but neither clock
+                // ordering proves when this device learned a synced deadline.
+                // Genuinely newer/ambiguous quotes keep their protections.
+                learnedAt = date
+            } else {
+                return nil
+            }
+        } else {
+            learnedAt = date
+        }
         let deadline = evidence.lifecycle.status == "current" ? evidence.lifecycle.priceExpiresAt : nil
         let transitionAt: Date
-        if previous != nil, let deadline, deadline > evidence.checkedAt {
+        if previous != nil, let deadline, deadline > learnedAt {
             transitionAt = deadline
         } else {
             // Already-expired evidence, or a synced record with no local
             // knowledge baseline, cannot invent an earlier local interval.
-            transitionAt = max(evidence.checkedAt, previous == nil ? date : evidence.checkedAt)
+            transitionAt = learnedAt
         }
-        return appendWithdrawal(record: record, previous: previous, kind: .eligibilityExpiry,
-                                at: transitionAt, learnedAt: evidence.checkedAt)
+        let withdrawal = appendWithdrawal(record: record, previous: previous, kind: .eligibilityExpiry,
+                                          at: transitionAt, learnedAt: learnedAt)
+        if let receipt = previous?.validatedSyncedGradedQuoteReceipt, receipt.matchesWithdrawal(withdrawal) {
+            withdrawal.syncedGradedQuoteReceipt = receipt
+        }
+        return withdrawal
     }
 
     private func appendWithdrawal(record: PriceRecord, previous: PriceObservation?,
@@ -409,6 +434,14 @@ struct PriceObservationLog {
         context.insert(row)
         index?.insert(row)
         return row
+    }
+
+    /// The provider-write path knows when this device checked the lifecycle.
+    /// Store that proof before a later synced record can replace the evidence.
+    func recordLocalQuoteReceipt(for record: PriceRecord, learnedAt date: Date) {
+        guard record.lastCheckedAt == date,
+              let observation = newestObservation(instrumentKey: record.key) else { return }
+        recordSyncedQuoteReceipt(on: observation, from: record, learnedAt: date, isLocalCheck: true)
     }
 
     /// Reconciles the current synced price-record state into this device's
@@ -536,6 +569,7 @@ struct PriceObservationLog {
             newestByInstrument[observation.instrumentKey] = observation
         }
         var written = 0
+        var receiptMetadataChanged = false
 
         let previousRulesVersion = PriceReadabilityRules.lastAppliedVersion(defaults: defaults)
         let readabilityTransitionKeys: Set<String>
@@ -571,6 +605,7 @@ struct PriceObservationLog {
                 receivedAt: candidate.receivedAt,
                 isSourceStamped: candidate.isSourceStamped
             )
+            recordSyncedQuoteReceipt(on: observation, from: record, learnedAt: localKnowledgeTime)
             context.insert(observation)
             observations.append(observation)
             newestByInstrument[key] = observation
@@ -578,7 +613,7 @@ struct PriceObservationLog {
         }
 
         for record in records {
-            let previous = newestByInstrument[record.key]
+            var previous = newestByInstrument[record.key]
 
             if reviewKeys.contains(record.key) || PokemonReviewedPhysicalObjects.requiresReview(priceKey: record.key) {
                 if previous?.kind != .physicalReview {
@@ -591,8 +626,45 @@ struct PriceObservationLog {
                 continue
             }
 
+            let supersedesReceivedQuote = previous.map {
+                isNewerSyncedQuote(record, than: $0, learnedAt: localKnowledgeTime)
+            } ?? false
+            let wasOutOfOrder = previous.map { isOutOfOrder(record: record, comparedTo: $0) } ?? false
+            let priorReceipt = previous?.validatedSyncedGradedQuoteReceipt ?? previous?.validatedWithdrawnGradedQuoteReceipt
+            var materializedReceiptExpiry = false
+            if let prior = previous,
+               let receipt = prior.validatedSyncedGradedQuoteReceipt,
+               receipt.evidence.lifecycle.status == "current",
+               let deadline = receipt.evidence.lifecycle.priceExpiresAt,
+               deadline > receipt.learnedAt, deadline <= localKnowledgeTime {
+                // The mutable record may already contain a replacement, even
+                // a non-USD quote. This old, locally known deadline remains
+                // valid independently of that replacement's eligibility.
+                let row = PriceObservation(instrumentKey: prior.instrumentKey, kind: .eligibilityExpiry, amount: nil,
+                    currencyCode: prior.currencyCode, source: prior.source,
+                    sourceVariantID: prior.sourceVariantID, marketVariantID: prior.marketVariantID,
+                    effectiveAt: receipt.learnedAt, receivedAt: deadline, isSourceStamped: false)
+                row.syncedGradedQuoteReceipt = receipt
+                context.insert(row)
+                index?.insert(row)
+                observations.append(row)
+                newestByInstrument[record.key] = row
+                previous = row
+                materializedReceiptExpiry = true
+                written += 1
+            }
+
             if !record.isInvalidated, record.exactGradedQuoteIsWithdrawn(at: localKnowledgeTime) {
-                if let row = recordElapsedEligibility(for: record, at: localKnowledgeTime, previous: previous) {
+                let withdrawal: PriceObservation?
+                if supersedesReceivedQuote, previous?.kind.withdrawsValue != true {
+                    // A replacement first learned after its own expiry cannot
+                    // claim that its deadline was known locally any earlier.
+                    withdrawal = appendWithdrawal(record: record, previous: previous, kind: .eligibilityExpiry,
+                        at: localKnowledgeTime, learnedAt: localKnowledgeTime)
+                } else {
+                    withdrawal = recordElapsedEligibility(for: record, at: localKnowledgeTime, previous: previous)
+                }
+                if let row = withdrawal {
                     observations.append(row)
                     newestByInstrument[record.key] = row
                     written += 1
@@ -602,13 +674,12 @@ struct PriceObservationLog {
                 continue
             }
             if !record.isInvalidated, let previous, previous.kind == .eligibilityExpiry,
+               !supersedesReceivedQuote, !materializedReceiptExpiry,
                (record.fetchedAt ?? .distantPast) <= previous.receivedAt { continue }
 
             if record.isInvalidated {
                 guard previous?.kind != .explicitInvalidation else { continue }
-                if let previous, isOutOfOrder(record: record, comparedTo: previous) {
-                    continue
-                }
+                if wasOutOfOrder { continue }
                 let observation = PriceObservation(
                     instrumentKey: record.key,
                     kind: .explicitInvalidation,
@@ -628,6 +699,17 @@ struct PriceObservationLog {
                 continue
             }
 
+            if materializedReceiptExpiry || previous?.kind == .eligibilityExpiry, let receipt = priorReceipt,
+               record.exactGradedQuoteEvidence == nil,
+               record.sourceRaw == receipt.sourceRaw, record.sourceVariantID == receipt.sourceVariantID,
+               record.marketVariantID == receipt.marketVariantID, record.currencyCode == receipt.currencyCode {
+                // Losing lifecycle metadata cannot make the same elapsed quote
+                // current again. A later provider update can establish a new
+                // quote; an equal/missing update clock cannot establish one.
+                guard let updatedAt = record.sourceUpdatedAt, let knownUpdate = receipt.sourceUpdatedAt,
+                      updatedAt > knownUpdate else { continue }
+            }
+
             // Preserve native-currency evidence just as ingestion does. A
             // USD -> non-USD transition withdraws portfolio priceability and
             // must reach replay even though its amount cannot enter the total.
@@ -635,9 +717,7 @@ struct PriceObservationLog {
                   nativeAmount.isFinite, nativeAmount >= 0,
                   let money = Money(rounding: nativeAmount) else { continue }
             let source = record.source
-            if let previous, isOutOfOrder(record: record, comparedTo: previous) {
-                continue
-            }
+            if !supersedesReceivedQuote, wasOutOfOrder { continue }
 
             let candidate = PriceObservationRules.Candidate(
                 value: PriceObservationValue(
@@ -655,7 +735,7 @@ struct PriceObservationLog {
                 // remote timestamp into local knowledge time.
                 receivedAt: localKnowledgeTime
             )
-            guard case let .append(kind) = PriceObservationRules.decide(
+            let decision = PriceObservationRules.decide(
                 candidate: candidate,
                 previous: previous.map {
                     PriceObservationRules.Previous(
@@ -666,7 +746,14 @@ struct PriceObservationLog {
                         kind: $0.kind
                     )
                 }
-            ) else { continue }
+            )
+            if decision == .unchanged, let previous {
+                if recordSyncedQuoteReceipt(on: previous, from: record, learnedAt: localKnowledgeTime) {
+                    receiptMetadataChanged = true
+                }
+                continue
+            }
+            guard case let .append(kind) = decision else { continue }
 
             let observation = PriceObservation(
                 instrumentKey: record.key,
@@ -680,13 +767,14 @@ struct PriceObservationLog {
                 receivedAt: candidate.receivedAt,
                 isSourceStamped: candidate.isSourceStamped
             )
+            recordSyncedQuoteReceipt(on: observation, from: record, learnedAt: localKnowledgeTime)
             context.insert(observation)
             observations.append(observation)
             newestByInstrument[record.key] = observation
             written += 1
         }
 
-        if written > 0 {
+        if written > 0 || receiptMetadataChanged {
             do {
                 if let reconciliationSave { try reconciliationSave() }
                 else { try context.save() }
@@ -704,6 +792,51 @@ struct PriceObservationLog {
             defaults.set(PriceReadabilityRules.currentVersion, forKey: PriceReadabilityRules.defaultsKey)
         }
         return (written, observations, true)
+    }
+
+    @discardableResult
+    private func recordSyncedQuoteReceipt(on observation: PriceObservation, from record: PriceRecord,
+                                         learnedAt: Date, isLocalCheck: Bool = false) -> Bool {
+        guard let evidence = record.exactGradedQuoteEvidence,
+              evidence.checkedAt <= learnedAt, observation.receivedAt <= learnedAt,
+              evidence.lifecycle.status == "current", let deadline = evidence.lifecycle.priceExpiresAt,
+              deadline > learnedAt,
+              observation.matchesStoredExactQuoteValue(evidence, record: record) else { return false }
+        if observation.isReceiptOfSyncedQuote(evidence, record: record) { return false }
+        if let prior = observation.validatedSyncedGradedQuoteReceipt {
+            if isLocalCheck {
+                guard evidence.checkedAt > prior.evidence.checkedAt, learnedAt >= prior.learnedAt else { return false }
+            } else if !isNewerSyncedQuote(record, than: observation, learnedAt: learnedAt) { return false }
+        }
+        observation.syncedGradedQuoteReceipt = .init(evidence: evidence, learnedAt: learnedAt,
+            sourceUpdatedAt: record.sourceUpdatedAt, observation: observation)
+        return true
+    }
+
+    /// A saved exact receipt supplies the remote check watermark that ordinary
+    /// local observations deliberately lack. Compare matching remote clocks;
+    /// never compare this newer remote check with the older local receipt.
+    private func isNewerSyncedQuote(_ record: PriceRecord, than observation: PriceObservation,
+                                   learnedAt: Date) -> Bool {
+        guard !record.isInvalidated,
+              let prior = observation.validatedSyncedGradedQuoteReceipt ?? observation.validatedWithdrawnGradedQuoteReceipt,
+              prior.learnedAt <= learnedAt,
+              let evidence = record.exactGradedQuoteEvidence,
+              evidence.variantID == prior.evidence.variantID,
+              evidence.checkedAt > prior.evidence.checkedAt, evidence.checkedAt <= learnedAt,
+              record.key == observation.instrumentKey, record.source == .justTCG,
+              record.marketVariantID == evidence.variantID,
+              record.sourceVariantID == observation.sourceVariantID,
+              record.currencyCode == observation.currencyCode,
+              PortfolioPriceEligibility.eligibleUnitPrice(amount: record.unitMarketPriceUSD,
+                  currencyCode: record.currencyCode) != nil else { return false }
+        if let known = prior.sourceUpdatedAt,
+           record.sourceUpdatedAt.map({ $0 >= known }) != true { return false }
+        if let known = prior.evidence.sourceUpdatedAt,
+           evidence.sourceUpdatedAt.map({ $0 >= known }) != true { return false }
+        if let incoming = evidence.lifecycle.lastSaleAt, let known = prior.evidence.lifecycle.lastSaleAt,
+           incoming < known { return false }
+        return true
     }
 
     /// Identifies values whose readability changed in the stamped release.
@@ -773,6 +906,13 @@ struct PriceObservationLog {
     /// a genuinely newly learned recovery can restore a value.
     private func isOutOfOrder(record: PriceRecord, comparedTo previous: PriceObservation) -> Bool {
         guard previous.kind != .explicitInvalidation else { return false }
+        if let receipt = previous.validatedSyncedGradedQuoteReceipt ?? previous.validatedWithdrawnGradedQuoteReceipt,
+           record.source == previous.source, record.marketVariantID == receipt.evidence.variantID,
+           let evidence = record.exactGradedQuoteEvidence, evidence.variantID == receipt.evidence.variantID {
+            if evidence.checkedAt < receipt.evidence.checkedAt { return true }
+            if evidence.checkedAt == receipt.evidence.checkedAt,
+               (evidence != receipt.evidence || record.sourceUpdatedAt != receipt.sourceUpdatedAt) { return true }
+        }
         let remoteKnowledge = [
             record.fetchedAt,
             record.lastSuccessfulCheckAt,

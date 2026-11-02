@@ -773,6 +773,8 @@ struct PriceStore {
                 instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
         }
         record.exactGradedQuoteEvidence = evidence
+        PriceObservationLog(context: context, index: index)
+            .recordLocalQuoteReceipt(for: record, learnedAt: evidence.checkedAt)
     }
 
     func migratePriceSide(
