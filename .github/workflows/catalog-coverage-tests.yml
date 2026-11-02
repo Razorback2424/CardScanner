@@ -26,6 +26,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Test offline ingestion and mapping policies
         run: python3 -m unittest discover -s scripts/tests -v
       - name: Test Yu-Gi-Oh membership and printing families
@@ -133,6 +135,7 @@ jobs:
             -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testExactObservationComparesItsUpdateClockIndependentlyOfLastSaleClock \
             -only-testing:TradingCardScannerTests/CenteringNativePrecisionTests \
             -only-testing:TradingCardScannerTests/CenteringExportTests \
+            -only-testing:TradingCardScannerTests/CardCenteringSurfaceTests \
             -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
