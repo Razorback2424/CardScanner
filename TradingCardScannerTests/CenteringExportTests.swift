@@ -1056,7 +1056,7 @@ final class CenteringNativePrecisionTests: XCTestCase {
                 XCTAssertTrue(fixture.probe.mutations.isEmpty, "A must remain pending when B starts")
                 // B consumes its own boundary while the real production
                 // removal completion for A is held. Both target the same field.
-                XCTAssertTrue(newInput.becomeFirstResponder())
+                try await fixture.focus(field)
                 if let text = item.text { fixture.replaceText(text, in: newInput, field: field) }
                 XCTAssertTrue(fixture.probe.mutations.isEmpty, "Typing B alone cannot publish A or B")
                 let newDone = fixture.done()
