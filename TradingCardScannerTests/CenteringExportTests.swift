@@ -503,15 +503,16 @@ final class CenteringNativePrecisionTests: XCTestCase {
             XCTAssertEqual(pendingRemovalCount, 1, "The real removal completion must be held before B starts")
             let resigned = try log.event("uikit.end", field: probe.positionFieldID, after: removal).uptimeNanoseconds
             let identity = "context=\(ObjectIdentifier(input))"
-            try await waitFor("SwiftUI detachment after native resignation", since: resigned, completedAt: {
-                self.log.events.first {
+            try await waitFor("native resignation and SwiftUI detachment", since: resigned, completedAt: {
+                guard let detached = self.log.events.first(where: {
                     $0.name == "view.window-detached" && $0.field == self.probe.positionFieldID
-                        && $0.uptimeNanoseconds >= resigned && $0.detail == identity
-                }?.uptimeNanoseconds
+                        && $0.uptimeNanoseconds >= removal && $0.detail == identity
+                })?.uptimeNanoseconds else { return nil }
+                return max(resigned, detached)
             }) {
                 input.window == nil && self.log.events.contains {
-                    $0.name == "view.window-detached" && $0.detail == identity
-                        && $0.uptimeNanoseconds >= resigned
+                    $0.name == "view.window-detached" && $0.field == self.probe.positionFieldID && $0.detail == identity
+                        && $0.uptimeNanoseconds >= removal
                 }
             }
             XCTAssertNil(input.window, "SwiftUI must have removed A before B starts")
@@ -533,7 +534,14 @@ final class CenteringNativePrecisionTests: XCTestCase {
             let input = try input(field)
             let requested = DispatchTime.now().uptimeNanoseconds
             log.trace.record("fixture.focus-request", field: field, focused: input.isFirstResponder)
-            let success = input.becomeFirstResponder()
+            // Routine readiness must not mutate the editor inside an ongoing
+            // SwiftUI observation transaction. Explicit race tests invoke the
+            // native responder directly and intentionally bypass this barrier.
+            let success = await withCheckedContinuation { continuation in
+                DispatchQueue.main.async {
+                    continuation.resume(returning: input.becomeFirstResponder())
+                }
+            }
             log.trace.record("fixture.focus-returned", field: field, focused: input.isFirstResponder, detail: "success=\(success)")
             XCTAssertTrue(success, "\(log.caseID): \(field)")
             try await waitFor("UIKit and SwiftUI focus: \(field)", completedAt: {
