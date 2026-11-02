@@ -607,6 +607,181 @@ final class CatalogSetArtworkTests: XCTestCase {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    func testForcedPriceDetailsWaitForOrdinaryTaskThenBypassCacheAndOrdinaryJoinsForce() async throws {
+        for forceFirst in [false, true] {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try priceConsistencyFixture()
+            let transport = PriceConsistencyTransport(set: fixture.set, card: fixture.card, suspends: true)
+            let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+                pokemonTransport: transport,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil))
+            let first = Task { try await catalog.details(for: fixture.summary, refreshingPrices: forceFirst) }
+            await transport.waitForRequests(1)
+            let second = Task { try await catalog.details(for: fixture.summary, refreshingPrices: !forceFirst) }
+            for _ in 0..<20 { await Task.yield() }
+            let pendingFlags = await transport.flags
+            XCTAssertEqual(pendingFlags.count, 1, "A forcing waiter must wait out the ordinary task")
+            await transport.finish(0)
+            if !forceFirst {
+                await transport.waitForRequests(2)
+                await transport.finish(1)
+            }
+            let firstResult = try await first.value
+            let secondResult = try await second.value
+            let flags = await transport.flags
+            XCTAssertEqual(flags, forceFirst ? [true] : [false, true])
+            XCTAssertEqual(firstResult.card.name, forceFirst ? "Forced" : "Ordinary")
+            XCTAssertEqual(secondResult.card.name, "Forced")
+        }
+    }
+
+    func testStaleDetailFallbackKeepsSortEvidenceDateAndRetriesOnReopen() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try priceConsistencyFixture()
+        let transport = PriceConsistencyTransport(set: fixture.set, card: fixture.card)
+        let clock = BrowseRefinementClock()
+        clock.advance(-172800)
+        let date = clock.date
+        let cache = CatalogCacheStore(root: root.appendingPathComponent("pages"))
+        let catalog = BrowseCatalog(cache: cache, pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil),
+            now: { clock.date })
+        _ = try await catalog.details(for: fixture.summary)
+        clock.advance(172800)
+        await transport.setFailure()
+        for _ in 0..<2 {
+            var last: CatalogPriceUpdate?
+            for await update in catalog.sortPriceUpdates(for: [fixture.summary]) { last = update }
+            XCTAssertEqual(last?.prices[fixture.summary.id], 42)
+            XCTAssertTrue(last?.unresolvedIDs.contains(fixture.summary.id) == true)
+            XCTAssertFalse(last?.resolvedIDs.contains(fixture.summary.id) == true)
+            let hints = await cache.sortPrices(for: fixture.summary.setID.id)
+            XCTAssertEqual(hints?.value[fixture.summary.id]?.checkedAt, date)
+        }
+        let flags = await transport.flags
+        XCTAssertEqual(flags.count, 3)
+    }
+
+    func testFailedColdRefreshRetainsSortHintAndOriginalDate() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try priceConsistencyFixture()
+        let cache = CatalogCacheStore(root: root.appendingPathComponent("pages"))
+        let date = Date.now.addingTimeInterval(-172800)
+        await cache.storeSortPrices([fixture.summary.id: SortPriceHint(price: 42, checkedAt: date)], for: fixture.summary.setID.id)
+        let transport = PriceConsistencyTransport(set: fixture.set, card: fixture.card)
+        await transport.setFailure()
+        for _ in 0..<2 {
+            let catalog = BrowseCatalog(cache: cache, pokemonTransport: transport,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil))
+            var last: CatalogPriceUpdate?
+            for await update in catalog.sortPriceUpdates(for: [fixture.summary]) { last = update }
+            XCTAssertEqual(last?.prices[fixture.summary.id], 42)
+            XCTAssertTrue(last?.unresolvedIDs.contains(fixture.summary.id) == true)
+            let hints = await cache.sortPrices(for: fixture.summary.setID.id)
+            XCTAssertEqual(hints?.value[fixture.summary.id]?.checkedAt, date)
+        }
+        let flags = await transport.flags
+        XCTAssertEqual(flags.count, 2)
+    }
+
+    func testStaleTCGCSVSortQuoteKeepsOriginalDateAcrossColdReopen() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try priceConsistencyFixture(setID: "30th")
+        var summary = fixture.summary
+        summary.masterSetVariant = .holo
+        let date = Date.now.addingTimeInterval(-172800)
+        let source = SavedSortTCGCSVSource(snapshot: .init(schemaVersion: 1, setID: "30th", feedBuild: "saved",
+            fetchedAt: date, validatedAt: date, valuesByCardID: [summary.providerID: 42]))
+        let cache = CatalogCacheStore(root: root.appendingPathComponent("pages"))
+        for _ in 0..<2 {
+            let catalog = BrowseCatalog(cache: cache,
+                pokemonTransport: PriceConsistencyTransport(set: fixture.set, card: fixture.card), tcgCSVSource: source,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil))
+            var last: CatalogPriceUpdate?
+            for await update in catalog.sortPriceUpdates(for: [summary]) { last = update }
+            XCTAssertEqual(last?.prices[summary.id], 42)
+            XCTAssertTrue(last?.unresolvedIDs.contains(summary.id) == true)
+            XCTAssertFalse(last?.resolvedIDs.contains(summary.id) == true)
+            let hints = await cache.sortPrices(for: summary.setID.id)
+            XCTAssertEqual(hints?.value[summary.id]?.checkedAt, date)
+        }
+        let calls = await source.calls
+        XCTAssertEqual(calls, 2)
+    }
+
+    func testStaleBulkSortQuoteKeepsOriginalDateAcrossColdReopen() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try priceConsistencyFixture()
+        let cacheRoot = root.appendingPathComponent("pages")
+        let cache = CatalogCacheStore(root: cacheRoot)
+        await cache.storePokemonBulkPrices(.init(valuesByCardID: [fixture.card.id: ["normal": 42]]), for: "fixture")
+        await cache.storePokemonBulkSetMatch(.init(secondarySetID: "secondary"), for: "fixture")
+        let directory = cacheRoot.appendingPathComponent("PokemonBulkPrices")
+        let file = try XCTUnwrap(FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil).first)
+        let date = Date.now.addingTimeInterval(-172800)
+        var envelope = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
+        envelope["storedAt"] = date.timeIntervalSinceReferenceDate
+        try JSONSerialization.data(withJSONObject: envelope).write(to: file)
+        let source = FailingSortBulkSource()
+        for _ in 0..<2 {
+            let catalog = BrowseCatalog(cache: cache,
+                pokemonTransport: PriceConsistencyTransport(set: fixture.set, card: fixture.card), pokemonPriceSource: source,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil))
+            var last: CatalogPriceUpdate?
+            for await update in catalog.sortPriceUpdates(for: [fixture.summary]) { last = update }
+            XCTAssertEqual(last?.prices[fixture.summary.id], 42)
+            XCTAssertTrue(last?.unresolvedIDs.contains(fixture.summary.id) == true)
+            let hints = await cache.sortPrices(for: fixture.summary.setID.id)
+            XCTAssertEqual(hints?.value[fixture.summary.id]?.checkedAt, date)
+        }
+        let calls = await source.calls
+        XCTAssertEqual(calls, 2)
+    }
+
+    @MainActor
+    func testOwnedPricesOverrideGridSortAndCounterInputsIncludingUnpricedEntries() throws {
+        let fixture = try priceConsistencyFixture()
+        let row = CollectedCard(card: .pokemon(fixture.card, setCode: "FIX"),
+            resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let owned = CatalogOwnershipIndex(rows: [CatalogOwnershipCardSnapshot(row, selectedPriceKey: row.priceKey,
+            selectedPrice: PriceDisplay(amount: 713, source: .justTCG, fetchedAt: .now))])
+        let displayed = OwnedCatalogPrice.displayPrices(for: [fixture.summary],
+            catalogPrices: [fixture.summary.id: 816], ownership: owned)
+        XCTAssertEqual(displayed[fixture.summary.id], 713)
+        XCTAssertEqual(displayed.count, 1)
+        let other = CatalogCardSummary(game: .pokemon, providerID: "fixture-002", setID: fixture.summary.setID,
+            setName: "Fixture", setCode: "FIX", name: "Other", collectorNumber: "002",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal)
+        let sortPrices = OwnedCatalogPrice.displayPrices(for: [fixture.summary, other],
+            catalogPrices: [fixture.summary.id: 816, other.id: 800], ownership: owned)
+        let sorted = CatalogSetQuery.apply([fixture.summary, other], search: "", sort: .priceHighToLow,
+            ownership: .all, owned: owned, prices: sortPrices)
+        XCTAssertEqual(sorted.map(\.id), [other.id, fixture.summary.id])
+        let unpriced = OwnedCatalogPrice.displayPrices(for: [fixture.summary],
+            catalogPrices: [fixture.summary.id: 816], ownership: CatalogOwnershipIndex([row]))
+        XCTAssertNil(unpriced[fixture.summary.id])
+        XCTAssertEqual(unpriced.count, 0)
+    }
+
+    private func priceConsistencyFixture(setID: String = "fixture") throws -> (set: TCGdexSetCatalog, card: TCGdexCard, summary: CatalogCardSummary) {
+        let set = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"\(setID)","name":"Fixture","cards":[{"id":"\(setID)-001","localId":"001","name":"Ordinary"}],"cardCount":{"total":1,"official":1}}
+        """)
+        let card = try decode(TCGdexCard.self, from: """
+        {"id":"\(setID)-001","localId":"001","name":"Ordinary","set":{"id":"\(setID)","name":"Fixture","cardCount":{"total":1,"official":1}},"variants":{"firstEdition":false,"normal":true,"holo":false,"reverse":false},"pricing":{"tcgplayer":{"normal":{"marketPrice":42}}}}
+        """)
+        let summary = CatalogCardSummary(game: .pokemon, providerID: card.id,
+            setID: CatalogSetID(game: .pokemon, providerID: setID), setName: "Fixture", setCode: "FIX",
+            name: card.name, collectorNumber: "001", thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal,
+            isSoleSlotForCard: true)
+        return (set, card, summary)
+    }
+
     @MainActor
     func testCompletedArtworkSurvivesDisappearAndReappear() async throws {
         let gate = DetailImageLoadGate()
@@ -1378,7 +1553,9 @@ final class BrowseFeatureTests: XCTestCase {
     func testSortPriceCacheRoundTripsAndReportsStaleOrderingHints() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
-        let prices = ["card-1": 12.50, "card-2": 1.25]
+        let date = Date.now
+        let prices = ["card-1": SortPriceHint(price: 12.50, checkedAt: date),
+                      "card-2": SortPriceHint(price: 1.25, checkedAt: date.addingTimeInterval(-172800))]
 
         let writer = CatalogCacheStore(root: root)
         await writer.storeSortPrices(prices, for: "sv08.5")
@@ -1387,6 +1564,8 @@ final class BrowseFeatureTests: XCTestCase {
         let saved = await reader.sortPrices(for: "sv08.5")
         XCTAssertEqual(saved?.value, prices)
         XCTAssertTrue(saved?.isFresh == true)
+        XCTAssertTrue(saved?.value["card-1"]?.isFresh() == true)
+        XCTAssertFalse(saved?.value["card-2"]?.isFresh() == true)
 
         let directory = root.appendingPathComponent("SortPrices", isDirectory: true)
         let files = try FileManager.default.contentsOfDirectory(
@@ -1530,7 +1709,7 @@ final class BrowseFeatureTests: XCTestCase {
             masterSetVariant: .holo,
             isSoleSlotForCard: true
         )
-        await cache.storeSortPrices([summary.id: 42], for: summary.setID.id)
+        await cache.storeSortPrices([summary.id: SortPriceHint(price: 42, checkedAt: .distantPast)], for: summary.setID.id)
         let sortPriceDirectory = root.appendingPathComponent("SortPrices", isDirectory: true)
         let sortPriceFile = try XCTUnwrap(FileManager.default.contentsOfDirectory(
             at: sortPriceDirectory, includingPropertiesForKeys: nil
@@ -1552,7 +1731,7 @@ final class BrowseFeatureTests: XCTestCase {
         let requestedPairs = await source.requestedPairs()
         XCTAssertTrue(requestedPairs.isEmpty)
         let persistedPrices = await cache.sortPrices(for: summary.setID.id)
-        XCTAssertEqual(persistedPrices?.value, [:])
+        XCTAssertEqual(persistedPrices?.value[summary.id], SortPriceHint(price: 42, checkedAt: .distantPast))
     }
 
     func testPokemonBulkPriceMapNeverBorrowsAnotherFinish() {
@@ -1879,8 +2058,8 @@ final class BrowseFeatureTests: XCTestCase {
         let pagesRoot = root.appendingPathComponent("pages")
         let priceCache = CatalogCacheStore(root: pagesRoot)
         await priceCache.storeSortPrices([
-            summaries[5].id: 77.0,
-            summaries[7].id: 88.0
+            summaries[5].id: SortPriceHint(price: 77, checkedAt: .distantPast),
+            summaries[7].id: SortPriceHint(price: 88, checkedAt: .distantPast)
         ], for: setID.id)
         let sortPriceDirectory = pagesRoot.appendingPathComponent(
             "SortPrices",
@@ -1915,7 +2094,8 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(latest.resolvedIDs.count, 6)
         XCTAssertEqual(latest.unresolvedIDs.count, 2)
         XCTAssertNil(latest.prices[summaries[5].id])
-        XCTAssertNil(latest.prices[summaries[7].id])
+        XCTAssertEqual(latest.prices[summaries[7].id], 88,
+            "A failed check retains its stale ordering hint without resolving the slot")
 
         let requestedSetIDs = await source.requestedSetIDs()
         XCTAssertEqual(requestedSetIDs, ["fixture"])
@@ -5521,8 +5701,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 
         for await _ in warmCatalog.sortPrices(for: [firstSlot, secondSlot]) {}
         let fullMap = await CatalogCacheStore(root: pagesRoot).sortPrices(for: set.catalogID.id)
-        XCTAssertEqual(fullMap?.value[firstSlot.id], 1.25)
-        XCTAssertEqual(fullMap?.value[secondSlot.id], 9.0)
+        XCTAssertEqual(fullMap?.value[firstSlot.id]?.price, 1.25)
+        XCTAssertEqual(fullMap?.value[secondSlot.id]?.price, 9.0)
         let warmCardRequests = await transport.requestCounts().card
 
         // A cold catalog sharing the same cache directory, asked for one slot.
@@ -5530,12 +5710,13 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         for await _ in coldCatalog.sortPrices(for: [firstSlot]) {}
 
         let mergedMap = await CatalogCacheStore(root: pagesRoot).sortPrices(for: set.catalogID.id)
-        XCTAssertEqual(mergedMap?.value[firstSlot.id], 1.25)
+        XCTAssertEqual(mergedMap?.value[firstSlot.id]?.price, 1.25)
         XCTAssertEqual(
-            mergedMap?.value[secondSlot.id],
+            mergedMap?.value[secondSlot.id]?.price,
             9.0,
             "The unrequested slot's ordering hint must survive a narrower request"
         )
+        XCTAssertEqual(mergedMap?.value[secondSlot.id]?.checkedAt, fullMap?.value[secondSlot.id]?.checkedAt)
         let coldCardRequests = await transport.requestCounts().card
         XCTAssertEqual(
             coldCardRequests,
@@ -8241,6 +8422,67 @@ private actor PagingBrowseCatalog: BrowseCatalogProviding {
     func prepareCatalog() async {}
 
     func requestedCursors() -> [String?] { cursors }
+}
+
+private actor SavedSortTCGCSVSource: PokemonTCGCSVPriceSource {
+    let saved: PokemonTCGCSVSnapshot
+    private(set) var calls = 0
+    init(snapshot: PokemonTCGCSVSnapshot) { saved = snapshot }
+    func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
+        calls += 1
+        return saved
+    }
+}
+
+private actor FailingSortBulkSource: PokemonBulkPriceSource {
+    private(set) var calls = 0
+    func fetchBulkPrices(tcgdexSetID: String, secondarySetID: String) async throws -> PokemonBulkPriceMap {
+        calls += 1
+        throw URLError(.notConnectedToInternet)
+    }
+}
+
+private actor PriceConsistencyTransport: PokemonBrowseTransport {
+    let set: TCGdexSetCatalog
+    let card: TCGdexCard
+    let suspends: Bool
+    private var fails = false
+    private(set) var flags: [Bool] = []
+    private var pending: [Int: CheckedContinuation<TCGdexCard, Error>] = [:]
+    private var waiters: [(Int, CheckedContinuation<Void, Never>)] = []
+    init(set: TCGdexSetCatalog, card: TCGdexCard, suspends: Bool = false) {
+        self.set = set
+        self.card = card
+        self.suspends = suspends
+    }
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] { [] }
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog { set }
+    func fetchCard(id: String) async throws -> TCGdexCard { try await fetchCard(id: id, ignoringCache: false) }
+    func fetchCard(id: String, ignoringCache: Bool) async throws -> TCGdexCard {
+        let index = flags.count
+        flags.append(ignoringCache)
+        if !suspends {
+            if fails { throw URLError(.notConnectedToInternet) }
+            return card
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            pending[index] = continuation
+            let ready = waiters.filter { $0.0 <= flags.count }
+            waiters.removeAll { $0.0 <= flags.count }
+            for (_, waiter) in ready { waiter.resume() }
+        }
+    }
+    func waitForRequests(_ count: Int) async {
+        if flags.count >= count { return }
+        await withCheckedContinuation { waiters.append((count, $0)) }
+    }
+    func finish(_ index: Int) {
+        guard let continuation = pending.removeValue(forKey: index) else { return }
+        let value = TCGdexCard(id: card.id, localId: card.localId, name: flags[index] ? "Forced" : "Ordinary",
+            image: nil, rarity: nil, set: card.set, variants: card.variants, pricing: card.pricing, variantsDetailed: nil)
+        continuation.resume(returning: value)
+    }
+    func setFailure() { fails = true }
 }
 
 private actor FakePokemonBrowseTransport: PokemonBrowseTransport {

@@ -2868,6 +2868,10 @@ struct CardMarketHistoryPanel: View {
         } ?? .flat
         VStack(alignment: .leading, spacing: 12) {
             Text("Market price history").font(.headline).padding(.horizontal, 16)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("JustTCG historical prices · Collection value uses the saved quote")
+                .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
+                .fixedSize(horizontal: false, vertical: true)
             if let selection, let sample = model.sample(at: selection) {
                 Text("\(sample.amount.formatted(currencyCode: "USD")) · \(sample.date.formatted(date: .abbreviated, time: .omitted))")
                     .font(.subheadline.monospacedDigit()).padding(.horizontal, 16)

@@ -47,6 +47,227 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testCatalogAddPreservesSelectedLegacyPriceBeforeAddingAnotherCopy() async throws {
+        let (container, context) = try makePriceContext()
+        let card = try pokemonCard()
+        let row = legacyOwnedRow(card)
+        context.insert(row)
+        let date = Date.now.addingTimeInterval(-172800)
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 713, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "saved", sourceUpdatedAt: date, fetchedAt: date)),
+            game: .pokemon, printingID: card.providerID, variantID: row.variantID, at: date))
+        XCTAssertTrue(prices.save())
+        let set = CatalogSet(catalogID: .init(game: .pokemon, providerID: "sv08.5"), name: card.setName,
+            code: card.setCode, logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let receipt = try await writer.addCatalog(.init(card: card, set: set),
+            resolved: .init(variant: .normal, resolution: .userConfirmed), pokemonPrintRun: nil, shouldContinue: { true })
+        XCTAssertTrue(receipt.priceSaved)
+        XCTAssertEqual(receipt.mutation.collectionKey, row.collectionKey)
+        let fresh = ModelContext(container)
+        let selected = try XCTUnwrap(try PriceStore(context: fresh).selectedRecord(for: row))
+        XCTAssertEqual(selected.key, row.resolvedCatalogPriceKey)
+        XCTAssertEqual(selected.effectiveUnitMarketPriceUSD, 713)
+        XCTAssertNil(PriceStore(context: fresh).record(forKey: row.priceKey))
+    }
+
+    @MainActor
+    func testOwnedCatalogReconciliationUsesSelectedAliasAndReturnsCollectionProjection() async throws {
+        for sourceOffset in [-86400.0, 86400.0] {
+            let (container, context) = try makePriceContext()
+            let card = try pokemonCard()
+            let row = legacyOwnedRow(card)
+            context.insert(row)
+            let savedAt = Date.now.addingTimeInterval(-172800)
+            let prices = PriceStore(context: context)
+            XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 713, currencyCode: "USD", source: .justTCG,
+                sourceVariantID: "saved", sourceUpdatedAt: savedAt, fetchedAt: savedAt)),
+                game: .pokemon, printingID: card.providerID, variantID: row.variantID, at: savedAt))
+            XCTAssertTrue(prices.save())
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let incoming = PriceLookup.price(.init(unitMarketPriceUSD: 816, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: savedAt.addingTimeInterval(sourceOffset), fetchedAt: .now))
+            let result = try await writer.reconcileOwnedPrice(incoming, collectionKey: row.collectionKey, shouldContinue: { true })
+            XCTAssertEqual(result.display.amount, sourceOffset < 0 ? 713 : 816)
+            XCTAssertEqual(result.selectedKey, sourceOffset < 0 ? row.resolvedCatalogPriceKey : row.priceKey)
+            XCTAssertEqual(result.retainedReason, sourceOffset < 0 ? .olderSourceDate(.tcgplayer, savedAt.addingTimeInterval(sourceOffset)) : nil)
+            XCTAssertGreaterThan(try XCTUnwrap(result.display.lastCheckedAt), savedAt)
+            let projection = await CollectionProjectionActor.makeBackground(modelContainer: container).snapshot()
+            XCTAssertEqual(projection.rows.first?.priceStorageKey, result.selectedKey)
+            XCTAssertEqual(projection.rows.first?.price, result.display)
+            let summary = CatalogCardSummary(game: .pokemon, providerID: card.providerID,
+                setID: CatalogSetID(game: .pokemon, providerID: "sv08.5"), setName: card.setName,
+                setCode: card.setCode, name: card.name, collectorNumber: card.cardNumber,
+                thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal)
+            let owned = OwnedCatalogPrice(rows: projection.ownership.matchingRows(for: summary))
+            XCTAssertEqual(owned.display, result.display)
+            if sourceOffset < 0 {
+                let fresh = ModelContext(container)
+                XCTAssertNil(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD)
+            }
+        }
+    }
+
+    @MainActor
+    func testOwnedAliasPromotionPreservesInvalidationAndStaleArrivalAtFreshCheckpoint() async throws {
+        for invalidated in [false, true] {
+            for checkpoint in [false, true] {
+                let (container, context) = try makePriceContext()
+                let card = try pokemonCard()
+                let row = legacyOwnedRow(card)
+                context.insert(row)
+                let receivedAt = Date.now.addingTimeInterval(-120)
+                let prices = PriceStore(context: context)
+                XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 713, currencyCode: "USD", source: .justTCG,
+                    sourceVariantID: "saved", sourceUpdatedAt: receivedAt, fetchedAt: receivedAt)),
+                    game: .pokemon, printingID: card.providerID, variantID: row.variantID, at: receivedAt))
+                XCTAssertTrue(prices.save())
+                let read = ModelContext(container)
+                let staged = PriceStore(context: read, index: PriceRefreshDataIndex(context: read), checkpointsInFreshContext: checkpoint)
+                let incoming = PriceLookup.price(.init(unitMarketPriceUSD: 816, currencyCode: "USD", source: .tcgplayer,
+                    sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: receivedAt.addingTimeInterval(-30)))
+                if checkpoint { XCTAssertTrue(staged.storeOwnedPrice(incoming, collectionKey: row.collectionKey)) }
+                if invalidated {
+                    XCTAssertNotNil(PriceObservationLog(context: context).recordInvalidation(
+                        instrumentKey: try XCTUnwrap(row.resolvedCatalogPriceKey), source: .justTCG,
+                        at: receivedAt.addingTimeInterval(30)))
+                    try context.save()
+                }
+                if !checkpoint {
+                    let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                    let result = try await writer.reconcileOwnedPrice(incoming, collectionKey: row.collectionKey, shouldContinue: { true })
+                    XCTAssertEqual(result.retainedReason, invalidated ? .invalidated : .laterReceipt)
+                } else { XCTAssertTrue(staged.save()) }
+                let fresh = ModelContext(container)
+                let store = PriceStore(context: fresh)
+                XCTAssertNil(store.record(forKey: row.priceKey))
+                let selected = try XCTUnwrap(try store.selectedRecord(for: row))
+                XCTAssertEqual(selected.key, row.resolvedCatalogPriceKey)
+                XCTAssertEqual(selected.effectiveUnitMarketPriceUSD, invalidated ? nil : 713)
+            }
+        }
+    }
+
+    @MainActor
+    func testOwnedRetentionDistinguishesMissingSourceDateAndKeepsUnavailableValue() async throws {
+        let (container, context) = try makePriceContext()
+        let card = try pokemonCard()
+        let row = legacyOwnedRow(card)
+        context.insert(row)
+        let date = Date.now.addingTimeInterval(-172800)
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 713, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "saved", sourceUpdatedAt: date, fetchedAt: date)),
+            game: .pokemon, printingID: card.providerID, variantID: row.variantID, at: date))
+        XCTAssertTrue(prices.save())
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let result = try await writer.reconcileOwnedPrice(.price(.init(unitMarketPriceUSD: 816, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "normal", sourceUpdatedAt: nil, fetchedAt: .now)),
+            collectionKey: row.collectionKey, shouldContinue: { true })
+        XCTAssertEqual(result.retainedReason, .missingSourceDate(.tcgplayer))
+        XCTAssertFalse(try XCTUnwrap(result.retainedReason).caption.contains("older"))
+        XCTAssertEqual(result.display.amount, 713)
+        let unavailable = try await writer.reconcileOwnedPrice(.unavailable(.tcgplayer), collectionKey: row.collectionKey, shouldContinue: { true })
+        XCTAssertEqual(unavailable.retainedReason, .unavailable)
+        XCTAssertEqual(unavailable.display.amount, 713)
+        XCTAssertEqual(unavailable.display.state(), .stale)
+    }
+
+    @MainActor
+    func testOwnedCatalogPriceKeepsDistinctEntriesAndUnpricedReviewState() throws {
+        let card = try pokemonCard()
+        let imported = legacyOwnedRow(card)
+        let native = CollectedCard(card: card, resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        let date = Date.now
+        let old = PriceDisplay(amount: 713, source: .justTCG, sourceUpdatedAt: date.addingTimeInterval(-172800), fetchedAt: date)
+        let new = PriceDisplay(amount: 816, source: .tcgplayer, sourceUpdatedAt: date, fetchedAt: date)
+        let owned = OwnedCatalogPrice(rows: [
+            CatalogOwnershipCardSnapshot(imported, selectedPriceKey: imported.priceKey, selectedPrice: old),
+            CatalogOwnershipCardSnapshot(native, selectedPriceKey: native.priceKey, selectedPrice: new)
+        ])
+        XCTAssertEqual(owned.entries.count, 2)
+        XCTAssertTrue(owned.entriesDisagree)
+        XCTAssertEqual(owned.display, new)
+        XCTAssertEqual(owned.reconcilableEntries(variant: .normal, treatmentIDs: []).count, 2)
+        XCTAssertTrue(owned.reconcilableEntries(variant: .holo, treatmentIDs: []).isEmpty,
+            "Matcher-only finish aliases must remain display-only")
+        imported.variantID = nil
+        XCTAssertTrue(OwnedCatalogPrice(rows: [CatalogOwnershipCardSnapshot(imported)])
+            .reconcilableEntries(variant: .normal, treatmentIDs: []).isEmpty)
+        let review = OwnedCatalogPrice(rows: [CatalogOwnershipCardSnapshot(imported)])
+        XCTAssertEqual(review.display, .unknown)
+        XCTAssertNil(review.display.amount)
+    }
+
+    @MainActor
+    func testOwnedProjectionWithholdsPhysicallyReviewedPrice() async throws {
+        let (container, context) = try makePriceContext()
+        let row = CollectedCard(collectionKey: "pokemon:swsh10.5-059:reverse", game: .pokemon,
+            providerID: "swsh10.5-059", name: "Synthetic review", setName: "Pokémon GO", setCode: "PGO",
+            cardNumber: "059", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .reverse, variantResolution: .userConfirmed)
+        context.insert(row)
+        XCTAssertTrue(PokemonReviewedPhysicalObjects.requiresReview(row))
+        let record = PriceRecord(key: row.priceKey, game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID)
+        record.unitMarketPriceUSD = 999
+        record.sourceRaw = PriceSource.tcgplayer.rawValue
+        record.fetchedAt = .now
+        context.insert(record)
+        try context.save()
+        let projection = await CollectionProjectionActor.makeBackground(modelContainer: container).snapshot()
+        XCTAssertEqual(projection.rows.first?.price, .unknown)
+        let summary = CatalogCardSummary(game: .pokemon, providerID: row.providerID,
+            setID: .init(game: .pokemon, providerID: "swsh10.5"), setName: row.setName, setCode: row.setCode,
+            name: row.name, collectorNumber: row.cardNumber, thumbnailURL: nil, imageURL: nil,
+            masterSetVariant: .reverse, isSoleSlotForCard: true)
+        let owned = OwnedCatalogPrice(rows: projection.ownership.matchingRows(for: summary))
+        XCTAssertEqual(owned.entries.count, 1)
+        XCTAssertEqual(owned.display, .unknown)
+    }
+
+    private func legacyOwnedRow(_ card: IdentifiedCard) -> CollectedCard {
+        let row = CollectedCard(collectionKey: "pokemon:csv:legacy:normal", game: .pokemon,
+            providerID: "csv:legacy", name: card.name, setName: card.setName, setCode: card.setCode,
+            cardNumber: card.cardNumber, rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .normal, variantResolution: .userConfirmed)
+        row.catalogProviderID = card.providerID
+        return row
+    }
+
+    @MainActor
+    func testCollectionRefreshCannotReplaceSelectedLegacyPriceWithOlderCatalogData() async throws {
+        let (container, context) = try makePriceContext()
+        let card = try pokemonCard()
+        let row = CollectedCard(collectionKey: "pokemon:csv:legacy:normal", game: .pokemon,
+            providerID: "csv:legacy", name: card.name, setName: card.setName, setCode: card.setCode,
+            cardNumber: card.cardNumber, rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .normal, variantResolution: .userConfirmed)
+        row.catalogProviderID = card.providerID
+        context.insert(row)
+        let retrievedAt = Date.now.addingTimeInterval(-2 * 24 * 60 * 60)
+        let store = PriceStore(context: context)
+        XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 713, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "saved", sourceUpdatedAt: retrievedAt, fetchedAt: retrievedAt)),
+            game: .pokemon, printingID: card.providerID, variantID: row.variantID, at: retrievedAt))
+        XCTAssertTrue(store.save())
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setPokemonFetchOverrideForTesting { _ in card }
+        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false, gradedOnly: false), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(result) = outcome else { return XCTFail("Expected completed refresh") }
+        XCTAssertFalse(result.persistenceFailed)
+        let fresh = ModelContext(container)
+        let records = try fresh.fetch(FetchDescriptor<PriceRecord>())
+        let selected = try XCTUnwrap(PriceStore.record(for: row, in: Dictionary(uniqueKeysWithValues: records.map { ($0.key, $0) })))
+        XCTAssertEqual(selected.key, row.resolvedCatalogPriceKey)
+        XCTAssertEqual(selected.effectiveUnitMarketPriceUSD, 713)
+        XCTAssertGreaterThan(try XCTUnwrap(selected.lastCheckedAt), retrievedAt)
+        XCTAssertNil(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD)
+    }
+
+    @MainActor
     func testExpiryRejectsOlderSaleOrUpdateUsingOnlyMatchingClockFields() throws {
         let now = Date.now
         let sale = now.addingTimeInterval(-1000)
@@ -1904,7 +2125,7 @@ final class PricingTests: XCTestCase {
             #"{"tcgplayer":{"unit":"USD","normal":{"marketPrice":-1}}}"#)
         XCTAssertEqual(CardPricing.price(for: card, variant: .normal, magicTreatments: []), .unavailable(.tcgplayer))
         for amount in [Double.nan, .infinity, -1] {
-            XCTAssertNil(CatalogSortPriceResolution.cachedPrice(amount))
+            XCTAssertNil(CatalogSortPriceResolution.cachedPrice(amount, asOf: .distantPast))
             let lookup = PriceLookup.price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgplayer,
                 sourceVariantID: "normal", sourceUpdatedAt: nil, fetchedAt: .now))
             XCTAssertTrue(PriceFallbackQuoteResolver.needsFallback(lookup))
@@ -2167,19 +2388,19 @@ final class PricingTests: XCTestCase {
         let priced = CardPricing.price(
             for: try pokemonCard(),
             variant: .reverse,
-            magicTreatments: []
+            magicTreatments: [], at: .distantPast
         )
         XCTAssertEqual(
             CatalogSortPriceResolution.exactLookup(priced),
-            .priced(3.75)
+            .priced(3.75, asOf: .distantPast)
         )
     }
 
     func testCachedNilPriceDoesNotResolveSlot() {
-        XCTAssertNil(CatalogSortPriceResolution.cachedPrice(nil))
+        XCTAssertNil(CatalogSortPriceResolution.cachedPrice(nil, asOf: .distantPast))
         XCTAssertEqual(
-            CatalogSortPriceResolution.cachedPrice(2.5),
-            .priced(2.5)
+            CatalogSortPriceResolution.cachedPrice(2.5, asOf: .distantPast),
+            .priced(2.5, asOf: .distantPast)
         )
     }
 
@@ -2204,10 +2425,10 @@ final class PricingTests: XCTestCase {
                 CardPricing.price(
                     for: try pokemonCard(),
                     variant: .normal,
-                    magicTreatments: []
+                    magicTreatments: [], at: .distantPast
                 )
             ]),
-            .priced(0.42)
+            .priced(0.42, asOf: .distantPast)
         )
     }
 

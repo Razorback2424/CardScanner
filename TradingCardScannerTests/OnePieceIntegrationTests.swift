@@ -1355,7 +1355,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == "fixture-release-0" })
         let page = try await catalog.cards(in: set, cursor: nil)
         let summary = try XCTUnwrap(page.items.first)
-        await cache.storeSortPrices([summary.id: 999], for: set.id)
+        await cache.storeSortPrices([summary.id: SortPriceHint(price: 999, checkedAt: .now)], for: set.id)
         var prices: [String: Double] = [:]
         for await update in catalog.sortPriceUpdates(for: [summary]) { prices = update.prices }
         XCTAssertEqual(prices[summary.id], 8.16)

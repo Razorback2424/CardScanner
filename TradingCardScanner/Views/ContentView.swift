@@ -85,7 +85,7 @@ struct ContentView: View {
         #endif
         let initialTab: Tab
         switch debugRoute {
-        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4": initialTab = .collection
+        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4", "OwnedPriceReview": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
         case "Pro", "ListingPhotos", "Centering", "CenteringStart", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation", "CenteringPrecision": initialTab = .pro
@@ -209,7 +209,11 @@ struct ContentView: View {
                     .background(Color(.systemBackground))
             }
 #endif
-            if debugRoute == "MagicTreatmentSlice4" {
+            if debugRoute == "OwnedPriceReview" {
+                OwnedPriceReviewView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(uiColor: .systemBackground))
+            } else if debugRoute == "MagicTreatmentSlice4" {
                 MagicTreatmentSlice4DebugView()
                     .environmentObject(projectionStore)
                     .environmentObject(setCompletionStore)

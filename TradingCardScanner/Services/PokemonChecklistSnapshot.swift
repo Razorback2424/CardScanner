@@ -674,6 +674,13 @@ protocol PokemonBrowseTransport: Sendable {
     func fetchSetDirectory() async throws -> [TCGdexBrowseSet]
     func fetchSet(id: String) async throws -> TCGdexSetCatalog
     func fetchCard(id: String) async throws -> TCGdexCard
+    func fetchCard(id: String, ignoringCache: Bool) async throws -> TCGdexCard
+}
+
+extension PokemonBrowseTransport {
+    func fetchCard(id: String, ignoringCache: Bool) async throws -> TCGdexCard {
+        try await fetchCard(id: id)
+    }
 }
 
 struct TCGdexBrowseTransport: PokemonBrowseTransport, Sendable {
@@ -698,6 +705,10 @@ struct TCGdexBrowseTransport: PokemonBrowseTransport, Sendable {
 
     func fetchCard(id: String) async throws -> TCGdexCard {
         try await service.fetchCard(id: id)
+    }
+
+    func fetchCard(id: String, ignoringCache: Bool) async throws -> TCGdexCard {
+        try await service.fetchCard(id: id, ignoringCache: ignoringCache)
     }
 }
 

@@ -2090,7 +2090,12 @@ struct CatalogSetCardsView: View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         presentation.update(.init(setID: set.catalogID, contentGeneration: contentGeneration,
             cards: cards, search: search, sort: sort, ownership: ownership,
-            ownershipRevision: projectionStore.revision, tier: masterSetTier, prices: prices), owned: owned)
+            ownershipRevision: projectionStore.revision, tier: masterSetTier, prices: displayPrices), owned: owned)
+    }
+
+    private var displayPrices: [String: Double] {
+        OwnedCatalogPrice.displayPrices(for: cards, catalogPrices: prices,
+            ownership: projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
     }
 
     private var masterSetSlots: [CatalogCardSummary] {
@@ -2146,7 +2151,7 @@ struct CatalogSetCardsView: View {
                             groups: visibleGroups,
                             catalog: catalog,
                             owned: owned,
-                            prices: prices
+                            prices: displayPrices
                         )
                             .padding(12)
                             .contentWidthLimit(.wide)
@@ -2284,8 +2289,9 @@ struct CatalogSetCardsView: View {
     }
 
     private var pricedSlotCount: Int {
-        masterSetSlots.reduce(0) { count, card in
-            count + (prices[card.id] == nil ? 0 : 1)
+        let displayed = displayPrices
+        return masterSetSlots.reduce(0) { count, card in
+            count + (displayed[card.id] == nil ? 0 : 1)
         }
     }
 

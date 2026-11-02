@@ -994,7 +994,9 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         var last: CatalogPriceUpdate?
         for await update in catalog.sortPriceUpdates(for: [summary]) { last = update }
         XCTAssertNotNil(last?.prices[summary.id])
-        XCTAssertTrue(last?.resolvedIDs.contains(summary.id) == true)
+        XCTAssertFalse(last?.resolvedIDs.contains(summary.id) == true)
+        XCTAssertTrue(last?.unresolvedIDs.contains(summary.id) == true,
+            "The saved fixture's original retrieval date must not become fresh on load")
     }
 
     func testLegacyChecklistNormalSlotBecomesHoloWithoutChangingIdentity() {

@@ -50,14 +50,14 @@ enum PriceLookup: Equatable, Sendable {
 /// Missing source evidence stays unresolved so the UI can offer a retry instead
 /// of claiming that no USD quote exists.
 enum CatalogSortPriceResolution: Equatable, Sendable {
-    case priced(Double)
+    case priced(Double, asOf: Date)
     case noUSDQuote
     case unresolved
     case mappingMissing
 
-    static func cachedPrice(_ value: Double?) -> Self? {
+    static func cachedPrice(_ value: Double?, asOf: Date) -> Self? {
         guard let value, PortfolioPriceEligibility.eligibleUnitPrice(amount: value, currencyCode: "USD") != nil else { return nil }
-        return .priced(value)
+        return .priced(value, asOf: asOf)
     }
 
     static func exactLookup(_ lookup: PriceLookup) -> Self {
@@ -66,7 +66,7 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
             guard price.isUsableUSD else {
                 return .noUSDQuote
             }
-            return .priced(price.unitMarketPriceUSD)
+            return .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt)
         case let .unavailable(source):
             return source == nil ? .unresolved : .noUSDQuote
         }
@@ -78,11 +78,11 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
     static func aggregate(_ lookups: [PriceLookup]) -> Self {
         guard !lookups.isEmpty else { return .unresolved }
         let results = lookups.map(exactLookup)
-        let prices = results.compactMap { result -> Double? in
-            guard case let .priced(value) = result else { return nil }
-            return value
+        let prices = results.compactMap { result -> (Double, Date)? in
+            guard case let .priced(value, date) = result else { return nil }
+            return (value, date)
         }
-        if let highest = prices.max() { return .priced(highest) }
+        if let highest = prices.max(by: { $0.0 < $1.0 }) { return .priced(highest.0, asOf: highest.1) }
         if results.contains(.unresolved) { return .unresolved }
         if results.contains(.mappingMissing) { return .mappingMissing }
         return .noUSDQuote

@@ -45,24 +45,36 @@ struct CatalogCardDetailView: View {
     @State private var mappedPriceCheckFinished = false
     @State private var failedPriceVariantIDs: Set<String> = []
     @State private var priceRetryID = 0
+    @State private var ownedPriceChecks: [String: OwnedPriceRetentionReason] = [:]
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
     private let marketTransport = JustTCGTransport.shared
 
     var body: some View {
-        ScrollView {
-            if let details { content(details) }
-            else if isLoading { ProgressView().padding(.top, 100) }
-            else if let error {
-                ContentUnavailableView("Couldn't load this card", systemImage: error.icon, description: Text(error.message))
-                if let action = error.action {
-                    Button(action) {
-                        Task {
-                            if error == .catalog { await catalog.refreshCatalogNow() }
-                            await load()
-                        }
-                    }.buttonStyle(.borderedProminent)
+        ScrollViewReader { proxy in
+            ScrollView {
+                if let details { content(details) }
+                else if isLoading {
+                    initialOwnedPriceSection
+                    ProgressView().padding(.top, 40)
                 }
+                else if let error {
+                    initialOwnedPriceSection
+                    ContentUnavailableView("Couldn't load this card", systemImage: error.icon, description: Text(error.message))
+                    if let action = error.action {
+                        Button(action) {
+                            Task {
+                                if error == .catalog { await catalog.refreshCatalogNow() }
+                                await load()
+                            }
+                        }.buttonStyle(.borderedProminent)
+                    }
+                }
+            }
+            .onChange(of: details?.card.id) { _, _ in
+#if DEBUG
+                if OwnedPriceReviewView.isActive { proxy.scrollTo("catalog-market-prices", anchor: .top) }
+#endif
             }
         }
         .navigationTitle("Card")
@@ -257,8 +269,15 @@ struct CatalogCardDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Owned").font(.headline)
                 ForEach(rows) { row in
-                    LabeledContent(row.ownedDisplayLabel, value: "\(row.quantity)")
-                        .accessibilityLabel("\(row.ownedDisplayLabel), \(row.quantity) owned")
+                    VStack(alignment: .leading, spacing: 3) {
+                        LabeledContent(row.ownedDisplayLabel, value: "\(row.quantity)")
+                        if OwnedCatalogPrice(rows: rows).entriesDisagree, row.itemKind == .rawCard {
+                            Text("\(row.providerID.hasPrefix("csv:") ? "Imported entry" : "Collection entry") · \(row.selectedPrice.amount.map { $0.formatted(.currency(code: "USD")) } ?? "Not priced yet")")
+                                .font(.subheadline)
+                            priceAttribution(row.selectedPrice)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
                 }
             }
             .padding(14)
@@ -267,81 +286,101 @@ struct CatalogCardDetailView: View {
         }
     }
 
-    @ViewBuilder private func priceSection(_ card: IdentifiedCard) -> some View {
-        if let service = runtimes?.makePriceQuoteService(), service.supportsStoredPrintingRefresh(for: card.game) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Published market prices").font(.headline)
-                ForEach(card.variantEvidence.catalogVariants) { variant in
-                    LabeledContent(variant.label) {
-                        if case let .price(price) = mappedPrices[variant.id] {
-                            VStack(alignment: .trailing) {
-                                Text(price.unitMarketPriceUSD.formatted(.currency(code: "USD")))
-                                Text(price.fetchedAt.formatted(date: .abbreviated, time: .omitted))
-                                    .font(.caption).foregroundStyle(.secondary)
-                            }
-                        } else if !mappedPriceCheckFinished { ProgressView() }
-                        else if failedPriceVariantIDs.contains(variant.id) {
-                            Text("Couldn't check price").foregroundStyle(.secondary)
-                        } else if mappedPrices[variant.id] == .unavailable(nil) {
-                            Text("No price yet").foregroundStyle(.secondary)
-                        } else { Text("No USD price").foregroundStyle(.secondary) }
-                    }
-                }
-                Text("TCGplayer via TCGCSV · aggregate market price")
-                    .font(.caption).foregroundStyle(.secondary)
-                priceRetryButton
-            }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-        } else {
-        let rows = CardPricing.publishedPrices(for: card,
-                                              pokemonPrintRun: summary.pokemonPrintRun,
-                                              at: details?.retrievedAt ?? .now)
-        if !rows.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Published market prices").font(.headline)
-                if let details {
-                    Text("Retrieved \(details.retrievedAt.formatted(date: .abbreviated, time: .shortened))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                ForEach(rows) { price in
-                    if let variantID = price.variantID, case let .price(quote) = mappedPrices[variantID], quote.currencyCode == "USD" {
-                        VStack(alignment: .leading, spacing: 3) {
-                            LabeledContent(price.label, value: quote.unitMarketPriceUSD.formatted(.currency(code: "USD")))
-                            Text("\(quote.source.label) · retrieved \(quote.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
-                                .font(.caption).foregroundStyle(.secondary)
-                        }
-                    } else if let variantID = price.variantID, mappedPrices[variantID] != nil {
-                        LabeledContent(price.label) {
-                            Text("No USD price").foregroundStyle(.secondary)
-                        }
-                    } else {
-                        switch price.availability {
-                        case let .published(amount):
-                            LabeledContent(price.label, value: amount.formatted(.currency(code: "USD")))
-                        case .noUSDQuote:
-                            LabeledContent(price.label) {
-                                if !mappedPriceCheckFinished { ProgressView() }
-                                else {
-                                    Text(failedPriceVariantIDs.contains(price.variantID ?? "") ? "Couldn't check price" : "No USD price")
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                    }
-                }
-                priceRetryButton
-            }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-        } else if let printRun = summary.pokemonPrintRun {
-            Text("No published USD price for \(printRun.label).")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+    private var ownership: CatalogOwnershipIndex {
+        projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
+    }
+
+    private func ownedPrice(for variant: PhysicalVariant) -> OwnedCatalogPrice {
+        var slot = summary
+        slot.masterSetVariant = variant
+        return OwnedCatalogPrice(rows: ownership.matchingRows(for: slot))
+    }
+
+    private func priceVariants(_ card: IdentifiedCard) -> [PhysicalVariant] {
+        if summary.pokemonPrintRun == .firstEdition { return [.firstEdition] }
+        var variants = summary.pokemonPrintRun == nil ? card.variantEvidence.catalogVariants
+            : card.variantEvidence.excludingFirstEditionPseudoFinish().catalogVariants
+        if let required = summary.masterSetVariant, !variants.contains(where: { $0.id == required.id }) {
+            variants.append(required)
         }
+        return variants
+    }
+
+    @ViewBuilder private var initialOwnedPriceSection: some View {
+        let owned = OwnedCatalogPrice(rows: ownership.matchingRows(for: summary))
+        if !owned.entries.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Saved market price").font(.headline)
+                priceValue(owned.display)
+                priceAttribution(owned.display)
+                if error != nil { Text("Couldn't check for a newer price just now").font(.caption) }
+            }
+            .padding(20)
+        }
+    }
+
+    private func priceSection(_ card: IdentifiedCard) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Market prices").font(.headline)
+            ForEach(priceVariants(card)) { variant in
+                variantPriceRow(variant)
+            }
+            priceRetryButton
+        }
+        .id("catalog-market-prices")
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private func variantPriceRow(_ variant: PhysicalVariant) -> some View {
+        let owned = ownedPrice(for: variant)
+        return VStack(alignment: .leading, spacing: 3) {
+            if !owned.entries.isEmpty {
+                LabeledContent(variant.label) { priceValue(owned.display) }
+                priceAttribution(owned.display)
+                if failedPriceVariantIDs.contains(variant.id) {
+                    Text("Couldn't check for a newer price just now").font(.caption).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    ForEach(Array(Set(owned.entries.compactMap { ownedPriceChecks[$0.collectionKey]?.caption })).sorted(), id: \.self) {
+                        Text($0).font(.caption).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            } else if case let .price(quote) = mappedPrices[variant.id] {
+                let display = PriceDisplay(quote)
+                LabeledContent(variant.label) { priceValue(display) }
+                priceAttribution(display)
+            } else {
+                LabeledContent(variant.label) {
+                    if !mappedPriceCheckFinished { ProgressView() }
+                    else {
+                        Text(failedPriceVariantIDs.contains(variant.id) ? "Couldn't check price"
+                            : (mappedPrices[variant.id] == .unavailable(nil) ? "No price yet" : "No USD price"))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder private func priceValue(_ display: PriceDisplay) -> some View {
+        if let amount = display.amount {
+            VStack(alignment: .trailing, spacing: 3) {
+                Text(amount.formatted(.currency(code: "USD")))
+                if display.state() == .stale { Text("Stale price").font(.caption).foregroundStyle(.secondary) }
+            }
+        } else {
+            Text(display.state() == .unavailable ? "No USD price" : "Not priced yet").foregroundStyle(.secondary)
+        }
+    }
+
+    private func priceAttribution(_ display: PriceDisplay) -> some View {
+        ForEach(display.detailAttribution, id: \.self) {
+            Text($0).font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -352,14 +391,30 @@ struct CatalogCardDetailView: View {
         mappedPriceCheckFinished = false
         failedPriceVariantIDs = []
         let retryID = priceRetryID
-        for variant in card.variantEvidence.catalogVariants {
+        let generation = CollectionStorageGeneration.shared
+        let token = generation.currentToken()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
+        for variant in priceVariants(card) {
             do {
                 let quote = try await catalog.price(for: summary, variant: variant)
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
                 mappedPrices[variant.id] = quote
+                let treatments = MagicTreatmentKeyCodec.storedIDs(from: card.magicTreatments(for: variant))
+                if let token {
+                    for entry in ownedPrice(for: variant).reconcilableEntries(variant: variant, treatmentIDs: treatments) {
+                        let result = try await CollectionExclusiveWrites.retryingIfRequired {
+                            try await writer.reconcileOwnedPrice(quote, collectionKey: entry.collectionKey,
+                                shouldContinue: generation.continuation(for: token))
+                        }
+                        guard !Task.isCancelled, generation.isCurrent(token), priceRetryID == retryID else { return }
+                        ownedPriceChecks[entry.collectionKey] = result.retainedReason
+                    }
+                    await projectionStore.rebuild(container: modelContext.container)
+                }
             } catch PriceQuoteError.mappingUnavailable {
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
                 mappedPrices[variant.id] = .unavailable(nil)
+                for entry in ownedPrice(for: variant).entries { ownedPriceChecks[entry.collectionKey] = .unavailable }
             } catch {
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
                 failedPriceVariantIDs.insert(variant.id)
@@ -369,7 +424,7 @@ struct CatalogCardDetailView: View {
     }
 
     @ViewBuilder private var priceRetryButton: some View {
-        if mappedPriceCheckFinished && (!failedPriceVariantIDs.isEmpty
+        if mappedPriceCheckFinished && (!failedPriceVariantIDs.isEmpty || !ownedPriceChecks.isEmpty
             || mappedPrices.values.contains(where: { if case let .unavailable(source) = $0 { return source != nil }; return false })) {
             Button("Retry prices") {
                 mappedPriceCheckFinished = false
@@ -456,6 +511,7 @@ struct CatalogCardDetailView: View {
                 }
                 queueFallbackPrice(for: details.card, variant: resolved.variant, pokemonPrintRun: printRun,
                     printingID: receipt.storageID, catalogLookup: receipt.catalogLookup,
+                    collectionKey: receipt.mutation.collectionKey,
                     writer: writer, shouldContinue: shouldContinue)
                 pendingMutation = receipt.mutation
                 undoTask?.cancel()
@@ -478,6 +534,7 @@ struct CatalogCardDetailView: View {
         pokemonPrintRun: PokemonPrintRun?,
         printingID: String,
         catalogLookup: PriceLookup,
+        collectionKey: String,
         writer: ScannerCollectionWriter,
         shouldContinue: @escaping StorageGenerationContinuation
     ) {
@@ -489,7 +546,7 @@ struct CatalogCardDetailView: View {
                 guard let quote = try? await service.refresh(card: card, variant: variant, pokemonPrintRun: nil),
                       !Task.isCancelled else { return }
                 _ = try? await writer.storeCatalogPrice(quote, game: card.game, printingID: printingID,
-                    variantID: variant?.id, shouldContinue: shouldContinue)
+                    variantID: variant?.id, collectionKey: collectionKey, shouldContinue: shouldContinue)
             }
             return
         }
@@ -537,6 +594,7 @@ struct CatalogCardDetailView: View {
                     variantID: variant?.id,
                     treatments: treatmentIDs,
                     marketVariantID: marketVariantID,
+                    collectionKey: collectionKey,
                     shouldContinue: shouldContinue
                 )
             case .failed:
@@ -602,7 +660,9 @@ struct CatalogCardDetailView: View {
         error = nil
         defer { isLoading = false }
         do {
-            details = try await catalog.details(for: summary)
+            let needsRefresh = OwnedCatalogPrice(rows: ownership.matchingRows(for: summary)).entries
+                .contains { $0.selectedPrice.state() == .stale }
+            details = try await catalog.details(for: summary, refreshingPrices: needsRefresh || priceRetryID > 0)
         }
         catch is CancellationError { return }
         catch { self.error = CatalogFailurePresentation(error: error) }
@@ -610,6 +670,130 @@ struct CatalogCardDetailView: View {
 }
 
 #if DEBUG
+/// In-memory fixtures for repeatable screenshots of the production surfaces.
+/// The catalog quote intentionally disagrees with the initial saved valuation.
+struct OwnedPriceReviewView: View {
+    @StateObject private var projection = CollectionProjectionStore()
+    @StateObject private var completions = CatalogSetCompletionStore()
+    @StateObject private var history = PortfolioHistoryStore()
+    @State private var fixture: OwnedPriceReviewFixture?
+    @State private var failure: String?
+
+    static var isActive: Bool { argument("-ui_debug_route") == "OwnedPriceReview" }
+    private static func argument(_ key: String) -> String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: key), args.indices.contains(index + 1) else { return nil }
+        return args[index + 1]
+    }
+
+    var body: some View {
+        NavigationStack {
+            if let fixture, let snapshot = projection.snapshot {
+                if fixture.state.contains("collection") {
+                    CollectionCardDetailView(card: fixture.row, price: snapshot.rows.first?.price ?? .unknown,
+                        history: history, unpricedReason: nil, artworkReason: nil,
+                        instrumentKey: snapshot.rows.first?.priceStorageKey,
+                        onRemoved: { _ in })
+                        .modelContainer(fixture.container)
+                } else if fixture.state.contains("grid") {
+                    CatalogSetCardsView(set: fixture.details.set, catalog: fixture.catalog)
+                        .modelContainer(fixture.container)
+                } else {
+                    CatalogCardDetailView(summary: fixture.summary, catalog: fixture.catalog)
+                        .modelContainer(fixture.container)
+                }
+            } else if let failure { Text(failure) }
+            else { ProgressView() }
+        }
+        .environmentObject(projection)
+        .environmentObject(completions)
+        .environment(\.cardGameRuntimes, nil)
+        .environment(\.sharedBrowseCatalog, nil)
+        .task {
+            guard fixture == nil else { return }
+            do {
+                let loaded = try OwnedPriceReviewFixture(state: Self.argument("-ui_debug_state") ?? "native-newer-catalog")
+                if !loaded.state.contains("catalog") {
+                    let writer = await ScannerCollectionWriter.makeBackground(modelContainer: loaded.container)
+                    _ = try await writer.reconcileOwnedPrice(loaded.quote, collectionKey: loaded.row.collectionKey, shouldContinue: { true })
+                }
+                await projection.rebuild(container: loaded.container)
+                fixture = loaded
+            } catch { failure = error.localizedDescription }
+        }
+    }
+}
+
+@MainActor
+private struct OwnedPriceReviewFixture {
+    let state: String
+    let container: ModelContainer
+    let row: CollectedCard
+    let summary: CatalogCardSummary
+    let details: CatalogCardDetails
+    let quote: PriceLookup
+    let catalog: OwnedPriceReviewCatalog
+
+    init(state: String) throws {
+        self.state = state
+        container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+        {"id":"fixture-001","localId":"001","name":"Price consistency fixture",
+         "set":{"id":"fixture","name":"Pricing review","cardCount":{"total":1,"official":1}},
+         "variants":{"firstEdition":false,"normal":false,"holo":true,"reverse":false}}
+        """#.utf8))
+        let identified = IdentifiedCard.pokemon(card, setCode: "FIX")
+        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "fixture"),
+            name: "Pricing review", code: "FIX", logoURL: nil, symbolURL: nil,
+            cardCount: 1, releaseDate: nil, sortRank: 0)
+        summary = CatalogCardSummary(game: .pokemon, providerID: card.id, setID: set.catalogID,
+            setName: set.name, setCode: "FIX", name: card.name, collectorNumber: "001", thumbnailURL: nil,
+            imageURL: nil, masterSetVariant: .holo, isSoleSlotForCard: true)
+        details = CatalogCardDetails(card: identified, set: set)
+        let legacy = state.contains("legacy")
+        row = CollectedCard(collectionKey: legacy ? "pokemon:csv:fixture:holo" : "pokemon:fixture-001:holo",
+            game: .pokemon, providerID: legacy ? "csv:fixture" : card.id, name: card.name, setName: set.name,
+            setCode: "FIX", cardNumber: "001", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .holo, variantResolution: .userConfirmed)
+        row.catalogProviderID = card.id
+        container.mainContext.insert(row)
+        let date = Date(timeIntervalSince1970: 1_793_469_600) // 2026-10-31 18:00 UTC
+        let prices = PriceStore(context: container.mainContext)
+        _ = prices.store(.price(.init(unitMarketPriceUSD: 713.30, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "saved", sourceUpdatedAt: date, fetchedAt: date)), game: .pokemon,
+            printingID: card.id, variantID: "holo", at: date)
+        guard prices.save() else { throw PriceStore.CheckpointWriteError() }
+        quote = state.contains("unavailable") ? .unavailable(.tcgplayer) : .price(.init(unitMarketPriceUSD: 816.38,
+            currencyCode: "USD", source: .tcgplayer, sourceVariantID: "holofoil",
+            sourceUpdatedAt: state.contains("undated") ? nil : date.addingTimeInterval(state.contains("newer") ? -86400 : 169200),
+            fetchedAt: .now))
+        catalog = OwnedPriceReviewCatalog(summary: summary, details: details, quote: quote, fails: state.contains("failure"))
+    }
+}
+
+private struct OwnedPriceReviewCatalog: BrowseCatalogProviding {
+    let summary: CatalogCardSummary
+    let details: CatalogCardDetails
+    let quote: PriceLookup
+    let fails: Bool
+    func sets(for game: CardGame) async throws -> [CatalogSet] { [details.set] }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        CatalogPage(items: [summary], nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        CatalogPage(items: [summary], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { details }
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
+        if fails { throw URLError(.notConnectedToInternet) }
+        return quote
+    }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.yield([summary.id: 816.38]); $0.finish() }
+    }
+}
+
 private enum MagicTreatmentSlice4Fixture {
     static let card: ScryfallCard = {
         let json = """

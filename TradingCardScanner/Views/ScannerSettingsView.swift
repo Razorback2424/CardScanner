@@ -343,6 +343,11 @@ private struct SettingsContentView: View {
                 }
                 .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
+                Button("Export Price Evidence for All Cards", systemImage: "clock.badge.checkmark") {
+                    prepareCSVExport(.priceEvidence, filename: "ScanStash Price Evidence")
+                }
+                .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
+
                 Button("Export Missing Artwork", systemImage: "photo") {
                     prepareCSVExport(.missingArtwork, filename: "ScanStash Missing Artwork")
                 }
