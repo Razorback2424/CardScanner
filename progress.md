@@ -1,3 +1,12 @@
+# 2026-11-02 — Preserve short-title scope and execute historical capture in CI
+
+The reviewed/fetched head is `b1a635611352564a08de43e171adea6d6fd0e276`.
+The N/AZ parser/matcher/catalog changes are preserved without speculative OCR
+changes. Added `HistoricalTitleCaptureTests` to the existing parser/catalog CI
+selection. Separate draft PR preparation is authorized; native and exact-head
+CI evidence are pending the validation pass. Physical OCR ambiguity remains an
+unproven risk, not a new defect claim.
+
 # 2026-11-01 — Make short Pokémon titles (N, AZ) scannable
 
 Follow-up coverage sweep (no provider network, no Swift toolchain in the
