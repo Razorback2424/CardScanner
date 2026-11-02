@@ -1,12 +1,37 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-01
+**Audit date:** 2026-10-02; review evidence updated 2026-11-02
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-01
+## Current authority boundary — updated 2026-11-02
+
+**Centering Done event ownership — 2026-11-02:** the
+[centering repair ledger](../audits/centering-guided-repair.md#explicit-done-boundary-repair--2026-11-02)
+supersedes PR #19's earlier queued/no-execution statement. Run 41384336534 at
+`4727926` failed the rapid-refocus method in the native class, affected suites
+and combined selection; its combined method totals are 1,500 passed, one
+failed and two skipped. A focused untouched-Done failure also remains visible.
+This demonstrates a production event-sequencing defect, without attributing
+every historical French timeout to that cause. The first repaired head
+`ecb4d6a` passes all nine sequencing methods and completes the combined XCTest
+selection with 1,508 passed / 2 skipped, but its workflow is not green: two
+focused readiness deadlines fail, one affected-method log line is interleaved,
+new removal-time publication warnings appear, and cancellation prevents native
+artifact retention. The ledger preserves these failures and the bounded
+production, timing and evidence corrections. Exact current-head validation is
+recorded in PR #19 and its Actions manifests; PR #19 remains draft and unmerged.
+The later `7d15be1` run also failed: queued-removal assertions and runtime
+aborts prevent a completion claim, including a stdout/result-bundle conflict.
+The ledger's local removal-race follow-up now records SwiftUI-owned removal,
+held real completion, delivery-time validity and per-completion guards, with
+15 focused passes, 46 native passes / 1 skip, 131 affected passes / 1 skip,
+and 1,513 combined passes / 2 skips. Exact per-method records reconcile without
+crashes or warnings. This is an uncommitted local patch on `7d15be1`; the remote
+head remains failed and final-commit CI is pending. The allocator abort's
+underlying trigger is not attributed to hierarchy setup as a proven diagnosis.
 
 **Bounded Pokémon finish evidence — 2026-11-02:** the
 [eight-set repair record](../audits/pokemon-finish-evidence-2026-11-02.md)

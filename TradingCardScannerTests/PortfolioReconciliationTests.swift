@@ -68,7 +68,7 @@ final class PortfolioEligibilityIntegrationTests: XCTestCase {
     }
 
     private func seed(_ container: ModelContainer, id: String = "expiry", variant: PhysicalVariant? = nil,
-                      alias: Bool = false) throws -> String {
+                      alias: Bool = false, syncedOnly: Bool = false, sourceStamped: Bool = true) throws -> String {
         let context = ModelContext(container)
         let row = CollectedCard(collectionKey: "eligibility-\(id)", game: .pokemon,
             providerID: alias ? "imported-\(id)" : id, name: "Eligibility fixture", setName: "Fixture",
@@ -86,22 +86,27 @@ final class PortfolioEligibilityIntegrationTests: XCTestCase {
         let key = row.priceKey
         let record = PriceRecord(key: key, game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID)
         _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
-            sourceVariantID: "eligibility-slab", sourceUpdatedAt: epoch, fetchedAt: epoch))
+            sourceVariantID: "eligibility-slab", sourceUpdatedAt: sourceStamped ? epoch : nil, fetchedAt: epoch))
         record.marketVariantID = "eligibility-slab"
         if id == "expiry" {
             record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
                 lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch,
                     priceExpiresAt: epoch.addingTimeInterval(2 * 86400 + 3600)), checkedAt: epoch,
-                sourceUpdatedAt: epoch)
+                sourceUpdatedAt: sourceStamped ? epoch : nil)
         }
         context.insert(record)
-        context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(50),
-            source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
-            effectiveAt: epoch, receivedAt: epoch, isSourceStamped: true))
+        if !syncedOnly {
+            context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(50),
+                source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
+                effectiveAt: epoch, receivedAt: epoch, isSourceStamped: true))
+            if let evidence = record.exactGradedQuoteEvidence {
+                PriceStore(context: context).recordExactGradedQuoteEvidence(evidence, forKey: key)
+            }
+        }
         let operation = UUID()
         context.insert(InventoryEvent(operationID: operation, leg: nil, kind: .initialBalance,
             source: .catalog, collectionKey: row.collectionKey, priceStorageKey: key, deltaQuantity: 1,
-            occurredAt: epoch, valuation: .init(unitPrice: money(50), source: .justTCG,
+            occurredAt: epoch, valuation: syncedOnly ? .unpriced : .init(unitPrice: money(50), source: .justTCG,
                 effectiveAt: epoch, receivedAt: epoch)))
         context.insert(CollectionActivity(card: row, source: .catalog, quantity: 1,
             occurredAt: epoch, ledgerOperationIDs: [operation]))
@@ -131,6 +136,662 @@ final class PortfolioEligibilityIntegrationTests: XCTestCase {
         })
         await engine.recomputeAndWait(context: ModelContext(container), now: date)
         return engine
+    }
+
+    /// The remote check and this device's receipt are deliberately different.
+    /// This uses the production reconciliation entry point because the live
+    /// actor advances past instants to now; only historical fixtures own t1.
+    private func learnSyncedQuote(_ container: ModelContainer, key: String, at receipt: Date,
+                                  sourceStamped: Bool = true) throws {
+        let context = ModelContext(container)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), 0)
+        let result = PriceObservationLog(context: context).reconcileForComputation(learnedAt: receipt)
+        XCTAssertTrue(result.succeeded)
+        let observation = try XCTUnwrap(result.observations.first)
+        XCTAssertEqual(result.observations.count, 1)
+        XCTAssertEqual(observation.instrumentKey, key)
+        XCTAssertEqual(observation.amount, money(50))
+        XCTAssertEqual(observation.receivedAt, receipt)
+        XCTAssertEqual(observation.effectiveAt, sourceStamped ? epoch : receipt)
+        let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+        XCTAssertEqual(record.fetchedAt, epoch)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.checkedAt, epoch)
+        XCTAssertLessThan(epoch, receipt)
+        let beforeReceipt = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+            through: receipt.addingTimeInterval(-1), timeZone: zone)
+        XCTAssertEqual(beforeReceipt.replay.live?.attribution.currentValue, .zero,
+            "The remote check must not become earlier local price knowledge")
+    }
+
+    func testSyncedFutureDeadlineWithdrawsAfterLocalReceiptAndSurvivesRepeatedReopen() async throws {
+        for sourceStamped in [true, false] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-expiry-\(UUID()).store")
+            var container: ModelContainer? = try open(url)
+            let key = try seed(try XCTUnwrap(container), syncedOnly: true, sourceStamped: sourceStamped)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+            try learnSyncedQuote(try XCTUnwrap(container), key: key, at: receipt, sourceStamped: sourceStamped)
+            container = nil
+
+            for _ in 0..<3 {
+                let reopened = try open(url)
+                let beforeReconciliation = ModelContext(reopened)
+                XCTAssertNil(InventoryLedger.resolveValuation(
+                    observation: PriceObservationLog(context: beforeReconciliation).newestObservation(instrumentKey: key),
+                    record: PriceStore(context: beforeReconciliation).record(forKey: key), at: deadline).unitPrice,
+                    "A synced receipt without a provider clock is still the same expired quote")
+                let engine = await recompute(reopened)
+                XCTAssertEqual(engine.summary?.currentValue, .zero)
+                XCTAssertEqual(engine.summary?.isAuthoritative, true)
+                XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+                let context = ModelContext(reopened)
+                let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+                XCTAssertEqual(observations.count, 2, "Repeated reconciliation must not create a recovery")
+                let withdrawal = try XCTUnwrap(observations.first { $0.kind == .eligibilityExpiry })
+                XCTAssertEqual(observations.filter { $0.kind == .eligibilityExpiry }.count, 1)
+                XCTAssertEqual(withdrawal.receivedAt, deadline)
+                XCTAssertEqual(withdrawal.effectiveAt, receipt, "This device learned the deadline at t1, not remote t0")
+                let history = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                    through: deadline.addingTimeInterval(1), timeZone: zone)
+                XCTAssertEqual(history.valuation.value, .zero)
+                XCTAssertEqual(history.replay.live?.attribution.currentValue, .zero)
+                XCTAssertEqual(history.replay.live?.attribution.pricingAdjustment, money(-50))
+                XCTAssertEqual(history.replay.live?.attribution.market, .zero)
+                XCTAssertEqual(history.replay.live?.attribution.unexplained, .zero)
+                let closes = try context.fetch(FetchDescriptor<PortfolioDailyClose>())
+                let close = try XCTUnwrap(closes.first { $0.date == epoch.addingTimeInterval(2 * 86400) })
+                XCTAssertEqual(close.closeValue, .zero)
+                XCTAssertEqual(close.pricingAdjustment, money(-50))
+                XCTAssertEqual(close.marketContribution, .zero)
+                XCTAssertNotNil(close.publishedAt)
+                XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+                XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).map(\.priceStorageKey), [key])
+            }
+        }
+    }
+
+    func testSyncedDeadlineIsPreservedBeforeRecoveryOverwritesEvidenceIncludingEqualTime() async throws {
+        for equalTime in [false, true] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-recovery-\(UUID()).store")
+            var container: ModelContainer? = try open(url)
+            let key = try seed(try XCTUnwrap(container), syncedOnly: true)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+            let recovery = equalTime ? deadline : epoch.addingTimeInterval(3 * 86400 + 3600)
+            try learnSyncedQuote(try XCTUnwrap(container), key: key, at: receipt)
+            container = nil
+            do {
+                // There is no post-expiry reconciliation before the new quote.
+                let reopened = try open(url)
+                let context = ModelContext(reopened)
+                let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+                let result = GradedVariantBinding.storeVariantQuote(
+                    .init(id: "eligibility-slab", company: .psa, grade: .init(value: "10"),
+                        marketPriceUSD: 60, updatedAt: recovery,
+                        quoteLifecycle: .init(status: "current", lastPrice: 60, lastSaleAt: recovery,
+                            priceExpiresAt: recovery.addingTimeInterval(10 * 86400))),
+                    game: row.cardGame, printingID: row.priceStorageID, variantID: row.variantID,
+                    treatmentIDs: [], store: PriceStore(context: context), at: recovery)
+                XCTAssertTrue(result.wasAccepted)
+                try context.save()
+            }
+
+            for _ in 0..<3 {
+                let reopened = try open(url)
+                let engine = await recompute(reopened)
+                XCTAssertEqual(engine.summary?.currentValue, money(60))
+                XCTAssertEqual(engine.summary?.isAuthoritative, true)
+                XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+                let context = ModelContext(reopened)
+                let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+                XCTAssertEqual(observations.count, 3)
+                XCTAssertEqual(observations.filter { $0.kind == .eligibilityExpiry }.count, 1)
+                XCTAssertEqual(observations.map(\.receivedAt), [receipt, deadline, recovery])
+                XCTAssertEqual(observations.map(\.amount), [money(50), nil, money(60)])
+                XCTAssertEqual(observations[1].effectiveAt, receipt)
+                XCTAssertEqual(PriceObservationLog(context: context).newestObservation(instrumentKey: key)?.amount,
+                    money(60), "A real recovery wins deterministic same-instant expiry ordering")
+                if !equalTime {
+                    let interval = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                        through: recovery.addingTimeInterval(-1), timeZone: zone)
+                    XCTAssertEqual(interval.valuation.value, .zero)
+                    XCTAssertEqual(interval.replay.live?.attribution.currentValue, .zero)
+                    XCTAssertEqual(interval.replay.days.last?.closeValue, .zero)
+                }
+                let history = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                    through: recovery.addingTimeInterval(1), timeZone: zone)
+                XCTAssertEqual(history.valuation.value, money(60))
+                XCTAssertEqual(history.replay.live?.attribution.currentValue, money(60))
+                XCTAssertEqual(history.replay.live?.attribution.pricingAdjustment, money(equalTime ? 10 : 60))
+                XCTAssertEqual(history.replay.live?.attribution.market, .zero)
+                XCTAssertEqual(history.replay.live?.attribution.unexplained, .zero)
+                let day = PortfolioCalendar.day(containing: recovery, in: zone)
+                let close = try XCTUnwrap(context.fetch(FetchDescriptor<PortfolioDailyClose>()).first { $0.date == day })
+                XCTAssertEqual(close.closeValue, money(60))
+                XCTAssertEqual(close.pricingAdjustment, money(equalTime ? 10 : 60))
+                XCTAssertEqual(close.marketContribution, .zero)
+            }
+        }
+    }
+
+    func testSyncedQuoteFirstLearnedAlreadyExpiredDoesNotInventAnEarlierLocalInterval() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-late-\(UUID()).store")
+        var container: ModelContainer? = try open(url)
+        let key = try seed(try XCTUnwrap(container), syncedOnly: true)
+        let receipt = epoch.addingTimeInterval(3 * 86400 + 3600)
+        do {
+            let context = ModelContext(try XCTUnwrap(container))
+            let result = PriceObservationLog(context: context).reconcileForComputation(learnedAt: receipt)
+            XCTAssertTrue(result.succeeded)
+            XCTAssertEqual(result.observations.count, 1)
+            XCTAssertEqual(result.observations.first?.kind, .eligibilityExpiry)
+            XCTAssertEqual(result.observations.first?.receivedAt, receipt)
+            XCTAssertEqual(result.observations.first?.effectiveAt, receipt)
+            XCTAssertNil(result.observations.first?.amount)
+        }
+        container = nil
+        let reopened = try open(url)
+        let engine = await recompute(reopened)
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        let context = ModelContext(reopened)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), 1)
+        let history = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+            through: receipt.addingTimeInterval(-1), timeZone: zone)
+        XCTAssertTrue(history.replay.days.allSatisfy { $0.closeValue == .zero && $0.pricingAdjustment == .zero })
+        XCTAssertEqual(history.replay.live?.attribution.currentValue, .zero)
+        XCTAssertEqual(PriceObservationLog(context: context).observations(instrumentKey: key).count, 1)
+    }
+
+    func testStaleSyncedDeadlineCannotWithdrawANewerExactObservation() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-newer-\(UUID()).store")
+        var container: ModelContainer? = try open(url)
+        let key = try seed(try XCTUnwrap(container), syncedOnly: true)
+        try learnSyncedQuote(try XCTUnwrap(container), key: key, at: epoch.addingTimeInterval(86400 + 3600))
+        let newer = epoch.addingTimeInterval(3 * 86400 + 3600)
+        do {
+            let context = ModelContext(try XCTUnwrap(container))
+            // A newer observation can precede its mutable synced record.
+            let decision = PriceObservationLog(context: context).ingest(
+                .price(.init(unitMarketPriceUSD: 75, currencyCode: "USD", source: .justTCG,
+                    sourceVariantID: "eligibility-slab", sourceUpdatedAt: newer, fetchedAt: newer)),
+                instrumentKey: key, marketVariantID: "eligibility-slab", at: newer)
+            XCTAssertEqual(decision, .append(.marketUpdate))
+            try context.save()
+        }
+        container = nil
+        let reopened = try open(url)
+        let engine = await recompute(reopened)
+        XCTAssertEqual(engine.summary?.currentValue, money(75))
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+        let context = ModelContext(reopened)
+        let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+        XCTAssertEqual(observations.count, 2)
+        XCTAssertFalse(observations.contains { $0.kind == .eligibilityExpiry })
+        let history = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch, through: .now, timeZone: zone)
+        XCTAssertEqual(history.valuation.value, money(75))
+        XCTAssertEqual(history.replay.live?.attribution.currentValue, money(75))
+    }
+
+    func testSyncedDeadlineDoesNotAdoptMismatchedObservationIdentityOrCurrency() async throws {
+        for (sourceVariant, marketVariant, currency, source) in [
+            ("wrong-source", "eligibility-slab", "USD", PriceSource.justTCG),
+            ("eligibility-slab", "wrong-grade", "USD", PriceSource.justTCG),
+            ("eligibility-slab", "eligibility-slab", "EUR", PriceSource.justTCG),
+            ("eligibility-slab", "eligibility-slab", "USD", PriceSource.tcgplayer)
+        ] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-mismatch-\(UUID()).store")
+            let container = try open(url)
+            let key = try seed(container, syncedOnly: true)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            try learnSyncedQuote(container, key: key, at: receipt)
+            let context = ModelContext(container)
+            let observation = try XCTUnwrap(context.fetch(FetchDescriptor<PriceObservation>()).first)
+            observation.sourceVariantID = sourceVariant
+            observation.marketVariantID = marketVariant
+            observation.currencyCode = currency
+            observation.sourceRaw = source.rawValue
+            try context.save()
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, .zero)
+            let fresh = ModelContext(reopened)
+            let observations = PriceObservationLog(context: fresh).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, 1, "A stored receipt must remain bound to its exact quote")
+            XCTAssertFalse(observations.contains { $0.kind == .eligibilityExpiry })
+            if currency == "USD" {
+                XCTAssertNotEqual(engine.summary?.isAuthoritative, true,
+                    "Inconsistent identity evidence must still block close publication")
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PortfolioDailyClose>()), 0)
+            }
+        }
+    }
+
+    func testLegacySyncedQuoteWithoutDeadlineReceiptIsWithdrawnOnlyWhenReconciledLocally() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("legacy-synced-expiry-\(UUID()).store")
+        var container: ModelContainer? = try open(url)
+        let key = try seed(try XCTUnwrap(container), syncedOnly: true)
+        let receipt = epoch.addingTimeInterval(86400 + 3600)
+        let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+        do {
+            let context = ModelContext(try XCTUnwrap(container))
+            // Older builds saved the positive local observation but no local
+            // receipt proving that its lifecycle was learned at the same time.
+            context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(50),
+                source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
+                effectiveAt: epoch, receivedAt: receipt, isSourceStamped: true))
+            try context.save()
+            let beforeRepair = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                through: deadline.addingTimeInterval(1), timeZone: zone)
+            XCTAssertEqual(beforeRepair.valuation.value, .zero)
+            XCTAssertEqual(beforeRepair.replay.live?.attribution.currentValue, money(50))
+        }
+        container = nil
+        let learnedAfter = Date.now
+        var withdrawalAt: Date?
+        for _ in 0..<3 {
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, .zero)
+            XCTAssertEqual(engine.summary?.isAuthoritative, true)
+            XCTAssertEqual(engine.summary?.attribution?.pricingAdjustment, money(-50))
+            XCTAssertEqual(engine.summary?.attribution?.market, .zero)
+            XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+            let context = ModelContext(reopened)
+            let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, 2)
+            let withdrawal = try XCTUnwrap(observations.first { $0.kind == .eligibilityExpiry })
+            XCTAssertGreaterThanOrEqual(withdrawal.receivedAt, learnedAfter)
+            XCTAssertEqual(withdrawal.effectiveAt, withdrawal.receivedAt)
+            if let withdrawalAt { XCTAssertEqual(withdrawal.receivedAt, withdrawalAt) }
+            withdrawalAt = withdrawal.receivedAt
+            let earlier = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                through: deadline.addingTimeInterval(1), timeZone: zone)
+            XCTAssertEqual(earlier.replay.live?.attribution.currentValue, money(50),
+                "A legacy row cannot prove that this device knew the deadline before expiry")
+        }
+        let reopened = try open(url)
+        _ = await recompute(reopened, at: try XCTUnwrap(withdrawalAt).addingTimeInterval(86400))
+        let context = ModelContext(reopened)
+        let day = PortfolioCalendar.day(containing: try XCTUnwrap(withdrawalAt), in: zone)
+        let close = try XCTUnwrap(context.fetch(FetchDescriptor<PortfolioDailyClose>()).first { $0.date == day })
+        XCTAssertEqual(close.closeValue, .zero)
+        XCTAssertEqual(close.pricingAdjustment, money(-50))
+        XCTAssertEqual(close.marketContribution, .zero)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), 2)
+    }
+
+    func testLegacySyncedExpiryRepairRejectsNewerOrMismatchedExactEvidence() async throws {
+        for scenario in ["newer-update", "wrong-source-variant", "wrong-market-variant", "wrong-currency",
+                         "wrong-provider", "different-amount", "unstamped"] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("legacy-synced-control-\(UUID()).store")
+            let container = try open(url)
+            let key = try seed(container, syncedOnly: true)
+            let context = ModelContext(container)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            let observation = PriceObservation(instrumentKey: key, kind: .marketUpdate,
+                amount: money(scenario == "different-amount" ? 60 : 50),
+                currencyCode: scenario == "wrong-currency" ? "EUR" : "USD",
+                source: scenario == "wrong-provider" ? .tcgplayer : .justTCG,
+                sourceVariantID: scenario == "wrong-source-variant" ? "other" : "eligibility-slab",
+                marketVariantID: scenario == "wrong-market-variant" ? "other" : "eligibility-slab",
+                effectiveAt: scenario == "newer-update" ? epoch.addingTimeInterval(1) : epoch,
+                receivedAt: receipt, isSourceStamped: scenario != "unstamped")
+            context.insert(observation)
+            try context.save()
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            let fresh = ModelContext(reopened)
+            let observations = PriceObservationLog(context: fresh).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, 1, scenario)
+            XCTAssertFalse(observations.contains { $0.kind == .eligibilityExpiry }, scenario)
+            if scenario == "newer-update" || scenario == "unstamped" {
+                XCTAssertEqual(engine.summary?.currentValue, money(50), scenario)
+                XCTAssertEqual(engine.summary?.isAuthoritative, true, scenario)
+            } else if scenario != "wrong-currency" {
+                XCTAssertEqual(engine.summary?.currentValue, .zero, scenario)
+                XCTAssertNotEqual(engine.summary?.isAuthoritative, true, scenario)
+                XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PortfolioDailyClose>()), 0, scenario)
+            }
+        }
+    }
+
+    func testExpiredSyncedLifecycleFirstLearnedAfterAnOlderPositiveDoesNotBackdateKnowledge() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("late-synced-lifecycle-\(UUID()).store")
+        let container = try open(url)
+        let key = try seed(container, syncedOnly: true)
+        let context = ModelContext(container)
+        let originalReceipt = epoch.addingTimeInterval(3600)
+        context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(50),
+            source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
+            effectiveAt: epoch, receivedAt: originalReceipt, isSourceStamped: true))
+        let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+        let remoteCheck = epoch.addingTimeInterval(86400)
+        record.fetchedAt = remoteCheck
+        record.lastCheckedAt = remoteCheck
+        record.lastSuccessfulCheckAt = remoteCheck
+        record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+            lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch,
+                priceExpiresAt: epoch.addingTimeInterval(2 * 86400)), checkedAt: remoteCheck, sourceUpdatedAt: epoch)
+        try context.save()
+        let learnedAfter = Date.now
+        let engine = await recompute(try open(url))
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        let fresh = ModelContext(try open(url))
+        let withdrawal = try XCTUnwrap(PriceObservationLog(context: fresh).observations(instrumentKey: key)
+            .first { $0.kind == .eligibilityExpiry })
+        XCTAssertGreaterThanOrEqual(withdrawal.receivedAt, learnedAfter)
+        XCTAssertEqual(withdrawal.effectiveAt, withdrawal.receivedAt)
+        let past = PortfolioReplaySnapshotBuilder.compute(context: fresh, epoch: epoch,
+            through: epoch.addingTimeInterval(3 * 86400), timeZone: zone)
+        XCTAssertEqual(past.replay.live?.attribution.currentValue, money(50))
+    }
+
+    func testUnchangedSyncedQuoteLearnsRevisedDeadlineWithoutChangingPriceReceipt() async throws {
+        for sourceStamped in [true, false] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("revised-synced-deadline-\(UUID()).store")
+            var container: ModelContainer? = try open(url)
+            let key = try seed(try XCTUnwrap(container), syncedOnly: true, sourceStamped: sourceStamped)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            let revisedReceipt = receipt.addingTimeInterval(3600)
+            let revisedDeadline = epoch.addingTimeInterval(3 * 86400 + 3600)
+            try learnSyncedQuote(try XCTUnwrap(container), key: key, at: receipt, sourceStamped: sourceStamped)
+            do {
+                let context = ModelContext(try XCTUnwrap(container))
+                let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+                let remoteRecheck = epoch.addingTimeInterval(3600)
+                XCTAssertLessThan(remoteRecheck, receipt)
+                _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+                    sourceVariantID: "eligibility-slab", sourceUpdatedAt: sourceStamped ? epoch.addingTimeInterval(1800) : nil,
+                    fetchedAt: remoteRecheck))
+                record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+                    lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch, priceExpiresAt: revisedDeadline),
+                    checkedAt: remoteRecheck, sourceUpdatedAt: record.sourceUpdatedAt)
+                try context.save()
+                let log = PriceObservationLog(context: context)
+                XCTAssertEqual(log.backfillFromRecords(receivedAt: revisedReceipt), 0,
+                    "An unchanged quote updates deadline knowledge without adding a price transition")
+                XCTAssertEqual(log.backfillFromRecords(receivedAt: revisedReceipt.addingTimeInterval(1)), 0)
+                let observations = log.observations(instrumentKey: key)
+                XCTAssertEqual(observations.count, 1)
+                XCTAssertEqual(observations.first?.receivedAt, receipt)
+                XCTAssertEqual(observations.first?.effectiveAt, sourceStamped ? epoch : receipt)
+            }
+            container = nil
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, .zero)
+            XCTAssertEqual(engine.summary?.isAuthoritative, true)
+            XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+            let context = ModelContext(reopened)
+            let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, 2)
+            let withdrawal = try XCTUnwrap(observations.first { $0.kind == .eligibilityExpiry })
+            XCTAssertEqual(withdrawal.receivedAt, revisedDeadline)
+            XCTAssertEqual(withdrawal.effectiveAt, revisedReceipt)
+            let oldDeadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+            let history = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                through: oldDeadline.addingTimeInterval(1), timeZone: zone)
+            XCTAssertEqual(history.replay.live?.attribution.currentValue, money(50))
+            XCTAssertEqual(history.valuation.value, money(50))
+        }
+    }
+
+    func testSyncedReplacementPreservesKnownExpiryBeforeRecordingRecovery() async throws {
+        for sourceStamped in [true, false] {
+            for recoveryAmount in [50.0, 60.0] {
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-replacement-\(UUID()).store")
+                var container: ModelContainer? = try open(url)
+                let key = try seed(try XCTUnwrap(container), syncedOnly: true, sourceStamped: sourceStamped)
+                let receipt = epoch.addingTimeInterval(86400 + 3600)
+                let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+                let recovery = epoch.addingTimeInterval(3 * 86400 + 3600)
+                try learnSyncedQuote(try XCTUnwrap(container), key: key, at: receipt, sourceStamped: sourceStamped)
+                do {
+                    let context = ModelContext(try XCTUnwrap(container))
+                    let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+                    // CloudKit replaces only the synced mutable record. The
+                    // local receipt is all that remains of the known deadline.
+                    let remoteRecheck = epoch.addingTimeInterval(3600)
+                    _ = record.apply(.init(unitMarketPriceUSD: recoveryAmount, currencyCode: "USD", source: .justTCG,
+                        sourceVariantID: "eligibility-slab", sourceUpdatedAt: sourceStamped ? epoch.addingTimeInterval(1800) : nil,
+                        fetchedAt: remoteRecheck))
+                    record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+                        lifecycle: .init(status: "current", lastPrice: recoveryAmount, lastSaleAt: epoch,
+                            priceExpiresAt: epoch.addingTimeInterval(10 * 86400)),
+                        checkedAt: remoteRecheck, sourceUpdatedAt: record.sourceUpdatedAt)
+                    try context.save()
+                    let result = PriceObservationLog(context: context).reconcileForComputation(learnedAt: recovery)
+                    XCTAssertTrue(result.succeeded)
+                }
+                container = nil
+                for _ in 0..<2 {
+                    let reopened = try open(url)
+                    let engine = await recompute(reopened)
+                    XCTAssertEqual(engine.summary?.currentValue, money(recoveryAmount))
+                    XCTAssertEqual(engine.summary?.isAuthoritative, true)
+                    XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+                    let context = ModelContext(reopened)
+                    let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+                    XCTAssertEqual(observations.map(\.receivedAt), [receipt, deadline, recovery])
+                    XCTAssertEqual(observations.map(\.amount), [money(50), nil, money(recoveryAmount)])
+                    XCTAssertEqual(observations.first { $0.kind == .eligibilityExpiry }?.effectiveAt, receipt)
+                    let interval = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                        through: recovery.addingTimeInterval(-1), timeZone: zone)
+                    XCTAssertEqual(interval.replay.live?.attribution.currentValue, .zero)
+                    XCTAssertEqual(interval.valuation.value, .zero)
+                    let close = try XCTUnwrap(context.fetch(FetchDescriptor<PortfolioDailyClose>())
+                        .first { $0.date == epoch.addingTimeInterval(3 * 86400) })
+                    XCTAssertEqual(close.pricingAdjustment, money(recoveryAmount))
+                    XCTAssertEqual(close.marketContribution, .zero)
+                }
+            }
+        }
+    }
+
+    func testSyncedCurrencyReplacementPreservesKnownExpiryAndItsLocalNativeCurrencyTransition() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-currency-replacement-\(UUID()).store")
+        let container = try open(url)
+        let key = try seed(container, syncedOnly: true)
+        let receipt = epoch.addingTimeInterval(86400 + 3600)
+        let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+        let replacementReceipt = epoch.addingTimeInterval(3 * 86400 + 3600)
+        try learnSyncedQuote(container, key: key, at: receipt)
+        let context = ModelContext(container)
+        let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+        let remoteCheck = epoch.addingTimeInterval(3600)
+        _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "EUR", source: .justTCG,
+            sourceVariantID: "eligibility-slab", sourceUpdatedAt: epoch.addingTimeInterval(1800), fetchedAt: remoteCheck))
+        record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+            lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch,
+                priceExpiresAt: epoch.addingTimeInterval(10 * 86400)), checkedAt: remoteCheck,
+            sourceUpdatedAt: record.sourceUpdatedAt)
+        try context.save()
+        XCTAssertTrue(PriceObservationLog(context: context).reconcileForComputation(learnedAt: replacementReceipt).succeeded)
+        let reopened = try open(url)
+        let engine = await recompute(reopened)
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+        let fresh = ModelContext(reopened)
+        let observations = PriceObservationLog(context: fresh).observations(instrumentKey: key)
+        XCTAssertEqual(observations.map(\.receivedAt), [receipt, deadline, replacementReceipt])
+        XCTAssertEqual(observations.map(\.currencyCode), ["USD", "USD", "EUR"])
+        XCTAssertEqual(observations.map(\.amount), [money(50), nil, money(50)])
+        let interval = PortfolioReplaySnapshotBuilder.compute(context: fresh, epoch: epoch,
+            through: replacementReceipt.addingTimeInterval(-1), timeZone: zone)
+        XCTAssertEqual(interval.replay.live?.attribution.currentValue, .zero)
+        XCTAssertEqual(interval.valuation.value, .zero)
+        let close = try XCTUnwrap(fresh.fetch(FetchDescriptor<PortfolioDailyClose>())
+            .first { $0.date == epoch.addingTimeInterval(2 * 86400) })
+        XCTAssertEqual(close.pricingAdjustment, money(-50))
+        XCTAssertEqual(close.marketContribution, .zero)
+    }
+
+    func testMissingSyncedLifecycleCannotRecoverTheSameExpiredProviderQuote() async throws {
+        for hasNewerProviderUpdate in [false, true] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("missing-synced-lifecycle-\(UUID()).store")
+            let container = try open(url)
+            let key = try seed(container, syncedOnly: true)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            let deadline = epoch.addingTimeInterval(2 * 86400 + 3600)
+            let recovery = epoch.addingTimeInterval(3 * 86400 + 3600)
+            try learnSyncedQuote(container, key: key, at: receipt)
+            let context = ModelContext(container)
+            let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+            _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+                sourceVariantID: "eligibility-slab",
+                sourceUpdatedAt: hasNewerProviderUpdate ? epoch.addingTimeInterval(1800) : epoch,
+                fetchedAt: recovery.addingTimeInterval(-1)))
+            XCTAssertNil(record.exactGradedQuoteEvidence)
+            try context.save()
+            XCTAssertTrue(PriceObservationLog(context: context).reconcileForComputation(learnedAt: recovery).succeeded)
+            for _ in 0..<2 {
+                let reopened = try open(url)
+                let engine = await recompute(reopened)
+                XCTAssertEqual(engine.summary?.currentValue, hasNewerProviderUpdate ? money(50) : .zero)
+                XCTAssertEqual(engine.summary?.isAuthoritative, true)
+                XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+                let fresh = ModelContext(reopened)
+                let observations = PriceObservationLog(context: fresh).observations(instrumentKey: key)
+                XCTAssertEqual(observations.count, hasNewerProviderUpdate ? 3 : 2)
+                XCTAssertEqual(observations.first { $0.kind == .eligibilityExpiry }?.receivedAt, deadline)
+                let interval = PortfolioReplaySnapshotBuilder.compute(context: fresh, epoch: epoch,
+                    through: recovery.addingTimeInterval(-1), timeZone: zone)
+                XCTAssertEqual(interval.replay.live?.attribution.currentValue, .zero)
+                XCTAssertEqual(interval.valuation.value, .zero)
+            }
+        }
+    }
+
+    func testFailedUnchangedDeadlineReceiptSaveDoesNotPublishEarlierKnowledge() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-receipt-save-failure-\(UUID()).store")
+        var container: ModelContainer? = try open(url)
+        let key = try seed(try XCTUnwrap(container), syncedOnly: true)
+        let receipt = epoch.addingTimeInterval(86400 + 3600)
+        let failedReceipt = receipt.addingTimeInterval(3600)
+        let savedReceipt = failedReceipt.addingTimeInterval(3600)
+        let deadline = epoch.addingTimeInterval(3 * 86400 + 3600)
+        try learnSyncedQuote(try XCTUnwrap(container), key: key, at: receipt)
+        do {
+            let context = ModelContext(try XCTUnwrap(container))
+            let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+            let remoteRecheck = epoch.addingTimeInterval(3600)
+            record.fetchedAt = remoteRecheck
+            record.lastCheckedAt = remoteRecheck
+            record.lastSuccessfulCheckAt = remoteRecheck
+            record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+                lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch, priceExpiresAt: deadline),
+                checkedAt: remoteRecheck, sourceUpdatedAt: epoch)
+            try context.save()
+            enum SaveFailure: Error { case injected }
+            let failed = PriceObservationLog(context: context, reconciliationSave: { throw SaveFailure.injected })
+                .reconcileForComputation(learnedAt: failedReceipt)
+            XCTAssertFalse(failed.succeeded)
+            XCTAssertTrue(failed.observations.isEmpty)
+        }
+        container = nil
+        do {
+            let reopened = try open(url)
+            let result = PriceObservationLog(context: ModelContext(reopened)).reconcileForComputation(learnedAt: savedReceipt)
+            XCTAssertTrue(result.succeeded)
+            XCTAssertEqual(result.observations.count, 1)
+        }
+        let reopened = try open(url)
+        let engine = await recompute(reopened)
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        let observations = PriceObservationLog(context: ModelContext(reopened)).observations(instrumentKey: key)
+        XCTAssertEqual(observations.count, 2)
+        XCTAssertEqual(observations.first { $0.kind == .eligibilityExpiry }?.receivedAt, deadline)
+        XCTAssertEqual(observations.first { $0.kind == .eligibilityExpiry }?.effectiveAt, savedReceipt)
+    }
+
+    func testMalformedOrUnsupportedUnstampedReceiptCannotBecomeNewerExactEvidence() async throws {
+        for malformed in [true, false] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("invalid-synced-receipt-\(UUID()).store")
+            let container = try open(url)
+            let key = try seed(container, syncedOnly: true, sourceStamped: false)
+            try learnSyncedQuote(container, key: key, at: epoch.addingTimeInterval(86400 + 3600), sourceStamped: false)
+            let context = ModelContext(container)
+            let observation = try XCTUnwrap(context.fetch(FetchDescriptor<PriceObservation>()).first)
+            if malformed {
+                observation.syncedGradedQuoteEvidenceJSON = "{invalid"
+            } else {
+                let data = Data(try XCTUnwrap(observation.syncedGradedQuoteEvidenceJSON).utf8)
+                var payload = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+                payload["version"] = 2
+                observation.syncedGradedQuoteEvidenceJSON = String(data: try JSONSerialization.data(withJSONObject: payload),
+                    encoding: .utf8)
+            }
+            try context.save()
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, .zero)
+            XCTAssertNotEqual(engine.summary?.isAuthoritative, true)
+            let fresh = ModelContext(reopened)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PriceObservation>()), 1,
+                "Damaged receipt metadata cannot fabricate a historical expiry either")
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PortfolioDailyClose>()), 0)
+        }
+    }
+
+    func testSyncedReceiptsCompareRemoteChecksInsteadOfLocalReceiptTimes() async throws {
+        for (sourceStamped, recordIsNewer, staleAfterReceipt) in [
+            (false, true, false), (false, false, false), (true, false, false),
+            (false, false, true), (true, false, true)
+        ] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("synced-receipt-order-\(UUID()).store")
+            let container = try open(url)
+            let key = try seed(container, syncedOnly: true, sourceStamped: sourceStamped)
+            let receipt = epoch.addingTimeInterval(86400 + 3600)
+            try learnSyncedQuote(container, key: key, at: receipt, sourceStamped: sourceStamped)
+            let context = ModelContext(container)
+            let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+            let oldEvidence = try XCTUnwrap(record.exactGradedQuoteEvidence)
+            let remoteRecheck = staleAfterReceipt ? receipt.addingTimeInterval(3600) : epoch.addingTimeInterval(3600)
+            _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+                sourceVariantID: "eligibility-slab", sourceUpdatedAt: sourceStamped ? epoch : nil, fetchedAt: remoteRecheck))
+            record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+                lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch,
+                    priceExpiresAt: epoch.addingTimeInterval((recordIsNewer ? 2 : 10) * 86400 + 7200)),
+                checkedAt: remoteRecheck, sourceUpdatedAt: sourceStamped ? epoch : nil)
+            try context.save()
+            if !recordIsNewer {
+                let result = PriceObservationLog(context: context).reconcileForComputation(
+                    learnedAt: receipt.addingTimeInterval(7200))
+                XCTAssertTrue(result.succeeded)
+                // A stale synced record arrives after this device durably
+                // learned the newer current lifecycle, with no value change.
+                let staleCheck = staleAfterReceipt ? receipt.addingTimeInterval(1800) : epoch
+                _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+                    sourceVariantID: "eligibility-slab", sourceUpdatedAt: sourceStamped ? epoch : nil, fetchedAt: staleCheck))
+                record.exactGradedQuoteEvidence = .init(variantID: oldEvidence.variantID, lifecycle: oldEvidence.lifecycle,
+                    checkedAt: staleCheck, sourceUpdatedAt: oldEvidence.sourceUpdatedAt)
+                try context.save()
+                let stale = PriceObservationLog(context: context).reconcileForComputation(
+                    learnedAt: receipt.addingTimeInterval(10800))
+                XCTAssertTrue(stale.succeeded)
+                XCTAssertEqual(stale.observations.count, 1, "An equal-price stale lifecycle cannot replace a newer receipt")
+            }
+            let reopened = try open(url)
+            let beforeReconciliation = ModelContext(reopened)
+            let live = InventoryLedger.resolveValuation(
+                observation: PriceObservationLog(context: beforeReconciliation).newestObservation(instrumentKey: key),
+                record: PriceStore(context: beforeReconciliation).record(forKey: key))
+            XCTAssertEqual(live.unitPrice, recordIsNewer ? nil : money(50))
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, recordIsNewer ? .zero : money(50))
+            XCTAssertEqual(engine.summary?.isAuthoritative, true)
+            XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+            let observations = PriceObservationLog(context: ModelContext(reopened)).observations(instrumentKey: key)
+            XCTAssertEqual(observations.count, recordIsNewer ? 2 : 1)
+            if recordIsNewer {
+                XCTAssertEqual(observations.last?.receivedAt, epoch.addingTimeInterval(2 * 86400 + 3600))
+                XCTAssertEqual(observations.last?.effectiveAt, receipt)
+            }
+        }
     }
 
     func testPassiveExpiryPublishesAnExplainedCloseAndSurvivesReopen() async throws {
@@ -252,6 +913,7 @@ final class PortfolioEligibilityIntegrationTests: XCTestCase {
         let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
         let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
         record.exactGradedQuoteEvidence = nil // This device had not learned a deadline.
+        PriceObservationLog(context: context).newestObservation(instrumentKey: key)?.syncedGradedQuoteEvidenceJSON = nil
         try context.save()
         let received = Date.now
         let queuedContext = ModelContext(container)

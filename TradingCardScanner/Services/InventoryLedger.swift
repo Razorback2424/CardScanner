@@ -340,16 +340,30 @@ struct InventoryLedger {
             guard let evidence = record.exactGradedQuoteEvidence,
                   let observation,
                   matchesExactGradedObservation(observation, variantID: evidence.variantID, recordKey: record.key),
-                  observation.receivedAt > evidence.checkedAt,
-                  observation.receivedAt <= date,
-                  record.invalidatedAt.map({ observation.receivedAt > $0 }) ?? true,
                   let amount = observation.effectiveUSDAmount else { return .unpriced }
             // Observation.effectiveAt is a provider price-update clock, not
             // the separate last_sale_at lifecycle field.
             let knownUpdate = [evidence.sourceUpdatedAt,
                 record.source == .justTCG ? record.sourceUpdatedAt : nil].compactMap { $0 }.max()
-            if observation.isSourceStamped, let knownUpdate, observation.effectiveAt <= knownUpdate {
-                return .unpriced
+            if observation.syncedGradedQuoteEvidenceJSON != nil {
+                // A local receipt is not a new remote check. Even without a
+                // provider price clock, its saved check must actually follow
+                // the withdrawn quote. Corrupt/unsupported receipts establish
+                // neither a recovery nor an earlier expiry interval.
+                guard let receipt = observation.validatedSyncedGradedQuoteReceipt,
+                      receipt.learnedAt <= date,
+                      receipt.evidence.checkedAt > evidence.checkedAt,
+                      record.invalidatedAt.map({ receipt.learnedAt > $0 }) ?? true,
+                      !receipt.evidence.lifecycle.withdrawsCurrentQuote(at: date) else { return .unpriced }
+                if let knownUpdate, receipt.sourceUpdatedAt.map({ $0 >= knownUpdate }) != true { return .unpriced }
+                if let incomingSale = receipt.evidence.lifecycle.lastSaleAt,
+                   let knownSale = evidence.lifecycle.lastSaleAt, incomingSale < knownSale { return .unpriced }
+            } else {
+                guard observation.receivedAt > evidence.checkedAt, observation.receivedAt <= date,
+                      record.invalidatedAt.map({ observation.receivedAt > $0 }) ?? true else { return .unpriced }
+                if observation.isSourceStamped, let knownUpdate, observation.effectiveAt <= knownUpdate {
+                    return .unpriced
+                }
             }
             return InventoryValuation(unitPrice: amount, source: observation.source,
                 effectiveAt: observation.effectiveAt, receivedAt: observation.receivedAt,

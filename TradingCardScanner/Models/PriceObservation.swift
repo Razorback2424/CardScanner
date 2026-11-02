@@ -96,6 +96,12 @@ final class PriceObservation {
     /// the fetch time. False for Scryfall, which publishes no clock.
     var isSourceStamped: Bool = false
 
+    /// Accepted local provider checks and synced-record reconciliation write
+    /// this receipt. A remote checkedAt cannot establish local knowledge; the
+    /// receipt records that local time without changing the price observation
+    /// when only a deadline changes. Older histories keep this field absent.
+    var syncedGradedQuoteEvidenceJSON: String?
+
     init(
         instrumentKey: String,
         kind: PriceObservationKind,
@@ -161,6 +167,107 @@ final class PriceObservation {
             sourceVariantID: sourceVariantID,
             marketVariantID: marketVariantID
         )
+    }
+
+    var syncedGradedQuoteReceipt: SyncedGradedQuoteReceipt? {
+        get {
+            guard let data = syncedGradedQuoteEvidenceJSON?.data(using: .utf8) else { return nil }
+            return try? JSONDecoder().decode(SyncedGradedQuoteReceipt.self, from: data)
+        }
+        set {
+            syncedGradedQuoteEvidenceJSON = newValue.flatMap { receipt in
+                (try? JSONEncoder().encode(receipt)).flatMap { String(data: $0, encoding: .utf8) }
+            }
+        }
+    }
+
+    var validatedSyncedGradedQuoteReceipt: SyncedGradedQuoteReceipt? {
+        syncedGradedQuoteReceipt.flatMap { $0.matches(self) ? $0 : nil }
+    }
+
+    var validatedWithdrawnGradedQuoteReceipt: SyncedGradedQuoteReceipt? {
+        syncedGradedQuoteReceipt.flatMap { $0.matchesWithdrawal(self) ? $0 : nil }
+    }
+
+    /// Receipt provenance is usable only while every part of the observed
+    /// quote still matches. Equal amounts alone cannot identify a quote.
+    func isReceiptOfSyncedQuote(_ evidence: ExactGradedQuoteEvidence, record: PriceRecord) -> Bool {
+        guard let receipt = validatedSyncedGradedQuoteReceipt else { return false }
+        return receipt.evidence == evidence && receipt.sourceUpdatedAt == record.sourceUpdatedAt
+            && matchesStoredExactQuoteValue(evidence, record: record)
+    }
+
+    func matchesStoredExactQuote(_ evidence: ExactGradedQuoteEvidence, record: PriceRecord) -> Bool {
+        guard matchesStoredExactQuoteValue(evidence, record: record) else { return false }
+        if let updatedAt = record.sourceUpdatedAt {
+            return isSourceStamped && effectiveAt == updatedAt
+        }
+        return !isSourceStamped
+    }
+
+    func matchesStoredExactQuoteValue(_ evidence: ExactGradedQuoteEvidence, record: PriceRecord) -> Bool {
+        guard record.marketVariantID == evidence.variantID,
+              InventoryLedger.matchesExactGradedObservation(self, variantID: evidence.variantID, recordKey: record.key),
+              source == record.source, currencyCode == record.currencyCode,
+              sourceVariantID == record.sourceVariantID, marketVariantID == record.marketVariantID,
+              amount == record.unitMarketPriceUSD.flatMap(Money.init(rounding:)) else { return false }
+        return true
+    }
+}
+
+/// A local receipt for a synced exact quote. Its value and observation-clock
+/// snapshot prove the association even after the mutable PriceRecord is
+/// replaced. A same-value provider update may advance sourceUpdatedAt without
+/// rewriting the original observation's effectiveAt or receivedAt.
+struct SyncedGradedQuoteReceipt: Codable, Equatable, Sendable {
+    let version: Int
+    let evidence: ExactGradedQuoteEvidence
+    let learnedAt: Date
+    let sourceUpdatedAt: Date?
+    let instrumentKey: String
+    let amountUSDTenThousandths: Int64?
+    let currencyCode: String
+    let sourceRaw: String
+    let sourceVariantID: String?
+    let marketVariantID: String?
+    let observationEffectiveAt: Date
+    let observationReceivedAt: Date
+    let observationIsSourceStamped: Bool
+
+    init(evidence: ExactGradedQuoteEvidence, learnedAt: Date, sourceUpdatedAt: Date?, observation: PriceObservation) {
+        version = 1
+        self.evidence = evidence
+        self.learnedAt = learnedAt
+        self.sourceUpdatedAt = sourceUpdatedAt
+        instrumentKey = observation.instrumentKey
+        amountUSDTenThousandths = observation.amountUSDTenThousandths
+        currencyCode = observation.currencyCode
+        sourceRaw = observation.sourceRaw
+        sourceVariantID = observation.sourceVariantID
+        marketVariantID = observation.marketVariantID
+        observationEffectiveAt = observation.effectiveAt
+        observationReceivedAt = observation.receivedAt
+        observationIsSourceStamped = observation.isSourceStamped
+    }
+
+    func matches(_ observation: PriceObservation) -> Bool {
+        version == 1 && learnedAt >= observation.receivedAt && learnedAt >= evidence.checkedAt
+            && InventoryLedger.matchesExactGradedObservation(observation, variantID: evidence.variantID,
+                                                             recordKey: instrumentKey)
+            && observation.amountUSDTenThousandths == amountUSDTenThousandths
+            && observation.currencyCode == currencyCode && observation.sourceRaw == sourceRaw
+            && observation.sourceVariantID == sourceVariantID && observation.marketVariantID == marketVariantID
+            && observation.effectiveAt == observationEffectiveAt && observation.receivedAt == observationReceivedAt
+            && observation.isSourceStamped == observationIsSourceStamped
+    }
+
+    func matchesWithdrawal(_ observation: PriceObservation) -> Bool {
+        guard version == 1, observation.kind == .eligibilityExpiry, observation.amount == nil,
+              evidence.lifecycle.status == "current", let deadline = evidence.lifecycle.priceExpiresAt,
+              deadline > learnedAt, observation.receivedAt == deadline, observation.effectiveAt == learnedAt,
+              observation.instrumentKey == instrumentKey else { return false }
+        return observation.currencyCode == currencyCode && observation.sourceRaw == sourceRaw
+            && observation.sourceVariantID == sourceVariantID && observation.marketVariantID == marketVariantID
     }
 }
 

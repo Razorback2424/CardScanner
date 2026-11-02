@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Verify exact PR head
+      - name: Verify the native candidate commit
         env:
           EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
@@ -64,6 +64,7 @@ jobs:
           swift test --package-path PokemonCatalogCore
           swift test --package-path MagicCatalogCore
       - name: Select an available iPhone simulator
+        id: simulator
         run: |
           xcodebuild -version
           python3 - <<'PY'
@@ -77,6 +78,23 @@ jobs:
           with open(os.environ['GITHUB_ENV'], 'a') as output:
               output.write('CATALOG_TEST_DEVICE=' + phones[0]['udid'] + '\n')
           PY
+      # The extra selections belong to this bounded investigation, not every
+      # unrelated catalog PR. No retry-until-green or simulator reset is used.
+      - name: Record bounded centering Done comparisons
+        if: github.head_ref == 'fix/centering-done-event-sequence'
+        continue-on-error: true
+        run: |
+          python3 scripts/centering_done_diagnostics.py record \
+            --device "$CATALOG_TEST_DEVICE" \
+            --derived-data "$RUNNER_TEMP/catalog-derived-data" \
+            --output "$RUNNER_TEMP/centering-done-diagnostics"
+      - name: Retain completed centering comparisons before the combined run
+        if: always() && github.head_ref == 'fix/centering-done-event-sequence'
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-centering-comparisons
+          path: ${{ runner.temp }}/centering-done-diagnostics
+          retention-days: 14
       - name: Run scanner, catalog, printing and variant regressions
         run: |
           set -o pipefail
@@ -127,6 +145,7 @@ jobs:
             -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testExactObservationComparesItsUpdateClockIndependentlyOfLastSaleClock \
             -only-testing:TradingCardScannerTests/CenteringNativePrecisionTests \
             -only-testing:TradingCardScannerTests/CenteringExportTests \
+            -only-testing:TradingCardScannerTests/CardCenteringSurfaceTests \
             -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
@@ -148,6 +167,13 @@ jobs:
             -only-testing:TradingCardScannerTests/LorcanaOwnershipTests/testFailedCSVRowCanBeCorrectedAndRetriedWithoutDuplicatingCommittedCopies \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee "$RUNNER_TEMP/catalog-native-tests.log"
+      - name: Require executed centering cases and retain failed attempts
+        if: always() && steps.simulator.outcome == 'success' && github.head_ref == 'fix/centering-done-event-sequence'
+        run: |
+          python3 scripts/centering_done_diagnostics.py verify \
+            --output "$RUNNER_TEMP/centering-done-diagnostics" \
+            --combined-log "$RUNNER_TEMP/catalog-native-tests.log" \
+            --combined-result-bundle "$RUNNER_TEMP/catalog-tests.xcresult"
       - name: Retain native test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -156,4 +182,5 @@ jobs:
           path: |
             ${{ runner.temp }}/catalog-tests.xcresult
             ${{ runner.temp }}/catalog-native-tests.log
+            ${{ runner.temp }}/centering-done-diagnostics
           retention-days: 14
