@@ -28,9 +28,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
       - name: Test offline ingestion and mapping policies
-        run: python3 -m unittest discover -s scripts/tests -v
+        run: |
+          # The finish ledger pins this baseline; its objects are required by the audit.
+          git fetch --no-tags --depth=1 origin 4a9d70b12d941877e2752fe9cfb5fd1508ce0520
+          python3 -m unittest discover -s scripts/tests -v
       - name: Audit pinned Pokemon finish ledger and retained resources
         run: python3 scripts/audit_pokemon_finish_repairs.py --check-table
       - name: Test Yu-Gi-Oh membership and printing families

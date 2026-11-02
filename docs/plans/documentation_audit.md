@@ -33,14 +33,6 @@ crashes or warnings. This is an uncommitted local patch on `7d15be1`; the remote
 head remains failed and final-commit CI is pending. The allocator abort's
 underlying trigger is not attributed to hierarchy setup as a proven diagnosis.
 
-**Bounded Pokémon finish evidence — 2026-11-02:** the
-[eight-set repair record](../audits/pokemon-finish-evidence-2026-11-02.md)
-reconciles the v2 source workbook with actual baseline blobs: 457 affected IDs,
-510 missing memberships, 504 total identities. It supersedes the original
-four-set count for this repair only, keeps product-exception holds explicit and
-separates offline membership from exhaustive-coverage confidence. Final-head
-execution and CI status are recorded in its draft PR; no release gate is closed.
-
 **Exact Pokémon finish/pricing cases — 2026-11-01:** the
 [case matrix](../audits/catalog-pricing-cases-2026-11-01.md) extends the merged
 catalog repairs with reviewed Cosmos choices/product handles and an existing
@@ -1663,6 +1655,14 @@ are recovery work; explicit dismissals and Price Check still cancel.
 [RF-13](release_followups.md#rf-13--october-review-performance-measurements)
 keeps physical-device performance acceptance open. No executor hypothesis is
 promoted to a measured defect or a release-readiness claim.
+
+**Bounded Pokémon finish evidence — 2026-11-02:** the
+[eight-set repair record](../audits/pokemon-finish-evidence-2026-11-02.md)
+reconciles the v2 source workbook with actual baseline blobs: 457 affected IDs,
+510 missing memberships, 504 total identities. It supersedes the original
+four-set count for this repair only, keeps product-exception holds explicit and
+separates offline membership from exhaustive-coverage confidence. Final-head
+execution and CI status are recorded in its draft PR; no release gate is closed.
 
 ## Re-run rule
 
