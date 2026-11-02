@@ -1,3 +1,20 @@
+# 2026-11-02 — Local centering removal-race follow-up (PR #19)
+
+From failed PR head `7d15be1`, replaced direct native-view removal and the
+auxiliary controller arrangement with SwiftUI-owned fixture views. A Debug
+hook holds the real production removal completion; its per-completion guard
+prevents duplicate delivery while Done/blur stay synchronous. Native tests
+prove A is pending before B, same-field suppression, valid different-field
+delivery, later sessions and context validity at delivery. Final simulator
+checks: 15 focused passed; native 46 passed / 1 skipped; affected 131 passed /
+1 skipped; combined 1,513 passed / 2 skipped. Exact stdout/bundle method
+records reconcile with no missing/duplicate cases, unexpected skips, restarts
+or runtime warnings; Python evidence checks pass 9/9. Earlier failed bundles
+remain retained; the runtime allocator abort's trigger is not proven to be
+hierarchy setup. The patch is uncommitted in an isolated checkout, with source
+hashes and receipts in the [centering ledger](docs/audits/centering-guided-repair.md#local-removal-race-repair-and-verification--2026-11-02).
+Remote #19 remains draft at failed `7d15be1`; final-commit CI is pending.
+
 # 2026-11-02 — Explicit centering Done boundary and native follow-up (PR #19)
 
 Rechecked remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520` and draft

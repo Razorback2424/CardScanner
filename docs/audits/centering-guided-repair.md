@@ -15,16 +15,95 @@ harmless flake.
 
 ### Explicit Done boundary repair — 2026-11-02
 
-**Status:** the explicit Done repair has executed natively. Its first repaired
-run passes the sequencing methods but fails the overall validation gate for
-the separate readiness/evidence problems recorded below. The follow-up also
-corrects a native-removal publication warning found by that run. The exact
-current-head verdict, checkout SHA and artifact receipts are maintained in
+**Status:** Done sequencing and the corrected removal-race tests have positive
+local native evidence, recorded below. Remote PR #19 remains draft at failed
+head `7d15be1e0f993661201f445dcc0f81c945538884`; the local follow-up is uncommitted
+and has not been pushed. Final-commit Actions execution is still required.
+The earlier failed native runs remain failed. See
 [PR #19's validation receipt](https://github.com/Razorback2424/CardScanner/pull/19)
-and the generated Actions manifests; source review alone is not a runtime pass.
-PR #19 stays draft and unmerged.
+for remote candidate identity and retained Actions artifacts.
 Remote main and the starting PR head were rechecked as `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`
 and `47279260010de4d6d1c4ab1c9062115334e0ae4d`. No newer fix was present.
+
+#### Local removal-race repair and verification — 2026-11-02
+
+The local follow-up starts at `7d15be1`, in an isolated checkout. The original
+race tests removed a native text field directly from SwiftUI's hierarchy. The
+same-field fixture also placed a child hosting controller's view directly in
+the window rather than its parent view. Both operations are removed. SwiftUI
+now owns removal and replacement through conditional fixture views.
+
+The production commit action has a per-instance Debug scheduler hook around
+only the real removal finalizer. The default remains a main-queue deferred
+completion; Done and ordinary blur remain synchronous. A guard belongs to
+each scheduled completion, so duplicate delivery cannot repeat publication or
+teardown and cannot suppress a later session. Fixture teardown restores the
+hook and drains pending work on success and error paths.
+
+The repaired tests hold A's real production removal completion, assert that
+no model update occurred through ordinary blur and that A is still pending
+before B starts, then deliver the held completion twice. A newer same-field
+valid, invalid or untouched boundary suppresses A; a different-field B commits
+first and A then commits once to its own field. Another edit after delivery
+still commits. Separate native methods check synchronous ordinary blur while
+A is held and delivery-time invalidation after a real image-load request,
+failed image loading, model replacement, field-owner replacement and a newer
+authoritative value. The existing live-value and field-token checks pass these
+cases; capture-time validity alone is not used as proof. No new production
+context-validation defect is claimed.
+
+The original two-second event deadlines and observer-before-Done assertions
+remain. An intentionally held completion is timed from explicit release;
+the tests separately prove that it did not execute before release.
+
+**Crash/evidence reconciliation:** the retained hosted focused bundle reports
+10 passed / 3 failed. Its delayed-end case contains a crash attachment despite
+the stdout pass; it is not an ordinary assertion failure that can be discarded.
+The attachment and a local baseline reproduce a `SIGABRT` with
+`freed pointer was not the last allocation`, through Swift concurrency task
+deallocation and XCTest's `XCTSwiftErrorObservation._observeErrors(in:)`.
+The hosted stdout starts the next same-field test before that abort. These
+records explain why stdout alone was insufficient. They do not establish the
+trigger of the runtime abort or prove that controller hierarchy caused it.
+The invalid hierarchy is removed, and every final local selection completes
+without an abort or restart. The old bundle remains authoritative for its head.
+
+Native evidence is retained on the external SSD under
+`CodexBuilds/CardScanner-PR19-Removal-20261102`:
+
+| Local selection | Passed | Failed methods | Skipped |
+| --- | ---: | ---: | ---: |
+| Baseline at `7d15be1`, three selected methods | 1 | 2 | 0 |
+| First five-method repair attempt | 4 | 1 | 0 |
+| First fifteen-method repair attempt | 14 | 1 | 0 |
+| Final focused selection, `repair-focused-2` | 15 | 0 | 0 |
+| Final native class, `repair-native-class` | 46 | 0 | 1 |
+| Final affected suites, `repair-affected-suites` | 131 | 0 | 1 |
+| Final unchanged combined selection, `repair-combined` | 1,513 | 0 | 2 |
+
+The baseline reproduces the same-field crash and premature A publication in
+the different-field test. The two intermediate failures remain retained: the
+new image test first bypassed the real load-revision path, then unnecessarily
+waited for image analysis within an editing deadline. The final test uses the
+production load entry point and checks deferred delivery while loading; it
+retires that analyzer afterward. Editing deadlines were not increased.
+
+Final verification used Xcode 27.1, iPhone 17 Pro / iOS 27.0 Simulator. Every
+expected method is present exactly once in each finalized bundle, with no
+stdout/bundle status conflicts, missing methods, unexpected skips, restarts,
+SwiftUI publication-warning matches or bundle runtime warnings. The two known
+combined skips are the native development-performance and aged-store opt-in
+benchmarks. The evidence-gate Python suite also passes 9/9.
+
+The local verification receipts include raw extraction output, exact method
+lists and SHA-256 identities for the unchanged tested source:
+
+- `CardCenteringView.swift`: `2337feeb622f5196d4bcb5a6edc2801d9389cf4490a6fa16951df4af76cebe95`
+- `CenteringExportTests.swift`: `8ba27d80ec4abaa466a78e2adb33914575df4d5a091a844f0defc136bd8e53d5`
+
+This is component/simulator evidence for the uncommitted local patch. It does
+not replace final-commit CI or establish keyboard-toolbar tapping, VoiceOver,
+physical-device, provider, CloudKit or release acceptance.
 
 The complete decoded [job 125081729300](https://github.com/Razorback2424/CardScanner/actions/runs/41384336534/job/125081729300)
 was inspected before editing. Its exact checkout was `47279260010de4d6d1c4ab1c9062115334e0ae4d`.
@@ -206,7 +285,7 @@ toolchain, simulator state, raw log, result extraction and `.xcresult`. Complete
 comparison bundles are uploaded before combined execution as well as in the
 final native artifact. The final head must execute this entire plan; its current
 receipt is linked from PR #19 rather than inferred from an earlier commit.
-Source discovery for this follow-up selects 13 focused methods, 45 native-class
+Source discovery at `7d15be1` selected 13 focused methods, 45 native-class
 methods and 130 affected methods; the unchanged combined selection gains ten
 methods over the 1,503-method starting head. These are expected selection counts,
 not an assertion that the new head has passed.
@@ -215,8 +294,8 @@ Local checks cover Python syntax, selection completeness and rejection of
 missing/failed/skipped/duplicate completion records, plus `git diff --check`.
 Nine persisted Python tests exercise exact result recovery, status conflicts,
 failure preservation, wrong-target/missing/duplicate cases and malformed data.
-This Linux authoring workspace has neither Swift nor Xcode. Native execution
-uses the existing GitHub Actions workflow with an exact-head checkout check;
+The original Linux authoring workspace had neither Swift nor Xcode. Its native execution
+used the existing GitHub Actions workflow with an exact-head checkout check;
 the unavailable local proxy was not bypassed. The hosted input regressions
 exercise the production Done action; actual keyboard-toolbar visibility,
 manual VoiceOver/keyboard interaction and physical-device behavior remain

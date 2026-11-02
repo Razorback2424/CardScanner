@@ -1768,6 +1768,27 @@ final class CardCenteringPrecisionCommitAction {
     fileprivate weak var activeEditor: CardCenteringPrecisionEditor?
     private var nextSessionToken: UInt64 = 0
     private var latestBoundaries: [String: UInt64] = [:]
+#if DEBUG
+    // Per-host seam for holding the real removal finalizer in native tests.
+    // Done and ordinary blur never pass through this scheduler.
+    var removalCompletionSchedulerForTesting: ((@escaping @MainActor () -> Void) -> Void)?
+#endif
+
+    fileprivate func scheduleRemovalCompletion(_ completion: @escaping @MainActor () -> Void) {
+        var delivered = false
+        let once: @MainActor () -> Void = {
+            guard !delivered else { return }
+            delivered = true
+            completion()
+        }
+#if DEBUG
+        if let removalCompletionSchedulerForTesting {
+            removalCompletionSchedulerForTesting(once)
+            return
+        }
+#endif
+        DispatchQueue.main.async { once() }
+    }
 
     fileprivate func makeSessionToken() -> UInt64 {
         nextSessionToken &+= 1
@@ -2015,6 +2036,7 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
     func disappear(_ input: CardCenteringPrecisionTextInput) {
         guard !removed, self.input === input else { return }
         let departing = snapshot(input)
+        let departingAction = departing?.session.commitAction ?? commitAction
         let departingContext = departing?.session.context ?? context
         let departingDraft = input.text
         let departingFocus = observedFocus
@@ -2032,7 +2054,7 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
         _ = input.resignFirstResponder()
         // Retain the captured owner until completion: a weak reference could
         // drop a legitimate removal commit when SwiftUI releases this editor.
-        DispatchQueue.main.async { [self] in
+        let complete: @MainActor () -> Void = { [self] in
             publication?()
             if removed, nativeLifetime == lifetime, isEditing { isEditing = false }
             // Teardown waits for this completion event, not merely native
@@ -2041,6 +2063,8 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
                 focused: departingFocus, draft: departingDraft,
                 value: departingContext?.currentValue(), detail: "lifetime=\(lifetime) context=\(departingInputID)")
         }
+        if let departingAction { departingAction.scheduleRemovalCompletion(complete) }
+        else { DispatchQueue.main.async { complete() } }
     }
 
     func detach(_ input: CardCenteringPrecisionTextInput) {
