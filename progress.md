@@ -1,3 +1,25 @@
+# 2026-11-02 — Final native verification and repository consolidation
+
+Squash-merged PRs #19, #18 and #20 using the green exact final integration tree. The
+verified combined source executes 1,737 selected native methods: 1,734 passed,
+three expected opt-in skips, zero failures, with reconciled stdout/result-bundle
+records. Offline Python tests pass 159 with five prerequisite skips; the pinned
+Pokémon finish audit passes. The centering repair proves SwiftUI-owned pending
+removal through B, same-field supersession, valid different-field delivery once,
+delivery-time validity, synchronous Done/blur and isolated one-shot scheduling.
+Hosted trace corrections retain the original deadlines and precision assertions.
+Extra #19 comparisons and the explained #18 infrastructure rerun were pending
+at merge time; those runs are not claimed green.
+Historical crashes/failures remain retained and are not promoted to a proven
+hierarchy diagnosis. See the [consolidation receipt](docs/audits/repository-consolidation-2026-11-02.md)
+for exact commits, runs and evidence scope. Earlier entries below are dated
+checkpoints, including the now-superseded uncommitted/draft status.
+
+All branch/worktree heads and the superseded stash are preserved in verified
+external recovery bundles before cleanup. Existing ignored settings and archives
+are preserved. Simulator/component evidence does not certify device, provider,
+CloudKit, archive or release readiness.
+
 # 2026-11-02 — Local centering removal-race follow-up (PR #19)
 
 From failed PR head `7d15be1`, replaced direct native-view removal and the

@@ -1,6 +1,18 @@
 # Guided centering repair
 
-## Localized Done investigation — 2026-11-01 (open)
+## Consolidated Done and removal repair — 2026-11-02
+
+**Current status:** repaired and squash-merged in PR #19. The exact final
+integration tree passed hosted CI. The [consolidation receipt](repository-consolidation-2026-11-02.md)
+records source identities, the pending extra branch runs and the combined
+1,734 passed / 3 expected skips / zero failures. Removal tests hold the real
+production completion through B, verify same/different-field outcomes and
+delivery-time validity, and reconcile every locally selected method with its
+finalized result bundle. The original allocator abort remains a failed
+historical result; its trigger is not claimed proven. Device, toolbar-tapping
+and release gates remain open.
+
+## Historical localized Done investigation — 2026-11-01
 
 This investigation is isolated in [draft PR #19](https://github.com/Razorback2424/CardScanner/pull/19),
 on `fix/centering-done-event-sequence`, from merged main
@@ -15,17 +27,14 @@ harmless flake.
 
 ### Explicit Done boundary repair — 2026-11-02
 
-**Status:** Done sequencing and the corrected removal-race tests have positive
-local native evidence, recorded below. Remote PR #19 remains draft at failed
-head `7d15be1e0f993661201f445dcc0f81c945538884`; the local follow-up is uncommitted
-and has not been pushed. Final-commit Actions execution is still required.
-The earlier failed native runs remain failed. See
-[PR #19's validation receipt](https://github.com/Razorback2424/CardScanner/pull/19)
-for remote candidate identity and retained Actions artifacts.
-Remote main and the starting PR head were rechecked as `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`
-and `47279260010de4d6d1c4ab1c9062115334e0ae4d`. No newer fix was present.
+**Current status:** superseded by the merged, final-head-verified consolidation
+receipt above. The following local investigation and failure records are
+historical checkpoints tied to their stated source identities.
 
 #### Local removal-race repair and verification — 2026-11-02
+
+**Historical checkpoint:** before publication and subsequent hosted fixture
+corrections. Its counts and hashes apply only to that earlier local patch.
 
 The local follow-up starts at `7d15be1`, in an isolated checkout. The original
 race tests removed a native text field directly from SwiftUI's hierarchy. The

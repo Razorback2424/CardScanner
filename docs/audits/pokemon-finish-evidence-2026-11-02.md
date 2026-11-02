@@ -1,6 +1,10 @@
 # Pokémon finish evidence repair
 
-**Date:** 2026-11-02. Bounded eight-set repair; draft, not release certification.
+**Date:** 2026-11-02. Bounded eight-set repair, merged in PR #20 after its
+final native gate passed. The [consolidation receipt](repository-consolidation-2026-11-02.md)
+records the current checkpoint and verified union selection. Earlier draft and
+integration-failure statements below are historical. Release certification
+remains open.
 Starting main and reviewed baseline: `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`.
 Open PRs #18 and #19 were inspected before editing and concern separate repairs.
 Implementation uses `fix/pokemon-finish-evidence` in an isolated worktree.

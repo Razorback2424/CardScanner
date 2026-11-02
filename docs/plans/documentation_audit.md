@@ -8,7 +8,17 @@ history.
 
 ## Current authority boundary — updated 2026-11-02
 
-**Centering Done event ownership — 2026-11-02:** the
+**Repository consolidation — 2026-11-02:** all remaining PRs (#19, #18, #20)
+are squash-merged. The exact final integration tree passed hosted #20 CI. The
+[consolidation receipt](../audits/repository-consolidation-2026-11-02.md) records
+the verified code checkpoint and 1,734 local native passes / three expected
+skips / zero failures, also reproduced by #20 hosted CI. Extra #19 comparisons
+and the explained #18 infrastructure rerun were pending at merge time. This
+supersedes earlier draft/uncommitted claims below. Earlier failures remain
+authoritative for their own heads; the allocator abort is not assigned a proven
+hierarchy diagnosis. No device/provider/release gate is certified.
+
+**Historical centering Done event ownership checkpoints — 2026-11-02:** the
 [centering repair ledger](../audits/centering-guided-repair.md#explicit-done-boundary-repair--2026-11-02)
 supersedes PR #19's earlier queued/no-execution statement. Run 41384336534 at
 `4727926` failed the rapid-refocus method in the native class, affected suites
