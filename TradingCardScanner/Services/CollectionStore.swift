@@ -587,6 +587,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         // durable receipt, never throw into a retry of the acquisition.
         let priceSaved = (try? storeCatalogPrice(lookup, game: details.card.game, printingID: storageID,
             variantID: resolved.variant?.id, at: details.retrievedAt, treatments: treatments,
+            collectionKey: mutation.collectionKey,
             shouldContinue: shouldContinue)) ?? false
         return (mutation, storageID, lookup, priceSaved)
     }
@@ -602,6 +603,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
     func storeCatalogPrice(
         _ lookup: PriceLookup, game: CardGame, printingID: String, variantID: String?,
         at fetchedAt: Date = .now, treatments: [String] = [], marketVariantID: String? = nil,
+        collectionKey: String? = nil,
         shouldContinue: StorageGenerationContinuation
     ) throws -> Bool {
         try performOwnershipWrite { context in
@@ -616,12 +618,41 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             let writeDate: Date
             if case .price = lookup { writeDate = .now }
             else { writeDate = fetchedAt }
-            guard prices.store(lookup, game: game, printingID: printingID, variantID: variantID,
-                marketVariantID: marketVariantID, at: writeDate, treatmentIDs: treatments) else {
+            let accepted: Bool
+            if let collectionKey {
+                accepted = prices.storeOwnedPrice(lookup, collectionKey: collectionKey,
+                    at: writeDate, marketVariantID: marketVariantID)
+            } else {
+                accepted = prices.store(lookup, game: game, printingID: printingID, variantID: variantID,
+                    marketVariantID: marketVariantID, at: writeDate, treatmentIDs: treatments)
+            }
+            guard accepted else {
                 context.rollback()
                 return false
             }
             return prices.save()
+        }
+    }
+
+    func reconcileOwnedPrice(_ lookup: PriceLookup, collectionKey: String,
+                             shouldContinue: StorageGenerationContinuation) throws -> OwnedPriceReconciliation {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            guard let card = try context.fetch(FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == collectionKey })).first else {
+                throw CollectionStoreError.missingDestinationRow(collectionKey)
+            }
+            let prices = PriceStore(context: context)
+            let reason = PriceStore.ownedPriceRetentionReason(existing: try prices.selectedRecord(for: card), incoming: lookup)
+            guard prices.storeOwnedPrice(lookup, collectionKey: collectionKey), prices.save() else {
+                context.rollback()
+                throw PriceStore.CheckpointWriteError()
+            }
+            let selected = try prices.selectedRecord(for: card)
+            return OwnedPriceReconciliation(selectedKey: selected?.key ?? card.priceKey,
+                display: PokemonReviewedPhysicalObjects.requiresReview(card) ? .unknown : (selected?.display ?? .unknown),
+                retainedReason: reason)
         }
     }
 
@@ -1154,13 +1185,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         in context: ModelContext
     ) {
         guard lookup.hasObservation else { return }
-        PriceStore(context: context).store(
-            lookup,
-            game: card.cardGame,
-            printingID: card.priceStorageID,
-            variantID: card.variantID,
-            treatmentIDs: card.priceTreatmentIDs
-        )
+        PriceStore(context: context).storeOwnedPrice(lookup, collectionKey: card.collectionKey)
     }
 
     private func stagePrice(

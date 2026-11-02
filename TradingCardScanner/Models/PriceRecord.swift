@@ -435,3 +435,12 @@ struct PriceDisplay: Equatable, Sendable {
         return now.timeIntervalSince(asOf) <= Self.staleAfter ? .current : .stale
     }
 }
+
+extension PriceDisplay {
+    init(_ price: NormalizedPrice) {
+        self.init(amount: price.isUsableUSD ? price.unitMarketPriceUSD : nil,
+                  currencyCode: price.currencyCode, source: price.source,
+                  sourceUpdatedAt: price.sourceUpdatedAt, fetchedAt: price.fetchedAt,
+                  lastCheckedAt: price.fetchedAt)
+    }
+}

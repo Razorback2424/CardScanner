@@ -235,6 +235,7 @@
 		A0010051 /* BrowseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010051 /* BrowseCatalog.swift */; };
 		A0010151 /* BrowsePriceHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010151 /* BrowsePriceHistoryStore.swift */; };
 		A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010152 /* BrowsePriceObservationDayResolver.swift */; };
+		FACE2001 /* OwnedCatalogPrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE2002 /* OwnedCatalogPrice.swift */; };
 		A0010153 /* ScryfallDatasetStampCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010153 /* ScryfallDatasetStampCache.swift */; };
 		A0010052 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010052 /* BrowseView.swift */; };
 		A00100C3 /* ArtworkFallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C3 /* ArtworkFallbacks.swift */; };
@@ -609,6 +610,7 @@
 		B0010051 /* BrowseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalog.swift; sourceTree = "<group>"; };
 		B0010151 /* BrowsePriceHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryStore.swift; sourceTree = "<group>"; };
 		B0010152 /* BrowsePriceObservationDayResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceObservationDayResolver.swift; sourceTree = "<group>"; };
+		FACE2002 /* OwnedCatalogPrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnedCatalogPrice.swift; sourceTree = "<group>"; };
 		B0010153 /* ScryfallDatasetStampCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScryfallDatasetStampCache.swift; sourceTree = "<group>"; };
 		B0010052 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		B00100C3 /* ArtworkFallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkFallbacks.swift; sourceTree = "<group>"; };
@@ -921,6 +923,7 @@
 				B0010051 /* BrowseCatalog.swift */,
 				B0010151 /* BrowsePriceHistoryStore.swift */,
 				B0010152 /* BrowsePriceObservationDayResolver.swift */,
+				FACE2002 /* OwnedCatalogPrice.swift */,
 				B0010153 /* ScryfallDatasetStampCache.swift */,
 				B00100C4 /* CatalogSetCompletion.swift */,
 				BBC10001 /* CatalogSetPresentation.swift */,
@@ -1581,6 +1584,7 @@
 				A0010051 /* BrowseCatalog.swift in Sources */,
 				A0010151 /* BrowsePriceHistoryStore.swift in Sources */,
 				A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */,
+				FACE2001 /* OwnedCatalogPrice.swift in Sources */,
 				A0010153 /* ScryfallDatasetStampCache.swift in Sources */,
 				A00100C4 /* CatalogSetCompletion.swift in Sources */,
 				ABC10001 /* CatalogSetPresentation.swift in Sources */,

@@ -996,6 +996,16 @@ struct CatalogCachedPrice: Codable, Equatable, Sendable {
     }
 }
 
+struct SortPriceHint: Codable, Equatable, Sendable {
+    let price: Double
+    let checkedAt: Date
+
+    func isFresh(now: Date = .now) -> Bool {
+        let age = now.timeIntervalSince(checkedAt)
+        return age >= 0 && age < PriceDisplay.staleAfter
+    }
+}
+
 /// A price stream reports coverage separately from the price dictionary. A
 /// resolved card with no USD quote is a quiet coverage gap; an unresolved card
 /// is an actionable request failure that can be retried.
@@ -1166,11 +1176,18 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
     let pokemonPrintRunRaw: String?
     let magicTreatmentIDsRaw: [String]
 
+    let selectedPriceKey: String
+    let selectedPrice: PriceDisplay
+
     var id: String { collectionKey }
     let sealedProductID: String?
     let sealedVariantID: String?
 
     init(_ card: CollectedCard) {
+        self.init(card, selectedPriceKey: card.priceKey, selectedPrice: .unknown)
+    }
+
+    init(_ card: CollectedCard, selectedPriceKey: String, selectedPrice: PriceDisplay) {
         collectionKey = card.collectionKey
         game = card.cardGame
         providerID = card.providerID
@@ -1185,6 +1202,8 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
         gradedLabel = card.itemKind == .gradedCard ? card.itemKindLabel : nil
         pokemonPrintRunRaw = card.pokemonPrintRunRaw
         magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
+        self.selectedPriceKey = selectedPriceKey
+        self.selectedPrice = selectedPrice
         sealedProductID = card.justTCGCardID
         sealedVariantID = card.justTCGVariantID
     }
@@ -1644,6 +1663,7 @@ protocol BrowseCatalogProviding: Sendable {
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
+    func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]>
     nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate>
@@ -1660,6 +1680,10 @@ protocol BrowseCatalogProviding: Sendable {
 extension BrowseCatalogProviding {
     var gameRegistry: CardGameRegistry { .standard }
     func refreshCatalogNow() async { await prepareCatalog() }
+
+    func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails {
+        try await details(for: summary)
+    }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
         let details = try await details(for: summary)

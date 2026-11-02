@@ -707,6 +707,83 @@ struct PriceStore {
     }
 
     private enum CheckpointError: Error { case writeFailed }
+    struct CheckpointWriteError: Error {}
+
+    /// Keep this decision identical for canonical writes and alias promotion.
+    static func retainsNewerMarketData(existing record: PriceRecord, incoming price: NormalizedPrice,
+                                       now: Date = .now) -> Bool {
+        record.game == CardGame.pokemon.rawValue && price.source == .tcgplayer && price.isUsableUSD
+            && !record.isInvalidated
+            && !(record.fetchedAt.map { $0 > now.addingTimeInterval(5 * 60) } ?? false)
+            && record.source != .importedCSV
+            && PortfolioPriceEligibility.eligibleUnitPrice(amount: record.unitMarketPriceUSD,
+                currencyCode: record.currencyCode) != nil
+            && (record.sourceUpdatedAt ?? record.fetchedAt).map {
+                price.effectiveAsOf < $0 || (record.sourceUpdatedAt != nil && price.sourceUpdatedAt == nil)
+            } == true
+    }
+
+    static func ownedPriceRetentionReason(existing: PriceRecord?, incoming: PriceLookup,
+                                          now: Date = .now) -> OwnedPriceRetentionReason? {
+        guard case let .price(price) = incoming else { return .unavailable }
+        guard let existing else { return nil }
+        if let invalidatedAt = existing.invalidatedAt, price.fetchedAt <= invalidatedAt { return .invalidated }
+        if !existing.isInvalidated, existing.isStale(price, now: now) { return .laterReceipt }
+        guard retainsNewerMarketData(existing: existing, incoming: price, now: now) else { return nil }
+        guard let date = price.sourceUpdatedAt else { return .missingSourceDate(price.source) }
+        return .olderSourceDate(price.source, date)
+    }
+
+    func selectedRecord(for card: CollectedCard) throws -> PriceRecord? {
+        let keys = card.priceLookupKeys
+        let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { keys.contains($0.key) }))
+        return Self.record(for: card, in: Dictionary(grouping: records, by: \.key)
+            .compactMapValues(Self.authoritativeRecord(in:)))
+    }
+
+    /// The complete selected-record decision is replayed inside the fresh
+    /// checkpoint. A sibling invalidation during a network await must still win.
+    @discardableResult
+    func storeOwnedPrice(_ lookup: PriceLookup, collectionKey: String,
+                         fallback: (game: CardGame, printingID: String, variantID: String?, treatmentIDs: [String])? = nil,
+                         at date: Date = .now, marketVariantID: String? = nil) -> Bool {
+        let card: CollectedCard?
+        do {
+            card = try context.fetch(FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == collectionKey })).first
+        } catch { return false }
+        guard let card else {
+            // Refresh still checkpoints exact quote/history evidence when the
+            // last owner was removed during the fetch; it never recreates ownership.
+            guard let fallback else { return true }
+            return store(lookup, game: fallback.game, printingID: fallback.printingID,
+                variantID: fallback.variantID, marketVariantID: marketVariantID,
+                at: date, treatmentIDs: fallback.treatmentIDs)
+        }
+        let fallback = fallback ?? (card.cardGame, card.priceStorageID, card.variantID, card.priceTreatmentIDs)
+        if enqueue(keys: card.priceLookupKeys, { fresh in
+            guard fresh.storeOwnedPrice(lookup, collectionKey: collectionKey, fallback: fallback,
+                at: .now, marketVariantID: marketVariantID) else {
+                throw CheckpointError.writeFailed
+            }
+        }) { return true }
+        guard !PokemonReviewedPhysicalObjects.requiresReview(card) else { return true }
+        let selected: PriceRecord?
+        do { selected = try selectedRecord(for: card) }
+        catch { return false }
+        if let selected, Self.ownedPriceRetentionReason(existing: selected, incoming: lookup, now: date) != nil {
+            // Reject delayed pre-correction evidence without creating another
+            // key that lacks the correction's invalidation watermark.
+            if case let .price(price) = lookup, let invalidatedAt = selected.invalidatedAt,
+               price.fetchedAt <= invalidatedAt { return true }
+            return store(lookup, game: card.cardGame, printingID: selected.printingID,
+                         variantID: selected.variantID, marketVariantID: marketVariantID,
+                         at: date, treatmentIDs: selected.magicTreatmentIDsRaw)
+        }
+        return store(lookup, game: card.cardGame, printingID: card.priceStorageID,
+                     variantID: card.variantID, marketVariantID: marketVariantID,
+                     at: date, treatmentIDs: card.priceTreatmentIDs)
+    }
 
     init(
         context: ModelContext,
@@ -1090,14 +1167,7 @@ struct PriceStore {
             // newer raw Pokémon quote, just as Price Check does. Equal source
             // dates still allow restatements; invalidations, imported values,
             // clock repairs and exact vendor bindings retain their own rules.
-            if game == .pokemon, price.source == .tcgplayer, price.isUsableUSD,
-               !record.isInvalidated, !isClockRollbackRepair,
-               record.source != .importedCSV,
-               PortfolioPriceEligibility.eligibleUnitPrice(amount: record.unitMarketPriceUSD,
-                   currencyCode: record.currencyCode) != nil,
-               let previousDate = record.sourceUpdatedAt ?? record.fetchedAt,
-               (price.effectiveAsOf < previousDate
-                || (record.sourceUpdatedAt != nil && price.sourceUpdatedAt == nil)) {
+            if Self.retainsNewerMarketData(existing: record, incoming: price, now: date) {
                 if record.lastCheckedAt.map({ coverageDate >= $0 }) ?? true {
                     PriceObservationLog(context: context, index: index).recordSuccessfulCheck(
                         instrumentKey: key, source: price.source, at: coverageDate

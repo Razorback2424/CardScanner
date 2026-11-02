@@ -4,6 +4,42 @@ import XCTest
 
 @MainActor
 final class CollectionStoreDigestTests: XCTestCase {
+    func testPriceEvidenceIncludesValuedAndStaleValuedSelectedRecords() async throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        try seed(context, reversed: false)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let records = try context.fetch(FetchDescriptor<PriceRecord>())
+        let date = Date.now.addingTimeInterval(-172800)
+        for record in records {
+            record.sourceUpdatedAt = record.game == CardGame.magic.rawValue ? .now : date
+            record.fetchedAt = record.sourceUpdatedAt
+            record.lastCheckedAt = .now
+        }
+        try context.save()
+        let text = try await CollectionCSV.exportIsolated(from: container, kind: .priceEvidence).text
+        XCTAssertEqual(text, CollectionCSV.exportPriceEvidence(cards, priceRecords: records).text)
+        XCTAssertTrue(text.contains("selected_price_key"))
+        XCTAssertTrue(text.contains("retained_quote_fetched_at"))
+        XCTAssertTrue(text.contains("retained_quote_updated_at"))
+        for card in cards {
+            XCTAssertTrue(text.contains(card.name))
+            XCTAssertTrue(text.contains(card.priceKey))
+        }
+        XCTAssertTrue(text.contains(ISO8601DateFormatter().string(from: date)))
+        let original = try XCTUnwrap(cards.first { $0.cardGame == .pokemon })
+        let imported = CollectedCard(collectionKey: "pokemon:csv:evidence:normal", game: .pokemon,
+            providerID: "csv:evidence", name: "Imported evidence", setName: original.setName,
+            setCode: original.setCode, cardNumber: original.cardNumber, rarity: nil, imageURL: nil,
+            thumbnailURL: nil, variant: .normal, variantResolution: .userConfirmed)
+        imported.catalogProviderID = original.providerID
+        context.insert(imported)
+        try context.save()
+        let aliases = CollectionCSV.exportPriceEvidence([imported], priceRecords: records).text
+        XCTAssertTrue(aliases.split(separator: "\n").last?.hasSuffix(original.priceKey) == true)
+        XCTAssertFalse(aliases.contains(imported.priceKey))
+    }
+
     private let storeID = UUID(uuidString: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE")!
     private let fixedDate = Date(timeIntervalSinceReferenceDate: 1234)
 

@@ -253,7 +253,7 @@ enum CollectionCSV {
     /// Fetch and format on an actor created off main; model instances stay in
     /// that actor's context and only the CSV text crosses the isolation boundary.
     enum ExportKind: Sendable {
-        case collection, portfolioHistory, unpriced, missingArtwork
+        case collection, portfolioHistory, unpriced, priceEvidence, missingArtwork
     }
 
     static func exportIsolated(
@@ -474,6 +474,12 @@ enum CollectionCSV {
         )
     }
 
+    static func exportPriceEvidence(_ cards: [CollectedCard], priceRecords: [PriceRecord]) -> CollectionCSVDocument {
+        diagnosticExport(cards, priceRecords: priceRecords) { card, record in
+            PricingDiagnostics.valuationExclusionReason(for: card, record: record)?.rawValue ?? "valued"
+        }
+    }
+
     /// Entries whose stored model has no usable artwork URL. A remote image that
     /// is temporarily offline is deliberately not classified as missing data.
     static func exportMissingArtwork(
@@ -507,7 +513,8 @@ enum CollectionCSV {
             "magic_treatment_ids", "magic_treatment_qualifiers", "magic_content_kind",
             "valuation_exclusion_reason", "retained_native_amount", "retained_native_currency",
             "retained_quote_fetched_at", "retained_quote_updated_at", "latest_attempt_status",
-            "latest_attempt_reason", "prior_graded_coverage", "tcgplayer_product_id", "justtcg_card_id"
+            "latest_attempt_reason", "prior_graded_coverage", "tcgplayer_product_id", "justtcg_card_id",
+            "selected_price_key"
         ]
         let rows = cards.sorted(by: diagnosticSort).map { card -> [String] in
             let record = PriceStore.record(for: card, in: recordsByKey)
@@ -544,7 +551,8 @@ enum CollectionCSV {
                 record?.lastFailureAt != nil ? PricingDiagnosticReason.providerRequestFailed.rawValue : (record?.lastFailureReasonRaw ?? ""),
                 record?.gradedMarketCoverage?.status.rawValue ?? "",
                 card.tcgplayerProductID ?? "",
-                card.justTCGCardID ?? ""
+                card.justTCGCardID ?? "",
+                record?.key ?? card.priceKey
             ]
         }
         let text = ([headers] + rows)
@@ -1999,6 +2007,11 @@ actor CollectionCSVExportActor: BackgroundModelActor {
             ).text
         case .unpriced:
             return CollectionCSV.exportUnpriced(
+                try modelContext.fetch(FetchDescriptor<CollectedCard>()),
+                priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            ).text
+        case .priceEvidence:
+            return CollectionCSV.exportPriceEvidence(
                 try modelContext.fetch(FetchDescriptor<CollectedCard>()),
                 priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>())
             ).text

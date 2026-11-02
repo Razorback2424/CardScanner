@@ -736,14 +736,16 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             case let .price(price): newAmount = price.unitMarketPriceUSD
             case .unavailable: newAmount = previousAmount
             }
-            let accepted = store.store(
-                lookup,
-                game: target.game,
-                printingID: target.printingID,
-                variantID: target.variantID,
-                at: now,
-                treatmentIDs: target.magicTreatmentIDsRaw
-            )
+            let owners = rowIdentitiesByPriceKey[key] ?? []
+            let accepted: Bool
+            if owners.isEmpty {
+                accepted = store.store(lookup, game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, at: now, treatmentIDs: target.magicTreatmentIDsRaw)
+            } else {
+                accepted = owners.map { store.storeOwnedPrice(lookup, collectionKey: $0.collectionKey,
+                    fallback: (target.game, target.printingID, target.variantID, target.magicTreatmentIDsRaw), at: now) }
+                    .allSatisfy { $0 }
+            }
             stage(
                 accepted,
                 key: key,

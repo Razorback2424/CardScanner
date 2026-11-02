@@ -466,7 +466,7 @@ final class JustTCGV2GradedSurfaceTests: XCTestCase {
         )
         XCTAssertEqual(
             identity.groupingKey(game: .pokemon),
-            "pokemon|base set|004/102| charizard |none|none"
+            "pokemon|base set|004/102| charizard |none|none|none"
         )
 
         let psa = UncoveredSurfaceFixtures.collectedCard(

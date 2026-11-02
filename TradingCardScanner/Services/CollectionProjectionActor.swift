@@ -220,7 +220,12 @@ actor CollectionProjectionActor: BackgroundModelActor {
             ),
             diagnosticsByCollectionKey: diagnostics,
             physicalRowCountsByKey: projection.byKey.mapValues(\.physicalRowCount),
-            ownership: CatalogOwnershipIndex(rows: cards.map(CatalogOwnershipCardSnapshot.init))
+            ownership: CatalogOwnershipIndex(rows: cards.map { card in
+                let key = keySelection.priceStorageKey(for: card)
+                return CatalogOwnershipCardSnapshot(card, selectedPriceKey: key,
+                    selectedPrice: PokemonReviewedPhysicalObjects.requiresReview(card)
+                        ? .unknown : (recordsByKey[key]?.display ?? .unknown))
+            })
         )
         lastReadSucceeded = true
         return snapshot
