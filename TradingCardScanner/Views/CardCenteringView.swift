@@ -1937,7 +1937,7 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
         if session == nil, let context, let value = context.currentValue() {
             input.text = context.formatted(value)
         }
-        record("view.appear")
+        record("view.appear", detail: "lifetime=\(nativeLifetime) context=\(ObjectIdentifier(input))")
         if isEditing, !input.isFirstResponder {
             let lifetime = nativeLifetime
             // Reattachment may supersede the old removal's UI cleanup without
@@ -2005,6 +2005,15 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
         return { [weak self] in self?.end(ended) }
     }
 
+    func captureWindowDetachment(_ input: CardCenteringPrecisionTextInput) -> (() -> Void)? {
+        guard let context, let trace = context.trace else { return nil }
+        let field = context.field, identity = ObjectIdentifier(input)
+        return {
+            trace.record("view.window-detached", field: field,
+                         detail: "context=\(identity)")
+        }
+    }
+
     private func end(_ ended: Snapshot) {
         commit(ended)
         guard session === ended.session else { return }
@@ -2069,6 +2078,7 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
 
     func detach(_ input: CardCenteringPrecisionTextInput) {
         guard self.input === input else { return }
+        input.prepareWindowDetachment()
         disappear(input)
         input.delegate = nil
         input.editor = nil
@@ -2170,16 +2180,31 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
 @MainActor
 final class CardCenteringPrecisionTextInput: UITextField {
     fileprivate weak var editor: CardCenteringPrecisionEditor?
+    private var windowDetachment: (() -> Void)?
+
+    fileprivate func prepareWindowDetachment() {
+        if windowDetachment == nil { windowDetachment = editor?.captureWindowDetachment(self) }
+    }
 
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        if window != nil { editor?.appear(self) }
+        if window != nil {
+            windowDetachment = nil
+            editor?.appear(self)
+        } else {
+            let detached = windowDetachment
+            windowDetachment = nil
+            detached?()
+        }
     }
 
     override func willMove(toWindow newWindow: UIWindow?) {
         // Capture removal while this native view still owns its edit. A later
         // SwiftUI disappearance notification cannot consume a refocused draft.
-        if window != nil, newWindow == nil { editor?.disappear(self) }
+        if window != nil, newWindow == nil {
+            prepareWindowDetachment()
+            editor?.disappear(self)
+        }
         super.willMove(toWindow: newWindow)
     }
 
