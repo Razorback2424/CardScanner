@@ -1,3 +1,34 @@
+# 2026-11-02 — PR #16 reconciled engine/model repairs
+
+Started at `c693463b213d68df3a77d34fbc4fbf3045206f51`; no interrupted local
+repair survived in accessible normal Git history. Camera presence is now
+independent of pending questions, and pair confirmation uses the most recently
+observed side. Reserved colon/pipe components cannot create a physical key or
+enter a decoded catalog; valid legacy key spellings remain unchanged. Corrected
+source versus retained snapshot counts and documented write acknowledgment/undo
+as deferred integration work. No scanner, storage, pricing or UI integration.
+
+Xcode 27.1 unsigned iOS 27 simulator: **48 executed, 48 passed, zero skipped**
+(`MagicPhysicalObjectTests`: 26; `MagicTokenPairingSessionTests`: 22), including
+removed-versus-present answers and both latest-side directions. Both suites are
+now selected by CI. The first build ran out of T7 space before tests; its failure
+log is retained. Only this session's rebuildable artifacts were removed for the
+successful sequential retry. Device flip/latch acceptance remains open.
+
+# 2026-11-01 — Design and engine for double-sided Magic token scanning
+
+On `claude/mtg-token-scanner-g4un9y`, the [token scanning plan](docs/plans/magic-token-scanning.md)
+defines token scope from repository data. Its evidence includes TCGplayer Guild
+Kit/Event Deck listings showing one face on up to three cards and printed
+numbers reused for different faces. The previously unused number-only token model was replaced
+with set-qualified face identity, an order-independent physical key,
+per-set coverage gating, merged listings and a validated catalog wire format.
+A new pure `MagicTokenPairingSession` implements flip-to-resolve, sibling-face
+suppression, moved-on parking, single-sided declaration and observed-pair
+confirmation. Tests were added for both. **Not built or run:** the authoring
+environment had no Xcode or Swift toolchain, and Scryfall/TCGCSV were unreachable.
+No scanner, persistence, pricing or UI integration; no device or provider evidence.
+
 # 2026-11-01 — Retain completed Browse artwork and observe settled bulk writes
 
 Separate local polish branch `polish/catalog-image-bulk-refresh-2026-11-01`
