@@ -57,10 +57,18 @@ final class CardCenteringViewModel: ObservableObject {
         currentExportFile = url
     }
     @Published var selectedPhoto: PhotosPickerItem?
-    @Published var image: UIImage?
+    @Published var image: UIImage? {
+        didSet {
+            if image !== oldValue { invalidateAfterPhotoRotation() }
+        }
+    }
     @Published private(set) var imageRevision = 0
     @Published var measurement: CardCenteringMeasurement?
-    @Published var rotationDegrees = 0.0
+    @Published var rotationDegrees = 0.0 {
+        didSet {
+            if rotationDegrees != oldValue { invalidateAfterPhotoRotation() }
+        }
+    }
     @Published var isAnalyzing = false
     @Published var errorMessage: String?
     /// The photo's luma, for snapping a dragged guide to an edge. Nil until it
@@ -309,17 +317,21 @@ final class CardCenteringViewModel: ObservableObject {
         let next = min(45, max(-45, adjusted))
         guard next != rotationDegrees else { return }
         rotationDegrees = next
-        invalidateAfterPhotoRotation()
     }
 
     func resetRotation() {
         guard rotationDegrees != 0 else { return }
         rotationDegrees = 0
-        invalidateAfterPhotoRotation()
     }
 
     private func invalidateAfterPhotoRotation() {
         measurement?.invalidateFrameConfirmationForPhotoRotation()
+        // Guides remain undoable, but approval belongs to the exact photo
+        // coordinate system. Even rotating back requires fresh confirmation.
+        for index in undoStack.indices {
+            undoStack[index].invalidateFrameConfirmationForPhotoRotation()
+        }
+        detectedMeasurement?.invalidateFrameConfirmationForPhotoRotation()
         retireExportFile()
         precisionUndo = nil
         precisionStart = nil
@@ -358,6 +370,7 @@ final class CardCenteringViewModel: ObservableObject {
             return
         }
         candidate.coordinateMapping = before.coordinateMapping
+        recordUndoPoint(coalescing: "precision \(frame) \(side)", keepsPrecisionSession: true)
         if precisionStart == nil { precisionStart = before }
         precisionUndo = before
         measurement = candidate
@@ -366,6 +379,7 @@ final class CardCenteringViewModel: ObservableObject {
 
     func undoPrecisionEdit() {
         guard let previous = precisionUndo else { return }
+        recordUndoPoint(keepsPrecisionSession: true)
         measurement = previous
         precisionUndo = nil
         precisionEditReason = nil
@@ -373,6 +387,7 @@ final class CardCenteringViewModel: ObservableObject {
 
     func resetPrecisionEdits() {
         guard let starting = precisionStart else { return }
+        recordUndoPoint(keepsPrecisionSession: true)
         precisionUndo = measurement
         measurement = starting
         precisionStart = nil
@@ -385,8 +400,7 @@ final class CardCenteringViewModel: ObservableObject {
         within range: ClosedRange<Int>
     ) {
         guard var measurement else { return }
-        precisionUndo = nil
-        precisionStart = nil
+        recordUndoPoint(coalescing: "exact outer \(keyPath)")
         measurement.setManualOuterEdge(
             keyPath,
             to: min(range.upperBound, max(range.lowerBound, value))
@@ -401,8 +415,7 @@ final class CardCenteringViewModel: ObservableObject {
         within range: ClosedRange<Int>
     ) {
         guard var measurement else { return }
-        precisionUndo = nil
-        precisionStart = nil
+        recordUndoPoint(coalescing: "exact inner \(keyPath)")
         measurement.setManualInnerEdge(
             keyPath,
             to: min(range.upperBound, max(range.lowerBound, value))
@@ -423,8 +436,17 @@ final class CardCenteringViewModel: ObservableObject {
     /// Saves the current guides before an edit. Repeated presses of the same
     /// arrow within a moment share one undo step, so holding an arrow down
     /// undoes in one go.
-    func recordUndoPoint(coalescing key: String? = nil) {
+    ///
+    /// Every edit path records here, so Undo steps back through drags,
+    /// arrows and Exact Values alike. Any edit outside the precision controls
+    /// ends their session, so their Undo and Reset cannot restore guides from
+    /// before later edits.
+    func recordUndoPoint(coalescing key: String? = nil, keepsPrecisionSession: Bool = false) {
         guard let measurement else { return }
+        if !keepsPrecisionSession {
+            precisionUndo = nil
+            precisionStart = nil
+        }
         let now = Date()
         defer { lastUndoKey = key.map { ($0, now) } }
         if let key, let lastUndoKey, lastUndoKey.key == key, now.timeIntervalSince(lastUndoKey.time) < 1.2 {
@@ -438,6 +460,8 @@ final class CardCenteringViewModel: ObservableObject {
     func undo() {
         guard let previous = undoStack.popLast() else { return }
         measurement = previous
+        precisionUndo = nil
+        precisionStart = nil
         lastUndoKey = nil
         canUndo = !undoStack.isEmpty
     }

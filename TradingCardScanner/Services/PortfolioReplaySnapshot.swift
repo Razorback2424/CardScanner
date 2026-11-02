@@ -232,6 +232,11 @@ enum PortfolioReplaySnapshotBuilder {
                 defects.append(Self.unreadableDefect(for: "PriceObservation", error: error))
             }
         }
+        if rows.contains(where: { $0.kind == .unrecognized }) {
+            defects.append(LedgerIntegrityDefect(reason: .unreadableStore,
+                collectionKey: "price-observations", detail: "Stored price observation semantics are unsupported.",
+                canRepairQuantity: false))
+        }
         let records: [PriceRecord]
         do {
             records = try context.fetch(FetchDescriptor<PriceRecord>())
@@ -242,7 +247,8 @@ enum PortfolioReplaySnapshotBuilder {
         let valuations = valuationIndex(
             observations: rows,
             records: records,
-            asOf: through
+            asOf: through,
+            reviewCards: cards
         )
         let otherCurrencyInstruments = Set(
             recordsForValuation(
@@ -449,8 +455,10 @@ enum PortfolioReplaySnapshotBuilder {
     static func valuationIndex(
         observations: [PriceObservation],
         records: [PriceRecord],
-        asOf: Date? = nil
+        asOf: Date? = nil,
+        reviewCards: [CollectedCard] = []
     ) -> InstrumentValuationIndex {
+        let valuationDate = asOf ?? .now
         let observationsForValuation: [PriceObservation]
         if let asOf {
             observationsForValuation = observations.filter { $0.receivedAt <= asOf }
@@ -483,13 +491,23 @@ enum PortfolioReplaySnapshotBuilder {
         for key in Set(newest.keys).union(recordsByKey.keys) {
             index[key] = InventoryLedger.resolveValuation(
                 observation: newest[key],
-                record: recordsByKey[key]
+                record: recordsByKey[key],
+                at: valuationDate,
+                appliesCurrentReviewRules: asOf == nil
             )
+        }
+        // A future withdrawal excludes a mutable record's amount, not its
+        // identity. Keep an alias with legitimate earlier observations
+        // selectable so historical holdings do not silently switch keys.
+        let selectionRecords = records.filter { recordsByKey[$0.key] != nil || newest[$0.key] != nil }
+        let selection = PriceRecordKeySelection(records: selectionRecords, at: valuationDate)
+        for card in reviewCards where asOf == nil && PokemonReviewedPhysicalObjects.requiresReview(card) {
+            index[selection.priceStorageKey(for: card)] = .unpriced
         }
 
         return InstrumentValuationIndex(
             byInstrument: index,
-            recordKeySelection: PriceRecordKeySelection(records: Array(recordsByKey.values))
+            recordKeySelection: selection
         )
     }
 
@@ -526,10 +544,7 @@ enum PortfolioReplaySnapshotBuilder {
         _ candidate: PriceObservation,
         than incumbent: PriceObservation
     ) -> Bool {
-        if candidate.receivedAt != incumbent.receivedAt {
-            return candidate.receivedAt > incumbent.receivedAt
-        }
-        return candidate.id.uuidString > incumbent.id.uuidString
+        PriceObservation.isNewer(candidate, than: incumbent)
     }
 
     /// One query for the whole range, reduced in memory.
@@ -653,7 +668,8 @@ actor PortfolioComputationActor: BackgroundModelActor {
     func compute(
         epoch: Date,
         liveInstant: Date,
-        timeZoneIdentifier: String
+        timeZoneIdentifier: String,
+        reconciliationSave: (@Sendable () throws -> Void)? = nil
     ) -> PortfolioReplaySnapshotBuilder.Computation {
         let signpostState = PerformanceSignpost.signposter
             .beginInterval("PortfolioComputationActor.compute")
@@ -677,7 +693,7 @@ actor PortfolioComputationActor: BackgroundModelActor {
         // process-wide backfill lock. That lock must cover the fetch itself;
         // fetching here first would let a second context carry a stale empty
         // snapshot into the critical section.
-        let log = PriceObservationLog(context: modelContext)
+        let log = PriceObservationLog(context: modelContext, reconciliationSave: reconciliationSave)
 
         // Retention runs here rather than at launch: this actor already owns a
         // context off the main actor, and a recompute is exactly when the rows
@@ -695,7 +711,8 @@ actor PortfolioComputationActor: BackgroundModelActor {
             try? modelContext.save()
         }
 
-        let observations = log.reconcileSyncedRecordsAndReturnObservations()
+        let reconciliation = log.reconcileForComputation(learnedAt: max(liveInstant, .now))
+        let observations = reconciliation.observations
         // Reconciliation may append a device-local observation after the
         // caller captured `liveInstant`. This actor is live-only, so establish
         // one coherent cutoff after that write rather than filtering the newly
@@ -704,6 +721,14 @@ actor PortfolioComputationActor: BackgroundModelActor {
         // advanced to now. Historical no-lookahead belongs to the builder's
         // day-boundary logic, not this parameter.
         let effectiveThrough = max(liveInstant, Date.now)
+        if !reconciliation.succeeded {
+            var result = PortfolioReplaySnapshotBuilder.compute(context: modelContext, epoch: epoch,
+                through: effectiveThrough, timeZone: timeZone)
+            result.isAuthoritative = false
+            result.defects.append(LedgerIntegrityDefect(reason: .unreadableStore, collectionKey: "price-observations",
+                detail: "Eligibility reconciliation could not be durably saved.", canRepairQuantity: false))
+            return result
+        }
         if observations.isEmpty {
             // An empty result may be a genuinely empty log or an unreadable
             // table. Let the builder perform its normal fetch so the latter is

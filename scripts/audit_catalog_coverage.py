@@ -143,17 +143,87 @@ def pokemon_static_descriptor_inventory(definitions, registry):
     return seed, historical
 
 
+def validate_pokemon_parallel_proof(document):
+    require(document['schemaVersion'] == 1, 'Unsupported Pokemon parallel proof')
+    entries = unique(document['cases'], lambda row: row['catalogID'], 'Pokemon parallel catalog identity')
+    unique(document['cases'], lambda row: row['product']['productId'], 'Pokemon parallel product identity')
+    for identity, row in entries.items():
+        source, product = row['source'], row['product']
+        expected_hash = hashlib.sha256(json.dumps([source, product], sort_keys=True,
+            separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+        require(row['contentSHA256'] == expected_hash, f'Pokemon parallel proof hash mismatch: {identity}')
+        numbers = [field['value'] for field in product['extendedData'] if field['name'] == 'Number']
+        require(len(numbers) == 1 and re.fullmatch(r'\d+/\d+', numbers[0]),
+            f'Pokemon parallel needs one complete number: {identity}')
+        number, denominator = map(int, numbers[0].split('/'))
+        require(source['id'] == identity == source['set']['id'] + '-' + source['localId']
+            and int(source['localId']) == number and source['set']['cardCount']['official'] == denominator,
+            f'Pokemon parallel catalog/printed identity mismatch: {identity}')
+        require(row['variantID'] == 'cosmos' and product['categoryId'] == 3
+            and product['groupId'] in [2289, 2374] and product['productId'] > 0
+            and product['name'] == source['name'] + ' - ' + numbers[0] + ' (Cosmos Holo)',
+            f'Pokemon parallel needs exact Cosmos product proof: {identity}')
+        require(row['sourceURL'] == 'https://api.tcgdex.net/v2/en/cards/' + identity
+            and row['productURL'] == 'https://tcgcsv.com/tcgplayer/3/' + str(product['groupId']) + '/products',
+            f'Pokemon parallel source scope mismatch: {identity}')
+    family = document.get('boundedRetailFamily')
+    if family:
+        members = unique(family['members'], lambda row: row['catalogID'], 'Pokemon bounded retail member')
+        require(set(members) == {'me03-050', 'me05-040', 'me02.5-097'}, 'Unexpected bounded blister membership')
+        for identity, member in members.items():
+            require(member['variantID'] == 'cosmos' and member['productID'] == entries[identity]['product']['productId']
+                and entries[identity]['source']['name'] in family['name'], 'Bounded blister product identity mismatch')
+        prices = unique(family['publicAggregateQuoteObservation']['rows'], lambda row: row['productId'], 'Pokemon recorded family quote')
+        require(set(prices) == {row['productID'] for row in members.values()}, 'Bounded blister quote membership mismatch')
+        for price in prices.values():
+            require(price['subTypeName'] == 'Holofoil' and (price['marketPrice'] is None
+                or isinstance(price['marketPrice'], (int, float)) and 0 <= price['marketPrice'] < float('inf')),
+                'Invalid recorded family aggregate quote')
+    return entries
+
+
+def validate_pokemon_physical_objects(document):
+    expected = {
+        'swsh10.5-059': ('Bidoof', 'swsh10.5', '059', 78,
+            {('reverse', '', ''): ('tcgplayer', 276982), ('reverse', '', 'peelable-ditto'): ('tcgplayer', 277788)}),
+        'sv03.5-004': ('Charmander', 'sv03.5', '004', 165,
+            {('holo', 'cosmos', ''): ('cardmarket', 791827), ('reverse', 'cosmos', ''): ('cardmarket', 794909)}),
+    }
+    entries = unique(document['cases'], lambda row: row['catalogID'], 'Pokemon physical-object proof')
+    require(set(entries) == set(expected), 'Unexpected physical-object review membership')
+    for identity, row in entries.items():
+        source = row['source']
+        name, set_id, number, denominator, objects = expected[identity]
+        digest = hashlib.sha256(json.dumps(source, sort_keys=True,
+            separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+        require(row['sourceSHA256'] == digest, 'Physical-object source hash mismatch')
+        require(source['id'] == identity and source['name'] == name and source['localId'] == number
+            and source['set']['id'] == set_id and source['set']['cardCount']['official'] == denominator
+            and row['sourceURL'] == 'https://api.tcgdex.net/v2/en/cards/' + identity,
+            'Physical-object source identity mismatch')
+        for axes, (provider, product) in objects.items():
+            matches = [v for v in source['variants_detailed'] if
+                (v['type'], v.get('foil', ''), v.get('subtype', '')) == axes
+                and not v.get('stamp') and v.get('size', 'standard') == 'standard']
+            require(len(matches) == 1 and matches[0]['thirdParty'].get(provider) == product,
+                'Physical-object axes/product mismatch')
+    return entries
+
+
 def pokemon(audit):
     root = Path('TradingCardScanner/PokemonChecklistSnapshot')
     manifest = audit.json(root / 'manifest.json')
     entries = manifest['entries']
     unique(entries, lambda entry: json.dumps(entry['set']['catalogID'], sort_keys=True), 'Pokemon checklist sets')
     provider_ids, card_ids, variants, per_set, all_normal = set(), set(), [], [], []
+    slots_by_card = collections.defaultdict(set)
     for entry in entries:
         rows = audit.json(root / entry['resource'])
         measured = validate_pokemon_slots(entry, rows)
         provider_ids.add(entry['providerID'])
         card_ids.update(row['providerID'] for row in rows)
+        for row in rows:
+            slots_by_card[row['providerID']].add((row.get('masterSetVariant') or {}).get('id'))
         variants.extend((row.get('masterSetVariant') or {}).get('id', '(unspecified)') for row in rows)
         per_set.append(dict(providerID=entry['providerID'], printRun=entry['set']['catalogID'].get('pokemonPrintRun'),
             rows=measured['rows'], standardSlots=measured['standardSlots'], declaredCardCount=entry['set']['cardCount']))
@@ -185,6 +255,32 @@ def pokemon(audit):
     for provider in sorted(descriptor_ids ^ publisher_ids):
         audit.gap('pokemon', 'seedPublisherDescriptorDifference', provider, 'publisher input',
             'Only in static bundled declarations.' if provider in descriptor_ids else 'Only in publisher input.')
+    parallel_path = Path('TestFixtures/TradingCards/PokemonCatalogCoverageAudit/reported-parallel-review.json')
+    parallel_review = []
+    family_evidence = None
+    if (audit.repo / parallel_path).is_file():
+        document = audit.json(parallel_path)
+        proof = validate_pokemon_parallel_proof(document)
+        family = document.get('boundedRetailFamily')
+        if family:
+            rows = family['publicAggregateQuoteObservation']['rows']
+            family_evidence = dict(expectedMembers=len(family['members']), exactProductLinks=len(rows),
+                recordedNonNullQuotes=sum(row['marketPrice'] is not None for row in rows),
+                recordedNullQuotes=sum(row['marketPrice'] is None for row in rows),
+                upstreamBuild=family['publicAggregateQuoteObservation']['upstreamBuild'],
+                boundary='Retained aggregate feed observation; not authenticated current quote acceptance.')
+        for identity, row in proof.items():
+            present = row['variantID'] in slots_by_card[identity]
+            parallel_review.append(dict(catalogID=identity, variantID=row['variantID'],
+                productID=row['product']['productId'], rawSnapshotHasSlot=present))
+            if not present:
+                audit.gap('pokemon', 'reviewedParallelMissingFromRawSnapshot', identity, 'exact Cosmos reprint',
+                    'Public exact-product proof retained; native tests verify the read-time choice/product repair. '
+                    'This census does not execute Swift or prove an authenticated price.', 'runtime_projection_required')
+    physical_path = Path('TestFixtures/TradingCards/PokemonCatalogCoverageAudit/reported-physical-collisions.json')
+    physical_review = []
+    if (audit.repo / physical_path).is_file():
+        physical_review = sorted(validate_pokemon_physical_objects(audit.json(physical_path)))
     return dict(snapshotGeneratedAt=manifest['generatedAt'], checklistEntries=len(entries),
         distinctProviderSets=len(provider_ids), physicalSlotRows=len(variants), uniqueProviderCardIDs=len(card_ids),
         slotCountsByVariant=counts(variants), sets=per_set,
@@ -193,6 +289,8 @@ def pokemon(audit):
         staticHistoricalMembershipDescriptorIDs=sorted(historical_ids),
         publisherInputDescriptors=len(publisher), seedDescriptorsAbsentOffline=sorted(descriptor_ids - provider_ids),
         rawNormalOnlyEntries=all_normal, rawNormalOnlyRows=sum(entry['rows'] for entry in all_normal),
+        reviewedParallelProducts=parallel_review,
+        boundedRetailFamilyEvidence=family_evidence, reviewedPhysicalObjectCollisions=physical_review,
         boundary='Static seed declarations and offline checklist slots are different inventories; historical/live routes are not executed.')
 
 

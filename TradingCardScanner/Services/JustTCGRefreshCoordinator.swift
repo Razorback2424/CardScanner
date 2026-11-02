@@ -18,6 +18,7 @@ struct MarketPriceTarget: Hashable, Sendable {
     let variantID: String?
     let itemKind: CollectionItemKind
     var pokemonPrintRun: PokemonPrintRun? = nil
+    var isJapanese: Bool
     /// The vendor's stable variant UUID, when identity has been resolved.
     let marketVariantID: String?
     /// Fallback identifiers, best-first by the vendor's precedence.
@@ -60,7 +61,8 @@ struct MarketPriceTarget: Hashable, Sendable {
         magicTreatmentIDsRaw: [String] = [],
         requiresFullResponse: Bool = false,
         exactPhysicalProductID: String? = nil,
-        pokemonPrintRun: PokemonPrintRun? = nil
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        isJapanese: Bool? = nil
     ) {
         self.priceKey = priceKey
         self.game = game
@@ -76,6 +78,7 @@ struct MarketPriceTarget: Hashable, Sendable {
         self.requiresFullResponse = requiresFullResponse
         self.exactPhysicalProductID = exactPhysicalProductID
         self.pokemonPrintRun = pokemonPrintRun
+        self.isJapanese = isJapanese ?? (ProductCatalogIdentity.game(for: game, catalogID: printingID) == .pokemonJapan)
     }
 
     /// The single identifier this target should be sent as.
@@ -511,11 +514,13 @@ struct JustTCGRefreshCoordinator {
         }
 
         guard let owner = owners.first,
-              owners.allSatisfy({ $0.variantID == owner.variantID && $0.pokemonPrintRun == owner.pokemonPrintRun }) else { return nil }
+              owners.allSatisfy({ $0.variantID == owner.variantID && $0.pokemonPrintRun == owner.pokemonPrintRun
+                && $0.isJapanese == owner.isJapanese }) else { return nil }
         let requirement = ProductFinish.requirement(for: owner.variantID.map(PhysicalVariant.resolving),
-            printRun: owner.game == .pokemon ? owner.pokemonPrintRun : nil)
+            printRun: owner.game == .pokemon ? owner.pokemonPrintRun : nil, isJapanese: owner.isJapanese)
         let nearMint = variants.filter {
             $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+                && GradedCardIdentity.matchesLanguage($0.language, isJapanese: owner.isJapanese)
         }
         if case let .printings(wanted) = requirement {
             for printing in wanted {
