@@ -55,6 +55,7 @@ enum PriceObservationRules {
         var effectiveAt: Date
         var receivedAt: Date
         var isSourceStamped: Bool
+        var kind: PriceObservationKind = .marketUpdate
     }
 
     enum Decision: Equatable, Sendable {
@@ -77,9 +78,13 @@ enum PriceObservationRules {
 
     /// Whether a provider answer is value-setting, and if so what it means.
     nonisolated static func decide(candidate: Candidate, previous: Previous?) -> Decision {
+        if previous?.kind == .physicalReview || previous?.kind == .unrecognized {
+            return .ignoredAfterInvalidation
+        }
         if let previous,
            previous.value.amount == nil,
-           previous.receivedAt >= candidate.receivedAt {
+           (previous.receivedAt > candidate.receivedAt
+            || (previous.receivedAt == candidate.receivedAt && previous.kind != .eligibilityExpiry)) {
             return .ignoredAfterInvalidation
         }
 
@@ -139,14 +144,18 @@ enum PriceObservationRules {
 /// "Unavailable" writing no observation is the load-bearing part. It is a real,
 /// current answer — the app asked and the provider has nothing for this exact
 /// physical variant — so it counts as coverage, but it must not remove a price
-/// the app legitimately holds. Only an `explicitInvalidation` can do that.
+/// the app legitimately holds. Explicit withdrawals and known eligibility
+/// transitions are separate value-setting evidence.
 struct PriceObservationLog {
     let context: ModelContext
     let index: PriceRefreshDataIndex?
+    private let reconciliationSave: (() throws -> Void)?
 
-    init(context: ModelContext, index: PriceRefreshDataIndex? = nil) {
+    init(context: ModelContext, index: PriceRefreshDataIndex? = nil,
+         reconciliationSave: (() throws -> Void)? = nil) {
         self.context = context
         self.index = index
+        self.reconciliationSave = reconciliationSave
     }
 
     /// Observation rows are local-only, so two SwiftData contexts in the same
@@ -176,7 +185,12 @@ struct PriceObservationLog {
             ]
         )
         descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        guard let latest = try? context.fetch(descriptor).first else { return nil }
+        let instant = latest.receivedAt
+        let ties = FetchDescriptor<PriceObservation>(predicate: #Predicate {
+            $0.instrumentKey == instrumentKey && $0.receivedAt == instant
+        })
+        return (try? context.fetch(ties))?.max { PriceObservation.isNewer($1, than: $0) }
     }
 
     func observations(instrumentKey: String) -> [PriceObservation] {
@@ -187,7 +201,7 @@ struct PriceObservationLog {
                 SortDescriptor(\.id, order: .forward)
             ]
         )
-        return (try? context.fetch(descriptor)) ?? []
+        return ((try? context.fetch(descriptor)) ?? []).sorted { PriceObservation.isNewer($1, than: $0) }
     }
 
     func checkDay(instrumentKey: String, day: Date) -> PriceCheckDay? {
@@ -264,8 +278,8 @@ struct PriceObservationLog {
     }
 
     /// Withdraws a value the app should never have held — a price discovered to
-    /// have been attached to the wrong market variant. The only thing that can
-    /// remove a price, and the only place `amount == nil` is written.
+    /// have been attached to the wrong market variant. Scheduled eligibility
+    /// transitions use a separate local kind without mutating source evidence.
     @discardableResult
     func recordInvalidation(
         instrumentKey: String,
@@ -360,6 +374,43 @@ struct PriceObservationLog {
 
     // MARK: - Synced-record reconciliation
 
+    /// Materialize an elapsed, previously learned deadline before *any* writer
+    /// replaces its mutable quote or observation baseline. No provider clock is
+    /// backdated: only a locally known future deadline can act at that deadline.
+    @discardableResult
+    func recordElapsedEligibility(for record: PriceRecord, at date: Date,
+                                  previous: PriceObservation? = nil) -> PriceObservation? {
+        guard let evidence = record.exactGradedQuoteEvidence,
+              evidence.checkedAt <= date,
+              evidence.lifecycle.withdrawsCurrentQuote(at: date) else { return nil }
+        let previous = previous ?? newestObservation(instrumentKey: record.key)
+        guard previous?.kind.withdrawsValue != true,
+              previous.map({ $0.receivedAt <= evidence.checkedAt }) ?? true else { return nil }
+        let deadline = evidence.lifecycle.status == "current" ? evidence.lifecycle.priceExpiresAt : nil
+        let transitionAt: Date
+        if previous != nil, let deadline, deadline > evidence.checkedAt {
+            transitionAt = deadline
+        } else {
+            // Already-expired evidence, or a synced record with no local
+            // knowledge baseline, cannot invent an earlier local interval.
+            transitionAt = max(evidence.checkedAt, previous == nil ? date : evidence.checkedAt)
+        }
+        return appendWithdrawal(record: record, previous: previous, kind: .eligibilityExpiry,
+                                at: transitionAt, learnedAt: evidence.checkedAt)
+    }
+
+    private func appendWithdrawal(record: PriceRecord, previous: PriceObservation?,
+                                  kind: PriceObservationKind, at date: Date, learnedAt: Date) -> PriceObservation {
+        let row = PriceObservation(instrumentKey: record.key, kind: kind, amount: nil,
+            currencyCode: record.currencyCode, source: record.source ?? previous?.source,
+            sourceVariantID: record.sourceVariantID ?? previous?.sourceVariantID,
+            marketVariantID: record.marketVariantID ?? previous?.marketVariantID,
+            effectiveAt: learnedAt, receivedAt: date, isSourceStamped: false)
+        context.insert(row)
+        index?.insert(row)
+        return row
+    }
+
     /// Reconciles the current synced price-record state into this device's
     /// local knowledge history.
     ///
@@ -409,6 +460,11 @@ struct PriceObservationLog {
         ).observations
     }
 
+    func reconcileForComputation(learnedAt date: Date) -> (observations: [PriceObservation], succeeded: Bool) {
+        let result = synchronizeRecords(receivedAt: date, existingObservations: nil)
+        return (result.observations, result.succeeded)
+    }
+
     #if DEBUG
     /// Test/support seam for a read failure. Production callers use the
     /// context-backed overloads above; this keeps the failure branch
@@ -433,11 +489,16 @@ struct PriceObservationLog {
         existingObservations: [PriceObservation]?,
         fetchExistingObservations: (() throws -> [PriceObservation])? = nil,
         defaults: UserDefaults = .standard
-    ) -> (written: Int, observations: [PriceObservation]) {
+    ) -> (written: Int, observations: [PriceObservation], succeeded: Bool) {
         Self.backfillLock.lock()
         defer { Self.backfillLock.unlock() }
 
-        let allRecords = PriceStore(context: context, index: index).allRecords()
+        let allRecords: [PriceRecord]
+        let reviewCards: [CollectedCard]
+        do {
+            allRecords = try context.fetch(FetchDescriptor<PriceRecord>())
+            reviewCards = try context.fetch(FetchDescriptor<CollectedCard>())
+        } catch { return (0, [], false) }
         var recordsByKey: [String: PriceRecord] = [:]
         for record in allRecords {
             if let existing = recordsByKey[record.key],
@@ -447,6 +508,10 @@ struct PriceObservationLog {
             recordsByKey[record.key] = record
         }
         let records = recordsByKey.values.sorted { $0.key < $1.key }
+        // Imported holdings keep their physical and catalog identity. Every
+        // readable alias receives the exclusion; no ownership row is rekeyed.
+        let reviewKeys = Set(reviewCards.filter(PokemonReviewedPhysicalObjects.requiresReview)
+            .flatMap(\.priceLookupKeys))
         var observations: [PriceObservation]
         if let existingObservations {
             observations = existingObservations
@@ -459,16 +524,13 @@ struct PriceObservationLog {
                 // from that unknown baseline would duplicate every priced
                 // record while the computation is already reporting the store
                 // defect.
-                return (0, [])
+                return (0, [], false)
             }
         }
         var newestByInstrument: [String: PriceObservation] = [:]
         for observation in observations {
             if let existing = newestByInstrument[observation.instrumentKey] {
-                let existingIsNewer =
-                    existing.receivedAt > observation.receivedAt
-                    || (existing.receivedAt == observation.receivedAt
-                        && existing.id.uuidString >= observation.id.uuidString)
+                let existingIsNewer = !PriceObservation.isNewer(observation, than: existing)
                 if existingIsNewer { continue }
             }
             newestByInstrument[observation.instrumentKey] = observation
@@ -517,6 +579,30 @@ struct PriceObservationLog {
 
         for record in records {
             let previous = newestByInstrument[record.key]
+
+            if reviewKeys.contains(record.key) || PokemonReviewedPhysicalObjects.requiresReview(priceKey: record.key) {
+                if previous?.kind != .physicalReview {
+                    let row = appendWithdrawal(record: record, previous: previous, kind: .physicalReview,
+                        at: localKnowledgeTime, learnedAt: localKnowledgeTime)
+                    observations.append(row)
+                    newestByInstrument[record.key] = row
+                    written += 1
+                }
+                continue
+            }
+
+            if !record.isInvalidated, record.exactGradedQuoteIsWithdrawn(at: localKnowledgeTime) {
+                if let row = recordElapsedEligibility(for: record, at: localKnowledgeTime, previous: previous) {
+                    observations.append(row)
+                    newestByInstrument[record.key] = row
+                    written += 1
+                }
+                // The stored historical amount is not a new quote. In
+                // particular it must not alternate recovery and withdrawal.
+                continue
+            }
+            if !record.isInvalidated, let previous, previous.kind == .eligibilityExpiry,
+               (record.fetchedAt ?? .distantPast) <= previous.receivedAt { continue }
 
             if record.isInvalidated {
                 guard previous?.kind != .explicitInvalidation else { continue }
@@ -576,7 +662,8 @@ struct PriceObservationLog {
                         value: $0.value,
                         effectiveAt: $0.effectiveAt,
                         receivedAt: $0.receivedAt,
-                        isSourceStamped: $0.isSourceStamped
+                        isSourceStamped: $0.isSourceStamped,
+                        kind: $0.kind
                     )
                 }
             ) else { continue }
@@ -601,20 +688,22 @@ struct PriceObservationLog {
 
         if written > 0 {
             do {
-                try context.save()
+                if let reconciliationSave { try reconciliationSave() }
+                else { try context.save() }
             } catch {
                 // Reconciliation is best effort, but unsaved in-memory
                 // observations must not be returned as durable evidence or
                 // remain staged for a later unrelated save. The computation
                 // actor will retry on its next pass.
                 context.rollback()
-                return (0, [])
+                index?.reload()
+                return (0, [], false)
             }
         }
         if previousRulesVersion < PriceReadabilityRules.currentVersion {
             defaults.set(PriceReadabilityRules.currentVersion, forKey: PriceReadabilityRules.defaultsKey)
         }
-        return (written, observations)
+        return (written, observations, true)
     }
 
     /// Identifies values whose readability changed in the stamped release.
@@ -715,7 +804,8 @@ struct PriceObservationLog {
             value: newest.value,
             effectiveAt: newest.effectiveAt,
             receivedAt: newest.receivedAt,
-            isSourceStamped: newest.isSourceStamped
+            isSourceStamped: newest.isSourceStamped,
+            kind: newest.kind
         )
     }
 

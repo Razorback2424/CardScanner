@@ -360,9 +360,13 @@ struct StoreRevisionMonitor: View {
     let storageGeneration: CollectionStorageGeneration
     let hasStartedPortfolio: Bool
     @ObservedObject var completionSignal: PriceRefreshCompletionSignal
+    var debounce: @Sendable () async throws -> Void = {
+        try await Task.sleep(for: .milliseconds(300))
+    }
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var saveGeneration: UInt = 0
+    @State private var processedBulkGeneration: UInt = 0
     @State private var foregroundGeneration: UInt = 0
     @State private var pendingForegroundEligibility = false
     @State private var previousFingerprint: StoreRevisionFingerprint?
@@ -391,6 +395,7 @@ struct StoreRevisionMonitor: View {
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
         let storageToken = storageGeneration.currentToken()
+        let bulkGeneration = writeCoordinator.generation
         let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)-\(completionSignal.generation)-\(foregroundGeneration)"
 
         return Color.clear
@@ -412,7 +417,11 @@ struct StoreRevisionMonitor: View {
             .task(id: observation) {
                 guard let storageToken else { return }
                 guard hasStartedPortfolio, !writeCoordinator.isBulkWriteInFlight else { return }
-                try? await Task.sleep(for: .milliseconds(300))
+                // Outermost bulk completion is already a settled trailing
+                // signal. Ordinary saves and remote changes still coalesce.
+                if bulkGeneration == processedBulkGeneration {
+                    try? await debounce()
+                }
                 guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
 
                 let actor = await StoreRevisionModelActor.makeBackground(modelContainer: modelContext.container)
@@ -420,6 +429,7 @@ struct StoreRevisionMonitor: View {
                 guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled,
                       !writeCoordinator.isBulkWriteInFlight,
+                      writeCoordinator.generation == bulkGeneration,
                       storageGeneration.isCurrent(storageToken) else { return }
                 let fallbackWasJustEnabled = !lastObservedFallbackPreference && usesPriceFallback
                 if lastObservedFallbackPreference != usesPriceFallback {
@@ -435,12 +445,23 @@ struct StoreRevisionMonitor: View {
                 }
                 revisionStore.publish(fingerprint)
                 let reconsiderAge = pendingForegroundEligibility && !isRefreshInFlight
+                let expectedApplyGeneration = applyGeneration &+ 1
                 await apply(
                     fingerprint,
                     storageToken: storageToken,
                     forceUnsupportedRetry: fallbackWasJustEnabled,
                     reconsiderAge: reconsiderAge
                 )
+                // A cancelled or superseded apply must leave the completion
+                // pending for the next observation.
+                if !Task.isCancelled,
+                   !writeCoordinator.isBulkWriteInFlight,
+                   writeCoordinator.generation == bulkGeneration,
+                   storageGeneration.isCurrent(storageToken),
+                   applyGeneration == expectedApplyGeneration,
+                   previousFingerprint == fingerprint {
+                    processedBulkGeneration = bulkGeneration
+                }
                 schedulePendingForcedFallbackRetryIfNeeded()
             }
     }

@@ -1,3 +1,166 @@
+# 2026-11-02 — Isolated combined validation candidate
+
+This local candidate combines the independently reviewed branch repairs; it is
+not a merge of any remote PR. Source/test merges were clean. Workflow selections
+and progress evidence were reconciled by retaining every branch's additions.
+The earlier entries below are chronological evidence, including failures, not
+claims of current blanket approval.
+
+Inputs: #14 `f495e36865fb228d398c337c9814529bbfdfaf0f`,
+#13 `6b78bd5c29597edde3dfe24f53208ed9b5f0fe37`,
+#15 `7ec2261bacbcb417cd70b63ae8957c294020b194`,
+#16 `b95c883ffbdd9db08a8d5d1680d76dbe77736e69`, and draft #17
+`43f32a86aadae4e9ad503fa7553c52971803a507`.
+All began at the reviewed heads. No interrupted repairs were recovered; an
+unrelated September stash was preserved. Main remains `0ab3b0e` and unchanged.
+
+Exact #14 local execution: 618 tests, 617 passed, one existing skip, no failures,
+including all six integrated eligibility tests. #15: 85 passed. #16: 48 passed.
+#13: 112 executed, 110 passed, one existing skip, one Keychain `-34018` failure;
+the exact failing test also failed on unchanged main. CI run 41370829274 executed
+all three centering/Opus classes (712 total, one skip, the same one failure).
+CI run 41371144187 executed both token classes (26 + 22, all passed), but its
+648-test selection failed in unrelated Lorcana temporary-directory cleanup.
+That failure remains recorded and is not waived. Further branch CI and the
+exact combined commit's local union results belong in the final handoff.
+
+The first combined candidate `e0d74b9` executed 1,501 native cases: 1,498 passed,
+two existing opt-in skips, and the inherited Keychain failure. No other failure,
+including the Lorcana cleanup case, reproduced locally. This final candidate adds
+only #14's stronger disk-reopen/later-refresh and persisted physical-review-close
+assertions. It is preserved separately so earlier test evidence remains tied to
+its actual commit. Short-title local selection passed 142; its exact-head CI run
+41371814570 passed 612 native cases, including historical title 10, parser 104,
+and catalog slice 19. Final candidate evidence is recorded in the final handoff.
+
+The combined selection also includes replay, history, close, ledger and trust
+classes. Local simulator/package tests and branch pushes/draft #17 were explicitly
+approved by the owner. No device installation, feed publication or user collection
+mutation is part of this validation. Native either-finger pinch, live providers,
+old-binary downgrade and deferred token ownership/UI integration remain unverified.
+
+# 2026-11-02 — PR #14 reconciled eligibility history and graded writers
+
+Started from reviewed `ce17ea0`; no interrupted local repair was recovered.
+Retained-set validation is a separate commit. Lifecycle/history repairs and
+their clock contract are in the [pricing plan](docs/plans/pricing_correctness_and_coverage.md#reconciled-pr-14--2026-11-02).
+All graded-add paths now retain full quote evidence; local eligibility events
+survive recovery, reopen and repeated reconciliation without changing ownership.
+Unknown semantics, failed durability and unexplained replay cannot publish
+authoritative closes. Expanded CI includes the integration and ownership suites.
+
+Native evidence retained: initial 175-test selection had one new Japanese
+fixture failure (fixed by using its production set-ID prefix). A Swift test
+closure required an explicit type after a compiler diagnostic failure. One
+build was blocked by T7 exhaustion before tests. Initial integrated execution
+reported 28 assertion failures: fixture activity history was missing, historical
+alias selection lost its earlier record key, and an old test expected publication
+despite unexplained value. Fixtures now carry coherent activity/ledger history;
+production alias selection is repaired and the publication assertion enforces
+the corrected contract. No failure was skipped or weakened.
+
+Subsequent runs: 272 executed / 271 passed / one existing skip; expanded 617
+executed / 616 passed / one existing skip, zero failures (repeated after re-add
+retention). Final ordering/unknown-kind tests and exact CI evidence are pending
+the final validation pass. Physical-device, live-provider and release gates stay open.
+
+# 2026-11-02 — PR #13 reconciled centering fixes
+
+Starting head: `4e85936465489b258183c2f432efc392ca78e3a5`. No interrupted
+local repair was present in registered worktrees, branches or normal history.
+Pinch handoff now clamps once before setting both display and continuation
+baseline, preserving the drag checkpoint. Any photo/orientation change revokes
+current and saved approvals; Undo retains geometry without restoring stale
+export eligibility. Added production-helper boundary/reverse tests and model
+canvas/Exact Values/rotation/reset/repeated-Undo/photo-change export regressions.
+
+Xcode 27.1 unsigned iOS 27 simulator run: 112 executed, 110 passed, one skipped,
+one failed (`OpusImplementationPlanTests.testREQ013ImportedSealedRowConvergesWithBrowseAdd`,
+Keychain `storeFailed(-34018)`). New regressions passed. Failure is preserved;
+unchanged-main comparison is pending. All three affected classes are now in CI.
+Either-finger native pinch release and physical-device acceptance remain open.
+
+The unchanged main reproduced the same Keychain failure. The sealed-import
+fixture now uses the normalizer's existing `sealedCredentialsAvailable` injection
+alongside its existing fake transport/API-key override, instead of writing/removing
+a fake Keychain credential. Every ownership/identity assertion remains unchanged;
+production credentials are untouched. This fixture-only follow-up must pass the
+same selected CI and final combined union before the owner's authorized squash merges.
+
+The next local run passed the Opus fixture but exposed a timing failure in the
+existing localized Exact Values UI test (three assertions in one case after its
+fixed 80 ms Done wait). The test now waits, bounded to two seconds, for its existing
+published value commit; all digit, value and no-premature-update assertions remain.
+The unchanged 112-case selection then passed 111 with one existing benchmark skip.
+
+# 2026-11-01 — Retain completed Browse artwork and observe settled bulk writes
+
+Separate local polish branch `polish/catalog-image-bulk-refresh-2026-11-01`
+starts at remote `main` (`0ab3b0e`). Pricing PR #14 and its clean checkout remain
+untouched at `ce17ea0`. Two small source fixes are isolated in local commits:
+`d58e618` preserves successfully displayed artwork independently of cancelled
+pending requests, and `3ca908d` skips ordinary debounce only for an unprocessed
+completed bulk generation. Cancellation, stale completion rejection, source and
+reload switching, ordinary 300 ms save/remote coalescing, storage tokens, active
+bulk guards and apply-generation safeguards remain covered.
+
+Three deterministic baseline tests reproduced the original behavior. At source
+candidate `3ca908d44c4a6b1689cf63c509d867d83f56764e`, the initial focused native
+selection passed 17/17; the relevant aggregate executed 350 tests, with 349
+passed, zero failed and one existing opt-in aged-store performance skip. Xcode
+27.1, Debug, iOS 27.0 iPhone 17 Pro simulator, unsigned. The
+[bounded review](review/catalog-image-bulk-polish-2026-11-01.md) records scope,
+before/after behavior, results and evidence limits. Real SwiftUI hosting proves
+lifecycle behavior with synthetic artwork; no measured user-visible 300 ms gain
+or physical-device certification is claimed. No PR/body was published.
+
+Independent review requested two additional acknowledgement regressions.
+Test-only commit `8d01aab42c2dcd1720e3858a622a260f251eecb6` verifies no-op bulk
+completion restores ordinary debounce, and a superseded apply leaves its bulk
+generation pending until a same-generation retry settles. The final focused
+selection passed 19/19 with zero failures/skips. Production files remain exactly
+those of `3ca908d`; no additional aggregate or performance measurement was run.
+
+# 2026-11-02 — PR #15 reconciled validation selection
+
+Starting head `fc19b8ccaf33f8359a50bdd632b5bbd5c0cd0c95` matches the review.
+Preserved completed-image retention and bulk-generation/acknowledgment behavior
+without production changes. Added `BrowseFeatureTests` and
+`StoreRevisionMonitorTests` to actual CI execution. Native and exact-head CI
+results are pending the reconciled validation pass; prior selected green runs
+did not execute these affected suites and are not blanket approval.
+
+# 2026-11-02 — PR #16 reconciled engine/model repairs
+
+Started at `c693463b213d68df3a77d34fbc4fbf3045206f51`; no interrupted local
+repair survived in accessible normal Git history. Camera presence is now
+independent of pending questions, and pair confirmation uses the most recently
+observed side. Reserved colon/pipe components cannot create a physical key or
+enter a decoded catalog; valid legacy key spellings remain unchanged. Corrected
+source versus retained snapshot counts and documented write acknowledgment/undo
+as deferred integration work. No scanner, storage, pricing or UI integration.
+
+Xcode 27.1 unsigned iOS 27 simulator: **48 executed, 48 passed, zero skipped**
+(`MagicPhysicalObjectTests`: 26; `MagicTokenPairingSessionTests`: 22), including
+removed-versus-present answers and both latest-side directions. Both suites are
+now selected by CI. The first build ran out of T7 space before tests; its failure
+log is retained. Only this session's rebuildable artifacts were removed for the
+successful sequential retry. Device flip/latch acceptance remains open.
+
+# 2026-11-01 — Design and engine for double-sided Magic token scanning
+
+On `claude/mtg-token-scanner-g4un9y`, the [token scanning plan](docs/plans/magic-token-scanning.md)
+defines token scope from repository data. Its evidence includes TCGplayer Guild
+Kit/Event Deck listings showing one face on up to three cards and printed
+numbers reused for different faces. The previously unused number-only token model was replaced
+with set-qualified face identity, an order-independent physical key,
+per-set coverage gating, merged listings and a validated catalog wire format.
+A new pure `MagicTokenPairingSession` implements flip-to-resolve, sibling-face
+suppression, moved-on parking, single-sided declaration and observed-pair
+confirmation. Tests were added for both. **Not built or run:** the authoring
+environment had no Xcode or Swift toolchain, and Scryfall/TCGCSV were unreachable.
+No scanner, persistence, pricing or UI integration; no device or provider evidence.
+
 # 2026-11-02 — Preserve short-title scope and execute historical capture in CI
 
 The reviewed/fetched head is `b1a635611352564a08de43e171adea6d6fd0e276`.
@@ -5469,3 +5632,111 @@ historical.
   [guided centering ledger](docs/audits/centering-guided-repair.md#current-precision-candidate--2026-11-01).
   Independent visual, physical capture, share/save/VoiceOver and device gates
   remain open; no automatic precision or release readiness claim.
+
+## 2026-11-01 — Exact Cosmos choices and pricing regression cases
+
+- From `main@0ab3b0e`, added exact Cosmos choices/bindings for PBL Marshadow
+  and ASC Team Rocket's Mimikyu, and missing Cosmos product handles for PAF
+  Charmander/Charmeleon. Cached checklist projection repairs choices without
+  rewriting source fingerprints or stored collection identities.
+- Reused the existing Genesect/30th mapping for direct paid-provider lookup
+  when the daily feed cannot answer. Gengar's existing exact Cosmos handle is
+  regression-tested separately from ordinary, GameStop and EB Games products.
+  No generic Cosmos/Tinsel finish alias, automatic identity rekey, invented
+  price, signed catalog publication or device install was added.
+- Final simulator aggregate: **820 passed, zero failures, one deliberate live
+  feed skip** (821 cases), including required catalog selections plus pricing,
+  graded and refresh suites. Earlier unsigned fixture Keychain failure is
+  recorded separately. Python: 149 passed/five optional publisher skips;
+  Yu-Gi-Oh families 33 passed; Pokémon core 83 passed/one skip; Magic core 18
+  passed. Census has zero structural errors and five exact Cosmos proofs.
+- [Case matrix and acceptance limits](docs/audits/catalog-pricing-cases-2026-11-01.md)
+  retain the physical-review, Tinsel, unavailable authenticated graded replay,
+  disconnected-device and unpublished-feed gaps. Private photos, collection
+  export, holdings and certificate identifiers remain outside the repository.
+
+## 2026-11-01 — Graded safety and bounded physical catalog accuracy
+
+- Draft PR14 expands the same focused case pass: exact Cosmos product proof
+  reaches raw and graded binding, persisted/offline checklist lifecycle,
+  scanner reconstruction, Browse and collection reopen. Wrong products,
+  retailer stamps, language, grades and qualifiers reject independently.
+- Premium BGS/CGC labels cannot use ordinary unlabeled quotes. PSA qualifiers
+  remain qualifiers; explicit imported slab finishes and distinct unbound keys
+  survive save/reopen. v2 language and Japanese raw lookup remain exact.
+- Exact graded quote lifecycle retains current/expired/never-priced states,
+  historical price, sale and expiry in the existing metadata JSON column.
+  Explicit expiry withdraws value; timeouts retain valid quotes, later sales
+  can restore them, and stale expiry cannot overwrite newer evidence. Bound
+  refresh uses retained card/variant identifiers; discovery includes all-null
+  cards without turning unresolved responses into terminal coverage claims.
+- Bidoof ordinary Reverse/Peelable Ditto and 151 Charmander Cosmos Holo/Reverse
+  have separate physical IDs. Ambiguous legacy holdings keep identity and
+  history while current views/valuation hold them for review. GO pack scope
+  remains Master; 151 retail Cosmos remains Grand Master. No migration or
+  silent holding merge is included. TCGCSV sharing says Market price.
+- Final source `b9177dd`: **1,060 native passes, zero failures, two deliberate
+  live-feed/performance skips** (1,062 selected cases). This closes the
+  intermediate collector-scope count assertions. Python **150 passed/five
+  optional skips**; census: zero structural errors across 914 source files,
+  separate three-member/product/dated-quote counts and two physical collisions.
+  The unrelated CollectionKey assertion was reproduced on untouched `0ab3b0e`
+  and is not represented as passing.
+- The explicitly approved app-specific Keychain read ran once and found no
+  item (exit 44): no key read and zero authenticated API requests. Live
+  Spinarak diagnosis, current device acceptance, feed activation, physical
+  reviews and Tinsel USD evidence remain open. No device install, owner-store
+  mutation, signed publication, deployment, merge or expanded credential access.
+  Details and the exact limits remain in the
+  [case ledger](docs/audits/catalog-pricing-cases-2026-11-01.md).
+
+## 2026-11-01 — Graded expiry chronology review
+
+- Follow-up to PR14 review threads: replay valuation and price-key selection
+  use the requested cutoff for expiry, preserving earlier valid quotes and the
+  knowledge timestamp of explicit withdrawal. Expired canonical evidence cannot
+  fall back to an old imported value.
+- Newer exact JustTCG USD sale observations can supersede an older mutable
+  withdrawal; mismatched UUIDs, stale/future receipts, foreign currency and
+  provably old provider price-update clocks cannot revive it. Later-fetched stale
+  expiry responses cannot withdraw newer known provider sales. Imported-value
+  timestamps are excluded from provider-clock comparison.
+- Source `72bcbeb` passed 1,066 of 1,068 selected native cases, with two deliberate
+  skips and zero failures. Source `bd26f35` adds old-provider-clock negatives;
+  all six focused chronology regressions pass. Final aggregate at `bd26f35`:
+  **1,068 total, 1,066 passed, two deliberate skips, zero failures**.
+- The existing JSON envelope gains an optional provider timestamp; no SwiftData
+  field, holding migration, credential access, device install or publication.
+
+## 2026-11-01 — Separate provider clock fields
+
+- Reproduced the remaining mixed-clock defect against `4ca368a` before editing
+  source: one test failed seven assertions. A genuine same-sale expiry was
+  rejected when sale time was compared against a different update-time field.
+- `b5eb58b` compares sale with sale, and price-update with price-update. Equal
+  or newer updates allow genuine same-sale expiry; old sale/update snapshots
+  still reject. Exact-observation recovery also avoids cross-field comparison.
+- Focused run: **197 total, 196 passed, one deliberate performance skip,
+  zero failures**. Final aggregate at `b5eb58b`: **1,071 total, 1,069 passed,
+  two deliberate skips, zero failures**. No schema or credential change.
+
+## 2026-11-01 — Unsigned CI retry-test repair
+
+- Inspected failed native CI job `124986000282` on `27512fa`: one of 827 cases
+  failed before retry assertions because the test wrote an OS Keychain fixture
+  in an unsigned simulator (`errSecMissingEntitlement`, -34018). Earlier signed
+  local passes did not close this CI gate.
+- `145012f` injects credential availability into the graded picker model for
+  tests, while production retains its live gate. Removed fixture Keychain
+  read/store/restore; retained every retry/overlap/terminal/cancellation assertion
+  and added unavailable-gate/no-transport coverage. CI remains unsigned.
+- The exact formerly failing case passes in a fresh local unsigned build:
+  **one executed, one passed, zero skipped/failed**. The broader unsigned run
+  exposed nine equivalent fixture failures in fallback helpers. `4584913`
+  removes their Keychain dependencies using a synthetic-key override, preserving
+  production defaults and every pricing/matching/backoff assertion; all **53
+  fallback tests pass unsigned**. This class is also selected in unsigned CI.
+  Final unsigned aggregate at `4584913`: **1,071 total, 1,069 passed, two
+  deliberate skips, zero failures**. All 33 required workflow selections are
+  covered. Exact-head remote verification is tracked on PR14 checks; the local
+  unsigned result does not override the earlier CI failure.

@@ -3,143 +3,321 @@ import XCTest
 
 /// Physical-object identity for tokens and art cards.
 ///
-/// Every fixture here is taken from live data: the MSH token faces from
-/// Scryfall's TMSH set, the paired product from JustTCG's catalogue, and the
-/// three art-card pools from Scryfall's AMSH listing.
+/// Token fixtures come from data already in this repository:
+/// - MSH: `Merfolk // Doombot` at `6 // 18` is verified against JustTCG and
+///   matches Scryfall's TMSH face numbers. The two Clue #17 pairings are the
+///   repository's existing MSH fixture.
+/// - GRN Guild Kit and Modern Event Deck 2014: TCGplayer's listings in
+///   `TestFixtures/TradingCards/SetPricingAudit/magic-product-proof.json`.
+/// Coverage claims are asserted by each fixture to exercise the rule; they are
+/// not claims about the real sets.
 final class MagicPhysicalObjectTests: XCTestCase {
-
-    // MARK: - Tokens
-
-    /// Verified against JustTCG: `Merfolk // Doombot Double-Sided Token`,
-    /// number `6 // 18`, which matches Scryfall's TMSH face numbers exactly.
-    private func mshProducts() -> [MagicPhysicalToken] {
-        [
-            MagicPhysicalToken(
-                frontNumber: "6", backNumber: "18",
-                name: "Merfolk // Doombot Double-Sided Token",
-                marketProductID: "47655647-e912-52ac-8b9b-2634b5c65104",
-                tcgplayerID: "703230"
-            ),
-            // Clue #17 is the case that motivates the whole design: it is the
-            // back of more than one physical token.
-            MagicPhysicalToken(
-                frontNumber: "4", backNumber: "17",
-                name: "Soldier // Clue Double-Sided Token",
-                marketProductID: "p-soldier-clue", tcgplayerID: nil
-            ),
-            MagicPhysicalToken(
-                frontNumber: "12", backNumber: "17",
-                name: "Insect // Clue Double-Sided Token",
-                marketProductID: "p-insect-clue", tcgplayerID: nil
-            )
-        ]
+    func testReservedIdentityCharactersCannotCollideOrEnterCatalog() throws {
+        let valid = try XCTUnwrap(MagicPhysicalTokenKey(faces: [face("TMSH", "6"), face("TMSH", "18")]))
+        XCTAssertEqual(MagicPhysicalTokenKey(storageKey: valid.storageKey), valid)
+        for (set, number) in [("TMSH:6", "18"), ("TMSH", "6:TMSH:18"),
+                               ("TMSH", "6|TMSH:18"), ("TMSH|OTHER", "6"), ("", "6"), ("TMSH", "")] {
+            let invalid = face(set, number)
+            XCTAssertFalse(invalid.isValid)
+            XCTAssertNil(MagicPhysicalTokenKey(faces: [invalid]))
+            XCTAssertNil(MagicPhysicalToken(faces: [.init(id: invalid, name: "Token")]))
+            XCTAssertThrowsError(try MagicTokenProductCatalog(jsonData: catalogJSON(products: """
+            [{"faces":[{"set":"\(set)","number":"\(number)","name":"Token"}]}]
+            """)))
+        }
+        XCTAssertNil(MagicPhysicalTokenKey(storageKey: "TMSH:6:18"))
+        XCTAssertNil(MagicPhysicalTokenKey(storageKey: "TMSH:6|"))
+        XCTAssertNotEqual(MagicPhysicalTokenKey(faces: [face("TMSH", "6")]), valid)
     }
 
-    /// One face, one product: nothing to ask.
+    // MARK: - Token fixtures
+
+    private func face(_ set: String, _ number: String) -> MagicTokenFaceID {
+        MagicTokenFaceID(setCode: set, number: number)
+    }
+
+    private func card(_ faces: (String, String, String)..., ids: Set<String> = []) -> MagicPhysicalToken {
+        MagicPhysicalToken(
+            faces: faces.map { MagicTokenFace(setCode: $0.0, number: $0.1, name: $0.2) },
+            tcgplayerProductIDs: ids
+        )!
+    }
+
+    private var merfolkDoombot: MagicPhysicalToken {
+        card(("TMSH", "6", "Merfolk"), ("TMSH", "18", "Doombot"), ids: ["703230"])
+    }
+    private var soldierClue: MagicPhysicalToken {
+        card(("TMSH", "4", "Soldier"), ("TMSH", "17", "Clue"))
+    }
+    private var insectClue: MagicPhysicalToken {
+        card(("TMSH", "12", "Insect"), ("TMSH", "17", "Clue"))
+    }
+
+    private func mshCatalog(coverage: [String: MagicTokenPairingCoverage] = ["TMSH": .complete]) -> MagicTokenProductCatalog {
+        MagicTokenProductCatalog(products: [merfolkDoombot, soldierClue, insectClue], coverage: coverage)
+    }
+
+    // MARK: - One face
+
+    /// One face, one card, and the catalog has verified it lists every card
+    /// in the set: nothing to ask.
     func testUniqueFaceResolvesWithoutAskingAnything() {
-        let index = MagicTokenProductIndex(products: mshProducts())
-
-        guard case let .resolved(product) = index.resolve(faceNumber: "18") else {
-            return XCTFail("Doombot #18 appears in exactly one product")
+        guard case let .resolved(product) = mshCatalog().resolve(face: face("TMSH", "18")) else {
+            return XCTFail("Doombot #18 appears on exactly one card")
         }
-        XCTAssertEqual(product.pairedNumber, "6 // 18")
-        XCTAssertEqual(product.tcgplayerID, "703230")
+        XCTAssertEqual(product.name, "Merfolk // Doombot")
+        XCTAssertEqual(product.key.storageKey, "TMSH:6|TMSH:18")
+        XCTAssertEqual(product.tcgplayerProductIDs, ["703230"])
     }
 
-    /// The heart of it. Scanning Clue perfectly still does not say which
-    /// physical token it is, and no better OCR could — the pairing is not a
-    /// property of the face.
+    /// Scanning Clue perfectly still does not say which physical token it is,
+    /// and no better OCR could. The pairing is not a property of the face.
     func testAmbiguousFaceAsksForTheReverseRatherThanGuessing() {
-        let index = MagicTokenProductIndex(products: mshProducts())
+        let resolution = mshCatalog().resolve(face: face("TMSH", "17"))
+        XCTAssertEqual(resolution, .needsReverse(candidates: [soldierClue, insectClue], catalogIsExhaustive: true))
+    }
 
-        guard case let .needsReverse(candidates) = index.resolve(faceNumber: "17") else {
-            return XCTFail("Clue #17 is in two products and must not resolve")
+    /// Without a verified coverage claim, a single listing is evidence but not
+    /// an answer: the same face may also be on cardboard nobody has listed.
+    func testWithoutVerifiedCoverageAUniqueListingIsEvidenceNotAnAnswer() {
+        let coverages: [[String: MagicTokenPairingCoverage]] = [[:], ["TMSH": .partial]]
+        for coverage in coverages {
+            XCTAssertEqual(
+                mshCatalog(coverage: coverage).resolve(face: face("TMSH", "18")),
+                .needsReverse(candidates: [merfolkDoombot], catalogIsExhaustive: false)
+            )
         }
-        XCTAssertEqual(candidates.count, 2)
+    }
+
+    /// A completeness claim that does not know the face has just been shown
+    /// to be wrong for that face.
+    func testCompleteCoverageThatDoesNotKnowTheFaceIsNotTrusted() {
         XCTAssertEqual(
-            Set(candidates.map(\.pairedNumber)),
-            ["4 // 17", "12 // 17"]
+            mshCatalog().resolve(face: face("TMSH", "99")),
+            .needsReverse(candidates: [], catalogIsExhaustive: false)
         )
     }
 
-    /// The reverse is evidence, not a question. Two faces intersect to one
-    /// product.
+    // MARK: - Two faces
+
+    /// The reverse is evidence, not a question. Two faces intersect to one card.
     func testReverseScanResolvesTheExactProduct() {
-        let index = MagicTokenProductIndex(products: mshProducts())
-
-        guard case let .resolved(product) = index.resolve(
-            faceNumber: "17", reverseNumber: "12"
-        ) else {
-            return XCTFail("Clue #17 plus Insect #12 is exactly one product")
-        }
-        XCTAssertEqual(product.pairedNumber, "12 // 17")
+        XCTAssertEqual(mshCatalog().resolve(face: face("TMSH", "17"), reverse: face("TMSH", "12")),
+                       .resolved(insectClue))
     }
 
-    /// The user may present either side first.
+    /// The person may present either side first.
     func testScanOrderDoesNotMatter() {
-        let index = MagicTokenProductIndex(products: mshProducts())
-
-        let forward = index.resolve(faceNumber: "17", reverseNumber: "4")
-        let reversed = index.resolve(faceNumber: "4", reverseNumber: "17")
-
-        XCTAssertEqual(forward, reversed)
-        guard case let .resolved(product) = forward else {
-            return XCTFail("Expected a resolution")
-        }
-        XCTAssertEqual(product.pairedNumber, "4 // 17")
-    }
-
-    /// Leading zeros are presentation. `0017` and `17` are one face.
-    func testLeadingZerosAreNotIdentity() {
-        let index = MagicTokenProductIndex(products: mshProducts())
-
+        let catalog = mshCatalog()
         XCTAssertEqual(
-            index.resolve(faceNumber: "0017"),
-            index.resolve(faceNumber: "17")
+            catalog.resolve(face: face("TMSH", "17"), reverse: face("TMSH", "4")),
+            catalog.resolve(face: face("TMSH", "4"), reverse: face("TMSH", "17"))
         )
+        XCTAssertEqual(catalog.resolve(face: face("TMSH", "4"), reverse: face("TMSH", "17")), .resolved(soldierClue))
     }
 
-    /// A face the catalogue does not place in any product. The face is still
-    /// known — it is the physical object that is not — so this is distinct from
-    /// failing to read the card.
-    func testUncataloguedFaceIsItsOwnAnswer() {
-        let index = MagicTokenProductIndex(products: mshProducts())
-
-        XCTAssertEqual(index.resolve(faceNumber: "99"), .unknownProduct)
-        XCTAssertEqual(
-            index.resolve(faceNumber: "6", reverseNumber: "17"),
-            .unknownProduct,
-            "Merfolk and Clue are not printed on the same card"
-        )
+    /// Merfolk and Clue are never printed on one card. A complete set can say
+    /// so, which means the second face is a different card. An incomplete one
+    /// cannot, and only a person can.
+    func testFacesNeverPrintedTogetherAreDifferentCardsOnlyWhenCoverageSaysSo() {
+        XCTAssertEqual(mshCatalog().resolve(face: face("TMSH", "6"), reverse: face("TMSH", "17")), .differentCards)
+        XCTAssertEqual(mshCatalog(coverage: [:]).resolve(face: face("TMSH", "6"), reverse: face("TMSH", "17")),
+                       .uncataloguedPair)
     }
 
-    /// Two faces that still do not decide it means the same pair exists as more
-    /// than one product — a finish difference. Refusing beats pricing a foil as
-    /// a nonfoil.
-    func testTwoFacesThatStillDoNotDecideStillRefuse() {
-        let index = MagicTokenProductIndex(products: [
-            MagicPhysicalToken(frontNumber: "6", backNumber: "18", name: "nonfoil",
-                               marketProductID: "a", tcgplayerID: nil),
-            MagicPhysicalToken(frontNumber: "6", backNumber: "18", name: "foil",
-                               marketProductID: "b", tcgplayerID: nil)
-        ])
-
-        guard case let .needsReverse(candidates) = index.resolve(
-            faceNumber: "6", reverseNumber: "18"
-        ) else {
-            return XCTFail("two products for one pair must not silently resolve")
-        }
-        XCTAssertEqual(candidates.count, 2)
+    /// Reading the same side twice says nothing about the other side.
+    func testSameFaceTwiceIsNotEvidence() {
+        XCTAssertEqual(mshCatalog().resolve(face: face("TMSH", "17"), reverse: face("TMSH", "0017")), .sameFace)
     }
 
-    /// Identity is the number, never the name. MSH prints `Soldier` at both #3
-    /// and #4, and those pair differently.
+    // MARK: - Identity
+
+    /// Leading zeros are presentation and case is OCR noise. A letter prefix
+    /// and a suffix are identity.
+    func testLeadingZerosAndCaseAreNotIdentity() {
+        XCTAssertEqual(face("tmsh", "0017"), face("TMSH", "17"))
+        XCTAssertEqual(MagicTokenFaceID.normalize("H013"), "H13")
+        XCTAssertEqual(MagicTokenFaceID.normalize("0009b"), "9B")
+        XCTAssertEqual(MagicTokenFaceID.normalize("★"), "★")
+        XCTAssertNotEqual(face("TLTR", "H13"), face("TLTR", "13"))
+    }
+
+    /// Identity is set and number, never the name. MSH prints `Soldier` at both
+    /// #3 and #4, and those pair differently.
     func testFaceIdentityIsTheNumberNotTheName() {
-        let three = MagicTokenFace(setCode: "TMSH", number: "3", name: "Soldier")
-        let four = MagicTokenFace(setCode: "TMSH", number: "0004", name: "Soldier")
+        XCTAssertNotEqual(MagicTokenFace(setCode: "TMSH", number: "3", name: "Soldier").id,
+                          MagicTokenFace(setCode: "TMSH", number: "0004", name: "Soldier").id)
+    }
 
-        XCTAssertNotEqual(three, four)
-        XCTAssertEqual(four.normalizedNumber, "4")
+    /// TCGplayer's RNA Guild Kit listing prints `Ooze // Frog Lizard` at
+    /// `9 // 6` and `Dragon // Goblin` at `5 // 6`. Two different faces carry
+    /// `6`, so a number-only key would claim those cards share a side. The set
+    /// codes here are placeholders; the collision is the listing's.
+    func testSetIsPartOfFaceIdentity() {
+        let ooze = card(("TAAA", "9", "Ooze"), ("TAAA", "6", "Frog Lizard"))
+        let dragon = card(("TBBB", "5", "Dragon"), ("TBBB", "6", "Goblin"))
+        let catalog = MagicTokenProductCatalog(products: [ooze, dragon], coverage: ["TAAA": .complete, "TBBB": .complete])
+
+        XCTAssertEqual(catalog.resolve(face: face("TAAA", "6")), .resolved(ooze))
+        XCTAssertEqual(catalog.resolve(face: face("TBBB", "6")), .resolved(dragon))
+    }
+
+    /// Two listings of one pair are one object. The difference between them is
+    /// a finish or packaging fact the finish resolver owns; it must never turn
+    /// into a request to flip a card that has already been flipped.
+    func testTwoListingsOfOneCardAreOneObject() {
+        let nonfoil = card(("TMSH", "6", "Merfolk"), ("TMSH", "18", "Doombot"), ids: ["a"])
+        let foil = card(("TMSH", "18", "Doombot"), ("TMSH", "6", "Merfolk"), ids: ["b"])
+        let catalog = MagicTokenProductCatalog(products: [nonfoil, foil], coverage: ["TMSH": .complete])
+
+        guard case let .resolved(product) = catalog.resolve(face: face("TMSH", "6"), reverse: face("TMSH", "18")) else {
+            return XCTFail("one pair is one card, however many times it is listed")
+        }
+        XCTAssertEqual(product.tcgplayerProductIDs, ["a", "b"])
+        XCTAssertEqual(product.name, "Merfolk // Doombot", "the first listing's display order is kept")
+        XCTAssertEqual(catalog.resolve(face: face("TMSH", "18")), .resolved(product))
+    }
+
+    /// Amonkhet's `Punchcard // Punchcard` carries one face on both sides. It
+    /// is double-sided, and never the same object as a single-sided printing.
+    func testIdenticalFacesOnBothSidesIsItsOwnObject() {
+        let punchcard = card(("TAKH", "26", "Punchcard"), ("TAKH", "26", "Punchcard"))
+        XCTAssertTrue(punchcard.isDoubleFaced)
+        XCTAssertNotEqual(punchcard.key, MagicPhysicalTokenKey(faces: [face("TAKH", "26")]))
+        XCTAssertEqual(punchcard.reverse(of: face("TAKH", "26"))?.name, "Punchcard")
+
+        let catalog = MagicTokenProductCatalog(products: [punchcard], coverage: ["TAKH": .complete])
+        XCTAssertEqual(catalog.resolve(face: face("TAKH", "26")), .resolved(punchcard))
+    }
+
+    func testStorageKeyRoundTripsAndIgnoresOrder() {
+        let forward = MagicPhysicalTokenKey(faces: [face("TMSH", "6"), face("TMSH", "18")])
+        let backward = MagicPhysicalTokenKey(faces: [face("TMSH", "18"), face("TMSH", "6")])
+        XCTAssertEqual(forward, backward)
+        XCTAssertEqual(forward?.storageKey, "TMSH:6|TMSH:18", "binder order, not string order")
+        XCTAssertEqual(MagicPhysicalTokenKey(storageKey: "TMSH:18|tmsh:0006"), forward)
+        XCTAssertEqual(MagicPhysicalTokenKey(storageKey: "TMSH:17")?.isDoubleFaced, false)
+
+        for invalid in ["", "TMSH", "TMSH:1|TMSH:2|TMSH:3", "TMSH:|TMSH:1", ":1", "TMSH:1|"] {
+            XCTAssertNil(MagicPhysicalTokenKey(storageKey: invalid), invalid)
+        }
+        XCTAssertNil(MagicPhysicalTokenKey(faces: []))
+    }
+
+    // MARK: - Real multiplicity
+
+    /// TCGplayer's GRN Guild Kit listing prints one Saproling face (#8) against
+    /// three different backs. Scryfall's TGK1 confirms #11 is `Voja // Saproling`.
+    /// The Selesnya and Golgari faces used here do not collide in that listing;
+    /// its Boros and Dimir faces reuse numbers, which
+    /// `testOneNumberNamingTwoFacesRefusesTheCatalog` covers.
+    func testOneFaceAcrossManyBacks() {
+        let voja = card(("TGK1", "8", "Saproling"), ("TGK1", "11", "Voja"), ids: ["179405"])
+        let wurm = card(("TGK1", "8", "Saproling"), ("TGK1", "9", "Wurm"), ids: ["179415"])
+        let elfKnight = card(("TGK1", "6", "Elf Knight"), ("TGK1", "8", "Saproling"), ids: ["179416"])
+        let catalog = MagicTokenProductCatalog(products: [voja, wurm, elfKnight], coverage: ["TGK1": .complete])
+
+        guard case let .needsReverse(candidates, exhaustive) = catalog.resolve(face: face("TGK1", "8")) else {
+            return XCTFail("one Saproling face is on three cards")
+        }
+        XCTAssertTrue(exhaustive)
+        XCTAssertEqual(candidates.compactMap { $0.reverse(of: face("TGK1", "8"))?.name }, ["Elf Knight", "Wurm", "Voja"])
+        XCTAssertEqual(catalog.resolve(face: face("TGK1", "8"), reverse: face("TGK1", "11")), .resolved(voja))
+        XCTAssertEqual(catalog.resolve(face: face("TGK1", "9")), .resolved(wurm))
+    }
+
+    /// Modern Event Deck 2014 pairs a planeswalker emblem with a token, and its
+    /// Soldier face appears on two cards.
+    func testEmblemsPairWithTokens() {
+        let emblem = card(("TMD1", "4", "Emblem - Elspeth, Knight-Errant"), ("TMD1", "1", "Soldier"), ids: ["83374"])
+        let myr = card(("TMD1", "3", "Myr"), ("TMD1", "2", "Spirit"), ids: ["83376"])
+        let soldier = card(("TMD1", "1", "Soldier"), ("TMD1", "2", "Spirit"), ids: ["83377"])
+        let catalog = MagicTokenProductCatalog(products: [emblem, myr, soldier], coverage: ["TMD1": .complete])
+
+        XCTAssertEqual(catalog.resolve(face: face("TMD1", "4")), .resolved(emblem))
+        XCTAssertEqual(catalog.resolve(face: face("TMD1", "1")),
+                       .needsReverse(candidates: [soldier, emblem], catalogIsExhaustive: true))
+        XCTAssertEqual(catalog.resolve(face: face("TMD1", "1"), reverse: face("TMD1", "4")), .resolved(emblem))
+    }
+
+    // MARK: - Published form
+
+    private func catalogJSON(
+        schemaVersion: Int = 1,
+        generation: String = "fixture-1",
+        sets: String = #"[{"code": "tmsh", "coverage": "complete"}]"#,
+        products: String
+    ) -> Data {
+        Data("""
+        {"schemaVersion": \(schemaVersion), "generation": "\(generation)", "sets": \(sets), "products": \(products)}
+        """.utf8)
+    }
+
+    func testCatalogDecodesFromItsPublishedForm() throws {
+        let catalog = try MagicTokenProductCatalog(jsonData: catalogJSON(products: """
+        [
+          {"faces": [{"set": "TMSH", "number": "0006", "name": "Merfolk"},
+                     {"set": "TMSH", "number": "0018", "name": "Doombot"}],
+           "tcgplayerProductIDs": ["703230"]},
+          {"faces": [{"set": "TMSH", "number": "4", "name": "Soldier"},
+                     {"set": "TMSH", "number": "17", "name": "Clue"}]},
+          {"faces": [{"set": "TMSH", "number": "12", "name": "Insect"},
+                     {"set": "TMSH", "number": "17", "name": "clue"}]}
+        ]
+        """))
+
+        XCTAssertEqual(catalog.generation, "fixture-1")
+        XCTAssertEqual(catalog.resolve(face: face("TMSH", "18")), .resolved(merfolkDoombot))
+        XCTAssertEqual(catalog.products(containing: face("TMSH", "17")).count, 2,
+                       "a face name differing only in case is the same face")
+    }
+
+    /// TCGplayer's GRN Guild Kit listing numbers `Soldier (002) // Goblin` at
+    /// `2 // 4` and `Horror // Copy` at `2 // 1`. Read as one numbering space,
+    /// #2 is two different faces. A catalog that cannot say what a face is
+    /// cannot say what it pairs with, so the whole file is refused.
+    func testOneNumberNamingTwoFacesRefusesTheCatalog() {
+        let data = catalogJSON(sets: "[]", products: """
+        [
+          {"faces": [{"set": "TGK1", "number": "2", "name": "Soldier"}, {"set": "TGK1", "number": "4", "name": "Goblin"}]},
+          {"faces": [{"set": "TGK1", "number": "2", "name": "Horror"}, {"set": "TGK1", "number": "1", "name": "Copy"}]}
+        ]
+        """)
+        XCTAssertThrowsError(try MagicTokenProductCatalog(jsonData: data)) { error in
+            XCTAssertEqual(error as? MagicTokenProductCatalogError, .conflictingFaceNames(face("TGK1", "2")))
+        }
+    }
+
+    func testMalformedCatalogsAreRefused() {
+        let oneFace = #"[{"faces": [{"set": "TMSH", "number": "17", "name": "Clue"}]}]"#
+        let cases: [(Data, MagicTokenProductCatalogError)] = [
+            (catalogJSON(schemaVersion: 2, products: oneFace), .unsupportedSchemaVersion(2)),
+            (catalogJSON(generation: " ", products: oneFace), .missingGeneration),
+            (catalogJSON(sets: #"[{"code": "TMSH", "coverage": "complete"}, {"code": "tmsh", "coverage": "partial"}]"#,
+                         products: oneFace), .duplicateSetCoverage("TMSH")),
+            (catalogJSON(products: "[{\"faces\": []}]"), .invalidProduct(index: 0)),
+            (catalogJSON(products: """
+            [{"faces": [{"set": "T", "number": "1", "name": "A"}, {"set": "T", "number": "2", "name": "B"},
+                        {"set": "T", "number": "3", "name": "C"}]}]
+            """), .invalidProduct(index: 0)),
+            (catalogJSON(products: #"[{"faces": [{"set": "TMSH", "number": "17", "name": " "}]}]"#),
+             .invalidProduct(index: 0)),
+            (catalogJSON(products: #"[{"faces": [{"set": "TMSH", "number": "17", "name": "Clue"}], "tcgplayerProductIDs": [""]}]"#),
+             .invalidProduct(index: 0))
+        ]
+        for (data, expected) in cases {
+            XCTAssertThrowsError(try MagicTokenProductCatalog(jsonData: data)) { error in
+                XCTAssertEqual(error as? MagicTokenProductCatalogError, expected)
+            }
+        }
+    }
+
+    /// Coverage is a reviewed claim. A value the build does not understand is
+    /// not quietly read as either answer.
+    func testUnknownCoverageValueIsRefused() {
+        let data = catalogJSON(sets: #"[{"code": "TMSH", "coverage": "probably"}]"#,
+                               products: #"[{"faces": [{"set": "TMSH", "number": "17", "name": "Clue"}]}]"#)
+        XCTAssertThrowsError(try MagicTokenProductCatalog(jsonData: data))
     }
 
     // MARK: - Art cards

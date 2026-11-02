@@ -1211,9 +1211,7 @@ final class OpusImplementationPlanTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer {
             defaults.removePersistentDomain(forName: suite)
-            PriceVendorCredentials.remove()
         }
-        try PriceVendorCredentials.store("opus-req-013-key")
         OpusJustTCGURLProtocol.reset(routes: [
             "sets": """
             {"data":[{"id":"req013-set","name":"REQ-013 Set","sealed_count":1}]}
@@ -1224,7 +1222,8 @@ final class OpusImplementationPlanTests: XCTestCase {
         ])
         let normalizer = CollectionCatalogNormalizer(
             tcgdex: EmptyTCGdexSource(),
-            justTCG: JustTCGV1Client(transport: makeREQ013Transport(defaults: defaults))
+            justTCG: JustTCGV1Client(transport: makeREQ013Transport(defaults: defaults)),
+            sealedCredentialsAvailable: true
         )
         await normalizer.normalizeImportedCards(in: context)
 

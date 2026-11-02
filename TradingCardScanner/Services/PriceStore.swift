@@ -64,6 +64,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case physicalIdentityReview = "physical_identity_review_needed"
     case gradedSearchIncomplete = "graded_search_incomplete"
     case gradedIdentityUnresolved = "graded_local_identity_unresolved"
+    case gradedMarketPriceExpired = "graded_market_price_expired"
+    case gradedMarketNeverPriced = "graded_market_never_priced"
 
     /// A few plain words for a tile or a detail heading. The provider-level
     /// account is `detail`; the support code is the raw value.
@@ -87,7 +89,9 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .otherCurrency: return "Non-USD price only"
         case .physicalIdentityReview: return "Check this card"
         case .gradedSearchIncomplete: return "Graded search unfinished"
-        case .gradedIdentityUnresolved: return "Set not matched"
+        case .gradedIdentityUnresolved: return "Graded identity not matched"
+        case .gradedMarketPriceExpired: return "Graded price expired"
+        case .gradedMarketNeverPriced: return "No recorded sale for this slab"
         }
     }
 
@@ -141,7 +145,11 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedSearchIncomplete:
             return "The bounded provider search did not finish. This is not evidence that the card or grade is absent. A later refresh can retry."
         case .gradedIdentityUnresolved:
-            return "The app could not resolve the vendor set for this print run. No card request was made; provider coverage remains unverified."
+            return "The app could not verify the set, language or physical printing needed for this graded identity. Provider coverage remains unverified."
+        case .gradedMarketPriceExpired:
+            return "The provider withdrew the current price after the slab's recent-sale window expired. Its historical sale is retained for reference and excluded from current value."
+        case .gradedMarketNeverPriced:
+            return "The exact slab variant exists, but the provider reports no recorded sale for it. Other grades and historical amounts are never substituted."
         }
     }
 
@@ -159,6 +167,11 @@ enum PricingDiagnostics {
     /// A retained quote's valuation eligibility is independent of the latest
     /// refresh attempt. Keep the general diagnostic's attempt-first precedence.
     static func valuationExclusionReason(for card: CollectedCard, record: PriceRecord?) -> PricingDiagnosticReason? {
+        if PokemonReviewedPhysicalObjects.requiresReview(card) { return .physicalIdentityReview }
+        if let lifecycle = record?.exactGradedQuoteEvidence?.lifecycle {
+            if lifecycle.isExpired(at: .now) { return .gradedMarketPriceExpired }
+            if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
+        }
         guard record?.effectiveUnitMarketPriceUSD == nil else { return nil }
         if let record, record.unitMarketPriceUSD != nil,
            record.currencyCode.caseInsensitiveCompare("USD") != .orderedSame {
@@ -171,6 +184,7 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if PokemonReviewedPhysicalObjects.requiresReview(card) { return .physicalIdentityReview }
         if let record, record.lastFailureAt != nil {
             if record.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue { return .invalidProviderQuote }
             if card.itemKind == .rawCard, card.catalogProviderID != nil,
@@ -181,6 +195,10 @@ enum PricingDiagnostics {
                 return .identityResolvedAfterFailedCheck
             }
             return .providerRequestFailed
+        }
+        if let lifecycle = record?.exactGradedQuoteEvidence?.lifecycle {
+            if lifecycle.isExpired(at: .now) { return .gradedMarketPriceExpired }
+            if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
         }
         if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
            reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved { return reason }
@@ -310,15 +328,17 @@ struct PriceRecordKeySelection: Sendable {
         invalidatedKeys: []
     )
 
-    init(records: [PriceRecord]) {
+    init(records: [PriceRecord], at date: Date = .now) {
         self.init(
             existingKeys: Set(records.map(\.key)),
             valuedKeys: Set(
                 records
-                    .filter { $0.effectiveUnitMarketPriceUSD != nil }
+                    .filter { $0.effectiveUnitMarketPriceUSD(at: date) != nil }
                     .map(\.key)
             ),
-            invalidatedKeys: Set(records.filter(\.isInvalidated).map(\.key))
+            invalidatedKeys: Set(records.filter {
+                $0.isInvalidated || $0.exactGradedQuoteIsWithdrawn(at: date)
+            }.map(\.key))
         )
     }
 
@@ -494,10 +514,7 @@ final class PriceRefreshDataIndex {
         _ candidate: PriceObservation,
         than incumbent: PriceObservation
     ) -> Bool {
-        if candidate.receivedAt != incumbent.receivedAt {
-            return candidate.receivedAt > incumbent.receivedAt
-        }
-        return candidate.id.uuidString > incumbent.id.uuidString
+        PriceObservation.isNewer(candidate, than: incumbent)
     }
 }
 
@@ -716,6 +733,48 @@ struct PriceStore {
         if let record = record(forKey: key) { update(record) }
     }
 
+    /// Preserve the entire exact-quote decision at the fresh checkpoint, not
+    /// just its individual mutations. Intervening lifecycle evidence must be
+    /// reevaluated before a queued positive amount can erase it.
+    func enqueueGradedQuote(_ variant: GradedVariant, game: CardGame, printingID: String,
+                            variantID: String?, treatmentIDs: [String], at date: Date) -> Bool {
+        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID,
+                                  treatmentIDs: treatmentIDs)
+        return enqueue(keys: [key]) { fresh in
+            _ = GradedVariantBinding.storeVariantQuote(variant, game: game, printingID: printingID,
+                variantID: variantID, treatmentIDs: treatmentIDs, store: fresh, at: date)
+        }
+    }
+
+    func recordExactGradedQuoteEvidence(_ evidence: ExactGradedQuoteEvidence, forKey key: String) {
+        if enqueue(keys: [key], { $0.recordExactGradedQuoteEvidence(evidence, forKey: key) }) { return }
+        guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
+              record.lastCheckedAt == evidence.checkedAt else { return }
+        PriceObservationLog(context: context, index: index).recordElapsedEligibility(for: record, at: evidence.checkedAt)
+        if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
+            // A price-observation clock and a most-recent-sale clock describe
+            // different facts. Only matching clock fields can establish stale
+            // evidence; same-sale expiry may have a later update timestamp.
+            let prior = record.exactGradedQuoteEvidence
+            if let incomingSale = evidence.lifecycle.lastSaleAt,
+               let knownSale = prior?.lifecycle.lastSaleAt, incomingSale < knownSale { return }
+            let observation = PriceObservationLog(context: context, index: index).newestObservation(instrumentKey: key)
+            let observedUpdate = observation.flatMap { value -> Date? in
+                guard value.isSourceStamped,
+                      InventoryLedger.matchesExactGradedObservation(value, variantID: evidence.variantID, recordKey: key)
+                else { return nil }
+                return value.effectiveAt
+            }
+            let knownUpdate = [record.source == .justTCG ? record.sourceUpdatedAt : nil,
+                prior?.sourceUpdatedAt, observedUpdate].compactMap { $0 }.max()
+            if let incomingUpdate = evidence.sourceUpdatedAt,
+               let knownUpdate, incomingUpdate < knownUpdate { return }
+            PriceObservationLog(context: context, index: index).recordInvalidation(
+                instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
+        }
+        record.exactGradedQuoteEvidence = evidence
+    }
+
     func migratePriceSide(
         from oldKey: String, to newKey: String, game: CardGame,
         printingID: String, variantID: String?, treatmentIDs: [String]
@@ -910,7 +969,7 @@ struct PriceStore {
         // The canonical record is authoritative once it has explicitly been
         // invalidated. Falling through to a legacy key in that state would
         // resurrect the very value the invalidation withdrew.
-        if primary.isInvalidated { return primary }
+        if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn { return primary }
 
         // Prefer a real record value over an empty canonical placeholder. The
         // legacy value is for the same exact object and remains better evidence
@@ -1054,7 +1113,9 @@ struct PriceStore {
             isClockRollbackRepair = false
         }
 
-        let observationDecision = PriceObservationLog(context: context, index: index).ingest(
+        let log = PriceObservationLog(context: context, index: index)
+        log.recordElapsedEligibility(for: record, at: coverageDate)
+        let observationDecision = log.ingest(
             lookup,
             instrumentKey: key,
             marketVariantID: marketVariantID ?? record.marketVariantID,
@@ -1104,7 +1165,7 @@ struct PriceStore {
 
         if let marketVariantID {
             record.marketVariantID = marketVariantID
-            record.gradedMarketCoverageJSON = nil
+            record.gradedMarketCoverage = nil
         }
         return true
     }
@@ -1315,7 +1376,7 @@ struct PriceStore {
         ) else { return false }
         if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
         guard record.effectiveUnitMarketPriceUSD == nil else {
-            record.gradedMarketCoverageJSON = nil
+            record.gradedMarketCoverage = nil
             if let reason = record.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
                reason.isGradedCoverageResult {
                 record.lastFailureReasonRaw = nil

@@ -121,19 +121,28 @@ actor ProductPriceService {
     private let pacer: JustTCGPacer
     private let budget: ProductFallbackBudget
     private let setDirectoryProvider: ProductSetDirectoryProvider
+    private let apiKeyOverride: String?
 
     init(
         configuration: Configuration = Configuration(),
         session: URLSession = .shared,
         pacer: JustTCGPacer = .shared,
         budget: ProductFallbackBudget = .shared,
-        setDirectoryProvider: ProductSetDirectoryProvider = .shared
+        setDirectoryProvider: ProductSetDirectoryProvider = .shared,
+        apiKeyOverride: String? = nil
     ) {
         self.configuration = configuration
         self.session = session
         self.pacer = pacer
         self.budget = budget
         self.setDirectoryProvider = setDirectoryProvider
+        self.apiKeyOverride = apiKeyOverride
+    }
+
+    private var apiKey: String? { apiKeyOverride ?? PriceVendorCredentials.key }
+    private var hasCredentials: Bool {
+        if let apiKeyOverride { return !apiKeyOverride.isEmpty }
+        return PriceVendorCredentials.hasKey
     }
 
     func budgetSnapshot() async -> ProductFallbackBudget.Snapshot {
@@ -177,7 +186,7 @@ actor ProductPriceService {
             // name/set search, which cannot prove the treatment and is refused.
             return .unsupportedTreatment
         }
-        guard PriceVendorCredentials.hasKey else { return .requestFailed }
+        guard hasCredentials else { return .requestFailed }
 
         do {
             let candidates: [ProductCard]
@@ -367,7 +376,7 @@ actor ProductPriceService {
         components.queryItems = query.map { URLQueryItem(name: $0.0, value: $0.1) }
         guard let url = components.url else { throw ProductPriceError.invalidURL }
 
-        guard let key = PriceVendorCredentials.key else { throw ProductPriceError.missingCredentials }
+        guard let key = apiKey else { throw ProductPriceError.missingCredentials }
 
         var request = URLRequest(url: url)
         request.timeoutInterval = configuration.timeout

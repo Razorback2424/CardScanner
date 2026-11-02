@@ -174,9 +174,21 @@ enum ImportedGradeParser {
             }
         }
 
+        // Flattened exports put PSA qualifiers beside the descriptive grade.
+        // Preserve that independent axis so an OC copy cannot match ordinary
+        // PSA 8 merely because a vendor omits the grade's descriptive label.
+        let supportedQualifiers: Set<String> = company == .psa ? ["OC", "ST", "MK", "PD", "MC"] : []
+        let qualifierParts = parts.filter {
+            supportedQualifiers.contains($0.trimmingCharacters(in: .punctuationCharacters).uppercased())
+        }
+        guard qualifierParts.count <= 1 else { return nil }
+        let qualifier = qualifierParts.first?.trimmingCharacters(in: .punctuationCharacters).uppercased()
+        if qualifier != nil {
+            parts.removeAll { supportedQualifiers.contains($0.trimmingCharacters(in: .punctuationCharacters).uppercased()) }
+        }
         let label = parts.joined(separator: " ").nilIfEmpty
         guard value != nil || label != nil else { return nil }
-        return (company, CardGrade(value: value, label: label))
+        return (company, CardGrade(value: value, label: label, qualifier: qualifier))
     }
 }
 

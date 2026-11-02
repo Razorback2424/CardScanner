@@ -2589,8 +2589,7 @@ struct PriceHistoryChartModel: Equatable {
     ) -> Self {
         let calendar = PortfolioCalendar.calendar(in: timeZone)
         let orderedObservations = observations.sorted {
-            if $0.receivedAt != $1.receivedAt { return $0.receivedAt < $1.receivedAt }
-            return $0.id.uuidString < $1.id.uuidString
+            PriceObservation.isNewer($1, than: $0)
         }
         let orderedCheckDays = checkDays.sorted {
             if $0.lastSuccessfulCheckAt != $1.lastSuccessfulCheckAt {
@@ -2642,7 +2641,7 @@ struct PriceHistoryChartModel: Equatable {
 
         for event in events {
             if let observation = event.observation {
-                if observation.kind == .explicitInvalidation {
+                if observation.kind.withdrawsValue {
                     currentAmount = nil
                     continue
                 }
@@ -2784,7 +2783,7 @@ struct PriceHistoryChartModel: Equatable {
         guard observation.currencyCode == currencyCode,
               let amount = observation.amount,
               amount.isValid,
-              observation.kind != .explicitInvalidation else { return nil }
+              !observation.kind.withdrawsValue else { return nil }
         return amount
     }
 
@@ -2822,6 +2821,9 @@ private extension PriceObservationKind {
         case .sourceRestatement: return "Source restatement"
         case .sourceTransition: return "Source changed"
         case .explicitInvalidation: return "Price withdrawn"
+        case .eligibilityExpiry: return "Price expired"
+        case .physicalReview: return "Physical review required"
+        case .unrecognized: return "Price evidence unsupported"
         }
     }
 }

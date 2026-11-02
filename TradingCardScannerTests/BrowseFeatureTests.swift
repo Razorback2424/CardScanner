@@ -608,6 +608,59 @@ final class CatalogSetArtworkTests: XCTestCase {
 
 final class BrowseFeatureTests: XCTestCase {
     @MainActor
+    func testCompletedArtworkSurvivesDisappearAndReappear() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/reappear.png")!
+        let artwork = UIImage()
+        loader.load(url, targetPixelSize: 128)
+        await gate.waitForCount(1)
+        await gate.finish(0, image: artwork)
+        await waitForImageLoader(loader)
+        loader.cancel() // CatalogCachedImage.onDisappear
+        XCTAssertTrue(loader.matchesSource(url, reloadToken: 0))
+        XCTAssertTrue(loader.image === artwork)
+        loader.load(url, targetPixelSize: 128)
+        for _ in 0..<30 { await Task.yield() }
+        XCTAssertTrue(loader.image === artwork)
+        let count = await gate.count
+        XCTAssertEqual(count, 1, "A completed derivative needs no replacement request on reappearance")
+        if count > 1 { await gate.finish(1, image: artwork) }
+        await waitForImageLoader(loader)
+    }
+
+    @MainActor
+    func testInterruptedArtworkRestartsAndCancelledUpgradeRetainsDisplayedDerivative() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/interrupted.png")!
+        let stale = UIImage(), artwork = UIImage(), upgraded = UIImage()
+        loader.load(url, targetPixelSize: 128)
+        await gate.waitForCount(1)
+        loader.cancel()
+        loader.load(url, targetPixelSize: 128)
+        await gate.waitForCount(2)
+        await gate.finish(1, image: artwork)
+        await waitForImageLoader(loader)
+        await gate.finish(0, image: stale)
+        for _ in 0..<30 { await Task.yield() }
+        XCTAssertTrue(loader.image === artwork)
+
+        loader.load(url, targetPixelSize: 512)
+        await gate.waitForCount(3)
+        loader.cancel()
+        XCTAssertTrue(loader.matchesSource(url, reloadToken: 0))
+        loader.load(url, targetPixelSize: 512)
+        await gate.waitForCount(4)
+        XCTAssertTrue(loader.image === artwork, "An interrupted upgrade must keep the old derivative visible")
+        await gate.finish(3, image: upgraded)
+        await waitForImageLoader(loader)
+        await gate.finish(2, image: stale)
+        for _ in 0..<30 { await Task.yield() }
+        XCTAssertTrue(loader.image === upgraded)
+    }
+
+    @MainActor
     func testArtworkResizeRetainsSourceAndRejectsSupersededCompletions() async throws {
         let gate = DetailImageLoadGate()
         let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
@@ -696,6 +749,42 @@ final class BrowseFeatureTests: XCTestCase {
         await waitForImageLoader(loader)
         XCTAssertTrue(loader.image === artwork)
         XCTAssertFalse(loader.failed)
+    }
+
+    @MainActor
+    func testHostedCompletedArtworkSurvivesDisappearReappear() async throws {
+        let gate = DetailImageLoadGate()
+        let loader = CatalogImageLoader { url, size in try await gate.fetch(url, size: size) }
+        let url = URL(string: "https://example.com/hosted-reappear.png")!
+        var disappeared = false
+        func view() -> AnyView {
+            AnyView(CatalogCachedImage(candidates: [.remote(url)], targetPixelSize: 128,
+                imageLoader: loader).frame(width: 90, height: 130)
+                .onDisappear { disappeared = true })
+        }
+        let controller = UIHostingController(rootView: view())
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await gate.waitForCount(1)
+        let artwork = UIGraphicsImageRenderer(size: CGSize(width: 90, height: 130)).image { context in
+            UIColor.blue.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 90, height: 130))
+        }
+        await gate.finish(0, image: artwork)
+        await waitForImageLoader(loader)
+        controller.rootView = AnyView(Color.clear)
+        for _ in 0..<40 where !disappeared { try await Task.sleep(for: .milliseconds(25)) }
+        XCTAssertTrue(disappeared)
+        XCTAssertTrue(loader.matchesSource(url, reloadToken: 0))
+        controller.rootView = view()
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertTrue(loader.image === artwork)
+        let count = await gate.count
+        XCTAssertEqual(count, 1)
+        if count > 1 { await gate.finish(1, image: artwork) }
+        await waitForImageLoader(loader)
     }
 
     @MainActor
@@ -5715,7 +5804,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         // These are the app's cataloged English scopes, not claims of exhaustive
         // Grand Master promo coverage. See the researched collector contract.
         let examples: [(String, Int, Int)] = [
-            ("sv03.5", 360, 378), ("sv08.5", 447, 472),
+            // GO's 163 raw rows already lose ten gold/rainbow aliases under
+            // the existing checklist rule; the distinct Ditto adds one slot.
+            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 149, 154),
             ("cel25", 25, 25), ("cel25cc", 25, 25),
             ("sv10", 415, 436), ("swsh9", 310, 315)
         ]
@@ -5742,9 +5833,21 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             if id == "sv03.5" {
                 XCTAssertTrue(master.contains { $0.collectorNumber == "207" }, "Secret rares remain in Master")
                 XCTAssertFalse(cards.contains { ["sv03.5-004", "sv03.5-005"].contains($0.providerID) && $0.masterSetVariant == .holo })
-                XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant?.id == "cosmos" && $0.isExpandedMasterSetVariant })
+                for finish in [PokemonReviewedPhysicalObjects.cosmosHolo, PokemonReviewedPhysicalObjects.cosmosReverse] {
+                    XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant == finish && $0.isExpandedMasterSetVariant })
+                }
+                XCTAssertFalse(cards.contains { $0.providerID == "sv03.5-004" && $0.masterSetVariant?.id == "cosmos" })
                 XCTAssertTrue(cards.contains { $0.providerID == "sv03.5-205" && $0.masterSetVariant?.id == "gold" && $0.isExpandedMasterSetVariant },
                               "The UPC metal Mew is distinct from the pack Mew")
+            }
+            if id == "swsh10.5" {
+                let bidoof = master.filter { $0.providerID == "swsh10.5-059" }
+                XCTAssertEqual(Set(bidoof.compactMap(\.masterSetVariant)), [.normal,
+                    PokemonReviewedPhysicalObjects.plainReverse, PokemonReviewedPhysicalObjects.peelableDitto])
+                for finish in [PokemonReviewedPhysicalObjects.plainReverse, PokemonReviewedPhysicalObjects.peelableDitto] {
+                    XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(finish))
+                    XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(finish, setProviderID: "sv03.5"))
+                }
             }
         }
         let again = await store.mergedEntries()

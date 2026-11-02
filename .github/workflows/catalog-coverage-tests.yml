@@ -87,6 +87,33 @@ jobs:
             -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
             -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
+            -only-testing:TradingCardScannerTests/PortfolioEligibilityIntegrationTests \
+            -only-testing:TradingCardScannerTests/PortfolioReplayEngineTests \
+            -only-testing:TradingCardScannerTests/PortfolioHistoryEngineTests \
+            -only-testing:TradingCardScannerTests/PortfolioCloseTests \
+            -only-testing:TradingCardScannerTests/PortfolioLedgerTests \
+            -only-testing:TradingCardScannerTests/PortfolioTrustPassTests \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests \
+            -only-testing:TradingCardScannerTests/CollectionItemKindTests \
+            -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests \
+            -only-testing:TradingCardScannerTests/RefreshStructuralWriteTests \
+            -only-testing:TradingCardScannerTests/JustTCGContractTests \
+            -only-testing:TradingCardScannerTests/ProductFallbackTests \
+            -only-testing:TradingCardScannerTests/ScannedGradedResolverTests \
+            -only-testing:TradingCardScannerTests/PriceRefreshLifecycleTests \
+            -only-testing:TradingCardScannerTests/CardShareContentTests \
+            -only-testing:TradingCardScannerTests/PriceRefreshSnapshotSliceTests \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testGradedExpiryUsesReplayCutoffForQuoteAndAliasSelection \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testExplicitGradedWithdrawalDoesNotRewriteEarlierKnowledgeCutoff \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testNewerExactSaleObservationCanSupersedeExpiredMutableQuoteOnlyForItsIdentity \
+            -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testExactObservationComparesItsUpdateClockIndependentlyOfLastSaleClock \
+            -only-testing:TradingCardScannerTests/CenteringNativePrecisionTests \
+            -only-testing:TradingCardScannerTests/CenteringExportTests \
+            -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \
+            -only-testing:TradingCardScannerTests/BrowseFeatureTests \
+            -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
+            -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
+            -only-testing:TradingCardScannerTests/MagicTokenPairingSessionTests \
             -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \
             -only-testing:TradingCardScannerTests/MagicCatalogBootstrapTests \

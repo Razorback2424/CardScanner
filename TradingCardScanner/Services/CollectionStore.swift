@@ -1138,7 +1138,9 @@ actor ScannerCollectionWriter: BackgroundModelActor {
               let record = PriceStore(context: context).record(forKey: row.priceKey),
               record.source == .justTCG, record.marketVariantID == marketID,
               GradedCardIdentity.matchesFinish(finish, printing: record.gradedPrinting,
-                  printRun: row.pokemonPrintRun),
+                  printRun: row.pokemonPrintRun, isJapanese: ProductCatalogIdentity.game(for: row.cardGame,
+                    catalogID: row.catalogProviderID ?? row.underlyingPrintingID) == .pokemonJapan,
+                  catalogID: row.catalogProviderID ?? row.underlyingPrintingID, verifiedProductID: row.tcgplayerProductID),
               let amount = record.effectiveUnitMarketPriceUSD,
               let fetchedAt = record.fetchedAt else { return nil }
         return .price(NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: record.currencyCode,
@@ -3664,12 +3666,7 @@ struct CollectionStore {
                     owner.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: owner)
-                storeMarketPrice(
-                    variant.marketPriceUSD,
-                    updatedAt: variant.updatedAt,
-                    marketVariantID: variant.id,
-                    for: owner
-                )
+                storeGradedQuote(variant, for: owner)
                 try commit()
                 return CollectionMutation(
                     collectionKey: owner.collectionKey,
@@ -3707,12 +3704,7 @@ struct CollectionStore {
                 )
             }
             markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
-            storeMarketPrice(
-                variant.marketPriceUSD,
-                updatedAt: variant.updatedAt,
-                marketVariantID: variant.id,
-                for: existing
-            )
+            storeGradedQuote(variant, for: existing)
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
@@ -3776,12 +3768,7 @@ struct CollectionStore {
         row.catalogProviderID = card.providerID
         markLiveMagicTreatmentMigrationComplete(for: card, on: row)
         context.insert(row)
-        storeMarketPrice(
-            variant.marketPriceUSD,
-            updatedAt: variant.updatedAt,
-            marketVariantID: variant.id,
-            for: row
-        )
+        storeGradedQuote(variant, for: row)
         let operationID = UUID()
         try requireAppended(
             ledger.record(
@@ -4370,7 +4357,9 @@ struct CollectionStore {
         let oldRecord = PriceStore(context: context).record(forKey: oldPriceKey)
         let compatibleBinding = variant.map { finish in
             GradedCardIdentity.matchesFinish(finish, printing: oldRecord?.gradedPrinting,
-                printRun: row.pokemonPrintRun)
+                printRun: row.pokemonPrintRun, isJapanese: ProductCatalogIdentity.game(for: row.cardGame,
+                    catalogID: row.catalogProviderID ?? row.underlyingPrintingID) == .pokemonJapan,
+                catalogID: row.catalogProviderID ?? row.underlyingPrintingID, verifiedProductID: row.tcgplayerProductID)
         } ?? false
         let changesKnownFinish = (row.variantID != variant?.id || revalidateBinding) && !compatibleBinding
         let printingID = changesKnownFinish ? row.collectionKey : row.priceStorageID
@@ -4447,6 +4436,14 @@ struct CollectionStore {
     /// current market observation. Persist it at add time under the exact vendor
     /// variant identity; adding an item must not make the price that was just
     /// shown disappear until a later refresh.
+    private func storeGradedQuote(_ variant: GradedVariant, for row: CollectedCard) {
+        _ = GradedVariantBinding.storeVariantQuote(
+            variant, game: row.cardGame, printingID: row.priceStorageID,
+            variantID: row.variantID, treatmentIDs: row.priceTreatmentIDs,
+            store: PriceStore(context: context), at: .now
+        )
+    }
+
     private func storeMarketPrice(
         _ amount: Double?,
         updatedAt: Date?,

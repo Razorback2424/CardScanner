@@ -44,7 +44,7 @@ struct ObservationEntry: Equatable, Sendable {
     /// total. A non-USD observation is still a real transition: the replay
     /// applies it as a de-pricing rather than silently carrying stale dollars.
     var participatesInPortfolioValue: Bool {
-        if kind == .explicitInvalidation { return true }
+        if kind.withdrawsValue { return true }
         return PortfolioPriceEligibility.participatesInPortfolioValue(
             amount: amount?.doubleValue,
             currencyCode: currencyCode

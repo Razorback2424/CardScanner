@@ -184,7 +184,7 @@ actor CollectionProjectionActor: BackgroundModelActor {
                     variantLabel: card.variantLabel,
                     quantity: position.quantity,
                     dateAdded: position.dateAdded,
-                    price: record?.display ?? .unknown,
+                    price: PokemonReviewedPhysicalObjects.requiresReview(card) ? .unknown : (record?.display ?? .unknown),
                     priceStorageKey: position.priceStorageKey,
                     magicTreatmentIDsRaw: card.magicTreatmentIDsRaw,
                     magicTreatmentQualifiers: card.magicTreatmentQualifiers,
@@ -203,7 +203,7 @@ actor CollectionProjectionActor: BackgroundModelActor {
                 )
             )
             diagnostics[card.collectionKey] = CollectionRowDiagnostics(
-                unpricedReason: record?.effectiveUnitMarketPriceUSD == nil
+                unpricedReason: PokemonReviewedPhysicalObjects.requiresReview(card) || record?.effectiveUnitMarketPriceUSD == nil
                     ? PricingDiagnostics.unpricedReason(for: card, record: record)
                     : nil,
                 artworkReason: ArtworkDiagnostics.reason(
