@@ -635,7 +635,7 @@ struct JustTCGV2GradedClient: Sendable {
             }
         }
         let setSlug: String?
-        if exactProduct != nil || isRetained {
+        if exactProduct != nil {
             // A product spans vendor grouping conventions; a display-name set
             // filter can exclude this exact printing (anthologies, promos).
             setSlug = nil
@@ -658,7 +658,7 @@ struct JustTCGV2GradedClient: Sendable {
             }
             setSlug = Self.resolvedSetSlug(identity: identity, game: game, directory: directory)
         }
-        if !isRetained, identity.pokemonPrintRun != nil, setSlug == nil, exactProduct == nil {
+        if (isRetained || identity.pokemonPrintRun != nil), setSlug == nil, exactProduct == nil {
             // A known print run without a trustworthy vendor set projection is
             // ambiguous. Do not issue a browse request whose first result could
             // become an authoritative slab binding.

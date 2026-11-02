@@ -1,4 +1,5 @@
 import XCTest
+import SwiftData
 @testable import TradingCardScanner
 
 private actor MarketRefreshProgressProbe {
@@ -26,7 +27,11 @@ private actor EditionPriceProbe {
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
     func testRetainedGradedIdentifiersSkipDiscoveryButStillVerifyEveryBindingAxis() async throws {
-        let client = try gradedFixtureClient(directory: .init())
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .pokemon) {
+            ProductSetDirectory(sets: [(id: "team-rocket-returns-pokemon", name: "Team Rocket Returns")])
+        }
+        let client = try gradedFixtureClient(directory: directory)
         let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns", collectorNumber: "78",
             catalogID: "ex7-78", finish: .normal)
         let slab = GradedSlabEvidence(company: .cgc, grade: .init(value: "10", label: "Gem Mint"),
@@ -66,6 +71,7 @@ final class JustTCGContractTests: XCTestCase {
             XCTAssertEqual(result, .localIdentityUnresolved)
         }
         for grading: [String: Any] in [["company": "CGC", "grade": 9],
+                                       ["company": "CGC", "grade": 10, "grade_label": "Pristine"],
                                        ["company": "CGC", "grade": 10, "qualifier": "OC"]] {
             var wrongVariant = variant; wrongVariant["grading"] = grading
             var wrong = card; wrong["variants"] = [wrongVariant]
@@ -77,6 +83,72 @@ final class JustTCGContractTests: XCTestCase {
         let missing = try await client.lookupRetained(identity: identity, game: .pokemon,
             cardID: nil, variantID: "missing-handle")
         XCTAssertEqual(missing, .localIdentityUnresolved)
+    }
+
+    @MainActor func testDiscoveryThenRetainedRefreshPreservesVerifiedSetAliases() async throws {
+        for (game, catalogID, vendorGame, catalogName, vendorName, language) in [
+            (CardGame.pokemon, "xy6-1", "pokemon", "Roaring Skies", "XY - Roaring Skies", "English"),
+            (.magic, "fixture", "magic-the-gathering", "The Big Score", "Outlaws of Thunder Junction: The Big Score", "English"),
+            (.pokemon, "SV8a-001", "pokemon-japan", "Terastal Festival ex", "SV8a: Terastal Fest ex", "Japanese")
+        ] {
+            let identity = GradedCardIdentity(name: "Audit card", setName: catalogName,
+                collectorNumber: "001", catalogID: catalogID, finish: .normal)
+            let setID = vendorGame == "pokemon-japan" ? "sv8a-terastal-fest-ex-pokemon-japan" : "verified-set"
+            let directory = ProductSetDirectoryProvider()
+            _ = try await directory.directory(for: XCTUnwrap(identity.vendorGame(for: game))) {
+                ProductSetDirectory(sets: [(id: setID, name: vendorName)])
+            }
+            let client = try gradedFixtureClient(directory: directory)
+            let body = """
+            {"data":[{"id":"alias-card","name":"Audit card","number":"001","game":{"id":"\(vendorGame)"},
+            "set":{"id":"\(setID)","name":"\(vendorName)"},"variants":[{"id":"alias-slab","type":"graded",
+            "printing":"Normal","language":"\(language)","grading":{"company":"PSA","grade":10},
+            "markets":[{"currency":"USD","price":50,"price_status":"current","price_expires_at":2000000000}]}]}]}
+            """
+            RecordingURLProtocol.reset(body: body)
+            guard case let .matched(discovered) = try await client.lookup(identity: identity, game: game) else {
+                return XCTFail("Discovery failed: \(catalogName)")
+            }
+            for cardID: String? in [discovered.first?.cardID, nil] {
+                RecordingURLProtocol.reset(body: body)
+                let retained = try await client.lookupRetained(identity: identity, game: game,
+                    cardID: cardID, variantID: "alias-slab")
+                XCTAssertEqual(retained, .matched(discovered))
+                guard case let .matched(refreshed) = retained else { return XCTFail("Expected retained quote") }
+                let container = try ProductionRowFixtures.makeContainer()
+                let store = PriceStore(context: container.mainContext)
+                let receipt = GradedVariantBinding.storeUnboundVariantQuote(try XCTUnwrap(refreshed.first),
+                    game: game, variantID: "normal", treatmentIDs: [], store: store, at: .now)
+                XCTAssertTrue(receipt.wasAccepted)
+                XCTAssertTrue(store.save())
+                let saved = try XCTUnwrap(PriceStore(context: ModelContext(container)).record(forKey: receipt.priceKey))
+                XCTAssertEqual(saved.effectiveUnitMarketPriceUSD, 50)
+                XCTAssertEqual(saved.exactGradedQuoteEvidence?.lifecycle.priceExpiresAt, Date(timeIntervalSince1970: 2_000_000_000))
+                let url = try XCTUnwrap(RecordingURLProtocol.recorded().last)
+                XCTAssertFalse(URLComponents(url: url, resolvingAgainstBaseURL: false)!.queryItems!.contains {
+                    ["q", "set"].contains($0.name)
+                })
+                for wrongBody in [body.replacingOccurrences(of: "\"id\":\"\(setID)\"", with: "\"id\":\"wrong-set\""),
+                                  body.replacingOccurrences(of: "\"id\":\"\(vendorGame)\"", with: "\"id\":\"wrong-game\"")] {
+                    RecordingURLProtocol.reset(body: wrongBody)
+                    let rejected = try await client.lookupRetained(identity: identity, game: game,
+                        cardID: cardID, variantID: "alias-slab")
+                    XCTAssertEqual(rejected, .localIdentityUnresolved)
+                }
+            }
+        }
+    }
+
+    func testRetainedRefreshCannotBroadenMatchingWhenDirectoryIsEmpty() async throws {
+        let directory = ProductSetDirectoryProvider()
+        _ = try await directory.directory(for: .pokemon) { ProductSetDirectory(sets: []) }
+        let client = try gradedFixtureClient(directory: directory)
+        RecordingURLProtocol.reset(body: #"{"data":[]}"#)
+        let result = try await client.lookupRetained(identity: .init(name: "Spinarak",
+            setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78"),
+            game: .pokemon, cardID: "saved-card", variantID: "saved-variant")
+        XCTAssertEqual(result, .localIdentityUnresolved)
+        XCTAssertFalse(RecordingURLProtocol.recorded().contains { $0.path.contains("v2/cards") })
     }
 
     func testLifecycleSeparatesCurrentExpiredNeverPricedAndForeignHistory() throws {
