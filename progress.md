@@ -14,6 +14,13 @@ Keychain `storeFailed(-34018)`). New regressions passed. Failure is preserved;
 unchanged-main comparison is pending. All three affected classes are now in CI.
 Either-finger native pinch release and physical-device acceptance remain open.
 
+The unchanged main reproduced the same Keychain failure. The sealed-import
+fixture now uses the normalizer's existing `sealedCredentialsAvailable` injection
+alongside its existing fake transport/API-key override, instead of writing/removing
+a fake Keychain credential. Every ownership/identity assertion remains unchanged;
+production credentials are untouched. This fixture-only follow-up must pass the
+same selected CI and final combined union before the owner's authorized squash merges.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
