@@ -112,6 +112,18 @@ rerun the report author's separate 14 Python tests.
 
 Final-head commands/results and CI links belong in the draft PR. Earlier runs
 above are retained evidence, not substitutes for the expanded final-head run.
+The complete source/test implementation at `2fd1325` then executed 597 native
+methods: **595 passed, one failed, one existing live-provider skip**. All nine
+new methods passed exactly once, including the extended stale-download/cache
+cohort checks and four distinct persisted holding provenances. The sealed
+`direct-product` assertion failed identically in a completed narrow native run
+on unchanged baseline `4a9d70b`; it remains outside this repair. The finalized
+bundle is retained, but `xcresulttool` summary access reports a local Library/Caches
+write error. Counts are reconciled from 597 unique stdout method-completion records
+and XCTest's total, not inferred from selection flags. See the
+[method record](pokemon-finish-evidence-2026-11-02-results.json).
+Subsequent CI-selection/documentation changes require another exact-head run;
+its authoritative result is in [draft PR #20](https://github.com/Razorback2424/CardScanner/pull/20).
 The catalog CI workflow explicitly selects `PokemonFinishEvidenceTests`, reviewed
 TCGCSV corrections, collection keys and scanner tests, checks out the exact PR
 head, and runs the ledger/blob audit with baseline history available.

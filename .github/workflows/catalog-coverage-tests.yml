@@ -99,6 +99,9 @@ jobs:
             -only-testing:TradingCardScannerTests/PokemonCatalogRegistryTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogParityTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogSliceDTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogInvalidationTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorInvalidationTests \
             -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
             -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
@@ -128,6 +131,7 @@ jobs:
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
             -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
+            -only-testing:TradingCardScannerTests/LorcanaPhysicalCatalogTests \
             -only-testing:TradingCardScannerTests/MagicTokenPairingSessionTests \
             -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \

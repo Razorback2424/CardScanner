@@ -1,0 +1,3060 @@
+{
+  "source": "Actual XCTest completion records, reconciled to XCTest totals; no raw logs or private identifiers",
+  "runs": [
+    {
+      "label": "unchanged-production",
+      "commit": "7a44011",
+      "stdoutSHA256": "b7ae22197612d2f6baa45e3b0655c2770a010a9aaf500ed8c182deddf1cbaca9",
+      "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -configuration Debug -destination \"platform=iOS Simulator,id=${SIMULATOR_UDID}\" -derivedDataPath /Volumes/T7/CardScanner-Pokemon-Finish-Evidence/DerivedData -resultBundlePath /Volumes/T7/CardScanner-Pokemon-Finish-Evidence/reproduction.xcresult -parallel-testing-enabled NO \"-only-testing:TradingCardScannerTests/PokemonFinishEvidenceTests\"",
+      "counts": {
+        "failed": 6
+      },
+      "methods": [
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testEveryLedgerMembershipThroughBundledLoaderFactoryAndResolver",
+          "status": "failed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testExactIdentitiesControlsAndExcludedPrintings",
+          "status": "failed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testMissingEvidenceNeverBecomesNormalAndIncompleteSingletonAcceptsOnlySupportedLock",
+          "status": "failed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testOldDownloadRefreshAndReopenPreserveMinimumAndUnrelatedData",
+          "status": "failed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testReviewedMinimumDoesNotCertifyRetainedNormalOrExhaustiveCoverage",
+          "status": "failed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testStaleResolvedCacheAndProviderPayloadCannotEraseMinimum",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "label": "expanded-implementation",
+      "commit": "2fd1325d5826d6ff9cd64a68f9b124aaf3a9706f",
+      "stdoutSHA256": "5c8488d906e86b812afb9c3c5a95b6f53e2a43fc6f96686b50ddb425a5283887",
+      "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -configuration Debug -destination \"platform=iOS Simulator,id=${SIMULATOR_UDID}\" -derivedDataPath \"${ARTIFACT_ROOT}/DerivedData\" -resultBundlePath \"${ARTIFACT_ROOT}/final-2fd1325.xcresult\" -parallel-testing-enabled NO COMPILATION_CACHE_CAS_PATH=${SPARSE_CACHE} \"-only-testing:TradingCardScannerTests/PokemonFinishEvidenceTests\" \"-only-testing:TradingCardScannerTests/VariantResolverTests\" \"-only-testing:TradingCardScannerTests/PokemonTCGCSVPriceTests\" \"-only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests\" \"-only-testing:TradingCardScannerTests/CollectionKeyTests\" \"-only-testing:TradingCardScannerTests/CardLatchTests\" \"-only-testing:TradingCardScannerTests/HistoricalCatalogRequestTests\" \"-only-testing:TradingCardScannerTests/PokemonCatalogParityTests\" \"-only-testing:TradingCardScannerTests/PokemonCatalogInvalidationTests\" \"-only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorInvalidationTests\" \"-only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests\" \"-only-testing:TradingCardScannerTests/PokemonCatalogSliceDTests\" \"-only-testing:TradingCardScannerTests/CollectionActivityHistoryTests\" \"-only-testing:TradingCardScannerTests/OnePieceIntegrationTests\" \"-only-testing:TradingCardScannerTests/YuGiOhResolutionTests\" \"-only-testing:TradingCardScannerTests/LorcanaPhysicalCatalogTests\" \"-only-testing:TradingCardScannerTests/MagicPhysicalObjectTests\"",
+      "counts": {
+        "passed": 595,
+        "failed": 1,
+        "skipped": 1
+      },
+      "methods": [
+        {
+          "suite": "CardLatchTests",
+          "method": "testACardBeingLiftedOutOfTheBandIsNotReadmitted",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testAFrameStartedBeforeTheResetCannotRearmItsRestartBudget",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testAMisreadDuringTheLiftDoesNotReadmitTheCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testAnEmptyBandStillMeansTheCardLeft",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testAPrintingIsPresumedGoneOnceItHasNotBeenReadForALongTime",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testArmedRecheckBecomesAdmissibleOnlyAfterItsDelay",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testArmedRecheckExpiresForAStationaryCardBeforeItsMatchingReadContinues",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testArmingOneRecheckDoesNotForgetOtherConsumedPrintings",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testAStrayConfirmationDoesNotReadmitTheCardStillInTheBand",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testATitleReadingDriftingDoesNotReadmitTheSamePhysicalCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testCancellingHeldRepeatRequiresFreshHeldObservationsBeforeAnotherOffer",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testCertificateRefinementRekeysTheHeldSlabBeforeASecondCopyArrives",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testChangingModeDropsInFlightSlabEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testCollectionRoutingAddsNonconsecutiveCopiesWithOrWithoutOldProof",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testCollectionRoutingUsesProofAndCommittedIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testContinuouslyVisibleCardIsConsumedOnlyOnce",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testDepartureSummaryKeepsPartialPricingHonest",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testDepartureSummaryUsesAddedFormatWhenEveryCardHasAValue",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testDifferentCardIsForwardedAndAdmittedImmediately",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testDifferentConfirmedCertificateOnSameFooterCanRelatchQuickCopySwap",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testExitRequiresLowGuideOverlapEvenWhenCenterIsOutside",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testExplicitRetryForgetsOnlyFailedPrintingAndHistoricalTitleEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testExplicitRetryPreservesAnotherCardsConfirmationAndHistoricalEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testFinishAndPokemonPrintRunDifferencesStillUseSameDuplicateIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testForgetReleasesOnlyItsKeyAndRetainsOtherDuplicateProtection",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testGlareGapCannotProduceADuplicate",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHealthyLongStackRearmsRecoveryForALaterCameraReset",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldCertlessSlabDoesNotTakeCertificateFromMismatchedCardText",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldMatchCountTracksHowLongTheSameCardHasBeenSittingThere",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldOfferDefersEvenWhenAnOlderSameKeyPresentationExists",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldOfferDefersUntilItsEncounterIsCommitted",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldRepeatAuthorizationCanReopenOnlyTheLostSeedGate",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldRepeatAuthorizationDoesNotAdmitAnotherIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldRepeatAuthorizationExpiryIsFakeClockable",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testHeldRepeatAuthorizationIsOneShotAndDoesNotMarkSpatialExit",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testInsideObservationOrTrackerLossCannotCompleteSpatialExit",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testLatchReleasesOnceTheIdentifierStopsBeingRead",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testLongStackReleasesEachReplacedTrackingSequenceAndRequest",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testMediaServicesResetRestartsOnlyAnActiveCameraAndResumesAfterRecovery",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testNonconsecutiveMagicAndDifferentSlabIdentityAddAutomatically",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testOCRWinsWhenTrackingAndOCRAreDueOnTheSameFrame",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testOneFooterMisreadDoesNotResetSlabLabelConfirmationProgress",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testOnlyPositiveSpatialExitMakesAConsumedPrintingReadmit",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testPausedRecognitionDoesNotAgeConsumedPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testPlainReleaseKeepsRefusingTheCardStillInView",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testPostCommitLabelWatchConfirmsOnlyTheLatchedRawCollectionEncounter",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testPostCommitLabelWatchSkipsOCRWhenFooterHasMovedToAnotherCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testPostCommitLabelWatchStopsAfterTwoMissedReads",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testQualifyingExitCompletesOnceAfterTwoObservations",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testRawFooterConfirmsWithoutReadingSlabLabel",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testRawModeDoesNotReadSlabLabelsBeforeACommit",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testRecognitionEligibilityRequiresActiveVisibleUnblockedScanner",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testReleaseAndForgetAdmitsTheVeryNextConfirmation",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testRepeatedMediaServicesResetDoesNotCreateARestartLoop",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testRepeatedVisionFailuresRebuildOnceWithoutForgettingConsumedCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testScanRequestCarriesHeldRepeatAuthorizationThroughResolution",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSecondPhysicalCopyIsAdmittedAfterTheFirstLeaves",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testShortOCRAbsenceDoesNotReadmitConsumedCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSingleStrayReadingDoesNotReleaseTheLatch",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSlabFooterMissAgesTheCommitWindowInsteadOfResettingIt",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSlabLabelOCRRequiresAMatchingFooterAndKeepsHalfSecondCadence",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSlabModeDoesNotCommitRawFooterWithoutConfirmedLabel",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSlabModeOffersRawSwitchAfterThreeSecondsWithoutLabelEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSlabModeRequiresAFooterKeyAndTwoMatchingLabelReads",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSpatialConfigurationUsesStrictExperimentalDefaults",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testSpatialTrackerSeedGateRejectsSameIdentityAfterLoss",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testStrayResolutionDoesNotChangeCommittedHistory",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testTrackerFeedsLatestObservationIntoTheNextRequest",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testTrackerLossReleasesResourcesAndDoesNotReseedTheSamePresentation",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testTrackingAndOCRCadencesAreIndependent",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testTwoDifferentCardsInSuccessionAreBothAdmitted",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testUnpausedResumeDoesNotDiscardPartiallyAccumulatedConfirmationWindow",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testUnrecoverableCameraErrorsStayVisibleWithoutPretendingToResume",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testValidOCRMismatchesDoNotCountAsCardAbsence",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testVisionFailureDiscardsPartialConfirmationWithoutReleasingConsumedCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testVisionFailureRecoveryPreservesSlabModeAndSessionEndClearsFailure",
+          "status": "passed"
+        },
+        {
+          "suite": "CardLatchTests",
+          "method": "testVisionRecoveryCannotClearAnIndependentCameraFailure",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testActivityProjectionMismatchIsDiagnosticOnly",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testAddingTreatedPrintingRekeysLegacyCollectionHistoryWithoutDuplicate",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testAddRemoveRestoreKeepsCollectionLedgerAndHistoryInAgreement",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testAutomaticCatalogFinishNeedsMatchingSightingsAcrossRefreshesAndTime",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundCatalogAcquisitionAddPriceAndUndoKeepMainActorResponsive",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundDetailMetadataWritesKeepMainActorResponsive",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundDetailWriterKeepsTaskBoundIdentityAuthorization",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundDetailWritesKeepMainActorResponsiveAndPreserveRemovalUndo",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundDetailWritesRejectCanceledOrRetiredStorageWork",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundDetailWritesRejectStaleAndRepeatedActionsWithoutExtraEvents",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundHistoryKeepsTaskBoundAuthorizationAndLoadFailureState",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundHistoryRejectsCanceledAndRetiredStorageWithoutMutation",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundHistoryRejectsStaleRemovalAndRepeatedRestoreOrCorrection",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundHistoryWritesKeepMainActorResponsiveAndLedgerConsistent",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundUndoBannerRestoreKeepsMainActorResponsiveAndUsesStoredSnapshot",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBackgroundUndoBannerRestoreRejectsReacquiredAndExpiredRemovals",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testBlankLegacyActivityGameFallsBackWithoutChangingUnknownGames",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogAcquisitionRetainsEditionAndRejectsInvalidQuoteWithoutLosingCopy",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogAcquisitionRollsBackFailedSaveAndUndoRemovesOnlyItsOwnCopy",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogAcquisitionUsesImportedAliasAndReturnsItsStoredPriceIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogFinishBackfillIsQuietAndKeepsLedgerAppendOnly",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogFinishRepairMergesIntoExistingDestinationRow",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogFinishRepairRekeysActivitiesWritesNewPriceAndIsIdempotent",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogPriceFailureAfterCommitReturnsDurableReceiptWithoutRetry",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCatalogPricePersistenceKeepsNewerQuoteAndOriginalProvenance",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCertifiedRestoreRejectsReacquisitionEvenAfterThatCopyWasRemoved",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCollectionReadThroughMergesCanonicalAndLegacyCollision",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCorrectingOneEntryLeavesSiblingEntriesUntouched",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testCorrectionMergeKeepsIndependentlyBoundDestination",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDeleteAllRecordsOneRemovalEntryPerPosition",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDetailArtworkPreservesSharedFilesAndRetainedGameLegacySuppression",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDetailFinishCorrectionKeepsTaskAuthorizationAndRejectsStaleClaim",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDetailMetadataRejectsStaleInputsAndFailedArtworkDoesNotLeakFiles",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDetailQuantityInvalidatesWhenASiblingDuplicateArrivesAndCanStillBeEdited",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDetailQuantityInvalidatesWhenOnlyAnExistingDuplicateTotalChanges",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDispositionAmountParsingIsExactOptionalAndLocaleAware",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDispositionFailedSaveRollsBackQuantityLedgerAndPersonalRecord",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDispositionInvalidOrStaleRequestDoesNotRecordTransaction",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDispositionPartialSaleAndFullTradePersistAfterLastCopyLeaves",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDispositionRestoreRetainsSaleDetailsAndBalancesPartialRemoval",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDispositionSurvivesDiskStoreReopenWithoutOwnedCard",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testDuplicatePhysicalRowsAreMergedBeforeEveryOwnershipMutation",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testExistingActivityRowsBackfillToAddedWithTheirLegacyQuantity",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testFilteredHistoryFindsEntriesBeyondTheUnfilteredPage",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testFinishCorrectionRejectsEditionWithoutChangingIdentityOrLedger",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testGradedDetailSkipsResolvedNewestAcquisitionAndPreservesLegacyClaims",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testHistoryMissingStorageTokenClearsLoading",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testHistoryReadFailuresRetainOnlyCompleteSnapshotsAndDisableActionsUntilRetry",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testIndependentRemovalsCanBothBeRestored",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testInitialQuantityReadAndWriteRaceRetainsStoreCAS",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testLegacyAliasCacheInvalidatesAfterRemoteCanonicalRowDelivery",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testLegacyAliasCacheIsSharedAndInvalidatedAfterCollectionMutation",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testLegacyLookupFindsCanonicalRowWhenLegacyRowIsAbsent",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testLegacyRemovalWithoutLedgerLinkCanStillRestoreAnAbsentRow",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testLegacyRowRepairsToARekeyedCanonicalLedgerBeforeWriting",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testMagicTreatmentIdentityFollowsActivityAndRemovalSnapshot",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testMissingReceiptRejectsStaleTapAndAbsoluteEditWithoutNegativeLedgerDelta",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testObsoleteHistoryRequestDoesNotClearNewerLoading",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testPartialSaleDoesNotOfferTheRemainingClaimAsCorrectableLineage",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testPriceRefreshActorPricesUnderTheConfirmedCatalogFinishKey",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testQuantityAdjustmentsAlsoAppearInTheActivityProjection",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testQuantityLimitIsEnforcedByCollectionStore",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testQueuedCatalogAcquisitionWritesRejectCancellationAndRetiredStorage",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testQueuedDetailMetadataWritesRejectCancellationAndRetiredStorage",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testQueuedHistoryWriteRechecksStorageGenerationAfterLockWait",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testQueuedUndoBannerRestoreRejectsCancellationAndRetiredStorage",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testReaddingResolvedPokemonFillsMissingArtworkOnExistingCollectionRow",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingBackfillRetainsIdentityGatePriceAndOwnershipLineage",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingBackgroundOwnershipPathsKeepMainActorResponsive",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingExclusiveAcquisitionPreservesBarrierAndTaskPermit",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingQuantityRepairRejectsMixedAndRepeatedDefects",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingQueuedWritesRejectCancellationAndRetiredStorageWithoutLeakingExclusiveToken",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingSealedPromotionKeepsTaskBoundAuthorizationAndExactUndo",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemainingSynchronousOwnershipPathsBlockMainActorUnderContention",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemovalSnapshotSharesHistoryDeadlineAndOlderJSONStillRestores",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRemovedPokemonHistoryWithColonProviderIDRemainsWritable",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRepeatedUndoAndRemovalActionsDoNotAppendSecondMutations",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRepeatingCorrectionTapDoesNotAppendAnotherMutation",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRestoreIsBlockedAfterThePositionIsReacquired",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRestoreIsBlockedOutsideTheRecentRemovalWindow",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testRestoreMergesBackIntoSurvivingSiblingCopies",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testSynchronousCatalogAcquisitionWritesBlockMainActorUnderContention",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testSynchronousDetailMetadataWritesBlockMainActorUnderContention",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testSynchronousDetailQuantityWriteBlocksMainActorUnderContention",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testSynchronousHistoryWritesBlockMainActorUnderContention",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testSynchronousUndoBannerRestoreBlocksMainActorUnderContention",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testUndoLeavesOriginalActivityAndAppendsAnUndoneEntry",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testZeroQuantityRejectsStaleAndNegativeIntents",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionActivityHistoryTests",
+          "method": "testZeroQuantityRemovesLastCopyAndCanBeRestoredFromHistory",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testCatalogVariantsComeFromTheCatalogAlone",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testMagicFinishesBecomePhysicalVariants",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testMarketPricesCarryTheVariantTheyBelongTo",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testMissingVariantsBlockDecodesToSilenceRatherThanThrowing",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind",
+          "status": "failed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testREQ004CollectionKeyCounterpartUsesProductionShapedGradedRow",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testScannedGradedKeysSeparateGradeAndCertificateWithoutRawCollision",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testUnboundCSVGradedRowsStillReadTheirLegacyProviderPriceKey",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testUnknownCatalogFinishIsCarriedThroughVerbatim",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testUnknownVariantKeepsTheLegacyProviderKey",
+          "status": "passed"
+        },
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testVariantsGetSeparateCollectionRows",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testCardRequestMemoEvictsLeastRecentlyUsedEntries",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testCelebrationsUmbreonIsAChoiceWhenOnlyTheLiveDirectoryHasTheOriginal",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testIncompleteOrContradictoryLiveOriginalCannotAutoSelectCelebrations",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testLiveOriginalUmbreonAndCelebrationsRemakeRemainSeparateChoices",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testRepeatedFramesOfOneCardCostOneRequestEach",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testSelectedCelebrationsReprintKeepsProviderNumberingForPriceAndArtwork",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testSelectedClassicPikachuFetchesProviderCardAndKeepsPrintedNumber",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testSelectedMembershipIdentityFetchesProviderCardButKeepsPrintedNumber",
+          "status": "passed"
+        },
+        {
+          "suite": "HistoricalCatalogRequestTests",
+          "method": "testStalledDirectoryIsNotRetriedEveryFrame",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testArtworkLabelsSupplyExplicitDistinctionWithoutImageAvailability",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testBatchedCompactLabelsKeepCollisionFallbackAndHandleEmptyOrSingletonChoices",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testBatchedSelectionKeepsArtworkAndMissingEvidenceRequirements",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testBatchResolutionPreservesSizeLabelsAndWithholdsUnreviewedOrIndistinguishableFamilies",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testCandidateUniverseCannotOmitAnUnreviewedOrOversizedRecord",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testConflictingCanonicalMembershipStaysIncomplete",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testCorrectionCyclesAndMissingHistoryFailClosed",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testExactChoicesSurviveRecoveryRelaunchAndModuleAbsence",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testExplicitCorrectionRetainsOldUUIDAndRequiresNewChoiceEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testGenerationIgnoresInputOrderAndRoundTripsSchemaTwo",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testIncompleteUniverseAndEveryUnreviewedCandidateBlockFalseUniqueness",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testIndistinguishableLabelsAndUnavailableArtworkStayIncomplete",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testLandscapeAndCrossSetCanonicalRelationshipPreserveDistinctPrintings",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testLargeDatedIslandPrintingFamilyPreparesLabelsWithoutBlocking",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testLoneOversizedStillRequiresUserSizeEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testMissingIdentityOrFinishEvidenceAndContradictoryFinishesRejectManifest",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testPhysicalRuntimeKeepsIndependentProductionCapabilitiesDisabled",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testRetryPreservesFooterRecoveryAcrossSchemaPromotionAndChoiceNeverBecomesDefault",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testReviewedSingletonResolvesExactUUIDThenAsksForSupportedFinish",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testSamePhysicalIdentityCannotAllocateTwoUUIDs",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testStampIsAPhysicalChoiceBeforeFinishAndSharesNoOwnershipKey",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testStandardAndOversizedRequireAnExplicitSizeChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testTamperedCrossGameAndStaleChoicesCannotResolve",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testTransitionRejectsIdentityReuseRemovedIDsAliasesFinishesAndSchemaDowngrade",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testUUIDAndOwnershipKeysSurviveAliasMetadataAndFinishAdditions",
+          "status": "passed"
+        },
+        {
+          "suite": "LorcanaPhysicalCatalogTests",
+          "method": "testVariantCorrectionUsesExactPrintingRatherThanGlobalFinishMenu",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testAFractionOutsideItsPoolIsRejected",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testAmbiguousFaceAsksForTheReverseRatherThanGuessing",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testCatalogDecodesFromItsPublishedForm",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testCompleteCoverageThatDoesNotKnowTheFaceIsNotTrusted",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testEmblemsPairWithTokens",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testFaceIdentityIsTheNumberNotTheName",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testFacesNeverPrintedTogetherAreDifferentCardsOnlyWhenCoverageSaysSo",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testIdenticalFacesOnBothSidesIsItsOwnObject",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testLeadingZerosAndCaseAreNotIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testMalformedCatalogsAreRefused",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testOneFaceAcrossManyBacks",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testOneNumberNamingTwoFacesRefusesTheCatalog",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testOnlyTheCollectorBoosterPoolCanBeStamped",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testReservedIdentityCharactersCannotCollideOrEnterCatalog",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testReverseScanResolvesTheExactProduct",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testSameFaceTwiceIsNotEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testScanOrderDoesNotMatter",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testSetIsPartOfFaceIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testStampKindsStayDistinctButReadAsOneChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testStorageKeyRoundTripsAndIgnoresOrder",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testThePrintedFractionNamesThePool",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testTreatmentsComeFromTheCatalogueNotTheCamera",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testTwoListingsOfOneCardAreOneObject",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testUniqueFaceResolvesWithoutAskingAnything",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testUnknownCoverageValueIsRefused",
+          "status": "passed"
+        },
+        {
+          "suite": "MagicPhysicalObjectTests",
+          "method": "testWithoutVerifiedCoverageAUniqueListingIsEvidenceNotAnAnswer",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testAcceptanceLaunchSeparatesCollectionAndRecoveryFromOwnerAndReviewStorage",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testActivationReachesScannerAndExplicitRecoveryRetryUsesNewGeneration",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testActivationRejectsLookupCompletingFromPreviousGeneration",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBootstrapRequiresDedicatedKeysSafeOriginAndVerifiedSeed",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBoundActivationPublishesWithdrawalBeforeBrowseOrCorrection",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBoundOnePiecePricingPassesWithdrawalWatermarkToSource",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBrowseActivationInvalidatesDetailsAndRejectsOldSummary",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBrowseGridUsesExactOnePiecePriceAdapter",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBrowseOwnershipAndCompletionRequireExactPrintingRatherThanSharedNumber",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBrowsePaginationPreservesAllPrintingsAndRejectsOtherQueryOrGeneration",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBrowseProductAppearancesKeepOnePhysicalIdentityAndExactDetails",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBrowseSetsExposeOnlyVerifiedMemberArtworkForEmptyCollection",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBundledOwnerCatalogRepairsIdentifierTitlesAcrossReleaseFamilies",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBusyCatalogPublicationDoesNotOutliveItsStorageSession",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testBusyCatalogPublicationRetriesNewestRevisionForEverySubscriber",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testCancelledDailyPriceWaiterPreservesSharedDownloadAndDiskCache",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testCatalogGenerationChangesRejectStaleChoiceAndDoNotChangeSuppression",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testCompactPrintingLabelsKeepEssentialDistinctionsAndOmitSharedMetadata",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testConfigurationFailureIsVisibleWithoutEnablingUnsupportedGame",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testConflictingImportUUIDsNeverBorrowAnotherPrintingsMetadata",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testCoordinatorSnapshotsFollowVerifiedGeneration",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testCSVExportRoundTripKeepsExactPrintingFinishAndRefusesProductionWrites",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDisabledBootstrapDoesNotRequireSeedOrRegisterOnePiece",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDiskBackedOnePieceFinishCorrectionFailuresRollbackEveryEntryPoint",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDiskBackedOnePieceIncrementFailurePreservesQuantityAndClaims",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDiskBackedOnePieceScannerSaveFailureRetriesOnceInSameSession",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDiskBackedOnePieceScannerSaveFailureRevalidatesAfterRelaunch",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDiskBackedOnePieceWithdrawalFailureRetainsAuthorityUntilRetry",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testDismissalDuringRecoveryReloadCannotResurrectPersistedEncounter",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testEnabledFixtureImportRequiresExactUUIDKeyAndSupportedFinish",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testEncounterDuringRecoveryLoadingMergesEarlierWorkWithoutFalseSaveFailure",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testEnglishScopeExcludesForeignPrintingsFromAllAcquisitionAndPricingSurfaces",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testExactOnePiecePricingDoesNotBorrowAnotherPrintingOrFinish",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testFailedAutomaticSaveRetryRequiresCurrentPrintingChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testFinishLockCannotSelectPrintingOrOverrideItsSoleSupportedFinish",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testFourReleaseFamilyPricingSampleUsesReviewedProductMappings",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testFullCatalogEligibilityAndFinishesAgreeAcrossScanBrowseAndCSV",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testFullCatalogPrintingSkipSurvivesRecoveryRelaunchAndRetriesExactChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testFullCatalogSameNumberSameFinishPersistsSeparateOwnershipPricesAndCSV",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testHomeScreenReviewLaunchRequiresSeparateBundleAndExplicitPublicKey",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testIncompleteNumberRecoversAfterRelaunchWithALaterVerifiedCatalog",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testIndistinguishableLabelsRequireDistinctAvailableArtworkOrMoreCatalogDetail",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testKnownIneligibleSiblingRequiresExplicitChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testLocalOwnerReviewRotationRequiresAnExplicitMatchingPublicPin",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testLookupChoiceAndRetryRejectTheSameMalformedIdentitySemantics",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testMalformedRecoveryEvidenceRemainsReadOnlyWithAnInstalledAdapter",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testMarketHistoryUsesReviewedOnePieceProductAndFinishMapping",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testMissingStarterFinishEvidenceCannotBecomeAnOwnedPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testMultipleNumbersAreHardAmbiguityAndRepeatedReadingsDeduplicate",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testNoChangeRecoveryRetainsExistingActivationSource",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testNormalizationDiscardsMetadataAfterCollectionPolicyWithdrawal",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testNormalizationUsesExactAdapterAndPreservesUnknownAndProductionGatedRows",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOlderPrintingCandidatesStillDecodeAndResolveWithoutNewDetails",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOmittedCatalogCanRecoverAfterVerifiedActivationWithoutRelaunch",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceCleanupFailureLeavesExistingGamesAvailable",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceCollectionRefreshPersistsExactMappedQuoteWithoutVendorFallback",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceFooterMustBeContainedInItsOCRRegion",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceImportAdapterPreservesLanguageEvidenceAndEnglishAliases",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceImportRejectsUnknownItemKindsAndConflictingRawMetadataWithoutWrites",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceMetadataRefreshPreservesPurchaseLink",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceScannerSaveQueuesExactBasePricingWithoutPaidCredentials",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceScanningChoiceFinishAndDifferentPhysicalCopiesStayIndependent",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceSealedAddUndoAndExactVendorRepricingRespectRuntimeGates",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceTCGCSVExactLaneAndDailyCache",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOnePieceVariantCorrectionRejectsUnsupportedFinishBeforeMutatingCollection",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOptionalCatalogFailureLeavesExistingGamesAvailable",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOrdinaryAppBundleEnablesOnePieceWithoutSavedOwnerSettings",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOwnerArtworkOptInUsesExactRecordedImagesAcrossRetainedCorpus",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testOwnerCatalogUsesNormalStorageAndRetainsVerifiedAuthorityForOrdinaryBuilds",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testPersistedSingletonChoiceStillRevalidatesAgainstCurrentResolvedPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testPriceAuthorityWithdrawalPreservesManualValuesAndRejectsOldReceipts",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testPrintingChoiceExposesReviewedFooterAndRegionWithoutOpaqueLabels",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testPrintingReleaseDateKeepsItsUTCCalendarDay",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testPrintingReleaseOrderUsesPrimaryReleaseRatherThanProductAppearance",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testProductionOnePieceRuntimeCannotWriteToSharedCollection",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testPublicationRejectsConflictsAndRetiredStorageSession",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRealLocalReviewScanChoiceCollectionRelaunchAndCSVBaseCase",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRealRetailNamiBaseCaseUsesProductPrintingAndManufacturerFoil",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRealStandardStarterAndBoosterScanChoiceFinishAndCollectionBaseCases",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRecordedArtworkRequiresExactReferenceHashAndManufacturerImage",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRegistryDerivedRecognitionKeepsNumericRepairAndLanguageConservative",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRetainedAutomaticFinishRequiresCurrentPrintingChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRetainedExplicitFinishRejectsWithdrawnIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRetainedExplicitFinishSurvivesKnownHeldSibling",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRetryPreservesEvidenceAndRejectsUnrecognizedIdentifierSemantics",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testRetrySaveAfterRelaunchRebasesEvidenceAndAsksForPrintingAgain",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testReviewedAwardCorpusRequiresWinnerSelectionAndKeepsUnverifiedParticipationUnowned",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testReviewedRomanceDawnParallelsAreExplicitDistinctChoices",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testReviewEvidenceDoesNotBecomeDisplayArtworkHints",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testSerializedWriterRejectsAutomaticAcquisitionAfterScannerPreflight",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testSerializedWriterRejectsRetiredExplicitIdentityWithoutChangingHistoricalOwnership",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testSharedRuntimeImportAndNormalizerUseActivatedPrintingGeneration",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testShikiScanSavesWithoutPrintingOrFinishPicker",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testSolePrintingStillAsksForMultipleFinishes",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testSoleVerifiedPrintingResolvesInIncompleteScopeWithoutKnownSiblings",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testSoleVerifiedPrintingResolvesWithoutLanguageConfirmationPicker",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testST10ReprintReviewUsesManufacturerEvidenceWithoutRetailerClaims",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testUncatalogedNumberIsRetainedForRecoveryWithoutOwnership",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testUncatalogedNumbersParticipateInAmbiguityAndRemainIncomplete",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testUnknownGameFinishDoesNotBecomePokemonPrintRunDuringCSVPreview",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testValidationOnlyBootstrapKeepsGameHiddenAndWritesDisabled",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testWithdrawalStartsFreshFetchWhileOlderRequestIsPending",
+          "status": "passed"
+        },
+        {
+          "suite": "OnePieceIntegrationTests",
+          "method": "testWritableNewGameCannotImportWithoutPrintingValidationAdapter",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogCoordinatorInvalidationTests",
+          "method": "testActivationInvalidatesAllConsumers",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testBrowseCatalogSetCacheInvalidation",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testCursorClearedOnRegistryActivation",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testCursorPreservedOnRejection",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testOfflineCatalogInvalidationClearsEntries",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testResolvedCacheEntryInvalidationPreservesOtherEntriesInSameSetAfterRestart",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testResolvedCacheInvalidatesChangedSets",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testResolvedCachePreservesUnchangedSets",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogInvalidationTests",
+          "method": "testScanDisabledExcludesFromHistoricalResolution",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testBrowseSortParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testCardCatalogOfficialCountParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testCollectionNormalizerParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testCustomWordsParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testDisplayCodeParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testExpansionCodesCoverAllCompiledSets",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testParserExpansionParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testParserPromoParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testPriceRefreshPrintedCodeParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testPromoPrefixesCoverAllCompiledSeries",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testScanParserStillParsesAllCompiledExpansions",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogParityTests",
+          "method": "testScanParserStillParsesAllCompiledPromos",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "test30thClassicCollectionSharesDisplayCodeWithoutClaimingScannerNamespace",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testBirthdayPikachuDoesNotInventTheSupplierDenominator",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testBundled30thAuthorityMatchesPublisherInput",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testBundledAndRefreshedEnergyDescriptorsMatchExplicitPublisherAuthority",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testBundledClassicPikachuKeepsBaseSetScanAmbiguousAndAvailableAsChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testBundledDPPromosAndHGSSPromosMatchPublisherAuthority",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testCelebrationsOriginalAndRemakeChoicesSurviveBothOakSpellings",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testDisabledSetCannotMatchHistoricalDenominatorButRemainsBrowseVisible",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testDispatchedIdentifierRetainsTheDefinitionThatParsedIt",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testEveryReviewedCelebrationsFractionPreservesIdentityAndRequiresTheOriginalCandidate",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testFirstLaunchClassicChoiceRequiresChecklistBeforeOfflineResolution",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testFixtureCodeIsRejectedBeforeActivationAndWhenDisabled",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testMetadataOnlyActivationPreservesConfirmationButVocabularyChangeResetsIt",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testPokemonAdapterRejectsUnknownLiveAndRecoveryIdentityFields",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testPokemonAdapterRetainsModernEvidenceButRejectsStaleHistoricalMembership",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testReviewedCelebrationsMembershipStaysOutsideCompletePublisherContract",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testSelectedClassicPikachuResolvesFromOfflineChecklistUsingMembershipNumber",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testShortSupporterTitlesResolveFromTheBundledChecklist",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceCTests",
+          "method": "testSignedActivationInstallsFixtureCodeWithoutRestart",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testBundledOnlyBrowseDetailsValidateMembershipAndProviderIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testFailedProviderRefreshPreservesPreviousBrowseDirectory",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testMixedDirectoryUsesBundledRanksUntilSignedOrderIsComplete",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testOlderReconciliationFailureCannotOverwriteNewerSignedTarget",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testProductionBrowseUsesRegistryAndPublishesAuthorizedContent",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testProviderOnlyDiscoveryUsesPendingCodeAndNeverActivates",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testReconciliationQueuePreservesIndependentFullSweepTimestamp",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testRegistryChangeInvalidatesFreshDetailAuthorization",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testRollbackUsesRegistryOrderingAndRemovesLegacyUserDefaultsAuthority",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testSignedCountCheckStillAppliesToBundledDetails",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonCatalogSliceDTests",
+          "method": "testSignedProviderFingerprintReconcilesOnlyTheStaleChecklist",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "test30thReviewedHoloSlotsDoNotCreateTwoIdenticalTierOptions",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testAFutureTimestampDoesNotSuppressRefreshing",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testArtworkSourceOrdersProviderThenLimitlessFallbacks",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testASweepWithFailuresStillExpiresItsResumeCursor",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testATransientReadFailureDoesNotPermanentlyMarkASetUnreadable",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBuilderIncludesBoosterBallParallelsInMaster",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBundledCelebrationsClassicReprintsAreChoicesOffline",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBundledChecklistManifestCarriesDirectoryDenominatorParity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBundledChecklistOpensOfflineWithoutCatalogRequests",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBundledCollectorScopeExamplesIncludePackParallelsAndExcludePromos",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBundledShinyVaultCardsResolveOfflineAsHolofoil",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testBundledSnapshotImageURLLessRowsHaveExplicitLimitlessCoverage",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCancelledDirectoryLoadDoesNotPublishLateResult",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCancellingOneSharedDetailWaiterDoesNotCancelTheOther",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCancellingSortPriceStreamCancelsInFlightProviderWork",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogCachedImageSkipsMissingBundledCandidate",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogCardDisplayGroupRejectsEmptySummaries",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogDetailsCoalescesVariantRequestsAndPreservesVariantPrices",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionCapsExactChecklistReadsAndUsesExactLoadedProgressForOverflow",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionIgnoresCaseDuplicateSetIDs",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionNonPokemonShortcutPreservesOwnershipAndPhysicalMembership",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionPublishesOnlyNewestCoalescedRequest",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionRetriesUnavailableChecklistWithUnchangedManifest",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionReusesInputsWithoutRepublishingAndRefreshesChangedManifest",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionStartedFilterUsesSelectedTier",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCatalogSetCompletionUsesManifestDenominatorAndSkipsUnownedChecklistReads",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testClassicArtworkCoversEveryReviewedCardWithoutDownloadedArtworkMap",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testClassicArtworkDoesNotGuessAcrossGamesSetsOrUnreviewedIdentities",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testClassicArtworkRecoversMissingAndForbiddenProviderImagesByExactProduct",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCollectorTierLabelsPreserveSavedPreferences",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCorruptChecklistEntryDoesNotHideOtherValidEntries",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testCorruptChecklistResourceIsRepublishedByTheNextRefresh",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testDestinedRivalsEntryAndTypingWorkload",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testDirectoriesAfterSlowGamePublishAndOlderLoadCannotOverwriteRetry",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testDownloadedChecklistOverridesBundledAndSurvivesNewCatalogInstance",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testFailedRefreshLeavesLastCompleteChecklistVisible",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testFreshScanAppliesSignedPerCardArtworkToExactPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testGalleryArtworkUsesSignedInheritedLogoAndKeepsProviderIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testLimitlessArtworkNormalizesPrintedKeys",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testMagicSetArtworkSourceHasNoBundledOrParentCandidates",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testModernFallbackSuccessDoesNotClearTCGdexBreaker",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testNarrowerSortPriceRequestDoesNotTruncateTheStoredMap",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testNetworkPokemonLookupDoesNotRequireProviderDenominator",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOfflineHistoricalCardPreservesAllPublishedVariantRows",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOfflineHistoricalMatchingRejectsWrongPrintedDenominator",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOfflineModernPokemonCardResolvesWithoutProviderRequests",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOfflineModernScanUsesZeroProviderRequestsEvenWhenMasterCountDiffers",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOfflinePokemonCardAllowsMasterCountDifferentFromPrintedDenominator",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOfflinePokemonCardPreservesAllPublishedVariantRows",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testOneProviderCardFetchFeedsEveryVirtualPrintRun",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPendingCompletionInvalidatesOldOwnershipAndCatalogImmediately",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPokemonCardNotFoundDoesNotFallThroughToSecondaryProvider",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPokemonCompletionIsReadyWhileUnrelatedDirectoryIsDelayedOrUnavailable",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPokemonFallbackUsesSecondaryProviderOnlyAfterRetryablePrimaryFailure",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPokemonSetsFallBackToSnapshotWhenDescriptorOmitsArtworkFallbacks",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPokemonSetsPreferDescriptorPublishedArtworkFallbacksOverSnapshot",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPriorGenerationResolvedCacheIsIgnored",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testProgressWithoutFailureDoesNotArmTheFailureBackoff",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testPromoFallbackSuccessDoesNotClearTCGdexBreaker",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testRarityFinishAliasPreservesOwnershipWithoutCountingMetalAsPackHolo",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testRefreshPublishesSuccessfulSetsWhenALaterSetFails",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testResolvedCardSetInvalidationLoadsColdDiskEntriesBeforeRemovingThem",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testResolvedPokemonIdentitySurvivesAColdCatalogInstance",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testReviewedNamedPackPatternsDoNotAdmitStampedOrUnknownVariants",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSessionCatalogCachePreservesOriginalResolutionTime",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourceAddsExtensionlessAndWebPTCGdexCandidatesAfterPNGURL",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourceAppendsCardArtworkLastAndRemovesDuplicates",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourceLeavesNonTCGdexHostsUntransformed",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourceNormalizesExtensionlessTCGdexProviderURL",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourcePrefersBundledLogoBeforeRemoteSymbol",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourcePrefersRequestedLogoRemoteWhenBothURLsExist",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourcePreservesCallerRequestedOrdering",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourceUsesRequestedKindForKnownSnapshotGap",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSetArtworkSourceUsesSignedInheritedLogoWithoutClientParentRules",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSignedCardArtworkFillsSummariesWithNoProviderImage",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSignedCardArtworkNeverOverridesAnExistingTCGdexImage",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSnapshotEntryDecodesLegacyManifestWithoutSlotCounts",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSortPriceStreamPublishesIncrementallyForSlowLargeFixture",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testStoredChecklistWithNilImagesPicksUpSignedCardArtworkWithoutReconciliation",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testSuccessfulRefreshPublishesCompleteChecklistBeforeBrowseUsesIt",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testTCGdexCircuitBreakerSuppressesRequestsDuringCooldown",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testTCGdexSetCatalogRetainsProviderEvidenceAndDecodesOlderRows",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testTCGdexSymbolCandidatesTrySiblingPrefixWithoutReplacingStoredPath",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testVariantlessResolvedCacheFallsThroughToTheOfflineVariantChecklist",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testVariantlessStorePreservesAnExistingResolvedCard",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonChecklistBrowseTests",
+          "method": "testVirtualEditionDetailsKeepRequestedContextWhileSharingPayload",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testEveryLedgerMembershipThroughBundledLoaderFactoryAndResolver",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testExactIdentitiesControlsAndExcludedPrintings",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testExpandedExactFinishAndControlMemberships",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testMissingEvidenceNeverBecomesNormalAndIncompleteSingletonAcceptsOnlySupportedLock",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testOldDownloadRefreshAndReopenPreserveMinimumAndUnrelatedData",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testRegenerationUsesNativeWriterAndPreservesProviderFingerprints",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testReviewedMinimumDoesNotCertifyRetainedNormalOrExhaustiveCoverage",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testStaleResolvedCacheAndProviderPayloadCannotEraseMinimum",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonFinishEvidenceTests",
+          "method": "testSyntheticHoldingsKeepExplicitAndInferredDecisionsAfterReopen",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testAll188MappingsJoinExactProductsAndHolofoilPrices",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testAnniversaryHistoryUsesReviewedProductForSavedAndBrowseCards",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testAutomaticNormalCollectionFinishIsRepairedAndPricedInOneRefresh",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testBrowseBulkPricingDoesNotNeedCatalogOrLegacySetMatch",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testBrowseDetailsRetainSupplementalQuoteAndProvenanceWhenOffline",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCachedQuoteCannotReplaceNewerAmountOrReviveInvalidatedValue",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCachedQuoteFillsLaterCatalogMissWithoutRestampingRetrievalOrHistory",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCanceledRolloverWaiterDoesNotReceiveCachedFallbackOrCancelOtherWaiters",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCancellingOneWaiterDoesNotCancelSharedDownload",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCatalogPriceReadThroughNeverCrossesFinishPrintRunOrItemKind",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testClassicRepeatedNumeratorsKeepDifferentProductIdentities",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCollectionMissingPriceRecordsCooldownInSyntheticAndCatalogOutageLanes",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCollectionRefreshUsesBulkWhenCatalogIsDownAndPaidFallbackDisabled",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testCompletePriceResponseWithDeclaredRowCountIsAccepted",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testDailyCacheCoalescesCallersAndSurvivesServiceRecreation",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testEnergyResolutionAndCollectionExportKeepExactPhysicalIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testExistingUSDQuoteWinsOverSupplementalQuote",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testExplicitRetryRefreshesMarkerAfterAPublicationFailure",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testFailureBackoffAndExplicitRetryPreservePriorSnapshot",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testFreshFallbackExpiresWhileAnUnsuccessfulRequestIsInFlight",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testInteractiveFallbackWorksWithPaidFallbackDisabled",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testLaggingPublicationFilesKeepFreshSnapshotWithoutAcceptingTheNewBuild",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testLegacyChecklistNormalSlotBecomesHoloWithoutChangingIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testLivePublishedMistyRefresh",
+          "status": "skipped"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testManualCollectionFeedFailurePreservesPriceAndRecordsFailedCheck",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testManualCollectionRefreshReplacesMistyQuoteAndChecksEachSetOnlyOnce",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testManualRetryCannotInheritAnOrdinaryRequestsCachedFailureFallback",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testManualRetryChecksPublicationEvenWithAFreshCachedSnapshot",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testManualRetryReportsMarkerOutageAndKeepsTheSavedSnapshot",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testMirrorProvenancePreservesCaptureTimeAndRejectsMissingMixedStaleOrFutureMetadata",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testNewBuildOutageKeepsFreshSnapshotThroughBackoffRetryAndRecovery",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testNullMissingDuplicateAndNegativeMarkets",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testPartialPriceFeedIsNotCachedAndExplicitRetryCanRecover",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testPriceResponseRejectsDeclaredRowCountMismatches",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testPublicationRolloverRefreshesCachedMarkerForAnUncachedSet",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testQuoteNeverBorrowsHoloPriceForAnotherFinishOrPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testQuoteRefreshPropagatesCancellationAndIdentityMismatch",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testQuoteRefreshStillPricesKnownIdentityDuringCatalogOutage",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testRecentLegacyMissDoesNotDelayNewSourceButTCGCSVMissKeepsNormalRetryInterval",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testReviewedArtworkCoversAnniversarySetsAndEnergyWithoutNumberGuessing",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testReviewedEnergyProductsAndChecklistRegenerationPreserveOldRows",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testReviewedFinishEvidenceCorrectsGeneratedNormalOnlyForMappedCards",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testReviewedFinishRepairPreservesUserConfirmedChoices",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testRolloverRecoveryStillRejectsTornFilesAndBoundsRequests",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testSavedClassicArtworkSurvivesProjectionAndImportedOwnershipKeys",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testSavedGenesectReadsFallbackQuoteStoredUnderItsResolvedCatalogIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testScannedArtworkMatchesTheSavedRowIncludingReviewedFallbacks",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testScannedGenesectRefreshPricesPortfolioAndCardsAddedUsingExactBrowseIdentity",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testSharedCatalogQuoteAfterOwnedPriceStaysOutOfHistoryAfterRefresh",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testSharedCatalogQuotesCannotOverrideOwnedPriceOrReviveItsWithdrawal",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testStampedHistoryUsesReviewedFinishInsteadOfStoredOriginalProduct",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testSupplementalPricesAppearInPureCardPricingAndPublishedPricePanel",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testUnchangedBuildCannotRenewAnExpiredServerCapture",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testUpstreamAndUnconfiguredEndpointsNeverReachTheNetwork",
+          "status": "passed"
+        },
+        {
+          "suite": "PokemonTCGCSVPriceTests",
+          "method": "testWrongGroupNumberNameOrDuplicateProductFailsClosed",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testBallPatternRuleDoesNotFireWithoutAReverseHoloPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testBallPatternSetOffersThePatternsTheCatalogDoesNotModel",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testBallPatternsUseExactEligibilityRatherThanEveryReverseHolo",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testBrowseSlotsAndScannerShareExactParallelEligibility",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testCatalogWithNothingToSayRecordsUnknownRatherThanGuessing",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testExactBallPatternInventoriesHaveAll471Slots",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testFinishLockDoesNotMatchStampedBaseWhenPlainFinishIsUnavailable",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testFinishLockDoesNotOverrideAPrintingThatOnlyExistsOneWay",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testFinishLockNeverInventsAVariantThePrintingDoesNotHave",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testFinishLockResolvesWhenTheCatalogAgreesItIsPossible",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testFinishLockSelectsExactUnstampedVariantAlongsideSupplementalStampedRelease",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testFinishLockWinsOverAConflictingPrintedLabel",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testLilliesDeterminationNormalLockResolvesAlongsideCatalogStampsAndPatterns",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testLostOriginGengarOffersItsExactStampedRelease",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testMagicFinishesComeStraightFromTheCatalog",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testMagicFinishLockMenuIsNarrowAndTreatmentAware",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testMagicTreatmentLockDoesNotApplyAcrossGameBoundaries",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testMagicTreatmentLockReportsNonApplicationWhenTheCatalogIsSilent",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testMagicTreatmentLockRequiresMatchingEvidenceAndPhysicalFinish",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testMasterBallLockOnABallPatternSetRemovesTheTap",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testOnePieceFinishLockRequiresExactIDAndReturnsCatalogFinish",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testOrdinarySetsAreUntouchedByTheRulesLayer",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPokemonFinishReconciliationRepairsOnlyUnambiguousAutomaticOrUnknownRows",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPokemonFinishReconciliationSkipsSpecialRunsAndNonPokemonCards",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPokemonRulesNeverApplyToMagic",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPrintedLabelCannotSilentlyAnswerAStampedVariantQuestion",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPrintedLabelCanResolveOnlyAfterTheCatalogLeavesMultipleUnstampedOptions",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPrintedLabelDisagreementFallsBackToCatalogOptions",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testPrintedLabelDisagreementLeavesMultipleCatalogOptionsForTheUser",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testProvenancePresentationStatesFinishAndEvidence",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testReceiptCallsOutOnlyFinishesThatNeedAPerson",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testReceiptProminenceKeepsRoutineCatalogAnswersQuiet",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testSerializedStampedVariantKeepsItsReadableLabel",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testSingleCatalogVariantResolvesWithoutAsking",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testSingleCatalogVariantWinsOverAConflictingPrintedLabel",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testStampedCatalogHasOneExactMarketplaceProductPerDocumentedCard",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testStampedPickerIsNotOfferedToSameNumberInAnotherSet",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testTwoPossibleVariantsAskWithTheLikelierOptionFirst",
+          "status": "passed"
+        },
+        {
+          "suite": "VariantResolverTests",
+          "method": "testUncertaintyNeverHardensWhenItCrossesIntoTheScanReceipt",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testCodeFamilyGroupingCannotAuthorizeAForgedPrinting",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testConflictNeverResolvesAgainstAnySingletonOrLock",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testCoverageUnknownRejectsSingletonAndLock",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testDiscoveryCatalogRetainsMaintenanceAdapters",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testEveryBundledSupportedCodeFamilyReachesSharedCatalog",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testExistingGamesKeepAbsentEvidenceBehavior",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testGameWideEditionPolicyIsIndependentOfReleaseAndRarity",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testGenerationAndExactMutationValidation",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testIncompleteCoverageAllowsExactSelectionButNeverForgedChoice",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testLookupAutomaticManualIncompleteAndIndistinguishable",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testMP24SaveRevalidatesActualEvidenceAndCurrentFamilyAuthority",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testPositiveMarkerBeatsLockAndContradictionRequiresAttention",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testProviderSupportedNonExhaustiveSelectionRequiresExplicitEdition",
+          "status": "passed"
+        },
+        {
+          "suite": "YuGiOhResolutionTests",
+          "method": "testRealDCRFamilyKeepsUnsupportedDiscoveryDisabled",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "label": "unchanged-baseline-sealed-control",
+      "commit": "4a9d70b12d941877e2752fe9cfb5fd1508ce0520",
+      "stdoutSHA256": "d17e8f979ecb5fa35d0e7b30ce2a8dfc5b26a495b8cdf5ef692a6ed220f522e2",
+      "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -configuration Debug -destination \"platform=iOS Simulator,id=${SIMULATOR_UDID}\" -derivedDataPath \"${ARTIFACT_ROOT}/BaselineDerivedData\" -resultBundlePath \"${ARTIFACT_ROOT}/baseline-sealed-comparison.xcresult\" -parallel-testing-enabled NO \"-only-testing:TradingCardScannerTests/CollectionKeyTests/testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind\"",
+      "counts": {
+        "failed": 1
+      },
+      "methods": [
+        {
+          "suite": "CollectionKeyTests",
+          "method": "testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind",
+          "status": "failed"
+        }
+      ]
+    }
+  ]
+}
