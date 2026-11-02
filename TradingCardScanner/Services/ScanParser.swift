@@ -809,13 +809,23 @@ enum PokemonHistoricalScanParser {
         })
     }
 
+    /// Complete printed titles shorter than the fragment threshold. The
+    /// Supporter `N` (bw3-92, bw3-101, bw5-96, xy10-105, xy10-105a and the
+    /// 30th Classic reprint 30th-c-021) and `AZ` (xy4-91, xy4-117) print
+    /// nothing else in the title band, so rejecting them as fragments made
+    /// those cards impossible to scan. Only these exact whole-observation
+    /// readings are retained. `PokemonNameMatcher` still refuses to let one
+    /// hide a longer title that OCR read approximately.
+    static let reviewedShortTitles: Set<String> = ["n", "az"]
+
     private static func canonicalTitle(_ raw: String) -> String? {
         let title = CatalogIdentityNormalization.canonicalText(raw)
         guard !title.isEmpty,
               title.count <= 60,
               title.rangeOfCharacter(from: .letters) != nil else { return nil }
-        // Two letters is not a name; it is a fragment of one.
-        guard title.count >= 3 else { return nil }
+        // Two letters is not a name; it is a fragment of one — unless it is
+        // one of the reviewed complete titles above.
+        guard title.count >= 3 || reviewedShortTitles.contains(title) else { return nil }
         guard !furniture.contains(title) else { return nil }
         guard !title.hasPrefix("illus") else { return nil }
         guard !title.hasPrefix("evolves from") else { return nil }

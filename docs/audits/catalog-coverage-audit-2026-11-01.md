@@ -518,6 +518,34 @@ not mean complete physical coverage. Newly discovered card families still need
 independent evidence and regression cases before changing membership or finish
 authority.
 
+## Follow-up sweep — short titles (2026-11-01)
+
+A later sweep replayed retained data through each recognizer: all 1,748
+adopted Lorcana footers, all 46,508 supported Yu-Gi-Oh codes, every One Piece
+prefix, every modern Pokémon local ID and every historical subset/suffix shape
+match their parsers; all 30 bundled 30th Classic memberships match an original
+checklist card; gold/rainbow duplicate slots are all covered by the holo alias
+list; the Magic finish vocabulary covers every foil/material promo type in the
+retained treatment snapshot.
+
+**Fixed:** `PokemonHistoricalScanParser` rejected titles shorter than three
+characters, so `N` (bw3-92, bw3-101, bw5-96, xy10-105, xy10-105a, 30th-c-021)
+and `AZ` (xy4-91, xy4-117) could never be scanned. These two exact titles are
+now retained. `PokemonNameMatcher` no longer lets a short exact match suppress
+fuzzy matches for longer names, so a stray `N` beside a misread title (for
+example Steven's Advice 92/101) stays ambiguous. N 101/101 remains a choice
+between NVI and 30th Classic. Tests: `HistoricalTitleCaptureTests`,
+`ScanParserTests`, `PokemonCatalogSliceCTests`. The session had no Swift
+toolchain; these changes are unverified until CI runs.
+
+**Residual risks, not changed:**
+
+| Issue | Closure |
+| --- | --- |
+| 30th Classic Magikarp reprints modern `sv02-203` (PAL 203/193). If the reprint prints `PAL`, the modern code path resolves the original without consulting membership. | Inspect the physical footer; if it prints `PAL`, offer original/reprint choice from the modern path. |
+| Lost Origin, Silver Tempest and Crown Zenith display `SWSH11`/`SWSH12`/`SWSH12.5` instead of LOR/SIT/CRZ, which also disables Limitless fallback for them (TCGdex artwork currently present for all rows). Historical resolutions store provider-ID codes for older sets generally. | Reviewed printed-code table for pre-SV sets. |
+| Yu-Gi-Oh Link-monster set-code placement versus the under-art band filter is undocumented. | Physical camera check. |
+
 ## Related authorities
 
 - [Earlier coverage research](card-coverage-gaps-and-research.md) and

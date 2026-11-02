@@ -1,33 +1,97 @@
-# 2026-11-02 — PR #16 reconciled engine/model repairs
+# 2026-11-02 — Isolated combined validation candidate
 
-Started at `c693463b213d68df3a77d34fbc4fbf3045206f51`; no interrupted local
-repair survived in accessible normal Git history. Camera presence is now
-independent of pending questions, and pair confirmation uses the most recently
-observed side. Reserved colon/pipe components cannot create a physical key or
-enter a decoded catalog; valid legacy key spellings remain unchanged. Corrected
-source versus retained snapshot counts and documented write acknowledgment/undo
-as deferred integration work. No scanner, storage, pricing or UI integration.
+This local candidate combines the independently reviewed branch repairs; it is
+not a merge of any remote PR. Source/test merges were clean. Workflow selections
+and progress evidence were reconciled by retaining every branch's additions.
+The earlier entries below are chronological evidence, including failures, not
+claims of current blanket approval.
 
-Xcode 27.1 unsigned iOS 27 simulator: **48 executed, 48 passed, zero skipped**
-(`MagicPhysicalObjectTests`: 26; `MagicTokenPairingSessionTests`: 22), including
-removed-versus-present answers and both latest-side directions. Both suites are
-now selected by CI. The first build ran out of T7 space before tests; its failure
-log is retained. Only this session's rebuildable artifacts were removed for the
-successful sequential retry. Device flip/latch acceptance remains open.
+Inputs: #14 `f495e36865fb228d398c337c9814529bbfdfaf0f`,
+#13 `6b78bd5c29597edde3dfe24f53208ed9b5f0fe37`,
+#15 `7ec2261bacbcb417cd70b63ae8957c294020b194`,
+#16 `b95c883ffbdd9db08a8d5d1680d76dbe77736e69`, and draft #17
+`43f32a86aadae4e9ad503fa7553c52971803a507`.
+All began at the reviewed heads. No interrupted repairs were recovered; an
+unrelated September stash was preserved. Main remains `0ab3b0e` and unchanged.
 
-# 2026-11-01 — Design and engine for double-sided Magic token scanning
+Exact #14 local execution: 618 tests, 617 passed, one existing skip, no failures,
+including all six integrated eligibility tests. #15: 85 passed. #16: 48 passed.
+#13: 112 executed, 110 passed, one existing skip, one Keychain `-34018` failure;
+the exact failing test also failed on unchanged main. CI run 41370829274 executed
+all three centering/Opus classes (712 total, one skip, the same one failure).
+CI run 41371144187 executed both token classes (26 + 22, all passed), but its
+648-test selection failed in unrelated Lorcana temporary-directory cleanup.
+That failure remains recorded and is not waived. Further branch CI and the
+exact combined commit's local union results belong in the final handoff.
 
-On `claude/mtg-token-scanner-g4un9y`, the [token scanning plan](docs/plans/magic-token-scanning.md)
-defines token scope from repository data. Its evidence includes TCGplayer Guild
-Kit/Event Deck listings showing one face on up to three cards and printed
-numbers reused for different faces. The previously unused number-only token model was replaced
-with set-qualified face identity, an order-independent physical key,
-per-set coverage gating, merged listings and a validated catalog wire format.
-A new pure `MagicTokenPairingSession` implements flip-to-resolve, sibling-face
-suppression, moved-on parking, single-sided declaration and observed-pair
-confirmation. Tests were added for both. **Not built or run:** the authoring
-environment had no Xcode or Swift toolchain, and Scryfall/TCGCSV were unreachable.
-No scanner, persistence, pricing or UI integration; no device or provider evidence.
+The first combined candidate `e0d74b9` executed 1,501 native cases: 1,498 passed,
+two existing opt-in skips, and the inherited Keychain failure. No other failure,
+including the Lorcana cleanup case, reproduced locally. This final candidate adds
+only #14's stronger disk-reopen/later-refresh and persisted physical-review-close
+assertions. It is preserved separately so earlier test evidence remains tied to
+its actual commit. Short-title local selection passed 142; its exact-head CI run
+41371814570 passed 612 native cases, including historical title 10, parser 104,
+and catalog slice 19. Final candidate evidence is recorded in the final handoff.
+
+The combined selection also includes replay, history, close, ledger and trust
+classes. Local simulator/package tests and branch pushes/draft #17 were explicitly
+approved by the owner. No device installation, feed publication or user collection
+mutation is part of this validation. Native either-finger pinch, live providers,
+old-binary downgrade and deferred token ownership/UI integration remain unverified.
+
+# 2026-11-02 — PR #14 reconciled eligibility history and graded writers
+
+Started from reviewed `ce17ea0`; no interrupted local repair was recovered.
+Retained-set validation is a separate commit. Lifecycle/history repairs and
+their clock contract are in the [pricing plan](docs/plans/pricing_correctness_and_coverage.md#reconciled-pr-14--2026-11-02).
+All graded-add paths now retain full quote evidence; local eligibility events
+survive recovery, reopen and repeated reconciliation without changing ownership.
+Unknown semantics, failed durability and unexplained replay cannot publish
+authoritative closes. Expanded CI includes the integration and ownership suites.
+
+Native evidence retained: initial 175-test selection had one new Japanese
+fixture failure (fixed by using its production set-ID prefix). A Swift test
+closure required an explicit type after a compiler diagnostic failure. One
+build was blocked by T7 exhaustion before tests. Initial integrated execution
+reported 28 assertion failures: fixture activity history was missing, historical
+alias selection lost its earlier record key, and an old test expected publication
+despite unexplained value. Fixtures now carry coherent activity/ledger history;
+production alias selection is repaired and the publication assertion enforces
+the corrected contract. No failure was skipped or weakened.
+
+Subsequent runs: 272 executed / 271 passed / one existing skip; expanded 617
+executed / 616 passed / one existing skip, zero failures (repeated after re-add
+retention). Final ordering/unknown-kind tests and exact CI evidence are pending
+the final validation pass. Physical-device, live-provider and release gates stay open.
+
+# 2026-11-02 — PR #13 reconciled centering fixes
+
+Starting head: `4e85936465489b258183c2f432efc392ca78e3a5`. No interrupted
+local repair was present in registered worktrees, branches or normal history.
+Pinch handoff now clamps once before setting both display and continuation
+baseline, preserving the drag checkpoint. Any photo/orientation change revokes
+current and saved approvals; Undo retains geometry without restoring stale
+export eligibility. Added production-helper boundary/reverse tests and model
+canvas/Exact Values/rotation/reset/repeated-Undo/photo-change export regressions.
+
+Xcode 27.1 unsigned iOS 27 simulator run: 112 executed, 110 passed, one skipped,
+one failed (`OpusImplementationPlanTests.testREQ013ImportedSealedRowConvergesWithBrowseAdd`,
+Keychain `storeFailed(-34018)`). New regressions passed. Failure is preserved;
+unchanged-main comparison is pending. All three affected classes are now in CI.
+Either-finger native pinch release and physical-device acceptance remain open.
+
+The unchanged main reproduced the same Keychain failure. The sealed-import
+fixture now uses the normalizer's existing `sealedCredentialsAvailable` injection
+alongside its existing fake transport/API-key override, instead of writing/removing
+a fake Keychain credential. Every ownership/identity assertion remains unchanged;
+production credentials are untouched. This fixture-only follow-up must pass the
+same selected CI and final combined union before the owner's authorized squash merges.
+
+The next local run passed the Opus fixture but exposed a timing failure in the
+existing localized Exact Values UI test (three assertions in one case after its
+fixed 80 ms Done wait). The test now waits, bounded to two seconds, for its existing
+published value commit; all digit, value and no-premature-update assertions remain.
+The unchanged 112-case selection then passed 111 with one existing benchmark skip.
 
 # 2026-11-01 — Retain completed Browse artwork and observe settled bulk writes
 
@@ -66,59 +130,58 @@ without production changes. Added `BrowseFeatureTests` and
 results are pending the reconciled validation pass; prior selected green runs
 did not execute these affected suites and are not blanket approval.
 
-# 2026-11-02 — PR #13 reconciled centering fixes
+# 2026-11-02 — PR #16 reconciled engine/model repairs
 
-Starting head: `4e85936465489b258183c2f432efc392ca78e3a5`. No interrupted
-local repair was present in registered worktrees, branches or normal history.
-Pinch handoff now clamps once before setting both display and continuation
-baseline, preserving the drag checkpoint. Any photo/orientation change revokes
-current and saved approvals; Undo retains geometry without restoring stale
-export eligibility. Added production-helper boundary/reverse tests and model
-canvas/Exact Values/rotation/reset/repeated-Undo/photo-change export regressions.
+Started at `c693463b213d68df3a77d34fbc4fbf3045206f51`; no interrupted local
+repair survived in accessible normal Git history. Camera presence is now
+independent of pending questions, and pair confirmation uses the most recently
+observed side. Reserved colon/pipe components cannot create a physical key or
+enter a decoded catalog; valid legacy key spellings remain unchanged. Corrected
+source versus retained snapshot counts and documented write acknowledgment/undo
+as deferred integration work. No scanner, storage, pricing or UI integration.
 
-Xcode 27.1 unsigned iOS 27 simulator run: 112 executed, 110 passed, one skipped,
-one failed (`OpusImplementationPlanTests.testREQ013ImportedSealedRowConvergesWithBrowseAdd`,
-Keychain `storeFailed(-34018)`). New regressions passed. Failure is preserved;
-unchanged-main comparison is pending. All three affected classes are now in CI.
-Either-finger native pinch release and physical-device acceptance remain open.
+Xcode 27.1 unsigned iOS 27 simulator: **48 executed, 48 passed, zero skipped**
+(`MagicPhysicalObjectTests`: 26; `MagicTokenPairingSessionTests`: 22), including
+removed-versus-present answers and both latest-side directions. Both suites are
+now selected by CI. The first build ran out of T7 space before tests; its failure
+log is retained. Only this session's rebuildable artifacts were removed for the
+successful sequential retry. Device flip/latch acceptance remains open.
 
-The unchanged main reproduced the same Keychain failure. The sealed-import
-fixture now uses the normalizer's existing `sealedCredentialsAvailable` injection
-alongside its existing fake transport/API-key override, instead of writing/removing
-a fake Keychain credential. Every ownership/identity assertion remains unchanged;
-production credentials are untouched. This fixture-only follow-up must pass the
-same selected CI and final combined union before the owner's authorized squash merges.
+# 2026-11-01 — Design and engine for double-sided Magic token scanning
 
-The next local run passed the Opus fixture but exposed a timing failure in the
-existing localized Exact Values UI test (three assertions in one case after its
-fixed 80 ms Done wait). The test now waits, bounded to two seconds, for its existing
-published value commit; all digit, value and no-premature-update assertions remain.
-The unchanged 112-case selection then passed 111 with one existing benchmark skip.
+On `claude/mtg-token-scanner-g4un9y`, the [token scanning plan](docs/plans/magic-token-scanning.md)
+defines token scope from repository data. Its evidence includes TCGplayer Guild
+Kit/Event Deck listings showing one face on up to three cards and printed
+numbers reused for different faces. The previously unused number-only token model was replaced
+with set-qualified face identity, an order-independent physical key,
+per-set coverage gating, merged listings and a validated catalog wire format.
+A new pure `MagicTokenPairingSession` implements flip-to-resolve, sibling-face
+suppression, moved-on parking, single-sided declaration and observed-pair
+confirmation. Tests were added for both. **Not built or run:** the authoring
+environment had no Xcode or Swift toolchain, and Scryfall/TCGCSV were unreachable.
+No scanner, persistence, pricing or UI integration; no device or provider evidence.
 
-# 2026-11-02 — PR #14 reconciled eligibility history and graded writers
+# 2026-11-02 — Preserve short-title scope and execute historical capture in CI
 
-Started from reviewed `ce17ea0`; no interrupted local repair was recovered.
-Retained-set validation is a separate commit. Lifecycle/history repairs and
-their clock contract are in the [pricing plan](docs/plans/pricing_correctness_and_coverage.md#reconciled-pr-14--2026-11-02).
-All graded-add paths now retain full quote evidence; local eligibility events
-survive recovery, reopen and repeated reconciliation without changing ownership.
-Unknown semantics, failed durability and unexplained replay cannot publish
-authoritative closes. Expanded CI includes the integration and ownership suites.
+The reviewed/fetched head is `b1a635611352564a08de43e171adea6d6fd0e276`.
+The N/AZ parser/matcher/catalog changes are preserved without speculative OCR
+changes. Added `HistoricalTitleCaptureTests` to the existing parser/catalog CI
+selection. Separate draft PR preparation is authorized; native and exact-head
+CI evidence are pending the validation pass. Physical OCR ambiguity remains an
+unproven risk, not a new defect claim.
 
-Native evidence retained: initial 175-test selection had one new Japanese
-fixture failure (fixed by using its production set-ID prefix). A Swift test
-closure required an explicit type after a compiler diagnostic failure. One
-build was blocked by T7 exhaustion before tests. Initial integrated execution
-reported 28 assertion failures: fixture activity history was missing, historical
-alias selection lost its earlier record key, and an old test expected publication
-despite unexplained value. Fixtures now carry coherent activity/ledger history;
-production alias selection is repaired and the publication assertion enforces
-the corrected contract. No failure was skipped or weakened.
+# 2026-11-01 — Make short Pokémon titles (N, AZ) scannable
 
-Subsequent runs: 272 executed / 271 passed / one existing skip; expanded 617
-executed / 616 passed / one existing skip, zero failures (repeated after re-add
-retention). Final ordering/unknown-kind tests and exact CI evidence are pending
-the final validation pass. Physical-device, live-provider and release gates stay open.
+Follow-up coverage sweep (no provider network, no Swift toolchain in the
+session). Historical title capture discarded every title under three
+characters, so Supporter `N` (bw3-92, bw3-101, bw5-96, xy10-105, xy10-105a,
+30th-c-021) and `AZ` (xy4-91, xy4-117) could never produce title evidence; the
+bundled 30th Classic `n` 101/101 membership was unreachable. Only these exact
+reviewed titles are now retained, and a short exact reading no longer
+suppresses a fuzzy match for a longer title, so stray OCR stays ambiguous.
+New regressions cover the parser, matcher and bundled-checklist resolution.
+**Not compiled or run here**; CI must confirm. Details and residual risks are
+in the [dated audit](docs/audits/catalog-coverage-audit-2026-11-01.md#follow-up-sweep--short-titles-2026-11-01).
 
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 

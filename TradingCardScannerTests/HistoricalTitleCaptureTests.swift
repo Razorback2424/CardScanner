@@ -55,6 +55,27 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         }
     }
 
+    /// `N` and `AZ` are complete printed titles. The fragment threshold made
+    /// every printing of them unscannable; other short fragments stay rejected.
+    func testReviewedShortCardTitlesSurviveButFragmentsDoNot() {
+        for (line, expected) in [("N", "n"), ("AZ", "az"), (" n ", "n")] {
+            guard case let .pokemonHistorical(evidence)? = PokemonHistoricalScanParser.parse(
+                number: number,
+                titleLines: ["TRAINER", line, "Supporter"]
+            )?.legacyIdentity else {
+                return XCTFail("\(line.debugDescription) is a complete card name")
+            }
+            XCTAssertEqual(evidence.titleCandidates, [expected])
+        }
+
+        for fragment in ["d", "Z", "A", "HP", "ex", "Nn"] {
+            XCTAssertNil(
+                PokemonHistoricalScanParser.parse(number: number, titleLines: [fragment]),
+                "\(fragment.debugDescription) is a fragment, not a card name"
+            )
+        }
+    }
+
     /// A frame that is all furniture yields no evidence at all, so nothing
     /// confirms and the prompt stays up while the user moves the camera.
     func testAFrameOfPureFurnitureYieldsNoEvidence() {
