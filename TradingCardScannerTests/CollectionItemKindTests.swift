@@ -482,7 +482,9 @@ final class CollectionItemKindTests: XCTestCase {
     func testBackgroundGradedPickerRetainsLifecycleAcrossDuplicateAndAdditionalCopies() async throws {
         for certificate: String? in ["LIFECYCLE-CERT", nil] {
             for status in ["current", "expired", "unpriced"] {
-                let container = try makePickerContainer()
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("graded-picker-\(UUID()).store")
+                let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(url: url)])
                 let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
                 let card = try identifiedPokemonCard()
                 let lifecycle = JustTCGQuoteLifecycle(status: status, lastPrice: status == "unpriced" ? nil : 50,
@@ -517,6 +519,29 @@ final class CollectionItemKindTests: XCTestCase {
                 let afterReadd = try XCTUnwrap(PriceStore(context: reloaded).record(forKey: slab.priceKey))
                 XCTAssertEqual(afterReadd.exactGradedQuoteEvidence?.lifecycle, lifecycle)
                 XCTAssertEqual(afterReadd.effectiveUnitMarketPriceUSD, status == "current" ? 50 : nil)
+                let reopened = try ModelContainer(for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(url: url)])
+                let refreshContext = ModelContext(reopened)
+                let reopenedSlab = try XCTUnwrap(refreshContext.fetch(FetchDescriptor<CollectedCard>()).first)
+                let refreshStore = PriceStore(context: refreshContext)
+                XCTAssertEqual(refreshStore.record(forKey: reopenedSlab.priceKey)?.exactGradedQuoteEvidence?.lifecycle, lifecycle)
+                XCTAssertEqual(reopenedSlab.quantity, certificate == nil ? 3 : 1)
+                let refreshTime = Date.now.addingTimeInterval(1)
+                let recovery = JustTCGQuoteLifecycle(status: "current", lastPrice: 60,
+                    lastSaleAt: refreshTime, priceExpiresAt: refreshTime.addingTimeInterval(86400))
+                _ = GradedVariantBinding.storeVariantQuote(
+                    GradedVariant(id: quote.id, cardID: quote.cardID, company: .psa, grade: .init(value: "10"),
+                        printing: "Holofoil", marketPriceUSD: 60, updatedAt: refreshTime, quoteLifecycle: recovery),
+                    game: reopenedSlab.cardGame, printingID: reopenedSlab.priceStorageID,
+                    variantID: reopenedSlab.variantID, treatmentIDs: [], store: refreshStore, at: refreshTime)
+                try refreshContext.save()
+                let finalContext = ModelContext(reopened)
+                let finalRecord = try XCTUnwrap(PriceStore(context: finalContext).record(forKey: reopenedSlab.priceKey))
+                XCTAssertEqual(finalRecord.effectiveUnitMarketPriceUSD, 60)
+                XCTAssertEqual(finalRecord.exactGradedQuoteEvidence?.lifecycle, recovery)
+                XCTAssertEqual(finalRecord.marketVariantID, quote.id)
+                XCTAssertEqual(try finalContext.fetch(FetchDescriptor<InventoryEvent>()).count, reopenedSlab.quantity)
+                XCTAssertEqual(try finalContext.fetch(FetchDescriptor<CollectionActivity>()).count, reopenedSlab.quantity)
             }
         }
     }

@@ -229,6 +229,17 @@ final class PortfolioEligibilityIntegrationTests: XCTestCase {
                     [$0.collectionKey, $0.providerID, $0.variantID ?? ""]
                 }, original)
                 XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).map(\.priceStorageKey), [key])
+                let learned = try XCTUnwrap(context.fetch(FetchDescriptor<PriceObservation>())
+                    .first { $0.kind == .physicalReview }?.receivedAt)
+                let later = await recompute(reopened, at: learned.addingTimeInterval(86400))
+                XCTAssertEqual(later.summary?.isAuthoritative, true)
+                let closeContext = ModelContext(reopened)
+                let reviewDay = PortfolioCalendar.day(containing: learned, in: zone)
+                let reviewClose = try XCTUnwrap(closeContext.fetch(FetchDescriptor<PortfolioDailyClose>())
+                    .first { $0.date == reviewDay })
+                XCTAssertEqual(reviewClose.closeValue, .zero)
+                XCTAssertEqual(reviewClose.pricingAdjustment, money(-50))
+                XCTAssertEqual(reviewClose.marketContribution, .zero)
             }
         }
     }
