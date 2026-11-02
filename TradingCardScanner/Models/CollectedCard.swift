@@ -165,9 +165,8 @@ final class CollectedCard {
     /// `providerID` is the raw printing id for legacy/raw rows but is the
     /// collection key for graded and sealed rows. Keep that distinction in one
     /// accessor so consumers never parse a collection namespace as a catalog
-    /// identity. Sealed rows written directly by `addSealed` carry their
-    /// product identity in `justTCGCardID` until catalog metadata enrichment
-    /// fills `catalogProviderID`.
+    /// identity. New sealed rows carry their product identity explicitly in
+    /// `catalogProviderID`; legacy rows can fall back to `justTCGCardID`.
     var underlyingPrintingID: String? {
         let candidate = catalogProviderID
             ?? (itemKind == .sealedProduct ? justTCGCardID : nil)
