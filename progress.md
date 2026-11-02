@@ -26,6 +26,15 @@ generation pending until a same-generation retry settles. The final focused
 selection passed 19/19 with zero failures/skips. Production files remain exactly
 those of `3ca908d`; no additional aggregate or performance measurement was run.
 
+# 2026-11-02 — PR #15 reconciled validation selection
+
+Starting head `fc19b8ccaf33f8359a50bdd632b5bbd5c0cd0c95` matches the review.
+Preserved completed-image retention and bulk-generation/acknowledgment behavior
+without production changes. Added `BrowseFeatureTests` and
+`StoreRevisionMonitorTests` to actual CI execution. Native and exact-head CI
+results are pending the reconciled validation pass; prior selected green runs
+did not execute these affected suites and are not blanket approval.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)
