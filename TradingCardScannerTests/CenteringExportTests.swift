@@ -431,10 +431,32 @@ final class CenteringNativePrecisionTests: XCTestCase {
             holdRemovalCompletions()
             let removal = DispatchTime.now().uptimeNanoseconds
             probe.positionVisible = false
-            try await waitFor("SwiftUI-owned position removal captured", since: removal) {
-                self.pendingRemovalCount == 1 && input.window == nil
-                    && self.log.contains("view.removal-captured", field: self.probe.positionFieldID, after: removal)
+            try await waitFor("SwiftUI-owned position removal captured", since: removal, completedAt: {
+                self.log.events.first {
+                    $0.name == "view.removal-captured" && $0.field == self.probe.positionFieldID
+                        && $0.uptimeNanoseconds >= removal
+                }?.uptimeNanoseconds
+            }) {
+                self.log.contains("view.removal-captured", field: self.probe.positionFieldID, after: removal)
             }
+            // Capture has its own recorded deadline. UIKit can block this
+            // actor while resigning afterward; do not call that time-to-capture.
+            // These separate state assertions must all hold before B starts.
+            XCTAssertEqual(pendingRemovalCount, 1, "The real removal completion must be held before B starts")
+            let resigned = try log.event("uikit.end", field: probe.positionFieldID, after: removal).uptimeNanoseconds
+            let identity = "context=\(ObjectIdentifier(input))"
+            try await waitFor("SwiftUI detachment after native resignation", since: resigned, completedAt: {
+                self.log.events.first {
+                    $0.name == "view.window-detached" && $0.field == self.probe.positionFieldID
+                        && $0.uptimeNanoseconds >= resigned && $0.detail == identity
+                }?.uptimeNanoseconds
+            }) {
+                input.window == nil && self.log.events.contains {
+                    $0.name == "view.window-detached" && $0.detail == identity
+                        && $0.uptimeNanoseconds >= resigned
+                }
+            }
+            XCTAssertNil(input.window, "SwiftUI must have removed A before B starts")
             XCTAssertTrue(probe.mutations.isEmpty, "A must not commit through ordinary blur before B starts")
             XCTAssertFalse(log.contains("commit.update-call", field: probe.positionFieldID, after: removal))
             XCTAssertNil(log.disappearance(of: input, field: probe.positionFieldID, after: removal))
@@ -538,6 +560,13 @@ final class CenteringNativePrecisionTests: XCTestCase {
             probe.commitAction.removalCompletionSchedulerForTesting = nil
             deliverRemovalCompletions()
             let ownedInputs = inputs.map { (field: $0.key, input: $0.value) }
+            let appearances = Dictionary(ownedInputs.map { field, input in
+                let identity = "context=\(ObjectIdentifier(input))"
+                let time = log.events.last {
+                    $0.name == "view.appear" && $0.field == field && $0.detail?.contains(identity) == true
+                }?.uptimeNanoseconds ?? 0
+                return (ObjectIdentifier(input), time)
+            }, uniquingKeysWith: { max($0, $1) })
             host?.view.endEditing(true)
             for (_, input) in ownedInputs where input.isFirstResponder { input.resignFirstResponder() }
             var removalFloors: [ObjectIdentifier: UInt64] = [:]
@@ -549,20 +578,45 @@ final class CenteringNativePrecisionTests: XCTestCase {
                 }
             } catch { log.trace.record("fixture.teardown-blur-failed", detail: String(describing: error)) }
             let removal = DispatchTime.now().uptimeNanoseconds
-            for (_, input) in ownedInputs where input.window != nil {
-                removalFloors[ObjectIdentifier(input)] = removal
+            for (field, input) in ownedInputs {
+                let appeared = appearances[ObjectIdentifier(input)] ?? 0
+                // A completion can precede native window detachment. Do not
+                // demand a second completion for that already-removed lifetime.
+                removalFloors[ObjectIdentifier(input)] =
+                    log.disappearance(of: input, field: field, after: appeared) == nil ? removal : appeared
             }
             probe.visible = false
             do {
-                try await waitFor("owned fields disappeared") {
+                try await waitFor("owned fields disappeared", since: removal, completedAt: {
+                    let times = ownedInputs.compactMap { field, input in
+                        self.log.disappearance(of: input, field: field,
+                            after: removalFloors[ObjectIdentifier(input)] ?? 0)?.uptimeNanoseconds
+                    }
+                    guard times.count == ownedInputs.count else { return nil }
+                    return times.max() ?? removal
+                }) {
                     ownedInputs.allSatisfy { field, input in
                         self.log.disappearance(of: input, field: field,
                             after: removalFloors[ObjectIdentifier(input)] ?? 0) != nil
                     }
                 }
             } catch { log.trace.record("fixture.teardown-disappearance-failed", detail: String(describing: error)) }
+            let windowRemoval = DispatchTime.now().uptimeNanoseconds
             window?.isHidden = true
             window?.rootViewController = nil
+            do {
+                try await waitFor("owned native windows detached", since: windowRemoval, completedAt: {
+                    let times = ownedInputs.compactMap { field, input in
+                        let identity = "context=\(ObjectIdentifier(input))"
+                        return self.log.events.last {
+                            $0.name == "view.window-detached" && $0.field == field && $0.detail == identity
+                                && $0.uptimeNanoseconds >= appearances[ObjectIdentifier(input), default: 0]
+                        }?.uptimeNanoseconds
+                    }
+                    guard times.count == ownedInputs.count else { return nil }
+                    return times.max() ?? windowRemoval
+                }) { ownedInputs.allSatisfy { $0.input.window == nil } }
+            } catch { log.trace.record("fixture.teardown-window-detachment-failed", detail: String(describing: error)) }
             host = nil
             inputs.removeAll()
             XCTAssertNil(probe.commitAction.removalCompletionSchedulerForTesting)
