@@ -279,6 +279,9 @@ enum PortfolioReplayEngine {
 
         let observations = input.observations.sorted { lhs, rhs in
             if lhs.receivedAt != rhs.receivedAt { return lhs.receivedAt < rhs.receivedAt }
+            if lhs.kind.orderingPriority != rhs.kind.orderingPriority {
+                return lhs.kind.orderingPriority < rhs.kind.orderingPriority
+            }
             return lhs.id.uuidString < rhs.id.uuidString
         }
 

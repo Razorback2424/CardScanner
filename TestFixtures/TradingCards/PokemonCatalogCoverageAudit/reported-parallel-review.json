@@ -1,0 +1,1641 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-11-01T19:27:44Z",
+  "boundary": "Public exact identity evidence only; not an installed-device or authenticated pricing receipt. No holdings, copies, certificates or private identifiers.",
+  "cases": [
+    {
+      "catalogID": "me05-040",
+      "variantID": "cosmos",
+      "source": {
+        "category": "Pokemon",
+        "id": "me05-040",
+        "illustrator": "Nakamura Ippan",
+        "image": "https://assets.tcgdex.net/en/me/me05/040",
+        "localId": "040",
+        "name": "Marshadow",
+        "rarity": "Uncommon",
+        "set": {
+          "cardCount": {
+            "official": 84,
+            "total": 120
+          },
+          "id": "me05",
+          "logo": "https://assets.tcgdex.net/en/me/me05/logo",
+          "name": "Pitch Black",
+          "symbol": "https://assets.tcgdex.net/univ/me/me05/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 895826,
+              "tcgplayer": 704797
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.873Z",
+                "unit": "EUR",
+                "idProduct": 895826,
+                "avg": 0.03,
+                "low": 0.02,
+                "trend": 0.02,
+                "avg1": 0.02,
+                "avg7": 0.02,
+                "avg30": 0.03,
+                "avg-holo": 0.08,
+                "low-holo": 0.02,
+                "trend-holo": 0.1,
+                "avg1-holo": 0.05,
+                "avg7-holo": 0.11,
+                "avg30-holo": 0.09
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:14.116Z",
+                "normal": {
+                  "productId": 704797,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.15,
+                  "highPrice": 14.15,
+                  "marketPrice": 0.15,
+                  "directLowPrice": 0.03
+                },
+                "reverse-holofoil": {
+                  "productId": 704797,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.25,
+                  "highPrice": 3,
+                  "marketPrice": 0.26,
+                  "directLowPrice": 0.19
+                }
+              }
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 895826,
+              "tcgplayer": 704797
+            },
+            "variantId": "cm4kqul3x1bwlz1f",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.873Z",
+                "unit": "EUR",
+                "idProduct": 895826,
+                "avg": 0.03,
+                "low": 0.02,
+                "trend": 0.02,
+                "avg1": 0.02,
+                "avg7": 0.02,
+                "avg30": 0.03,
+                "avg-holo": 0.08,
+                "low-holo": 0.02,
+                "trend-holo": 0.1,
+                "avg1-holo": 0.05,
+                "avg7-holo": 0.11,
+                "avg30-holo": 0.09
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:14.116Z",
+                "normal": {
+                  "productId": 704797,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.15,
+                  "highPrice": 14.15,
+                  "marketPrice": 0.15,
+                  "directLowPrice": 0.03
+                },
+                "reverse-holofoil": {
+                  "productId": 704797,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.25,
+                  "highPrice": 3,
+                  "marketPrice": 0.26,
+                  "directLowPrice": 0.19
+                }
+              }
+            }
+          }
+        ],
+        "dexId": [
+          802
+        ],
+        "hp": 90,
+        "types": [
+          "Psychic"
+        ],
+        "stage": "Basic",
+        "attacks": [
+          {
+            "cost": [
+              "Psychic"
+            ],
+            "name": "Shadowy Knot",
+            "effect": "This attack does 30 damage for each {C} in your opponent's Active Pokémon's Retreat Cost.",
+            "damage": "30×"
+          }
+        ],
+        "weaknesses": [
+          {
+            "type": "Darkness",
+            "value": "×2"
+          }
+        ],
+        "resistances": [
+          {
+            "type": "Fighting",
+            "value": "-30"
+          }
+        ],
+        "retreat": 1,
+        "regulationMark": "J",
+        "legal": {
+          "standard": true,
+          "expanded": true
+        },
+        "updated": "2026-07-18T09:39:17+02:00",
+        "pricing": {
+          "cardmarket": {
+            "updated": "2026-10-31T22:54:32.873Z",
+            "unit": "EUR",
+            "idProduct": 895826,
+            "avg": 0.03,
+            "low": 0.02,
+            "trend": 0.02,
+            "avg1": 0.02,
+            "avg7": 0.02,
+            "avg30": 0.03,
+            "avg-holo": 0.08,
+            "low-holo": 0.02,
+            "trend-holo": 0.1,
+            "avg1-holo": 0.05,
+            "avg7-holo": 0.11,
+            "avg30-holo": 0.09
+          },
+          "tcgplayer": {
+            "unit": "USD",
+            "updated": "2026-10-14T22:55:14.116Z",
+            "normal": {
+              "productId": 704797,
+              "lowPrice": 0.01,
+              "midPrice": 0.15,
+              "highPrice": 14.15,
+              "marketPrice": 0.15,
+              "directLowPrice": 0.03
+            },
+            "reverse-holofoil": {
+              "productId": 704797,
+              "lowPrice": 0.01,
+              "midPrice": 0.25,
+              "highPrice": 3,
+              "marketPrice": 0.26,
+              "directLowPrice": 0.19
+            }
+          }
+        }
+      },
+      "product": {
+        "productId": 714065,
+        "name": "Marshadow - 040/084 (Cosmos Holo)",
+        "cleanName": "Marshadow 040 084 Cosmos Holo",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/714065_200w.jpg",
+        "categoryId": 3,
+        "groupId": 2289,
+        "url": "https://www.tcgplayer.com/product/714065/pokemon-blister-exclusives-marshadow-040-084-cosmos-holo",
+        "modifiedOn": "2026-08-28T20:07:33.863",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "040/084"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Uncommon"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Psychic"
+          },
+          {
+            "name": "HP",
+            "displayName": "HP",
+            "value": "90"
+          },
+          {
+            "name": "Stage",
+            "displayName": "Stage",
+            "value": "Basic"
+          },
+          {
+            "name": "Attack 1",
+            "displayName": "Attack 1",
+            "value": "[P] Shadowy Knot (30x)<br> This attack does 30 damage for each Retreat Cost."
+          },
+          {
+            "name": "Weakness",
+            "displayName": "Weakness",
+            "value": "Dx2"
+          },
+          {
+            "name": "Resistance",
+            "displayName": "Resistance",
+            "value": "F-30"
+          },
+          {
+            "name": "RetreatCost",
+            "displayName": "Retreat Cost",
+            "value": "1"
+          }
+        ]
+      },
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/me05-040",
+      "productURL": "https://tcgcsv.com/tcgplayer/3/2289/products",
+      "contentSHA256": "f988ed12c03e89c2d9035d844d441dee1846fa660ea5e4b0932f64c77b5ef2d6"
+    },
+    {
+      "catalogID": "me02.5-097",
+      "variantID": "cosmos",
+      "source": {
+        "category": "Pokemon",
+        "id": "me02.5-097",
+        "illustrator": "DOM",
+        "image": "https://assets.tcgdex.net/en/me/me02.5/097",
+        "localId": "097",
+        "name": "Team Rocket's Mimikyu",
+        "rarity": "Uncommon",
+        "set": {
+          "cardCount": {
+            "official": 217,
+            "total": 295
+          },
+          "id": "me02.5",
+          "logo": "https://assets.tcgdex.net/en/me/me02.5/logo",
+          "name": "Ascended Heroes",
+          "symbol": "https://assets.tcgdex.net/univ/me/me02.5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 869708,
+              "tcgplayer": 675909
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.873Z",
+                "unit": "EUR",
+                "idProduct": 869708,
+                "avg": 0.04,
+                "low": 0.02,
+                "trend": 0.05,
+                "avg1": 0.16,
+                "avg7": 0.04,
+                "avg30": 0.05,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:13.436Z",
+                "normal": {
+                  "productId": 675909,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.2,
+                  "highPrice": 19.8,
+                  "marketPrice": 0.19,
+                  "directLowPrice": 0.05
+                }
+              }
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "foil": "energy",
+            "thirdParty": {
+              "cardmarket": 870289,
+              "tcgplayer": 677069
+            },
+            "variantId": "3wehmjjju11cdaad92gj82f",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.873Z",
+                "unit": "EUR",
+                "idProduct": 870289,
+                "avg": null,
+                "low": 0.05,
+                "trend": 0.47,
+                "avg1": 0.4,
+                "avg7": 0.42,
+                "avg30": 0.38,
+                "avg-holo": 0.5,
+                "low-holo": 0.05,
+                "trend-holo": 0.57,
+                "avg1-holo": 0.42,
+                "avg7-holo": 0.56,
+                "avg30-holo": 0.53
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:13.436Z",
+                "reverse-holofoil": {
+                  "productId": 677069,
+                  "lowPrice": 0.15,
+                  "midPrice": 0.55,
+                  "highPrice": 40,
+                  "marketPrice": 0.5,
+                  "directLowPrice": null
+                }
+              }
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "foil": "team-rocket",
+            "thirdParty": {
+              "cardmarket": 870290,
+              "tcgplayer": 676929
+            },
+            "variantId": "23tfgqp0wec7hf06ng21llrwgifv",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.873Z",
+                "unit": "EUR",
+                "idProduct": 870290,
+                "avg": null,
+                "low": 0.02,
+                "trend": 0.21,
+                "avg1": 0.29,
+                "avg7": 0.28,
+                "avg30": 0.29,
+                "avg-holo": 1.06,
+                "low-holo": 0.02,
+                "trend-holo": 0.85,
+                "avg1-holo": 1,
+                "avg7-holo": 0.83,
+                "avg30-holo": 0.8
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:13.436Z",
+                "reverse-holofoil": {
+                  "productId": 676929,
+                  "lowPrice": 0.55,
+                  "midPrice": 1.5,
+                  "highPrice": 27.92,
+                  "marketPrice": 1.29,
+                  "directLowPrice": 1.46
+                }
+              }
+            }
+          }
+        ],
+        "dexId": [
+          778
+        ],
+        "hp": 60,
+        "types": [
+          "Psychic"
+        ],
+        "description": "This Pokémon lives in dark places untouched by sunlight. When it appears before humans, it hides itself under a cloth that resembles a Pikachu.",
+        "stage": "Basic",
+        "attacks": [
+          {
+            "cost": [
+              "Psychic",
+              "Colorless"
+            ],
+            "name": "Gemstone Mimicry",
+            "effect": "Choose 1 of your opponent's Active Tera Pokémon's attacks and use it as this attack."
+          }
+        ],
+        "weaknesses": [
+          {
+            "type": "Darkness",
+            "value": "×2"
+          }
+        ],
+        "resistances": [
+          {
+            "type": "Fighting",
+            "value": "-30"
+          }
+        ],
+        "retreat": 0,
+        "regulationMark": "I",
+        "legal": {
+          "standard": true,
+          "expanded": true
+        },
+        "updated": "2026-08-29T18:25:24Z",
+        "pricing": {
+          "cardmarket": {
+            "updated": "2026-10-31T22:54:32.873Z",
+            "unit": "EUR",
+            "idProduct": 869708,
+            "avg": 0.04,
+            "low": 0.02,
+            "trend": 0.05,
+            "avg1": 0.16,
+            "avg7": 0.04,
+            "avg30": 0.05,
+            "avg-holo": null,
+            "low-holo": null,
+            "trend-holo": 0,
+            "avg1-holo": null,
+            "avg7-holo": null,
+            "avg30-holo": null
+          },
+          "tcgplayer": {
+            "unit": "USD",
+            "updated": "2026-10-14T22:55:13.436Z",
+            "normal": {
+              "productId": 675909,
+              "lowPrice": 0.01,
+              "midPrice": 0.2,
+              "highPrice": 19.8,
+              "marketPrice": 0.19,
+              "directLowPrice": 0.05
+            }
+          }
+        }
+      },
+      "product": {
+        "productId": 714066,
+        "name": "Team Rocket's Mimikyu - 097/217 (Cosmos Holo)",
+        "cleanName": "Team Rockets Mimikyu 097 217 Cosmos Holo",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/714066_200w.jpg",
+        "categoryId": 3,
+        "groupId": 2289,
+        "url": "https://www.tcgplayer.com/product/714066/pokemon-blister-exclusives-team-rockets-mimikyu-097-217-cosmos-holo",
+        "modifiedOn": "2026-08-28T20:06:40.273",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "097/217"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Uncommon"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Psychic"
+          },
+          {
+            "name": "HP",
+            "displayName": "HP",
+            "value": "60"
+          },
+          {
+            "name": "Stage",
+            "displayName": "Stage",
+            "value": "Basic"
+          },
+          {
+            "name": "Attack 1",
+            "displayName": "Attack 1",
+            "value": "[PC] Gemstone Mimicry<br> Choose 1 of your opponent's Active Tera Pokemon's attacks and use it as this attack."
+          },
+          {
+            "name": "Weakness",
+            "displayName": "Weakness",
+            "value": "Dx2"
+          },
+          {
+            "name": "Resistance",
+            "displayName": "Resistance",
+            "value": "F-30"
+          },
+          {
+            "name": "RetreatCost",
+            "displayName": "Retreat Cost",
+            "value": "0"
+          }
+        ]
+      },
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/me02.5-097",
+      "productURL": "https://tcgcsv.com/tcgplayer/3/2289/products",
+      "contentSHA256": "337a3143924164f776a0733f39418de45ba2edc147d0ccf8e0f91b7fd739f267"
+    },
+    {
+      "catalogID": "sv04.5-007",
+      "variantID": "cosmos",
+      "source": {
+        "category": "Pokemon",
+        "id": "sv04.5-007",
+        "illustrator": "GIDORA",
+        "image": "https://assets.tcgdex.net/en/sv/sv04.5/007",
+        "localId": "007",
+        "name": "Charmander",
+        "rarity": "Common",
+        "set": {
+          "cardCount": {
+            "official": 91,
+            "total": 245
+          },
+          "id": "sv04.5",
+          "logo": "https://assets.tcgdex.net/en/sv/sv04.5/logo",
+          "name": "Paldean Fates",
+          "symbol": "https://assets.tcgdex.net/univ/sv/sv04.5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 751533,
+              "tcgplayer": 534142,
+              "cardtrader": 274191
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 751533,
+                "avg": 0.07,
+                "low": 0.02,
+                "trend": 0.05,
+                "avg1": 0.02,
+                "avg7": 0.05,
+                "avg30": 0.07,
+                "avg-holo": 0.14,
+                "low-holo": 0.02,
+                "trend-holo": 0.18,
+                "avg1-holo": 0.1,
+                "avg7-holo": 0.15,
+                "avg30-holo": 0.14
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:10.139Z",
+                "reverse-holofoil": {
+                  "productId": 534142,
+                  "lowPrice": 0.08,
+                  "midPrice": 0.27,
+                  "highPrice": 14.66,
+                  "marketPrice": 0.27,
+                  "directLowPrice": 0.14
+                },
+                "normal": {
+                  "productId": 534142,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.2,
+                  "highPrice": 20,
+                  "marketPrice": 0.19,
+                  "directLowPrice": 0.05
+                }
+              }
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "foil": "cosmos",
+            "thirdParty": {
+              "cardmarket": 833339
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 833339,
+                "avg": 0.59,
+                "low": 0.02,
+                "trend": 0.64,
+                "avg1": 0.59,
+                "avg7": 0.59,
+                "avg30": 0.56,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": null
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 751533,
+              "tcgplayer": 534142,
+              "cardtrader": 274191
+            },
+            "variantId": "cm4kqul3x1bwlz1f",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 751533,
+                "avg": 0.07,
+                "low": 0.02,
+                "trend": 0.05,
+                "avg1": 0.02,
+                "avg7": 0.05,
+                "avg30": 0.07,
+                "avg-holo": 0.14,
+                "low-holo": 0.02,
+                "trend-holo": 0.18,
+                "avg1-holo": 0.1,
+                "avg7-holo": 0.15,
+                "avg30-holo": 0.14
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:10.139Z",
+                "reverse-holofoil": {
+                  "productId": 534142,
+                  "lowPrice": 0.08,
+                  "midPrice": 0.27,
+                  "highPrice": 14.66,
+                  "marketPrice": 0.27,
+                  "directLowPrice": 0.14
+                },
+                "normal": {
+                  "productId": 534142,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.2,
+                  "highPrice": 20,
+                  "marketPrice": 0.19,
+                  "directLowPrice": 0.05
+                }
+              }
+            }
+          }
+        ],
+        "dexId": [
+          4
+        ],
+        "hp": 70,
+        "types": [
+          "Fire"
+        ],
+        "description": "From the time it is born, a flame burns at the tip of its tail. Its life would end if the flame were to go out.",
+        "stage": "Basic",
+        "attacks": [
+          {
+            "cost": [
+              "Fire"
+            ],
+            "name": "Blazing Destruction",
+            "effect": "Discard a Stadium in play."
+          },
+          {
+            "cost": [
+              "Fire",
+              "Fire"
+            ],
+            "name": "Steady Firebreathing",
+            "damage": 30
+          }
+        ],
+        "weaknesses": [
+          {
+            "type": "Water",
+            "value": "×2"
+          }
+        ],
+        "retreat": 1,
+        "regulationMark": "G",
+        "legal": {
+          "standard": false,
+          "expanded": true
+        },
+        "updated": "2026-08-16T13:04:55+01:00",
+        "pricing": {
+          "cardmarket": {
+            "updated": "2026-10-31T22:54:32.850Z",
+            "unit": "EUR",
+            "idProduct": 751533,
+            "avg": 0.07,
+            "low": 0.02,
+            "trend": 0.05,
+            "avg1": 0.02,
+            "avg7": 0.05,
+            "avg30": 0.07,
+            "avg-holo": 0.14,
+            "low-holo": 0.02,
+            "trend-holo": 0.18,
+            "avg1-holo": 0.1,
+            "avg7-holo": 0.15,
+            "avg30-holo": 0.14
+          },
+          "tcgplayer": {
+            "unit": "USD",
+            "updated": "2026-10-14T22:55:10.139Z",
+            "reverse-holofoil": {
+              "productId": 534142,
+              "lowPrice": 0.08,
+              "midPrice": 0.27,
+              "highPrice": 14.66,
+              "marketPrice": 0.27,
+              "directLowPrice": 0.14
+            },
+            "normal": {
+              "productId": 534142,
+              "lowPrice": 0.01,
+              "midPrice": 0.2,
+              "highPrice": 20,
+              "marketPrice": 0.19,
+              "directLowPrice": 0.05
+            }
+          }
+        }
+      },
+      "product": {
+        "productId": 641613,
+        "name": "Charmander - 007/091 (Cosmos Holo)",
+        "cleanName": "Charmander 007 091 Cosmos Holo",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/641613_200w.jpg",
+        "categoryId": 3,
+        "groupId": 2374,
+        "url": "https://www.tcgplayer.com/product/641613/pokemon-miscellaneous-cards-and-products-charmander-007-091-cosmos-holo",
+        "modifiedOn": "2025-07-07T15:06:41.823",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "007/091"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Common"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Fire"
+          },
+          {
+            "name": "HP",
+            "displayName": "HP",
+            "value": "70"
+          },
+          {
+            "name": "Stage",
+            "displayName": "Stage",
+            "value": "Basic"
+          },
+          {
+            "name": "Attack 1",
+            "displayName": "Attack 1",
+            "value": "[R] Blazing Destruction<br>Discard a Stadium in play."
+          },
+          {
+            "name": "Attack 2",
+            "displayName": "Attack 2",
+            "value": "[RR] Steady Firebreathing (30)"
+          },
+          {
+            "name": "Weakness",
+            "displayName": "Weakness",
+            "value": "Wx2"
+          },
+          {
+            "name": "Resistance",
+            "displayName": "Resistance",
+            "value": "None"
+          },
+          {
+            "name": "RetreatCost",
+            "displayName": "Retreat Cost",
+            "value": "1"
+          }
+        ]
+      },
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/sv04.5-007",
+      "productURL": "https://tcgcsv.com/tcgplayer/3/2374/products",
+      "contentSHA256": "c5e6441916e7443970725885b0e1a68cb62696366d4a5718bb46ebcabcdb98ed"
+    },
+    {
+      "catalogID": "sv04.5-008",
+      "variantID": "cosmos",
+      "source": {
+        "category": "Pokemon",
+        "id": "sv04.5-008",
+        "illustrator": "Tonji Matsuno",
+        "image": "https://assets.tcgdex.net/en/sv/sv04.5/008",
+        "localId": "008",
+        "name": "Charmeleon",
+        "rarity": "Uncommon",
+        "set": {
+          "cardCount": {
+            "official": 91,
+            "total": 245
+          },
+          "id": "sv04.5",
+          "logo": "https://assets.tcgdex.net/en/sv/sv04.5/logo",
+          "name": "Paldean Fates",
+          "symbol": "https://assets.tcgdex.net/univ/sv/sv04.5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 751534,
+              "tcgplayer": 534143,
+              "cardtrader": 274192
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 751534,
+                "avg": 0.05,
+                "low": 0.02,
+                "trend": 0.04,
+                "avg1": 0.05,
+                "avg7": 0.05,
+                "avg30": 0.07,
+                "avg-holo": 0.23,
+                "low-holo": 0.02,
+                "trend-holo": 0.24,
+                "avg1-holo": 0.12,
+                "avg7-holo": 0.22,
+                "avg30-holo": 0.23
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:10.139Z",
+                "reverse-holofoil": {
+                  "productId": 534143,
+                  "lowPrice": 0.07,
+                  "midPrice": 0.3,
+                  "highPrice": 45,
+                  "marketPrice": 0.28,
+                  "directLowPrice": null
+                },
+                "normal": {
+                  "productId": 534143,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.23,
+                  "highPrice": 25,
+                  "marketPrice": 0.24,
+                  "directLowPrice": 0.09
+                }
+              }
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "foil": "cosmos",
+            "thirdParty": {
+              "cardmarket": 833342
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 833342,
+                "avg": 0.45,
+                "low": 0.02,
+                "trend": 0.35,
+                "avg1": 0.63,
+                "avg7": 0.54,
+                "avg30": 0.42,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": null
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 751534,
+              "tcgplayer": 534143,
+              "cardtrader": 274192
+            },
+            "variantId": "cm4kqul3x1bwlz1f",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 751534,
+                "avg": 0.05,
+                "low": 0.02,
+                "trend": 0.04,
+                "avg1": 0.05,
+                "avg7": 0.05,
+                "avg30": 0.07,
+                "avg-holo": 0.23,
+                "low-holo": 0.02,
+                "trend-holo": 0.24,
+                "avg1-holo": 0.12,
+                "avg7-holo": 0.22,
+                "avg30-holo": 0.23
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:10.139Z",
+                "reverse-holofoil": {
+                  "productId": 534143,
+                  "lowPrice": 0.07,
+                  "midPrice": 0.3,
+                  "highPrice": 45,
+                  "marketPrice": 0.28,
+                  "directLowPrice": null
+                },
+                "normal": {
+                  "productId": 534143,
+                  "lowPrice": 0.01,
+                  "midPrice": 0.23,
+                  "highPrice": 25,
+                  "marketPrice": 0.24,
+                  "directLowPrice": 0.09
+                }
+              }
+            }
+          }
+        ],
+        "dexId": [
+          5
+        ],
+        "hp": 90,
+        "types": [
+          "Fire"
+        ],
+        "evolveFrom": "Charmander",
+        "description": "If it becomes agitated during battle, it spouts intense flames, incinerating its surroundings.",
+        "stage": "Stage1",
+        "abilities": [
+          {
+            "type": "Ability",
+            "name": "Flare Veil",
+            "effect": "Prevent all effects of attacks used by your opponent's Pokémon done to this Pokémon. (Damage is not an effect.)"
+          }
+        ],
+        "attacks": [
+          {
+            "cost": [
+              "Fire",
+              "Fire"
+            ],
+            "name": "Combustion",
+            "damage": 50
+          }
+        ],
+        "weaknesses": [
+          {
+            "type": "Water",
+            "value": "×2"
+          }
+        ],
+        "retreat": 2,
+        "regulationMark": "G",
+        "legal": {
+          "standard": false,
+          "expanded": true
+        },
+        "updated": "2026-08-16T13:04:55+01:00",
+        "pricing": {
+          "cardmarket": {
+            "updated": "2026-10-31T22:54:32.850Z",
+            "unit": "EUR",
+            "idProduct": 751534,
+            "avg": 0.05,
+            "low": 0.02,
+            "trend": 0.04,
+            "avg1": 0.05,
+            "avg7": 0.05,
+            "avg30": 0.07,
+            "avg-holo": 0.23,
+            "low-holo": 0.02,
+            "trend-holo": 0.24,
+            "avg1-holo": 0.12,
+            "avg7-holo": 0.22,
+            "avg30-holo": 0.23
+          },
+          "tcgplayer": {
+            "unit": "USD",
+            "updated": "2026-10-14T22:55:10.139Z",
+            "reverse-holofoil": {
+              "productId": 534143,
+              "lowPrice": 0.07,
+              "midPrice": 0.3,
+              "highPrice": 45,
+              "marketPrice": 0.28,
+              "directLowPrice": null
+            },
+            "normal": {
+              "productId": 534143,
+              "lowPrice": 0.01,
+              "midPrice": 0.23,
+              "highPrice": 25,
+              "marketPrice": 0.24,
+              "directLowPrice": 0.09
+            }
+          }
+        }
+      },
+      "product": {
+        "productId": 641614,
+        "name": "Charmeleon - 008/091 (Cosmos Holo)",
+        "cleanName": "Charmeleon 008 091 Cosmos Holo",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/641614_200w.jpg",
+        "categoryId": 3,
+        "groupId": 2374,
+        "url": "https://www.tcgplayer.com/product/641614/pokemon-miscellaneous-cards-and-products-charmeleon-008-091-cosmos-holo",
+        "modifiedOn": "2025-07-07T15:10:36.237",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "008/091"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Uncommon"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Fire"
+          },
+          {
+            "name": "HP",
+            "displayName": "HP",
+            "value": "90"
+          },
+          {
+            "name": "Stage",
+            "displayName": "Stage",
+            "value": "Stage 1"
+          },
+          {
+            "name": "CardText",
+            "displayName": "Card Text",
+            "value": "<strong>Ability — Flare Veil</strong>\r\n<br>Prevent all effects of attacks used by your opponent's Pokémon done to this Pokémon. (Damage is not an effect.)"
+          },
+          {
+            "name": "Attack 1",
+            "displayName": "Attack 1",
+            "value": "[RR] Combustion (50)"
+          },
+          {
+            "name": "Weakness",
+            "displayName": "Weakness",
+            "value": "Wx2"
+          },
+          {
+            "name": "Resistance",
+            "displayName": "Resistance",
+            "value": "None"
+          },
+          {
+            "name": "RetreatCost",
+            "displayName": "Retreat Cost",
+            "value": "2"
+          }
+        ]
+      },
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/sv04.5-008",
+      "productURL": "https://tcgcsv.com/tcgplayer/3/2374/products",
+      "contentSHA256": "1a7e5821bb5d4967b59d21927821180b0e26066606710292dd2fbe4197277979"
+    },
+    {
+      "catalogID": "me03-050",
+      "variantID": "cosmos",
+      "source": {
+        "category": "Pokemon",
+        "id": "me03-050",
+        "illustrator": "Masako Tomii",
+        "image": "https://assets.tcgdex.net/en/me/me03/050",
+        "localId": "050",
+        "name": "Gengar",
+        "rarity": "Rare",
+        "set": {
+          "cardCount": {
+            "official": 88,
+            "total": 124
+          },
+          "id": "me03",
+          "logo": "https://assets.tcgdex.net/en/me/me03/logo",
+          "name": "Perfect Order",
+          "symbol": "https://assets.tcgdex.net/univ/me/me03/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 684431,
+              "cardmarket": 877465
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 877465,
+                "avg": 0.42,
+                "low": 0.02,
+                "trend": 0.44,
+                "avg1": 0.32,
+                "avg7": 0.35,
+                "avg30": 0.42,
+                "avg-holo": 0.86,
+                "low-holo": 0.02,
+                "trend-holo": 0.68,
+                "avg1-holo": 0.35,
+                "avg7-holo": 0.63,
+                "avg30-holo": 0.72
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:13.679Z",
+                "holofoil": {
+                  "productId": 684431,
+                  "lowPrice": 0.05,
+                  "midPrice": 0.68,
+                  "highPrice": 9999,
+                  "marketPrice": 0.62,
+                  "directLowPrice": 1.48
+                },
+                "reverse-holofoil": {
+                  "productId": 684431,
+                  "lowPrice": 0.02,
+                  "midPrice": 0.95,
+                  "highPrice": 50,
+                  "marketPrice": 0.79,
+                  "directLowPrice": 0.87
+                }
+              }
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 684431,
+              "cardmarket": 877465
+            },
+            "variantId": "cm4kqul3x1bwlz1f",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 877465,
+                "avg": 0.42,
+                "low": 0.02,
+                "trend": 0.44,
+                "avg1": 0.32,
+                "avg7": 0.35,
+                "avg30": 0.42,
+                "avg-holo": 0.86,
+                "low-holo": 0.02,
+                "trend-holo": 0.68,
+                "avg1-holo": 0.35,
+                "avg7-holo": 0.63,
+                "avg30-holo": 0.72
+              },
+              "tcgplayer": {
+                "unit": "USD",
+                "updated": "2026-10-14T22:55:13.679Z",
+                "holofoil": {
+                  "productId": 684431,
+                  "lowPrice": 0.05,
+                  "midPrice": 0.68,
+                  "highPrice": 9999,
+                  "marketPrice": 0.62,
+                  "directLowPrice": 1.48
+                },
+                "reverse-holofoil": {
+                  "productId": 684431,
+                  "lowPrice": 0.02,
+                  "midPrice": 0.95,
+                  "highPrice": 50,
+                  "marketPrice": 0.79,
+                  "directLowPrice": 0.87
+                }
+              }
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "player-rewards-program"
+            ],
+            "thirdParty": {
+              "cardmarket": 894139,
+              "tcgplayer": 704418
+            },
+            "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 894139,
+                "avg": 4.14,
+                "low": 1,
+                "trend": 3.64,
+                "avg1": 0.8,
+                "avg7": 3.73,
+                "avg30": 3.72,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": null
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "foil": "cosmos",
+            "thirdParty": {
+              "cardmarket": 898805,
+              "tcgplayer": 709697
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 898805,
+                "avg": 5.1,
+                "low": 0.93,
+                "trend": 3.02,
+                "avg1": 4.73,
+                "avg7": 3.91,
+                "avg30": 5.24,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": null
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "stamp": [
+              "gamestop"
+            ],
+            "foil": "cosmos",
+            "thirdParty": {
+              "cardmarket": 877703,
+              "tcgplayer": 685555
+            },
+            "variantId": "1k6bkhde1s16d5eofz5bj2kjufs2t",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 877703,
+                "avg": 167.5,
+                "low": 150,
+                "trend": 218.8,
+                "avg1": 175,
+                "avg7": 282.15,
+                "avg30": 204.63,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": null
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "stamp": [
+              "eb-games"
+            ],
+            "foil": "cosmos",
+            "thirdParty": {
+              "cardmarket": 881891,
+              "tcgplayer": 686505
+            },
+            "variantId": "1k6bkhde1s16d5eofmz2adfjxrxwo",
+            "pricing": {
+              "cardmarket": {
+                "updated": "2026-10-31T22:54:32.850Z",
+                "unit": "EUR",
+                "idProduct": 881891,
+                "avg": 172.5,
+                "low": 69.99,
+                "trend": 133.64,
+                "avg1": 172.5,
+                "avg7": 121.07,
+                "avg30": 104.26,
+                "avg-holo": null,
+                "low-holo": null,
+                "trend-holo": 0,
+                "avg1-holo": null,
+                "avg7-holo": null,
+                "avg30-holo": null
+              },
+              "tcgplayer": null
+            }
+          }
+        ],
+        "dexId": [
+          94
+        ],
+        "hp": 130,
+        "types": [
+          "Darkness"
+        ],
+        "evolveFrom": "Haunter",
+        "stage": "Stage2",
+        "abilities": [
+          {
+            "type": "Ability",
+            "name": "Infinite Shadow",
+            "effect": "If this Pokémon is Knocked Out by damage from an attack from your opponent's Pokémon, put it into your hand instead of the discard pile. (Discard all attached cards.)"
+          }
+        ],
+        "attacks": [
+          {
+            "cost": [
+              "Darkness"
+            ],
+            "name": "Mind Jack",
+            "effect": "This attack does 30 more damage for each of your opponent's Benched Pokémon.",
+            "damage": "10+"
+          }
+        ],
+        "weaknesses": [
+          {
+            "type": "Fighting",
+            "value": "×2"
+          }
+        ],
+        "retreat": 1,
+        "regulationMark": "J",
+        "legal": {
+          "standard": true,
+          "expanded": true
+        },
+        "updated": "2026-08-21T15:29:53+01:00",
+        "pricing": {
+          "cardmarket": {
+            "updated": "2026-10-31T22:54:32.850Z",
+            "unit": "EUR",
+            "idProduct": 877465,
+            "avg": 0.42,
+            "low": 0.02,
+            "trend": 0.44,
+            "avg1": 0.32,
+            "avg7": 0.35,
+            "avg30": 0.42,
+            "avg-holo": 0.86,
+            "low-holo": 0.02,
+            "trend-holo": 0.68,
+            "avg1-holo": 0.35,
+            "avg7-holo": 0.63,
+            "avg30-holo": 0.72
+          },
+          "tcgplayer": {
+            "unit": "USD",
+            "updated": "2026-10-14T22:55:13.679Z",
+            "holofoil": {
+              "productId": 684431,
+              "lowPrice": 0.05,
+              "midPrice": 0.68,
+              "highPrice": 9999,
+              "marketPrice": 0.62,
+              "directLowPrice": 1.48
+            },
+            "reverse-holofoil": {
+              "productId": 684431,
+              "lowPrice": 0.02,
+              "midPrice": 0.95,
+              "highPrice": 50,
+              "marketPrice": 0.79,
+              "directLowPrice": 0.87
+            }
+          }
+        }
+      },
+      "product": {
+        "productId": 709697,
+        "name": "Gengar - 050/088 (Cosmos Holo)",
+        "cleanName": "Gengar 050 088 Cosmos Holo",
+        "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/709697_200w.jpg",
+        "categoryId": 3,
+        "groupId": 2289,
+        "url": "https://www.tcgplayer.com/product/709697/pokemon-blister-exclusives-gengar-050-088-cosmos-holo",
+        "modifiedOn": "2026-08-03T17:06:39.44",
+        "imageCount": 1,
+        "presaleInfo": {
+          "isPresale": false,
+          "releasedOn": null,
+          "note": null
+        },
+        "extendedData": [
+          {
+            "name": "Number",
+            "displayName": "Card Number",
+            "value": "050/088"
+          },
+          {
+            "name": "Rarity",
+            "displayName": "Rarity",
+            "value": "Rare"
+          },
+          {
+            "name": "Card Type",
+            "displayName": "Card Type",
+            "value": "Darkness"
+          },
+          {
+            "name": "HP",
+            "displayName": "HP",
+            "value": "130"
+          },
+          {
+            "name": "Stage",
+            "displayName": "Stage",
+            "value": "Stage 2"
+          },
+          {
+            "name": "CardText",
+            "displayName": "Card Text",
+            "value": "<strong>Ability: Infinite Shadow</strong> If this Pokémon is Knocked Out by damage from an attack from your opponent's Pokémon, put it into your hand instead of the discard pile. <em>(Discard all attached cards.)</em>"
+          },
+          {
+            "name": "Attack 1",
+            "displayName": "Attack 1",
+            "value": "[D] Mind Jack (10+)<br> This attack does 30 more damage for each of your opponent's Benched Pokémon."
+          },
+          {
+            "name": "Weakness",
+            "displayName": "Weakness",
+            "value": "Fx2"
+          },
+          {
+            "name": "RetreatCost",
+            "displayName": "Retreat Cost",
+            "value": "1"
+          }
+        ]
+      },
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/me03-050",
+      "productURL": "https://tcgcsv.com/tcgplayer/3/2289/products",
+      "contentSHA256": "a30ab2be54da8abefacb30ce08a72c60892e2defb61ddb13226f20f4220e454c"
+    }
+  ],
+  "boundedRetailFamily": {
+    "name": "Enhanced 2-Pack Blister Pack [Gengar, Marshadow, Team Rocket's Mimikyu]",
+    "retailProductID": 714361,
+    "retailProductURL": "https://mp-search-api.tcgplayer.com/v1/product/714361/details",
+    "retailContents": "Expand your collection with foil Pokémon TCG cards featuring Gengar, Marshadow, and Team Rocket's Mimikyu—plus a plastic coin and two Pokémon TCG booster packs!\r\n<br><br><em>(Pokemon TCG booster packs and contents vary by product.)</em>",
+    "members": [
+      {
+        "catalogID": "me03-050",
+        "variantID": "cosmos",
+        "productID": 709697
+      },
+      {
+        "catalogID": "me05-040",
+        "variantID": "cosmos",
+        "productID": 714065
+      },
+      {
+        "catalogID": "me02.5-097",
+        "variantID": "cosmos",
+        "productID": 714066
+      }
+    ],
+    "publicAggregateQuoteObservation": {
+      "sourceURL": "https://tcgcsv.com/tcgplayer/3/2289/prices",
+      "upstreamBuild": "2026-10-31T20:05:59+0000",
+      "capturedAt": "2026-11-01T19:58:18.944198+00:00",
+      "boundary": "Recorded aggregate market observation only, not condition-specific, not an app/provider acceptance or a holding valuation.",
+      "rows": [
+        {
+          "productId": 709697,
+          "lowPrice": 5.41,
+          "midPrice": 7.89,
+          "highPrice": 25.0,
+          "marketPrice": 7.43,
+          "directLowPrice": null,
+          "subTypeName": "Holofoil"
+        },
+        {
+          "productId": 714065,
+          "lowPrice": 0.1,
+          "midPrice": 0.35,
+          "highPrice": 5.0,
+          "marketPrice": 0.32,
+          "directLowPrice": null,
+          "subTypeName": "Holofoil"
+        },
+        {
+          "productId": 714066,
+          "lowPrice": 0.15,
+          "midPrice": 0.68,
+          "highPrice": 83.0,
+          "marketPrice": 0.59,
+          "directLowPrice": null,
+          "subTypeName": "Holofoil"
+        }
+      ]
+    }
+  }
+}

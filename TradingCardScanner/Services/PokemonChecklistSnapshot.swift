@@ -14,14 +14,21 @@ enum PokemonChecklistSnapshotVersion {
 /// Read-time repair of reviewed identities only. Source resources and provider
 /// fingerprints remain untouched, including when an unchanged probe skips a crawl.
 enum PokemonChecklistReviewedProjection {
-    static let setIDs: Set<String> = ["me02.5", "sma", "xya"]
+    static let setIDs: Set<String> = ["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"]
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var emitted = Set<String>()
         let reviewed = cards.flatMap { base -> [CatalogCardSummary] in
             guard base.game == .pokemon, setIDs.contains(base.setID.providerID),
-                  base.pokemonPrintRun == nil,
-                  let variants = PokemonVariantRules.reviewedVariants(cardID: base.providerID) else { return [base] }
+                  base.pokemonPrintRun == nil else { return [base] }
+            let variants: [PhysicalVariant]
+            if let reviewed = PokemonVariantRules.reviewedVariants(cardID: base.providerID) {
+                variants = reviewed
+            } else if let parallel = PokemonReviewedParallelCatalog.entry(cardID: base.providerID),
+                      parallel.matches(name: base.name, setID: base.setID.providerID, number: base.collectorNumber) {
+                variants = ScanText.unique(cards.filter { $0.providerID == base.providerID && $0.setID == base.setID }
+                    .compactMap(\.masterSetVariant) + [PokemonReviewedParallelCatalog.variant])
+            } else { return [base] }
             guard emitted.insert(base.providerID).inserted else { return [] }
             return PokemonMasterSetDefinition.requiredSlots(for: variants, setProviderID: base.setID.providerID).map { slot in
                 var value = cards.first {

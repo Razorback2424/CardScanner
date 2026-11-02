@@ -3262,6 +3262,12 @@ enum PokemonMasterSetDefinition {
     /// versions have their own IDs and never inherit their base finish's scope.
     static func isPackVariant(_ variant: PhysicalVariant, setProviderID: String? = nil) -> Bool {
         if isPackReversePattern(variant, setProviderID: setProviderID) { return true }
+        // Pokémon GO's numbered Bidoof includes both ordinary Reverse and the
+        // peelable Ditto object. Qualified identity must not demote pack cards.
+        if setProviderID?.lowercased() == "swsh10.5",
+           [PokemonReviewedPhysicalObjects.plainReverse, PokemonReviewedPhysicalObjects.peelableDitto].contains(variant) {
+            return true
+        }
         switch variant.id {
         case "normal", "holo", "reverse", "pokeBall", "masterBall",
              "duskBall", "friendBall", "quickBall", "loveBall": return true

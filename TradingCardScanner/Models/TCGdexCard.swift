@@ -133,12 +133,20 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         for choice in stampChoices where !result.contains(choice.variant) {
             result.append(choice.variant)
         }
+        if PokemonReviewedParallelCatalog.entry(cardID: id)?.matches(self) == true,
+           !result.contains(PokemonReviewedParallelCatalog.variant) {
+            result.append(PokemonReviewedParallelCatalog.variant)
+        }
         return result
     }
 
     /// The `variants_detailed` entry describing one physical object, if TCGdex
     /// published one for it.
     func detailedVariant(for variant: PhysicalVariant) -> TCGdexDetailedVariant? {
+        guard !PokemonVariantRules.requiresPhysicalReview(cardID: id, variant: variant) else { return nil }
+        if PokemonReviewedPhysicalObjects.all.contains(variant) {
+            return variantsDetailed?.first { PokemonReviewedPhysicalObjects.variant(for: $0, on: self) == variant }
+        }
         if PokemonCatalogStampVariant.decode(variant.id) != nil {
             return variantsDetailed?.first { $0.isStandardEnglish && $0.stampedPhysicalVariant?.id == variant.id }
         }

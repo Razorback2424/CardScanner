@@ -20,9 +20,34 @@ enum PriceObservationKind: String, Codable, Hashable, Sendable {
     /// repaired, not market performance.
     case sourceTransition
     /// The app is withdrawing a value it should not have held — a price found
-    /// to have been attached to the wrong market variant. The only thing that
-    /// can remove a value.
+    /// to have been attached to the wrong market variant.
     case explicitInvalidation
+    /// A previously learned deadline elapsed; receivedAt is the deadline,
+    /// effectiveAt is when the deadline evidence was learned (not a sale date).
+    case eligibilityExpiry
+    /// A physical-identity rule became known locally at receivedAt.
+    case physicalReview
+    /// Forward compatibility: unfamiliar semantics cannot reinstate a value.
+    case unrecognized
+
+    var withdrawsValue: Bool {
+        switch self {
+        case .explicitInvalidation, .eligibilityExpiry, .physicalReview, .unrecognized: return true
+        default: return false
+        }
+    }
+
+    /// Scheduled expiry precedes a genuine same-instant recovery. Explicit
+    /// withdrawals and review rules dominate a quote at the same instant.
+    var orderingPriority: Int {
+        switch self {
+        case .eligibilityExpiry: return 0
+        case .marketUpdate, .sourceRestatement, .sourceTransition: return 1
+        case .explicitInvalidation: return 2
+        case .physicalReview: return 3
+        case .unrecognized: return 4
+        }
+    }
 }
 
 /// One append-only entry in the price observation log.
@@ -47,8 +72,8 @@ final class PriceObservation {
     var instrumentKey: String = ""
     var kindRaw: String = ""
 
-    /// `nil` has exactly one meaning in this table: an `explicitInvalidation`
-    /// withdrawing a value. It never means "the provider was unreachable" and
+    /// `nil` means a withdrawal (explicit or local eligibility). It never
+    /// means "the provider was unreachable" and
     /// never means "no listing exists" — those write no row at all.
     var amountUSDTenThousandths: Int64?
     var currencyCode: String = "USD"
@@ -97,7 +122,7 @@ final class PriceObservation {
     }
 
     var kind: PriceObservationKind {
-        PriceObservationKind(rawValue: kindRaw) ?? .marketUpdate
+        PriceObservationKind(rawValue: kindRaw) ?? .unrecognized
     }
 
     var source: PriceSource? { PriceSource(rawValue: sourceRaw) }
@@ -111,10 +136,19 @@ final class PriceObservation {
     /// observations remain visible to diagnostics but cannot enter the USD
     /// valuation.
     var effectiveUSDAmount: Money? {
-        PortfolioPriceEligibility.eligibleUnitPrice(
+        guard !kind.withdrawsValue else { return nil }
+        return PortfolioPriceEligibility.eligibleUnitPrice(
             amount: amount?.doubleValue,
             currencyCode: currencyCode
         )
+    }
+
+    static func isNewer(_ candidate: PriceObservation, than incumbent: PriceObservation) -> Bool {
+        if candidate.receivedAt != incumbent.receivedAt { return candidate.receivedAt > incumbent.receivedAt }
+        if candidate.kind.orderingPriority != incumbent.kind.orderingPriority {
+            return candidate.kind.orderingPriority > incumbent.kind.orderingPriority
+        }
+        return candidate.id.uuidString > incumbent.id.uuidString
     }
 
     /// The value-setting content of this row, as the pure ingestion logic sees

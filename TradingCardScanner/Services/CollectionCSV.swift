@@ -464,7 +464,8 @@ enum CollectionCSV {
             .compactMapValues(PriceStore.authoritativeRecord(in:))
         return diagnosticExport(
             cards.filter { card in
-                PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
+                PokemonReviewedPhysicalObjects.requiresReview(card)
+                    || PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
             },
             priceRecords: priceRecords,
             diagnostic: { card, record in
@@ -523,7 +524,7 @@ enum CollectionCSV {
                 String(card.quantity),
                 diagnostic(card, record),
                 priceStatus(record),
-                record?.effectiveUnitMarketPriceUSD.map { String($0) } ?? "",
+                PokemonReviewedPhysicalObjects.requiresReview(card) ? "" : (record?.effectiveUnitMarketPriceUSD.map { String($0) } ?? ""),
                 record?.source?.label ?? "",
                 record?.sourceVariantID ?? "",
                 record?.lastCheckedAt.map { formatter.string(from: $0) } ?? "",
@@ -1402,9 +1403,10 @@ enum CollectionCSV {
             rarity: nil,
             imageURL: nil,
             thumbnailURL: nil,
-            // A slab has no raw finish and a sealed box has no finish at all.
-            // Carrying one would put a "Reverse Holo" badge on a booster box.
-            variant: (graded != nil || isSealed) ? nil : variant,
+            // A slab still has the underlying card's stated physical finish.
+            // Empty/unknown evidence is never recovered from market listings.
+            // Sealed products have no physical card finish.
+            variant: isSealed ? nil : variant,
             importedMarketPriceUSD: importedPrice?.amount,
             importedPriceAsOf: importedPrice?.asOf,
             quantity: quantity,
@@ -1515,6 +1517,7 @@ enum CollectionCSV {
                     "\(company.rawValue)|\(grade?.identityFragment ?? "")"
                 } ?? "unknown"
                 var base = "graded:\(baseKey)#\(fragment)"
+                if let resolvedVariant { base += ":finish:\(resolvedVariant.id)" }
                 if game == .pokemon, let resolvedPrintRun {
                     base += ":run:\(resolvedPrintRun.rawValue)"
                 }

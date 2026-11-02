@@ -142,6 +142,25 @@ enum CardPricing {
         }
         let detailed = exactDetailedVariants(on: pokemon, variant: variant, printRun: printRun)
         let products = detailed.reduce(into: Set<Int>()) { $0.formUnion(productIDs(in: $1)) }
+        if variant == PokemonReviewedParallelCatalog.variant,
+           let reviewed = PokemonReviewedParallelCatalog.entry(cardID: pokemon.id) {
+            guard printRun == nil || printRun == .unlimited, reviewed.matches(pokemon) else { return nil }
+            // A later conflicting provider handle is new evidence to review,
+            // not permission to choose between products. Missing handles are
+            // exactly the gap this reviewed binding fills.
+            guard products.isEmpty || (products == [reviewed.productID]
+                && detailed.allSatisfy({ productIDs(in: $0) == products })) else { return nil }
+            return reviewed.productID
+        }
+        if variant == .holo, let reviewed = PokemonTCGCSVMapping.byCardID[pokemon.id] {
+            guard printRun == nil || printRun == .unlimited, reviewed.matches(pokemon) else { return nil }
+            // Reuse the existing reviewed identity when the daily feed is
+            // unconfigured/unavailable. The paid fallback can ask for this
+            // exact product instead of searching a differently grouped set.
+            guard products.isEmpty || (products == [reviewed.productID]
+                && detailed.allSatisfy({ productIDs(in: $0) == products })) else { return nil }
+            return reviewed.productID
+        }
         if products.count == 1, detailed.allSatisfy({ productIDs(in: $0) == products }) {
             return products.first
         }
@@ -165,6 +184,9 @@ enum CardPricing {
     ) -> [TCGdexDetailedVariant] {
         (card.variantsDetailed ?? []).filter {
             guard $0.isStandardEnglish else { return false }
+            if let object = PokemonReviewedPhysicalObjects.variant(for: $0, on: card) {
+                return variant == object && printRun != .firstEdition && printRun != .shadowless
+            }
             if printRun == .firstEdition {
                 return $0.isFirstEdition && $0.genericStamps.isEmpty
                     && (variant == .firstEdition || $0.physicalVariant == variant)

@@ -25,12 +25,14 @@ enum GradedVariantBinding {
         treatmentIDs: [String],
         at fetchedAt: Date
     ) throws -> GradedVariantBindingReceipt {
-        let finishMatches = row.variant.map {
-            GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: row.pokemonPrintRun,
-                isJapanese: ProductCatalogIdentity.game(for: row.cardGame,
-                    catalogID: row.catalogProviderID ?? row.underlyingPrintingID) == .pokemonJapan)
-        } ?? (row.justTCGVariantID == variant.id)
-        guard finishMatches else {
+        let catalogID = row.catalogProviderID ?? row.underlyingPrintingID
+        guard let company = row.gradingCompany, let grade = row.cardGrade,
+              ScannedGradedResolver.matchingVariant(in: [variant],
+                for: .init(company: company, grade: grade, certificationNumber: nil, labelCardText: []),
+                finish: row.variant, printRun: row.pokemonPrintRun,
+                isJapanese: ProductCatalogIdentity.game(for: row.cardGame, catalogID: catalogID) == .pokemonJapan,
+                boundVariantID: row.variant == nil ? row.justTCGVariantID : nil,
+                catalogID: catalogID) != nil else {
             return GradedVariantBindingReceipt(quote: .unavailable(.justTCG), priceKey: row.priceKey, wasAccepted: false)
         }
         if let run = row.pokemonPrintRun,
@@ -54,6 +56,7 @@ enum GradedVariantBinding {
         }
         row.justTCGVariantID = variant.id
         row.justTCGCardID = variant.cardID ?? row.justTCGCardID
+        row.tcgplayerProductID = variant.verifiedProductID ?? row.tcgplayerProductID
         row.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
         row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
 
@@ -89,7 +92,7 @@ enum GradedVariantBinding {
         )
     }
 
-    private static func storeVariantQuote(
+    static func storeVariantQuote(
         _ variant: GradedVariant,
         game: CardGame,
         printingID: String,
@@ -98,7 +101,27 @@ enum GradedVariantBinding {
         store: PriceStore,
         at fetchedAt: Date
     ) -> GradedVariantBindingReceipt {
-        let quote: PriceLookup = if let amount = variant.marketPriceUSD {
+        let priceKey = PriceRecord.key(game: game, printingID: printingID,
+            variantID: variantID, treatmentIDs: treatmentIDs)
+        let priorEvidence = store.record(forKey: priceKey)?.exactGradedQuoteEvidence
+        if let prior = priorEvidence,
+           prior.variantID == variant.id {
+            let staleSale = variant.quoteLifecycle?.lastSaleAt.map { incoming in
+                prior.lifecycle.lastSaleAt.map { incoming < $0 } ?? false
+            } ?? false
+            let staleUpdate = variant.updatedAt.map { incoming in
+                prior.sourceUpdatedAt.map { incoming < $0 } ?? false
+            } ?? false
+            if prior.checkedAt > fetchedAt || staleSale || staleUpdate {
+                return .init(quote: .unavailable(.justTCG), priceKey: priceKey, wasAccepted: false)
+            }
+        }
+        // An entry path with no lifecycle fields supplies no evidence that a
+        // known deadline disappeared. Preserve it for this exact listing.
+        let lifecycle = variant.quoteLifecycle
+            ?? (priorEvidence?.variantID == variant.id ? priorEvidence?.lifecycle : nil)
+        let quote: PriceLookup = if let amount = variant.marketPriceUSD,
+            lifecycle?.withdrawsCurrentQuote(at: fetchedAt) != true {
             .price(
                 NormalizedPrice(
                     unitMarketPriceUSD: amount,
@@ -112,12 +135,10 @@ enum GradedVariantBinding {
         } else {
             .unavailable(.justTCG)
         }
-        let priceKey = PriceRecord.key(
-            game: game,
-            printingID: printingID,
-            variantID: variantID,
-            treatmentIDs: treatmentIDs
-        )
+        if store.enqueueGradedQuote(variant, game: game, printingID: printingID, variantID: variantID,
+                                    treatmentIDs: treatmentIDs, at: fetchedAt) {
+            return .init(quote: quote, priceKey: priceKey, wasAccepted: true)
+        }
         let wasAccepted = store.store(
             quote,
             game: game,
@@ -129,12 +150,17 @@ enum GradedVariantBinding {
         )
         store.updateRecordMetadata(forKey: priceKey) { record in
             guard record.fetchedAt.map({ $0 <= fetchedAt }) ?? true else { return }
-            if wasAccepted, variant.marketPriceUSD != nil, record.fetchedAt == fetchedAt {
+            if wasAccepted, case .price = quote, record.fetchedAt == fetchedAt {
                 record.justTCGFetchedAt = fetchedAt
             }
             record.marketVariantID = variant.id
-            record.gradedPrinting = variant.printing
+            record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        }
+        if wasAccepted, let lifecycle {
+            store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
+                checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt
+                    ?? (variant.quoteLifecycle == nil ? priorEvidence?.sourceUpdatedAt : nil)), forKey: priceKey)
         }
         return GradedVariantBindingReceipt(
             quote: quote,
@@ -1605,7 +1631,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     requiresFullResponse: intent == .manual || !candidate.target.hasPrice
                         || candidate.target.needsArtwork,
                     exactPhysicalProductID: candidate.exactPhysicalProductID,
-                    pokemonPrintRun: candidate.target.pokemonPrintRun
+                    pokemonPrintRun: candidate.target.pokemonPrintRun,
+                    isJapanese: ProductCatalogIdentity.game(for: candidate.target.game,
+                        catalogID: candidate.card?.providerID ?? candidate.target.catalogPrintingID ?? candidate.target.printingID) == .pokemonJapan
                 )
             )
         }
@@ -1828,7 +1856,10 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         var byCard: [String: [PriceTarget]] = [:]
         for slab in slabs {
             guard let identity = slab.gradedIdentity else { continue }
-            byCard[identity.groupingKey(game: slab.game), default: []].append(slab)
+            let handle = slab.marketVariantID.map { variant in
+                slab.justTCGCardID.flatMap { $0.isEmpty ? nil : $0 }.map { "card:\($0)" } ?? "variant:\(variant)"
+            } ?? "unbound"
+            byCard[identity.groupingKey(game: slab.game) + "|" + handle, default: []].append(slab)
         }
 
         let client = JustTCGV2GradedClient(transport: sharedTransport,
@@ -1880,7 +1911,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 finish: target.variantID.map(PhysicalVariant.resolving),
                 printRun: target.pokemonPrintRun,
                 isJapanese: target.gradedIdentity?.vendorGame(for: target.game) == .pokemonJapan,
-                boundVariantID: target.marketVariantID
+                boundVariantID: target.marketVariantID,
+                catalogID: target.gradedIdentity?.catalogID ?? target.catalogPrintingID
             )
         }
 
@@ -1987,6 +2019,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 let lookup: GradedVariantLookupResult
                 if let gradedLookupOverride {
                     lookup = try await gradedLookupOverride(identity, game)
+                } else if let handle = group.first?.marketVariantID {
+                    lookup = try await client.lookupRetained(identity: identity, game: game,
+                        cardID: group.first?.justTCGCardID, variantID: handle, lane: .background)
                 } else {
                     lookup = try await client.lookup(identity: identity, game: game, lane: .background)
                 }
