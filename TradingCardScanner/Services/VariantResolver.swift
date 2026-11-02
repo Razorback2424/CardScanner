@@ -33,6 +33,41 @@ struct VariantLock: Equatable, Hashable, Sendable, Identifiable {
 /// treatment qualification and lock applicability are unchanged.
 typealias MagicFinishLock = VariantLock
 
+/// Exact, additive minimums from the retained 457-row source ledger. These are
+/// membership evidence, never a claim of exhaustive product coverage or prices.
+/// Regenerate with scripts/audit_pokemon_finish_repairs.py --write-table.
+enum PokemonFinishMinimumCatalog {
+    struct Entry: Decodable {
+        let setID: String
+        let number: String
+        let minimum: [String]
+        let normalNeedsReview: Bool
+
+        var variants: [PhysicalVariant] {
+            minimum.compactMap { id in [.normal, .holo, .reverse].first { $0.id == id } }
+        }
+    }
+
+    static let entries: [String: Entry] = {
+        guard let url = Bundle.main.url(forResource: "finish-minimums", withExtension: "json", subdirectory: "PokemonChecklistSnapshot"),
+              let data = try? Data(contentsOf: url),
+              let entries = try? JSONDecoder().decode([String: Entry].self, from: data) else { return [:] }
+        return entries.filter { id, entry in id == entry.setID + "-" + entry.number }
+    }()
+
+    static let setIDs = Set(entries.values.map(\.setID))
+
+    static func retainingMinimum(cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
+        ScanText.unique(variants + (entries[cardID]?.variants ?? []))
+    }
+
+    static func supported(cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
+        retainingMinimum(cardID: cardID, variants: variants).filter {
+            !($0 == .normal && entries[cardID]?.normalNeedsReview == true)
+        }
+    }
+}
+
 /// Everything the resolver is allowed to reason from. Deliberately a plain value
 /// rather than the catalog card itself: the resolver must be testable without a
 /// network response, and it must be impossible for it to reach for a "confidence"
@@ -65,10 +100,14 @@ struct VariantEvidence: Equatable, Sendable {
         self.game = game
         self.setID = setID
         self.cardNumber = cardNumber
-        self.catalogVariants = catalogVariants
+        let minimum = game == .pokemon ? PokemonFinishMinimumCatalog.entries[setID + "-" + cardNumber] : nil
+        self.catalogVariants = minimum == nil ? catalogVariants
+            : PokemonFinishMinimumCatalog.supported(cardID: setID + "-" + cardNumber, variants: catalogVariants)
         self.magicTreatments = magicTreatments
-        self.physicalCoverageVerified = physicalCoverageVerified
-        self.explicitMembershipSupported = explicitMembershipSupported
+        // Keep other games and existing reviewed projections' contracts intact.
+        // A bounded minimum cannot become exhaustive through a defaulted caller.
+        self.physicalCoverageVerified = minimum == nil && physicalCoverageVerified
+        self.explicitMembershipSupported = minimum != nil || explicitMembershipSupported
     }
 
     /// The same evidence with 1st Edition removed from the finish list.
@@ -122,7 +161,7 @@ enum VariantResolver {
     /// persisted identity. Contradictory positives cannot be erased by a lock.
     static func gate(_ evidence: VariantEvidence, printedEdition: PrintedEditionEvidence) -> VariantOutcome? {
         guard evidence.physicalCoverageVerified || evidence.explicitMembershipSupported else { return .needsChoice(options: [], lockDidNotApply: nil) }
-        if !evidence.physicalCoverageVerified && printedEdition == .absent {
+        if !evidence.physicalCoverageVerified && printedEdition == .absent && evidence.game != .pokemon {
             return .needsChoice(options: ordered(evidence.catalogVariants), lockDidNotApply: nil)
         }
         guard printedEdition != .absent else { return nil }
@@ -140,7 +179,7 @@ enum VariantResolver {
         finishLock: VariantLock? = nil,
         printedFinish: PhysicalVariant? = nil
     ) -> VariantOutcome {
-        guard evidence.physicalCoverageVerified else {
+        guard evidence.physicalCoverageVerified || (evidence.game == .pokemon && evidence.explicitMembershipSupported) else {
             return .needsChoice(options: evidence.explicitMembershipSupported ? ordered(evidence.catalogVariants) : [], lockDidNotApply: nil)
         }
         let resolutionID = PerformanceSignpost.makeID()
@@ -167,7 +206,7 @@ enum VariantResolver {
             return .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent))
         }
 
-        if possible.count == 1 {
+        if possible.count == 1 && evidence.physicalCoverageVerified {
             return .resolved(
                 ResolvedVariant(
                     variant: possible[0],
@@ -422,13 +461,15 @@ enum PokemonVariantRules {
     }
 
     static func requiresPhysicalReview(cardID: String, variant: PhysicalVariant) -> Bool {
-        reviewedVariants(cardID: cardID).map { !$0.contains(variant) } ?? false
+        (variant == .normal && PokemonFinishMinimumCatalog.entries[cardID]?.normalNeedsReview == true)
+            || (reviewedVariants(cardID: cardID).map { !$0.contains(variant) } ?? false)
     }
 
     /// A stored finish the reviewed list does not contain. Only a person
     /// holding the card can replace it; no automatic path may rekey it.
     static func requiresPhysicalReview(cardID: String, variantID: String?) -> Bool {
         guard let variantID else { return false }
+        if variantID == "normal", PokemonFinishMinimumCatalog.entries[cardID]?.normalNeedsReview == true { return true }
         return reviewedVariants(cardID: cardID).map { reviewed in
             !reviewed.contains { $0.id == variantID }
         } ?? false

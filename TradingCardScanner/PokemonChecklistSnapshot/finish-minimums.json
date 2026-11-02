@@ -1,0 +1,3993 @@
+{
+  "xy12-1": {
+    "setID": "xy12",
+    "number": "1",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-2": {
+    "setID": "xy12",
+    "number": "2",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-3": {
+    "setID": "xy12",
+    "number": "3",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-4": {
+    "setID": "xy12",
+    "number": "4",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-5": {
+    "setID": "xy12",
+    "number": "5",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-6": {
+    "setID": "xy12",
+    "number": "6",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-7": {
+    "setID": "xy12",
+    "number": "7",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-8": {
+    "setID": "xy12",
+    "number": "8",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-9": {
+    "setID": "xy12",
+    "number": "9",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-10": {
+    "setID": "xy12",
+    "number": "10",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-11": {
+    "setID": "xy12",
+    "number": "11",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-12": {
+    "setID": "xy12",
+    "number": "12",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-13": {
+    "setID": "xy12",
+    "number": "13",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-14": {
+    "setID": "xy12",
+    "number": "14",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-15": {
+    "setID": "xy12",
+    "number": "15",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-16": {
+    "setID": "xy12",
+    "number": "16",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-17": {
+    "setID": "xy12",
+    "number": "17",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-18": {
+    "setID": "xy12",
+    "number": "18",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-19": {
+    "setID": "xy12",
+    "number": "19",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-20": {
+    "setID": "xy12",
+    "number": "20",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-21": {
+    "setID": "xy12",
+    "number": "21",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-22": {
+    "setID": "xy12",
+    "number": "22",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-23": {
+    "setID": "xy12",
+    "number": "23",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-24": {
+    "setID": "xy12",
+    "number": "24",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-25": {
+    "setID": "xy12",
+    "number": "25",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-26": {
+    "setID": "xy12",
+    "number": "26",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-27": {
+    "setID": "xy12",
+    "number": "27",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-28": {
+    "setID": "xy12",
+    "number": "28",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-29": {
+    "setID": "xy12",
+    "number": "29",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-30": {
+    "setID": "xy12",
+    "number": "30",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-31": {
+    "setID": "xy12",
+    "number": "31",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-32": {
+    "setID": "xy12",
+    "number": "32",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-33": {
+    "setID": "xy12",
+    "number": "33",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-34": {
+    "setID": "xy12",
+    "number": "34",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-35": {
+    "setID": "xy12",
+    "number": "35",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-36": {
+    "setID": "xy12",
+    "number": "36",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-37": {
+    "setID": "xy12",
+    "number": "37",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-38": {
+    "setID": "xy12",
+    "number": "38",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-39": {
+    "setID": "xy12",
+    "number": "39",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-40": {
+    "setID": "xy12",
+    "number": "40",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-41": {
+    "setID": "xy12",
+    "number": "41",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-42": {
+    "setID": "xy12",
+    "number": "42",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-43": {
+    "setID": "xy12",
+    "number": "43",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-44": {
+    "setID": "xy12",
+    "number": "44",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-45": {
+    "setID": "xy12",
+    "number": "45",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-46": {
+    "setID": "xy12",
+    "number": "46",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-47": {
+    "setID": "xy12",
+    "number": "47",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-48": {
+    "setID": "xy12",
+    "number": "48",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-49": {
+    "setID": "xy12",
+    "number": "49",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-50": {
+    "setID": "xy12",
+    "number": "50",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-51": {
+    "setID": "xy12",
+    "number": "51",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-52": {
+    "setID": "xy12",
+    "number": "52",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-53": {
+    "setID": "xy12",
+    "number": "53",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-54": {
+    "setID": "xy12",
+    "number": "54",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-55": {
+    "setID": "xy12",
+    "number": "55",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-56": {
+    "setID": "xy12",
+    "number": "56",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-57": {
+    "setID": "xy12",
+    "number": "57",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-58": {
+    "setID": "xy12",
+    "number": "58",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-59": {
+    "setID": "xy12",
+    "number": "59",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-60": {
+    "setID": "xy12",
+    "number": "60",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-61": {
+    "setID": "xy12",
+    "number": "61",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-62": {
+    "setID": "xy12",
+    "number": "62",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-63": {
+    "setID": "xy12",
+    "number": "63",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-64": {
+    "setID": "xy12",
+    "number": "64",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-65": {
+    "setID": "xy12",
+    "number": "65",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-66": {
+    "setID": "xy12",
+    "number": "66",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-67": {
+    "setID": "xy12",
+    "number": "67",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-68": {
+    "setID": "xy12",
+    "number": "68",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-69": {
+    "setID": "xy12",
+    "number": "69",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-70": {
+    "setID": "xy12",
+    "number": "70",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-71": {
+    "setID": "xy12",
+    "number": "71",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-72": {
+    "setID": "xy12",
+    "number": "72",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-73": {
+    "setID": "xy12",
+    "number": "73",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-74": {
+    "setID": "xy12",
+    "number": "74",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-75": {
+    "setID": "xy12",
+    "number": "75",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-76": {
+    "setID": "xy12",
+    "number": "76",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-77": {
+    "setID": "xy12",
+    "number": "77",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-78": {
+    "setID": "xy12",
+    "number": "78",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-79": {
+    "setID": "xy12",
+    "number": "79",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-80": {
+    "setID": "xy12",
+    "number": "80",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-81": {
+    "setID": "xy12",
+    "number": "81",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-82": {
+    "setID": "xy12",
+    "number": "82",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-83": {
+    "setID": "xy12",
+    "number": "83",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-84": {
+    "setID": "xy12",
+    "number": "84",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-85": {
+    "setID": "xy12",
+    "number": "85",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-86": {
+    "setID": "xy12",
+    "number": "86",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-87": {
+    "setID": "xy12",
+    "number": "87",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-88": {
+    "setID": "xy12",
+    "number": "88",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-89": {
+    "setID": "xy12",
+    "number": "89",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-90": {
+    "setID": "xy12",
+    "number": "90",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-91": {
+    "setID": "xy12",
+    "number": "91",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-92": {
+    "setID": "xy12",
+    "number": "92",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-93": {
+    "setID": "xy12",
+    "number": "93",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-94": {
+    "setID": "xy12",
+    "number": "94",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-95": {
+    "setID": "xy12",
+    "number": "95",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-96": {
+    "setID": "xy12",
+    "number": "96",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-97": {
+    "setID": "xy12",
+    "number": "97",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-98": {
+    "setID": "xy12",
+    "number": "98",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-99": {
+    "setID": "xy12",
+    "number": "99",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "xy12-100": {
+    "setID": "xy12",
+    "number": "100",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-101": {
+    "setID": "xy12",
+    "number": "101",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-102": {
+    "setID": "xy12",
+    "number": "102",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-103": {
+    "setID": "xy12",
+    "number": "103",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-104": {
+    "setID": "xy12",
+    "number": "104",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-105": {
+    "setID": "xy12",
+    "number": "105",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-106": {
+    "setID": "xy12",
+    "number": "106",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-107": {
+    "setID": "xy12",
+    "number": "107",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "xy12-108": {
+    "setID": "xy12",
+    "number": "108",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-2": {
+    "setID": "sm6",
+    "number": "2",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-3": {
+    "setID": "sm6",
+    "number": "3",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-4": {
+    "setID": "sm6",
+    "number": "4",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-5": {
+    "setID": "sm6",
+    "number": "5",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-6": {
+    "setID": "sm6",
+    "number": "6",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-7": {
+    "setID": "sm6",
+    "number": "7",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-8": {
+    "setID": "sm6",
+    "number": "8",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-9": {
+    "setID": "sm6",
+    "number": "9",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-10": {
+    "setID": "sm6",
+    "number": "10",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-11": {
+    "setID": "sm6",
+    "number": "11",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-12": {
+    "setID": "sm6",
+    "number": "12",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-13": {
+    "setID": "sm6",
+    "number": "13",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-14": {
+    "setID": "sm6",
+    "number": "14",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-15": {
+    "setID": "sm6",
+    "number": "15",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-16": {
+    "setID": "sm6",
+    "number": "16",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-17": {
+    "setID": "sm6",
+    "number": "17",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-18": {
+    "setID": "sm6",
+    "number": "18",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-19": {
+    "setID": "sm6",
+    "number": "19",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-20": {
+    "setID": "sm6",
+    "number": "20",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-21": {
+    "setID": "sm6",
+    "number": "21",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-22": {
+    "setID": "sm6",
+    "number": "22",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-23": {
+    "setID": "sm6",
+    "number": "23",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-24": {
+    "setID": "sm6",
+    "number": "24",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-25": {
+    "setID": "sm6",
+    "number": "25",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-26": {
+    "setID": "sm6",
+    "number": "26",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-27": {
+    "setID": "sm6",
+    "number": "27",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-28": {
+    "setID": "sm6",
+    "number": "28",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-29": {
+    "setID": "sm6",
+    "number": "29",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-30": {
+    "setID": "sm6",
+    "number": "30",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-31": {
+    "setID": "sm6",
+    "number": "31",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-32": {
+    "setID": "sm6",
+    "number": "32",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-33": {
+    "setID": "sm6",
+    "number": "33",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-34": {
+    "setID": "sm6",
+    "number": "34",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-35": {
+    "setID": "sm6",
+    "number": "35",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-36": {
+    "setID": "sm6",
+    "number": "36",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-37": {
+    "setID": "sm6",
+    "number": "37",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-38": {
+    "setID": "sm6",
+    "number": "38",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-39": {
+    "setID": "sm6",
+    "number": "39",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-40": {
+    "setID": "sm6",
+    "number": "40",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-41": {
+    "setID": "sm6",
+    "number": "41",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-42": {
+    "setID": "sm6",
+    "number": "42",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-43": {
+    "setID": "sm6",
+    "number": "43",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-44": {
+    "setID": "sm6",
+    "number": "44",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-45": {
+    "setID": "sm6",
+    "number": "45",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-46": {
+    "setID": "sm6",
+    "number": "46",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-47": {
+    "setID": "sm6",
+    "number": "47",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-48": {
+    "setID": "sm6",
+    "number": "48",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-49": {
+    "setID": "sm6",
+    "number": "49",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-50": {
+    "setID": "sm6",
+    "number": "50",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-51": {
+    "setID": "sm6",
+    "number": "51",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-52": {
+    "setID": "sm6",
+    "number": "52",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-53": {
+    "setID": "sm6",
+    "number": "53",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-54": {
+    "setID": "sm6",
+    "number": "54",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-55": {
+    "setID": "sm6",
+    "number": "55",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-56": {
+    "setID": "sm6",
+    "number": "56",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-57": {
+    "setID": "sm6",
+    "number": "57",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-58": {
+    "setID": "sm6",
+    "number": "58",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-59": {
+    "setID": "sm6",
+    "number": "59",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-60": {
+    "setID": "sm6",
+    "number": "60",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-61": {
+    "setID": "sm6",
+    "number": "61",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-62": {
+    "setID": "sm6",
+    "number": "62",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-63": {
+    "setID": "sm6",
+    "number": "63",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-64": {
+    "setID": "sm6",
+    "number": "64",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-65": {
+    "setID": "sm6",
+    "number": "65",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-66": {
+    "setID": "sm6",
+    "number": "66",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-67": {
+    "setID": "sm6",
+    "number": "67",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-68": {
+    "setID": "sm6",
+    "number": "68",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-69": {
+    "setID": "sm6",
+    "number": "69",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-70": {
+    "setID": "sm6",
+    "number": "70",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-71": {
+    "setID": "sm6",
+    "number": "71",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-72": {
+    "setID": "sm6",
+    "number": "72",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-73": {
+    "setID": "sm6",
+    "number": "73",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-74": {
+    "setID": "sm6",
+    "number": "74",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-75": {
+    "setID": "sm6",
+    "number": "75",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-76": {
+    "setID": "sm6",
+    "number": "76",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-77": {
+    "setID": "sm6",
+    "number": "77",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-78": {
+    "setID": "sm6",
+    "number": "78",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-79": {
+    "setID": "sm6",
+    "number": "79",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-80": {
+    "setID": "sm6",
+    "number": "80",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-81": {
+    "setID": "sm6",
+    "number": "81",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-82": {
+    "setID": "sm6",
+    "number": "82",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-83": {
+    "setID": "sm6",
+    "number": "83",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-84": {
+    "setID": "sm6",
+    "number": "84",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-85": {
+    "setID": "sm6",
+    "number": "85",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-86": {
+    "setID": "sm6",
+    "number": "86",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-87": {
+    "setID": "sm6",
+    "number": "87",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-88": {
+    "setID": "sm6",
+    "number": "88",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-89": {
+    "setID": "sm6",
+    "number": "89",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-90": {
+    "setID": "sm6",
+    "number": "90",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-91": {
+    "setID": "sm6",
+    "number": "91",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-92": {
+    "setID": "sm6",
+    "number": "92",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-93": {
+    "setID": "sm6",
+    "number": "93",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-94": {
+    "setID": "sm6",
+    "number": "94",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-95": {
+    "setID": "sm6",
+    "number": "95",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-96": {
+    "setID": "sm6",
+    "number": "96",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-97": {
+    "setID": "sm6",
+    "number": "97",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-98": {
+    "setID": "sm6",
+    "number": "98",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-99": {
+    "setID": "sm6",
+    "number": "99",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-100": {
+    "setID": "sm6",
+    "number": "100",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-101": {
+    "setID": "sm6",
+    "number": "101",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-102": {
+    "setID": "sm6",
+    "number": "102",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-103": {
+    "setID": "sm6",
+    "number": "103",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-104": {
+    "setID": "sm6",
+    "number": "104",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-105": {
+    "setID": "sm6",
+    "number": "105",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-106": {
+    "setID": "sm6",
+    "number": "106",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-107": {
+    "setID": "sm6",
+    "number": "107",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-108": {
+    "setID": "sm6",
+    "number": "108",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-109": {
+    "setID": "sm6",
+    "number": "109",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-110": {
+    "setID": "sm6",
+    "number": "110",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-111": {
+    "setID": "sm6",
+    "number": "111",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-112": {
+    "setID": "sm6",
+    "number": "112",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-113": {
+    "setID": "sm6",
+    "number": "113",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-114": {
+    "setID": "sm6",
+    "number": "114",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-115": {
+    "setID": "sm6",
+    "number": "115",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-116": {
+    "setID": "sm6",
+    "number": "116",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-117": {
+    "setID": "sm6",
+    "number": "117",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-118": {
+    "setID": "sm6",
+    "number": "118",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm6-119": {
+    "setID": "sm6",
+    "number": "119",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-120": {
+    "setID": "sm6",
+    "number": "120",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-121": {
+    "setID": "sm6",
+    "number": "121",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-122": {
+    "setID": "sm6",
+    "number": "122",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-123": {
+    "setID": "sm6",
+    "number": "123",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-124": {
+    "setID": "sm6",
+    "number": "124",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-125": {
+    "setID": "sm6",
+    "number": "125",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-126": {
+    "setID": "sm6",
+    "number": "126",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-127": {
+    "setID": "sm6",
+    "number": "127",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-128": {
+    "setID": "sm6",
+    "number": "128",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-129": {
+    "setID": "sm6",
+    "number": "129",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-130": {
+    "setID": "sm6",
+    "number": "130",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm6-131": {
+    "setID": "sm6",
+    "number": "131",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-1": {
+    "setID": "dv1",
+    "number": "1",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-2": {
+    "setID": "dv1",
+    "number": "2",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-3": {
+    "setID": "dv1",
+    "number": "3",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-4": {
+    "setID": "dv1",
+    "number": "4",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-5": {
+    "setID": "dv1",
+    "number": "5",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-6": {
+    "setID": "dv1",
+    "number": "6",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-7": {
+    "setID": "dv1",
+    "number": "7",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-8": {
+    "setID": "dv1",
+    "number": "8",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-9": {
+    "setID": "dv1",
+    "number": "9",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-10": {
+    "setID": "dv1",
+    "number": "10",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-11": {
+    "setID": "dv1",
+    "number": "11",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-12": {
+    "setID": "dv1",
+    "number": "12",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-13": {
+    "setID": "dv1",
+    "number": "13",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-14": {
+    "setID": "dv1",
+    "number": "14",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-15": {
+    "setID": "dv1",
+    "number": "15",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-16": {
+    "setID": "dv1",
+    "number": "16",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-17": {
+    "setID": "dv1",
+    "number": "17",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-18": {
+    "setID": "dv1",
+    "number": "18",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-19": {
+    "setID": "dv1",
+    "number": "19",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-20": {
+    "setID": "dv1",
+    "number": "20",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dv1-21": {
+    "setID": "dv1",
+    "number": "21",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-1": {
+    "setID": "det1",
+    "number": "1",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-2": {
+    "setID": "det1",
+    "number": "2",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-3": {
+    "setID": "det1",
+    "number": "3",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-4": {
+    "setID": "det1",
+    "number": "4",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-5": {
+    "setID": "det1",
+    "number": "5",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-6": {
+    "setID": "det1",
+    "number": "6",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-7": {
+    "setID": "det1",
+    "number": "7",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-8": {
+    "setID": "det1",
+    "number": "8",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-9": {
+    "setID": "det1",
+    "number": "9",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-10": {
+    "setID": "det1",
+    "number": "10",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-11": {
+    "setID": "det1",
+    "number": "11",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-12": {
+    "setID": "det1",
+    "number": "12",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-13": {
+    "setID": "det1",
+    "number": "13",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-14": {
+    "setID": "det1",
+    "number": "14",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-15": {
+    "setID": "det1",
+    "number": "15",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-16": {
+    "setID": "det1",
+    "number": "16",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-17": {
+    "setID": "det1",
+    "number": "17",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "det1-18": {
+    "setID": "det1",
+    "number": "18",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-1": {
+    "setID": "sm3.5",
+    "number": "1",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-2": {
+    "setID": "sm3.5",
+    "number": "2",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-3": {
+    "setID": "sm3.5",
+    "number": "3",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-4": {
+    "setID": "sm3.5",
+    "number": "4",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-5": {
+    "setID": "sm3.5",
+    "number": "5",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-6": {
+    "setID": "sm3.5",
+    "number": "6",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-7": {
+    "setID": "sm3.5",
+    "number": "7",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-8": {
+    "setID": "sm3.5",
+    "number": "8",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-9": {
+    "setID": "sm3.5",
+    "number": "9",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-10": {
+    "setID": "sm3.5",
+    "number": "10",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-11": {
+    "setID": "sm3.5",
+    "number": "11",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-12": {
+    "setID": "sm3.5",
+    "number": "12",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-13": {
+    "setID": "sm3.5",
+    "number": "13",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-14": {
+    "setID": "sm3.5",
+    "number": "14",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-15": {
+    "setID": "sm3.5",
+    "number": "15",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-16": {
+    "setID": "sm3.5",
+    "number": "16",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-17": {
+    "setID": "sm3.5",
+    "number": "17",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-18": {
+    "setID": "sm3.5",
+    "number": "18",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-19": {
+    "setID": "sm3.5",
+    "number": "19",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-20": {
+    "setID": "sm3.5",
+    "number": "20",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-21": {
+    "setID": "sm3.5",
+    "number": "21",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-22": {
+    "setID": "sm3.5",
+    "number": "22",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-23": {
+    "setID": "sm3.5",
+    "number": "23",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-24": {
+    "setID": "sm3.5",
+    "number": "24",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-25": {
+    "setID": "sm3.5",
+    "number": "25",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-26": {
+    "setID": "sm3.5",
+    "number": "26",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-27": {
+    "setID": "sm3.5",
+    "number": "27",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-28": {
+    "setID": "sm3.5",
+    "number": "28",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-29": {
+    "setID": "sm3.5",
+    "number": "29",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-30": {
+    "setID": "sm3.5",
+    "number": "30",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-31": {
+    "setID": "sm3.5",
+    "number": "31",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-32": {
+    "setID": "sm3.5",
+    "number": "32",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-33": {
+    "setID": "sm3.5",
+    "number": "33",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-34": {
+    "setID": "sm3.5",
+    "number": "34",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-35": {
+    "setID": "sm3.5",
+    "number": "35",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-36": {
+    "setID": "sm3.5",
+    "number": "36",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-37": {
+    "setID": "sm3.5",
+    "number": "37",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-38": {
+    "setID": "sm3.5",
+    "number": "38",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-39": {
+    "setID": "sm3.5",
+    "number": "39",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-40": {
+    "setID": "sm3.5",
+    "number": "40",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-41": {
+    "setID": "sm3.5",
+    "number": "41",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-42": {
+    "setID": "sm3.5",
+    "number": "42",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-43": {
+    "setID": "sm3.5",
+    "number": "43",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-44": {
+    "setID": "sm3.5",
+    "number": "44",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-45": {
+    "setID": "sm3.5",
+    "number": "45",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-46": {
+    "setID": "sm3.5",
+    "number": "46",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-47": {
+    "setID": "sm3.5",
+    "number": "47",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-48": {
+    "setID": "sm3.5",
+    "number": "48",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-49": {
+    "setID": "sm3.5",
+    "number": "49",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-50": {
+    "setID": "sm3.5",
+    "number": "50",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-51": {
+    "setID": "sm3.5",
+    "number": "51",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-52": {
+    "setID": "sm3.5",
+    "number": "52",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-53": {
+    "setID": "sm3.5",
+    "number": "53",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-54": {
+    "setID": "sm3.5",
+    "number": "54",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-55": {
+    "setID": "sm3.5",
+    "number": "55",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-56": {
+    "setID": "sm3.5",
+    "number": "56",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-57": {
+    "setID": "sm3.5",
+    "number": "57",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-58": {
+    "setID": "sm3.5",
+    "number": "58",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-59": {
+    "setID": "sm3.5",
+    "number": "59",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-60": {
+    "setID": "sm3.5",
+    "number": "60",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-61": {
+    "setID": "sm3.5",
+    "number": "61",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-62": {
+    "setID": "sm3.5",
+    "number": "62",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-63": {
+    "setID": "sm3.5",
+    "number": "63",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-64": {
+    "setID": "sm3.5",
+    "number": "64",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-65": {
+    "setID": "sm3.5",
+    "number": "65",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-66": {
+    "setID": "sm3.5",
+    "number": "66",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-67": {
+    "setID": "sm3.5",
+    "number": "67",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-68": {
+    "setID": "sm3.5",
+    "number": "68",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-69": {
+    "setID": "sm3.5",
+    "number": "69",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-70": {
+    "setID": "sm3.5",
+    "number": "70",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm3.5-71": {
+    "setID": "sm3.5",
+    "number": "71",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-72": {
+    "setID": "sm3.5",
+    "number": "72",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm3.5-73": {
+    "setID": "sm3.5",
+    "number": "73",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-1": {
+    "setID": "sm7.5",
+    "number": "1",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-2": {
+    "setID": "sm7.5",
+    "number": "2",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-3": {
+    "setID": "sm7.5",
+    "number": "3",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-4": {
+    "setID": "sm7.5",
+    "number": "4",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-5": {
+    "setID": "sm7.5",
+    "number": "5",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-6": {
+    "setID": "sm7.5",
+    "number": "6",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-7": {
+    "setID": "sm7.5",
+    "number": "7",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-8": {
+    "setID": "sm7.5",
+    "number": "8",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-9": {
+    "setID": "sm7.5",
+    "number": "9",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-10": {
+    "setID": "sm7.5",
+    "number": "10",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-11": {
+    "setID": "sm7.5",
+    "number": "11",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-12": {
+    "setID": "sm7.5",
+    "number": "12",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-13": {
+    "setID": "sm7.5",
+    "number": "13",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-14": {
+    "setID": "sm7.5",
+    "number": "14",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-15": {
+    "setID": "sm7.5",
+    "number": "15",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-16": {
+    "setID": "sm7.5",
+    "number": "16",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-17": {
+    "setID": "sm7.5",
+    "number": "17",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-18": {
+    "setID": "sm7.5",
+    "number": "18",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-19": {
+    "setID": "sm7.5",
+    "number": "19",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-20": {
+    "setID": "sm7.5",
+    "number": "20",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-21": {
+    "setID": "sm7.5",
+    "number": "21",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-22": {
+    "setID": "sm7.5",
+    "number": "22",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-23": {
+    "setID": "sm7.5",
+    "number": "23",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-24": {
+    "setID": "sm7.5",
+    "number": "24",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-25": {
+    "setID": "sm7.5",
+    "number": "25",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-26": {
+    "setID": "sm7.5",
+    "number": "26",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-27": {
+    "setID": "sm7.5",
+    "number": "27",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-28": {
+    "setID": "sm7.5",
+    "number": "28",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-29": {
+    "setID": "sm7.5",
+    "number": "29",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-30": {
+    "setID": "sm7.5",
+    "number": "30",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-31": {
+    "setID": "sm7.5",
+    "number": "31",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-32": {
+    "setID": "sm7.5",
+    "number": "32",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-33": {
+    "setID": "sm7.5",
+    "number": "33",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-34": {
+    "setID": "sm7.5",
+    "number": "34",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-35": {
+    "setID": "sm7.5",
+    "number": "35",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-36": {
+    "setID": "sm7.5",
+    "number": "36",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-37": {
+    "setID": "sm7.5",
+    "number": "37",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-38": {
+    "setID": "sm7.5",
+    "number": "38",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-39": {
+    "setID": "sm7.5",
+    "number": "39",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-40": {
+    "setID": "sm7.5",
+    "number": "40",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-41": {
+    "setID": "sm7.5",
+    "number": "41",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-42": {
+    "setID": "sm7.5",
+    "number": "42",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-43": {
+    "setID": "sm7.5",
+    "number": "43",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-44": {
+    "setID": "sm7.5",
+    "number": "44",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-45": {
+    "setID": "sm7.5",
+    "number": "45",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-46": {
+    "setID": "sm7.5",
+    "number": "46",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-47": {
+    "setID": "sm7.5",
+    "number": "47",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-48": {
+    "setID": "sm7.5",
+    "number": "48",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-49": {
+    "setID": "sm7.5",
+    "number": "49",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-50": {
+    "setID": "sm7.5",
+    "number": "50",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-51": {
+    "setID": "sm7.5",
+    "number": "51",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-52": {
+    "setID": "sm7.5",
+    "number": "52",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-53": {
+    "setID": "sm7.5",
+    "number": "53",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-54": {
+    "setID": "sm7.5",
+    "number": "54",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-55": {
+    "setID": "sm7.5",
+    "number": "55",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-56": {
+    "setID": "sm7.5",
+    "number": "56",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-57": {
+    "setID": "sm7.5",
+    "number": "57",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-58": {
+    "setID": "sm7.5",
+    "number": "58",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-59": {
+    "setID": "sm7.5",
+    "number": "59",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-60": {
+    "setID": "sm7.5",
+    "number": "60",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-61": {
+    "setID": "sm7.5",
+    "number": "61",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-62": {
+    "setID": "sm7.5",
+    "number": "62",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-63": {
+    "setID": "sm7.5",
+    "number": "63",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-64": {
+    "setID": "sm7.5",
+    "number": "64",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "sm7.5-65": {
+    "setID": "sm7.5",
+    "number": "65",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-66": {
+    "setID": "sm7.5",
+    "number": "66",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-67": {
+    "setID": "sm7.5",
+    "number": "67",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-68": {
+    "setID": "sm7.5",
+    "number": "68",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-69": {
+    "setID": "sm7.5",
+    "number": "69",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "sm7.5-70": {
+    "setID": "sm7.5",
+    "number": "70",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-1": {
+    "setID": "dc1",
+    "number": "1",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-2": {
+    "setID": "dc1",
+    "number": "2",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-3": {
+    "setID": "dc1",
+    "number": "3",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-4": {
+    "setID": "dc1",
+    "number": "4",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-5": {
+    "setID": "dc1",
+    "number": "5",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-6": {
+    "setID": "dc1",
+    "number": "6",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-7": {
+    "setID": "dc1",
+    "number": "7",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-8": {
+    "setID": "dc1",
+    "number": "8",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-9": {
+    "setID": "dc1",
+    "number": "9",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-10": {
+    "setID": "dc1",
+    "number": "10",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-11": {
+    "setID": "dc1",
+    "number": "11",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-12": {
+    "setID": "dc1",
+    "number": "12",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-13": {
+    "setID": "dc1",
+    "number": "13",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-14": {
+    "setID": "dc1",
+    "number": "14",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-15": {
+    "setID": "dc1",
+    "number": "15",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-16": {
+    "setID": "dc1",
+    "number": "16",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-17": {
+    "setID": "dc1",
+    "number": "17",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-18": {
+    "setID": "dc1",
+    "number": "18",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-19": {
+    "setID": "dc1",
+    "number": "19",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-20": {
+    "setID": "dc1",
+    "number": "20",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-21": {
+    "setID": "dc1",
+    "number": "21",
+    "minimum": [
+      "holo",
+      "reverse"
+    ],
+    "normalNeedsReview": true
+  },
+  "dc1-22": {
+    "setID": "dc1",
+    "number": "22",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-23": {
+    "setID": "dc1",
+    "number": "23",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-24": {
+    "setID": "dc1",
+    "number": "24",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-25": {
+    "setID": "dc1",
+    "number": "25",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-26": {
+    "setID": "dc1",
+    "number": "26",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-27": {
+    "setID": "dc1",
+    "number": "27",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-28": {
+    "setID": "dc1",
+    "number": "28",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-29": {
+    "setID": "dc1",
+    "number": "29",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-30": {
+    "setID": "dc1",
+    "number": "30",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-31": {
+    "setID": "dc1",
+    "number": "31",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-32": {
+    "setID": "dc1",
+    "number": "32",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-33": {
+    "setID": "dc1",
+    "number": "33",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "dc1-34": {
+    "setID": "dc1",
+    "number": "34",
+    "minimum": [
+      "normal",
+      "reverse"
+    ],
+    "normalNeedsReview": false
+  },
+  "ru1-1": {
+    "setID": "ru1",
+    "number": "1",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "ru1-7": {
+    "setID": "ru1",
+    "number": "7",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  },
+  "ru1-9": {
+    "setID": "ru1",
+    "number": "9",
+    "minimum": [
+      "holo"
+    ],
+    "normalNeedsReview": true
+  }
+}

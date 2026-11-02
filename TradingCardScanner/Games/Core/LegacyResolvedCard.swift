@@ -185,7 +185,10 @@ enum LegacyResolvedCard: Identifiable, Sendable {
                 game: .pokemon,
                 setID: card.set.id,
                 cardNumber: card.localId,
-                catalogVariants: card.catalogVariants
+                catalogVariants: card.catalogVariants,
+                physicalCoverageVerified: card.finishCoverageVerified
+                    ?? (PokemonFinishMinimumCatalog.entries[card.id] == nil),
+                explicitMembershipSupported: !card.catalogVariants.isEmpty
             )
         case let .magic(card):
             return VariantEvidence(

@@ -4281,7 +4281,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let identified = IdentifiedCard.pokemon(card, setCode: "DRI")
         XCTAssertEqual(
             VariantResolver.resolve(identified.variantEvidence),
-            .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent))
+            .needsChoice(options: [], lockDidNotApply: nil)
         )
     }
 
@@ -4397,9 +4397,12 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             // Fates must not become an automatic Normal finish.
             XCTAssertEqual(
                 VariantResolver.resolve(identified.variantEvidence),
-                .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)),
+                .needsChoice(options: [.holo], lockDidNotApply: nil),
                 printed
             )
+            XCTAssertFalse(identified.variantEvidence.physicalCoverageVerified)
+            XCTAssertEqual(VariantResolver.resolve(identified.variantEvidence, finishLock: PhysicalVariant.holo),
+                .resolved(.init(variant: .holo, resolution: .finishLock)))
         }
 
         let entry = try XCTUnwrap(snapshot.entry(forProviderID: "sma"))

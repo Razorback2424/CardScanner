@@ -3233,20 +3233,17 @@ enum PokemonMasterSetDefinition {
     static func requiredVariants(
         for card: TCGdexCard
     ) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
-        var variants = PokemonVariantRules.apply(to: VariantEvidence(
+        let variants = PokemonVariantRules.apply(to: VariantEvidence(
             game: .pokemon, setID: card.set.id, cardNumber: card.localId,
             catalogVariants: card.catalogVariants
         )).variants.filter {
             $0.id != PhysicalVariant.firstEdition.id
         }
-
-        // Some early cards publish only the edition flag. They still represent
-        // one pack-pulled base slot within that edition.
-        if variants.isEmpty {
-            variants = [.normal]
-        }
-
-        return requiredSlots(for: variants, setProviderID: card.set.id)
+        // Preserve retained memberships that still need product review in the
+        // checklist. The resolver separately exposes supported choices only.
+        let retained = PokemonFinishMinimumCatalog.entries[card.id] == nil ? variants
+            : PokemonFinishMinimumCatalog.retainingMinimum(cardID: card.id, variants: card.catalogVariants)
+        return requiredSlots(for: retained, setProviderID: card.set.id)
     }
 
     static func requiredSlots(for variants: [PhysicalVariant], setProviderID: String? = nil) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {

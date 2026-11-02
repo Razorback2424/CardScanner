@@ -1,3 +1,16 @@
+# 2026-11-02 — Bounded Pokémon finish-evidence repair
+
+An isolated branch from `4a9d70b` retains the original failing native reproduction
+(`7a44011`) and extends the same correction mechanism to the v2 workbook's 457 IDs
+and 510 memberships. The ledger/blob audit verifies eight actual Git resources,
+1,015 repaired slots, unchanged 504 identities, no removed memberships and no
+held/unassessed additions. Native regeneration and all nine new entry-point
+methods passed in the first expanded run. Broader candidate failures and the
+T7 storage/finalization failure remain recorded, with final-head validation to be
+reported in the draft PR. See the [evidence record](docs/audits/pokemon-finish-evidence-2026-11-02.md)
+for exact scope, source hashes, confidence/cache boundaries and remaining holds.
+No real collection, device, feed, release, portfolio/token or centering mutation.
+
 # 2026-11-02 — Isolated combined validation candidate
 
 This local candidate combines the independently reviewed branch repairs; it is
