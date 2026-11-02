@@ -298,7 +298,11 @@ struct MagicTokenPairingSession: Sendable {
         basis: MagicTokenPairingBasis,
         lastSeen: MagicTokenFaceID
     ) -> [Effect] {
-        state = .holding(key, lastSeen: lastSeen, inBand: observedInBand)
+        // Rejecting a pair can leave a question about a historical face while
+        // the other card is visible. Only this face's camera presence belongs
+        // to the acquisition; answering its question is not a new reading.
+        let inBand = observedInBand && latestFace == lastSeen
+        state = .holding(key, lastSeen: lastSeen, inBand: inBand)
         return [.add(MagicTokenAcquisition(key: key, product: product, basis: basis))]
     }
 
