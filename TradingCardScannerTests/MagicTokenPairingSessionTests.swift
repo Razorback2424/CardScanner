@@ -335,6 +335,108 @@ final class MagicTokenPairingSessionTests: XCTestCase {
         ])
     }
 
+    func testSingleFacedAnswerAfterRejectionUsesTheRecordedFacesPresence() {
+        for (first, second) in [(face("TZZZ", "1"), face("TZZZ", "2")),
+                                (face("TZZZ", "2"), face("TZZZ", "1"))] {
+            for visibleFace in [first, second, nil] as [MagicTokenFaceID?] {
+                var session = uncataloguedSession()
+                XCTAssertEqual(session.handle(.faceConfirmed(first)), [.askForReverse(openQuestion(first))])
+                XCTAssertEqual(session.handle(.faceConfirmed(second)), [
+                    .confirmPair(MagicTokenPairConfirmation(face: first, reverse: second))
+                ])
+                if visibleFace == first {
+                    // The first card returned while the person was deciding.
+                    XCTAssertEqual(session.handle(.faceConfirmed(first)), [])
+                } else if visibleFace == nil {
+                    XCTAssertEqual(session.handle(.bandCleared), [])
+                }
+
+                XCTAssertEqual(session.handle(.rejectedPair), [
+                    .dismissPrompt,
+                    .park(MagicTokenParkedFace(face: first, candidates: [], unconfirmedReverse: nil)),
+                    .askForReverse(openQuestion(second))
+                ])
+                XCTAssertEqual(session.pendingQuestion, openQuestion(second))
+                XCTAssertNil(session.pendingPairConfirmation)
+                XCTAssertEqual(session.handle(.declaredSingleFaced), [
+                    .dismissPrompt,
+                    .add(MagicTokenAcquisition(key: key(second), product: nil, basis: .userDeclaredSingleFaced))
+                ])
+                XCTAssertNil(session.pendingQuestion)
+                XCTAssertNil(session.pendingPairConfirmation)
+
+                // An answer about historical B must not claim that B stayed in
+                // view merely because A is there. An actually visible B stays held.
+                let stillPresent = visibleFace == second
+                XCTAssertEqual(session.handle(.faceConfirmed(second)),
+                               stillPresent ? [] : [.askForReverse(openQuestion(second))])
+                XCTAssertEqual(session.pendingQuestion, stillPresent ? nil : openQuestion(second))
+                XCTAssertNil(session.pendingPairConfirmation)
+                XCTAssertEqual(session.handle(.faceConfirmed(second)), [],
+                               "a repeated camera reading must not create another acquisition")
+            }
+        }
+    }
+
+    func testCandidateAnswerAfterRejectionUsesTheRecordedFacesPresenceAndPreservesFlips() {
+        for (first, second) in [(face("TZZZ", "1"), face("TZZZ", "2")),
+                                (face("TZZZ", "2"), face("TZZZ", "1"))] {
+            let firstProduct = card((first.setCode, first.number, "First"), ("TZZZ", "3", "First back"))
+            let secondProduct = card((second.setCode, second.number, "Second"), ("TZZZ", "4", "Second back"))
+            let catalog = MagicTokenProductCatalog(products: [firstProduct, secondProduct])
+            let firstQuestion = MagicTokenReverseQuestion(
+                face: first, candidates: [firstProduct], catalogIsExhaustive: false
+            )
+            let secondQuestion = MagicTokenReverseQuestion(
+                face: second, candidates: [secondProduct], catalogIsExhaustive: false
+            )
+            for visibleFace in [first, second, nil] as [MagicTokenFaceID?] {
+                var session = MagicTokenPairingSession(catalog: catalog)
+                XCTAssertEqual(session.handle(.faceConfirmed(first)), [.askForReverse(firstQuestion)])
+                XCTAssertEqual(session.handle(.faceConfirmed(second)), [
+                    .confirmPair(MagicTokenPairConfirmation(face: first, reverse: second))
+                ])
+                if visibleFace == first {
+                    XCTAssertEqual(session.handle(.faceConfirmed(first)), [])
+                } else if visibleFace == nil {
+                    XCTAssertEqual(session.handle(.bandCleared), [])
+                }
+
+                XCTAssertEqual(session.handle(.rejectedPair), [
+                    .dismissPrompt,
+                    .park(MagicTokenParkedFace(face: first, candidates: [firstProduct], unconfirmedReverse: nil)),
+                    .askForReverse(secondQuestion)
+                ])
+                XCTAssertEqual(session.pendingQuestion, secondQuestion)
+                XCTAssertNil(session.pendingPairConfirmation)
+                XCTAssertEqual(session.handle(.choseCandidate(secondProduct.key)),
+                               [.dismissPrompt, added(secondProduct, .userChoseCandidate)])
+                XCTAssertNil(session.pendingQuestion)
+                XCTAssertNil(session.pendingPairConfirmation)
+
+                let stillPresent = visibleFace == second
+                XCTAssertEqual(session.handle(.faceConfirmed(second)),
+                               stillPresent ? [] : [.askForReverse(secondQuestion)])
+                XCTAssertEqual(session.pendingQuestion, stillPresent ? nil : secondQuestion)
+                XCTAssertNil(session.pendingPairConfirmation)
+                XCTAssertEqual(session.handle(.faceConfirmed(second)), [])
+                if !stillPresent {
+                    XCTAssertEqual(session.handle(.choseCandidate(secondProduct.key)),
+                                   [.dismissPrompt, added(secondProduct, .userChoseCandidate)])
+                }
+
+                // Once this card is actually in view, a genuine flip is still
+                // the same acquisition, even though turning it empties the band.
+                let back = face("TZZZ", "4")
+                XCTAssertEqual(session.handle(.bandCleared), [])
+                XCTAssertEqual(session.handle(.faceConfirmed(back)), [.sameCard(secondProduct.key)])
+                XCTAssertNil(session.pendingQuestion)
+                XCTAssertNil(session.pendingPairConfirmation)
+                XCTAssertEqual(session.handle(.faceConfirmed(back)), [])
+            }
+        }
+    }
+
     /// A third face means the person moved on without answering. Both faces
     /// read stay on one Needs Attention entry, so one card never becomes two.
     func testAThirdFaceParksTheFirstWithItsUnconfirmedBack() {
