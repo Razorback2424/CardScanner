@@ -1031,6 +1031,17 @@ final class CenteringNativePrecisionTests: XCTestCase {
                                "A cannot publish after B's valid, invalid or unchanged boundary")
                 XCTAssertEqual(fixture.probe.angle, PrecisionInteractionProbe.initialAngle, accuracy: 1e-12)
                 // The one-shot finalizer for A cannot suppress a later edit.
+                // Finish B's observed blur before requiring a fresh observed
+                // focus transition. The separate rapid-refocus regression
+                // deliberately exercises coalescing without this wait.
+                try await fixture.waitFor("B's Done blur before the later session", since: newDone, completedAt: {
+                    log.completionTime(for: [("uikit.end", nil), ("focus.observed", false)],
+                                       field: field, after: newDone)
+                }) {
+                    !newInput.isFirstResponder
+                        && log.contains("focus.observed", field: field, after: newDone, focused: false)
+                        && log.focus(field) == false
+                }
                 try await fixture.focus(field)
                 try fixture.replaceText("119,3371", field: field)
                 let laterDone = fixture.done()
