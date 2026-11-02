@@ -1792,6 +1792,7 @@ struct CardCenteringPrecisionNumberField: View {
             original.transaction(transaction).wrappedValue = text
             trace("draft.binding-returned")
         })
+    }
 
     private func commit() {
         trace("commit.enter")
