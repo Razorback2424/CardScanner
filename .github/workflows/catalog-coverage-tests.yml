@@ -73,7 +73,7 @@ jobs:
           with open(os.environ['GITHUB_ENV'], 'a') as output:
               output.write('CATALOG_TEST_DEVICE=' + phones[0]['udid'] + '\n')
           PY
-      # The extra repetitions belong to this bounded investigation, not every
+      # The extra selections belong to this bounded investigation, not every
       # unrelated catalog PR. No retry-until-green or simulator reset is used.
       - name: Record bounded centering Done comparisons
         if: github.head_ref == 'fix/centering-done-event-sequence'
@@ -83,6 +83,13 @@ jobs:
             --device "$CATALOG_TEST_DEVICE" \
             --derived-data "$RUNNER_TEMP/catalog-derived-data" \
             --output "$RUNNER_TEMP/centering-done-diagnostics"
+      - name: Retain completed centering comparisons before the combined run
+        if: always() && github.head_ref == 'fix/centering-done-event-sequence'
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-centering-comparisons
+          path: ${{ runner.temp }}/centering-done-diagnostics
+          retention-days: 14
       - name: Run scanner, catalog, printing and variant regressions
         run: |
           set -o pipefail
@@ -151,7 +158,8 @@ jobs:
         run: |
           python3 scripts/centering_done_diagnostics.py verify \
             --output "$RUNNER_TEMP/centering-done-diagnostics" \
-            --combined-log "$RUNNER_TEMP/catalog-native-tests.log"
+            --combined-log "$RUNNER_TEMP/catalog-native-tests.log" \
+            --combined-result-bundle "$RUNNER_TEMP/catalog-tests.xcresult"
       - name: Retain native test results
         if: always()
         uses: actions/upload-artifact@v4

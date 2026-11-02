@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-01
+**Audit date:** 2026-10-02; review evidence updated 2026-11-02
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-01
+## Current authority boundary — updated 2026-11-02
 
 **Centering Done event ownership — 2026-11-02:** the
 [centering repair ledger](../audits/centering-guided-repair.md#explicit-done-boundary-repair--2026-11-02)
@@ -15,8 +15,14 @@ supersedes PR #19's earlier queued/no-execution statement. Run 41384336534 at
 and combined selection; its combined method totals are 1,500 passed, one
 failed and two skipped. A focused untouched-Done failure also remains visible.
 This demonstrates a production event-sequencing defect, without attributing
-every historical French timeout to that cause. The isolated repair and exact
-native validation belong in that ledger; PR #19 remains draft and unmerged.
+every historical French timeout to that cause. The first repaired head
+`ecb4d6a` passes all nine sequencing methods and completes the combined XCTest
+selection with 1,508 passed / 2 skipped, but its workflow is not green: two
+focused readiness deadlines fail, one affected-method log line is interleaved,
+new removal-time publication warnings appear, and cancellation prevents native
+artifact retention. The ledger preserves these failures and the bounded
+production, timing and evidence corrections. Exact current-head validation is
+recorded in PR #19 and its Actions manifests; PR #19 remains draft and unmerged.
 
 **Exact Pokémon finish/pricing cases — 2026-11-01:** the
 [case matrix](../audits/catalog-pricing-cases-2026-11-01.md) extends the merged

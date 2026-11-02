@@ -1766,6 +1766,23 @@ extension EnvironmentValues {
 @MainActor
 final class CardCenteringPrecisionCommitAction {
     fileprivate weak var activeEditor: CardCenteringPrecisionEditor?
+    private var nextSessionToken: UInt64 = 0
+    private var latestBoundaries: [String: UInt64] = [:]
+
+    fileprivate func makeSessionToken() -> UInt64 {
+        nextSessionToken &+= 1
+        return nextSessionToken
+    }
+
+    fileprivate func consume(_ token: UInt64, field: String) -> Bool {
+        guard token >= latestBoundaries[field, default: 0] else { return false }
+        latestBoundaries[field] = token
+        return true
+    }
+
+    fileprivate func ownsBoundary(_ token: UInt64, field: String) -> Bool {
+        latestBoundaries[field] == token
+    }
 
     func commitActiveAndDismiss() {
         // Publishing may focus another field. Keep both commit and dismissal
@@ -1830,15 +1847,21 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
         }
     }
 
+    @MainActor
     private final class Session {
         let id: UInt64
         let inputID: ObjectIdentifier
+        let boundaryToken: UInt64
+        let commitAction: CardCenteringPrecisionCommitAction
         let context: Context
         let initialDisplay: String
         var consumed = false
 
-        init(id: UInt64, input: CardCenteringPrecisionTextInput, context: Context, initialDisplay: String) {
+        init(id: UInt64, input: CardCenteringPrecisionTextInput, context: Context,
+             commitAction: CardCenteringPrecisionCommitAction, initialDisplay: String) {
             self.id = id; self.inputID = ObjectIdentifier(input)
+            self.boundaryToken = commitAction.makeSessionToken()
+            self.commitAction = commitAction
             self.context = context; self.initialDisplay = initialDisplay
         }
     }
@@ -1859,6 +1882,7 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
     private var lastConsumedSessionID: UInt64 = 0
     private var observedFocus = false
     private var removed = false
+    private var nativeLifetime: UInt64 = 0
     private var displayedValue: Double?
 
     func configure(_ input: CardCenteringPrecisionTextInput, value: Double,
@@ -1886,12 +1910,25 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
 
     func appear(_ input: CardCenteringPrecisionTextInput) {
         guard self.input === input else { return }
+        nativeLifetime &+= 1
         removed = false
         observedFocus = input.isFirstResponder
         if session == nil, let context, let value = context.currentValue() {
             input.text = context.formatted(value)
         }
         record("view.appear")
+        if isEditing, !input.isFirstResponder {
+            let lifetime = nativeLifetime
+            // Reattachment may supersede the old removal's UI cleanup without
+            // starting another edit. Refresh this lifetime after reconciliation,
+            // provided no intervening refocus has established a new session.
+            DispatchQueue.main.async { [weak self, weak input] in
+                guard let self, let input, self.input === input,
+                      !removed, nativeLifetime == lifetime,
+                      session == nil, !input.isFirstResponder, isEditing else { return }
+                isEditing = false
+            }
+        }
     }
 
     func observeFocus(_ focused: Bool) {
@@ -1902,12 +1939,13 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
     }
 
     func begin(_ input: CardCenteringPrecisionTextInput, initialDisplay: String? = nil) {
-        guard !removed, self.input === input, let context else { return }
+        guard !removed, self.input === input, let context, let commitAction else { return }
         nextSessionID &+= 1
         let editing = Session(id: nextSessionID, input: input, context: context,
+                              commitAction: commitAction,
                               initialDisplay: initialDisplay ?? input.text ?? "")
         session = editing
-        commitAction?.activeEditor = self
+        commitAction.activeEditor = self
         record("editing.begin", detail: "session=\(editing.id)")
         isEditing = true
     }
@@ -1964,7 +2002,7 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
         // control. Its new session does not belong to this Done action.
         guard session === intended.session else { return }
         record("done.dismiss-requested", snapshot: intended)
-        input.resignFirstResponder()
+        _ = input.resignFirstResponder()
         record("done.focus-reset-returned", snapshot: intended)
     }
 
@@ -1977,15 +2015,32 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
     func disappear(_ input: CardCenteringPrecisionTextInput) {
         guard !removed, self.input === input else { return }
         let departing = snapshot(input)
-        // Keep the owned snapshot, then invalidate this lifetime before any
-        // publication can reenter. Dismantling is idempotent with disappearance.
+        let departingContext = departing?.session.context ?? context
+        let departingDraft = input.text
+        let departingFocus = observedFocus
+        let departingInputID = ObjectIdentifier(input)
+        let lifetime = nativeLifetime
+        // Native removal occurs inside SwiftUI reconciliation. Consume and
+        // validate its immutable edit now, but publish the departing model
+        // value only after that reconciliation has returned. Done and ordinary
+        // focus loss keep their synchronous commit boundary.
         removed = true
-        if let departing { commit(departing) }
         session = nil
         if commitAction?.activeEditor === self { commitAction?.activeEditor = nil }
-        isEditing = false
-        input.resignFirstResponder()
-        record("view.disappear")
+        let publication = departing.flatMap { commit($0, deferPublication: true) }
+        record("view.removal-captured", snapshot: departing, detail: "lifetime=\(lifetime)")
+        _ = input.resignFirstResponder()
+        // Retain the captured owner until completion: a weak reference could
+        // drop a legitimate removal commit when SwiftUI releases this editor.
+        DispatchQueue.main.async { [self] in
+            publication?()
+            if removed, nativeLifetime == lifetime, isEditing { isEditing = false }
+            // Teardown waits for this completion event, not merely native
+            // removal, so no queued commit outlives its owned test/view case.
+            departingContext?.trace?.record("view.disappear", field: departingContext?.field ?? "fixture",
+                focused: departingFocus, draft: departingDraft,
+                value: departingContext?.currentValue(), detail: "lifetime=\(lifetime) context=\(departingInputID)")
+        }
     }
 
     func detach(_ input: CardCenteringPrecisionTextInput) {
@@ -1996,36 +2051,41 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
         self.input = nil
     }
 
-    private func commit(_ intended: Snapshot) {
+    @discardableResult
+    private func commit(_ intended: Snapshot, deferPublication: Bool = false) -> (@MainActor () -> Void)? {
         let editing = intended.session
-        guard !editing.consumed else { return }
+        guard !editing.consumed else { return nil }
         editing.consumed = true
         // This also closes invalid and untouched drafts. A delayed older end
-        // cannot publish after a newer explicit boundary.
-        guard editing.id >= lastConsumedSessionID else { return }
+        // cannot publish after a newer explicit boundary, even if that field
+        // has been recreated with a different editor instance.
+        guard editing.id >= lastConsumedSessionID,
+              editing.commitAction.consume(editing.boundaryToken, field: editing.context.field) else { return nil }
         lastConsumedSessionID = editing.id
         record("commit.enter", snapshot: intended)
         record("commit.session-consumed", snapshot: intended)
         guard let authoritative = editing.context.currentValue() else {
             record("commit.context-invalid", snapshot: intended)
-            return
+            return nil
         }
-        let ownsDisplay = session === editing && input === intended.input
+        let ownsDisplay = !removed && session === editing && input === intended.input
         // Compare to the display the user actually entered, preserving the
         // full authoritative Double when that rounded text was untouched.
         guard intended.draft != editing.initialDisplay else {
             if ownsDisplay { inputReason = nil }
             record("commit.unchanged-display", snapshot: intended)
-            return
+            return nil
         }
         guard let parsed = CardCenteringPrecisionNumberField.parsedValue(intended.draft, locale: editing.context.locale) else {
+            record("commit.parse-invalid", snapshot: intended)
             if ownsDisplay {
                 inputReason = "Enter a finite number using your region’s decimal separator."
                 intended.input.text = editing.context.formatted(authoritative)
+                record("draft.restored-invalid")
+            } else {
+                record("draft.discarded-invalid", snapshot: intended)
             }
-            record("commit.parse-invalid", snapshot: intended)
-            record("draft.restored-invalid")
-            return
+            return nil
         }
         record("commit.parse-valid", snapshot: intended, detail: "parsed=\(parsed)")
         if ownsDisplay {
@@ -2033,25 +2093,46 @@ fileprivate final class CardCenteringPrecisionEditor: NSObject, ObservableObject
             intended.input.text = editing.context.formatted(authoritative)
             record("draft.restored-before-update")
         }
-        if parsed != authoritative {
-            record("commit.update-call", snapshot: intended, detail: "parsed=\(parsed)")
-            editing.context.update(parsed)
-            record("commit.update-returned", snapshot: intended)
+        let needsUpdate = parsed != authoritative
+        let publish: @MainActor () -> Void = { [self] in
+            guard editing.id == lastConsumedSessionID,
+                  editing.commitAction.ownsBoundary(editing.boundaryToken, field: editing.context.field) else {
+                record("commit.superseded", snapshot: intended)
+                return
+            }
+            guard let current = editing.context.currentValue() else {
+                record("commit.context-invalid", snapshot: intended)
+                return
+            }
+            // A non-text model action can also supersede a departing edit.
+            // Never replay an old removal over a newer authoritative value.
+            guard !deferPublication || current == authoritative || current == parsed else {
+                record("commit.superseded", snapshot: intended, detail: "authoritative value changed")
+                return
+            }
+            if needsUpdate, parsed != current {
+                record("commit.update-call", snapshot: intended, detail: "parsed=\(parsed)")
+                editing.context.update(parsed)
+                record("commit.update-returned", snapshot: intended)
+            }
+            // Read accepted geometry synchronously. Removal completions never
+            // format a control that could already belong to a newer draft.
+            if !deferPublication, !removed, session === editing, input === intended.input,
+               let accepted = editing.context.currentValue() {
+                intended.input.text = editing.context.formatted(accepted)
+                record("draft.formatted")
+            }
+            record("commit.exit", snapshot: intended)
         }
-        // Read back accepted geometry synchronously. A parsed number may have
-        // been rejected, and immediate refocus can precede SwiftUI's next body.
-        if session === editing, input === intended.input,
-           let accepted = editing.context.currentValue() {
-            intended.input.text = editing.context.formatted(accepted)
-            record("draft.formatted")
-        }
-        record("commit.exit", snapshot: intended)
+        if deferPublication { return publish }
+        publish()
+        return nil
     }
 
     private func record(_ name: String, snapshot: Snapshot? = nil, detail: String? = nil) {
         guard let context = snapshot?.session.context ?? context else { return }
         let ownership = snapshot.map {
-            "session=\($0.session.id) context=\(ObjectIdentifier($0.input))"
+            "session=\($0.session.id) boundary=\($0.session.boundaryToken) context=\(ObjectIdentifier($0.input))"
         }
         context.trace?.record(name, field: context.field, focused: observedFocus,
                               draft: snapshot?.draft ?? input?.text,

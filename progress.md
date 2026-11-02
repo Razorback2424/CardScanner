@@ -1,4 +1,4 @@
-# 2026-11-02 — Explicit centering Done boundary candidate (PR #19)
+# 2026-11-02 — Explicit centering Done boundary and native follow-up (PR #19)
 
 Rechecked remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520` and draft
 head `47279260010de4d6d1c4ab1c9062115334e0ae4d`. The actual logs from run
@@ -11,8 +11,28 @@ The precision field now captures an explicit per-edit commit boundary and
 keeps dismissal separate. Native end callbacks retain their own draft/context;
 ordinary blur and removal still commit. Locale parsing, full precision,
 unchanged/invalid handling and no update while typing are preserved. Seven
-additional native regressions and an explicit focused sequencing selection are
-prepared. Source/Python checks pass; repaired-head native execution is pending.
+additional native regressions and an explicit focused sequencing selection were
+executed at `ecb4d6a7d6cf108a06a4c7a5a1cacecb216f086a`. Run 41444747470 passes
+all nine sequencing methods and the native class (41 passed / 1 skipped).
+Affected XCTest reports 126 passed / 1 skipped, but an interleaved method line
+fails the exact-method gate. Combined XCTest completes 1,508 passed / 2 skipped;
+the job is then cancelled during result finalization and native upload fails.
+Two earlier focused localized attempts remain failed: required readiness events
+completed within two seconds, but their polling tasks resumed after the deadline.
+Eight new view-update publication warnings also require correction. These are
+not a successful workflow or a retained native result bundle.
+
+The follow-up keeps the two-second deadline and all original assertions, uses
+every required event's timestamp for readiness, and adds deadline-rejection
+coverage. Native removal consumes its immutable context before deferring only
+its model publication beyond SwiftUI reconciliation; per-field session fences
+protect replacement editors. Done and ordinary blur remain synchronous. The
+recorder reconciles exact method records from finalized result bundles, keeps
+all failures, consolidates redundant focused launches without omitting a case,
+and uploads completed comparisons before the original combined selection.
+The exact current-head validation receipt and artifact links are maintained in
+[draft PR #19](https://github.com/Razorback2424/CardScanner/pull/19); no earlier
+commit's result is substituted for final-head execution.
 One fresh pre-fix reproduction rerun again failed the rapid-refocus method in
 all three broader selections (combined: 1,500 passed / 1 failed / 2 skipped);
 its logs and native artifact `13142235545` are retained separately. No merge, deployment,

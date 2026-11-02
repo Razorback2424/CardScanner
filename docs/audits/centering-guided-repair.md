@@ -15,8 +15,14 @@ harmless flake.
 
 ### Explicit Done boundary repair — 2026-11-02
 
-**Status:** production repair and regression candidate prepared; native results
-for the repaired head are not yet available. PR #19 stays draft and unmerged.
+**Status:** the explicit Done repair has executed natively. Its first repaired
+run passes the sequencing methods but fails the overall validation gate for
+the separate readiness/evidence problems recorded below. The follow-up also
+corrects a native-removal publication warning found by that run. The exact
+current-head verdict, checkout SHA and artifact receipts are maintained in
+[PR #19's validation receipt](https://github.com/Razorback2424/CardScanner/pull/19)
+and the generated Actions manifests; source review alone is not a runtime pass.
+PR #19 stays draft and unmerged.
 Remote main and the starting PR head were rechecked as `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`
 and `47279260010de4d6d1c4ab1c9062115334e0ae4d`. No newer fix was present.
 
@@ -73,6 +79,76 @@ Attempt 2 retains native artifact `13142235545`, SHA-256
 `d958f0b8f2f1996835afc745a55ceafe774de15accff309b46e745dcc40576b3`;
 the original attempt's artifact remains separately available.
 
+#### First repaired native run — retained failed attempt
+
+[Run 41444747470, job 125274962125](https://github.com/Razorback2424/CardScanner/actions/runs/41444747470/job/125274962125)
+checked out repair commit `ecb4d6a7d6cf108a06a4c7a5a1cacecb216f086a` exactly.
+The job was **cancelled**, its execution gate **failed**, and its native
+artifact upload **failed**. Passing method totals do not make this a passing
+workflow:
+
+| Repaired-head selection | Methods | Passed | Failed methods | Skipped | Execution receipt |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Localized focused attempt 1 | 1 | 0 | 1 | 0 | Focus-readiness polling deadline |
+| Localized focused attempt 2 | 1 | 0 | 1 | 0 | Untouched-Done readiness polling deadline |
+| Localized focused attempt 3 | 1 | 1 | 0 | 0 | Exact method completion |
+| Focused sequencing/removal | 9 | 9 | 0 | 0 | All nine exact methods completed |
+| Complete native precision class | 42 | 41 | 0 | 1 | All 42 exact methods completed |
+| Affected centering/export suites | 127 | 126 | 0 | 1 | XCTest total; one completion line was interleaved, so the method gate failed |
+| Original combined selection | 1,510 | 1,508 | 0 | 2 | All methods completed; result finalization was cancelled |
+
+The preserved rapid-refocus trace commits A (`119,1193`) at 167.906 ms after
+Done at 160.196 ms, before requesting dismissal at 180.140 ms. Immediate
+refocus occurs at 287.764 ms with SwiftUI still reporting true. B's own Done
+at 341.519 ms commits `119,2297` at 350.633 ms; the first observed blur is only
+at 479.071 ms. The stale-focus regression delivers Done with focus false at
+1,491.180 ms and publishes at 1,510.091 ms, before focus true at 1,891.670 ms.
+The saved-old-end regression replays A's end at 1,392.173 ms without a second
+publication; B's legitimate blur at 1,506.189 ms commits B at 1,507.006 ms.
+These are production-component traces, not simulated commit implementations.
+
+The two focused failures remain failures in this receipt. Their traces identify
+an additional fixture timing defect: the waiter judged its own delayed resume
+time rather than the recorded completion time. In attempt 1, focus was observed
+at 1,176.348 ms, within the deadline that began after native focus returned at
+218.681 ms; the waiter resumed at 2,278.184 ms with `condition=true`. In attempt
+2, Done was requested at 2,591.300 ms, the unchanged guard ran at 2,602.600 ms,
+UIKit ended at 3,647.440 ms and SwiftUI observed blur at 3,649.689 ms. All required
+events were within two seconds, but the waiter resumed at 4,761.701 ms. The
+follow-up uses the latest timestamp of **every** required event from the same
+field/request, while still requiring the original live condition. Missing,
+contrary, stale or post-deadline events cannot satisfy it. The original two-second
+limit, observer-before-Done ordering and no-premature-update assertions remain.
+
+Eight new SwiftUI runtime warnings, each also reported by XCTest, occurred in
+context replacement and valid focused removal across the four broader phases.
+They identify the model publication in the fixture's `accept` callback: native
+removal was committing during SwiftUI reconciliation. The follow-up consumes
+the immutable removal snapshot synchronously, then publishes only that captured
+removal value outside the view-update transaction, with per-field session fences
+and context revalidation. Done and ordinary blur still commit synchronously.
+
+The affected-suite stdout split
+`testPrecisionDoneReentrantRepeatedActionAndRemovalPublishOnce` across an
+unrelated simulator message. Its pass is visible in the fragments and the other
+three selections, but the original exact-method gate correctly remained failed.
+The follow-up retains raw stdout and extracts exact method identities/statuses
+from each finalized `.xcresult`; it does not infer missing methods from totals.
+Missing or invalid result data and failures from either evidence source still
+fail verification.
+
+The combined XCTest summary finished at 13:02:20 UTC with 1,508 passes and two
+skips. Cancellation at 13:02:34 UTC interrupted result finalization after the
+35-minute job budget. The subsequent upload failed with `ENOENT` for a moving
+file inside `catalog-tests.xcresult/Staging`; only the separate census artifact
+survived. **No native result bundle from this candidate was successfully retained.**
+The decoded job log remains available at the job link and was inspected in full
+(SHA-256 `370c165692fcf6d8ebebfe32a4f403af3344b928f5ab517ddaff2f0836e609b9`).
+This evidence loss is a remaining limit of that attempt, not a successful upload.
+The follow-up combines the redundant focused launches into one fixed selection
+and uploads completed comparison bundles before starting the original combined
+selection. It does not increase the job or test timeouts or retry until green.
+
 #### Bounded production change
 
 Only the precision number input owns a native editing session. The enclosing
@@ -87,7 +163,11 @@ responder boundary. Other inputs retain their existing behavior.
 - Native resignation captures an immutable end event before UIKit can begin
   another edit. Delayed end callbacks carry that event; they never read the
   latest field or draft. Consumed/older sessions cannot publish again.
-- Ordinary blur and focused removal still commit valid edits. Invalid and
+- Ordinary blur and focused removal still commit valid edits. Removal consumes
+  its captured session immediately and publishes the validated captured value
+  after SwiftUI reconciliation; a later callback never reads a live draft.
+  Per-field boundary tokens also protect against replacement native editors.
+  Invalid and
   untouched drafts are consumed without publication. No global next-blur
   suppression is used. Typing alone only changes the native draft.
 - The existing locale parser and finite-number validation are unchanged.
@@ -109,20 +189,32 @@ precision/text/no-premature-update assertions remain, and the timeout remains
 two seconds. Seven additional methods exercise stale focus, immediate
 equivalent-value refocus, delayed old end callbacks, legitimate B blur,
 context replacement/invalidation, reentrant/repeated Done, removal, invalid
-and untouched drafts. Trace assertions compare session identity, exact values,
-callback counts and Done → consumption → update → dismissal ordering.
+and untouched drafts. The follow-up adds one exact readiness-deadline method
+and two native removal methods: a distinct editor's newer same-field boundary
+must suppress A, while a different field's boundary must preserve A's legitimate
+removal publication. Trace assertions compare native identity, session identity,
+exact values, callback counts and Done → consumption → update → dismissal order.
 
-The recorder keeps the three fixed localized attempts and adds one explicit
-`focused-sequencing` selection containing all nine sequencing/removal methods,
+The follow-up recorder runs one fixed `focused-regressions` selection containing
+the original localized method and every sequencing/removal/readiness regression,
 then the full native class and affected suites. The original combined selection
-is unchanged. Every selected method must have an actual completion record;
-missing/duplicate methods, unexpected skips and earlier failures remain gates.
-Each invocation retains its command, commit, toolchain, simulator state, log
-and `.xcresult`. Source selection currently discovers 42 native methods and
-127 affected methods. These are discovery counts, not native pass claims.
+is unchanged. Every selected method must have an exact completion record from
+stdout or a finalized result bundle; aggregate totals cannot supply missing
+methods. Missing/duplicate methods, unexpected skips, conflicting status and
+earlier failures remain gates. Each invocation records its command, commit,
+toolchain, simulator state, raw log, result extraction and `.xcresult`. Completed
+comparison bundles are uploaded before combined execution as well as in the
+final native artifact. The final head must execute this entire plan; its current
+receipt is linked from PR #19 rather than inferred from an earlier commit.
+Source discovery for this follow-up selects 13 focused methods, 45 native-class
+methods and 130 affected methods; the unchanged combined selection gains ten
+methods over the 1,503-method starting head. These are expected selection counts,
+not an assertion that the new head has passed.
 
 Local checks cover Python syntax, selection completeness and rejection of
 missing/failed/skipped/duplicate completion records, plus `git diff --check`.
+Nine persisted Python tests exercise exact result recovery, status conflicts,
+failure preservation, wrong-target/missing/duplicate cases and malformed data.
 This Linux authoring workspace has neither Swift nor Xcode. Native execution
 uses the existing GitHub Actions workflow with an exact-head checkout check;
 the unavailable local proxy was not bypassed. The hosted input regressions

@@ -74,7 +74,11 @@ final class CenteringNativePrecisionTests: XCTestCase {
                 // Baseline traces showed that refocusing after a fixed sleep
                 // could coalesce this blur and never execute the unchanged-
                 // display guard. Require the actual production path first.
-                try await fixture.waitFor("unchanged Done delivery, blur and commit guard", since: unchangedDone) {
+                try await fixture.waitFor("unchanged Done delivery, blur and commit guard", since: unchangedDone, completedAt: {
+                    log.completionTime(for: [("done.delivered", nil), ("uikit.end", nil),
+                                             ("focus.observed", false), ("commit.unchanged-display", nil)],
+                                       field: field, after: unchangedDone)
+                }) {
                     log.contains("done.delivered", field: field, after: unchangedDone)
                         && log.contains("uikit.end", field: field, after: unchangedDone)
                         && log.contains("focus.observed", field: field, after: unchangedDone, focused: false)
@@ -156,6 +160,30 @@ final class CenteringNativePrecisionTests: XCTestCase {
             events.contains {
                 $0.name == name && $0.field == field && $0.uptimeNanoseconds >= after
                     && (focused == nil || $0.focused == focused)
+            }
+        }
+
+        func completionTime(for required: [(name: String, focused: Bool?)], field: String, after: UInt64) -> UInt64? {
+            guard !required.isEmpty else { return nil }
+            var times: [UInt64] = []
+            for requirement in required {
+                // Use the latest event of this kind for this request. An older
+                // matching focus cannot hide a newer contrary focus or a late
+                // required event. The waiter's live condition is still required.
+                guard let event = events.filter({
+                    $0.name == requirement.name && $0.field == field && $0.uptimeNanoseconds >= after
+                }).max(by: { $0.uptimeNanoseconds < $1.uptimeNanoseconds }),
+                      requirement.focused == nil || event.focused == requirement.focused else { return nil }
+                times.append(event.uptimeNanoseconds)
+            }
+            return times.max()
+        }
+
+        func disappearance(of input: UITextField, field: String, after: UInt64 = 0) -> CardCenteringPrecisionTrace.Event? {
+            let identity = "context=\(ObjectIdentifier(input))"
+            return events.last {
+                $0.name == "view.disappear" && $0.field == field && $0.uptimeNanoseconds >= after
+                    && $0.detail?.contains(identity) == true
             }
         }
 
@@ -293,6 +321,8 @@ final class CenteringNativePrecisionTests: XCTestCase {
         private var host: UIViewController?
         private weak var previousKeyWindow: UIWindow?
         private var inputs: [String: UITextField] = [:]
+        private var auxiliaryHosts: [UIViewController] = []
+        private var auxiliaryInputs: [CardCenteringPrecisionTextInput] = []
         private var observations: [NSObjectProtocol] = []
         private var closed = false
 
@@ -341,7 +371,8 @@ final class CenteringNativePrecisionTests: XCTestCase {
                 observations.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { [weak self] note in
                     MainActor.assumeIsolated {
                         guard let self, let input = note.object as? UITextField,
-                              let field = self.inputs.first(where: { $0.value === input })?.key else { return }
+                              let field = self.inputs.first(where: { $0.value === input })?.key
+                                ?? self.auxiliaryInputs.first(where: { $0 === input })?.accessibilityLabel else { return }
                         self.log.trace.record(event, field: field, focused: input.isFirstResponder, draft: input.text)
                     }
                 })
@@ -364,6 +395,34 @@ final class CenteringNativePrecisionTests: XCTestCase {
             return true
         }
 
+        func mountAuxiliaryPosition() async throws -> CardCenteringPrecisionTextInput {
+            let parent = try XCTUnwrap(host), ownedWindow = try XCTUnwrap(window)
+            let probe = self.probe, field = self.probe.positionFieldID
+            let controller = UIHostingController(rootView:
+                CardCenteringPrecisionNumberField(label: "Replacement position", accessibilityName: field,
+                    value: probe.position, step: 0.1, currentValue: { probe.position },
+                    commitAction: probe.commitAction) { probe.accept($0, field: field) }
+                    .environment(\.locale, locale).environment(\.centeringPrecisionTrace, log.trace))
+            parent.addChild(controller)
+            controller.loadViewIfNeeded()
+            controller.view.frame = CGRect(x: 0, y: 440, width: 393, height: 200)
+            // A distinct real production editor is mounted before A starts.
+            // Native removal can then race with B without a test-only scheduler.
+            ownedWindow.addSubview(controller.view)
+            controller.didMove(toParent: parent)
+            auxiliaryHosts.append(controller)
+            controller.view.layoutIfNeeded()
+            var mounted: CardCenteringPrecisionTextInput?
+            try await waitFor("auxiliary production input mounted") {
+                mounted = self.textFields(in: controller.view).compactMap { $0 as? CardCenteringPrecisionTextInput }
+                    .first { $0.accessibilityLabel == field && $0.window === ownedWindow }
+                return mounted != nil
+            }
+            let input = try XCTUnwrap(mounted)
+            auxiliaryInputs.append(input)
+            return input
+        }
+
         func focus(_ field: String) async throws {
             let input = try input(field)
             let requested = DispatchTime.now().uptimeNanoseconds
@@ -371,7 +430,10 @@ final class CenteringNativePrecisionTests: XCTestCase {
             let success = input.becomeFirstResponder()
             log.trace.record("fixture.focus-returned", field: field, focused: input.isFirstResponder, detail: "success=\(success)")
             XCTAssertTrue(success, "\(log.caseID): \(field)")
-            try await waitFor("UIKit and SwiftUI focus: \(field)") {
+            try await waitFor("UIKit and SwiftUI focus: \(field)", completedAt: {
+                self.log.completionTime(for: [("uikit.begin", nil), ("focus.observed", true)],
+                                        field: field, after: requested)
+            }) {
                 input.isFirstResponder && self.log.focus(field) == true
                     && self.log.contains("uikit.begin", field: field, after: requested)
                     && self.log.contains("focus.observed", field: field, after: requested, focused: true)
@@ -380,6 +442,10 @@ final class CenteringNativePrecisionTests: XCTestCase {
 
         func replaceText(_ text: String, field: String) throws {
             let input = try input(field)
+            replaceText(text, in: input, field: field)
+        }
+
+        func replaceText(_ text: String, in input: UITextField, field: String) {
             XCTAssertTrue(input.isFirstResponder, "\(log.caseID): typing requires the intended native field")
             log.trace.record("fixture.type-request", field: field, focused: input.isFirstResponder, draft: text)
             input.selectedTextRange = input.textRange(from: input.beginningOfDocument, to: input.endOfDocument)
@@ -404,8 +470,8 @@ final class CenteringNativePrecisionTests: XCTestCase {
                 let satisfied = condition()
                 let observed = DispatchTime.now().uptimeNanoseconds
                 if satisfied, let eventTime = completedAt?(), eventTime <= deadline {
-                    // A recorded update proves when the commit happened even if
-                    // UIKit held the main actor before this waiter could resume.
+                    // Recorded events prove when the required state completed,
+                    // even if UIKit held the main actor before this waiter resumed.
                     log.trace.record("fixture.state-ready", detail: "\(state) completed_ns=\(eventTime) observedAfterDeadline=\(observed > deadline)")
                     return
                 }
@@ -441,25 +507,50 @@ final class CenteringNativePrecisionTests: XCTestCase {
             guard !closed else { return }
             closed = true
             log.trace.record("fixture.teardown-begin")
+            let ownedInputs = inputs.map { (field: $0.key, input: $0.value) }
+                + auxiliaryHosts.flatMap { controller in
+                    textFields(in: controller.view).compactMap { input in
+                        input.accessibilityLabel.map { (field: $0, input: input) }
+                    }
+                }
             host?.view.endEditing(true)
-            for input in inputs.values where input.isFirstResponder { input.resignFirstResponder() }
+            for (_, input) in ownedInputs where input.isFirstResponder { input.resignFirstResponder() }
+            var removalFloors: [ObjectIdentifier: UInt64] = [:]
+            let auxiliaryRemoval = DispatchTime.now().uptimeNanoseconds
+            for controller in auxiliaryHosts {
+                for input in textFields(in: controller.view) where input.window != nil {
+                    removalFloors[ObjectIdentifier(input)] = auxiliaryRemoval
+                }
+                controller.willMove(toParent: nil)
+                controller.view.removeFromSuperview()
+                controller.removeFromParent()
+            }
             do {
                 try await waitFor("owned native and SwiftUI blur") {
-                    self.inputs.allSatisfy { field, input in
-                        !input.isFirstResponder && (self.log.focus(field) == false || self.log.contains("view.disappear", field: field))
+                    ownedInputs.allSatisfy { field, input in
+                        !input.isFirstResponder && (self.log.focus(field) == false || self.log.disappearance(of: input, field: field) != nil)
                     }
                 }
             } catch { log.trace.record("fixture.teardown-blur-failed", detail: String(describing: error)) }
+            let removal = DispatchTime.now().uptimeNanoseconds
+            for (_, input) in ownedInputs where input.window != nil {
+                removalFloors[ObjectIdentifier(input)] = removal
+            }
             probe.visible = false
             do {
                 try await waitFor("owned fields disappeared") {
-                    self.inputs.keys.allSatisfy { self.log.contains("view.disappear", field: $0) }
+                    ownedInputs.allSatisfy { field, input in
+                        self.log.disappearance(of: input, field: field,
+                            after: removalFloors[ObjectIdentifier(input)] ?? 0) != nil
+                    }
                 }
             } catch { log.trace.record("fixture.teardown-disappearance-failed", detail: String(describing: error)) }
             window?.isHidden = true
             window?.rootViewController = nil
             host = nil
             inputs.removeAll()
+            auxiliaryHosts.removeAll()
+            auxiliaryInputs.removeAll()
             if let previousKeyWindow, !previousKeyWindow.isHidden, previousKeyWindow.windowScene != nil {
                 previousKeyWindow.makeKey()
             }
@@ -472,6 +563,46 @@ final class CenteringNativePrecisionTests: XCTestCase {
 
         private func textFields(in view: UIView) -> [UITextField] {
             (view as? UITextField).map { [$0] } ?? view.subviews.flatMap { textFields(in: $0) }
+        }
+    }
+
+    @MainActor func testPrecisionEditingReadinessRequiresEveryCurrentEventWithinOriginalDeadline() throws {
+        let requested: UInt64 = 1_000
+        let deadline = requested + PrecisionInteractionFixture.deadlineNanoseconds
+        let field = "Current input"
+        let groups: [[(name: String, focused: Bool?)]] = [
+            [("uikit.begin", nil), ("focus.observed", true)],
+            [("done.delivered", nil), ("uikit.end", nil),
+             ("focus.observed", false), ("commit.unchanged-display", nil)]
+        ]
+        for required in groups {
+            let log = PrecisionInteractionLog("readiness-event-deadline")
+            func event(_ index: Int, at time: UInt64, targetField: String? = nil,
+                       focused: Bool? = nil) -> CardCenteringPrecisionTrace.Event {
+                .init(uptimeNanoseconds: time, name: required[index].name, field: targetField ?? field,
+                      focused: focused ?? required[index].focused, draft: nil, value: nil, detail: nil)
+            }
+            let valid = required.indices.map { event($0, at: requested + UInt64($0) + 1) }
+            log.events = valid
+            XCTAssertEqual(log.completionTime(for: required, field: field, after: requested),
+                           requested + UInt64(required.count))
+            for index in required.indices {
+                log.events = valid.enumerated().filter { $0.offset != index }.map { $0.element }
+                log.events.append(event(index, at: requested - 1))
+                log.events.append(event(index, at: requested + 1, targetField: "Another input"))
+                XCTAssertNil(log.completionTime(for: required, field: field, after: requested),
+                             "A missing current-request event cannot borrow a stale or other-field event")
+                log.events = valid + [event(index, at: deadline + 1)]
+                let late = try XCTUnwrap(log.completionTime(for: required, field: field, after: requested))
+                XCTAssertEqual(late, deadline + 1)
+                XCTAssertFalse(late <= deadline, "The original waitFor deadline must reject any late required event")
+                if let focused = required[index].focused {
+                    log.events = valid + [event(index, at: requested + 100, focused: !focused)]
+                    XCTAssertNil(log.completionTime(for: required, field: field, after: requested),
+                                 "An older matching focus cannot override a newer contrary focus")
+                    XCTAssertEqual(log.focus(field), !focused)
+                }
+            }
         }
     }
 
@@ -822,6 +953,117 @@ final class CenteringNativePrecisionTests: XCTestCase {
                 await fixture.close()
                 throw error
             }
+        }
+    }
+
+    @MainActor func testPrecisionEditingQueuedRemovalCannotOverwriteNewSameFieldBoundary() async throws {
+        var logs: [PrecisionInteractionLog] = []
+        defer { logs.forEach { $0.dump(); XCTAssertTrue($0.lateEvents.isEmpty, $0.caseID) } }
+        let cases: [(name: String, text: String?, expected: Double?)] = [
+            ("valid", "119,2297", 119.2297), ("invalid", "-", nil), ("untouched", nil, nil)
+        ]
+        for item in cases {
+            let log = PrecisionInteractionLog("fr_FR/queued-removal+new-editor/\(item.name)")
+            logs.append(log)
+            let fixture = PrecisionInteractionFixture(log: log)
+            let field = PrecisionInteractionProbe.positionID
+            do {
+                try await fixture.mount()
+                let newInput = try await fixture.mountAuxiliaryPosition()
+                try await fixture.focus(field)
+                let oldInput = try fixture.nativeInput(field)
+                XCTAssertFalse(oldInput === newInput, "The replacement must own a distinct production editor")
+                try fixture.replaceText("119,1193", field: field)
+                let oldEnd = try XCTUnwrap(oldInput.captureEndEditing())
+                XCTAssertTrue(fixture.probe.mutations.isEmpty)
+
+                let removal = DispatchTime.now().uptimeNanoseconds
+                oldInput.removeFromSuperview()
+                XCTAssertNil(oldInput.window)
+                XCTAssertTrue(log.contains("view.removal-captured", field: field, after: removal))
+                XCTAssertNil(log.disappearance(of: oldInput, field: field, after: removal))
+                XCTAssertTrue(fixture.probe.mutations.isEmpty, "Native removal must capture A before deferred publication")
+                // No suspension: B consumes its own boundary before A's queued
+                // removal finalizer runs. Both editors address the same field.
+                XCTAssertTrue(newInput.becomeFirstResponder())
+                if let text = item.text { fixture.replaceText(text, in: newInput, field: field) }
+                XCTAssertTrue(fixture.probe.mutations.isEmpty, "Typing B alone cannot publish A or B")
+                let newDone = fixture.done()
+                oldEnd()
+                XCTAssertEqual(fixture.probe.mutations.count, item.expected == nil ? 0 : 1)
+                let consumed = log.events.filter {
+                    $0.name == "commit.session-consumed" && $0.field == field && $0.uptimeNanoseconds >= removal
+                }
+                XCTAssertEqual(consumed.count, 2, "Removal A and Done B must each consume one owned session")
+                XCTAssertTrue(consumed.first?.detail?.contains("context=\(ObjectIdentifier(oldInput))") == true)
+                XCTAssertTrue(consumed.last?.detail?.contains("context=\(ObjectIdentifier(newInput))") == true)
+
+                try await fixture.waitFor("queued old editor removal completed", since: removal, completedAt: {
+                    log.disappearance(of: oldInput, field: field, after: removal)?.uptimeNanoseconds
+                }) { log.disappearance(of: oldInput, field: field, after: removal) != nil }
+                XCTAssertTrue(log.contains("commit.superseded", field: field, after: removal))
+                let expectedValue = item.expected ?? PrecisionInteractionProbe.initialPosition
+                XCTAssertEqual(fixture.probe.position, expectedValue, accuracy: 1e-10)
+                XCTAssertEqual(newInput.text, expectedValue.formatted(.number.precision(.fractionLength(2)).locale(fixture.locale)))
+                if let expected = item.expected {
+                    try await fixture.expectMutation(0, field: field, value: expected, requested: newDone)
+                    try log.assertCommitOrder(field: field, requested: newDone, draft: try XCTUnwrap(item.text))
+                }
+                oldEnd()
+                fixture.done()
+                XCTAssertEqual(fixture.probe.mutations.count, item.expected == nil ? 0 : 1,
+                               "A cannot publish after B's valid, invalid or unchanged boundary")
+                XCTAssertEqual(fixture.probe.angle, PrecisionInteractionProbe.initialAngle, accuracy: 1e-12)
+                await fixture.close()
+                XCTAssertEqual(fixture.probe.mutations.count, item.expected == nil ? 0 : 1)
+            } catch {
+                await fixture.close()
+                throw error
+            }
+        }
+    }
+
+    @MainActor func testPrecisionEditingQueuedRemovalStillPublishesAfterDifferentFieldBoundary() async throws {
+        let log = PrecisionInteractionLog("fr_FR/queued-position-removal+angle-Done")
+        let fixture = PrecisionInteractionFixture(log: log)
+        let position = PrecisionInteractionProbe.positionID, angle = PrecisionInteractionProbe.angleID
+        defer { log.dump(); XCTAssertTrue(log.lateEvents.isEmpty, log.caseID) }
+        do {
+            try await fixture.mount()
+            try await fixture.focus(position)
+            let oldInput = try fixture.nativeInput(position), angleInput = try fixture.nativeInput(angle)
+            try fixture.replaceText("119,1193", field: position)
+            let oldEnd = try XCTUnwrap(oldInput.captureEndEditing())
+            XCTAssertTrue(fixture.probe.mutations.isEmpty)
+            let removal = DispatchTime.now().uptimeNanoseconds
+            oldInput.removeFromSuperview()
+            XCTAssertNil(oldInput.window)
+            XCTAssertNil(log.disappearance(of: oldInput, field: position, after: removal))
+            XCTAssertTrue(fixture.probe.mutations.isEmpty)
+            // A newer boundary in another field must not invalidate position A.
+            XCTAssertTrue(angleInput.becomeFirstResponder())
+            fixture.replaceText("-0,2573", in: angleInput, field: angle)
+            XCTAssertTrue(fixture.probe.mutations.isEmpty)
+            let angleDone = fixture.done()
+            oldEnd()
+            XCTAssertEqual(fixture.probe.mutations.count, 1)
+            XCTAssertEqual(fixture.probe.mutations.first?.field, angle)
+            try await fixture.expectMutation(0, field: angle, value: -0.2573, requested: angleDone)
+            try await fixture.waitFor("position removal publication completed", since: removal, completedAt: {
+                log.disappearance(of: oldInput, field: position, after: removal)?.uptimeNanoseconds
+            }) { log.disappearance(of: oldInput, field: position, after: removal) != nil }
+            try await fixture.expectMutation(1, field: position, value: 119.1193, requested: removal)
+            XCTAssertEqual(fixture.probe.mutations.map(\.field), [angle, position])
+            XCTAssertEqual(fixture.probe.position, 119.1193, accuracy: 1e-10)
+            XCTAssertEqual(fixture.probe.angle, -0.2573, accuracy: 1e-10)
+            XCTAssertFalse(log.contains("commit.superseded", field: position, after: removal))
+            oldEnd()
+            fixture.done()
+            await fixture.close()
+            XCTAssertEqual(fixture.probe.mutations.count, 2, "Each field's own boundary must publish exactly once")
+        } catch {
+            await fixture.close()
+            throw error
         }
     }
 

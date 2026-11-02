@@ -148,8 +148,128 @@ def execution_summary(log: str, expected: set[str]) -> dict:
     }
 
 
+def xcresult_completions(payload: dict) -> list[dict]:
+    """Read exact XCTest case nodes; never infer methods from suite totals."""
+    if not isinstance(payload, dict):
+        raise ValueError("xcresulttool output is not an object")
+    roots = payload.get("testNodes")
+    if not isinstance(roots, list):
+        raise ValueError("xcresulttool output has no testNodes array")
+    records = []
+
+    def visit(node: dict, bundle: str | None = None) -> None:
+        if not isinstance(node, dict):
+            raise ValueError("Malformed xcresult test node")
+        if node.get("nodeType") in ("Unit test bundle", "UI test bundle"):
+            bundle_name = node.get("name")
+            if not isinstance(bundle_name, str):
+                raise ValueError("Malformed xcresult test bundle name")
+            bundle = bundle_name.removesuffix(".xctest")
+        if node.get("nodeType") == "Test Case":
+            if bundle != "TradingCardScannerTests":
+                return
+            identifier = node.get("nodeIdentifier", "")
+            if not isinstance(identifier, str):
+                raise ValueError("Malformed xcresult case identifier")
+            match = re.fullmatch(r"(?:TradingCardScannerTests[./])?(\w+)/(test\w+)(?:\(\))?", identifier)
+            if not match:
+                raise ValueError(f"Unrecognized XCTest case identifier: {identifier!r}")
+            result = node.get("result")
+            if not isinstance(result, str):
+                raise ValueError("Malformed xcresult case result")
+            status = {"Passed": "passed", "Failed": "failed", "Skipped": "skipped"}.get(result)
+            if status is None:
+                raise ValueError(f"Unrecognized XCTest case result: {identifier!r}: {result!r}")
+            records.append({"test": f"{match[1]}/{match[2]}", "status": status,
+                            "identifier": identifier, "identifier_url": node.get("nodeIdentifierURL"),
+                            "duration": node.get("duration"), "source": "xcresulttool"})
+            return
+        children = node.get("children", [])
+        if not isinstance(children, list):
+            raise ValueError("Malformed xcresult children")
+        for child in children:
+            visit(child, bundle)
+
+    for node in roots:
+        visit(node)
+    if not records:
+        raise ValueError("xcresulttool reported no exact TradingCardScannerTests cases")
+    return records
+
+
+def reconcile_xcresult(summary: dict, expected: set[str], bundle: Path, output: Path) -> dict:
+    """Keep stdout intact and reconcile it with finalized per-method results.
+
+    Apple documents this command in the Xcode 16.3 release notes. The testNodes /
+    Test Case / nodeIdentifier contract is also used by Chromium's Xcode16LogParser.
+    Unknown schema, extraction failures, disagreement and duplicate runs fail closed.
+    """
+    command = ["xcrun", "xcresulttool", "get", "test-results", "tests", "--path", str(bundle)]
+    receipt = {"command": command, "bundle": str(bundle), "status": "unavailable"}
+    summary["stdout_missing"] = list(summary["missing"])
+    summary["status_source"] = "stdout"
+    summary["result_evidence_errors"] = []
+    summary["xcresult_counts"] = None
+    summary["recovered_from_xcresult"] = []
+    raw_path = output.with_name(output.name + "-tests.json")
+    error_path = output.with_name(output.name + "-stderr.log")
+    receipt_path = output.with_name(output.name + "-receipt.json")
+    try:
+        # Info.plist is necessary but not sufficient: successful extraction and
+        # exact terminal case nodes are still required. Never inspect Staging.
+        if not (bundle / "Info.plist").is_file():
+            raise ValueError("No finalized result-bundle Info.plist")
+        with raw_path.open("w") as stdout, error_path.open("w") as stderr:
+            process = subprocess.run(command, stdout=stdout, stderr=stderr, text=True, timeout=60)
+        receipt["exit_code"] = process.returncode
+        receipt["raw_json"] = str(raw_path)
+        receipt["stderr"] = str(error_path)
+        if process.returncode != 0:
+            raise ValueError(f"xcresulttool exited {process.returncode}")
+        records = xcresult_completions(json.loads(raw_path.read_text()))
+        receipt["status"] = "extracted"
+        receipt["case_count"] = len(records)
+        summary["xcresult_completed"] = records
+        statuses = Counter(item["status"] for item in records)
+        summary["xcresult_counts"] = {"executed": len(records),
+            **{name: statuses[name] for name in ("passed", "failed", "skipped")}}
+        by_bundle: dict[str, list[dict]] = {}
+        by_stdout: dict[str, list[dict]] = {}
+        for item in records:
+            by_bundle.setdefault(item["test"], []).append(item)
+        for item in summary["completed"]:
+            by_stdout.setdefault(item["test"], []).append(item)
+        conflicts = sorted(name for name in by_bundle.keys() & by_stdout.keys()
+                           if {item["status"] for item in by_bundle[name]}
+                           != {item["status"] for item in by_stdout[name]})
+        if conflicts:
+            summary["result_evidence_errors"].append({"status_conflicts": conflicts})
+        summary["missing"] = sorted(expected - by_bundle.keys())
+        summary["duplicate_completions"] = sorted(set(summary["duplicate_completions"]) |
+            {name for name, items in by_bundle.items() if len(items) > 1} |
+            {name for name, items in by_stdout.items() if len(items) > 1})
+        summary["required_failures"] = sorted(set(summary["required_failures"]) |
+            {item["test"] for item in records if item["status"] == "failed"} |
+            {item["test"] for item in summary["completed"] if item["status"] == "failed"})
+        summary["unexpected_skips"] = sorted(set(summary["unexpected_skips"]) |
+            {item["test"] for item in records if item["test"] in expected - ALLOWED_SKIPS and item["status"] == "skipped"})
+        summary["recovered_from_xcresult"] = sorted(set(summary["stdout_missing"]) - set(summary["missing"]))
+        summary["status_source"] = "stdout_and_exact_xcresult_cases"
+        final = summary["final_suite_summary"]
+        if final and final["failure_assertions"]:
+            summary["result_evidence_errors"].append("The final stdout suite reports failure assertions")
+        if final and final["executed"] != len(records):
+            summary["result_evidence_errors"].append("Final suite total and exact xcresult case count disagree")
+    except (OSError, ValueError, subprocess.TimeoutExpired) as error:
+        receipt["error"] = str(error)
+        summary["result_evidence_errors"].append(str(error))
+    write_json(receipt_path, receipt)
+    summary["xcresult_extraction"] = receipt
+    return summary
+
+
 def complete_and_successful(summary: dict) -> bool:
-    return not any(summary[key] for key in ("missing", "duplicate_completions", "required_failures", "unexpected_skips"))
+    return not any(summary.get(key) for key in ("missing", "duplicate_completions", "required_failures", "unexpected_skips", "result_evidence_errors"))
 
 
 def simulator_state(device_id: str) -> dict:
@@ -168,8 +288,9 @@ def record(args: argparse.Namespace) -> int:
     if manifest_path.exists():
         raise ValueError(f"Refusing to overwrite prior evidence: {manifest_path}")
     plan = [
-        ("focused-1", (EXACT,)), ("focused-2", (EXACT,)), ("focused-3", (EXACT,)),
-        ("focused-sequencing", focused_sequencing_tests()),
+        # One focused launch retains every explicit regression while leaving
+        # the job budget for the complete class, affected and combined runs.
+        ("focused-regressions", (EXACT, *focused_sequencing_tests())),
         ("native-class", (NATIVE,)), ("affected-suites", AFFECTED_CLASSES),
     ]
     manifest = {
@@ -178,7 +299,7 @@ def record(args: argparse.Namespace) -> int:
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "toolchain": subprocess.check_output(["xcodebuild", "-version"], text=True).strip(),
         "simulator_policy": "Existing selected simulator, reused across attempts; this recorder never erases, shuts down, or resets it.",
-        "attempt_policy": "Three localized exact-test attempts, one focused sequencing selection, one full class, one affected selection; every attempt is retained regardless of success.",
+        "attempt_policy": "One focused selection containing the localized exact test and every sequencing regression, one full class, one affected selection; every attempt is retained regardless of success.",
         "planned_attempts": [name for name, _ in plan],
         "attempts": [],
     }
@@ -215,7 +336,9 @@ def record(args: argparse.Namespace) -> int:
                 print(line, end="", flush=True)
             return_code = process.wait()
         log = log_path.read_text()
-        summary = execution_summary(log, expected_tests(selections))
+        expected = expected_tests(selections)
+        summary = reconcile_xcresult(execution_summary(log, expected), expected,
+                                    output / f"{name}.xcresult", output / f"{name}-xcresult")
         (output / f"{name}-keyboard.log").write_text("\n".join(line for line in log.splitlines() if KEYBOARD.search(line)) + "\n")
         attempt.update({
             "status": "complete", "finished_utc": utc_now(),
@@ -226,7 +349,7 @@ def record(args: argparse.Namespace) -> int:
         write_json(manifest_path, manifest)
         passed = return_code == 0 and complete_and_successful(summary)
         failed |= not passed
-        print(f"CENTERING_COMPARISON_END {name} {json.dumps({'exit_code': return_code, 'duration_seconds': attempt['duration_seconds'], **{key: summary[key] for key in ('counts', 'counts_source', 'completion_record_counts', 'final_suite_summary', 'count_discrepancies')}, 'execution_verified': passed, 'simulator_after': attempt['simulator_after']})}", flush=True)
+        print(f"CENTERING_COMPARISON_END {name} {json.dumps({'exit_code': return_code, 'duration_seconds': attempt['duration_seconds'], **{key: summary[key] for key in ('counts', 'counts_source', 'completion_record_counts', 'final_suite_summary', 'count_discrepancies', 'status_source', 'xcresult_counts', 'stdout_missing', 'recovered_from_xcresult', 'missing', 'result_evidence_errors')}, 'execution_verified': passed, 'simulator_after': attempt['simulator_after']})}", flush=True)
     manifest["finished_utc"] = utc_now()
     write_json(manifest_path, manifest)
     return int(failed)
@@ -244,12 +367,15 @@ def verify(args: argparse.Namespace) -> int:
             problems.append(f"{attempt['name']}: failed or missing required executed tests")
     if not args.combined_log.exists():
         problems.append("Combined selection has no retained log; no execution is established")
-    combined = execution_summary(args.combined_log.read_text() if args.combined_log.exists() else "", expected_tests(COMBINED_CLASSES))
+    expected = expected_tests(COMBINED_CLASSES)
+    combined = reconcile_xcresult(
+        execution_summary(args.combined_log.read_text() if args.combined_log.exists() else "", expected),
+        expected, args.combined_result_bundle, args.output / "combined-xcresult")
     write_json(args.output / "combined-execution.json", combined)
     if not complete_and_successful(combined):
         problems.append("Combined selection failed or did not execute every relevant test method")
     print(json.dumps({"diagnostic_attempts": len(manifest["attempts"]), "combined_counts": combined["counts"],
-                      **{key: combined[key] for key in ('counts_source', 'completion_record_counts', 'final_suite_summary', 'count_discrepancies')},
+                      **{key: combined[key] for key in ('counts_source', 'completion_record_counts', 'final_suite_summary', 'count_discrepancies', 'status_source', 'xcresult_counts', 'stdout_missing', 'recovered_from_xcresult', 'missing', 'result_evidence_errors')},
                       "problems": problems}, indent=2))
     return int(bool(problems))
 
@@ -264,6 +390,7 @@ def main() -> int:
     check = commands.add_parser("verify")
     check.add_argument("--output", required=True, type=Path)
     check.add_argument("--combined-log", required=True, type=Path)
+    check.add_argument("--combined-result-bundle", required=True, type=Path)
     args = parser.parse_args()
     return record(args) if args.command == "record" else verify(args)
 
