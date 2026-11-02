@@ -1,5 +1,151 @@
 import XCTest
+import SwiftData
 @testable import TradingCardScanner
+
+/// Expectations come from the original BOM CSV, independently of the runtime table.
+final class PokemonFinishEvidenceTests: XCTestCase {
+    private func ledger() throws -> [[String: String]] {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        let text = try String(contentsOf: root.appendingPathComponent("TestFixtures/TradingCards/PokemonFinishEvidence/confirmed_repairs.csv"), encoding: .utf8)
+            .replacingOccurrences(of: "\u{feff}", with: "")
+        var table: [[String]] = [], row: [String] = [], cell = "", quoted = false
+        var chars = Array(text).makeIterator()
+        while let c = chars.next() {
+            if c == "\"" { quoted.toggle() }
+            else if c == "," && !quoted { row.append(cell); cell = "" }
+            else if (c == "\n" || c == "\r\n") && !quoted {
+                row.append(cell); table.append(row); row = []; cell = ""
+            } else { cell.append(c) }
+        }
+        if !cell.isEmpty { row.append(cell); table.append(row) }
+        let headers = try XCTUnwrap(table.first)
+        return table.dropFirst().map { Dictionary(uniqueKeysWithValues: zip(headers, $0)) }
+    }
+
+    private func snapshot() async throws -> PokemonChecklistSnapshot {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let loaded = await PokemonChecklistStore(root: root, bundle: .main).bundledSnapshot()
+        return try XCTUnwrap(loaded)
+    }
+
+    private func card(_ id: String, in snapshot: PokemonChecklistSnapshot) throws -> TCGdexCard {
+        let parts = id.split(separator: "-", maxSplits: 1).map(String.init)
+        return try XCTUnwrap(PokemonOfflineCardFactory.card(in: snapshot, providerSetID: parts[0],
+            localID: parts[1], expectedOfficialCount: snapshot.entry(forProviderID: parts[0])?.officialCount))
+    }
+
+    func testEveryLedgerMembershipThroughBundledLoaderFactoryAndResolver() async throws {
+        let snapshot = try await snapshot()
+        let rows = try ledger()
+        XCTAssertEqual(rows.count, 277)
+        XCTAssertEqual(Set(rows.compactMap { $0["provider_id"] }).count, 277)
+        var memberships = 0
+        for row in rows {
+            let id = try XCTUnwrap(row["provider_id"])
+            let card = try card(id, in: snapshot)
+            let entry = try XCTUnwrap(snapshot.entry(forProviderID: card.set.id))
+            let slots = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID)).filter { $0.providerID == id }
+            XCTAssertEqual(Set(slots.map(\.id)).count, slots.count, id)
+            XCTAssertEqual(Set(slots.compactMap(\.masterSetVariant)).count, slots.count, id)
+            let options = VariantResolver.options(for: IdentifiedCard.pokemon(card, setCode: entry.set.code).variantEvidence)
+            for finish in try XCTUnwrap(row["required_minimum_finishes"]).components(separatedBy: "; ") {
+                XCTAssertTrue(slots.contains { $0.masterSetVariant?.id == finish }, "\(id) missing retained \(finish)")
+                XCTAssertTrue(options.contains { $0.id == finish }, "\(id) missing resolved \(finish)")
+            }
+            memberships += Int(row["missing_finish_count"]!)!
+        }
+        XCTAssertEqual(memberships, 302)
+    }
+
+    func testExactIdentitiesControlsAndExcludedPrintings() async throws {
+        let snapshot = try await snapshot()
+        for (id, expected) in [("xy12-80", ["normal", "reverse"]), ("xy12-108", ["normal", "holo"]),
+                               ("xy12-11", ["normal", "holo", "reverse"]), ("sm6-1", ["normal", "reverse"]),
+                               ("sm6-31", ["normal", "holo"]), ("dv1-21", ["normal", "holo"]),
+                               ("det1-10", ["normal", "holo"])] {
+            let value = try card(id, in: snapshot)
+            XCTAssertEqual(value.id, id)
+            XCTAssertEqual(Set(value.catalogVariants.map(\.id)), Set(expected), id)
+            XCTAssertTrue(value.catalogVariants.allSatisfy { ["normal", "holo", "reverse"].contains($0.id) })
+            XCTAssertNil(value.pricing)
+        }
+        for id in (109...113).map({ "xy12-\($0)" }) + (132...146).map({ "sm6-\($0)" }) {
+            XCTAssertEqual(try card(id, in: snapshot).catalogVariants, [.normal], id)
+        }
+        XCTAssertEqual(try card("dv1-20", in: snapshot).catalogVariants.count, 2, "No stamped/Cosmos/World Championship additions")
+    }
+
+    func testMissingEvidenceNeverBecomesNormalAndIncompleteSingletonAcceptsOnlySupportedLock() throws {
+        let empty = TCGdexCard(id: "fixture-1", localId: "1", name: "Unknown", image: nil, rarity: nil,
+            set: .init(id: "fixture", name: "Fixture", cardCount: .init(total: 1, official: 1)),
+            variants: nil, pricing: nil, variantsDetailed: nil)
+        XCTAssertTrue(PokemonMasterSetDefinition.requiredVariants(for: empty).isEmpty)
+        XCTAssertTrue(empty.catalogVariants.isEmpty)
+        let partial = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1", catalogVariants: [.holo],
+            physicalCoverageVerified: false, explicitMembershipSupported: true)
+        XCTAssertEqual(VariantResolver.resolve(partial), .needsChoice(options: [.holo], lockDidNotApply: nil))
+        XCTAssertEqual(VariantResolver.resolve(partial, finishLock: PhysicalVariant.holo), .resolved(.init(variant: .holo, resolution: .finishLock)))
+        XCTAssertEqual(VariantResolver.resolveAcquisition(partial, printedEdition: .absent, finishLock: .init(finish: .holo)),
+            .resolved(.init(variant: .holo, resolution: .finishLock)))
+        XCTAssertEqual(VariantResolver.resolve(partial, finishLock: PhysicalVariant.normal), .needsChoice(options: [.holo], lockDidNotApply: .init(finish: .normal)))
+        let verified = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1", catalogVariants: [.normal])
+        XCTAssertEqual(VariantResolver.resolve(verified), .resolved(.init(variant: .normal, resolution: .uniqueInCatalog)))
+        let silent = IdentifiedCard.pokemon(empty, setCode: "FIX").variantEvidence
+        XCTAssertTrue(VariantResolver.options(for: silent).isEmpty)
+    }
+
+    func testReviewedMinimumDoesNotCertifyRetainedNormalOrExhaustiveCoverage() async throws {
+        let snapshot = try await snapshot()
+        let value = try card("dv1-21", in: snapshot)
+        let evidence = IdentifiedCard.pokemon(value, setCode: "DRV").variantEvidence
+        XCTAssertFalse(evidence.physicalCoverageVerified)
+        XCTAssertEqual(VariantResolver.options(for: evidence), [.holo])
+        XCTAssertEqual(VariantResolver.resolve(evidence), .needsChoice(options: [.holo], lockDidNotApply: nil))
+        XCTAssertEqual(VariantResolver.resolve(evidence, finishLock: PhysicalVariant.holo), .resolved(.init(variant: .holo, resolution: .finishLock)))
+        XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: "dv1-21", variant: .normal))
+        XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: "xy12-80", variant: .normal))
+    }
+
+    func testOldDownloadRefreshAndReopenPreserveMinimumAndUnrelatedData() async throws {
+        let bundled = try await snapshot()
+        let entry = try XCTUnwrap(bundled.entry(forProviderID: "xy12"))
+        var old = try XCTUnwrap(bundled.checklist(for: entry.set.catalogID)).filter { $0.masterSetVariant == .normal }
+        for i in old.indices { old[i].isSoleSlotForCard = true }
+        let other = try XCTUnwrap(bundled.entry(forProviderID: "sm6"))
+        let unrelated = try XCTUnwrap(bundled.checklist(for: other.set.catalogID))
+        let stale = PokemonChecklistSnapshot(manifest: .init(schemaVersion: 1, rulesVersion: 1, generatedAt: .now,
+            directoryFingerprint: "legacy", entries: [entry, other]), checklists: [entry.set.id: old, other.set.id: unrelated])
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root, bundle: .main)
+        for _ in 0..<2 {
+            try await store.publish(stale)
+            let loaded = await store.mergedSnapshot()
+            let snapshot = try XCTUnwrap(loaded)
+            XCTAssertEqual(Set(try card("xy12-11", in: snapshot).catalogVariants), [.normal, .holo, .reverse])
+            XCTAssertEqual(snapshot.checklist(for: other.set.catalogID), unrelated)
+        }
+        let reopened = PokemonChecklistStore(root: root, bundle: .main)
+        let loaded = await reopened.mergedSnapshot()
+        let fresh = try XCTUnwrap(loaded)
+        XCTAssertEqual(Set(try card("xy12-80", in: fresh).catalogVariants), [.normal, .reverse])
+    }
+
+    func testStaleResolvedCacheAndProviderPayloadCannotEraseMinimum() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let raw = #"{"id":"dv1-21","localId":"21","name":"Kyurem","set":{"id":"dv1","name":"Dragon Vault","cardCount":{"total":21,"official":20}},"variants":{"normal":true,"holo":false,"reverse":false,"firstEdition":false}}"#
+        let value = try JSONDecoder().decode(TCGdexCard.self, from: Data(raw.utf8))
+        let cache = ResolvedPokemonCardCache(root: root)
+        await cache.store(card: value, setCode: "DRV", key: "kyurem")
+        let reopened = ResolvedPokemonCardCache(root: root)
+        let loaded = await reopened.card(for: "kyurem")
+        let hit = try XCTUnwrap(loaded)
+        XCTAssertEqual(Set(hit.card.catalogVariants), [.normal, .holo])
+        XCTAssertEqual(VariantResolver.resolve(IdentifiedCard.pokemon(hit.card, setCode: hit.setCode).variantEvidence),
+            .needsChoice(options: [.holo], lockDidNotApply: nil))
+    }
+}
 
 final class VariantResolverTests: XCTestCase {
     private func pokemon(
