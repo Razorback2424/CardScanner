@@ -1,3 +1,32 @@
+# 2026-11-02 — PR #13 reconciled centering fixes
+
+Starting head: `4e85936465489b258183c2f432efc392ca78e3a5`. No interrupted
+local repair was present in registered worktrees, branches or normal history.
+Pinch handoff now clamps once before setting both display and continuation
+baseline, preserving the drag checkpoint. Any photo/orientation change revokes
+current and saved approvals; Undo retains geometry without restoring stale
+export eligibility. Added production-helper boundary/reverse tests and model
+canvas/Exact Values/rotation/reset/repeated-Undo/photo-change export regressions.
+
+Xcode 27.1 unsigned iOS 27 simulator run: 112 executed, 110 passed, one skipped,
+one failed (`OpusImplementationPlanTests.testREQ013ImportedSealedRowConvergesWithBrowseAdd`,
+Keychain `storeFailed(-34018)`). New regressions passed. Failure is preserved;
+unchanged-main comparison is pending. All three affected classes are now in CI.
+Either-finger native pinch release and physical-device acceptance remain open.
+
+The unchanged main reproduced the same Keychain failure. The sealed-import
+fixture now uses the normalizer's existing `sealedCredentialsAvailable` injection
+alongside its existing fake transport/API-key override, instead of writing/removing
+a fake Keychain credential. Every ownership/identity assertion remains unchanged;
+production credentials are untouched. This fixture-only follow-up must pass the
+same selected CI and final combined union before the owner's authorized squash merges.
+
+The next local run passed the Opus fixture but exposed a timing failure in the
+existing localized Exact Values UI test (three assertions in one case after its
+fixed 80 ms Done wait). The test now waits, bounded to two seconds, for its existing
+published value commit; all digit, value and no-premature-update assertions remain.
+The unchanged 112-case selection then passed 111 with one existing benchmark skip.
+
 # 2026-11-02 — PR #14 reconciled eligibility history and graded writers
 
 Started from reviewed `ce17ea0`; no interrupted local repair was recovered.
