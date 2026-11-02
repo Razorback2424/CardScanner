@@ -35,6 +35,12 @@ COMPLETION = re.compile(
     r"Test Case '-\[(?:TradingCardScannerTests\.)?(\w+) (test\w+)\]' "
     r"(passed|failed|skipped) \(([0-9.]+) seconds\)\."
 )
+SUITE_SUMMARY = re.compile(
+    r"Test Suite '(?P<suite>Selected tests|All tests)' (?P<status>passed|failed) at [^\n]+\n"
+    r"[^\n]*?\bExecuted (?P<executed>\d+) tests?, with "
+    r"(?:(?P<skipped>\d+) tests? skipped and )?(?P<failure_assertions>\d+) failures? "
+    r"\((?P<unexpected_assertions>\d+) unexpected\)"
+)
 KEYBOARD = re.compile(
     r"UIKeyboardTaskQueue|RTIInputSystemClient|remote.?keyboard|keyboard.*(?:timeout|invalid)",
     re.IGNORECASE,
@@ -82,9 +88,36 @@ def execution_summary(log: str, expected: set[str]) -> dict:
     by_test: dict[str, list[dict]] = {}
     for result in completed:
         by_test.setdefault(result["test"], []).append(result)
-    counts = Counter(item["status"] for item in completed)
+    statuses = Counter(item["status"] for item in completed)
+    record_counts = {"executed": len(completed), **{name: statuses[name] for name in ("passed", "failed", "skipped")}}
+    summaries = list(SUITE_SUMMARY.finditer(log))
+    suite_summary = None
+    discrepancies = {}
+    counts = record_counts
+    counts_source = "completion_records"
+    if summaries:
+        final = summaries[-1]
+        suite_summary = {
+            "suite": final["suite"], "status": final["status"],
+            **{name: int(final[name] or 0) for name in ("executed", "skipped", "failure_assertions", "unexpected_assertions")},
+        }
+        for name in ("executed", "skipped"):
+            if suite_summary[name] != record_counts[name]:
+                discrepancies[name] = {"suite_summary": suite_summary[name], "completion_records": record_counts[name]}
+        # Interleaved stdout can damage individual completion lines. A final
+        # zero-failure suite total still establishes aggregate passes; it never
+        # supplies a missing method to the execution gates below. With failures,
+        # XCTest's failure count is assertions, not necessarily failed cases.
+        if suite_summary["failure_assertions"] == 0 and suite_summary["status"] == "passed" and statuses["failed"] == 0:
+            counts = {"executed": suite_summary["executed"], "passed": suite_summary["executed"] - suite_summary["skipped"],
+                      "failed": 0, "skipped": suite_summary["skipped"]}
+            counts_source = "zero_failure_suite_summary"
     return {
-        "counts": {"executed": len(completed), **{name: counts[name] for name in ("passed", "failed", "skipped")}},
+        "counts": counts,
+        "counts_source": counts_source,
+        "completion_record_counts": record_counts,
+        "final_suite_summary": suite_summary,
+        "count_discrepancies": discrepancies,
         "expected_count": len(expected),
         "missing": sorted(expected - by_test.keys()),
         "duplicate_completions": sorted(name for name in expected if len(by_test.get(name, [])) > 1),
@@ -149,7 +182,7 @@ def record(args: argparse.Namespace) -> int:
         ]
         attempt["command"] = command
         write_json(manifest_path, manifest)
-        print(f"CENTERING_COMPARISON_START {name} {attempt['started_utc']}", flush=True)
+        print(f"CENTERING_COMPARISON_START {name} {attempt['started_utc']} simulator={json.dumps(attempt['simulator_before'])}", flush=True)
         started = time.monotonic()
         log_path = output / f"{name}.log"
         with log_path.open("w") as log_file:
@@ -172,7 +205,7 @@ def record(args: argparse.Namespace) -> int:
         write_json(manifest_path, manifest)
         passed = return_code == 0 and complete_and_successful(summary)
         failed |= not passed
-        print(f"CENTERING_COMPARISON_END {name} {json.dumps({'exit_code': return_code, 'duration_seconds': attempt['duration_seconds'], 'counts': summary['counts'], 'execution_verified': passed})}", flush=True)
+        print(f"CENTERING_COMPARISON_END {name} {json.dumps({'exit_code': return_code, 'duration_seconds': attempt['duration_seconds'], **{key: summary[key] for key in ('counts', 'counts_source', 'completion_record_counts', 'final_suite_summary', 'count_discrepancies')}, 'execution_verified': passed, 'simulator_after': attempt['simulator_after']})}", flush=True)
     manifest["finished_utc"] = utc_now()
     write_json(manifest_path, manifest)
     return int(failed)
@@ -188,11 +221,15 @@ def verify(args: argparse.Namespace) -> int:
             problems.append(f"{attempt['name']}: no completed result")
         elif attempt["exit_code"] != 0 or not complete_and_successful(attempt["execution"]):
             problems.append(f"{attempt['name']}: failed or missing required executed tests")
-    combined = execution_summary(args.combined_log.read_text(), expected_tests(COMBINED_CLASSES))
+    if not args.combined_log.exists():
+        problems.append("Combined selection has no retained log; no execution is established")
+    combined = execution_summary(args.combined_log.read_text() if args.combined_log.exists() else "", expected_tests(COMBINED_CLASSES))
     write_json(args.output / "combined-execution.json", combined)
     if not complete_and_successful(combined):
         problems.append("Combined selection failed or did not execute every relevant test method")
-    print(json.dumps({"diagnostic_attempts": len(manifest["attempts"]), "combined_counts": combined["counts"], "problems": problems}, indent=2))
+    print(json.dumps({"diagnostic_attempts": len(manifest["attempts"]), "combined_counts": combined["counts"],
+                      **{key: combined[key] for key in ('counts_source', 'completion_record_counts', 'final_suite_summary', 'count_discrepancies')},
+                      "problems": problems}, indent=2))
     return int(bool(problems))
 
 

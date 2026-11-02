@@ -1806,11 +1806,13 @@ struct CardCenteringPrecisionNumberField: View {
             trace("commit.parse-invalid")
             inputReason = "Enter a finite number using your region’s decimal separator."
             draft = formattedValue
+            trace("draft.restored-invalid")
             return
         }
         trace("commit.parse-valid", detail: "parsed=\(parsed)")
         inputReason = nil
         draft = formattedValue
+        trace("draft.restored-before-update")
         if parsed != value {
             trace("commit.update-call", detail: "parsed=\(parsed)")
             update(parsed)
@@ -1842,7 +1844,7 @@ struct CardCenteringPrecisionNumberField: View {
         .onAppear { draft = formattedValue; trace("view.appear") }
         .onChange(of: value) { old, new in
             trace("value.observed", detail: "old=\(old) new=\(new)")
-            if !isFocused { draft = formattedValue }
+            if !isFocused { draft = formattedValue; trace("draft.formatted") }
         }
         .onChange(of: isFocused) { wasFocused, focused in
             trace("focus.observed", detail: "old=\(wasFocused) new=\(focused)")
@@ -1851,6 +1853,7 @@ struct CardCenteringPrecisionNumberField: View {
         .onChange(of: focusReset) { old, new in
             trace("done.delivered", detail: "old=\(old) new=\(new)")
             isFocused = false
+            trace("done.focus-reset-returned")
         }
         .onDisappear { trace("view.disappear"); if isFocused { commit() } }
     }

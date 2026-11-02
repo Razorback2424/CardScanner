@@ -1,3 +1,25 @@
+# 2026-11-01 — Isolated localized Done investigation (open)
+
+From remote main `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`, draft PR #19
+adds observational event diagnostics and bounded native comparisons for the
+localized centering Done timeout. It is separate from portfolio/token repairs.
+The original job's complete log confirms 1,498 native passes, two skips and one
+failure, but lacks the event order needed to establish its cause. The unchanged
+instrumented baseline passed three focused runs, the 33-case native class,
+118 affected cases and the 1,501-case combined selection. Its traces demonstrate
+eight coalesced initial unchanged-Done blurs in 18 cases and 14 callbacks after
+case teardown. All 18 edited drafts committed once within 70–645 ms; the
+historical edited-Done timeout remains unreproduced.
+
+The fixture correction observes actual focus/blur/draft/commit state and owns
+teardown, preserving the original Combine expectation and two-second deadline.
+Two native cases add repeat/refocus/field-change and removal coverage. Candidate
+execution is pending; production commit behavior is unchanged. An initial
+missing-brace correction superseded a canceled build with zero native cases.
+No physical-device verification or merge is claimed. The
+[centering ledger](docs/audits/centering-guided-repair.md#localized-done-investigation--2026-11-01-open)
+retains provenance, counts, timing limits and current status.
+
 # 2026-11-02 — Isolated combined validation candidate
 
 This local candidate combines the independently reviewed branch repairs; it is

@@ -54,150 +54,480 @@ final class CenteringNativePrecisionTests: XCTestCase {
         }
     }
 
-    private final class InputProbe: ObservableObject {
-        @Published var value = 119.005754
-        @Published var focusReset = 0
-        var updates: [Double] = []
-        var trace: CardCenteringPrecisionTrace?
-    }
-    private struct InputProbeView: View {
-        @ObservedObject var probe: InputProbe
-        var body: some View {
-            CardCenteringPrecisionNumberField(label: "Native position", accessibilityName: "Input probe",
-                value: probe.value, step: 0.1, focusReset: probe.focusReset) {
-                    probe.trace?.record("model.update-enter", value: $0)
-                    probe.updates.append($0)
-                    probe.trace?.record("model.publish-before", value: $0)
-                    probe.value = $0
-                    probe.trace?.record("model.publish-returned", value: probe.value,
-                                        detail: "updates=\(probe.updates.count)")
+    @MainActor func testTypedLocalizedDraftPreservesAllDigitsAndCommitsOnlyOnDone() async throws {
+        var logs: [PrecisionInteractionLog] = []
+        defer { logs.forEach { $0.dump(); XCTAssertTrue($0.lateEvents.isEmpty, $0.caseID) } }
+        for (index, item) in [("fr_FR", "119,11", 119.11), ("fr_FR", "-0,25", -0.25), ("en_US", "123.45", 123.45)].enumerated() {
+            let (identifier, text, expected) = item
+            let caseID = "\(index + 1):\(identifier)/\(expected >= 0 ? "+" : "")\(text)"
+            let log = PrecisionInteractionLog(caseID)
+            logs.append(log)
+            log.trace.record("case.begin")
+            let fixture = PrecisionInteractionFixture(log: log, locale: Locale(identifier: identifier), includesAngle: false)
+            let field = fixture.probe.positionFieldID
+            do {
+                try await fixture.mount()
+                let input = try fixture.input(field)
+                try await fixture.focus(field)
+                log.trace.record("done.unchanged-request", field: field, focused: input.isFirstResponder, draft: input.text)
+                let unchangedDone = fixture.done()
+                // Baseline traces showed that refocusing after a fixed sleep
+                // could coalesce this blur and never execute the unchanged-
+                // display guard. Require the actual production path first.
+                try await fixture.waitFor("unchanged Done delivery, blur and commit guard", since: unchangedDone) {
+                    log.contains("done.delivered", field: field, after: unchangedDone)
+                        && log.contains("uikit.end", field: field, after: unchangedDone)
+                        && log.contains("focus.observed", field: field, after: unchangedDone, focused: false)
+                        && log.contains("commit.unchanged-display", field: field, after: unchangedDone)
+                        && !input.isFirstResponder && log.focus(field) == false
                 }
+                XCTAssertTrue(fixture.probe.mutations.isEmpty, "Focus/Done without editing must preserve the unrounded Double: \(caseID)")
+                XCTAssertEqual(fixture.probe.position, 119.005754, accuracy: 1e-12, caseID)
+                try await fixture.focus(field)
+                let typed = DispatchTime.now().uptimeNanoseconds
+                try fixture.replaceText(text, field: field)
+                try await fixture.waitFor("focused native and SwiftUI localized draft") {
+                    input.isFirstResponder && log.focus(field) == true && input.text == text
+                        && log.contains("draft.binding-returned", field: field, after: typed) && log.draft(field) == text
+                }
+                XCTAssertEqual(input.text, text, "Every typed digit must survive while focused: \(caseID)")
+                XCTAssertTrue(fixture.probe.mutations.isEmpty, "An unfinished draft must not move the guide: \(caseID)")
+                let committed = expectation(description: "Done commits the localized draft: \(caseID)")
+                committed.assertForOverFulfill = true
+                let commitObservation = fixture.probe.$position.dropFirst().sink { value in
+                    log.trace.record("publication.received", field: field, value: value,
+                                     detail: "storedBeforeWillSet=\(fixture.probe.position)")
+                    log.trace.record("expectation.fulfill-call")
+                    committed.fulfill()
+                    log.trace.record("expectation.fulfill-returned")
+                }
+                defer { commitObservation.cancel() }
+                log.trace.record("observer.installed")
+                log.trace.record("done.edited-request", field: field, focused: input.isFirstResponder, draft: input.text)
+                let editedDone = fixture.done()
+                log.trace.record("expectation.wait-enter")
+                await fulfillment(of: [committed], timeout: 2)
+                log.trace.record("expectation.wait-returned", value: fixture.probe.position,
+                                 detail: "updates=\(fixture.probe.mutations.count)")
+                commitObservation.cancel()
+                log.trace.record("observer.cancelled")
+                XCTAssertEqual(try XCTUnwrap(fixture.probe.mutations.last).value, expected, accuracy: 1e-10, caseID)
+                XCTAssertEqual(fixture.probe.position, expected, accuracy: 1e-10, caseID)
+                XCTAssertEqual(input.text, expected.formatted(.number.precision(.fractionLength(2)).locale(Locale(identifier: identifier))), caseID)
+                try await fixture.expectMutation(0, field: field, value: expected, requested: editedDone)
+                XCTAssertEqual(fixture.probe.mutations.count, 1, "Done must commit the latest draft exactly once: \(caseID)")
+                await fixture.close()
+                XCTAssertEqual(fixture.probe.mutations.count, 1, "Teardown must not add a commit: \(caseID)")
+            } catch {
+                await fixture.close()
+                throw error
+            }
         }
     }
 
-    @MainActor private final class InputTraceLog {
+    @MainActor private final class PrecisionInteractionLog {
         let caseID: String
         let origin = DispatchTime.now().uptimeNanoseconds
         var ended = false
-        var events: [(CardCenteringPrecisionTrace.Event, Bool)] = []
+        var events: [CardCenteringPrecisionTrace.Event] = []
+        var lateEvents: [String] = []
         lazy var trace = CardCenteringPrecisionTrace { [weak self] event in
             guard let self else { return }
-            events.append((event, ended))
+            events.append(event)
             if ended {
-                // This is diagnostic only in the baseline: changing teardown or
-                // adding a wait here would alter the race under investigation.
-                print("CENTERING_INPUT_LATE_CALLBACK case=\(caseID) event=\(event.name) uptime_ns=\(event.uptimeNanoseconds)")
+                lateEvents.append(event.name)
+                XCTFail("Callback after owned fixture teardown: \(caseID), \(event.field), \(event.name)")
             }
         }
 
         init(_ caseID: String) { self.caseID = caseID }
 
+        func focus(_ field: String) -> Bool? {
+            events.last { $0.field == field && ($0.name == "focus.observed" || $0.name == "view.appear") }?.focused
+        }
+
+        func draft(_ field: String) -> String? {
+            let snapshots: Set<String> = ["draft.binding-returned", "view.appear", "draft.restored-invalid",
+                                          "draft.restored-before-update", "draft.formatted"]
+            return events.last { $0.field == field && snapshots.contains($0.name) }?.draft
+        }
+
+        func contains(_ name: String, field: String, after: UInt64 = 0, focused: Bool? = nil) -> Bool {
+            events.contains {
+                $0.name == name && $0.field == field && $0.uptimeNanoseconds >= after
+                    && (focused == nil || $0.focused == focused)
+            }
+        }
+
         func dump() {
-            let lines = events.map { event, late in
-                let milliseconds = Double(event.uptimeNanoseconds - origin) / 1_000_000
-                return "CENTERING_INPUT_TRACE case=\(caseID) uptime_ns=\(event.uptimeNanoseconds) ms=\(String(format: "%.3f", milliseconds)) event=\(event.name) field=\(event.field.debugDescription) focus=\(event.focused.map { String($0) } ?? "nil") draft=\(event.draft?.debugDescription ?? "nil") value=\(event.value.map { String($0) } ?? "nil") late=\(late) \(event.detail ?? "")"
-            }.joined(separator: "\n")
-            // Buffer during UI interaction; printing each keystroke could itself
-            // disturb main-actor scheduling. The attachment retains exact order.
-            print(lines)
-            let attachment = XCTAttachment(string: lines)
-            attachment.name = "Centering input trace \(caseID)"
+            let lines = events.map { event in
+                "CENTERING_INTERACTION_TRACE case=\(caseID) uptime_ns=\(event.uptimeNanoseconds) ms=\(String(format: "%.3f", Double(event.uptimeNanoseconds - origin) / 1_000_000)) event=\(event.name) field=\(event.field.debugDescription) focus=\(event.focused.map { String($0) } ?? "nil") draft=\(event.draft?.debugDescription ?? "nil") value=\(event.value.map { String($0) } ?? "nil") \(event.detail ?? "")"
+            }
+            // Emit each buffered line separately to reduce interleaving with
+            // unrelated simulator output. Keep the complete attachment.
+            lines.forEach { print($0) }
+            let attachment = XCTAttachment(string: lines.joined(separator: "\n"))
+            let activityName = "Centering interaction trace \(caseID)"
+            attachment.name = activityName
             attachment.lifetime = .keepAlways
-            XCTContext.runActivity(named: "Input events \(caseID)") { $0.add(attachment) }
+            XCTContext.runActivity(named: activityName) { $0.add(attachment) }
         }
     }
 
-    @MainActor func testTypedLocalizedDraftPreservesAllDigitsAndCommitsOnlyOnDone() async throws {
-        var traces: [InputTraceLog] = []
-        var observations: [NSObjectProtocol] = []
-        defer {
-            observations.forEach { NotificationCenter.default.removeObserver($0) }
-            traces.forEach { $0.dump() }
+    @MainActor private final class PrecisionInteractionProbe: ObservableObject {
+        static let positionID = "Interaction position"
+        static let angleID = "Interaction angle"
+        static let initialPosition = 119.005754
+        static let initialAngle = -0.253178
+        struct Mutation {
+            let field: String
+            let value: Double
+            let uptimeNanoseconds: UInt64
         }
-        for (index, item) in [("fr_FR", "119,11", 119.11), ("fr_FR", "-0,25", -0.25), ("en_US", "123.45", 123.45)].enumerated() {
-            let (identifier, text, expected) = item
-            let caseID = "\(index + 1):\(identifier)/\(expected >= 0 ? "+" : "")\(text)"
-            let log = InputTraceLog(caseID)
-            traces.append(log)
-            log.trace.record("case.begin")
-            let probe = InputProbe()
-            probe.trace = log.trace
-            let host = UIHostingController(rootView: InputProbeView(probe: probe)
-                .environment(\.locale, Locale(identifier: identifier))
-                .environment(\.centeringPrecisionTrace, log.trace))
-            let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
-            let window = UIWindow(windowScene: scene)
-            window.frame = CGRect(x: 0, y: 0, width: 393, height: 852)
-            window.rootViewController = host; window.makeKeyAndVisible()
-            host.loadViewIfNeeded(); host.view.setNeedsLayout(); host.view.layoutIfNeeded()
-            weak var observedInput: UITextField?
-            defer {
-                log.trace.record("teardown.begin", focused: observedInput?.isFirstResponder,
-                                 draft: observedInput?.text)
-                window.isHidden = true // Deliberately retain baseline cleanup for comparison.
-                log.trace.record("teardown.hidden", focused: observedInput?.isFirstResponder,
-                                 detail: "key=\(window.isKeyWindow) rootAttached=\(window.rootViewController != nil)")
-                log.ended = true
+
+        @Published var position = PrecisionInteractionProbe.initialPosition
+        @Published var angle = PrecisionInteractionProbe.initialAngle
+        @Published var focusReset = 0
+        @Published var visible = true
+        var mutations: [Mutation] = []
+        let log: PrecisionInteractionLog
+        let includesAngle: Bool
+        var positionFieldID: String { includesAngle ? Self.positionID : "Input probe" }
+
+        init(log: PrecisionInteractionLog, includesAngle: Bool) {
+            self.log = log
+            self.includesAngle = includesAngle
+        }
+
+        func accept(_ value: Double, field: String) {
+            mutations.append(Mutation(field: field, value: value,
+                                      uptimeNanoseconds: DispatchTime.now().uptimeNanoseconds))
+            log.trace.record("model.update", field: field, value: value,
+                             detail: "callback=\(mutations.count)")
+            if field == positionFieldID { position = value } else { angle = value }
+            log.trace.record("model.publication-returned", field: field, value: value)
+        }
+    }
+
+    private struct PrecisionInteractionView: View {
+        @ObservedObject var probe: PrecisionInteractionProbe
+        var body: some View {
+            if probe.visible {
+                if probe.includesAngle {
+                    VStack {
+                        positionField
+                        CardCenteringPrecisionNumberField(label: "Angle", accessibilityName: PrecisionInteractionProbe.angleID,
+                            value: probe.angle, step: 0.01, focusReset: probe.focusReset) {
+                                probe.accept($0, field: PrecisionInteractionProbe.angleID)
+                            }
+                    }
+                    .padding()
+                } else {
+                    positionField
+                }
+            } else {
+                Text("Fixture dismissed")
             }
-            log.trace.record("host.laid-out")
-            try await Task.sleep(for: .milliseconds(80))
-            func field(in view: UIView) -> UITextField? {
-                if let value = view as? UITextField { return value }
-                return view.subviews.compactMap { field(in: $0) }.first
+        }
+
+        private var positionField: some View {
+            CardCenteringPrecisionNumberField(label: probe.includesAngle ? "Position" : "Native position",
+                accessibilityName: probe.positionFieldID,
+                value: probe.position, step: 0.1, focusReset: probe.focusReset) {
+                    probe.accept($0, field: probe.positionFieldID)
+                }
+        }
+    }
+
+    @MainActor private final class PrecisionInteractionFixture {
+        private struct StateTimeout: Error { let state: String }
+        static let deadlineNanoseconds: UInt64 = 2_000_000_000
+        let log: PrecisionInteractionLog
+        let probe: PrecisionInteractionProbe
+        let locale: Locale
+        private var window: UIWindow?
+        private var host: UIViewController?
+        private weak var previousKeyWindow: UIWindow?
+        private var inputs: [String: UITextField] = [:]
+        private var observations: [NSObjectProtocol] = []
+        private var closed = false
+
+        init(log: PrecisionInteractionLog, locale: Locale = Locale(identifier: "fr_FR"), includesAngle: Bool = true) {
+            self.log = log
+            self.locale = locale
+            probe = PrecisionInteractionProbe(log: log, includesAngle: includesAngle)
+        }
+
+        func mount() async throws {
+            var activeScene: UIWindowScene?
+            try await waitFor("foreground active scene") {
+                activeScene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+                    .first { $0.activationState == .foregroundActive }
+                return activeScene != nil
             }
-            let input = try XCTUnwrap(field(in: host.view))
-            observedInput = input
-            for name in [UITextField.textDidBeginEditingNotification, UITextField.textDidEndEditingNotification,
-                         UITextField.textDidChangeNotification] {
-                observations.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { [weak input, weak log] note in
+            let scene = try XCTUnwrap(activeScene)
+            previousKeyWindow = scene.windows.first { $0.isKeyWindow }
+            let controller = UIHostingController(rootView: PrecisionInteractionView(probe: probe)
+                .environment(\.locale, locale).environment(\.centeringPrecisionTrace, log.trace))
+            let ownedWindow = UIWindow(windowScene: scene)
+            ownedWindow.frame = CGRect(x: 0, y: 0, width: 393, height: 852)
+            host = controller; window = ownedWindow
+            ownedWindow.rootViewController = controller; ownedWindow.makeKeyAndVisible()
+            controller.loadViewIfNeeded(); controller.view.layoutIfNeeded()
+            try await waitFor("owned fields mounted with initial drafts") {
+                let fields = self.textFields(in: controller.view)
+                let position = PrecisionInteractionProbe.initialPosition.formatted(.number.precision(.fractionLength(2)).locale(self.locale))
+                guard fields.count == (self.probe.includesAngle ? 2 : 1),
+                      let first = fields.first(where: { $0.text == position }),
+                      first.window === ownedWindow,
+                      self.log.contains("view.appear", field: self.probe.positionFieldID) else { return false }
+                self.inputs = [self.probe.positionFieldID: first]
+                if self.probe.includesAngle {
+                    let angle = PrecisionInteractionProbe.initialAngle.formatted(.number.precision(.fractionLength(2)).locale(self.locale))
+                    guard let second = fields.first(where: { $0.text == angle }), first !== second,
+                          second.window === ownedWindow,
+                          self.log.contains("view.appear", field: PrecisionInteractionProbe.angleID) else { return false }
+                    self.inputs[PrecisionInteractionProbe.angleID] = second
+                }
+                return true
+            }
+            for (name, event) in [(UITextField.textDidBeginEditingNotification, "uikit.begin"),
+                                  (UITextField.textDidEndEditingNotification, "uikit.end"),
+                                  (UITextField.textDidChangeNotification, "uikit.change")] {
+                observations.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { [weak self] note in
                     MainActor.assumeIsolated {
-                        guard let input, let log, let source = note.object as? UITextField, source === input else { return }
-                        log.trace.record("uikit.\(name.rawValue)", focused: input.isFirstResponder, draft: input.text)
+                        guard let self, let input = note.object as? UITextField,
+                              let field = self.inputs.first(where: { $0.value === input })?.key else { return }
+                        self.log.trace.record(event, field: field, focused: input.isFirstResponder, draft: input.text)
                     }
                 })
             }
-            log.trace.record("uikit.initial-focus-call", focused: input.isFirstResponder, draft: input.text)
-            let initialFocus = input.becomeFirstResponder()
-            log.trace.record("uikit.initial-focus-returned", focused: input.isFirstResponder, detail: "success=\(initialFocus)")
-            XCTAssertTrue(initialFocus, caseID)
-            try await Task.sleep(for: .milliseconds(40))
-            log.trace.record("done.unchanged-request", focused: input.isFirstResponder, draft: input.text)
-            probe.focusReset += 1
-            try await Task.sleep(for: .milliseconds(40))
-            XCTAssertTrue(probe.updates.isEmpty, "Focus/Done without editing must preserve the unrounded Double: \(caseID)")
-            XCTAssertEqual(probe.value, 119.005754, accuracy: 1e-12, caseID)
-            log.trace.record("uikit.refocus-call", focused: input.isFirstResponder, draft: input.text)
-            let refocus = input.becomeFirstResponder()
-            log.trace.record("uikit.refocus-returned", focused: input.isFirstResponder, detail: "success=\(refocus)")
-            XCTAssertTrue(refocus, caseID)
-            try await Task.sleep(for: .milliseconds(40))
-            log.trace.record("uikit.selection-call", focused: input.isFirstResponder, draft: input.text)
-            input.selectedTextRange = input.textRange(from: input.beginningOfDocument, to: input.endOfDocument)
-            log.trace.record("uikit.insert-call", focused: input.isFirstResponder, draft: input.text, detail: "input=\(text.debugDescription)")
-            input.insertText(text)
-            log.trace.record("uikit.insert-returned", focused: input.isFirstResponder, draft: input.text)
-            try await Task.sleep(for: .milliseconds(40))
-            log.trace.record("fixture.before-done", focused: input.isFirstResponder, draft: input.text)
-            XCTAssertEqual(input.text, text, "Every typed digit must survive while focused: \(caseID)")
-            XCTAssertTrue(probe.updates.isEmpty, "An unfinished draft must not move the guide: \(caseID)")
-            let committed = expectation(description: "Done commits the localized draft: \(caseID)")
-            let commitObservation = probe.$value.dropFirst().sink { value in
-                log.trace.record("publication.received", value: value, detail: "storedBeforeWillSet=\(probe.value)")
-                log.trace.record("expectation.fulfill-call")
-                committed.fulfill()
-                log.trace.record("expectation.fulfill-returned")
+            log.trace.record("fixture.mounted")
+        }
+
+        func input(_ field: String) throws -> UITextField { try XCTUnwrap(inputs[field], field) }
+
+        func focus(_ field: String) async throws {
+            let input = try input(field)
+            let requested = DispatchTime.now().uptimeNanoseconds
+            log.trace.record("fixture.focus-request", field: field, focused: input.isFirstResponder)
+            let success = input.becomeFirstResponder()
+            log.trace.record("fixture.focus-returned", field: field, focused: input.isFirstResponder, detail: "success=\(success)")
+            XCTAssertTrue(success, "\(log.caseID): \(field)")
+            try await waitFor("UIKit and SwiftUI focus: \(field)") {
+                input.isFirstResponder && self.log.focus(field) == true
+                    && self.log.contains("uikit.begin", field: field, after: requested)
+                    && self.log.contains("focus.observed", field: field, after: requested, focused: true)
             }
-            log.trace.record("observer.installed")
-            log.trace.record("done.edited-request", focused: input.isFirstResponder, draft: input.text)
-            probe.focusReset += 1 // The production keyboard toolbar's Done action.
-            log.trace.record("expectation.wait-enter")
-            await fulfillment(of: [committed], timeout: 2)
-            log.trace.record("expectation.wait-returned", value: probe.value, detail: "updates=\(probe.updates.count)")
-            commitObservation.cancel()
-            log.trace.record("observer.cancelled")
-            XCTAssertEqual(try XCTUnwrap(probe.updates.last), expected, accuracy: 1e-10, caseID)
-            XCTAssertEqual(probe.value, expected, accuracy: 1e-10, caseID)
-            XCTAssertEqual(input.text, expected.formatted(.number.precision(.fractionLength(2)).locale(Locale(identifier: identifier))), caseID)
+        }
+
+        func replaceText(_ text: String, field: String) throws {
+            let input = try input(field)
+            XCTAssertTrue(input.isFirstResponder, "\(log.caseID): typing requires the intended native field")
+            log.trace.record("fixture.type-request", field: field, focused: input.isFirstResponder, draft: text)
+            input.selectedTextRange = input.textRange(from: input.beginningOfDocument, to: input.endOfDocument)
+            input.insertText(text)
+            log.trace.record("fixture.type-returned", field: field, focused: input.isFirstResponder, draft: input.text)
+            XCTAssertEqual(input.text, text, "\(log.caseID): every typed digit")
+        }
+
+        @discardableResult func done() -> UInt64 {
+            let requested = DispatchTime.now().uptimeNanoseconds
+            log.trace.record("fixture.done-request")
+            probe.focusReset += 1
+            return requested
+        }
+
+        func waitFor(_ state: String, since start: UInt64? = nil,
+                     completedAt: (() -> UInt64?)? = nil, condition: () -> Bool) async throws {
+            let started = start ?? DispatchTime.now().uptimeNanoseconds
+            let deadline = started + Self.deadlineNanoseconds
+            while true {
+                let satisfied = condition()
+                let observed = DispatchTime.now().uptimeNanoseconds
+                if satisfied, let eventTime = completedAt?(), eventTime <= deadline {
+                    // A recorded update proves when the commit happened even if
+                    // UIKit held the main actor before this waiter could resume.
+                    log.trace.record("fixture.state-ready", detail: "\(state) completed_ns=\(eventTime) observedAfterDeadline=\(observed > deadline)")
+                    return
+                }
+                guard observed <= deadline else {
+                    log.trace.record("fixture.timeout", detail: "\(state) condition=\(satisfied) elapsed_ns=\(observed - started)")
+                    XCTFail("\(log.caseID): two-second deadline waiting for \(state); see retained event trace")
+                    throw StateTimeout(state: state)
+                }
+                if satisfied {
+                    log.trace.record("fixture.state-ready", detail: state)
+                    return
+                }
+                try await Task.sleep(for: .milliseconds(5))
+            }
+        }
+
+        func expectMutation(_ index: Int, field: String, value: Double, requested: UInt64) async throws {
+            try await waitFor("commit \(index + 1) for \(field)", since: requested, completedAt: {
+                self.probe.mutations.count > index ? self.probe.mutations[index].uptimeNanoseconds : nil
+            }) {
+                self.probe.mutations.count > index
+            }
+            let mutation = probe.mutations[index]
+            XCTAssertEqual(mutation.field, field, log.caseID)
+            XCTAssertEqual(mutation.value, value, accuracy: 1e-10, log.caseID)
+            XCTAssertGreaterThanOrEqual(mutation.uptimeNanoseconds, requested,
+                                        "\(log.caseID): a premature update cannot satisfy the intended commit")
+            XCTAssertLessThanOrEqual(mutation.uptimeNanoseconds, requested + Self.deadlineNanoseconds,
+                                     "\(log.caseID): commit must meet the original two-second deadline")
+        }
+
+        func close() async {
+            guard !closed else { return }
+            closed = true
+            log.trace.record("fixture.teardown-begin")
+            host?.view.endEditing(true)
+            for input in inputs.values where input.isFirstResponder { input.resignFirstResponder() }
+            do {
+                try await waitFor("owned native and SwiftUI blur") {
+                    self.inputs.allSatisfy { field, input in
+                        !input.isFirstResponder && (self.log.focus(field) == false || self.log.contains("view.disappear", field: field))
+                    }
+                }
+            } catch { log.trace.record("fixture.teardown-blur-failed", detail: String(describing: error)) }
+            probe.visible = false
+            do {
+                try await waitFor("owned fields disappeared") {
+                    self.inputs.keys.allSatisfy { self.log.contains("view.disappear", field: $0) }
+                }
+            } catch { log.trace.record("fixture.teardown-disappearance-failed", detail: String(describing: error)) }
+            window?.isHidden = true
+            window?.rootViewController = nil
+            host = nil
+            inputs.removeAll()
+            if let previousKeyWindow, !previousKeyWindow.isHidden, previousKeyWindow.windowScene != nil {
+                previousKeyWindow.makeKey()
+            }
+            observations.forEach { NotificationCenter.default.removeObserver($0) }
+            observations.removeAll()
+            log.trace.record("fixture.teardown-complete", detail: "rootDetached=\(window?.rootViewController == nil) observers=\(observations.count)")
+            window = nil
+            log.ended = true
+        }
+
+        private func textFields(in view: UIView) -> [UITextField] {
+            (view as? UITextField).map { [$0] } ?? view.subviews.flatMap { textFields(in: $0) }
+        }
+    }
+
+    @MainActor func testPrecisionDoneUsesLatestDraftOnceAcrossRapidRefocusAndFieldChanges() async throws {
+        let log = PrecisionInteractionLog("fr_FR/latest+repeat+rapid-refocus+field-change")
+        let fixture = PrecisionInteractionFixture(log: log)
+        let position = PrecisionInteractionProbe.positionID, angle = PrecisionInteractionProbe.angleID
+        defer { log.dump(); XCTAssertTrue(log.lateEvents.isEmpty, log.caseID) }
+        do {
+            try await fixture.mount()
+            try await fixture.focus(position)
+            try fixture.replaceText("119,11", field: position)
+            try fixture.replaceText("119,1193", field: position)
+            try await fixture.waitFor("latest full-precision draft") { log.draft(position) == "119,1193" }
+            XCTAssertTrue(fixture.probe.mutations.isEmpty, "An unfinished draft must not update either field")
+            let firstDone = fixture.done()
+            fixture.done() // Two real Done signals may be observed in a single SwiftUI update.
+            let nativePosition = try fixture.input(position)
+            try await fixture.waitFor("UIKit blur before immediate refocus", since: firstDone) { !nativePosition.isFirstResponder }
+            log.trace.record("fixture.rapid-refocus", field: position, focused: log.focus(position))
+            XCTAssertTrue(nativePosition.becomeFirstResponder())
+            // Intentionally do not await SwiftUI blur/focus or publication here.
+            // The native field has accepted refocus; the trace records whether
+            // its earlier SwiftUI focus transition was still outstanding.
+            try fixture.replaceText("119,2297", field: position)
+            try await fixture.expectMutation(0, field: position, value: 119.1193, requested: firstDone)
+            try await fixture.waitFor("refocused latest draft") {
+                nativePosition.isFirstResponder && log.draft(position) == "119,2297"
+            }
+            XCTAssertEqual(fixture.probe.mutations.count, 1, "A delayed old blur must not consume the new draft before Done")
+            XCTAssertEqual(fixture.probe.position, 119.1193, accuracy: 1e-10)
+            XCTAssertEqual(nativePosition.text, "119,2297")
+            let secondDone = fixture.done()
+            try await fixture.expectMutation(1, field: position, value: 119.2297, requested: secondDone)
+            try await fixture.waitFor("second Done blur") { !nativePosition.isFirstResponder && log.focus(position) == false }
+            XCTAssertEqual(fixture.probe.mutations.count, 2)
+            let repeatedDone = fixture.done()
+            try await fixture.waitFor("repeated Done delivery") {
+                log.contains("done.delivered", field: position, after: repeatedDone)
+                    && log.contains("done.delivered", field: angle, after: repeatedDone)
+            }
+            XCTAssertEqual(fixture.probe.mutations.count, 2, "Repeated Done must not recommit the rounded display")
+            XCTAssertEqual(fixture.probe.position, 119.2297, accuracy: 1e-10)
+            XCTAssertEqual(fixture.probe.angle, PrecisionInteractionProbe.initialAngle, accuracy: 1e-12)
+
+            try await fixture.focus(position)
+            try fixture.replaceText("119,3391", field: position)
+            try await fixture.waitFor("draft before field movement") { log.draft(position) == "119,3391" }
+            XCTAssertEqual(fixture.probe.mutations.count, 2)
+            let movement = DispatchTime.now().uptimeNanoseconds
+            try await fixture.focus(angle)
+            try await fixture.expectMutation(2, field: position, value: 119.3391, requested: movement)
+            XCTAssertEqual(fixture.probe.mutations.count, 3, "Moving fields must commit only the field being left")
+            try fixture.replaceText("-0,2573", field: angle)
+            try await fixture.waitFor("negative angle draft") { log.draft(angle) == "-0,2573" }
+            XCTAssertEqual(fixture.probe.mutations.count, 3)
+            XCTAssertEqual(fixture.probe.angle, PrecisionInteractionProbe.initialAngle, accuracy: 1e-12)
+            let angleDone = fixture.done()
+            try await fixture.expectMutation(3, field: angle, value: -0.2573, requested: angleDone)
+            let nativeAngle = try fixture.input(angle)
+            try await fixture.waitFor("angle Done blur") { !nativeAngle.isFirstResponder && log.focus(angle) == false }
+            XCTAssertEqual(fixture.probe.mutations.count, 4, "Done on B must not commit an old A draft")
+            XCTAssertEqual(fixture.probe.position, 119.3391, accuracy: 1e-10)
+            await fixture.close()
+            XCTAssertEqual(fixture.probe.mutations.count, 4, "Teardown must not add a commit")
+        } catch {
+            await fixture.close()
+            throw error
+        }
+    }
+
+    @MainActor func testPrecisionFocusedRemovalPreservesValidInvalidAndUntouchedDraftBehavior() async throws {
+        var logs: [PrecisionInteractionLog] = []
+        defer { logs.forEach { $0.dump(); XCTAssertTrue($0.lateEvents.isEmpty, $0.caseID) } }
+        let cases: [(String, String?, Double?)] = [
+            ("valid/+119,1193", "119,1193", 119.1193),
+            ("invalid/-", "-", nil),
+            ("untouched/+119.005754", nil, nil)
+        ]
+        for (identifier, text, expected) in cases {
+            let log = PrecisionInteractionLog("fr_FR/removal/\(identifier)")
+            logs.append(log)
+            let fixture = PrecisionInteractionFixture(log: log)
+            let position = PrecisionInteractionProbe.positionID
+            do {
+                try await fixture.mount()
+                try await fixture.focus(position)
+                if let text {
+                    try fixture.replaceText(text, field: position)
+                    try await fixture.waitFor("draft before dismissal") { log.draft(position) == text }
+                }
+                XCTAssertTrue(fixture.probe.mutations.isEmpty, "A draft must not commit before dismissal")
+                let removal = DispatchTime.now().uptimeNanoseconds
+                log.trace.record("fixture.remove-request")
+                fixture.probe.visible = false
+                try await fixture.waitFor("focused field disappearance", since: removal) {
+                    log.contains("view.disappear", field: position, after: removal)
+                }
+                if let expected {
+                    try await fixture.expectMutation(0, field: position, value: expected, requested: removal)
+                    XCTAssertEqual(fixture.probe.mutations.count, 1)
+                    XCTAssertEqual(fixture.probe.position, expected, accuracy: 1e-10)
+                } else {
+                    XCTAssertTrue(fixture.probe.mutations.isEmpty, "Invalid or untouched input must not update the model")
+                    XCTAssertEqual(fixture.probe.position, PrecisionInteractionProbe.initialPosition, accuracy: 1e-12)
+                }
+                XCTAssertEqual(fixture.probe.angle, PrecisionInteractionProbe.initialAngle, accuracy: 1e-12)
+                await fixture.close()
+                XCTAssertEqual(fixture.probe.mutations.count, expected == nil ? 0 : 1,
+                               "Disappearance and teardown must not duplicate a commit")
+            } catch {
+                await fixture.close()
+                throw error
+            }
         }
     }
 
