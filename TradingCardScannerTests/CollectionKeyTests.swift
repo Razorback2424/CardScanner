@@ -244,7 +244,12 @@ final class CollectionKeyTests: XCTestCase {
         let directSealed = try XCTUnwrap(
             CollectionStore(context: context).card(forKey: directSealedMutation.collectionKey)
         )
-        XCTAssertNil(directSealed.catalogProviderID)
+        XCTAssertEqual(directSealed.catalogProviderID, directSealedProduct.id)
+        XCTAssertEqual(directSealed.underlyingPrintingID, directSealedProduct.id)
+        // Legacy sealed rows can predate the explicit catalog identity.
+        // Exercise that fallback separately from today's addSealed contract.
+        directSealed.catalogProviderID = nil
+        XCTAssertEqual(directSealed.justTCGCardID, directSealedProduct.id)
 
         XCTAssertEqual(raw.underlyingPrintingID, ProductionRowFixtures.pokemonPrintingID)
         XCTAssertEqual(graded.underlyingPrintingID, ProductionRowFixtures.pokemonPrintingID)

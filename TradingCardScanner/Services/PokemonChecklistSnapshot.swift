@@ -14,7 +14,8 @@ enum PokemonChecklistSnapshotVersion {
 /// Read-time repair of reviewed identities only. Source resources and provider
 /// fingerprints remain untouched, including when an unchanged probe skips a crawl.
 enum PokemonChecklistReviewedProjection {
-    static let setIDs: Set<String> = ["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"]
+    static let setIDs: Set<String> = Set(["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"])
+        .union(PokemonFinishMinimumCatalog.setIDs)
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var emitted = Set<String>()
@@ -28,6 +29,10 @@ enum PokemonChecklistReviewedProjection {
                       parallel.matches(name: base.name, setID: base.setID.providerID, number: base.collectorNumber) {
                 variants = ScanText.unique(cards.filter { $0.providerID == base.providerID && $0.setID == base.setID }
                     .compactMap(\.masterSetVariant) + [PokemonReviewedParallelCatalog.variant])
+            } else if PokemonFinishMinimumCatalog.entries[base.providerID] != nil {
+                variants = PokemonFinishMinimumCatalog.retainingMinimum(cardID: base.providerID,
+                    variants: cards.filter { $0.providerID == base.providerID && $0.setID == base.setID }
+                        .compactMap(\.masterSetVariant))
             } else { return [base] }
             guard emitted.insert(base.providerID).inserted else { return [] }
             return PokemonMasterSetDefinition.requiredSlots(for: variants, setProviderID: base.setID.providerID).map { slot in
@@ -422,7 +427,11 @@ enum PokemonMasterSetChecklistBuilder {
                             imageURL: imageURL
                         )
                     }
-                    return PokemonMasterSetDefinition.requiredVariants(for: card).map {
+                    let requirements = PokemonMasterSetDefinition.requiredVariants(for: card)
+                    // Retain the identity when the provider is silent, with no
+                    // affirmative finish slot. Silence must not create Normal.
+                    guard !requirements.isEmpty else { return [base] }
+                    return requirements.map {
                         requirement in
                         var value = base
                         value.masterSetVariant = requirement.variant
@@ -1624,6 +1633,28 @@ actor PokemonChecklistStore {
 /// Release tooling calls this from a test so the generator uses exactly the
 /// same builder as the app. It is excluded from production builds.
 enum PokemonChecklistSnapshotGenerator {
+    /// Rebuild only ledger-scoped resources through the normal atomic writer.
+    /// Keep upstream canonical/probe fingerprints separate: reviewed evidence
+    /// changes local slots, not the retained provider input or its signature.
+    static func rebuildFinishMinimums(root: URL) async throws {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let manifest = try decoder.decode(PokemonChecklistSnapshotManifest.self,
+            from: Data(contentsOf: root.appendingPathComponent("manifest.json")))
+        var checklists: [String: [CatalogCardSummary]] = [:]
+        let entries = try manifest.entries.filter { PokemonFinishMinimumCatalog.setIDs.contains($0.providerID) }.map { entry in
+            let old = try decoder.decode([CatalogCardSummary].self,
+                from: Data(contentsOf: root.appendingPathComponent(entry.resource)))
+            let cards = PokemonChecklistReviewedProjection.cards(old)
+            checklists[entry.set.id] = cards
+            return PokemonChecklistReviewedProjection.entry(entry, cards: cards)
+        }
+        try await PokemonChecklistStore(root: root, bundle: nil).publish(.init(manifest: .init(
+            schemaVersion: manifest.schemaVersion, rulesVersion: manifest.rulesVersion,
+            generatedAt: manifest.generatedAt, directoryFingerprint: manifest.directoryFingerprint,
+            entries: entries), checklists: checklists))
+    }
+
     /// Offline, bounded regeneration for reviewed card evidence. Retains the
     /// original provider fingerprint (the upstream input has not been crawled)
     /// and republishes only affected set resources through the normal writer.

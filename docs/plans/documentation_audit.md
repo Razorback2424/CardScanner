@@ -1656,6 +1656,14 @@ are recovery work; explicit dismissals and Price Check still cancel.
 keeps physical-device performance acceptance open. No executor hypothesis is
 promoted to a measured defect or a release-readiness claim.
 
+**Bounded Pokémon finish evidence — 2026-11-02:** the
+[eight-set repair record](../audits/pokemon-finish-evidence-2026-11-02.md)
+reconciles the v2 source workbook with actual baseline blobs: 457 affected IDs,
+510 missing memberships, 504 total identities. It supersedes the original
+four-set count for this repair only, keeps product-exception holds explicit and
+separates offline membership from exhaustive-coverage confidence. Final-head
+execution and CI status are recorded in its draft PR; no release gate is closed.
+
 ## Re-run rule
 
 Review-fix reconciliation (2026-10-05; eleven finding fixes committed through

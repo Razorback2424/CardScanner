@@ -29,7 +29,12 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Test offline ingestion and mapping policies
-        run: python3 -m unittest discover -s scripts/tests -v
+        run: |
+          # The finish ledger pins this baseline; its objects are required by the audit.
+          git fetch --no-tags --depth=1 origin 4a9d70b12d941877e2752fe9cfb5fd1508ce0520
+          python3 -m unittest discover -s scripts/tests -v
+      - name: Audit pinned Pokemon finish ledger and retained resources
+        run: python3 scripts/audit_pokemon_finish_repairs.py --check-table
       - name: Test Yu-Gi-Oh membership and printing families
         run: PYTHONPATH=scripts python3 -m unittest discover -s scripts/fixtures/yugioh -v
       - name: Check retained catalog integrity and report coverage gaps
@@ -106,10 +111,17 @@ jobs:
             -only-testing:TradingCardScannerTests/HistoricalTitleCaptureTests \
             -only-testing:TradingCardScannerTests/HistoricalCatalogRequestTests \
             -only-testing:TradingCardScannerTests/VariantResolverTests \
+            -only-testing:TradingCardScannerTests/PokemonFinishEvidenceTests \
+            -only-testing:TradingCardScannerTests/PokemonTCGCSVPriceTests \
+            -only-testing:TradingCardScannerTests/CollectionKeyTests \
+            -only-testing:TradingCardScannerTests/CardLatchTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogPromoPadWidthTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogRegistryTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogParityTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogSliceCTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogSliceDTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogInvalidationTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorInvalidationTests \
             -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
             -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
@@ -140,6 +152,7 @@ jobs:
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
             -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
+            -only-testing:TradingCardScannerTests/LorcanaPhysicalCatalogTests \
             -only-testing:TradingCardScannerTests/MagicTokenPairingSessionTests \
             -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \

@@ -5821,3 +5821,20 @@ historical.
   deliberate skips, zero failures**. All 33 required workflow selections are
   covered. Exact-head remote verification is tracked on PR14 checks; the local
   unsigned result does not override the earlier CI failure.
+
+# 2026-11-02 — Bounded Pokémon finish-evidence repair
+
+An isolated branch from `4a9d70b` retains the original failing native reproduction
+(`7a44011`) and extends the same correction mechanism to the v2 workbook's 457 IDs
+and 510 memberships. The ledger/blob audit verifies eight actual Git resources,
+1,015 repaired slots, unchanged 504 identities, no removed memberships and no
+held/unassessed additions. Native regeneration and all nine new entry-point
+methods passed in the first expanded run. Broader candidate failures and the
+T7 storage/finalization failure remain recorded. The complete implementation
+`2fd1325` executed 597 methods: 595 passed, one existing skip, and one sealed-product
+assertion also reproduced on unchanged `4a9d70b`. All nine new Pokémon methods
+passed. The final CI-selection/docs head is rerun and reported in
+[draft PR #20](https://github.com/Razorback2424/CardScanner/pull/20).
+See the [evidence record](docs/audits/pokemon-finish-evidence-2026-11-02.md)
+for exact scope, source hashes, confidence/cache boundaries and remaining holds.
+No real collection, device, feed, release, portfolio/token or centering mutation.

@@ -16,7 +16,8 @@ enum PokemonOfflineCardFactory {
         officialCount: Int,
         localID: String? = nil
     ) -> TCGdexCard {
-        if let reviewed = PokemonReviewedEnergyCatalog.card(providerID: summaries[0].providerID) {
+        if var reviewed = PokemonReviewedEnergyCatalog.card(providerID: summaries[0].providerID) {
+            reviewed.finishCoverageVerified = false
             return reviewed
         }
         // One numbered Pokémon card may occupy several checklist rows: normal,
@@ -24,7 +25,8 @@ enum PokemonOfflineCardFactory {
         // The offline snapshot has no live prices, but it does have authoritative
         // variant evidence. Preserve that evidence so the same resolver used by
         // collection scans can choose one variant or ask the user.
-        let variants = Set(summaries.compactMap(\.masterSetVariant))
+        let variants = Set(PokemonFinishMinimumCatalog.retainingMinimum(
+            cardID: summaries[0].providerID, variants: summaries.compactMap(\.masterSetVariant)))
         let hasNormal = variants.contains(.normal)
         let hasHolo = variants.contains(.holo)
         let hasReverse = variants.contains(.reverse)
@@ -54,7 +56,7 @@ enum PokemonOfflineCardFactory {
             name: setName,
             cardCount: count
         )
-        return TCGdexCard(
+        var card = TCGdexCard(
             id: summaries[0].providerID,
             localId: localID ?? summaries[0].collectorNumber,
             name: summaries[0].name,
@@ -73,6 +75,8 @@ enum PokemonOfflineCardFactory {
             pricing: nil,
             variantsDetailed: detailedVariants.isEmpty ? nil : detailedVariants
         )
+        card.finishCoverageVerified = false
+        return card
     }
 
     static func card(
@@ -666,10 +670,11 @@ actor ResolvedPokemonCardCache {
         /// catalog. An empty list cannot answer the finish question and is
         /// therefore never served as a cache hit.
         let variants: [PhysicalVariant]
+        let finishCoverageVerified: Bool?
 
         enum CodingKeys: String, CodingKey {
             case key, storedAt, cardID, localID, name, image, rarity
-            case setID, setName, officialCount, setCode, variants
+            case setID, setName, officialCount, setCode, variants, finishCoverageVerified
         }
 
         init(
@@ -684,7 +689,8 @@ actor ResolvedPokemonCardCache {
             setName: String,
             officialCount: Int,
             setCode: String,
-            variants: [PhysicalVariant]
+            variants: [PhysicalVariant],
+            finishCoverageVerified: Bool
         ) {
             self.key = key
             self.storedAt = storedAt
@@ -698,6 +704,7 @@ actor ResolvedPokemonCardCache {
             self.officialCount = officialCount
             self.setCode = setCode
             self.variants = variants
+            self.finishCoverageVerified = finishCoverageVerified
         }
 
         init(from decoder: Decoder) throws {
@@ -714,6 +721,7 @@ actor ResolvedPokemonCardCache {
             officialCount = try container.decode(Int.self, forKey: .officialCount)
             setCode = try container.decode(String.self, forKey: .setCode)
             variants = try container.decodeIfPresent([PhysicalVariant].self, forKey: .variants) ?? []
+            finishCoverageVerified = try container.decodeIfPresent(Bool.self, forKey: .finishCoverageVerified)
         }
     }
 
@@ -779,7 +787,7 @@ actor ResolvedPokemonCardCache {
             return nil
         }
         let count = TCGdexCardCount(total: entry.officialCount, official: entry.officialCount)
-        let card = TCGdexCard(
+        var card = TCGdexCard(
             id: entry.cardID,
             localId: entry.localID,
             name: entry.name,
@@ -810,6 +818,9 @@ actor ResolvedPokemonCardCache {
                     )
                 }
         )
+        // Older caches persisted membership only. Absence of a coverage field
+        // cannot certify completeness; retain the entry without deleting it.
+        card.finishCoverageVerified = entry.finishCoverageVerified ?? false
         return CachedCard(card: card, setCode: entry.setCode, storedAt: entry.storedAt)
     }
 
@@ -840,7 +851,8 @@ actor ResolvedPokemonCardCache {
             setName: card.set.name,
             officialCount: officialCount ?? card.set.cardCount.official,
             setCode: setCode,
-            variants: variants
+            variants: variants,
+            finishCoverageVerified: LegacyResolvedCard.pokemon(card, setCode: setCode).variantEvidence.physicalCoverageVerified
         )
         if entries.count > Self.maxEntries {
             let oldest = entries.values

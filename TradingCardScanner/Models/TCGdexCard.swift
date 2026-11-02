@@ -21,6 +21,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
     /// Validated CDN evidence, kept out of the raw provider fingerprint.
     var recoveredArtwork: PokemonCatalogResolvedCardArtwork? = nil
+    /// Checklist/cache membership is weaker than a primary-provider coverage
+    /// contract. Nil retains the existing live-provider policy; offline records
+    /// explicitly carry false, including across cache persistence.
+    var finishCoverageVerified: Bool? = nil
 
     private var providerArtworkURL: String? {
         guard let image,
@@ -137,7 +141,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
            !result.contains(PokemonReviewedParallelCatalog.variant) {
             result.append(PokemonReviewedParallelCatalog.variant)
         }
-        return result
+        return PokemonFinishMinimumCatalog.retainingMinimum(cardID: id, variants: result)
     }
 
     /// The `variants_detailed` entry describing one physical object, if TCGdex
