@@ -4,6 +4,56 @@ import UIKit
 @testable import TradingCardScanner
 
 final class CenteringNativePrecisionTests: XCTestCase {
+    func testPinchHandoffUsesClampedBaselineAndRetainsTranslationAtEveryBoundary() {
+        for overshoot in [CGSize(width: -500, height: 0), CGSize(width: 500, height: 0),
+                          CGSize(width: 0, height: -500), CGSize(width: 0, height: 500)] {
+            let checkpoint = CGSize(width: 37, height: -19)
+            let handoff = CardCenteringPanHandoff(pan: overshoot, translation: checkpoint) {
+                CGSize(width: min(100, max(-100, $0.width)), height: min(100, max(-100, $0.height)))
+            }
+            XCTAssertEqual(handoff.translation, checkpoint)
+            let reverse = CGSize(width: overshoot.width == 0 ? 0 : (overshoot.width > 0 ? -1 : 1),
+                                 height: overshoot.height == 0 ? 0 : (overshoot.height > 0 ? -1 : 1))
+            let continued = CGSize(width: handoff.pan.width + checkpoint.width + reverse.width - handoff.translation.width,
+                                   height: handoff.pan.height + checkpoint.height + reverse.height - handoff.translation.height)
+            XCTAssertEqual(abs(continued.width) + abs(continued.height), 99,
+                           "The first reversed point must move immediately off the displayed boundary")
+        }
+    }
+
+    @MainActor func testUndoCannotRestoreApprovalAcrossRotationResetOrChangedPhoto() throws {
+        for exactValues in [false, true] {
+            let model = CardCenteringViewModel()
+            model.image = synthetic()
+            model.measurement = fixture()
+            model.confirmFrames()
+            XCTAssertNotNil(model.exportSnapshot())
+            if exactValues {
+                model.updateInner(\.left, to: 65, within: 1...200)
+            } else {
+                model.recordUndoPoint()
+                model.applyGuideEdit(try XCTUnwrap(model.measurement))
+            }
+            model.recordUndoPoint()
+            model.adjustRotation(by: 0.01)
+            model.resetRotation()
+            model.undo()
+            model.undo()
+            model.resetGuides()
+            XCTAssertFalse(try XCTUnwrap(model.measurement).canReportRatios)
+            XCTAssertNil(model.exportSnapshot())
+            model.confirmFrames()
+            XCTAssertNotNil(model.exportSnapshot())
+            model.recordUndoPoint()
+            model.image = synthetic()
+            model.undo()
+            XCTAssertFalse(try XCTUnwrap(model.measurement).canReportRatios)
+            XCTAssertNil(model.exportSnapshot())
+            model.confirmFrames()
+            XCTAssertNotNil(model.exportSnapshot())
+        }
+    }
+
     private final class InputProbe: ObservableObject {
         @Published var value = 119.005754
         @Published var focusReset = 0

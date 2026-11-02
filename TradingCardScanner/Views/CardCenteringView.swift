@@ -57,10 +57,18 @@ final class CardCenteringViewModel: ObservableObject {
         currentExportFile = url
     }
     @Published var selectedPhoto: PhotosPickerItem?
-    @Published var image: UIImage?
+    @Published var image: UIImage? {
+        didSet {
+            if image !== oldValue { invalidateAfterPhotoRotation() }
+        }
+    }
     @Published private(set) var imageRevision = 0
     @Published var measurement: CardCenteringMeasurement?
-    @Published var rotationDegrees = 0.0
+    @Published var rotationDegrees = 0.0 {
+        didSet {
+            if rotationDegrees != oldValue { invalidateAfterPhotoRotation() }
+        }
+    }
     @Published var isAnalyzing = false
     @Published var errorMessage: String?
     /// The photo's luma, for snapping a dragged guide to an edge. Nil until it
@@ -309,17 +317,21 @@ final class CardCenteringViewModel: ObservableObject {
         let next = min(45, max(-45, adjusted))
         guard next != rotationDegrees else { return }
         rotationDegrees = next
-        invalidateAfterPhotoRotation()
     }
 
     func resetRotation() {
         guard rotationDegrees != 0 else { return }
         rotationDegrees = 0
-        invalidateAfterPhotoRotation()
     }
 
     private func invalidateAfterPhotoRotation() {
         measurement?.invalidateFrameConfirmationForPhotoRotation()
+        // Guides remain undoable, but approval belongs to the exact photo
+        // coordinate system. Even rotating back requires fresh confirmation.
+        for index in undoStack.indices {
+            undoStack[index].invalidateFrameConfirmationForPhotoRotation()
+        }
+        detectedMeasurement?.invalidateFrameConfirmationForPhotoRotation()
         retireExportFile()
         precisionUndo = nil
         precisionStart = nil

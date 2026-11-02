@@ -1,3 +1,19 @@
+# 2026-11-02 — PR #13 reconciled centering fixes
+
+Starting head: `4e85936465489b258183c2f432efc392ca78e3a5`. No interrupted
+local repair was present in registered worktrees, branches or normal history.
+Pinch handoff now clamps once before setting both display and continuation
+baseline, preserving the drag checkpoint. Any photo/orientation change revokes
+current and saved approvals; Undo retains geometry without restoring stale
+export eligibility. Added production-helper boundary/reverse tests and model
+canvas/Exact Values/rotation/reset/repeated-Undo/photo-change export regressions.
+
+Xcode 27.1 unsigned iOS 27 simulator run: 112 executed, 110 passed, one skipped,
+one failed (`OpusImplementationPlanTests.testREQ013ImportedSealedRowConvergesWithBrowseAdd`,
+Keychain `storeFailed(-34018)`). New regressions passed. Failure is preserved;
+unchanged-main comparison is pending. All three affected classes are now in CI.
+Either-finger native pinch release and physical-device acceptance remain open.
+
 # 2026-11-01 — Close remaining CSV validation bypasses in the catalog PR stack
 
 Reviewed current PRs #8 (`b57519f`), #9 (`9b468b0`) and #10 (`0c49781`)

@@ -1,6 +1,16 @@
 import SwiftUI
 import UIKit
 
+/// A pinch hands off the displayed, bounded pan and the existing drag checkpoint.
+struct CardCenteringPanHandoff {
+    let pan: CGSize
+    let translation: CGSize
+
+    init(pan: CGSize, translation: CGSize, clamp: (CGSize) -> CGSize) {
+        self.pan = clamp(pan)
+        self.translation = translation
+    }
+}
 /// Where an image pixel appears on screen: `screen = origin + scale · pixel`.
 struct CardCenteringProjection: Equatable {
     var origin: CGPoint
@@ -375,12 +385,15 @@ struct CardCenteringCanvas: View {
             }
             .onEnded { _ in
                 pinch = nil
+                let handoff = CardCenteringPanHandoff(pan: pan, translation: dragTranslation) {
+                    clampedPan($0, zoom: zoom, size: size, base: base)
+                }
                 // A finger still down carries on as a one-finger pan.
                 if case .cancelled? = interaction, dragLocation != nil {
-                    interaction = .pan(pan, from: dragTranslation)
+                    interaction = .pan(handoff.pan, from: handoff.translation)
                 }
                 withAnimation(reduceMotion ? nil : .snappy(duration: 0.25)) {
-                    pan = clampedPan(pan, zoom: zoom, size: size, base: base)
+                    pan = handoff.pan
                 }
             }
     }
