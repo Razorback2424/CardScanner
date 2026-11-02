@@ -1,5 +1,472 @@
 # Guided centering repair
 
+## Localized Done investigation — 2026-11-01 (open)
+
+This investigation is isolated in [draft PR #19](https://github.com/Razorback2424/CardScanner/pull/19),
+on `fix/centering-done-event-sequence`, from merged main
+`4a9d70b12d941877e2752fe9cfb5fd1508ce0520` (tree
+`6809ca82f89cea5cb69ed10d64c25b679181e042`). It is separate from the portfolio,
+token and Reset Guides work in draft PR #18. Existing worktrees, edits and
+stashes were preserved. No merge or release acceptance is part of this work.
+
+The earlier passing native precision receipts below remain historical evidence.
+They do not supersede the later merged-main failure or establish that it is a
+harmless flake.
+
+### Explicit Done boundary repair — 2026-11-02
+
+**Status:** Done sequencing and the corrected removal-race tests have positive
+local native evidence, recorded below. Remote PR #19 remains draft at failed
+head `7d15be1e0f993661201f445dcc0f81c945538884`; the local follow-up is uncommitted
+and has not been pushed. Final-commit Actions execution is still required.
+The earlier failed native runs remain failed. See
+[PR #19's validation receipt](https://github.com/Razorback2424/CardScanner/pull/19)
+for remote candidate identity and retained Actions artifacts.
+Remote main and the starting PR head were rechecked as `4a9d70b12d941877e2752fe9cfb5fd1508ce0520`
+and `47279260010de4d6d1c4ab1c9062115334e0ae4d`. No newer fix was present.
+
+#### Local removal-race repair and verification — 2026-11-02
+
+The local follow-up starts at `7d15be1`, in an isolated checkout. The original
+race tests removed a native text field directly from SwiftUI's hierarchy. The
+same-field fixture also placed a child hosting controller's view directly in
+the window rather than its parent view. Both operations are removed. SwiftUI
+now owns removal and replacement through conditional fixture views.
+
+The production commit action has a per-instance Debug scheduler hook around
+only the real removal finalizer. The default remains a main-queue deferred
+completion; Done and ordinary blur remain synchronous. A guard belongs to
+each scheduled completion, so duplicate delivery cannot repeat publication or
+teardown and cannot suppress a later session. Fixture teardown restores the
+hook and drains pending work on success and error paths.
+
+The repaired tests hold A's real production removal completion, assert that
+no model update occurred through ordinary blur and that A is still pending
+before B starts, then deliver the held completion twice. A newer same-field
+valid, invalid or untouched boundary suppresses A; a different-field B commits
+first and A then commits once to its own field. Another edit after delivery
+still commits. Separate native methods check synchronous ordinary blur while
+A is held and delivery-time invalidation after a real image-load request,
+failed image loading, model replacement, field-owner replacement and a newer
+authoritative value. The existing live-value and field-token checks pass these
+cases; capture-time validity alone is not used as proof. No new production
+context-validation defect is claimed.
+
+The original two-second event deadlines and observer-before-Done assertions
+remain. An intentionally held completion is timed from explicit release;
+the tests separately prove that it did not execute before release.
+
+**Crash/evidence reconciliation:** the retained hosted focused bundle reports
+10 passed / 3 failed. Its delayed-end case contains a crash attachment despite
+the stdout pass; it is not an ordinary assertion failure that can be discarded.
+The attachment and a local baseline reproduce a `SIGABRT` with
+`freed pointer was not the last allocation`, through Swift concurrency task
+deallocation and XCTest's `XCTSwiftErrorObservation._observeErrors(in:)`.
+The hosted stdout starts the next same-field test before that abort. These
+records explain why stdout alone was insufficient. They do not establish the
+trigger of the runtime abort or prove that controller hierarchy caused it.
+The invalid hierarchy is removed, and every final local selection completes
+without an abort or restart. The old bundle remains authoritative for its head.
+
+Native evidence is retained on the external SSD under
+`CodexBuilds/CardScanner-PR19-Removal-20261102`:
+
+| Local selection | Passed | Failed methods | Skipped |
+| --- | ---: | ---: | ---: |
+| Baseline at `7d15be1`, three selected methods | 1 | 2 | 0 |
+| First five-method repair attempt | 4 | 1 | 0 |
+| First fifteen-method repair attempt | 14 | 1 | 0 |
+| Final focused selection, `repair-focused-2` | 15 | 0 | 0 |
+| Final native class, `repair-native-class` | 46 | 0 | 1 |
+| Final affected suites, `repair-affected-suites` | 131 | 0 | 1 |
+| Final unchanged combined selection, `repair-combined` | 1,513 | 0 | 2 |
+
+The baseline reproduces the same-field crash and premature A publication in
+the different-field test. The two intermediate failures remain retained: the
+new image test first bypassed the real load-revision path, then unnecessarily
+waited for image analysis within an editing deadline. The final test uses the
+production load entry point and checks deferred delivery while loading; it
+retires that analyzer afterward. Editing deadlines were not increased.
+
+Final verification used Xcode 27.1, iPhone 17 Pro / iOS 27.0 Simulator. Every
+expected method is present exactly once in each finalized bundle, with no
+stdout/bundle status conflicts, missing methods, unexpected skips, restarts,
+SwiftUI publication-warning matches or bundle runtime warnings. The two known
+combined skips are the native development-performance and aged-store opt-in
+benchmarks. The evidence-gate Python suite also passes 9/9.
+
+The local verification receipts include raw extraction output, exact method
+lists and SHA-256 identities for the unchanged tested source:
+
+- `CardCenteringView.swift`: `2337feeb622f5196d4bcb5a6edc2801d9389cf4490a6fa16951df4af76cebe95`
+- `CenteringExportTests.swift`: `8ba27d80ec4abaa466a78e2adb33914575df4d5a091a844f0defc136bd8e53d5`
+
+This is component/simulator evidence for the uncommitted local patch. It does
+not replace final-commit CI or establish keyboard-toolbar tapping, VoiceOver,
+physical-device, provider, CloudKit or release acceptance.
+
+The complete decoded [job 125081729300](https://github.com/Razorback2424/CardScanner/actions/runs/41384336534/job/125081729300)
+was inspected before editing. Its exact checkout was `47279260010de4d6d1c4ab1c9062115334e0ae4d`.
+This supersedes the older PR/ledger statement that this candidate was queued
+without execution. It reproduced a production event-sequencing defect:
+
+| Starting-head selection, run 41384336534 attempt 1 | Methods | Passed | Failed methods | Skipped |
+| --- | ---: | ---: | ---: | ---: |
+| Localized focused attempt 1 | 1 | 0 | 1 | 0 |
+| Localized focused attempt 2 | 1 | 1 | 0 | 0 |
+| Localized focused attempt 3 | 1 | 1 | 0 | 0 |
+| Complete native precision class | 35 | 33 | 1 | 1 |
+| Affected centering/export suites | 120 | 118 | 1 | 1 |
+| Original combined selection | 1,503 | 1,500 | 1 | 2 |
+
+The rapid-refocus method fails in each of the last three selections. XCTest's
+two failure assertions, one unexpected, belong to **one failed method**.
+Focused attempt 1 separately fails while waiting for the initial untouched
+Done/blur/unchanged-display guard; later focused passes do not erase it.
+
+In the combined rapid-refocus trace, Done for A (`119,1193`) arrives at
+1,874.201 ms, UIKit ends editing at 1,924.061 ms, and the fixture refocuses at
+1,926.280 ms while SwiftUI still reports true. B (`119,2297`) reaches the draft
+at 2,003.449 ms. A never commits. The later teardown blur at 4,188.576 ms
+enters commit and publishes B at 4,188.770 ms as callback 1. The full-class
+trace independently delivers B's Done at 2,003.445 ms with SwiftUI focus false;
+the delayed focus-true observation arrives at 2,043.016 ms, and B only commits
+during teardown at 4,477.379 ms. Times are per-case monotonic milliseconds.
+
+The cause is the dependency on an observed SwiftUI focus transition, not the
+locale parser or a value subscription installed too late. These traces do
+**not** establish the cause of every historical French-locale timeout.
+
+The starting run retained `catalog-native-results`, artifact `13114804763`,
+139,792,040 bytes, SHA-256
+`49f911d657ac2cea7c5789aadb658d58924053e37b6ef56df58ace8dbcb461fd`.
+It contains the commands/attempt manifest, logs, keyboard diagnostics, per-run
+result bundles and combined execution summary. The original artifact's stated
+expiry is 2026-11-16 04:07:24 UTC. Complete decoded logs were inspected; local
+result-bundle extraction is unavailable through this workspace's configured
+network route.
+
+A single fresh [pre-fix reproduction, attempt 2](https://github.com/Razorback2424/CardScanner/actions/runs/41384336534/job/125260500820),
+again checked out the unchanged `4727926` head. It **reproduced** the rapid-refocus
+failure while waiting for commit 2 in the native class, affected suites and
+combined selection. No second retry was requested. The three localized focused
+attempts each passed 1/1; native was 33 passed / 1 failed / 1 skipped (35 total),
+affected 118 / 1 / 1 (120 total), and combined 1,500 / 1 / 2 (1,503 total).
+Each failed selection again has one failed method and two assertions, not two
+failed methods. The earlier focused failure in attempt 1 remains recorded.
+Attempt 2 retains native artifact `13142235545`, SHA-256
+`d958f0b8f2f1996835afc745a55ceafe774de15accff309b46e745dcc40576b3`;
+the original attempt's artifact remains separately available.
+
+#### First repaired native run — retained failed attempt
+
+[Run 41444747470, job 125274962125](https://github.com/Razorback2424/CardScanner/actions/runs/41444747470/job/125274962125)
+checked out repair commit `ecb4d6a7d6cf108a06a4c7a5a1cacecb216f086a` exactly.
+The job was **cancelled**, its execution gate **failed**, and its native
+artifact upload **failed**. Passing method totals do not make this a passing
+workflow:
+
+| Repaired-head selection | Methods | Passed | Failed methods | Skipped | Execution receipt |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Localized focused attempt 1 | 1 | 0 | 1 | 0 | Focus-readiness polling deadline |
+| Localized focused attempt 2 | 1 | 0 | 1 | 0 | Untouched-Done readiness polling deadline |
+| Localized focused attempt 3 | 1 | 1 | 0 | 0 | Exact method completion |
+| Focused sequencing/removal | 9 | 9 | 0 | 0 | All nine exact methods completed |
+| Complete native precision class | 42 | 41 | 0 | 1 | All 42 exact methods completed |
+| Affected centering/export suites | 127 | 126 | 0 | 1 | XCTest total; one completion line was interleaved, so the method gate failed |
+| Original combined selection | 1,510 | 1,508 | 0 | 2 | All methods completed; result finalization was cancelled |
+
+The preserved rapid-refocus trace commits A (`119,1193`) at 167.906 ms after
+Done at 160.196 ms, before requesting dismissal at 180.140 ms. Immediate
+refocus occurs at 287.764 ms with SwiftUI still reporting true. B's own Done
+at 341.519 ms commits `119,2297` at 350.633 ms; the first observed blur is only
+at 479.071 ms. The stale-focus regression delivers Done with focus false at
+1,491.180 ms and publishes at 1,510.091 ms, before focus true at 1,891.670 ms.
+The saved-old-end regression replays A's end at 1,392.173 ms without a second
+publication; B's legitimate blur at 1,506.189 ms commits B at 1,507.006 ms.
+These are production-component traces, not simulated commit implementations.
+
+The two focused failures remain failures in this receipt. Their traces identify
+an additional fixture timing defect: the waiter judged its own delayed resume
+time rather than the recorded completion time. In attempt 1, focus was observed
+at 1,176.348 ms, within the deadline that began after native focus returned at
+218.681 ms; the waiter resumed at 2,278.184 ms with `condition=true`. In attempt
+2, Done was requested at 2,591.300 ms, the unchanged guard ran at 2,602.600 ms,
+UIKit ended at 3,647.440 ms and SwiftUI observed blur at 3,649.689 ms. All required
+events were within two seconds, but the waiter resumed at 4,761.701 ms. The
+follow-up uses the latest timestamp of **every** required event from the same
+field/request, while still requiring the original live condition. Missing,
+contrary, stale or post-deadline events cannot satisfy it. The original two-second
+limit, observer-before-Done ordering and no-premature-update assertions remain.
+
+Eight new SwiftUI runtime warnings, each also reported by XCTest, occurred in
+context replacement and valid focused removal across the four broader phases.
+They identify the model publication in the fixture's `accept` callback: native
+removal was committing during SwiftUI reconciliation. The follow-up consumes
+the immutable removal snapshot synchronously, then publishes only that captured
+removal value outside the view-update transaction, with per-field session fences
+and context revalidation. Done and ordinary blur still commit synchronously.
+
+The affected-suite stdout split
+`testPrecisionDoneReentrantRepeatedActionAndRemovalPublishOnce` across an
+unrelated simulator message. Its pass is visible in the fragments and the other
+three selections, but the original exact-method gate correctly remained failed.
+The follow-up retains raw stdout and extracts exact method identities/statuses
+from each finalized `.xcresult`; it does not infer missing methods from totals.
+Missing or invalid result data and failures from either evidence source still
+fail verification.
+
+The combined XCTest summary finished at 13:02:20 UTC with 1,508 passes and two
+skips. Cancellation at 13:02:34 UTC interrupted result finalization after the
+35-minute job budget. The subsequent upload failed with `ENOENT` for a moving
+file inside `catalog-tests.xcresult/Staging`; only the separate census artifact
+survived. **No native result bundle from this candidate was successfully retained.**
+The decoded job log remains available at the job link and was inspected in full
+(SHA-256 `370c165692fcf6d8ebebfe32a4f403af3344b928f5ab517ddaff2f0836e609b9`).
+This evidence loss is a remaining limit of that attempt, not a successful upload.
+The follow-up combines the redundant focused launches into one fixed selection
+and uploads completed comparison bundles before starting the original combined
+selection. It does not increase the job or test timeouts or retry until green.
+
+#### Bounded production change
+
+Only the precision number input owns a native editing session. The enclosing
+SwiftUI labels, stepper, reason and model validation remain. A plain SwiftUI
+focus Boolean cannot distinguish A's delayed blur from B's legitimate blur,
+so the field uses a small `UITextField` representable with a captured native
+responder boundary. Other inputs retain their existing behavior.
+
+- Toolbar Done synchronously captures the active editor, field, session,
+  locale and native text. It consumes that session before invoking its
+  captured update callback, then separately dismisses that same responder.
+- Native resignation captures an immutable end event before UIKit can begin
+  another edit. Delayed end callbacks carry that event; they never read the
+  latest field or draft. Consumed/older sessions cannot publish again.
+- Ordinary blur and focused removal still commit valid edits. Removal consumes
+  its captured session immediately and publishes the validated captured value
+  after SwiftUI reconciliation; a later callback never reads a live draft.
+  Per-field boundary tokens also protect against replacement native editors.
+  Invalid and
+  untouched drafts are consumed without publication. No global next-blur
+  suppression is used. Typing alone only changes the native draft.
+- The existing locale parser and finite-number validation are unchanged.
+  The untouched guard uses the edit's starting display; a captured live-value
+  getter preserves unrounded precision, rejects invalidated image contexts,
+  avoids duplicate writes before SwiftUI rerenders and restores the actual
+  accepted geometry if model validation rejects a parsed value.
+- The existing field identity now includes image revision. Captured side,
+  frame, image revision, getter and updater remain tied to the same context.
+  SwiftUI focus observations affect UI/diagnostics only. The `view.appear` and
+  `view.disappear` trace events now identify the owned native window lifecycle;
+  a delayed SwiftUI disappearance callback is not a commit source.
+
+#### Regression and execution contract
+
+The preserved rapid-refocus interaction waits only for UIKit blur before
+refocusing. The localized observer still precedes Done, all original
+precision/text/no-premature-update assertions remain, and the timeout remains
+two seconds. Seven additional methods exercise stale focus, immediate
+equivalent-value refocus, delayed old end callbacks, legitimate B blur,
+context replacement/invalidation, reentrant/repeated Done, removal, invalid
+and untouched drafts. The follow-up adds one exact readiness-deadline method
+and two native removal methods: a distinct editor's newer same-field boundary
+must suppress A, while a different field's boundary must preserve A's legitimate
+removal publication. Trace assertions compare native identity, session identity,
+exact values, callback counts and Done → consumption → update → dismissal order.
+
+The follow-up recorder runs one fixed `focused-regressions` selection containing
+the original localized method and every sequencing/removal/readiness regression,
+then the full native class and affected suites. The original combined selection
+is unchanged. Every selected method must have an exact completion record from
+stdout or a finalized result bundle; aggregate totals cannot supply missing
+methods. Missing/duplicate methods, unexpected skips, conflicting status and
+earlier failures remain gates. Each invocation records its command, commit,
+toolchain, simulator state, raw log, result extraction and `.xcresult`. Completed
+comparison bundles are uploaded before combined execution as well as in the
+final native artifact. The final head must execute this entire plan; its current
+receipt is linked from PR #19 rather than inferred from an earlier commit.
+Source discovery at `7d15be1` selected 13 focused methods, 45 native-class
+methods and 130 affected methods; the unchanged combined selection gains ten
+methods over the 1,503-method starting head. These are expected selection counts,
+not an assertion that the new head has passed.
+
+Local checks cover Python syntax, selection completeness and rejection of
+missing/failed/skipped/duplicate completion records, plus `git diff --check`.
+Nine persisted Python tests exercise exact result recovery, status conflicts,
+failure preservation, wrong-target/missing/duplicate cases and malformed data.
+The original Linux authoring workspace had neither Swift nor Xcode. Its native execution
+used the existing GitHub Actions workflow with an exact-head checkout check;
+the unavailable local proxy was not bypassed. The hosted input regressions
+exercise the production Done action; actual keyboard-toolbar visibility,
+manual VoiceOver/keyboard interaction and physical-device behavior remain
+separate UI limits unless explicitly verified below.
+
+### Original failure and evidence limits
+
+The complete [failed job](https://github.com/Razorback2424/CardScanner/actions/runs/41375910704/job/125055978381)
+was inspected and retained privately (7,962 log lines). The native result
+artifact is available in that run as `catalog-native-results`, artifact
+`13111359872`, with a 14-day retention period. Its connector download reference
+was obtained, but local transfer failed because the configured proxy was
+unreachable. No alternate network route was used; the result bundle's internal
+records have not been inspected.
+
+| Historical selection | Executed | Passed | Failed | Skipped |
+| --- | ---: | ---: | ---: | ---: |
+| Combined native selection | 1,501 | 1,498 | 1 | 2 |
+| Native precision class, included above | 33 | 31 | 1 | 1 |
+| Export class, included above | 47 | 47 | 0 | 0 |
+| Pokémon package, separate from native | 84 | 83 | 0 | 1 |
+| Magic package, separate from native | 18 | 18 | 0 | 0 |
+
+`testTypedLocalizedDraftPreservesAllDigitsAndCommitsOnlyOnDone` took 57.321
+seconds. Its only failure was the two-second `fr_FR` Done expectation; later
+numeric/text assertions did not separately fail. Both French inputs shared the
+description, so the failed signed input cannot be recovered from this log.
+
+No test failure preceded it. The preceding classes were Browse (72), sharing
+(17), catalog normalization (40), and centering export (47), all passing.
+There is no recorded simulator reset, test-process restart or crash. The same
+application process continued through later tests. Absence of a reset message
+does not establish simulator health.
+
+| Original clock | UTC, November 2 | Observed event |
+| --- | --- | --- |
+| Application | 02:17:36.318812 | Keyboard main-thread queue timeout. |
+| Application | 02:17:39.434007 | Invalid keyboard session ID. |
+| Application | 02:18:05.205657; 02:18:19.547168 | Remote keyboard connection invalidation. |
+| GitHub log ingestion | 02:18:28.651157 | French Done expectation timeout received. |
+| GitHub log ingestion | 02:18:35.406104 | Test failure result received, duration 57.321 s. |
+
+GitHub ingestion and application clocks are buffered/interleaved by up to
+approximately 26 seconds here. This table cannot establish the order or delay
+of focus, Done, commit, parse, publication or fulfillment; those events were
+not instrumented. Keyboard disruption is established, infrastructure-only
+causation is not.
+
+Source inspection establishes that commit, parsing and probe publication are
+synchronous once invoked, and the value subscription precedes the Done token.
+It also establishes unobserved 80/40 ms fixture assumptions and hide-only
+window cleanup. Neither source observation alone identifies the failed event.
+
+### Observational baseline
+
+Diagnostic head `b0c6ae3ad548e6d8e11f55bd273e776b91e71b1b` adds unique
+locale/signed-input identifiers and per-host monotonic events. It retains the
+three inputs, every original assertion, fixed sleeps, original cleanup,
+production commit decisions and the two-second deadline. The app installs no
+default trace sink or input logging. Instrumented bindings forward the original
+transaction, and notification observers add no dispatches or waits.
+
+The recorded events cover UIKit responder/editing calls, the actual draft
+binding, observed SwiftUI focus, Done delivery, commit and parse outcomes,
+model assignment/publication, fulfillment and teardown. Baseline callbacks
+after a case ends are detected during subsequent cases; this does not prove
+absence of callbacks after the entire test method has ended.
+
+[Native comparison run](https://github.com/Razorback2424/CardScanner/actions/runs/41381240608)
+uses three predetermined focused attempts, one whole-class attempt and one
+affected-suite attempt, followed by the unchanged combined selection. It
+retains logs, result bundles and an attempt manifest, uses the exact PR head,
+and checks actual test-completion records. It reuses the selected simulator
+without erasing or resetting it. A failed attempt remains failed even if a
+later attempt passes.
+
+| Baseline selection | Executed | Passed | Failed | Skipped | Localized test duration |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Focused attempt 1 | 1 | 1 | 0 | 0 | 26.579 s |
+| Focused attempt 2 | 1 | 1 | 0 | 0 | 6.689 s |
+| Focused attempt 3 | 1 | 1 | 0 | 0 | 7.370 s |
+| Full native precision class | 33 | 32 | 0 | 1 | 17.958 s |
+| Affected centering suites | 118 | 117 | 0 | 1 | 4.252 s |
+| Original combined selection | 1,501 | 1,499 | 0 | 2 | 5.067 s |
+
+These are six executions of the localized method, containing 18 locale/input
+cases. They are repeated selections, not a count of distinct methods. The
+combined total is XCTest's authoritative suite summary; one unrelated
+completion line was interleaved with another log stream. Every required
+centering method was individually confirmed. The recorder now preserves both
+the suite summary and raw completion counts, and never substitutes an aggregate
+count for a missing required method.
+
+All 18 edited drafts were in SwiftUI before Done, and Done arrived with SwiftUI
+focus true. Each published exactly once after the request, in 70.264–645.461 ms.
+Observed blur to commit took 4–14 microseconds; commit to publication took
+0.095–12.498 ms, and publication to fulfillment approximately 0–1 microseconds.
+This baseline does not demonstrate a parsing, subscription or publication race.
+
+The baseline had 31 invalid keyboard-session warnings but none of the original
+queue timeouts or remote-keyboard invalidations. One initial UIKit focus call
+blocked for 5.086 seconds. The original two-second edited-Done failure did not
+reproduce; its precise cause remains unresolved, and it is not classified as
+infrastructure-only.
+
+### Demonstrated fixture sequencing and cleanup defects
+
+**Eight of 18 initial unchanged-Done blur transitions coalesced across refocus.**
+The assertions about preserving the untouched Double passed without executing
+the unchanged-display commit guard. **Fourteen disappearance callbacks arrived
+after cases were marked ended.** Those callbacks all had focus false; no late
+model update or publication was observed.
+
+The affected-suite English case supplies a complete 50-event example. Times
+are milliseconds from that case's monotonic origin:
+
+| Time | Event |
+| ---: | --- |
+| 145.109 | SwiftUI observed focus true. |
+| 239.388 | Fixture requested unchanged Done. |
+| 242.610 | Field received Done while focused. |
+| 292.750 | Fixture requested refocus; UIKit was no longer first responder. |
+| 405.738 | UIKit refocus returned true. |
+| 498.533 | Fixture inserted `123.45`. |
+| 501.235 | SwiftUI draft contained `123.45`. |
+| 545.658 | Fixture requested edited Done. |
+| 548.526 | Edited Done arrived with focus true and the correct draft. |
+| 706.189 | SwiftUI observed its only blur. |
+| 706.195 | Commit entered for the edited draft. |
+| 706.427 | Model published `123.45`. |
+| 706.428 | Expectation was fulfilled. |
+
+There is no intermediate observed blur/refocus pair or unchanged-display
+commit. This demonstrates that the original fixed-sleep fixture did not
+complete its intended first focus cycle. It does not prove that this caused
+the historical edited-Done timeout.
+
+### Fixture correction and behavioral coverage candidate
+
+The corrected localized test retains the same single-field host, locale/input
+cases, precision/text/no-premature-update assertions, and Combine subscription
+before Done with the original two-second fulfillment timeout. It observes
+mounting, fresh UIKit and SwiftUI focus, and the actual draft. Before asserting
+untouched-value preservation or refocusing, it requires Done delivery, native
+responder loss, a fresh observed SwiftUI blur, and the real unchanged-display
+commit guard. Exact callback-count and request-to-mutation deadline assertions
+are added.
+
+The shared fixture ends only its own editing session, observes blur and
+disappearance, detaches the host, restores the previously visible key window,
+and removes its observers before marking the case ended. No cleanup task is
+launched from a synchronous defer. Retained traces detect callbacks during
+subsequent cases; they do not claim observation forever after the test method.
+
+Two new native cases cover the latest full-precision draft, repeated Done,
+rapid native refocus before SwiftUI blur acknowledgment, movement between two
+fields, and focused removal with valid, invalid and untouched input. The rapid
+refocus case deliberately does not add the ordinary readiness gate that would
+remove the interaction under test. Production commit behavior remains
+unchanged at this checkpoint. These new cases and the fixture correction are
+written and source-reviewed at that historical checkpoint. Their subsequently
+failed native execution is recorded in the explicit-boundary repair section
+above; the earlier pending statement is no longer current evidence.
+
+The initial diagnostic head `26cad32794930de0e4c13500ecb6a44580eac2be` had a
+missing computed-property brace caught in source review. Its superseded
+[run](https://github.com/Razorback2424/CardScanner/actions/runs/41381093991)
+was canceled during its first build and executed **zero native test cases**.
+Its package step passed 101 cases with one skip. That cancellation is not a
+reproduction or native pass.
+
 ## Current precision candidate — 2026-11-01
 
 Branch provenance: `refinement/centering-native-2026-11-01`, based on
