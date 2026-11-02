@@ -28,7 +28,651 @@ private actor UpgradeProbeTransport: PokemonBrowseTransport {
     }
 }
 
+private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
+    let provider: TCGdexSetCatalog
+    var detailRequests = 0
+    var setRequests = 0
+    init(provider: TCGdexSetCatalog) { self.provider = provider }
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] {
+        let object: [String: Any] = ["id": provider.id, "name": provider.name,
+            "cardCount": ["total": provider.cardCount?.total ?? 1, "official": provider.cardCount?.official ?? 1]]
+        return [try JSONDecoder().decode(TCGdexBrowseSet.self, from: JSONSerialization.data(withJSONObject: object))]
+    }
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog { setRequests += 1; return provider }
+    func fetchCard(id: String) async throws -> TCGdexCard {
+        detailRequests += 1
+        throw URLError(.notConnectedToInternet)
+    }
+}
+
 final class PricingTests: XCTestCase {
+    @MainActor
+    func testExpiryRejectsOlderSaleOrUpdateUsingOnlyMatchingClockFields() throws {
+        let now = Date.now
+        let sale = now.addingTimeInterval(-1000)
+        let update = now.addingTimeInterval(-500)
+        for (incomingSale, incomingUpdate) in [
+            (sale.addingTimeInterval(-1), update.addingTimeInterval(-1)),
+            (sale, update.addingTimeInterval(-1)),
+            (sale.addingTimeInterval(-1), update.addingTimeInterval(1))
+        ] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let store = PriceStore(context: container.mainContext)
+            let current = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-matching-clocks", company: .cgc,
+                grade: .init(value: "10"), printing: "Normal", marketPriceUSD: 60, updatedAt: update,
+                quoteLifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: sale,
+                    priceExpiresAt: now.addingTimeInterval(1000))), game: .pokemon, variantID: "normal",
+                    treatmentIDs: [], store: store, at: update)
+            let record = try XCTUnwrap(store.record(forKey: current.priceKey))
+            _ = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-matching-clocks", company: .cgc,
+                grade: .init(value: "10"), printing: "Normal", marketPriceUSD: nil, updatedAt: incomingUpdate,
+                quoteLifecycle: .init(status: "expired", lastPrice: 60, lastSaleAt: incomingSale,
+                    priceExpiresAt: update)), game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: now)
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+            XCTAssertFalse(record.isInvalidated)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.lastSaleAt, sale)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.sourceUpdatedAt, update)
+        }
+    }
+
+    @MainActor
+    func testSameSaleExpiryComparesSaleAndUpdateClocksSeparately() throws {
+        let now = Date.now
+        let sale = now.addingTimeInterval(-1000)
+        let currentUpdate = now.addingTimeInterval(-500)
+        for expiryUpdate in [currentUpdate, now.addingTimeInterval(-100)] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let store = PriceStore(context: container.mainContext)
+            func bind(status: String, update: Date, at checked: Date) -> GradedVariantBindingReceipt {
+                GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-mixed-clocks", company: .cgc,
+                    grade: .init(value: "10"), printing: "Normal", marketPriceUSD: status == "current" ? 60 : nil,
+                    updatedAt: update, quoteLifecycle: .init(status: status, lastPrice: status == "expired" ? 60 : nil,
+                        lastSaleAt: sale, priceExpiresAt: status == "expired" ? currentUpdate : now.addingTimeInterval(1000))),
+                    game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: checked)
+            }
+            let current = bind(status: "current", update: currentUpdate, at: currentUpdate)
+            let record = try XCTUnwrap(store.record(forKey: current.priceKey))
+            _ = bind(status: "expired", update: expiryUpdate, at: now)
+            XCTAssertNil(record.effectiveUnitMarketPriceUSD, "Same-sale expiry must not compare sale time against a later update time")
+            XCTAssertTrue(record.isInvalidated)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "expired")
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.sourceUpdatedAt, expiryUpdate)
+        }
+    }
+
+    @MainActor
+    func testImportedValuationClockCannotOverrideAnExactProviderExpiry() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceStore(context: container.mainContext)
+        let now = Date.now
+        let printing = "justtcg:v2:synthetic-imported-clock"
+        XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 60, currencyCode: "USD", source: .importedCSV,
+            sourceVariantID: "synthetic-import", sourceUpdatedAt: now, fetchedAt: now)), game: .pokemon,
+            printingID: printing, variantID: "normal", at: now))
+        let oldSale = now.addingTimeInterval(-1000)
+        let receipt = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-imported-clock", company: .cgc,
+            grade: .init(value: "10"), printing: "Normal", marketPriceUSD: nil, updatedAt: oldSale,
+            quoteLifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: oldSale,
+                priceExpiresAt: oldSale.addingTimeInterval(100))), game: .pokemon, variantID: "normal",
+            treatmentIDs: [], store: store, at: now.addingTimeInterval(1))
+        let record = try XCTUnwrap(store.record(forKey: receipt.priceKey))
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertTrue(record.isInvalidated)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "expired")
+    }
+
+    @MainActor
+    func testLaterFetchedOldExpiryCannotWithdrawNewerSaleAndEqualSaleExpiryStillCan() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceStore(context: container.mainContext)
+        let now = Date.now
+        let oldSale = now.addingTimeInterval(-1000)
+        let newSale = now.addingTimeInterval(-100)
+        let fetched = now.addingTimeInterval(-50)
+        func bind(status: String, sale: Date, amount: Double?, at checked: Date) -> GradedVariantBindingReceipt {
+            GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-cache-race", company: .cgc,
+                grade: .init(value: "10", label: "Gem Mint"), printing: "Normal", marketPriceUSD: amount,
+                updatedAt: sale, quoteLifecycle: .init(status: status, lastPrice: status == "expired" ? 40 : nil,
+                    lastSaleAt: sale, priceExpiresAt: status == "expired" ? sale.addingTimeInterval(1) : now.addingTimeInterval(1000))),
+                game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: checked)
+        }
+        let positive = bind(status: "current", sale: newSale, amount: 60, at: fetched)
+        let record = try XCTUnwrap(store.record(forKey: positive.priceKey))
+        _ = bind(status: "expired", sale: oldSale, amount: nil, at: now)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+        XCTAssertEqual(record.sourceUpdatedAt, newSale)
+        XCTAssertEqual(record.fetchedAt, fetched)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.checkedAt, fetched)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "current")
+        XCTAssertFalse(record.isInvalidated)
+        XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+        _ = bind(status: "expired", sale: newSale, amount: nil, at: now.addingTimeInterval(1))
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertTrue(record.isInvalidated, "Expiry of the same sale is a valid later lifecycle transition")
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.status, "expired")
+    }
+
+    @MainActor
+    func testStaleExpiryCannotSupersedeNewerExactObservationWhileMutableRecordLags() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let store = PriceStore(context: context)
+        let now = Date.now
+        let oldSale = now.addingTimeInterval(-1000)
+        let withdrawn = now.addingTimeInterval(-500)
+        let newSale = now.addingTimeInterval(-100)
+        let key = PriceRecord.key(game: .pokemon, printingID: "justtcg:v2:synthetic-observation-cache", variantID: "normal")
+        let record = PriceRecord(key: key, game: .pokemon,
+            printingID: "justtcg:v2:synthetic-observation-cache", variantID: "normal")
+        record.sourceRaw = PriceSource.justTCG.rawValue
+        record.sourceUpdatedAt = oldSale
+        record.marketVariantID = "synthetic-observation-cache"
+        record.invalidatedAt = withdrawn
+        record.exactGradedQuoteEvidence = .init(variantID: "synthetic-observation-cache",
+            lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: oldSale, priceExpiresAt: withdrawn),
+            checkedAt: withdrawn, sourceUpdatedAt: oldSale)
+        context.insert(record)
+        context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: Money(rounding: 60),
+            source: .justTCG, sourceVariantID: "synthetic-observation-cache", marketVariantID: "synthetic-observation-cache",
+            effectiveAt: newSale, receivedAt: newSale, isSourceStamped: true))
+        _ = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-observation-cache", company: .cgc,
+            grade: .init(value: "10"), printing: "Normal", marketPriceUSD: nil, updatedAt: oldSale,
+            quoteLifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: oldSale, priceExpiresAt: withdrawn)),
+            game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: now)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.checkedAt, withdrawn)
+        XCTAssertEqual(record.invalidatedAt, withdrawn)
+        XCTAssertEqual(InventoryLedger(context: context).valuation(forPriceKey: key).unitPrice, Money(rounding: 60))
+    }
+
+    @MainActor
+    func testExactGradedExpiryWithdrawsValueWhileTimeoutRetainsItAndNewSaleCanRestoreIt() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("graded-lifecycle-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+        let now = Date.now
+        let expires = now.addingTimeInterval(500)
+        let current = JustTCGQuoteLifecycle(status: "current", lastPrice: nil, lastSaleAt: now,
+            priceExpiresAt: expires)
+        let expired = JustTCGQuoteLifecycle(status: "expired", lastPrice: 50, lastSaleAt: now,
+            priceExpiresAt: expires)
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let key = try autoreleasepool {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let store = PriceStore(context: container.mainContext)
+            func bind(_ lifecycle: JustTCGQuoteLifecycle, price: Double?, at date: Date) -> GradedVariantBindingReceipt {
+                GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-lifecycle", company: .cgc,
+                    grade: grade, printing: "Normal", marketPriceUSD: price, updatedAt: now,
+                    quoteLifecycle: lifecycle), game: .pokemon, variantID: "normal", treatmentIDs: [], store: store, at: date)
+            }
+            let first = bind(current, price: 50, at: now)
+            XCTAssertTrue(first.wasAccepted)
+            let record = try XCTUnwrap(store.record(forKey: first.priceKey))
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertTrue(store.recordFailure(game: .pokemon, printingID: record.printingID,
+                variantID: "normal", at: now.addingTimeInterval(1)))
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 50)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, current)
+            let next = bind(expired, price: nil, at: now.addingTimeInterval(2))
+            XCTAssertTrue(next.wasAccepted)
+            XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+            XCTAssertTrue(record.isInvalidated)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.lastPrice, 50)
+            XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle.lastSaleAt, now)
+            XCTAssertNil(InventoryLedger(context: container.mainContext).valuation(forPriceKey: first.priceKey).unitPrice)
+            let log = try container.mainContext.fetch(FetchDescriptor<PriceObservation>())
+            XCTAssertEqual(log.count, 2)
+            XCTAssertEqual(log.filter { $0.kind == .explicitInvalidation }.count, 1)
+            XCTAssertTrue(store.save())
+            return first.priceKey
+        }
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let store = PriceStore(context: reopened.mainContext)
+        let record = try XCTUnwrap(store.record(forKey: key))
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, expired)
+        XCTAssertNil(record.gradedMarketCoverage)
+        let restored = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-lifecycle", company: .cgc,
+            grade: grade, printing: "Normal", marketPriceUSD: 60, updatedAt: now.addingTimeInterval(3),
+            quoteLifecycle: current), game: .pokemon, variantID: "normal", treatmentIDs: [], store: store,
+            at: now.addingTimeInterval(3))
+        XCTAssertTrue(restored.wasAccepted)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+        XCTAssertFalse(record.isInvalidated)
+        let staleExpiry = ExactGradedQuoteEvidence(variantID: "synthetic-lifecycle", lifecycle: expired,
+            checkedAt: now.addingTimeInterval(2))
+        store.recordExactGradedQuoteEvidence(staleExpiry, forKey: key)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 60)
+        XCTAssertEqual(record.exactGradedQuoteEvidence?.lifecycle, current)
+        let alreadyExpired = GradedVariantBinding.storeUnboundVariantQuote(.init(id: "synthetic-past-expiry", company: .cgc,
+            grade: grade, printing: "Normal", marketPriceUSD: 99, updatedAt: now,
+            quoteLifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: now.addingTimeInterval(-1000),
+                priceExpiresAt: now.addingTimeInterval(-1))), game: .pokemon, variantID: "normal",
+            treatmentIDs: [], store: store, at: now)
+        let expiredRecord = try XCTUnwrap(store.record(forKey: alreadyExpired.priceKey))
+        XCTAssertNil(expiredRecord.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(expiredRecord.justTCGFetchedAt, "An elapsed quote cannot stamp a new current quote check")
+    }
+
+    func testLifecycleMetadataPreservesLegacyCoverageAndPublishedExpiryIsNeverCurrent() throws {
+        let record = PriceRecord(key: "pokemon:justtcg:v2:synthetic:normal", game: .pokemon,
+            printingID: "justtcg:v2:synthetic", variantID: "normal")
+        let coverage = GradedMarketCoverage(status: .gradeNotListed)
+        record.gradedMarketCoverageJSON = String(data: try JSONEncoder().encode(coverage), encoding: .utf8)
+        XCTAssertEqual(record.gradedMarketCoverage?.status, .gradeNotListed)
+        record.exactGradedQuoteEvidence = .init(variantID: "synthetic", lifecycle: .init(status: "current",
+            lastPrice: nil, lastSaleAt: .now.addingTimeInterval(-1000), priceExpiresAt: .now.addingTimeInterval(-1)), checkedAt: .now)
+        record.unitMarketPriceUSD = 40
+        XCTAssertEqual(record.gradedMarketCoverage?.status, .gradeNotListed)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(InventoryLedger.resolveValuation(observation: nil, record: record).unitPrice)
+        record.gradedMarketCoverage = nil
+        XCTAssertNotNil(record.exactGradedQuoteEvidence)
+        XCTAssertNil(record.gradedMarketCoverage)
+        record.exactGradedQuoteEvidence = .init(variantID: "synthetic", lifecycle: .init(status: "unpriced",
+            lastPrice: nil, lastSaleAt: nil, priceExpiresAt: nil), checkedAt: .now)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+    }
+
+    private func collisionSources() throws -> [TCGdexCard] {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-physical-collisions",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let root = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        return try XCTUnwrap(root["cases"] as? [[String: Any]]).map {
+            try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: XCTUnwrap($0["source"])))
+        }
+    }
+
+    func testReviewedPhysicalObjectsKeepDittoSubtypeAndBothCosmosBasesDistinct() throws {
+        let objects = PokemonReviewedPhysicalObjects.self
+        for source in try collisionSources() {
+            let identified = IdentifiedCard.pokemon(source, setCode: "")
+            let finishes = try XCTUnwrap(objects.variants(cardID: source.id))
+            XCTAssertEqual(source.catalogVariants, finishes)
+            XCTAssertEqual(Set(finishes.map(\.id)).count, finishes.count)
+            for finish in finishes {
+                XCTAssertEqual(PhysicalVariant.resolving(finish.id), finish)
+                let data = try JSONEncoder().encode(finish)
+                XCTAssertEqual(try JSONDecoder().decode(PhysicalVariant.self, from: data), finish)
+            }
+            if source.id == "swsh10.5-059" {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: objects.plainReverse, printRun: nil), 276982)
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: objects.peelableDitto, printRun: nil), 277788)
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .reverse, printRun: nil))
+                XCTAssertNil(CardPricing.price(for: identified, variant: .reverse, magicTreatments: []).value)
+                XCTAssertEqual(source.detailedVariant(for: objects.plainReverse)?.subtype, nil)
+                XCTAssertEqual(source.detailedVariant(for: objects.peelableDitto)?.subtype, "peelable-ditto")
+            } else {
+                XCTAssertEqual(source.detailedVariant(for: objects.cosmosHolo)?.type, "holo")
+                XCTAssertEqual(source.detailedVariant(for: objects.cosmosReverse)?.type, "reverse")
+                XCTAssertNil(source.detailedVariant(for: .pokemonFoilPattern("cosmos")))
+                XCTAssertNil(CardPricing.price(for: identified, variant: .pokemonFoilPattern("cosmos"), magicTreatments: []).value)
+            }
+            for finish in [objects.plainReverse, objects.peelableDitto, objects.cosmosHolo, objects.cosmosReverse] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: finish, printRun: .firstEdition))
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: finish, printRun: .shadowless))
+            }
+        }
+    }
+
+    @MainActor
+    func testAmbiguousPhysicalObjectsKeepOwnershipAndQuotesButAreUnpricedAfterStoreReopen() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("physical-review-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+        let now = Date(timeIntervalSince1970: 1_790_000_000)
+        try autoreleasepool {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let context = container.mainContext
+            for source in try collisionSources() {
+                let old: PhysicalVariant = source.id == "swsh10.5-059" ? .reverse : .pokemonFoilPattern("cosmos")
+                for imported in [false, true] {
+                    let id = imported ? "csv:\(source.id)" : source.id
+                    let row = CollectedCard(collectionKey: "\(id):\(old.id)", game: .pokemon, providerID: id,
+                        name: source.name, setName: source.set.name, setCode: source.set.id,
+                        cardNumber: source.localId, rarity: nil, imageURL: nil, thumbnailURL: nil,
+                        variant: old, variantResolution: .userConfirmed)
+                    row.catalogProviderID = source.id
+                    context.insert(row)
+                    let store = PriceStore(context: context)
+                    XCTAssertTrue(store.store(.price(.init(unitMarketPriceUSD: 12, currencyCode: "USD",
+                        source: .tcgplayer, sourceVariantID: "legacy", sourceUpdatedAt: now, fetchedAt: now)),
+                        game: .pokemon, printingID: row.priceStorageID, variantID: old.id, at: now))
+                    XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: old.id,
+                        storedResolution: .userConfirmed, itemKind: .rawCard, printRun: nil,
+                        card: .pokemon(source, setCode: "")))
+                }
+            }
+            try context.save()
+        }
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let cards = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        let records = try reopened.mainContext.fetch(FetchDescriptor<PriceRecord>())
+        let observations = try reopened.mainContext.fetch(FetchDescriptor<PriceObservation>())
+        XCTAssertEqual(cards.count, 4)
+        XCTAssertEqual(records.count, 4)
+        XCTAssertTrue(records.allSatisfy { $0.unitMarketPriceUSD == 12 && !$0.isInvalidated })
+        XCTAssertEqual(observations.count, 4)
+        let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(observations: observations,
+            records: records, reviewCards: cards)
+        let reader = await PriceSnapshotModelActor.makeBackground(modelContainer: reopened)
+        let snapshot = await reader.snapshot()
+        let projection = await CollectionProjectionActor.makeBackground(modelContainer: reopened)
+        let rows = await projection.snapshot()
+        let presentation = PriceSnapshotStore()
+        presentation.replace(with: snapshot)
+        for card in cards {
+            XCTAssertTrue(PokemonReviewedPhysicalObjects.requiresReview(card))
+            XCTAssertEqual(card.variantResolution, .userConfirmed)
+            XCTAssertEqual(card.quantity, 1)
+            XCTAssertNil(valuations.valuation(for: valuations.priceStorageKey(for: card)).unitPrice)
+            XCTAssertNil(snapshot.prices[card.priceKey]?.amount)
+            XCTAssertNil(rows.rowsByCollectionKey[card.collectionKey]?.price.amount)
+            XCTAssertEqual(snapshot.diagnosticsByCollectionKey[card.collectionKey]?.unpricedReason, .physicalIdentityReview)
+            presentation.apply([.init(key: card.priceKey, display: .init(amount: 99, currencyCode: "USD", source: .tcgplayer,
+                sourceUpdatedAt: now, fetchedAt: now))])
+            XCTAssertNil(presentation.display(for: card.priceKey)?.amount)
+        }
+        let csv = CollectionCSV.exportUnpriced(cards, priceRecords: records)
+        XCTAssertEqual(csv.text.split(separator: "\n").count, 5)
+    }
+
+    private func reportedParallelCases() throws -> [[String: Any]] {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-parallel-review",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        return try XCTUnwrap(document["cases"] as? [[String: Any]])
+    }
+
+    func testEveryReviewedDailyFeedProductRequiresItsSourceIdentityAndExactHoloRun() throws {
+        XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.setID)), ["mee", "30th", "30th-c"])
+        for entry in PokemonTCGCSVMapping.entries {
+            let localID = entry.setID == "mee" ? entry.printedNumber : String(entry.cardID.dropFirst(entry.setID.count + 1))
+            var source: [String: Any] = ["id": entry.cardID, "localId": localID, "name": entry.productName,
+                "set": ["id": entry.setID, "name": "Reviewed fixture", "cardCount": ["official": 128, "total": 196]],
+                "variants_detailed": [["type": "holo", "size": "standard"]]]
+            func card(_ object: [String: Any]) throws -> IdentifiedCard {
+                .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object)), setCode: "")
+            }
+            for run: PokemonPrintRun? in [nil, .unlimited] {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: try card(source), variant: .holo, printRun: run), entry.productID, entry.cardID)
+            }
+            for run: PokemonPrintRun in [.firstEdition, .shadowless] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(source), variant: .holo, printRun: run), entry.cardID)
+            }
+            for finish: PhysicalVariant in [.normal, .reverse, .pokemonFoilPattern("cosmos")] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(source), variant: finish, printRun: nil), entry.cardID)
+            }
+            for (field, value) in [("name", "Unrelated Fixture"), ("localId", "99999"), ("id", "fixture-unknown")] {
+                var wrong = source; wrong[field] = value
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(wrong), variant: .holo, printRun: nil), entry.cardID + field)
+            }
+            var wrongSet = source
+            wrongSet["set"] = ["id": "unrelated", "name": "Unrelated", "cardCount": ["official": 128, "total": 196]]
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(wrongSet), variant: .holo, printRun: nil))
+            source["variants_detailed"] = [["type": "holo", "thirdParty": ["tcgplayer": 999999]]]
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: try card(source), variant: .holo, printRun: nil), entry.cardID)
+        }
+    }
+
+    @MainActor
+    func testBlisterFamilySurvivesSavedChecklistUnchangedProbeOfflineScannerBrowseAndCollectionReopen() async throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-parallel-review",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let family = try XCTUnwrap(document["boundedRetailFamily"] as? [String: Any])
+        let members = try XCTUnwrap(family["members"] as? [[String: Any]])
+        XCTAssertEqual(Set(members.compactMap { $0["catalogID"] as? String }), ["me03-050", "me05-040", "me02.5-097"])
+        let loaded = await PokemonChecklistStore.shared.bundledSnapshot()
+        let bundle = try XCTUnwrap(loaded)
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        for member in members {
+            let id = try XCTUnwrap(member["catalogID"] as? String)
+            let expectedProduct = try XCTUnwrap(member["productID"] as? Int)
+            let sourceEntry = try XCTUnwrap((try reportedParallelCases()).first { $0["catalogID"] as? String == id })
+            let source = try JSONDecoder().decode(TCGdexCard.self,
+                from: JSONSerialization.data(withJSONObject: XCTUnwrap(sourceEntry["source"])))
+            let entry = try XCTUnwrap(bundle.entry(forProviderID: source.set.id))
+            let rows = try XCTUnwrap(bundle.checklist(for: entry.set.catalogID))
+            let old = rows.filter { !($0.providerID == id && $0.masterSetVariant == cosmos) }
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent("blister-family-\(UUID())")
+            defer { try? FileManager.default.removeItem(at: root) }
+            let probeObject: [String: Any] = ["id": source.set.id, "name": source.set.name,
+                "cards": [["id": id, "localId": source.localId, "name": source.name]],
+                "cardCount": ["total": source.set.cardCount.total, "official": source.set.cardCount.official]]
+            let probe = try JSONDecoder().decode(TCGdexSetCatalog.self, from: JSONSerialization.data(withJSONObject: probeObject))
+            let oldCounts = PokemonChecklistReviewedProjection.entry(entry, cards: old)
+            let oldEntry = PokemonChecklistSnapshotEntry(set: oldCounts.set, providerID: entry.providerID,
+                providerFingerprint: entry.providerFingerprint,
+                providerProbeFingerprint: PokemonMasterSetChecklistBuilder.providerProbeFingerprint(of: probe),
+                officialCount: entry.officialCount, standardSlotCount: oldCounts.standardSlotCount,
+                expandedSlotCount: oldCounts.expandedSlotCount, resource: entry.resource)
+            let manifest = PokemonChecklistSnapshotManifest(schemaVersion: bundle.manifest.schemaVersion,
+                rulesVersion: bundle.manifest.rulesVersion, generatedAt: bundle.manifest.generatedAt,
+                directoryFingerprint: bundle.manifest.directoryFingerprint, entries: [oldEntry])
+            try await PokemonChecklistStore(root: root, bundle: nil).replace(.init(manifest: manifest, checklists: [entry.set.id: old]))
+            let bytes = try Data(contentsOf: root.appendingPathComponent(entry.resource))
+            let manifestBytes = try Data(contentsOf: root.appendingPathComponent("manifest.json"))
+            let reopened = PokemonChecklistStore(root: root, bundle: nil)
+            for _ in 0..<2 {
+                let loaded = await reopened.mergedChecklist(for: entry.set.catalogID)
+                let repaired = try XCTUnwrap(loaded)
+                XCTAssertEqual(repaired.filter { $0.providerID == id && $0.masterSetVariant == cosmos }.count, 1)
+                XCTAssertEqual(repaired.count, old.count + 1)
+                let directory = await reopened.mergedEntries()
+                let projected = try XCTUnwrap(directory.first { $0.providerID == source.set.id })
+                XCTAssertEqual(projected.expandedSlotCount, repaired.count)
+                XCTAssertEqual(projected.standardSlotCount, repaired.filter { !$0.isExpandedMasterSetVariant }.count)
+                XCTAssertEqual(projected.set.cardCount, repaired.count)
+                XCTAssertEqual(projected.providerFingerprint, oldEntry.providerFingerprint)
+                XCTAssertEqual(projected.providerProbeFingerprint, oldEntry.providerProbeFingerprint)
+                await reopened.discardDecodedChecklists()
+            }
+            let offline = await PokemonOfflineCatalog(store: reopened).card(providerSetID: source.set.id,
+                localID: source.localId, expectedOfficialCount: source.set.cardCount.official)
+            let offlineCard = try XCTUnwrap(offline)
+            let identified = IdentifiedCard.pokemon(offlineCard, setCode: entry.set.code)
+            XCTAssertTrue(VariantResolver.options(for: identified.variantEvidence).contains(cosmos))
+            XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: identified, variant: cosmos), [.tcgplayerID(String(expectedProduct))])
+            XCTAssertNil(CardPricing.price(for: identified, variant: cosmos, magicTreatments: []).value)
+            let code = ["me03": "POR", "me05": "PBL", "me02.5": "ASC"][source.set.id]!
+            let identifier = try XCTUnwrap(PokemonScanProfile.bundledSeed.parse("\(code) EN \(source.localId)/\(source.set.cardCount.official)"))
+            guard case let .pokemon(_, number, _, definition) = identifier.legacyIdentity else { return XCTFail("Expected photographed footer route") }
+            XCTAssertEqual(definition.tcgdexSetID, source.set.id)
+            XCTAssertEqual(Int(number), Int(source.localId))
+            let transport = BlisterFamilyProbeTransport(provider: probe)
+            let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+                pokemonTransport: transport, checklistStore: reopened)
+            await catalog.refreshCatalogNow()
+            let detailRequests = await transport.detailRequests
+            let setRequests = await transport.setRequests
+            XCTAssertEqual(setRequests, 1)
+            XCTAssertEqual(detailRequests, 0, "An unchanged probe must keep the saved source bytes")
+            let page = try await catalog.cards(in: entry.set, cursor: nil)
+            XCTAssertTrue(page.items.contains { $0.providerID == id && $0.masterSetVariant == cosmos })
+            XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent(entry.resource)), bytes)
+            XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")), manifestBytes)
+            let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"), cloudKitDatabase: .none)
+            let key = try autoreleasepool {
+                let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+                return try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                    try CollectionStore(context: context).add(identified,
+                        resolved: .init(variant: cosmos, resolution: .userConfirmed)).collectionKey
+                }
+            }
+            let reloaded = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+            let saved = try XCTUnwrap(CollectionStore(context: reloaded.mainContext).card(forKey: key))
+            XCTAssertEqual(saved.providerID, id)
+            XCTAssertEqual(saved.variant, cosmos)
+            XCTAssertEqual(saved.quantity, 1)
+            XCTAssertNil(PriceStore(context: reloaded.mainContext).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD)
+        }
+    }
+
+    func testReportedUnpricedIdentitiesKeepReviewAndCurrencySafeguards() throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "reported-unpriced-review",
+            withExtension: "json", subdirectory: "TradingCards/PokemonCatalogCoverageAudit"))
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        for entry in try XCTUnwrap(document["cases"] as? [[String: Any]]) {
+            let source = try XCTUnwrap(entry["source"] as? [String: Any])
+            let provider = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: source))
+            let card = IdentifiedCard.pokemon(provider, setCode: "")
+            switch provider.id {
+            case "30th-c-004":
+                XCTAssertEqual(provider.catalogVariants, [.holo])
+                for run: PokemonPrintRun? in [nil, .unlimited] {
+                    XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: card, variant: .holo, pokemonPrintRun: run),
+                        [.tcgplayerID("716158")], "Existing mapping must survive an unavailable daily feed")
+                }
+                for variant: PhysicalVariant in [.normal, .reverse, .pokemonFoilPattern("cosmos")] {
+                    XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: variant).isEmpty)
+                }
+                for run: PokemonPrintRun in [.firstEdition, .shadowless] {
+                    XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: .holo, pokemonPrintRun: run).isEmpty)
+                }
+            case "me02.5-155", "me02.5-178":
+                let finish = provider.id == "me02.5-155"
+                    ? PhysicalVariant.resolving("pokemonStamp|holo|pokemon-center|") : .reverse
+                XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: provider.id, variant: finish))
+                XCTAssertNil(CardPricing.price(for: card, variant: finish, magicTreatments: []).value)
+                XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: finish).isEmpty)
+                XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: finish.id,
+                    storedResolution: .userConfirmed, itemKind: .rawCard, printRun: nil, card: card))
+            case "sv10.5w-021":
+                let tinsel = PhysicalVariant.pokemonFoilPattern("tinsel")
+                XCTAssertTrue(provider.catalogVariants.contains(tinsel))
+                XCTAssertNil(CardPricing.price(for: card, variant: tinsel, magicTreatments: []).value)
+                XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: tinsel).isEmpty)
+                XCTAssertNil(ProductFinish.printing(for: tinsel), "A flat Holofoil quote is not exact Tinsel proof")
+            case "ex7-78":
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: .normal, printRun: nil), 89455)
+            default: XCTFail("Unreviewed case in retained fixture")
+            }
+        }
+    }
+
+    func testReportedSpinarakGradedIdentityRequiresExactFinishGradeAndQualifier() throws {
+        let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns",
+            collectorNumber: "78", catalogID: "ex7-78", finish: .normal)
+        let query = Dictionary(uniqueKeysWithValues: JustTCGV2GradedClient.requestQuery(identity: identity,
+            game: .pokemon, setSlug: "team-rocket-returns-pokemon", companies: [.cgc], grades: ["10.0"]))
+        XCTAssertEqual(query["grading_company"], "CGC")
+        XCTAssertEqual(query["grade"], "10")
+        XCTAssertEqual(query["set"], "team-rocket-returns-pokemon")
+        XCTAssertEqual(query["regions"], "NA")
+        let body = #"{"id":"synthetic-spinarak","name":"Spinarak","number":"78/109","game":{"id":"pokemon"},"set":{"id":"team-rocket-returns-pokemon","name":"EX Team Rocket Returns"}}"#
+        let card = try JSONDecoder().decode(JustTCGV2Card.self, from: Data(body.utf8))
+        XCTAssertTrue(identity.matches(card, game: .pokemon, expectedSetSlug: "team-rocket-returns-pokemon"))
+        XCTAssertFalse(identity.matches(card, game: .pokemon, expectedSetSlug: "team-rocket-pokemon"))
+        let owned = GradedSlabEvidence(company: .cgc, grade: .init(value: "10", label: "Gem Mint"),
+            certificationNumber: nil, labelCardText: [], printedFinish: .normal)
+        let exact = GradedVariant(id: "synthetic-cgc10", company: .cgc, grade: owned.grade,
+            printing: "Normal", marketPriceUSD: 40, updatedAt: nil)
+        XCTAssertEqual(ScannedGradedResolver.matchingVariant(in: [exact], for: owned), exact)
+        for grade in [CardGrade(value: "9", label: "Mint"), .init(value: "10", label: "Pristine"),
+                      .init(value: "10", label: "Gem Mint", qualifier: "OC")] {
+            let wrong = GradedVariant(id: "synthetic-other-grade", company: .cgc, grade: grade,
+                printing: "Normal", marketPriceUSD: 99, updatedAt: nil)
+            XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [wrong], for: owned))
+        }
+        let reverse = GradedVariant(id: "synthetic-reverse", company: .cgc, grade: owned.grade,
+            printing: "Reverse Holofoil", marketPriceUSD: 99, updatedAt: nil)
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(in: [reverse], for: owned))
+    }
+
+    func testReportedCosmosChoicesUseOnlyTheirExactReviewedProduct() throws {
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        for entry in try reportedParallelCases() {
+            let source = try XCTUnwrap(entry["source"] as? [String: Any])
+            let provider = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: source))
+            let product = try XCTUnwrap(entry["product"] as? [String: Any])
+            let productID = try XCTUnwrap(product["productId"] as? Int)
+            let card = IdentifiedCard.pokemon(provider, setCode: "")
+            XCTAssertTrue(VariantResolver.options(for: card.variantEvidence).contains(cosmos), provider.id)
+            XCTAssertEqual(VariantResolver.resolve(card.variantEvidence, finishLock: cosmos),
+                .resolved(.init(variant: cosmos, resolution: .finishLock)), provider.id)
+            for run: PokemonPrintRun? in [nil, .unlimited] {
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: cosmos, printRun: run), productID, provider.id)
+                XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: card, variant: cosmos, pokemonPrintRun: run),
+                    [.tcgplayerID(String(productID))], provider.id)
+            }
+            for run: PokemonPrintRun in [.firstEdition, .shadowless] {
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: card, variant: cosmos, printRun: run), provider.id)
+            }
+            XCTAssertNil(CardPricing.price(for: card, variant: cosmos, magicTreatments: []).value,
+                "The retained catalog has no USD Cosmos quote; flat Holo/Reverse cannot substitute")
+            XCTAssertNotEqual(CardPricing.tcgplayerProductID(for: card, variant: .normal, printRun: nil), productID)
+            XCTAssertNotEqual(CardPricing.tcgplayerProductID(for: card, variant: .reverse, printRun: nil), productID)
+
+            var conflict = source
+            var details = source["variants_detailed"] as? [[String: Any]] ?? []
+            details.append(["type": "holo", "foil": "cosmos", "size": "standard", "thirdParty": ["tcgplayer": 999999]])
+            conflict["variants_detailed"] = details
+            let conflicting = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: conflict))
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: .pokemon(conflicting, setCode: ""), variant: cosmos, printRun: nil))
+            if PokemonReviewedParallelCatalog.entry(cardID: provider.id) != nil {
+                for field in ["name", "localId"] {
+                    var wrong = source
+                    wrong[field] = field == "name" ? "Unrelated Card" : "999"
+                    let mismatched = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: wrong))
+                    XCTAssertNil(CardPricing.tcgplayerProductID(for: .pokemon(mismatched, setCode: ""), variant: cosmos, printRun: nil))
+                }
+            }
+        }
+    }
+
+    func testReportedCosmosChecklistProjectionRepairsCachedSlotsIdempotently() async throws {
+        let loaded = await PokemonChecklistStore.shared.bundledSnapshot()
+        let snapshot = try XCTUnwrap(loaded)
+        for parallel in PokemonReviewedParallelCatalog.entries {
+            let set = try XCTUnwrap(snapshot.entry(forProviderID: parallel.setID))
+            let rows = try XCTUnwrap(snapshot.checklist(for: set.set.catalogID))
+            let old = rows.filter { !($0.providerID == parallel.catalogID && $0.masterSetVariant == PokemonReviewedParallelCatalog.variant) }
+            let repaired = PokemonChecklistReviewedProjection.cards(old)
+            XCTAssertTrue(repaired.contains { $0.providerID == parallel.catalogID
+                && $0.masterSetVariant == PokemonReviewedParallelCatalog.variant && $0.isExpandedMasterSetVariant }, parallel.catalogID)
+            XCTAssertEqual(PokemonChecklistReviewedProjection.cards(repaired), repaired)
+            XCTAssertEqual(Set(repaired.map(\.providerID)), Set(old.map(\.providerID)))
+            XCTAssertEqual(Set(repaired.filter { $0.providerID != parallel.catalogID && $0.masterSetVariant?.id == "cosmos" }
+                .map(\.providerID)), Set(rows.filter { $0.providerID != parallel.catalogID && $0.masterSetVariant?.id == "cosmos" }
+                .map(\.providerID)))
+        }
+    }
+
+    func testReportedCosmosRefreshListingRejectsOtherPhysicalProductsAndAmbiguousConditions() throws {
+        for entry in try reportedParallelCases() {
+            let product = try XCTUnwrap(entry["product"] as? [String: Any])
+            let productID = String(try XCTUnwrap(product["productId"] as? Int))
+            let id = try XCTUnwrap(entry["catalogID"] as? String)
+            let target = MarketPriceTarget(priceKey: id + ":cosmos", game: .pokemon, printingID: id,
+                variantID: "cosmos", itemKind: .rawCard, marketVariantID: nil,
+                lookupCandidates: [.tcgplayerID(productID)], currentAmount: nil, lastCheckedAt: nil,
+                exactPhysicalProductID: productID)
+            let nm = #"{"uuid":"synthetic-nm","condition":"Near Mint","printing":"Holofoil","price":2.34}"#
+            let lp = #"{"uuid":"synthetic-lp","condition":"Lightly Played","printing":"Holofoil","price":1.20}"#
+            func result(product: String, listings: String) throws -> JustTCGRefreshCoordinator.ExactLookupResult {
+                let response = try JSONDecoder().decode(JustTCGBatchResponse.self,
+                    from: Data("{\"data\":[{\"uuid\":\"synthetic-card\",\"tcgplayerId\":\"\(product)\",\"variants\":[\(listings)]}]}".utf8))
+                return JustTCGRefreshCoordinator.exactListing(lookup: .tcgplayerID(productID), owners: [target], response: response)
+            }
+            guard case let .matched(_, listing) = try result(product: productID, listings: lp + "," + nm) else {
+                return XCTFail("Exact Cosmos product must admit its single Near Mint listing: \(id)")
+            }
+            XCTAssertEqual(listing.variantId, "synthetic-nm")
+            for wrongProduct in ["684431", "685555", "686505", "534142", "534143"] where wrongProduct != productID {
+                if case .matched = try result(product: wrongProduct, listings: nm) { XCTFail("Wrong physical product priced \(id)") }
+            }
+            if case .matched = try result(product: productID, listings: lp) { XCTFail("Played listing priced \(id)") }
+            if case .matched = try result(product: productID, listings: nm + "," + nm) { XCTFail("Ambiguous listing priced \(id)") }
+        }
+    }
+
     @MainActor
     func testPokemonCatalogRetainsNewerMarketDataAcrossDirectAndCheckpointWrites() throws {
         let checkedAt = Date.now

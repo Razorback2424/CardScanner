@@ -10,6 +10,18 @@ enum PokemonTCGCSVMapping {
         let printedNumber: String
         let productName: String
         var setID: String { groupID == 24461 ? "mee" : (groupID == 24722 ? "30th" : "30th-c") }
+
+        /// Provider-local numbering can differ from the physical reprint's
+        /// original fraction (Genesect is internal 004, printed 11/101).
+        /// Validate both the declared source key and its independently named
+        /// card before allowing the reviewed product into a paid lookup.
+        func matches(_ card: TCGdexCard) -> Bool {
+            let expectedLocalID = setID == "mee" ? printedNumber : String(cardID.dropFirst(setID.count + 1))
+            return card.id == cardID && card.set.id == setID
+                && CatalogIdentityNormalization.localNumber(card.localId)
+                    == CatalogIdentityNormalization.localNumber(expectedLocalID)
+                && CatalogIdentityNormalization.namesMatch(imported: card.name, catalog: productName)
+        }
     }
 
     static let entries: [Entry] = [

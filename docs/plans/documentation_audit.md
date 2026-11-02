@@ -8,6 +8,13 @@ history.
 
 ## Current authority boundary — updated 2026-11-01
 
+**Exact Pokémon finish/pricing cases — 2026-11-01:** the
+[case matrix](../audits/catalog-pricing-cases-2026-11-01.md) extends the merged
+catalog repairs with reviewed Cosmos choices/product handles and an existing
+Genesect mapping reuse. It keeps authenticated graded replay, physical identity
+review, Tinsel coverage and feed publication open. Its candidate tests do not
+supersede physical-device/provider gates or certify the whole catalog.
+
 **Catalog coverage and printing identity — 2026-11-01:** the
 [five-game audit](../audits/catalog-coverage-audit-2026-11-01.md) records
 evidence-backed scanner/import/finish repairs against `main@a2b11ade`, a

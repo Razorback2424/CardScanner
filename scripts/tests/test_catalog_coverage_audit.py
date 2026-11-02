@@ -9,7 +9,8 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from audit_catalog_coverage import (
     Audit, CatalogIntegrityError, compare_magic_audit, one_piece_registry, pokemon,
-    validate_magic_treatments, validate_pokemon_slots, yugioh_summary,
+    validate_magic_treatments, validate_pokemon_slots, validate_pokemon_parallel_proof,
+    validate_pokemon_physical_objects, yugioh_summary,
 )
 
 
@@ -19,6 +20,51 @@ CARD = 'cccccccc-3333-4333-8333-333333333333'
 
 
 class CatalogCoverageAuditTests(unittest.TestCase):
+    def testPhysicalCollisionProofRejectsRehashedSubtypeBaseAndProductChanges(self):
+        root = Path(__file__).resolve().parents[2]
+        document = json.loads((root / 'TestFixtures/TradingCards/PokemonCatalogCoverageAudit/reported-physical-collisions.json').read_bytes())
+        self.assertEqual(set(validate_pokemon_physical_objects(document)), {'swsh10.5-059', 'sv03.5-004'})
+        for index, field, value in [(0, 'subtype', 'unlimited'), (0, 'thirdParty', {'tcgplayer': 276982}),
+                                    (1, 'type', 'holo')]:
+            wrong = copy.deepcopy(document)
+            row = wrong['cases'][index]
+            row['source']['variants_detailed'][-1][field] = value
+            row['sourceSHA256'] = hashlib.sha256(json.dumps(row['source'], sort_keys=True,
+                separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+            with self.subTest(field=field), self.assertRaises(CatalogIntegrityError):
+                validate_pokemon_physical_objects(wrong)
+
+    def testExactCosmosProofRejectsOrdinaryStampedWrongGameAndWrongNumberProducts(self):
+        root = Path(__file__).resolve().parents[2]
+        document = json.loads((root / 'TestFixtures/TradingCards/PokemonCatalogCoverageAudit/reported-parallel-review.json').read_bytes())
+        proof = validate_pokemon_parallel_proof(document)
+        self.assertEqual({key: row['product']['productId'] for key, row in proof.items()}, {
+            'me05-040': 714065, 'me02.5-097': 714066, 'sv04.5-007': 641613,
+            'sv04.5-008': 641614, 'me03-050': 709697})
+        for field, value in [('name', 'Marshadow'), ('name', 'Marshadow - 040/084 (GameStop Cosmos Holo)'),
+                             ('categoryId', 2), ('groupId', 999)]:
+            wrong = copy.deepcopy(document)
+            row = wrong['cases'][0]
+            row['product'][field] = value
+            # Rehash mutations so semantic checks, rather than only the byte
+            # receipt, must reject a plausible but different physical product.
+            row['contentSHA256'] = hashlib.sha256(json.dumps([row['source'], row['product']],
+                sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+            with self.subTest(field=field, value=value), self.assertRaises(CatalogIntegrityError):
+                validate_pokemon_parallel_proof(wrong)
+        for field, value in [('localId', '041'), ('id', 'me02-040')]:
+            wrong = copy.deepcopy(document)
+            row = wrong['cases'][0]
+            row['source'][field] = value
+            row['contentSHA256'] = hashlib.sha256(json.dumps([row['source'], row['product']],
+                sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+            with self.subTest(field=field), self.assertRaises(CatalogIntegrityError):
+                validate_pokemon_parallel_proof(wrong)
+        wrong = copy.deepcopy(document)
+        wrong['cases'].append(copy.deepcopy(wrong['cases'][0]))
+        with self.assertRaises(CatalogIntegrityError):
+            validate_pokemon_parallel_proof(wrong)
+
     def testReceiptsHashExactBytesAndRejectDuplicateObjectKeysOrOutsideResources(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

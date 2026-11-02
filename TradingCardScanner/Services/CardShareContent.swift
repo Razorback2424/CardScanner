@@ -109,7 +109,8 @@ struct CardSharePrice: Equatable, Sendable {
             return "Market price"
         case .rawCard:
             switch source {
-            case .tcgplayer, .tcgCSV, .justTCG: return "Near Mint market"
+            case .tcgplayer, .justTCG: return "Near Mint market"
+            case .tcgCSV: return "Market price"
             default: return "Market price"
             }
         }

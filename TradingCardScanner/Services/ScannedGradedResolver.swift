@@ -114,7 +114,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
                 switch result {
                 case let .matched(variants):
                     guard let exact = Self.matchingVariant(in: variants, for: slab, finish: finish, printRun: knownRun,
-                        isJapanese: identity.vendorGame(for: card.game) == .pokemonJapan) else {
+                        isJapanese: identity.vendorGame(for: card.game) == .pokemonJapan, catalogID: identity.catalogID) else {
                         return .gradeNotTracked(GradedMarketCoverage(
                             status: .gradeNotListed,
                             variants: variants,
@@ -149,15 +149,16 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     }
 
     /// Match the stable grader/grade/qualifier axis first, then require the
-    /// vendor label to agree when it publishes one. A unique unlabeled vendor
-    /// variant remains usable; a conflicting Black Label never does.
+    /// vendor label to agree. A unique unlabeled vendor variant can cover an
+    /// ordinary descriptive grade, never a premium or unknown designation.
     static func matchingVariant(
         in variants: [GradedVariant],
         for slab: GradedSlabEvidence,
         finish: PhysicalVariant? = nil,
         printRun: PokemonPrintRun? = nil,
         isJapanese: Bool = false,
-        boundVariantID: String? = nil
+        boundVariantID: String? = nil,
+        catalogID: String? = nil
     ) -> GradedVariant? {
         let knownFinish = finish ?? slab.printedFinish
         // An existing exact listing handle can be refreshed. A unique market
@@ -165,8 +166,11 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         guard knownFinish != nil || boundVariantID != nil else { return nil }
         let candidates = variants.filter { variant in
             (boundVariantID.map { $0 == variant.id } ?? true)
+                && GradedCardIdentity.matchesLanguage(variant.language, isJapanese: isJapanese)
                 && (knownFinish.map {
-                    GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun, isJapanese: isJapanese)
+                    GradedCardIdentity.matchesFinish($0, printing: variant.printing, printRun: printRun ?? slab.printedPrintRun,
+                        isJapanese: isJapanese, language: variant.language,
+                        catalogID: catalogID, verifiedProductID: variant.verifiedProductID)
                 } ?? (variant.printing != nil))
                 && ((printRun ?? slab.printedPrintRun).map {
                     ProductEdition.from($0).admits(printing: variant.printing ?? "")
@@ -189,6 +193,12 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         if exactLabelMatches.count == 1 { return exactLabelMatches[0] }
         if exactLabelMatches.count > 1 { return nil }
 
+        let ordinaryLabels: Set<String> = ["GEM MINT", "MINT", "MINT+", "NM MT", "NM", "EX MT", "EX", "VG EX", "VG", "GOOD", "FAIR", "POOR"]
+        if scannedLabel == nil {
+            let ordinary = candidates.filter { normalizedLabel($0.grade.label).map(ordinaryLabels.contains) ?? true }
+            return ordinary.count == 1 ? ordinary[0] : nil
+        }
+        guard scannedLabel == nil || ordinaryLabels.contains(scannedLabel!) else { return nil }
         let unlabeled = candidates.filter { $0.grade.label == nil }
         guard unlabeled.count == 1 else { return nil }
         return unlabeled[0]

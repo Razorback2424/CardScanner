@@ -253,7 +253,7 @@ extension PhysicalVariant {
         .normal, .holo, .reverse, .firstEdition,
         .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
         .nonfoil, .foil, .etched
-    ]
+    ] + PokemonReviewedPhysicalObjects.all
 
     /// TCGdex's `foil` vocabulary for parallel patterns, mapped onto this app's
     /// ids. The two differ only in casing, but the map is explicit so a new

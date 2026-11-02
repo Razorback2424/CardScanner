@@ -56,6 +56,286 @@ private actor PortfolioComputationGate {
     }
 }
 
+@MainActor
+final class PortfolioEligibilityIntegrationTests: XCTestCase {
+    private let zone = TimeZone(secondsFromGMT: 0)!
+    private var epoch: Date { PortfolioCalendar.day(containing: .now, in: zone).addingTimeInterval(-4 * 86400) }
+    private func money(_ value: Double) -> Money { Money(rounding: value)! }
+
+    private func open(_ url: URL) throws -> ModelContainer {
+        try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(url: url)])
+    }
+
+    private func seed(_ container: ModelContainer, id: String = "expiry", variant: PhysicalVariant? = nil,
+                      alias: Bool = false) throws -> String {
+        let context = ModelContext(container)
+        let row = CollectedCard(collectionKey: "eligibility-\(id)", game: .pokemon,
+            providerID: alias ? "imported-\(id)" : id, name: "Eligibility fixture", setName: "Fixture",
+            setCode: "FIX", cardNumber: "1", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: variant, variantResolution: .imported, quantity: 1, dateAdded: epoch)
+        if alias { row.catalogProviderID = id }
+        if id == "expiry" {
+            row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            row.justTCGVariantID = "eligibility-slab"
+            row.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+            row.gradingCompanyRaw = GradingCompany.psa.rawValue
+            row.gradeRaw = "10"
+        }
+        context.insert(row)
+        let key = row.priceKey
+        let record = PriceRecord(key: key, game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID)
+        _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "eligibility-slab", sourceUpdatedAt: epoch, fetchedAt: epoch))
+        record.marketVariantID = "eligibility-slab"
+        if id == "expiry" {
+            record.exactGradedQuoteEvidence = .init(variantID: "eligibility-slab",
+                lifecycle: .init(status: "current", lastPrice: 50, lastSaleAt: epoch,
+                    priceExpiresAt: epoch.addingTimeInterval(2 * 86400 + 3600)), checkedAt: epoch,
+                sourceUpdatedAt: epoch)
+        }
+        context.insert(record)
+        context.insert(PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(50),
+            source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
+            effectiveAt: epoch, receivedAt: epoch, isSourceStamped: true))
+        let operation = UUID()
+        context.insert(InventoryEvent(operationID: operation, leg: nil, kind: .initialBalance,
+            source: .catalog, collectionKey: row.collectionKey, priceStorageKey: key, deltaQuantity: 1,
+            occurredAt: epoch, valuation: .init(unitPrice: money(50), source: .justTCG,
+                effectiveAt: epoch, receivedAt: epoch)))
+        context.insert(CollectionActivity(card: row, source: .catalog, quantity: 1,
+            occurredAt: epoch, ledgerOperationIDs: [operation]))
+        try context.save()
+        return key
+    }
+
+    private func recompute(_ container: ModelContainer, at date: Date = .now,
+                           failSave: Bool = false) async -> PortfolioEngine {
+        let defaults = UserDefaults.standard
+        let oldEpoch = defaults.object(forKey: PortfolioEpoch.defaultsKey)
+        let oldZone = defaults.object(forKey: PortfolioCalendar.defaultsKey)
+        defaults.set(epoch.timeIntervalSince1970, forKey: PortfolioEpoch.defaultsKey)
+        defaults.set(zone.identifier, forKey: PortfolioCalendar.defaultsKey)
+        defer {
+            defaults.set(oldEpoch, forKey: PortfolioEpoch.defaultsKey)
+            defaults.set(oldZone, forKey: PortfolioCalendar.defaultsKey)
+        }
+        enum SaveFailure: Error { case injected }
+        let save: (@Sendable () throws -> Void)?
+        if failSave { save = { throw SaveFailure.injected } }
+        else { save = nil }
+        let engine = PortfolioEngine(computationProvider: { container, epoch, through, zone in
+            await PortfolioComputationActor(modelContainer: container).compute(epoch: epoch,
+                liveInstant: through, timeZoneIdentifier: zone,
+                reconciliationSave: save)
+        })
+        await engine.recomputeAndWait(context: ModelContext(container), now: date)
+        return engine
+    }
+
+    func testPassiveExpiryPublishesAnExplainedCloseAndSurvivesReopen() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("eligibility-\(UUID()).store")
+        var container: ModelContainer? = try open(url)
+        let key = try seed(try XCTUnwrap(container))
+        let engine = await recompute(try XCTUnwrap(container))
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+        container = nil
+        let reopened = try open(url)
+        _ = await recompute(reopened)
+        _ = await recompute(reopened)
+        let context = ModelContext(reopened)
+        let rows = try context.fetch(FetchDescriptor<PriceObservation>())
+        XCTAssertEqual(rows.filter { $0.kind == .eligibilityExpiry }.count, 1)
+        XCTAssertEqual(rows.count, 2, "No unchanged-price recovery on reconciliation")
+        XCTAssertEqual(rows.first { $0.kind == .eligibilityExpiry }?.receivedAt,
+                       epoch.addingTimeInterval(2 * 86400 + 3600))
+        let closes = try context.fetch(FetchDescriptor<PortfolioDailyClose>())
+        let expiryClose = try XCTUnwrap(closes.first { $0.date == epoch.addingTimeInterval(2 * 86400) })
+        XCTAssertEqual(expiryClose.closeValue, .zero)
+        XCTAssertEqual(expiryClose.pricingAdjustment, money(-50))
+        XCTAssertEqual(expiryClose.marketContribution, .zero)
+        let past = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+            through: epoch.addingTimeInterval(86400), timeZone: zone)
+        XCTAssertEqual(past.valuation.value, money(50))
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).map(\.priceStorageKey), [key])
+    }
+
+    func testInactiveExpiryIsWrittenBeforeRecoveryAndRemainsInHistoricalReplay() async throws {
+        for equalTime in [false, true] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("recovery-\(UUID()).store")
+            var container: ModelContainer? = try open(url)
+            let key = try seed(try XCTUnwrap(container))
+            let recovery = equalTime ? epoch.addingTimeInterval(2 * 86400 + 3600) : Date.now
+            do {
+                let context = ModelContext(try XCTUnwrap(container))
+                let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+                _ = GradedVariantBinding.storeVariantQuote(
+                    .init(id: "eligibility-slab", company: .psa, grade: .init(value: "10"),
+                        marketPriceUSD: 60, updatedAt: recovery,
+                        quoteLifecycle: .init(status: "current", lastPrice: 60, lastSaleAt: recovery,
+                            priceExpiresAt: recovery.addingTimeInterval(10 * 86400))),
+                    game: row.cardGame, printingID: row.priceStorageID, variantID: row.variantID,
+                    treatmentIDs: [], store: PriceStore(context: context), at: recovery)
+                try context.save()
+            }
+            container = nil
+            let reopened = try open(url)
+            let engine = await recompute(reopened)
+            XCTAssertEqual(engine.summary?.currentValue, money(60))
+            XCTAssertEqual(engine.summary?.isAuthoritative, true)
+            XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+            let context = ModelContext(reopened)
+            let observations = PriceObservationLog(context: context).observations(instrumentKey: key)
+            XCTAssertEqual(observations.filter { $0.kind == .eligibilityExpiry }.count, 1)
+            XCTAssertEqual(observations.count, 3)
+            if !equalTime {
+                let interval = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                    through: epoch.addingTimeInterval(3 * 86400), timeZone: zone)
+                XCTAssertEqual(interval.valuation.value, .zero)
+                XCTAssertEqual(interval.replay.days.last?.closeValue, .zero)
+            }
+            _ = await recompute(reopened)
+            XCTAssertEqual(try ModelContext(reopened).fetchCount(FetchDescriptor<PriceObservation>()), 3)
+        }
+    }
+
+    func testRealLegacyPhysicalRulesPreserveHistoryAndImportedIdentity() async throws {
+        for (id, variant) in [("swsh10.5-059", PhysicalVariant.reverse),
+                               ("sv03.5-004", PhysicalVariant.pokemonFoilPattern("cosmos"))] {
+            for alias in [false, true] {
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("review-\(UUID()).store")
+                let container = try open(url)
+                let key = try seed(container, id: id, variant: variant, alias: alias)
+                let original = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).map {
+                    [$0.collectionKey, $0.providerID, $0.variantID ?? ""]
+                }
+                let engine = await recompute(container)
+                XCTAssertEqual(engine.summary?.currentValue, .zero)
+                XCTAssertEqual(engine.summary?.isAuthoritative, true)
+                XCTAssertEqual(engine.summary?.attribution?.pricingAdjustment, money(-50))
+                XCTAssertEqual(engine.summary?.attribution?.market, .zero)
+                XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+                let reopened = try open(url)
+                _ = await recompute(reopened)
+                let context = ModelContext(reopened)
+                let past = PortfolioReplaySnapshotBuilder.compute(context: context, epoch: epoch,
+                    through: epoch.addingTimeInterval(86400), timeZone: zone)
+                XCTAssertEqual(past.valuation.value, money(50))
+                XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).filter { $0.kind == .physicalReview }.count, 1)
+                XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map {
+                    [$0.collectionKey, $0.providerID, $0.variantID ?? ""]
+                }, original)
+                XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).map(\.priceStorageKey), [key])
+                let learned = try XCTUnwrap(context.fetch(FetchDescriptor<PriceObservation>())
+                    .first { $0.kind == .physicalReview }?.receivedAt)
+                let later = await recompute(reopened, at: learned.addingTimeInterval(86400))
+                XCTAssertEqual(later.summary?.isAuthoritative, true)
+                let closeContext = ModelContext(reopened)
+                let reviewDay = PortfolioCalendar.day(containing: learned, in: zone)
+                let reviewClose = try XCTUnwrap(closeContext.fetch(FetchDescriptor<PortfolioDailyClose>())
+                    .first { $0.date == reviewDay })
+                XCTAssertEqual(reviewClose.closeValue, .zero)
+                XCTAssertEqual(reviewClose.pricingAdjustment, money(-50))
+                XCTAssertEqual(reviewClose.marketContribution, .zero)
+            }
+        }
+    }
+
+    func testFirstExpiredEvidenceUsesReceiptTimeAndStaleQueuedRecoveryCannotEraseIt() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("first-expired-\(UUID()).store")
+        let container = try open(url)
+        let key = try seed(container)
+        let context = ModelContext(container)
+        let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+        let record = try XCTUnwrap(PriceStore(context: context).record(forKey: key))
+        record.exactGradedQuoteEvidence = nil // This device had not learned a deadline.
+        try context.save()
+        let received = Date.now
+        let queuedContext = ModelContext(container)
+        let queued = PriceStore(context: queuedContext, checkpointsInFreshContext: true)
+        let stale = GradedVariant(id: "eligibility-slab", company: .psa, grade: .init(value: "10"),
+            marketPriceUSD: 99, updatedAt: epoch,
+            quoteLifecycle: .init(status: "current", lastPrice: 99, lastSaleAt: epoch,
+                priceExpiresAt: received.addingTimeInterval(86400)))
+        _ = GradedVariantBinding.storeVariantQuote(stale, game: row.cardGame, printingID: row.priceStorageID,
+            variantID: row.variantID, treatmentIDs: [], store: queued, at: received.addingTimeInterval(1))
+        let expired = GradedVariant(id: "eligibility-slab", company: .psa, grade: .init(value: "10"),
+            marketPriceUSD: nil, updatedAt: epoch.addingTimeInterval(3600),
+            quoteLifecycle: .init(status: "expired", lastPrice: 50, lastSaleAt: epoch,
+                priceExpiresAt: epoch.addingTimeInterval(86400)))
+        _ = GradedVariantBinding.storeVariantQuote(expired, game: row.cardGame, printingID: row.priceStorageID,
+            variantID: row.variantID, treatmentIDs: [], store: PriceStore(context: context), at: received)
+        try context.save()
+        XCTAssertTrue(queued.save())
+        let engine = await recompute(container, at: received.addingTimeInterval(2))
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertEqual(engine.summary?.isAuthoritative, true)
+        XCTAssertEqual(engine.summary?.attribution?.market, .zero)
+        XCTAssertEqual(engine.summary?.attribution?.pricingAdjustment, money(-50))
+        XCTAssertEqual(engine.summary?.attribution?.unexplained, .zero)
+        let reopened = try open(url)
+        let fresh = ModelContext(reopened)
+        let observations = PriceObservationLog(context: fresh).observations(instrumentKey: key)
+        XCTAssertEqual(observations.count, 2)
+        XCTAssertEqual(observations.last?.kind, .explicitInvalidation)
+        XCTAssertEqual(observations.last?.receivedAt, received)
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: key)?.exactGradedQuoteEvidence?.lifecycle, expired.quoteLifecycle)
+        let beforeReceipt = PortfolioReplaySnapshotBuilder.compute(context: fresh, epoch: epoch,
+            through: epoch.addingTimeInterval(2 * 86400), timeZone: zone)
+        XCTAssertEqual(beforeReceipt.valuation.value, money(50), "An unknown deadline cannot rewrite earlier knowledge")
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+    }
+
+    func testFailedEligibilitySaveCannotPublishAuthoritativeCloses() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("save-failure-\(UUID()).store")
+        let container = try open(url)
+        _ = try seed(container)
+        let engine = await recompute(container, failSave: true)
+        XCTAssertNotEqual(engine.summary?.isAuthoritative, true)
+        let context = ModelContext(container)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PortfolioDailyClose>()), 0)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), 1)
+        let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+        let queued = PriceStore(context: context, checkpointsInFreshContext: true)
+        _ = GradedVariantBinding.storeVariantQuote(.init(id: "eligibility-slab", company: .psa,
+            grade: .init(value: "10"), marketPriceUSD: 60, updatedAt: .now,
+            quoteLifecycle: .init(status: "current", lastPrice: 60, lastSaleAt: .now,
+                priceExpiresAt: .now.addingTimeInterval(86400))), game: row.cardGame,
+            printingID: row.priceStorageID, variantID: row.variantID, treatmentIDs: [], store: queued, at: .now)
+        let token = try CollectionWriteSerializer.beginExclusive()
+        let checkpointSaved = queued.save()
+        CollectionWriteSerializer.endExclusive(token)
+        XCTAssertFalse(checkpointSaved)
+        let recovered = await recompute(container)
+        XCTAssertEqual(recovered.summary?.isAuthoritative, true)
+        XCTAssertEqual(recovered.summary?.currentValue, .zero)
+        XCTAssertEqual(PriceStore(context: ModelContext(container)).record(forKey: row.priceKey)?.unitMarketPriceUSD, 50)
+    }
+
+    func testUnknownStoredObservationKindFailsClosedWithoutChangingOwnership() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("unknown-kind-\(UUID()).store")
+        let container = try open(url)
+        let key = try seed(container)
+        let context = ModelContext(container)
+        let unsupported = PriceObservation(instrumentKey: key, kind: .marketUpdate, amount: money(999),
+            source: .justTCG, sourceVariantID: "eligibility-slab", marketVariantID: "eligibility-slab",
+            effectiveAt: .now, receivedAt: .now, isSourceStamped: false)
+        unsupported.kindRaw = "future-unsupported-semantics"
+        context.insert(unsupported)
+        try context.save()
+        let reopened = try open(url)
+        let engine = await recompute(reopened)
+        XCTAssertNotEqual(engine.summary?.isAuthoritative, true)
+        let fresh = ModelContext(reopened)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<PortfolioDailyClose>()), 0)
+        XCTAssertNil(PriceObservationLog(context: fresh).newestObservation(instrumentKey: key)?.effectiveUSDAmount)
+        XCTAssertEqual(try fresh.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
+    }
+}
+
 /// Container-backed reconciliation cases: local knowledge time, missed close
 /// publication, CloudKit-style duplicate rows, invalidation, and explicit undo
 /// semantics. These are the contracts most likely to pass pure accounting tests
@@ -63,6 +343,129 @@ private actor PortfolioComputationGate {
 @MainActor
 final class PortfolioReconciliationTests: XCTestCase {
     private var container: ModelContainer?
+
+    func testExactObservationComparesItsUpdateClockIndependentlyOfLastSaleClock() {
+        func clock(_ value: TimeInterval) -> Date { Date(timeIntervalSince1970: value) }
+        let record = PriceRecord(key: "pokemon:justtcg:v2:independent-clocks:normal", game: .pokemon,
+            printingID: "justtcg:v2:independent-clocks", variantID: "normal")
+        record.sourceRaw = PriceSource.justTCG.rawValue
+        record.sourceUpdatedAt = clock(20)
+        record.invalidatedAt = clock(40)
+        record.exactGradedQuoteEvidence = .init(variantID: "independent-clocks",
+            lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: clock(30), priceExpiresAt: clock(40)),
+            checkedAt: clock(40), sourceUpdatedAt: clock(20))
+        func observed(update: TimeInterval) -> PriceObservation {
+            PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(60), source: .justTCG,
+                sourceVariantID: "independent-clocks", marketVariantID: "independent-clocks",
+                effectiveAt: clock(update), receivedAt: clock(50), isSourceStamped: true)
+        }
+        XCTAssertEqual(InventoryLedger.resolveValuation(observation: observed(update: 25), record: record,
+            at: clock(50)).unitPrice, money(60), "Price update 25 follows update 20; sale clock 30 is a different field")
+        for stale in [19.0, 20.0] {
+            XCTAssertNil(InventoryLedger.resolveValuation(observation: observed(update: stale), record: record,
+                at: clock(50)).unitPrice)
+        }
+    }
+
+    func testGradedExpiryUsesReplayCutoffForQuoteAndAliasSelection() throws {
+        let fetched = Date(timeIntervalSince1970: 1_700_000_000)
+        let expires = fetched.addingTimeInterval(100)
+        let owned = card(key: "legacy-clock")
+        owned.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        owned.variantID = "normal"
+        owned.justTCGVariantID = "synthetic-clock"
+        owned.justTCGAPIVersion = "v2"
+        let primary = PriceRecord(key: owned.priceKey, game: .pokemon,
+            printingID: owned.priceStorageID, variantID: "normal")
+        _ = primary.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "synthetic-clock", sourceUpdatedAt: fetched, fetchedAt: fetched))
+        primary.marketVariantID = "synthetic-clock"
+        primary.exactGradedQuoteEvidence = .init(variantID: "synthetic-clock",
+            lifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: fetched, priceExpiresAt: expires),
+            checkedAt: fetched, sourceUpdatedAt: fetched)
+        let legacyKey = try XCTUnwrap(owned.legacyPriceKeys.first)
+        let legacy = PriceRecord(key: legacyKey, game: .pokemon, printingID: owned.providerID, variantID: "normal")
+        _ = legacy.apply(.init(unitMarketPriceUSD: 999, currencyCode: "USD", source: .importedCSV,
+            sourceVariantID: "synthetic-import", sourceUpdatedAt: fetched, fetchedAt: fetched))
+        let observation = PriceObservation(instrumentKey: primary.key, kind: .marketUpdate,
+            amount: money(50), source: .justTCG, sourceVariantID: "synthetic-clock", marketVariantID: "synthetic-clock",
+            effectiveAt: fetched, receivedAt: fetched, isSourceStamped: true)
+        for rows in [[], [observation]] {
+            let before = PortfolioReplaySnapshotBuilder.valuationIndex(observations: rows,
+                records: [primary, legacy], asOf: expires.addingTimeInterval(-1))
+            XCTAssertEqual(before.priceStorageKey(for: owned), primary.key)
+            XCTAssertEqual(before.valuation(for: primary.key).unitPrice, money(50))
+            let after = PortfolioReplaySnapshotBuilder.valuationIndex(observations: rows,
+                records: [primary, legacy], asOf: expires)
+            XCTAssertEqual(after.priceStorageKey(for: owned), primary.key, "Expired canonical evidence must block legacy resurrection")
+            XCTAssertNil(after.valuation(for: primary.key).unitPrice)
+            let current = PortfolioReplaySnapshotBuilder.valuationIndex(observations: rows, records: [primary, legacy])
+            XCTAssertEqual(current.priceStorageKey(for: owned), primary.key)
+            XCTAssertNil(current.valuation(for: primary.key).unitPrice)
+        }
+        XCTAssertNil(primary.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(primary.effectiveUnitMarketPriceUSD(at: expires.addingTimeInterval(-1)), 50)
+        XCTAssertEqual(PriceStore.record(for: owned, in: [primary.key: primary, legacy.key: legacy])?.key, primary.key)
+    }
+
+    func testExplicitGradedWithdrawalDoesNotRewriteEarlierKnowledgeCutoff() throws {
+        let fetched = Date(timeIntervalSince1970: 1_700_000_000)
+        let withdrawn = fetched.addingTimeInterval(100)
+        let record = PriceRecord(key: "pokemon:justtcg:v2:withdrawn:normal", game: .pokemon,
+            printingID: "justtcg:v2:withdrawn", variantID: "normal")
+        _ = record.apply(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "withdrawn", sourceUpdatedAt: fetched, fetchedAt: fetched))
+        _ = record.invalidate(at: withdrawn)
+        record.exactGradedQuoteEvidence = .init(variantID: "withdrawn",
+            lifecycle: .init(status: "expired", lastPrice: 50, lastSaleAt: fetched, priceExpiresAt: nil),
+            checkedAt: withdrawn, sourceUpdatedAt: fetched)
+        let price = PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(50),
+            source: .justTCG, sourceVariantID: "withdrawn", marketVariantID: "withdrawn",
+            effectiveAt: fetched, receivedAt: fetched, isSourceStamped: true)
+        let invalidation = PriceObservation(instrumentKey: record.key, kind: .explicitInvalidation, amount: nil,
+            source: .justTCG, sourceVariantID: "withdrawn", marketVariantID: "withdrawn",
+            effectiveAt: withdrawn, receivedAt: withdrawn, isSourceStamped: false)
+        let before = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [price, invalidation],
+            records: [record], asOf: withdrawn.addingTimeInterval(-1))
+        XCTAssertEqual(before.valuation(for: record.key).unitPrice, money(50))
+        let after = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [price, invalidation],
+            records: [record], asOf: withdrawn)
+        XCTAssertNil(after.valuation(for: record.key).unitPrice)
+    }
+
+    func testNewerExactSaleObservationCanSupersedeExpiredMutableQuoteOnlyForItsIdentity() throws {
+        let fetched = Date(timeIntervalSince1970: 1_700_000_000)
+        let withdrawn = fetched.addingTimeInterval(100)
+        let newer = withdrawn.addingTimeInterval(100)
+        let record = PriceRecord(key: "pokemon:justtcg:v2:observation-race:normal", game: .pokemon,
+            printingID: "justtcg:v2:observation-race", variantID: "normal")
+        record.marketVariantID = "observation-race"
+        record.invalidatedAt = withdrawn
+        record.exactGradedQuoteEvidence = .init(variantID: "observation-race",
+            lifecycle: .init(status: "expired", lastPrice: 40, lastSaleAt: fetched, priceExpiresAt: withdrawn),
+            checkedAt: withdrawn, sourceUpdatedAt: fetched)
+        func observation(received: Date? = nil, effective: Date? = nil, variant: String? = "observation-race",
+                         sourceVariant: String? = "observation-race", currency: String = "USD",
+                         source: PriceSource = .justTCG) -> PriceObservation {
+            PriceObservation(instrumentKey: record.key, kind: .marketUpdate, amount: money(60), currencyCode: currency,
+                source: source, sourceVariantID: sourceVariant, marketVariantID: variant,
+                effectiveAt: effective ?? newer, receivedAt: received ?? newer, isSourceStamped: true)
+        }
+        let valid = observation()
+        let current = InventoryLedger.resolveValuation(observation: valid, record: record, at: newer)
+        XCTAssertEqual(current.unitPrice, money(60))
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(observations: [valid], records: [record], asOf: newer)
+        XCTAssertEqual(bulk.valuation(for: record.key).unitPrice, money(60))
+        for rejected in [observation(received: withdrawn), observation(effective: fetched.addingTimeInterval(-1)),
+                         observation(effective: fetched), observation(variant: "wrong-grade"),
+                         observation(sourceVariant: "wrong-stamp"), observation(variant: nil),
+                         observation(currency: "EUR"), observation(source: .tcgplayer)] {
+            XCTAssertNil(InventoryLedger.resolveValuation(observation: rejected, record: record,
+                at: newer).unitPrice)
+        }
+        XCTAssertNil(InventoryLedger.resolveValuation(observation: valid, record: record,
+            at: newer.addingTimeInterval(-1)).unitPrice, "Future observations cannot revive an earlier cutoff")
+    }
 
     /// Epoch establishment resolves each position's price key through the bulk
     /// valuation index rather than `InventoryLedger`, which costs two predicate
@@ -4052,10 +4455,10 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(defect.reason, .unattributedValueChange)
         XCTAssertEqual(defect.amount, value)
         XCTAssertEqual(defect.periodEnd, now)
-        XCTAssertTrue(summary.isAuthoritative)
-        XCTAssertFalse(
+        XCTAssertFalse(summary.isAuthoritative)
+        XCTAssertTrue(
             try context.fetch(FetchDescriptor<PortfolioDailyClose>()).isEmpty,
-            "an attribution defect must not discard the independently measured close"
+            "an unexplained value difference cannot publish authoritative replay closes"
         )
         XCTAssertEqual(engine.integrityDefects, summary.defects)
     }
