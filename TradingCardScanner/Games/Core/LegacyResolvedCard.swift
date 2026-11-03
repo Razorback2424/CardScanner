@@ -185,9 +185,9 @@ enum LegacyResolvedCard: Identifiable, Sendable {
                 game: .pokemon,
                 setID: card.set.id,
                 cardNumber: card.localId,
-                catalogVariants: card.catalogVariants,
-                physicalCoverageVerified: card.finishCoverageVerified
-                    ?? (PokemonFinishMinimumCatalog.entries[card.id] == nil),
+                catalogVariants: card.catalogVariants.filter { !($0 == .normal && card.signedNormalNeedsReview) },
+                physicalCoverageVerified: !card.hasSignedFinishMinimum && (card.finishCoverageVerified
+                    ?? (PokemonFinishMinimumCatalog.entries[card.id] == nil)),
                 explicitMembershipSupported: !card.catalogVariants.isEmpty
             )
         case let .magic(card):

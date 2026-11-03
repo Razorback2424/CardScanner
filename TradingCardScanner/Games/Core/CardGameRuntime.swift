@@ -472,7 +472,7 @@ struct CardGameRuntimeContainer: Sendable {
     }
 
     func makePriceQuoteService() -> PriceQuoteService {
-        PriceQuoteService(registry: registry, adapters: pricingAdapters)
+        PriceQuoteService(registry: registry, adapters: pricingAdapters, pokemonCatalogCoordinator: legacyBindings.pokemon)
     }
 
     func makeCardCatalog() -> CardCatalog {

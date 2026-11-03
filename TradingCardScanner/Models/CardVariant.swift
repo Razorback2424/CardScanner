@@ -226,6 +226,7 @@ extension PhysicalVariant {
     // Pokémon.
     static let normal = PhysicalVariant(id: "normal", label: "Normal")
     static let holo = PhysicalVariant(id: "holo", label: "Holo")
+    static let jumbo = PhysicalVariant(id: "jumbo", label: "Jumbo")
     static let reverse = PhysicalVariant(id: "reverse", label: "Reverse")
     static let firstEdition = PhysicalVariant(id: "firstEdition", label: "1st Edition")
     static let pokeBall = PhysicalVariant(id: "pokeBall", label: "Poké Ball")
@@ -250,7 +251,7 @@ extension PhysicalVariant {
 
     static let known: [PhysicalVariant] = [
         .yugiohFirstEdition, .yugiohUnlimited, .yugiohLimited,
-        .normal, .holo, .reverse, .firstEdition,
+        .normal, .holo, .reverse, .jumbo, .firstEdition,
         .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
         .nonfoil, .foil, .etched
     ] + PokemonReviewedPhysicalObjects.all

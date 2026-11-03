@@ -19,7 +19,7 @@ struct PokemonGameRuntime: Sendable {
 
     var runtime: CardGameRuntime {
         .init(descriptor: Self.descriptor, variantPolicy: PokemonVariantPolicy(),
-              pricing: PokemonPriceAdapter(),
+              pricing: PokemonPriceAdapter(catalogCoordinator: coordinator),
               catalog: PokemonCatalogAdapter(),
               legacyCatalogBindings: .init(pokemon: coordinator))
     }

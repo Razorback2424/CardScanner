@@ -15,6 +15,7 @@ struct PriceQuoteService: Sendable {
     private let registry: CardGameRegistry
     private let adapters: GamePriceAdapterRegistry
     private let catalogRefreshOverride: (@Sendable (IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async throws -> PriceLookup)?
+    private let pokemonCatalogCoordinator: PokemonCatalogCoordinator?
 
     init(
         tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
@@ -23,12 +24,21 @@ struct PriceQuoteService: Sendable {
         registry = .standard
         adapters = try! GamePriceAdapterRegistry(adapters: [PokemonPriceAdapter(tcgCSVSource: tcgCSVSource), MagicPriceAdapter()])
         self.catalogRefreshOverride = catalogRefreshOverride
+        pokemonCatalogCoordinator = nil
     }
 
-    init(registry: CardGameRegistry, adapters: GamePriceAdapterRegistry) {
+    init(registry: CardGameRegistry, adapters: GamePriceAdapterRegistry,
+         pokemonCatalogCoordinator: PokemonCatalogCoordinator? = nil) {
         self.registry = registry
         self.adapters = adapters
         catalogRefreshOverride = nil
+        self.pokemonCatalogCoordinator = pokemonCatalogCoordinator
+    }
+
+    func applyingCatalogSupplements(to card: IdentifiedCard) async -> IdentifiedCard {
+        guard let pokemonCatalogCoordinator,
+              case let .pokemon(pokemon, code) = card.legacyIdentity else { return card }
+        return .pokemon(pokemon.applyingAdditionalVariants(from: await pokemonCatalogCoordinator.registry), setCode: code)
     }
 
     func supportsPricing(for game: CardGame) -> Bool {

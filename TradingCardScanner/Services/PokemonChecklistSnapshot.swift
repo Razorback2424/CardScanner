@@ -14,6 +14,33 @@ enum PokemonChecklistSnapshotVersion {
 /// Read-time repair of reviewed identities only. Source resources and provider
 /// fingerprints remain untouched, including when an unchanged probe skips a crawl.
 enum PokemonChecklistReviewedProjection {
+    /// Signed supplements are a read-time projection. Keep them out of the raw
+    /// provider snapshot so removing an authorization also removes its slot.
+    static func addingAdditionalVariants(to cards: [CatalogCardSummary], registry: PokemonCatalogRegistry) -> [CatalogCardSummary] {
+        var result = cards
+        for descriptor in registry.descriptors {
+            for reviewed in descriptor.additionalVariants ?? [] where reviewed.addsMembership && reviewed.variantID != "jumbo" {
+                guard let base = cards.first(where: {
+                    $0.providerID == reviewed.providerCardID && $0.setID.providerID == descriptor.providerSetID
+                        && CatalogIdentityNormalization.canonicalText($0.name)
+                            == CatalogIdentityNormalization.canonicalText(reviewed.canonicalName)
+                }) else { continue }
+                let variant = PhysicalVariant.pokemonFoilPattern(reviewed.variantID)
+                guard !result.contains(where: { $0.providerID == base.providerID && $0.setID == base.setID
+                    && $0.masterSetVariant?.id == variant.id }) else { continue }
+                for index in result.indices where result[index].providerID == base.providerID && result[index].setID == base.setID {
+                    result[index].isSoleSlotForCard = false
+                }
+                var added = base
+                added.masterSetVariant = variant
+                added.isExpandedMasterSetVariant = reviewed.variantID == "cosmos"
+                added.isSoleSlotForCard = false
+                result.append(added)
+            }
+        }
+        return result
+    }
+
     static let setIDs: Set<String> = Set(["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"])
         .union(PokemonFinishMinimumCatalog.setIDs)
 

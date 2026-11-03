@@ -25,6 +25,16 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// contract. Nil retains the existing live-provider policy; offline records
     /// explicitly carry false, including across cache persistence.
     var finishCoverageVerified: Bool? = nil
+    /// Installed by the catalog adapter from its verified registry, never
+    /// decoded from a provider response or trusted from a disk cache.
+    var reviewedAdditionalVariants: [PokemonCatalogAdditionalVariant] = []
+
+    func applyingAdditionalVariants(from registry: PokemonCatalogRegistry) -> Self {
+        var card = self
+        card.reviewedAdditionalVariants = registry.descriptor(forProviderSetID: set.id)?
+            .additionalVariants?.filter { $0.providerCardID == id } ?? []
+        return card
+    }
 
     private var providerArtworkURL: String? {
         guard let image,
@@ -108,10 +118,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// The supplemental rules layer may still widen this for sets whose parallel
     /// patterns TCGdex does not model at all; no *rule* is applied here.
     var catalogVariants: [PhysicalVariant] {
-        if let reviewed = PokemonVariantRules.reviewedVariants(cardID: id) { return reviewed }
+        if let reviewed = PokemonVariantRules.reviewedVariants(cardID: id) { return addingReviewedVariants(to: reviewed) }
         // Reviewed exact products in both 30th sets are Holofoil. The upstream
         // generated Normal flag is incorrect; unrelated/unknown cards keep it.
-        if PokemonTCGCSVMapping.byCardID[id]?.setID == set.id { return [.holo] }
+        if PokemonTCGCSVMapping.byCardID[id]?.setID == set.id { return addingReviewedVariants(to: [.holo]) }
         var result: [PhysicalVariant] = []
         if let variants {
             if variants.normal { result.append(.normal) }
@@ -141,12 +151,57 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
            !result.contains(PokemonReviewedParallelCatalog.variant) {
             result.append(PokemonReviewedParallelCatalog.variant)
         }
-        return PokemonFinishMinimumCatalog.retainingMinimum(cardID: id, variants: result)
+        return addingReviewedVariants(to: PokemonFinishMinimumCatalog.retainingMinimum(cardID: id, variants: result))
+    }
+
+    var authorizedJumbo: PokemonCatalogAdditionalVariant? {
+        authorizedAdditionalVariants.first { $0.variantID == "jumbo" }
+    }
+
+    var authorizedAdditionalVariants: [PokemonCatalogAdditionalVariant] {
+        reviewedAdditionalVariants.filter {
+            $0.providerCardID == id && id == set.id + "-" + localId
+                && CatalogIdentityNormalization.canonicalText($0.canonicalName)
+                    == CatalogIdentityNormalization.canonicalText(name)
+        }
+    }
+
+    private func addingReviewedVariants(to variants: [PhysicalVariant]) -> [PhysicalVariant] {
+        var result = variants
+        for reviewed in authorizedAdditionalVariants where reviewed.addsMembership {
+            let variant: PhysicalVariant = reviewed.variantID == "jumbo" ? .jumbo
+                : .pokemonFoilPattern(reviewed.variantID)
+            if !result.contains(where: { $0.id == variant.id }) { result.append(variant) }
+        }
+        return result
+    }
+
+    var signedNormalNeedsReview: Bool {
+        authorizedAdditionalVariants.contains { $0.normalNeedsReview == true }
+    }
+
+    var hasSignedFinishMinimum: Bool {
+        authorizedAdditionalVariants.contains { $0.addsMembership && ["normal", "holo", "reverse"].contains($0.variantID) }
+    }
+
+    var jumboDetailedVariants: [TCGdexDetailedVariant] {
+        additionalDetailedVariants(for: "jumbo")
+    }
+
+    func additionalDetailedVariants(for variantID: String) -> [TCGdexDetailedVariant] {
+        guard let reviewed = authorizedAdditionalVariants.first(where: { $0.variantID == variantID }) else { return [] }
+        return (variantsDetailed ?? []).filter {
+            reviewed.matchesProviderDetail(type: $0.type, size: $0.size, foil: $0.foil,
+                stamp: $0.stamp, subtype: $0.subtype, languages: $0.languages)
+        }
     }
 
     /// The `variants_detailed` entry describing one physical object, if TCGdex
     /// published one for it.
     func detailedVariant(for variant: PhysicalVariant) -> TCGdexDetailedVariant? {
+        if variant == .jumbo {
+            return jumboDetailedVariants.count == 1 ? jumboDetailedVariants.first : nil
+        }
         guard !PokemonVariantRules.requiresPhysicalReview(cardID: id, variant: variant) else { return nil }
         if PokemonReviewedPhysicalObjects.all.contains(variant) {
             return variantsDetailed?.first { PokemonReviewedPhysicalObjects.variant(for: $0, on: self) == variant }
@@ -472,11 +527,14 @@ struct TCGdexDetailedVariant: Decodable, Sendable {
         return "\(stamps)|\(subtype?.lowercased() ?? "")"
     }
 
-    var isStandardEnglish: Bool {
-        size?.caseInsensitiveCompare("jumbo") != .orderedSame
-            && (languages == nil || languages?.contains(where: {
+    var isEnglish: Bool {
+        languages == nil || languages?.contains(where: {
                 $0.caseInsensitiveCompare("en") == .orderedSame
-            }) == true)
+            }) == true
+    }
+
+    var isStandardEnglish: Bool {
+        size?.caseInsensitiveCompare("jumbo") != .orderedSame && isEnglish
     }
 
     /// The marketplace listing key this entry's `type` would normally be read

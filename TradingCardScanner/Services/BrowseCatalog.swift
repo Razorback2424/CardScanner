@@ -912,7 +912,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
             // source and must not be displaced by an older partial page.
             if let local = await checklistStore.mergedChecklist(for: set.catalogID) {
                 return CatalogPage(
-                    items: Self.applyingSignedCardArtwork(local, set: set),
+                    items: Self.applyingSignedCardArtwork(
+                        PokemonChecklistReviewedProjection.addingAdditionalVariants(to: local, registry: catalogRegistry), set: set),
                     nextCursor: nil
                 )
             }
@@ -1272,7 +1273,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         state.waiters.insert(waiter)
         pokemonDetailPayloadTasks[id] = state
         defer { releasePokemonPayloadWaiter(id: id, requestID: state.id, waiter: waiter) }
-        return try await awaitDetailTask(state.task)
+        return try await awaitDetailTask(state.task).applyingAdditionalVariants(from: catalogRegistry)
     }
 
     private func releasePokemonPayloadWaiter(id: String, requestID: UUID, waiter: UUID) {
@@ -1727,8 +1728,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 let retry = tcgCSVRetrySetIDs.remove(setID) != nil
                 let snapshot = try await source.snapshot(setID: setID, retry: retry)
                 try Task.checkCancellation()
+                let checkedAt = now()
                 return SortPriceGroupResult(slots: summaries.map { summary in
-                    if let details = detailCache[detailCacheKey(for: summary)] {
+                    if let details = detailCache[detailCacheKey(for: summary)],
+                       Self.detailsAreFresh(details, now: checkedAt) {
                         let detailed = details.card
                         let existing = CardPricing.price(
                             for: detailed, variant: summary.masterSetVariant ?? .holo,
@@ -1736,7 +1739,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                             pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt
                         )
                         if case let .price(price) = existing, price.source != .tcgCSV,
-                           price.currencyCode == "USD" {
+                           price.currencyCode == "USD", !price.isStale(now: checkedAt) {
                             return SortPriceSlot(id: summary.id, resolution: .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt))
                         }
                     }
@@ -2469,7 +2472,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 guard let card = details.cards[summary.providerID],
                       let retrievedAt = details.retrievedAt[summary.providerID] else { continue }
                 detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
-                    card: .pokemon(card, setCode: summary.setCode),
+                    card: .pokemon(card.applyingAdditionalVariants(from: catalogRegistry), setCode: summary.setCode),
                     set: value.set,
                     retrievedAt: retrievedAt
                 )
@@ -2478,7 +2481,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 displayedCards = summaries
             }
         }
-        return displayedCards
+        return PokemonChecklistReviewedProjection.addingAdditionalVariants(to: displayedCards, registry: catalogRegistry)
     }
 
     private func pokemonCardDetails(
@@ -2529,7 +2532,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
             loadTask = task
         }
 
-        let entries = await loadTask.value
+        var entries = await loadTask.value
+        for index in entries.indices {
+            let entry = entries[index]
+            guard catalogRegistry.descriptor(forProviderSetID: entry.providerID)?.additionalVariants?.isEmpty == false,
+                  let cards = await checklistStore.mergedChecklist(for: entry.set.catalogID) else { continue }
+            entries[index] = PokemonChecklistReviewedProjection.entry(entry, cards:
+                PokemonChecklistReviewedProjection.addingAdditionalVariants(to: cards, registry: catalogRegistry))
+        }
         pokemonBundledRanks = await checklistStore.bundledSetRanks()
         // Do not turn a cancelled or unsuccessful request into a completed
         // latch. A nil result must remain retryable if both snapshot sources
@@ -3292,7 +3302,9 @@ enum PokemonMasterSetDefinition {
 
     static func requiredSlots(for variants: [PhysicalVariant], setProviderID: String? = nil) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
         var seen = Set<String>()
-        let slots = variants.filter { seen.insert($0.id).inserted }
+        // Oversized objects can be collected from a scan, but do not add a
+        // standard-size Master/Grand Master checklist requirement.
+        let slots = variants.filter { $0 != .jumbo && seen.insert($0.id).inserted }
         return slots.map { variant in
             return (variant, !isPackVariant(variant, setProviderID: setProviderID), slots.count == 1)
         }

@@ -537,17 +537,20 @@ actor PokemonCatalogEngine {
     }
 
     private func applyingSignedArtwork(to identifiedCard: IdentifiedCard) -> IdentifiedCard {
-        guard case let .pokemon(card, setCode) = identifiedCard.legacyIdentity,
-              !Self.hasUsableArtworkURL(card.image),
+        guard case let .pokemon(rawCard, setCode) = identifiedCard.legacyIdentity else { return identifiedCard }
+        // Reapply the captured registry on every path, including memory/disk
+        // hits. An old authorization cannot survive its signed removal.
+        let card = rawCard.applyingAdditionalVariants(from: catalogRegistry)
+        guard !Self.hasUsableArtworkURL(card.image),
               let descriptor = catalogRegistry.descriptor(forProviderSetID: card.set.id),
               let artwork = descriptor.cardArtwork?.first(where: {
                   CatalogIdentityNormalization.localNumber($0.localID)
                     == CatalogIdentityNormalization.localNumber(card.localId)
               }),
               let image = Self.artworkBaseURL(from: artwork.imageURL) else {
-            return identifiedCard
+            return .pokemon(card, setCode: setCode)
         }
-        let signedCard = TCGdexCard(
+        var signedCard = TCGdexCard(
             id: card.id,
             localId: card.localId,
             name: card.name,
@@ -558,6 +561,7 @@ actor PokemonCatalogEngine {
             pricing: card.pricing,
             variantsDetailed: card.variantsDetailed
         )
+        signedCard.reviewedAdditionalVariants = card.reviewedAdditionalVariants
         return .pokemon(signedCard, setCode: setCode)
     }
 

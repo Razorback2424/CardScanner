@@ -713,7 +713,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     parentProviderSetID: parentProviderSetID,
                     bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: existing.rulesVersion,
-                    membershipRecognition: nil
+                    membershipRecognition: nil,
+                    additionalVariants: humanInput?.additionalVariants ?? existing.additionalVariants
                 ))
             }
 
@@ -768,7 +769,8 @@ public struct PokemonCatalogBuilder: Sendable {
                 bundledArtworkSourceID: bundledArtworkSourceID,
                 rulesVersion: existing.rulesVersion,
                 membershipRecognition: humanInput?.membershipRecognition
-                    ?? existing.membershipRecognition
+                    ?? existing.membershipRecognition,
+                additionalVariants: humanInput?.additionalVariants ?? existing.additionalVariants
             ))
         }
 
@@ -818,7 +820,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     parentProviderSetID: parentProviderSetID,
                     bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: humanInput.rulesVersion,
-                    membershipRecognition: humanInput.membershipRecognition
+                    membershipRecognition: humanInput.membershipRecognition,
+                    additionalVariants: humanInput.additionalVariants
                 ))
 
             case .promo, .energy, .notScannable:
@@ -843,7 +846,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     parentProviderSetID: parentProviderSetID,
                     bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: humanInput.rulesVersion,
-                    membershipRecognition: humanInput.membershipRecognition
+                    membershipRecognition: humanInput.membershipRecognition,
+                    additionalVariants: humanInput.additionalVariants
                 ))
             }
         }
@@ -1331,6 +1335,24 @@ public struct PokemonCatalogBuilder: Sendable {
             providerCards: providerCards,
             setID: row.id
         )
+
+        for variant in descriptor.additionalVariants ?? [] {
+            guard let card = providerCards[variant.providerCardID.lowercased()],
+                  PokemonCatalogTextNormalization.canonicalMembershipName(card.name)
+                    == PokemonCatalogTextNormalization.canonicalMembershipName(variant.canonicalName) else {
+                throw PokemonCatalogBuildError.invalidDescriptor("reviewed variant has no matching card: \(variant.providerCardID)")
+            }
+            // Oversized records must already be present upstream. A standard
+            // Cosmos supplement can fill the provider's documented omission.
+            if variant.variantID == "jumbo" {
+                guard (card.variantsDetailed ?? []).filter({
+                      variant.matchesProviderDetail(type: $0.type, size: $0.size, foil: $0.foil,
+                          stamp: $0.stamp, subtype: $0.subtype, languages: $0.languages)
+                  }).count == 1 else {
+                    throw PokemonCatalogBuildError.invalidDescriptor("reviewed Jumbo is absent or ambiguous: \(variant.providerCardID)")
+                }
+            }
+        }
 
         var briefIDs = Set<String>()
         var summaries: [PokemonCatalogCardSummary] = []

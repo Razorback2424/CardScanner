@@ -445,6 +445,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
     public let bundledArtworkSourceID: String?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
+    public let additionalVariants: [PokemonCatalogAdditionalVariant]?
 
     public init(
         providerSetID: String,
@@ -463,7 +464,8 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         parentProviderSetID: String? = nil,
         bundledArtworkSourceID: String? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
-        membershipRecognition: PokemonCatalogMembershipRecognition? = nil
+        membershipRecognition: PokemonCatalogMembershipRecognition? = nil,
+        additionalVariants: [PokemonCatalogAdditionalVariant]? = nil
     ) {
         self.providerSetID = providerSetID
         self.recognitionKind = recognitionKind
@@ -482,6 +484,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         self.bundledArtworkSourceID = bundledArtworkSourceID
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
+        self.additionalVariants = additionalVariants
     }
 }
 

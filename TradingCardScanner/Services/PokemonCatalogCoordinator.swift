@@ -413,8 +413,9 @@ actor PokemonCatalogCoordinator {
             guard let oldDescriptor = old.descriptor(
                 forProviderSetID: descriptor.providerSetID
             ),
-            oldDescriptor.providerFingerprint != descriptor.providerFingerprint,
-            descriptor.providerFingerprint != nil else { continue }
+            (oldDescriptor.providerFingerprint != descriptor.providerFingerprint
+                && descriptor.providerFingerprint != nil)
+                || oldDescriptor.additionalVariants != descriptor.additionalVariants else { continue }
             changed.insert(descriptor.providerSetID.lowercased())
         }
         return changed

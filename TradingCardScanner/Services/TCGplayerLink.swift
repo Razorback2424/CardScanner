@@ -16,6 +16,77 @@ import Foundation
 enum TCGplayerLinkBuilder {
     private static let host = "www.tcgplayer.com"
 
+    struct Destination: Equatable {
+        let url: URL
+        let isExactProduct: Bool
+        var title: String { isExactProduct ? "View on TCGplayer" : "Search TCGplayer" }
+        var accessibilityLabel: String {
+            isExactProduct ? "View this printing on TCGplayer" : "Search TCGplayer for this card"
+        }
+    }
+
+    /// Every detail screen gets a destination. Searching is explicitly labeled
+    /// and never supplies a product identity, price, or persisted association.
+    static func destination(for card: CollectedCard) -> Destination {
+        if let exact = url(for: card), isProductPage(exact) { return .init(url: exact, isExactProduct: true) }
+        return search(game: card.cardGame, name: card.name, setName: card.setName,
+            number: card.cardNumber, variant: card.variantID.map(PhysicalVariant.resolving),
+            pokemonPrintRun: card.pokemonPrintRun)
+    }
+
+    static func destination(for card: IdentifiedCard, variant: PhysicalVariant?,
+                            pokemonPrintRun: PokemonPrintRun? = nil) -> Destination {
+        if let exact = url(for: card, variant: variant, pokemonPrintRun: pokemonPrintRun), isProductPage(exact) {
+            return .init(url: exact, isExactProduct: true)
+        }
+        if card.game == .pokemon, let variant,
+           let id = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun),
+           let exact = productURL(productID: String(id), variantID: variant.id, game: card.game) {
+            return .init(url: exact, isExactProduct: true)
+        }
+        return search(game: card.game, name: card.name, setName: card.setName, number: card.cardNumber,
+            variant: variant, pokemonPrintRun: pokemonPrintRun)
+    }
+
+    static func destination(for summary: CatalogCardSummary) -> Destination {
+        search(game: summary.game, name: summary.name, setName: summary.setName,
+            number: summary.collectorNumber, variant: summary.masterSetVariant, pokemonPrintRun: summary.pokemonPrintRun)
+    }
+
+    private static func isProductPage(_ url: URL) -> Bool {
+        let parts = url.pathComponents
+        return parts.count > 2 && parts[1] == "product" && !parts[2].isEmpty && parts[2].allSatisfy(\.isNumber)
+    }
+
+    static func search(game: CardGame, name: String, setName: String, number: String,
+                       variant: PhysicalVariant? = nil, pokemonPrintRun: PokemonPrintRun? = nil) -> Destination {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        components.path = "/search/all/product"
+        let terms = [name, setName, number, variant?.label, pokemonPrintRun?.label]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+        var query = [URLQueryItem(name: "q", value: terms.joined(separator: " ")),
+                     URLQueryItem(name: "view", value: "grid")]
+        let productLine: String?
+        switch game {
+        case .pokemon: productLine = "pokemon"
+        case .magic: productLine = "magic"
+        case .yuGiOh: productLine = "yugioh"
+        case .lorcana: productLine = "lorcana-tcg"
+        case .onePiece: productLine = "one-piece-card-game"
+        default: productLine = nil
+        }
+        if let productLine {
+            components.path = "/search/\(productLine)/product"
+            query.append(.init(name: "productLineName", value: productLine))
+        }
+        components.queryItems = query
+        // All structural components are constants; card text is encoded only
+        // as query-item values, including non-ASCII names and punctuation.
+        return .init(url: components.url!, isExactProduct: false)
+    }
+
     /// The destination for a card, or `nil` when the app has no marketplace
     /// identity it can stand behind.
     ///
@@ -59,6 +130,15 @@ enum TCGplayerLinkBuilder {
             // TCGdex's ordinary product identity must not be used for a
             // Shadowless virtual set, whose marketplace identity is distinct.
             guard pokemonPrintRun != .shadowless else { return nil }
+            if variant == .jumbo || (variant.map { selected in
+                pokemon.authorizedAdditionalVariants.contains { $0.variantID == selected.id }
+                    || (selected == .normal && pokemon.signedNormalNeedsReview)
+            } ?? false) {
+                return CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun)
+                    .flatMap { productURL(productID: String($0), variantID: variant?.id, game: .pokemon) }
+            }
+            if variant == nil, pokemon.authorizedJumbo != nil
+                || pokemon.authorizedAdditionalVariants.contains(where: { !$0.addsMembership }) { return nil }
             if pokemon.set.id == "xya", let variant,
                let id = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun) {
                 return productURL(productID: String(id), variantID: variant.id, game: .pokemon)

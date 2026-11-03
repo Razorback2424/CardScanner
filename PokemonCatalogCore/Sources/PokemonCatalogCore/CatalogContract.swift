@@ -101,6 +101,70 @@ public struct PokemonCatalogCardArtwork: Codable, Equatable, Hashable, Sendable 
     }
 }
 
+/// Protected membership or an exact product exclusion for a reviewed object. Source URLs
+/// are review receipts, not proof inferred from a provider product handle.
+public struct PokemonCatalogAdditionalVariant: Codable, Equatable, Hashable, Sendable {
+    public let providerCardID: String
+    public let canonicalName: String
+    public let variantID: String
+    public let providerType: String
+    public let tcgplayerProductID: Int?
+    public let evidenceURLs: [String]
+    public let providerStamps: [String]?
+    /// Only these reviewed bad handles may be replaced. Unknown conflicts
+    /// remain unresolved, and quotes attached to a replaced handle are not used.
+    public let replacesProviderProductIDs: [Int]?
+    /// An exclusion corrects a price association without asserting membership.
+    public let excludedTCGplayerProductIDs: [Int]?
+    public let providerFoil: String?
+    /// Retain legacy Normal records, but require physical review before use.
+    public let normalNeedsReview: Bool?
+
+    public var addsMembership: Bool { (excludedTCGplayerProductIDs ?? []).isEmpty }
+
+    public var exclusionVariantID: String {
+        let base = providerFoil ?? providerType
+        let stamps = (providerStamps ?? []).sorted()
+        return stamps.isEmpty ? base : "pokemonStamp|\(base)|\(stamps.joined(separator: ","))|"
+    }
+
+    public init(providerCardID: String, canonicalName: String, variantID: String, providerType: String,
+                tcgplayerProductID: Int? = nil, evidenceURLs: [String],
+                providerStamps: [String]? = nil, replacesProviderProductIDs: [Int]? = nil,
+                excludedTCGplayerProductIDs: [Int]? = nil, providerFoil: String? = nil,
+                normalNeedsReview: Bool? = nil) {
+        self.providerCardID = providerCardID
+        self.canonicalName = canonicalName
+        self.variantID = variantID
+        self.providerType = providerType
+        self.tcgplayerProductID = tcgplayerProductID
+        self.evidenceURLs = evidenceURLs
+        self.providerStamps = providerStamps
+        self.replacesProviderProductIDs = replacesProviderProductIDs
+        self.excludedTCGplayerProductIDs = excludedTCGplayerProductIDs
+        self.providerFoil = providerFoil
+        self.normalNeedsReview = normalNeedsReview
+    }
+
+    public func matchesProviderDetail(type: String?, size: String?, foil: String?, stamp: [String]?,
+                                      subtype: String?, languages: [String]?) -> Bool {
+        guard type == providerType,
+              languages == nil || languages!.contains(where: { $0.lowercased() == "en" }),
+              subtype == nil || subtype?.lowercased() == "unlimited",
+              (stamp ?? []).map({ $0.lowercased() }).sorted() == (providerStamps ?? []).sorted() else { return false }
+        if variantID == "jumbo" {
+            return size?.lowercased() == "jumbo" && (foil ?? "").isEmpty
+        }
+        if !addsMembership {
+            return size?.lowercased() == "standard" && (foil ?? "").lowercased() == (providerFoil ?? "")
+        }
+        if ["normal", "holo", "reverse"].contains(variantID) {
+            return size?.lowercased() != "jumbo" && (foil ?? "").isEmpty
+        }
+        return variantID == "cosmos" && size?.lowercased() != "jumbo" && foil?.lowercased() == "cosmos"
+    }
+}
+
 public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendable {
     public enum RecognitionKind: String, Codable, Sendable {
         case expansion
@@ -145,6 +209,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     public let cardArtwork: [PokemonCatalogCardArtwork]?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
+    public let additionalVariants: [PokemonCatalogAdditionalVariant]?
 
     public init(
         providerSetID: String,
@@ -166,7 +231,8 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         artworkFallbackURLs: [String]? = nil,
         cardArtwork: [PokemonCatalogCardArtwork]? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
-        membershipRecognition: PokemonCatalogMembershipRecognition? = nil
+        membershipRecognition: PokemonCatalogMembershipRecognition? = nil,
+        additionalVariants: [PokemonCatalogAdditionalVariant]? = nil
     ) {
         self.providerSetID = providerSetID
         self.providerFingerprint = providerFingerprint
@@ -188,6 +254,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         self.cardArtwork = cardArtwork
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
+        self.additionalVariants = additionalVariants
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -211,6 +278,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         case cardArtwork
         case rulesVersion
         case membershipRecognition
+        case additionalVariants
     }
 
     /// The optional fingerprint is additive within schema 1. A legacy
@@ -257,6 +325,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             PokemonCatalogMembershipRecognition.self,
             forKey: .membershipRecognition
         )
+        additionalVariants = try container.decodeIfPresent([PokemonCatalogAdditionalVariant].self, forKey: .additionalVariants)
     }
 
     public func withProviderFingerprint(
@@ -305,7 +374,8 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             artworkFallbackURLs: artworkFallbackURLs,
             cardArtwork: cardArtwork,
             rulesVersion: rulesVersion,
-            membershipRecognition: membershipRecognition
+            membershipRecognition: membershipRecognition,
+            additionalVariants: additionalVariants
         )
     }
 
@@ -532,6 +602,7 @@ public enum PokemonCatalogReleaseValidator {
                 throw ValidationError.invalidDescriptor("release order must be non-negative")
             }
             try validateMembershipRecognition(descriptor.membershipRecognition)
+            try validateAdditionalVariants(descriptor.additionalVariants, setID: providerID)
 
             switch descriptor.recognitionKind {
             case .expansion:
@@ -616,6 +687,48 @@ public enum PokemonCatalogReleaseValidator {
         let characters = Array(value.uppercased())
         return characters.count == 3
             && characters.allSatisfy { $0.isLetter || $0.isNumber }
+    }
+
+    private static func validateAdditionalVariants(_ variants: [PokemonCatalogAdditionalVariant]?, setID: String) throws {
+        guard let variants else { return }
+        var ids = Set<String>()
+        for variant in variants {
+            let hosts = Set(variant.evidenceURLs.compactMap { raw -> String? in
+                guard let url = URL(string: raw), url.scheme == "https", url.user == nil,
+                      url.password == nil, !url.path.isEmpty else { return nil }
+                return url.host?.lowercased()
+            })
+            let ordinary = ["normal", "holo", "reverse"].contains(variant.variantID)
+                && variant.variantID == variant.providerType && (variant.providerStamps ?? []).isEmpty
+            let membership = variant.addsMembership && variant.providerFoil == nil
+                && ((variant.variantID == "jumbo" && ["normal", "holo", "lenticular"].contains(variant.providerType))
+                    || (variant.variantID == "cosmos" && variant.providerType == "holo") || ordinary)
+            let exclusion = !variant.addsMembership && variant.tcgplayerProductID == nil
+                && (variant.replacesProviderProductIDs ?? []).isEmpty
+                && variant.normalNeedsReview != true
+                && ["normal", "holo", "reverse"].contains(variant.providerType)
+                && variant.variantID == variant.exclusionVariantID
+                && (variant.providerFoil == nil || variant.providerFoil!.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" })
+                && variant.providerFoil != "" && variant.providerFoil == variant.providerFoil?.lowercased()
+            guard variant.providerCardID.hasPrefix(setID + "-"),
+                  variant.providerCardID.count > setID.count + 1,
+                  ids.insert(variant.providerCardID + ":" + variant.variantID).inserted,
+                  !PokemonCatalogTextNormalization.canonicalMembershipName(variant.canonicalName).isEmpty,
+                  membership || exclusion,
+                  variant.normalNeedsReview != true || (ordinary && variant.variantID == "holo" && variant.addsMembership),
+                  variant.tcgplayerProductID == nil || variant.tcgplayerProductID! > 0,
+                  (variant.providerStamps ?? []).allSatisfy({ !$0.isEmpty && $0 == $0.lowercased()
+                    && $0.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "-" }) && $0 != "1st-edition" }),
+                  Set(variant.providerStamps ?? []).count == (variant.providerStamps ?? []).count,
+                  (variant.replacesProviderProductIDs ?? []).allSatisfy({ $0 > 0 && $0 != variant.tcgplayerProductID }),
+                  Set(variant.replacesProviderProductIDs ?? []).count == (variant.replacesProviderProductIDs ?? []).count,
+                  (variant.replacesProviderProductIDs ?? []).isEmpty || variant.tcgplayerProductID != nil,
+                  (variant.excludedTCGplayerProductIDs ?? []).allSatisfy({ $0 > 0 }),
+                  Set(variant.excludedTCGplayerProductIDs ?? []).count == (variant.excludedTCGplayerProductIDs ?? []).count,
+                  hosts.count >= 2, variant.evidenceURLs.count == hosts.count else {
+                throw ValidationError.invalidDescriptor("invalid reviewed physical-variant authorization in \(setID)")
+            }
+        }
     }
 
     private static func isValidPromoPrefix(_ value: String) -> Bool {

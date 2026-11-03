@@ -136,6 +136,11 @@ enum CardPricing {
         }
         guard case let .pokemon(pokemon, _) = card.legacyIdentity, let variant,
               printRun != .shadowless else { return nil }
+        guard !signedPriceIsBlocked(on: pokemon, variant: variant) else { return nil }
+        if variant == .jumbo || hasSignedProduct(on: pokemon, variant: variant) {
+            guard printRun == nil || printRun == .unlimited else { return nil }
+            return reviewedAdditionalProductID(on: pokemon, variant: variant)
+        }
         guard !PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) else { return nil }
         if pokemon.set.id == "xya", ReviewedPokemonProductIdentity.catalogIDs.contains(pokemon.id) {
             return ReviewedPokemonProductIdentity.productID(for: pokemon, variant: variant, printRun: printRun)
@@ -182,7 +187,16 @@ enum CardPricing {
     private static func exactDetailedVariants(
         on card: TCGdexCard, variant: PhysicalVariant, printRun: PokemonPrintRun?
     ) -> [TCGdexDetailedVariant] {
-        (card.variantsDetailed ?? []).filter {
+        if variant == .jumbo || hasSignedProduct(on: card, variant: variant) {
+            guard printRun == nil || printRun == .unlimited,
+                  let productID = reviewedAdditionalProductID(on: card, variant: variant) else { return [] }
+            return card.additionalDetailedVariants(for: variant.id).filter {
+                // A reviewed ID correction authorizes a direct lookup of the
+                // right product, never the wrong product's embedded quote.
+                productIDs(in: $0).isEmpty || productIDs(in: $0) == [productID]
+            }
+        }
+        return (card.variantsDetailed ?? []).filter {
             guard $0.isStandardEnglish else { return false }
             if let object = PokemonReviewedPhysicalObjects.variant(for: $0, on: card) {
                 return variant == object && printRun != .firstEdition && printRun != .shadowless
@@ -235,6 +249,47 @@ enum CardPricing {
             .compactMap { $0 }.filter { $0 > 0 })
     }
 
+    private static func hasSignedProduct(on card: TCGdexCard, variant: PhysicalVariant) -> Bool {
+        card.authorizedAdditionalVariants.contains { $0.variantID == variant.id && $0.tcgplayerProductID != nil }
+    }
+
+    private static func reviewedAdditionalProductID(on card: TCGdexCard, variant: PhysicalVariant) -> Int? {
+        guard let reviewed = card.authorizedAdditionalVariants.first(where: { $0.variantID == variant.id }),
+              let productID = reviewed.tcgplayerProductID else { return nil }
+        let objects = (card.variantsDetailed ?? []).filter {
+            if variant == .jumbo { return $0.size?.lowercased() == "jumbo" }
+            if ["normal", "holo", "reverse"].contains(variant.id) {
+                return $0.size?.lowercased() != "jumbo" && $0.type == variant.id
+                    && ($0.foil ?? "").isEmpty && $0.genericStamps.isEmpty
+            }
+            return $0.size?.lowercased() != "jumbo" && $0.foil?.lowercased() == variant.id
+        }
+        // A missing row may use the signed binding. A contradictory or newly
+        // ambiguous row needs review; it cannot silently replace that binding.
+        let allowed = Set([productID] + (reviewed.replacesProviderProductIDs ?? []))
+        guard objects.isEmpty || (objects.count == 1 && card.additionalDetailedVariants(for: variant.id).count == 1
+            && productIDs(in: objects[0]).count <= 1 && productIDs(in: objects[0]).isSubset(of: allowed)) else { return nil }
+        let standardProducts = (card.variantsDetailed ?? []).filter {
+            $0.isStandardEnglish && $0.physicalVariant?.id != variant.id
+        }
+            .reduce(into: Set<Int>()) { $0.formUnion(productIDs(in: $1)) }
+        guard !standardProducts.contains(productID) else { return nil }
+        return productID
+    }
+
+    private static func signedPriceIsBlocked(on card: TCGdexCard, variant: PhysicalVariant?) -> Bool {
+        if variant == .normal && card.signedNormalNeedsReview { return true }
+        return card.authorizedAdditionalVariants.contains { correction in
+            guard !correction.addsMembership, variant == nil || correction.variantID == variant?.id else { return false }
+            let excluded = Set(correction.excludedTCGplayerProductIDs ?? [])
+            return (card.variantsDetailed ?? []).contains { detail in
+                correction.matchesProviderDetail(type: detail.type, size: detail.size, foil: detail.foil,
+                    stamp: detail.stamp, subtype: detail.subtype, languages: detail.languages)
+                    && !productIDs(in: detail).isDisjoint(with: excluded)
+            }
+        }
+    }
+
     /// A missing detailed quote may use the flat listing only when both its
     /// product and its finish agree. Product equality alone does not prove foil.
     private static func verifiedFlatPrice(
@@ -264,6 +319,8 @@ enum CardPricing {
         pokemonPrintRun: PokemonPrintRun? = nil,
         at fetchedAt: Date = .now
     ) -> PriceLookup {
+        if case let .pokemon(pokemon, _) = card.legacyIdentity,
+           signedPriceIsBlocked(on: pokemon, variant: variant) { return .unavailable(.tcgplayer) }
         let catalog = catalogPrice(
             for: card, variant: variant, magicTreatments: magicTreatments,
             pokemonPrintRun: pokemonPrintRun, at: fetchedAt
@@ -288,6 +345,15 @@ enum CardPricing {
         case .none:
             return .unavailable(nil)
         case let .pokemon(pokemon, _):
+            if let variant, variant == .jumbo || hasSignedProduct(on: pokemon, variant: variant) {
+                guard pokemonPrintRun == nil || pokemonPrintRun == .unlimited,
+                      reviewedAdditionalProductID(on: pokemon, variant: variant) != nil,
+                      let quote = unambiguousPrice(from: exactDetailedVariants(on: pokemon,
+                        variant: variant, printRun: pokemonPrintRun), at: fetchedAt) else {
+                    return .unavailable(.tcgplayer)
+                }
+                return .price(quote)
+            }
             if let variant, PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) {
                 return .unavailable(.tcgplayer)
             }

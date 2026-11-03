@@ -695,6 +695,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
 
         func priceTarget(_ target: PriceTarget, card: IdentifiedCard, at now: Date) async {
             guard pricedTargetIDs.insert(target.id).inserted else { return }
+            let card = await gamePricing.applyingCatalogSupplements(to: card)
             let variant = target.variantID.map(PhysicalVariant.resolving)
             var lookup = CardPricing.price(
                 for: card,
@@ -2438,6 +2439,7 @@ extension PokemonFinishReconciliation {
                 // A finish outside a reviewed card's list waits for the person
                 // holding the card, however it was originally chosen.
                 let canCorrect = row.variantID != nil && storedResolution?.isAutomatic == true
+                    && !(row.variantID == "normal" && !card.variantEvidence.catalogVariants.contains(.normal))
                     && !PokemonVariantRules.requiresPhysicalReview(
                         cardID: card.providerID,
                         variantID: row.variantID

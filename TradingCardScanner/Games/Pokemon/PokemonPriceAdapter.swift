@@ -9,11 +9,14 @@ struct PokemonPriceAdapter: GamePriceAdapter {
     /// one host; discovering it twice costs a second connect timeout per scan.
     private let tcgdexCircuit = TCGdexCircuitBreaker.shared
     private let marketPrices: PokemonMarketPriceResolver
+    private let catalogCoordinator: PokemonCatalogCoordinator?
 
     init(
-        tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared
+        tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
+        catalogCoordinator: PokemonCatalogCoordinator? = nil
     ) {
         marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource)
+        self.catalogCoordinator = catalogCoordinator
     }
 
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
@@ -85,7 +88,11 @@ struct PokemonPriceAdapter: GamePriceAdapter {
             )
             throw error
         }
-        refreshed = .pokemon(returned, setCode: card.displaySetCode)
+        let authorized: TCGdexCard
+        if let catalogCoordinator {
+            authorized = returned.applyingAdditionalVariants(from: await catalogCoordinator.registry)
+        } else { authorized = returned }
+        refreshed = .pokemon(authorized, setCode: card.displaySetCode)
 
         guard card.matches(.legacy(refreshed)) else {
             throw PriceQuoteError.identityMismatch

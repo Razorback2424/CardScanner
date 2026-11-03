@@ -135,6 +135,14 @@ public enum PokemonCatalogCandidateValidator {
         }
 
         for descriptor in build.release.sets {
+            for variant in descriptor.additionalVariants ?? [] {
+                guard let summary = build.snapshot.checklists[descriptor.providerSetID.lowercased()]?.first(where: {
+                    $0.providerCardID == variant.providerCardID
+                }), PokemonCatalogTextNormalization.canonicalMembershipName(summary.name)
+                    == PokemonCatalogTextNormalization.canonicalMembershipName(variant.canonicalName) else {
+                    throw PokemonCatalogCandidateValidationError.membershipRowsDoNotMatchSnapshot(descriptor.providerSetID)
+                }
+            }
             guard let recognition = descriptor.membershipRecognition else { continue }
             let id = descriptor.providerSetID.lowercased()
             guard let checklist = build.snapshot.checklists[id] else {
