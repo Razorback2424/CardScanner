@@ -5927,3 +5927,381 @@ changed price presentation; full VoiceOver/device/release certification is not
 inferred. Final simulator build, local Markdown links and `git diff --check`
 pass. Removed only the clean temporary baseline checkout created for this task;
 its native control results remain in the task evidence.
+
+## 2026-11-02 — remaining pricing review gaps on main@9413e90
+
+Confirmed and repaired both medium findings in the
+[pricing follow-up](docs/plans/pricing_correctness_and_coverage.md#first-edition-finish-and-stale-detail-follow-up--2026-11-02).
+The TCGCSV sort path now checks both cached detail receipt age and source-data
+age before preferring that quote. First-edition catalog detail preserves its
+physical finish, including an owned Holo finish when catalog metadata is
+absent; display and reconciliation use the same selection. Edition-only quotes
+cannot price a known physical Holo slot.
+
+All three new regressions failed before the fixes and passed afterward. The
+final native affected-suite run executed **298 tests: 297 passed, one expected
+skip, zero failures**. The centering corpus was excluded. Native result summary
+and stdout agree. Evidence on the external SSD uses stem
+`owned-price-followup-final-9413e90-20261102`, with result bundle, summary,
+pre-run source patch and manifest of source/app/test hashes. The source patch
+was unchanged after the run; SHA-256 is
+`ecff788ebabf054588030118ef27d760e07a5ded084432f37500d0518c9d68f7`.
+The first result-summary extraction failed to create its tool cache; a temporary
+cache allowed extraction from the successful bundle without rerunning tests.
+
+Four inspected simulator captures used that exact tested binary. First-edition
+Holo retains $713.30 on the set grid, catalog detail and Collection detail;
+newer evidence selects $816.38 on catalog detail with the correct source date.
+Captures and hashes are retained with the external evidence. No code or layout
+edits followed this run. Markdown links and `git diff --check` pass.
+
+The previous 295-case focused run preceded the final UI wrapping changes; it
+did not establish final-tree validation. The new source-bound run includes
+those changes. Historical baseline failures remain recorded, and no full-suite,
+physical-device, provider, CloudKit or release claim is made. Set-grid fetching
+still updates catalog hints; owned valuations reconcile in detail or Collection
+refresh. Changes remain local and uncommitted.
+
+## 2026-11-02 — rarity-first portrait sharing
+
+Spent over 15 minutes researching and comparing native SwiftUI design studies
+before the first implementation edit (19:25–19:41 UTC). Compared three portrait
+ratios and three rarity treatments, including real catalog artwork, small
+previews, price/history layouts and long metadata. The resulting source uses a
+1080 × 1920 canvas, prominent rarity symbols plus full names, a secondary
+finish/edition footer, and natural-width semibold ScanStash text. Grading and
+printing facts remain independent; unknown rarities stay neutral and are not
+inferred from a finish or number. Existing user pricing/browse edits are intact.
+
+The pre-edit focused baseline passed 25/25 after moving only this task's
+generated DebugRemoteLocal artifacts from the full T7 to the other external
+drive. After the owner's instruction to skip tests, builds and simulator work,
+none of those were run on the implementation. The existing raster-height
+expectation was adjusted to 1920; final rendering and native interactions remain
+unverified. Source review, relative documentation links and `git diff --check`
+are the only post-edit checks. HIG verdict is RISK pending rendered typography,
+accessibility and native-sharing acceptance.
+
+Design rationale and sources are in the
+[sharing hand-off](docs/plans/card_sharing_handoff.md#rarity-and-portrait-design--2026-11-02);
+the [acceptance checklist](references/card_share_rarity_success_checklist.md)
+remains open. Research images are local temporary studies, not final-app proof.
+
+## 2026-11-02 — retail Eevee and lenticular Charizard investigation
+
+Completed a bounded public-provider census of all 158 30th Celebration cards,
+226 SVP promos and ten adjacent controls (394/394 after retrying 81 HTTP 503s).
+Confirmed missing Eevee Cosmos evidence upstream plus the app's Holo-only
+30th shortcut; confirmed SVP 196 lenticular jumbo is published upstream but
+excluded by both size and unsupported type. Identified 20 identities with
+jumbo records affected by the size gate; PAF 007/008 Cosmos are existing controls.
+The [investigation](docs/audits/pokemon-retail-variants-2026-11-02.md) retains
+price-free evidence, reproduction, identity caveats and ordered repair criteria.
+Investigation only: no application/catalog repair or device validation claimed.
+
+The subsequent maintenance goal requires two authoritative sources, batched
+checks, milestone testing, catalog-only changes and normal signing. Draft
+logic/test changes were withdrawn, preserving earlier user work. The 20-card
+[Jumbo review queue](docs/audits/pokemon-retail-variant-review-2026-11-02.json)
+records corroboration holds and the verified signing-contract limitation: the
+current signed set descriptor cannot transport per-card variant overrides.
+SVP 196 has TCGdex plus TCGplayer Jumbo identity evidence; the requested display
+label is Jumbo, with lenticular retained only as evidence metadata. No production
+catalog, signed revision or pricing binding was changed. Draft test runs did
+not establish passing repair evidence. Full English historical coverage remains
+unproven and the maintenance goal remains active.
+
+## 2026-11-02 — POP Series 1–9 signed membership data
+
+Corroborated all 153 numbered POP identities across TCGdex and Serebii, then
+added nine membership descriptors to production publisher input. All previous
+33 input descriptors are preserved. Native publisher validation passed on nine
+complete sets and 153 detailed cards; existing production-membership boundary
+tests passed 2/2. No app consumer/scanner/portfolio logic, finishes, price
+bindings or stored holdings changed. The batch follows the existing protected
+new-set signing route and remains unsigned/unpublished. See the
+[batch receipt](docs/audits/pokemon-pop-2026-11-02/README.md) for evidence,
+normalization corrections, verification scope and remaining runtime gates.
+The live scope census observed 205 physical provider sets and 59 absent bundled
+checklists; that is not an exhaustive physical-printing coverage certificate.
+
+## 2026-11-02 — English McDonald's membership batch
+
+Added 166 numbered identities across 12 English McDonald's collections to normal
+publisher input after TCGdex/Bulbapedia corroboration. Japanese and French-only
+tables were explicitly excluded. Preserved all previous 33 production and nine
+POP descriptor objects. Combined native publisher validation passed for 21 sets
+and 319 cards; existing membership regressions passed 9/9 at this milestone.
+No app logic, finish or price mapping changed. All additions remain unsigned
+and unpublished, requiring the existing protected new-set signing path. The
+[batch receipt](docs/audits/pokemon-mcdonalds-2026-11-02/README.md) records full
+evidence, source-language boundaries, 70 identities without provider USD quotes
+and the 2022 detailed-finish review lead. Device and live-pricing gates remain
+open; full English coverage is not certified.
+
+## 2026-11-02 — Southern Islands and EX Trainer Kit membership
+
+Added five complete two-catalog-corroborated memberships (62 numbered cards,
+including six Basic Energy records) to normal publisher input. Preserved all
+previous 54 descriptors; current input has 59 descriptors. Native publisher
+validation passed the accumulated 26-set / 381-card candidate. No app logic,
+finish policy or price binding changed; signing/publication and device gates
+remain open. The [batch receipt](docs/audits/pokemon-historical-products-2026-11-02/README.md)
+records source hashes, the inspected physical Energy footer, and a systematic
+20-half-deck Trainer Kit census. That census found Lycanroc has only 18 of its
+declared 30 numbered provider cards; those 12 missing slots were not guessed.
+The other 15 unreviewed half decks require a second source before admission.
+
+## 2026-11-02 — remaining Trainer Kit membership review
+
+Corroborated all 16 remaining half-deck tables and admitted the 15 complete
+provider sets: 413 numbered identities, including 153 Energy records. All previous
+59 descriptors are preserved. Input now contains 74 descriptors; accumulated
+new membership data covers 41 sets / 794 identities. Native publisher validation
+passed that complete union; existing membership regressions passed 9/9 at this
+milestone. Riolu's physical 6/61 footer is authored with independent printing
+history and retailer evidence while preserving its provider ID. All 12 missing
+Lycanroc slots are independently identified as Fighting Energy; every detail
+endpoint returned 404, so the set remains held. See the
+[receipt](docs/audits/pokemon-later-trainer-kits-2026-11-02/README.md).
+No app logic, finish or price mapping changed. Normal protected signing and
+publication, device scanning and exact-price gates remain open.
+
+## 2026-11-02 — residual promo and W-stamp coverage review
+
+Audited the remaining eight unconfigured provider groups and all seven W-stamp
+originals, retaining price-free public receipts. Standalone wp/jumbo/sp/rc entries
+are empty aggregations; all seven W details exist under original card IDs, and
+25 RC identities already exist under bw11. Two W details reuse ordinary product
+handles; five lack exact TCGplayer handles. These are pricing-isolation findings,
+not an observed device-price result or permission to install guessed products.
+The [receipt](docs/audits/pokemon-residual-promos-2026-11-02/README.md) records
+the exact findings and corrects the interpretation of non-Pocket directory counts.
+No production input, app logic or price binding changed. Requested a scope
+decision because signed per-card variant/product overrides require schema and
+consumer support forbidden by the current no-logic-change constraint. Earlier
+794 memberships remain intact, unsigned and unpublished; the goal is not complete.
+
+## 2026-11-02 — production signature and membership-union preflight
+
+Verified hosted revision 19 with the app's pinned public key using the native
+publisher; its immutable release matches the current envelope byte-for-byte.
+The shared candidate validator accepted the isolated 794-card batch artifacts.
+A read-only native audit validated the full 74-descriptor union, preserving all
+33 active descriptors, matching current authoring memberships and classifying
+the 41 additions as protected newSet. See the
+[receipt](docs/audits/pokemon-signing-preflight-2026-11-02/README.md).
+This is not a fresh full-provider candidate or device/pricing acceptance. No
+production input, app logic, signed release or deployment changed this turn.
+The schema/consumer scope question remains pending; continuation is not approval.
+
+## 2026-11-02 — SVE Basic Energy catalog-only recognition fix
+
+Corroborated all 24 SVE identities across TCGdex and Bulbapedia, inspected the
+manufacturer's SVE 001 footer, and registered SVE through the existing signed
+rules-2 Energy descriptor. No app consumer/scanner/portfolio logic changed;
+all prior 74 descriptors are preserved. Native validation passed the accumulated
+42-set / 818-card candidate; signature/contract preflight passed the 75-descriptor
+union against active revision 19. Core tests passed 10/10. Focused iOS parser
+regressions passed 3/3, with actual test identifiers and counts verified from
+the xcresult's legacy reader after a modern-reader cache error. The new test
+checks all 24 footers through the registry-update path; the bundled seed remains
+unchanged. See the [receipt](docs/audits/pokemon-sve-energy-2026-11-02/README.md).
+No signing/publication or physical-camera/paid-pricing acceptance is claimed.
+The separate schema-support scope question and global coverage goal remain open.
+
+## 2026-11-02 — authorized Eevee/Jumbo repair and universal detail links
+
+The owner explicitly authorized Jumbo, Eevee Cosmos, minimal signed variant
+support, and TCGplayer links across card detail screens; the earlier schema
+scope question is resolved. Added protected `additionalVariants` authoring and
+signed descriptor support, verified-registry application across scan/cache,
+Browse and collection refresh paths, stable Jumbo identity, size-scoped product
+binding, and an additive Eevee Cosmos Grand Master projection. Both physical
+memberships have two independent sources; Eevee's price binding remains held.
+Existing user sharing, pricing and Browse changes were preserved.
+
+Core verification: 85 passed, one opt-in live CDN test skipped, zero failures.
+Backend iOS milestone: 50/50 passed. Final link/render milestone: 26/26 passed,
+including 18 link cases, six retail integration cases and two native rendering
+cases. First iOS attempt failed on test-only fileprivate helper access; corrected
+runs passed. Native publisher validated the recorded 384-card two-set cohort.
+Signed fixture tests verify protected authority classification and withdrawal;
+an unsigned CLI baseline comparison was correctly rejected. Inspected final
+catalog/collection captures and exact/search accessibility3 control renders.
+Modern attachment export failed on Library/Caches access; legacy export worked.
+
+All card detail entry points now expose an exact-product link when available or
+an explicitly labeled TCGplayer search, including loading/failure and recovery.
+See the [repair receipt](docs/audits/pokemon-retail-repairs-2026-11-02.md) and
+[visual checklist](references/tcgplayer_link_success_checklist.md). Generated
+builds/results/screenshots stay on external storage. No production signing,
+publication, commit/push, physical-camera, live paid-price or full-live-75-set
+acceptance is claimed. PAF 054 alternate-face canonical routing remains open;
+the other 19 Jumbo candidates retain their review holds.
+
+## 2026-11-02 — Jumbo cohort, Eevee exact product and full live publisher preflight
+
+Corroborated 19 of the 20 oversized census objects across fresh TCGdex English
+records and TCGplayer's own public product metadata, adding 18 reviewed Jumbo
+supplements beyond SVP 196. Verified Eevee Cosmos product 717879 separately from
+ordinary Holo 714357. Inspected primary marketplace images for Houndstone,
+Bloodmoon Ursaluna, Great Tusk and Terapagos & Friends. The latter has no printed
+collector number, so its provider `svp-500` identity remains held rather than
+inventing a footer. All 21 transient provider 503s recovered in a failure-only
+retry; product 791832's explicit HTTP 400 receipt was retained.
+
+Extended the owner's approved minimal signed supplement consumer to require
+reviewed stamps and scope an explicit bad-product replacement. Great Tusk's
+Paldean Fates stamp must match. Houndstone binds to 596423 while permitting only
+the reviewed old handle 791832 to be replaced; its old embedded quote is never
+reused. Signed Cosmos bindings now drive exact lookups/links without borrowing
+Holo quotes. No scanner recognition algorithm or portfolio calculation changed.
+
+Shared suite: 86 passed, one optional live CDN case skipped, zero failures.
+Focused iOS milestone: 70/70 passed, including the 19-Jumbo matrix and wrong-price,
+stamp, alias/product isolation, cache/withdrawal and adjacent link regressions.
+The normal publisher validated the complete final live candidate against a
+freshly fetched, signature-verified production revision 19: revision 20 contains
+75 sets, 6,675 numbered cards and all 20 reviewed supplements unchanged. It uses
+the protected newSet lane, with authority changes in 30th, sv03 and svp.
+
+See the [cohort receipt](docs/audits/pokemon-jumbo-products-2026-11-02/README.md),
+primary-source JSON and hashed live-validation receipt. Five other sets have
+raw provider-content fingerprint changes; numbered summary comparison shows no
+added/deleted cards and only 40 MEP image URL changes, but cannot prove unchanged
+raw finish evidence. That review remains open before publication. Everything is
+local, unsigned and unpublished; no commit/push or live paid/camera acceptance
+is claimed. PAF 054 canonical alternate-face support and global completeness
+remain open.
+
+## 2026-11-02 — provider fingerprint correction and artwork-only input pins
+
+Corrected the preceding report: none of the five content-flagged sets changed
+its signed provider fingerprint. All 33 existing fingerprints remain equal;
+the descriptor changes are enriched artwork metadata. The contract fingerprint
+covers consumed physical finish/edition/stamp/size/language inputs, excluding
+publisher artwork enrichment and marketplace handles/prices. The earlier
+numbered comparison remains valid, but its raw-content hold was incorrect.
+
+Audited all 194 old thumbnail/high URLs for the 97 mappings omitted by the
+earlier candidate: every check returned HTTP 403 here, which is not evidence of
+failure on every device. A later normal native live validation recovered the
+secondary source and retained all 97 mappings. Pinned the healthy Classic
+Collection parent logo/symbol and Phantasmal Flames symbol with existing input
+fields; all three returned HTTP 200 PNG. No physical card, supplement, product
+binding or app/publisher logic changed in this batch. All 20 supplements remain
+unchanged from the prior authoring input.
+
+Collected independent TCGdex/TCGplayer metadata joins for 94 artwork replacement
+candidates, and verified all 94 public marketplace images decode. Three BW
+objects lack exact product joins in this receipt. No per-card replacement was
+installed; full visual identity/quality review and publisher authoring support
+remain separate work. See the [receipt](docs/audits/pokemon-artwork-delta-2026-11-02/README.md).
+
+Normal native publisher validation exited zero against verified production
+revision 19: unsigned revision 20 has 75 sets, 6,675 numbered cards and 20 reviewed
+supplements, with protected newSet classification. Final input/payload/snapshot
+hashes are recorded separately from the prior candidate. No app/Core source
+changed this turn, so earlier test suites were not repeated. No production
+signing, deployment, commit/push, physical-camera or live paid-price acceptance
+is claimed; PAF 054 routing and global completeness remain open.
+
+## 2026-11-02 — 54 Sword & Shield Jumbo catalog additions
+
+Audited all 307 English SWSH promo records, finding 73 Jumbo objects, and fetched
+all 67 available exact TCGplayer product identities independently. Every request
+succeeded. Added 54 corroborated Jumbos through the approved signed supplement
+format, preserving all previous input fields and 20 earlier supplements. Five
+new entries require exact 25th Celebration or Pokémon GO stamps. The new read-only
+family audit utility preserves source receipts and supports failure-only retry.
+
+Held 19 objects: six missing handles, six V-UNION composites and seven conflicts
+between provider Holo and marketplace Normal-only evidence. Inspected 11 primary
+product images, including the stamp cases and Infernape: its SWSH252 name/footer
+resolve the marketplace number attribute's missing H without inventing a new
+identity. All 54 admitted Jumbo product IDs are distinct from their corresponding
+standard-size IDs. No numeric price or quote success is inferred from handles.
+
+The first full normal publisher run stopped on an unrelated Maximum Belt
+endpoint HTTP 502. That endpoint recovered to HTTP 200; a normal retry passed
+against freshly fetched, signature-verified production revision 19. The unsigned
+revision-20 candidate has 75 sets, 6,675 numbered cards and 74 supplements: 73
+Jumbos plus Eevee Cosmos. All 33 existing provider fingerprints remain unchanged.
+The overall lane stays protected newSet, with swshp added to protected authority
+changes. Secondary artwork ambiguity/HTTP 500 warnings are retained. Input and
+candidate hashes, all-row dispositions and provider receipts are in the
+[batch report](docs/audits/pokemon-swsh-jumbos-2026-11-02/README.md).
+
+An adjacent MEP 094–101 check found eight provider HTTP 404s; those base-card
+gaps were recorded rather than filled with invented provider records. No app,
+scanner, portfolio or publisher algorithm changed in this data-only batch, so
+prior app/Core tests were not repeated. Native candidate validation is the
+current data milestone. No production signature, deployment, commit/push,
+physical-camera or paid-pricing acceptance is claimed. The global goal remains
+open, including the recorded historical, composite, finish and provider holds.
+
+## 2026-11-02 — broader coverage ledger, ordinary Holo minimums and Energy price exclusion
+
+Expanded the work beyond oversized cards into a nine-dimension coverage ledger.
+Complete SVE/MEE reads cover 32 identities and 128 detailed provider rows; all
+95 primary product metadata requests succeeded. Confirmed SVE 002's stamped
+Cosmos row incorrectly reuses product 651037 for printed SVE 010. Complete XY
+reads cover 216 cards; 269 of 271 independent ordinary product metadata requests
+succeeded, retaining two HTTP 400 receipts. Exact ordinary matching yields 155
+missing-Holo signals, with seven independently corroborated by official Pokémon
+foil-product pages. Other signals remain review leads, not blanket corrections.
+
+After explicit owner approval, extended the protected signed correction array
+to ordinary Normal/Holo/Reverse minimums and exact physical-object product
+exclusions. Authored the seven Holo/product entries and one SVE 002 exclusion;
+all previous 74 records and other input fields are preserved. Signed minimums
+retain legacy Normal data but require a finish choice and hold Normal pricing
+and automatic rekeying for physical review. Exclusions assert no membership,
+guess no replacement and block the wrong embedded quote/product/identified-card
+link, while leaving SVE 010 and unstamped Cosmos unchanged. Recognition algorithms
+and portfolio calculations are unchanged. Current local input has 75 descriptors
+and 82 protected records: 81 memberships plus one price-only exclusion.
+
+Core suite: 88 passed, one optional live test skipped, zero failures. Final iOS
+milestone: 80/80 passed (13 retail, 40 resolver, 18 link, nine existing finish
+evidence), including all seven new ordinary entries, cache/withdrawal, exact
+Energy sibling isolation and four persisted Normal provenance cases through
+refresh/reopen without holding/ledger changes. The first test build caught
+immutable fixture assignments; corrected final tests passed. Synthetic quote
+values are not paid-provider acceptance. No UI layout changed.
+
+Normal full live publisher validation passed against freshly fetched and
+signature-verified production revision 19, preserving all 33 old provider
+fingerprints and all 82 authored records. The candidate remains protected
+newSet overall: 75 sets / 6,675 numbered cards. Secondary artwork was unavailable
+and 97 prior card-art mappings were omitted; do not treat this candidate as
+ready to publish without artwork continuity review. Source hashes, primary
+receipts, final result counts and this limitation are recorded in the
+[implementation report](docs/audits/pokemon-broad-coverage-2026-11-02/README.md).
+The earlier XY/SM Jumbo count of 87 was a provisional inventory match, not an
+installable finish cohort; no changes from that unfinished batch were applied.
+No production signing, deployment, commit/push, physical-camera or paid-pricing
+acceptance is claimed. The full English-printing goal remains active and open.
+
+### 2026-11-02 — complete ordinary 2017 Mythical Collections cohort
+
+Added 13 ordinary XY Holo/product minimums for the complete Volcanion and Magearna
+Mythical Collections promo contents. Fresh 13 TCGdex and 13 primary marketplace
+reads all succeeded; contemporary primary release reporting independently
+corroborates each number and foil finish. The inaccessible manufacturer PDF
+(HTTP 403) and uninspected photo gallery are explicit evidence limits, not
+counted as extra corroboration. All previous 82 records and other input fields
+are preserved. Local authoring now has 75 descriptors and 95 protected records,
+including 20 ordinary Holo minimums and one price-only exclusion.
+
+Full normal native live validation passed against signature-verified production
+revision 19: 6,675 numbered summaries, all 95 authored corrections carried exactly,
+and all 33 prior provider fingerprints unchanged. The secondary source recovered
+and all 97 existing card-art mappings survive exactly; the earlier outage
+omission does not affect this candidate. Mapping continuity is not global URL
+health. [Source, delta and native receipts](docs/audits/pokemon-mythical-collections-2017-2026-11-02/README.md)
+retain hashes and scope. No app/Core code changed or build/tests rerun for this
+data-only batch; prior mechanism milestone evidence remains 88 shared passes,
+one skip and 80 iOS passes. No signing, publication, commit/push, physical-camera
+or paid-price acceptance is claimed. Comprehensive coverage remains open.

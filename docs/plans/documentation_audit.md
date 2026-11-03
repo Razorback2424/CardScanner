@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-11-02
 
+**First-edition finish and stale detail follow-up — 2026-11-02:** the
+[pricing follow-up](pricing_correctness_and_coverage.md#first-edition-finish-and-stale-detail-follow-up--2026-11-02)
+repairs both remaining medium findings on `main@9413e90`. Its final source-bound
+native result has 297 passes, one expected skip and zero failures, followed by
+four simulator captures using the same tested binary. The original 295-case
+pricing run preceded subsequent UI wrapping edits; that historical bundle is
+not evidence for those final edits. The new manifest binds the current source
+patch and app/test binaries to the new result without rewriting the older
+checkpoint or claiming a green full suite.
+
 **Owned-price and sort-date correction — 2026-11-02:** the
 [pricing correctness contract](pricing_correctness_and_coverage.md#one-owned-price-and-honest-sort-dates--2026-11-02)
 supersedes the October refinement plan's claim of no demonstrated false
@@ -1715,3 +1725,87 @@ keys only. The C-19 directory/detail denominator requirement remains applicable;
 older dated counts retain their historical meaning. Grand Master is explicitly
 limited to listed catalog variants, with separately numbered promos, subsets,
 energies and vintage print runs tracked separately rather than claimed complete.
+
+### 2026-11-02 retail variant authorization reconciliation
+
+The owner subsequently authorized Jumbo, Eevee Cosmos, minimal signed variant
+support, and TCGplayer links across detail screens. The
+[repair receipt](../audits/pokemon-retail-repairs-2026-11-02.md) supersedes the
+earlier retail investigation's implementation hold for these two physical
+objects. Historical census/review holds remain evidence, not current proof that
+the repaired consumers are absent. Production publication and physical-camera
+acceptance remain open.
+
+### 2026-11-02 Jumbo batch follow-up
+
+The [Jumbo cohort review](../audits/pokemon-jumbo-products-2026-11-02/README.md)
+supersedes the initial retail repair's pending Eevee product binding and the
+19-object second-source queue: 18 more Jumbos and Eevee 717879 are prepared;
+numberless Terapagos & Friends remains held. Full live 75-set native validation
+now passes. This does not close production publication, physical-camera/paid
+pricing, artwork availability, or PAF 054 alternate-face gates. The raw-content
+wording is corrected by the following descriptor comparison.
+
+### 2026-11-02 provider fingerprint versus artwork classification correction
+
+The [artwork follow-up](../audits/pokemon-artwork-delta-2026-11-02/README.md)
+supersedes the Jumbo report's statement that five raw provider fingerprints
+changed: all 33 existing signed provider fingerprints are equal. The five
+flags were enriched artwork metadata; a later native validation recovered all
+97 existing card-art mappings through the available secondary source. Three
+healthy set-artwork URLs are now pinned through existing input fields. The
+75-set / 6,675-card / 20-supplement candidate remains unsigned and unpublished.
+The earlier progress entry and candidate hashes retain their historical scope;
+they are not evidence of new physical variants or of globally healthy artwork.
+The 94 decoded replacement-image candidates are uninstalled review evidence.
+
+### 2026-11-02 Sword & Shield Jumbo cohort
+
+The [SWSH promo Jumbo receipt](../audits/pokemon-swsh-jumbos-2026-11-02/README.md)
+extends the local signed authoring input by 54 reviewed objects. Its complete
+307-card census found 73 Jumbo rows; 19 remain held for six missing marketplace
+handles, six V-UNION composite identities and seven finish conflicts. The new
+normal native candidate passes with 75 sets, 6,675 numbered cards and 74 total
+supplements (73 Jumbo plus Eevee Cosmos). Earlier 20-supplement and 19-Jumbo
+counts retain their dated candidate scope. No app/publisher algorithm or
+production release changed; physical camera, paid pricing and global coverage
+remain open. Eight MEP 094–101 endpoint 404s are a separate recorded provider gap,
+not guessed additions or a claim that the modern promo universe is complete.
+
+### 2026-11-02 comprehensive scope and approved ordinary correction support
+
+The [broader coverage ledger](../audits/pokemon-broad-coverage-2026-11-02/README.md)
+tracks base releases, ordinary finishes, Energy, stamps, vintage editions,
+subsets/numbering, oversized objects, exact pricing and device/rollout evidence
+separately, following the owner's explicit request not to focus only on Jumbos.
+Its seven official/marketplace-corroborated ordinary XY Holo additions and exact
+SVE 002 wrong-number product exclusion are now implemented through the owner's
+approved signed support extension. Earlier proposal fields and 74-record counts
+retain their research/candidate scope; the implementation receipt records the
+current 82 signed records (81 memberships and one exclusion).
+
+Shared tests pass 88 with one optional skip; focused iOS tests pass 80/80,
+including persisted Normal holding preservation after refresh/reopen. Full
+normal native live validation passes, with all 33 prior provider fingerprints
+unchanged. This latest candidate lacks 97 artwork mappings because the secondary
+source was unavailable; structural/data validation is not artwork continuity or
+permission to publish it. Production signatures, physical camera, paid pricing,
+saved-only marketplace-link reconciliation and exhaustive coverage remain open.
+
+### 2026-11-02 ordinary 2017 Mythical Collections follow-up
+
+The [complete 13-card product-family review](../audits/pokemon-mythical-collections-2017-2026-11-02/README.md)
+adds ordinary XY Holo minimums using the already-approved support. Its fresh
+provider/marketplace receipts and contemporary primary release reporting
+corroborate each number and finish. Current authoring is 95 protected records,
+including 20 ordinary Holo minimums; the broader ledger's 82-record receipt
+retains its earlier input/test scope rather than being rewritten.
+
+Full normal native live validation passes with all previous records carried
+exactly and all 33 prior provider fingerprints unchanged. The secondary service
+recovered, retaining all 97 old artwork mappings exactly in this candidate;
+the earlier omission/hold describes the earlier outage candidate, not this one.
+Mapping continuity does not prove public URL health. No app/Core source or tests
+changed in this data-only batch; prior 88 shared passes/one skip and 80 iOS passes
+remain mechanism evidence only. Unsigned/unpublished, physical camera, paid
+pricing, saved-only links and exhaustive English coverage remain open.
