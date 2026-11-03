@@ -1,0 +1,4447 @@
+{
+  "setReceipt": {
+    "url": "https://api.tcgdex.net/v2/en/sets/swshp",
+    "status": 200,
+    "sha256": "02b99767665d26e7b1b8facd3911fd36cf6ee06490a06b47eb54f072b25c3623"
+  },
+  "declaredCardCount": {
+    "firstEd": 0,
+    "holo": 436,
+    "normal": 19,
+    "official": 307,
+    "reverse": 0,
+    "total": 307
+  },
+  "observedAtUTC": "2026-11-03T01:40:23.811133+00:00",
+  "summary": {
+    "members": 307,
+    "successfulCardReceipts": 307,
+    "jumboCardIdentities": 73,
+    "jumboDetailedObjects": 73,
+    "requestedProducts": 67,
+    "successfulProductReceipts": 67,
+    "failures": []
+  },
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH001",
+      "status": 200,
+      "sha256": "f629999a7caaf122c94736cf2f1f45945f676be0b845b5575c4b09828b7c9b45",
+      "requestedCardID": "swshp-SWSH001",
+      "identity": {
+        "id": "swshp-SWSH001",
+        "name": "Grookey",
+        "localId": "SWSH001",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 547426,
+              "tcgplayer": 231458
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH002",
+      "status": 200,
+      "sha256": "e1e7dc9d260e42c22c6532a9b8d4c4b0167a01e08beebb9b64a207b8364af13b",
+      "requestedCardID": "swshp-SWSH002",
+      "identity": {
+        "id": "swshp-SWSH002",
+        "name": "Scorbunny",
+        "localId": "SWSH002",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 547456,
+              "tcgplayer": 231466
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH003",
+      "status": 200,
+      "sha256": "f393ae8da5d56f3735b5c728c1f7534ed8efee678ce072293ea42c763ce7a2b9",
+      "requestedCardID": "swshp-SWSH003",
+      "identity": {
+        "id": "swshp-SWSH003",
+        "name": "Sobble",
+        "localId": "SWSH003",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 547476,
+              "tcgplayer": 231468
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH004",
+      "status": 200,
+      "sha256": "7092e8c35d555277428129119883bbc6fced782fc72b504b045d9508fbeb278d",
+      "requestedCardID": "swshp-SWSH004",
+      "identity": {
+        "id": "swshp-SWSH004",
+        "name": "Meowth V",
+        "localId": "SWSH004",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH005",
+      "status": 200,
+      "sha256": "f2b3e13bd1c7d2c8d74facf660daefe708d08bdf829ab6ba8b3559431617bbeb",
+      "requestedCardID": "swshp-SWSH005",
+      "identity": {
+        "id": "swshp-SWSH005",
+        "name": "Meowth VMAX",
+        "localId": "SWSH005",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 453338,
+              "tcgplayer": 205467
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH006",
+      "status": 200,
+      "sha256": "f90aaa7bf8d7a2fd948ebafd8f57b04079e407bb576cd9d1931a8b9f72eb5bac",
+      "requestedCardID": "swshp-SWSH006",
+      "identity": {
+        "id": "swshp-SWSH006",
+        "name": "Rillaboom",
+        "localId": "SWSH006",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH007",
+      "status": 200,
+      "sha256": "6a77ef1d5c2cfec0dccc37222c39607113b7eaffa0dceeb1504e072973eae6f1",
+      "requestedCardID": "swshp-SWSH007",
+      "identity": {
+        "id": "swshp-SWSH007",
+        "name": "Frosmoth",
+        "localId": "SWSH007",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH008",
+      "status": 200,
+      "sha256": "467746badda38ac122ff20ecdefcccddf3e811eddd0e18a78a3811c59adde480",
+      "requestedCardID": "swshp-SWSH008",
+      "identity": {
+        "id": "swshp-SWSH008",
+        "name": "Galarian Perrserker",
+        "localId": "SWSH008",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH009",
+      "status": 200,
+      "sha256": "54198370613cb0c67a4225ed29cdc23627d6556cf562fb7f188bc3f0923199c0",
+      "requestedCardID": "swshp-SWSH009",
+      "identity": {
+        "id": "swshp-SWSH009",
+        "name": "Cinccino",
+        "localId": "SWSH009",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH010",
+      "status": 200,
+      "sha256": "48760b5b0a1b24b545d744a91df12a1639c25ac35f5231f85971d10ed1bbd701",
+      "requestedCardID": "swshp-SWSH010",
+      "identity": {
+        "id": "swshp-SWSH010",
+        "name": "Gossifleur",
+        "localId": "SWSH010",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH011",
+      "status": 200,
+      "sha256": "7e76e7aa2370389123e0b02322370cf740346142aa74f8fc564c0a65789601f5",
+      "requestedCardID": "swshp-SWSH011",
+      "identity": {
+        "id": "swshp-SWSH011",
+        "name": "Wooloo",
+        "localId": "SWSH011",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH012",
+      "status": 200,
+      "sha256": "b616bd86c0a08b475bd98df698bd3c16fdef19d189a0e9c4de24c65f952902c3",
+      "requestedCardID": "swshp-SWSH012",
+      "identity": {
+        "id": "swshp-SWSH012",
+        "name": "Morpeko",
+        "localId": "SWSH012",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH013",
+      "status": 200,
+      "sha256": "132222098288ff9b1304829d050e500972bcf3f0b4d0b797fdf96f8043accf7e",
+      "requestedCardID": "swshp-SWSH013",
+      "identity": {
+        "id": "swshp-SWSH013",
+        "name": "Galarian Ponyta",
+        "localId": "SWSH013",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH014",
+      "status": 200,
+      "sha256": "574882db341d04bb6ac55303da27ab955641328a6b205ee3c7e9a65419c98590",
+      "requestedCardID": "swshp-SWSH014",
+      "identity": {
+        "id": "swshp-SWSH014",
+        "name": "Rillaboom V",
+        "localId": "SWSH014",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 610513,
+              "tcgplayer": 220754
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH015",
+      "status": 200,
+      "sha256": "ba745bf641d171a5479318636017f5e00e3f39ed1c1453414fb608971b42eb7f",
+      "requestedCardID": "swshp-SWSH015",
+      "identity": {
+        "id": "swshp-SWSH015",
+        "name": "Cinderace V",
+        "localId": "SWSH015",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 610514,
+              "tcgplayer": 220755
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH016",
+      "status": 200,
+      "sha256": "6d6b7456c335c6af8dd4d0e1b8bba3e5a2b479bdc6ce25ce4e91b69ebc562bd1",
+      "requestedCardID": "swshp-SWSH016",
+      "identity": {
+        "id": "swshp-SWSH016",
+        "name": "Inteleon V",
+        "localId": "SWSH016",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 609015,
+              "tcgplayer": 220753
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH017",
+      "status": 200,
+      "sha256": "28652d460a070af42d1320026024ed06b7b7c0f0d45583ee800a496fd70a92ec",
+      "requestedCardID": "swshp-SWSH017",
+      "identity": {
+        "id": "swshp-SWSH017",
+        "name": "Toxtricity V",
+        "localId": "SWSH017",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 453328,
+              "tcgplayer": 206426
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH018",
+      "status": 200,
+      "sha256": "e1dfcb8f61a023a8bc5acd37a99e7754a61823097168aa557c0a4d95dd2c14b9",
+      "requestedCardID": "swshp-SWSH018",
+      "identity": {
+        "id": "swshp-SWSH018",
+        "name": "Zacian V",
+        "localId": "SWSH018",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH019",
+      "status": 200,
+      "sha256": "baa0cadb302e1f351e9d5638efaa906a9a568d1667155b262aeb6af07cf0d5c1",
+      "requestedCardID": "swshp-SWSH019",
+      "identity": {
+        "id": "swshp-SWSH019",
+        "name": "Zamazenta V",
+        "localId": "SWSH019",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH020",
+      "status": 200,
+      "sha256": "35f73fabdcb09513e7a153f1f408c02da9adc6e2e124a49d00ffc90e4bb64195",
+      "requestedCardID": "swshp-SWSH020",
+      "identity": {
+        "id": "swshp-SWSH020",
+        "name": "Pikachu",
+        "localId": "SWSH020",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH021",
+      "status": 200,
+      "sha256": "cf32e03f3a85df352238faa22bde5811f558381135fb2b7312ee6134fb2f6b35",
+      "requestedCardID": "swshp-SWSH021",
+      "identity": {
+        "id": "swshp-SWSH021",
+        "name": "Polteageist V",
+        "localId": "SWSH021",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576518,
+              "tcgplayer": 214236
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH022",
+      "status": 200,
+      "sha256": "8d56d04ccd06362055383bbecf05b91de7df79b4db7bcf7ab0d2625090ec3fca",
+      "requestedCardID": "swshp-SWSH022",
+      "identity": {
+        "id": "swshp-SWSH022",
+        "name": "Flapple",
+        "localId": "SWSH022",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH023",
+      "status": 200,
+      "sha256": "88524e5a9ffe04733085f5ca28ca69a04594520bb216d3101e39ad657053ba29",
+      "requestedCardID": "swshp-SWSH023",
+      "identity": {
+        "id": "swshp-SWSH023",
+        "name": "Luxray",
+        "localId": "SWSH023",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH024",
+      "status": 200,
+      "sha256": "703103b30e8fda7bbb9c3079096d24287c9d6085c924c9ce2df797b9f73163af",
+      "requestedCardID": "swshp-SWSH024",
+      "identity": {
+        "id": "swshp-SWSH024",
+        "name": "Coalossal",
+        "localId": "SWSH024",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH025",
+      "status": 200,
+      "sha256": "4b5d13a92cc9f3bad3a3e2539f5e6b0d6e40025ef263b81074f1661fd92c0ae9",
+      "requestedCardID": "swshp-SWSH025",
+      "identity": {
+        "id": "swshp-SWSH025",
+        "name": "Garbodor",
+        "localId": "SWSH025",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH026",
+      "status": 200,
+      "sha256": "df1c8a6849824cb643c2e8b58ee2e3c43bc9f38f359816660e5887208d62ebe6",
+      "requestedCardID": "swshp-SWSH026",
+      "identity": {
+        "id": "swshp-SWSH026",
+        "name": "Mantine",
+        "localId": "SWSH026",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH027",
+      "status": 200,
+      "sha256": "3f7fc973b792edf6f7b8ee6a35752b5191b0f2621fe7a3f9687bb91750e5c287",
+      "requestedCardID": "swshp-SWSH027",
+      "identity": {
+        "id": "swshp-SWSH027",
+        "name": "Noctowl",
+        "localId": "SWSH027",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH028",
+      "status": 200,
+      "sha256": "62e947e7c0f748a180b960936e7dbd6a614c282f39a40c665878a328bd098c1e",
+      "requestedCardID": "swshp-SWSH028",
+      "identity": {
+        "id": "swshp-SWSH028",
+        "name": "Duraludon",
+        "localId": "SWSH028",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH029",
+      "status": 200,
+      "sha256": "ee40257ef4788c9cefb2bd85acd7ceb8e9538e1ffbd40aa8f6dd87dea6114ad7",
+      "requestedCardID": "swshp-SWSH029",
+      "identity": {
+        "id": "swshp-SWSH029",
+        "name": "Rayquaza",
+        "localId": "SWSH029",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH030",
+      "status": 200,
+      "sha256": "3d655f0e4467dad5e05ef50c2b471f79dd5361124d3cab0b3be90b0c8af24163",
+      "requestedCardID": "swshp-SWSH030",
+      "identity": {
+        "id": "swshp-SWSH030",
+        "name": "Copperajah V",
+        "localId": "SWSH030",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576519,
+              "tcgplayer": 214229
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH031",
+      "status": 200,
+      "sha256": "0855cfeff56752d87b5a14fe3191c8e69f7b4fb077fefc7491c75f75c3ed812e",
+      "requestedCardID": "swshp-SWSH031",
+      "identity": {
+        "id": "swshp-SWSH031",
+        "name": "Morpeko",
+        "localId": "SWSH031",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH032",
+      "status": 200,
+      "sha256": "cdd9d1ff004adcc5cf46f7de7d78a88470d0bc4e2c6fe621f2c0aadcb061223e",
+      "requestedCardID": "swshp-SWSH032",
+      "identity": {
+        "id": "swshp-SWSH032",
+        "name": "Snorlax",
+        "localId": "SWSH032",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH033",
+      "status": 200,
+      "sha256": "86b25ad549b3f5fbbe500bf2b6b199cb474d2c5904b5b0a03bb6567ddcf8465a",
+      "requestedCardID": "swshp-SWSH033",
+      "identity": {
+        "id": "swshp-SWSH033",
+        "name": "Zacian",
+        "localId": "SWSH033",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH034",
+      "status": 200,
+      "sha256": "ad41cd363fae0b3d5c1dfbc82e855f64c85648b6b7b352156522b8812894c7e6",
+      "requestedCardID": "swshp-SWSH034",
+      "identity": {
+        "id": "swshp-SWSH034",
+        "name": "Zamazenta",
+        "localId": "SWSH034",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH035",
+      "status": 200,
+      "sha256": "e722fcf2bcbf5e50c1b22f368b1cbee92adbb037003976e80f87f8bebb60ce44",
+      "requestedCardID": "swshp-SWSH035",
+      "identity": {
+        "id": "swshp-SWSH035",
+        "name": "Decidueye",
+        "localId": "SWSH035",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH036",
+      "status": 200,
+      "sha256": "ab9c2752311ca8a29b0d1e73ab654c545b3a47653ab0f0787dbcb502587c90b6",
+      "requestedCardID": "swshp-SWSH036",
+      "identity": {
+        "id": "swshp-SWSH036",
+        "name": "Arctozolt",
+        "localId": "SWSH036",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH037",
+      "status": 200,
+      "sha256": "42e573bfd3ff5261216dcccd87d6a5983f7f63efa6736aeaf583f354b25f4a5b",
+      "requestedCardID": "swshp-SWSH037",
+      "identity": {
+        "id": "swshp-SWSH037",
+        "name": "Hydreigon",
+        "localId": "SWSH037",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH038",
+      "status": 200,
+      "sha256": "f514c3a319223aa4f4ce0dd206fa1e0ebe6a6d5cce09f3a280f2d2a720964fc2",
+      "requestedCardID": "swshp-SWSH038",
+      "identity": {
+        "id": "swshp-SWSH038",
+        "name": "Kangaskhan",
+        "localId": "SWSH038",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH039",
+      "status": 200,
+      "sha256": "95ff24d2a51a50ed2b6d5e84378f1166b1e2b55ea8e07d4cb9e9c6c5616f02be",
+      "requestedCardID": "swshp-SWSH039",
+      "identity": {
+        "id": "swshp-SWSH039",
+        "name": "Pikachu",
+        "localId": "SWSH039",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH040",
+      "status": 200,
+      "sha256": "490666ef635d59fb689a69374b8256f0a75e609d89d0a5df17d9237439400471",
+      "requestedCardID": "swshp-SWSH040",
+      "identity": {
+        "id": "swshp-SWSH040",
+        "name": "Hatenna",
+        "localId": "SWSH040",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH041",
+      "status": 200,
+      "sha256": "5609a8048955999ade23d7686eb34ca871eaa5c75ed7afa528a594f6009e3645",
+      "requestedCardID": "swshp-SWSH041",
+      "identity": {
+        "id": "swshp-SWSH041",
+        "name": "Flareon",
+        "localId": "SWSH041",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH042",
+      "status": 200,
+      "sha256": "fb108962e12e543c02714e3dca7fd733dd7992de764cb853fc159f539ecf2b80",
+      "requestedCardID": "swshp-SWSH042",
+      "identity": {
+        "id": "swshp-SWSH042",
+        "name": "Eevee",
+        "localId": "SWSH042",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH043",
+      "status": 200,
+      "sha256": "342f26385e83ffe613233230526b636693f2bfc7646a1dceb592b2edb6a860ff",
+      "requestedCardID": "swshp-SWSH043",
+      "identity": {
+        "id": "swshp-SWSH043",
+        "name": "Galarian Sirfetch'd V",
+        "localId": "SWSH043",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 560033,
+              "tcgplayer": 220274
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH044",
+      "status": 200,
+      "sha256": "c6e3a3cef081fc54b5a1cd70e5f7a174e3d1447d3c197bb7e5d73a3abb32c188",
+      "requestedCardID": "swshp-SWSH044",
+      "identity": {
+        "id": "swshp-SWSH044",
+        "name": "Eternatus V",
+        "localId": "SWSH044",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH045",
+      "status": 200,
+      "sha256": "bcb593c491314bce2485396f09315af283a84bf32a0679fa4067ed26993c3eee",
+      "requestedCardID": "swshp-SWSH045",
+      "identity": {
+        "id": "swshp-SWSH045",
+        "name": "Eternatus VMAX",
+        "localId": "SWSH045",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 496315,
+              "tcgplayer": 220282
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH046",
+      "status": 200,
+      "sha256": "2e8ee096db8d33d9404acdff0079fe6a1b4fa4a60ae3f3908ed785599a12817b",
+      "requestedCardID": "swshp-SWSH046",
+      "identity": {
+        "id": "swshp-SWSH046",
+        "name": "Eldegoss",
+        "localId": "SWSH046",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH047",
+      "status": 200,
+      "sha256": "bdbb5fb733ff464b73ae9cd539547c160f11a85228b5ac303a8d3c7bcb0cb629",
+      "requestedCardID": "swshp-SWSH047",
+      "identity": {
+        "id": "swshp-SWSH047",
+        "name": "Drednaw",
+        "localId": "SWSH047",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH048",
+      "status": 200,
+      "sha256": "ec046aea3b3fde94dd389834017b27482230961bf2119659341a1a2445e9d281",
+      "requestedCardID": "swshp-SWSH048",
+      "identity": {
+        "id": "swshp-SWSH048",
+        "name": "Centiskorch",
+        "localId": "SWSH048",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH049",
+      "status": 200,
+      "sha256": "c1f5c5dd8b42bc0931439d8330efd12e91db2f2ed841562b65823e16ab347a3e",
+      "requestedCardID": "swshp-SWSH049",
+      "identity": {
+        "id": "swshp-SWSH049",
+        "name": "Dubwool V",
+        "localId": "SWSH049",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 574323,
+              "tcgplayer": 223753
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH050",
+      "status": 200,
+      "sha256": "84f97515becaa08cf847a5602335ec2d972ea3c7014272ae25bbbe88370a4744",
+      "requestedCardID": "swshp-SWSH050",
+      "identity": {
+        "id": "swshp-SWSH050",
+        "name": "Charizard V",
+        "localId": "SWSH050",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH051",
+      "status": 200,
+      "sha256": "c7ac16ecccb358c8f2eab9a2f52f418133d81d484c65f6f5e92a6f42fbff641b",
+      "requestedCardID": "swshp-SWSH051",
+      "identity": {
+        "id": "swshp-SWSH051",
+        "name": "Lapras",
+        "localId": "SWSH051",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH052",
+      "status": 200,
+      "sha256": "534749d54d1a7569db0f8d0513408c5b422c5b365142e9014cfab3ec821bda84",
+      "requestedCardID": "swshp-SWSH052",
+      "identity": {
+        "id": "swshp-SWSH052",
+        "name": "Gengar",
+        "localId": "SWSH052",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH053",
+      "status": 200,
+      "sha256": "2a5e86b31ff0140300f7a96a7223fa95eec9a5e0c1178c3ef276e16980c026f6",
+      "requestedCardID": "swshp-SWSH053",
+      "identity": {
+        "id": "swshp-SWSH053",
+        "name": "Machamp",
+        "localId": "SWSH053",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH054",
+      "status": 200,
+      "sha256": "e02894571b3d5143875e4a7170d7c2dcb8f4e9ee91a951ad219f5d9e9da1a78c",
+      "requestedCardID": "swshp-SWSH054",
+      "identity": {
+        "id": "swshp-SWSH054",
+        "name": "Coalossal",
+        "localId": "SWSH054",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH055",
+      "status": 200,
+      "sha256": "f860a5e97b7c4f24ff3b95a95cb6af270fcb61cffee0ed830085925609437742",
+      "requestedCardID": "swshp-SWSH055",
+      "identity": {
+        "id": "swshp-SWSH055",
+        "name": "Hatterene V",
+        "localId": "SWSH055",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 510175,
+              "tcgplayer": 223756
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH056",
+      "status": 200,
+      "sha256": "7fd934bce2a0e421f109769ad3cbe3bbd366b110a9c4917a31da3d054718fed5",
+      "requestedCardID": "swshp-SWSH056",
+      "identity": {
+        "id": "swshp-SWSH056",
+        "name": "Morpeko V",
+        "localId": "SWSH056",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH057",
+      "status": 200,
+      "sha256": "ab5ac42505ea9df366d95f011e001127c3df82694b76b5e0632036451702c257",
+      "requestedCardID": "swshp-SWSH057",
+      "identity": {
+        "id": "swshp-SWSH057",
+        "name": "Grimmsnarl V",
+        "localId": "SWSH057",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 557272,
+              "tcgplayer": 229436
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH058",
+      "status": 200,
+      "sha256": "276ec9d308d9559c05050a79b3a2cbcccf664a946c5ff77a4be4fbb91da88d57",
+      "requestedCardID": "swshp-SWSH058",
+      "identity": {
+        "id": "swshp-SWSH058",
+        "name": "Alcremie",
+        "localId": "SWSH058",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH059",
+      "status": 200,
+      "sha256": "fa8f2bae315246096ddd3f0fd82e79388ddda666e6e45f132b3a5d0ec8264e6e",
+      "requestedCardID": "swshp-SWSH059",
+      "identity": {
+        "id": "swshp-SWSH059",
+        "name": "Galarian Obstagoon",
+        "localId": "SWSH059",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH060",
+      "status": 200,
+      "sha256": "53b970c88d78fe691c3cee3f1d0bf27b5831f26c8e152082ac13699436725272",
+      "requestedCardID": "swshp-SWSH060",
+      "identity": {
+        "id": "swshp-SWSH060",
+        "name": "Duraludon",
+        "localId": "SWSH060",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH061",
+      "status": 200,
+      "sha256": "ddc7121c1aa31e638e7f9611538edbaa655861f48d6d389676bb8fe42c224a72",
+      "requestedCardID": "swshp-SWSH061",
+      "identity": {
+        "id": "swshp-SWSH061",
+        "name": "Pikachu V",
+        "localId": "SWSH061",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 565010,
+              "tcgplayer": 232443
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH062",
+      "status": 200,
+      "sha256": "1cf98fe614405de8d1cb66ff14e0a466d50b02ea61bcfcdafdd7872a1ba7a930",
+      "requestedCardID": "swshp-SWSH062",
+      "identity": {
+        "id": "swshp-SWSH062",
+        "name": "Pikachu VMAX",
+        "localId": "SWSH062",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH063",
+      "status": 200,
+      "sha256": "ae270c28b672352220e970c67b720b919c9819a75f50010c1d9d464fc317bd33",
+      "requestedCardID": "swshp-SWSH063",
+      "identity": {
+        "id": "swshp-SWSH063",
+        "name": "Pikachu V",
+        "localId": "SWSH063",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH064",
+      "status": 200,
+      "sha256": "41af2aeb3e701c5cb1caea836eb3a77f96690ef526098e7694405775f7e0aa91",
+      "requestedCardID": "swshp-SWSH064",
+      "identity": {
+        "id": "swshp-SWSH064",
+        "name": "Eternatus V",
+        "localId": "SWSH064",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH065",
+      "status": 200,
+      "sha256": "6df0f3c7d1c2d61f5ac5fb7caf55b8d658fad94e33fef4a8561723bbd9bdc514",
+      "requestedCardID": "swshp-SWSH065",
+      "identity": {
+        "id": "swshp-SWSH065",
+        "name": "Eevee V",
+        "localId": "SWSH065",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH066",
+      "status": 200,
+      "sha256": "bd7d7cdd9f022737309d83855236893959eb80003e6104bec0bcaf6aedb259d6",
+      "requestedCardID": "swshp-SWSH066",
+      "identity": {
+        "id": "swshp-SWSH066",
+        "name": "Charizard",
+        "localId": "SWSH066",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH067",
+      "status": 200,
+      "sha256": "0ba5d4b8e1782aa05527f87bb1f4c306a86dd26fa917d01e917e2863e202a599",
+      "requestedCardID": "swshp-SWSH067",
+      "identity": {
+        "id": "swshp-SWSH067",
+        "name": "Donphan",
+        "localId": "SWSH067",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH068",
+      "status": 200,
+      "sha256": "50ae041c9a5fe9a3def546b5c3155d68a0b18d4242723e5baff238de413c4f27",
+      "requestedCardID": "swshp-SWSH068",
+      "identity": {
+        "id": "swshp-SWSH068",
+        "name": "Snorlax",
+        "localId": "SWSH068",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH069",
+      "status": 200,
+      "sha256": "9c34b0391308d56431643f860e75ba4bbfb3c529b0df39cadbbe0dc4eb098859",
+      "requestedCardID": "swshp-SWSH069",
+      "identity": {
+        "id": "swshp-SWSH069",
+        "name": "Lugia",
+        "localId": "SWSH069",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH070",
+      "status": 200,
+      "sha256": "4762e9a1557bf9321e166afca5367f4f9e45dfa58a8fbcb672b7a1d2f793efbc",
+      "requestedCardID": "swshp-SWSH070",
+      "identity": {
+        "id": "swshp-SWSH070",
+        "name": "Grookey",
+        "localId": "SWSH070",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH071",
+      "status": 200,
+      "sha256": "fa12ecb8b67b8ff18c937a86b0192e45fa458b707d8613848d69f5e60da4b5f7",
+      "requestedCardID": "swshp-SWSH071",
+      "identity": {
+        "id": "swshp-SWSH071",
+        "name": "Scorbunny",
+        "localId": "SWSH071",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH072",
+      "status": 200,
+      "sha256": "1852fad354c590c9d8f39790b3ee7a448ea57c3f788999892ab242c9fc5915cb",
+      "requestedCardID": "swshp-SWSH072",
+      "identity": {
+        "id": "swshp-SWSH072",
+        "name": "Vaporeon",
+        "localId": "SWSH072",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH073",
+      "status": 200,
+      "sha256": "1c0c12570a6f453a316b9ee43def0d7998ba96d682f6939c13d70975aef3906b",
+      "requestedCardID": "swshp-SWSH073",
+      "identity": {
+        "id": "swshp-SWSH073",
+        "name": "Sobble",
+        "localId": "SWSH073",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH074",
+      "status": 200,
+      "sha256": "759b16b6b7c7dd5c42dca4467708b12c311b69bc55b1f0dc8cc31d8200adc763",
+      "requestedCardID": "swshp-SWSH074",
+      "identity": {
+        "id": "swshp-SWSH074",
+        "name": "Special Delivery Pikachu",
+        "localId": "SWSH074",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH075",
+      "status": 200,
+      "sha256": "9442ce7723648c91cd2869139ef3bb6cab259072d7ffc80a595f9486a6bc2795",
+      "requestedCardID": "swshp-SWSH075",
+      "identity": {
+        "id": "swshp-SWSH075",
+        "name": "Special Delivery Charizard",
+        "localId": "SWSH075",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH076",
+      "status": 200,
+      "sha256": "2da0140f11b8152cab045568f611c172e98920a762d351b07f922a641342fc5b",
+      "requestedCardID": "swshp-SWSH076",
+      "identity": {
+        "id": "swshp-SWSH076",
+        "name": "Zacian V",
+        "localId": "SWSH076",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH077",
+      "status": 200,
+      "sha256": "3157ad7c3f28263b15a1104731741a10a0de314746daa6e6a1f30b77dbedbddf",
+      "requestedCardID": "swshp-SWSH077",
+      "identity": {
+        "id": "swshp-SWSH077",
+        "name": "Zamazenta V",
+        "localId": "SWSH077",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH078",
+      "status": 200,
+      "sha256": "a7bc188d87bab41a5db8dca80d1bab9c856e53bccf97b8d8a5bf093af25d68d6",
+      "requestedCardID": "swshp-SWSH078",
+      "identity": {
+        "id": "swshp-SWSH078",
+        "name": "Orbeetle V",
+        "localId": "SWSH078",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 522980,
+              "tcgplayer": 227026
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH079",
+      "status": 200,
+      "sha256": "c5fd0e7f380dfbcbc4f3472ab3c047eeb8d59913bd250f4881ac40c2753c7221",
+      "requestedCardID": "swshp-SWSH079",
+      "identity": {
+        "id": "swshp-SWSH079",
+        "name": "Galarian Mr. Rime",
+        "localId": "SWSH079",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH080",
+      "status": 200,
+      "sha256": "481a92840f67ba0d67b8a2e6d9baa83408b47fda379aa8c1161e2a2f6caa7f5f",
+      "requestedCardID": "swshp-SWSH080",
+      "identity": {
+        "id": "swshp-SWSH080",
+        "name": "Dedenne",
+        "localId": "SWSH080",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH081",
+      "status": 200,
+      "sha256": "f417b8f4d05da1372357860900f0c78684d5bf85221e96694204d8a1518857d7",
+      "requestedCardID": "swshp-SWSH081",
+      "identity": {
+        "id": "swshp-SWSH081",
+        "name": "Polteageist",
+        "localId": "SWSH081",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH082",
+      "status": 200,
+      "sha256": "ec29ff3ada97d0aa4f01a47bfdfd42b541b73d57bd966b90788baa18e62d7ed3",
+      "requestedCardID": "swshp-SWSH082",
+      "identity": {
+        "id": "swshp-SWSH082",
+        "name": "Bunnelby",
+        "localId": "SWSH082",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH083",
+      "status": 200,
+      "sha256": "5acce7052afacb2a1a542268d9cee8ddd9bcfd0486a09c4cee03a08d5ce3cee9",
+      "requestedCardID": "swshp-SWSH083",
+      "identity": {
+        "id": "swshp-SWSH083",
+        "name": "Alakazam V",
+        "localId": "SWSH083",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 530482,
+              "tcgplayer": 228981
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH084",
+      "status": 200,
+      "sha256": "dbbaa58d781f38355e45e140921d53cb391b658d8db7a709ad0873f73fc6b9ee",
+      "requestedCardID": "swshp-SWSH084",
+      "identity": {
+        "id": "swshp-SWSH084",
+        "name": "Eldegoss V",
+        "localId": "SWSH084",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 610515,
+              "tcgplayer": 251623
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH085",
+      "status": 200,
+      "sha256": "6a99c12317d9db212f6a6db37a4ffe4d52decd3d3c8c3dd71daedaf175a13484",
+      "requestedCardID": "swshp-SWSH085",
+      "identity": {
+        "id": "swshp-SWSH085",
+        "name": "Boltund V",
+        "localId": "SWSH085",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 610516,
+              "tcgplayer": 243659
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH086",
+      "status": 200,
+      "sha256": "9aa424b03dddc491ec37c8fbe1a562fe9bd9714c39364bd6d3388d351b0f6bbc",
+      "requestedCardID": "swshp-SWSH086",
+      "identity": {
+        "id": "swshp-SWSH086",
+        "name": "Cramorant V",
+        "localId": "SWSH086",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 610517,
+              "tcgplayer": 251622
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH087",
+      "status": 200,
+      "sha256": "1f458e7ad001c6b668ceb1dbf724ad40d2d00c76878b20e00a8ccb80d060153f",
+      "requestedCardID": "swshp-SWSH087",
+      "identity": {
+        "id": "swshp-SWSH087",
+        "name": "Eevee VMAX",
+        "localId": "SWSH087",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH088",
+      "status": 200,
+      "sha256": "652033a66052f535c0f4e0cd890eee0d1487dd704e513723403571668107d9be",
+      "requestedCardID": "swshp-SWSH088",
+      "identity": {
+        "id": "swshp-SWSH088",
+        "name": "Cherrim",
+        "localId": "SWSH088",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH089",
+      "status": 200,
+      "sha256": "6cadb091edad6404f8a057c7d1203af29d633548fe3652f12ea79cbf149dedb2",
+      "requestedCardID": "swshp-SWSH089",
+      "identity": {
+        "id": "swshp-SWSH089",
+        "name": "Octillery",
+        "localId": "SWSH089",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH090",
+      "status": 200,
+      "sha256": "150c4c41e92e572a921d7ea6404d5a5ce546b756b2577618ee5b1c6f2c10c386",
+      "requestedCardID": "swshp-SWSH090",
+      "identity": {
+        "id": "swshp-SWSH090",
+        "name": "Houndoom",
+        "localId": "SWSH090",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH091",
+      "status": 200,
+      "sha256": "7201f5d268418a8fa81226669a9e22b2741d68e77341fb825686d76c11d7031f",
+      "requestedCardID": "swshp-SWSH091",
+      "identity": {
+        "id": "swshp-SWSH091",
+        "name": "Bronzong",
+        "localId": "SWSH091",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH092",
+      "status": 200,
+      "sha256": "65d67afe76246006aae6daf653064164b0b4a9a73fc3ad7c1c1bd8b04f2414b6",
+      "requestedCardID": "swshp-SWSH092",
+      "identity": {
+        "id": "swshp-SWSH092",
+        "name": "Charmander",
+        "localId": "SWSH092",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH093",
+      "status": 200,
+      "sha256": "cc314d44971d55b991a50d30361d9c7f449cf2c11347c8a02fc93811e3c5ae20",
+      "requestedCardID": "swshp-SWSH093",
+      "identity": {
+        "id": "swshp-SWSH093",
+        "name": "Arrokuda",
+        "localId": "SWSH093",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH094",
+      "status": 200,
+      "sha256": "612a47829a60deca14891f8f76e66b98b9e6522c2fff9435dc636cfab10196b3",
+      "requestedCardID": "swshp-SWSH094",
+      "identity": {
+        "id": "swshp-SWSH094",
+        "name": "Jolteon",
+        "localId": "SWSH094",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH095",
+      "status": 200,
+      "sha256": "ae9ff1b8bcbe75e2a38cb6673edd539f6abe4275baceeb8734412251cc443e71",
+      "requestedCardID": "swshp-SWSH095",
+      "identity": {
+        "id": "swshp-SWSH095",
+        "name": "Eevee",
+        "localId": "SWSH095",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH096",
+      "status": 200,
+      "sha256": "fc1404154d8e34665d30e58128708f24063009a6930a89d2602a0f9a9c0fcf3e",
+      "requestedCardID": "swshp-SWSH096",
+      "identity": {
+        "id": "swshp-SWSH096",
+        "name": "Dragapult V",
+        "localId": "SWSH096",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH097",
+      "status": 200,
+      "sha256": "a30c35f4219f0c773e2348b6a1328a5f05172f6da15f6d90bde03155e2a77abe",
+      "requestedCardID": "swshp-SWSH097",
+      "identity": {
+        "id": "swshp-SWSH097",
+        "name": "Dragapult VMAX",
+        "localId": "SWSH097",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 556545,
+              "tcgplayer": 232609
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH098",
+      "status": 200,
+      "sha256": "9e7011d86263bd50b77b5c9a5dd6ff610397b502c3057ffa1910468699b859d5",
+      "requestedCardID": "swshp-SWSH098",
+      "identity": {
+        "id": "swshp-SWSH098",
+        "name": "Crobat V",
+        "localId": "SWSH098",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH099",
+      "status": 200,
+      "sha256": "882b4546d8643e2adaf37a343f7de602c0a3d63eb8b9a0ed13cd4b13efed1a8d",
+      "requestedCardID": "swshp-SWSH099",
+      "identity": {
+        "id": "swshp-SWSH099",
+        "name": "Crobat VMAX",
+        "localId": "SWSH099",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 556553,
+              "tcgplayer": 232614
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH100",
+      "status": 200,
+      "sha256": "0b2e156b471ef8caf5f6bac58e2a8b2ca5d727523f8fa588d9cf48feb350f1b5",
+      "requestedCardID": "swshp-SWSH100",
+      "identity": {
+        "id": "swshp-SWSH100",
+        "name": "Venusaur V",
+        "localId": "SWSH100",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH101",
+      "status": 200,
+      "sha256": "d6cce3879dc58c8a0eaa38031f54e0fa9e8fafab42b0bb2b755e39dfb97a0219",
+      "requestedCardID": "swshp-SWSH101",
+      "identity": {
+        "id": "swshp-SWSH101",
+        "name": "Blastoise V",
+        "localId": "SWSH101",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH102",
+      "status": 200,
+      "sha256": "e02f02e6ea923ef82a1c0e63377158017d24e590ebfb4d6675a63fb26b02802c",
+      "requestedCardID": "swshp-SWSH102",
+      "identity": {
+        "id": "swshp-SWSH102",
+        "name": "Venusaur VMAX",
+        "localId": "SWSH102",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 557273,
+              "tcgplayer": 234375
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH103",
+      "status": 200,
+      "sha256": "fc2559ac33bdd41f6962d6e19d1fd259b44d0fe92369011cf6953ea41149b5aa",
+      "requestedCardID": "swshp-SWSH103",
+      "identity": {
+        "id": "swshp-SWSH103",
+        "name": "Blastoise VMAX",
+        "localId": "SWSH103",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 557274,
+              "tcgplayer": 234376
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH104",
+      "status": 200,
+      "sha256": "667c3d0db91a024aad9b23fe9e7073d1ec6c7ddfba17f4fbef70fbf330b6b631",
+      "requestedCardID": "swshp-SWSH104",
+      "identity": {
+        "id": "swshp-SWSH104",
+        "name": "Victini V",
+        "localId": "SWSH104",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH105",
+      "status": 200,
+      "sha256": "ea8c3e7626ce965c699936c94f008fd18a874324b7697a43189ab8217f8cec24",
+      "requestedCardID": "swshp-SWSH105",
+      "identity": {
+        "id": "swshp-SWSH105",
+        "name": "Gardevoir V",
+        "localId": "SWSH105",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH106",
+      "status": 200,
+      "sha256": "c40baf790fd971102858cc32de9a1f8cc2a1f6ba8ae927625c3702b724dfc05b",
+      "requestedCardID": "swshp-SWSH106",
+      "identity": {
+        "id": "swshp-SWSH106",
+        "name": "Single Strike Urshifu V",
+        "localId": "SWSH106",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 557275,
+              "tcgplayer": 234377
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH107",
+      "status": 200,
+      "sha256": "50383fd9952fe80e0d7f081273ccd850757a502fd389971179de5a31c0f96780",
+      "requestedCardID": "swshp-SWSH107",
+      "identity": {
+        "id": "swshp-SWSH107",
+        "name": "Rapid Strike Urshifu V",
+        "localId": "SWSH107",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 557276,
+              "tcgplayer": 234378
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH108",
+      "status": 200,
+      "sha256": "251dbff68a4497e6435196ae65a4e8d74e0f1ac06edde3bdc37aebb4a339f172",
+      "requestedCardID": "swshp-SWSH108",
+      "identity": {
+        "id": "swshp-SWSH108",
+        "name": "Empoleon V",
+        "localId": "SWSH108",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH109",
+      "status": 200,
+      "sha256": "7d9592d3eaad716df889a498e11e3cda5444bd683951dd2e8db9beee8c1966ac",
+      "requestedCardID": "swshp-SWSH109",
+      "identity": {
+        "id": "swshp-SWSH109",
+        "name": "Tyranitar V",
+        "localId": "SWSH109",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH110",
+      "status": 200,
+      "sha256": "73d298b3f3f2d60477abb1c71296c7437ccfb23ca907ab8a662451ca658e6f00",
+      "requestedCardID": "swshp-SWSH110",
+      "identity": {
+        "id": "swshp-SWSH110",
+        "name": "Crobat V",
+        "localId": "SWSH110",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH111",
+      "status": 200,
+      "sha256": "bebb743318b2ee3b54743de0a183fae6ab2d2f0cc10784d4dae4ca80a2e35d90",
+      "requestedCardID": "swshp-SWSH111",
+      "identity": {
+        "id": "swshp-SWSH111",
+        "name": "Galarian Rapidash V",
+        "localId": "SWSH111",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 561772,
+              "tcgplayer": 236055
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH112",
+      "status": 200,
+      "sha256": "52efe4218f3b4190124f747e916b1c9ea53ac15af53865e792ba33be8e88e824",
+      "requestedCardID": "swshp-SWSH112",
+      "identity": {
+        "id": "swshp-SWSH112",
+        "name": "Cinderace",
+        "localId": "SWSH112",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH113",
+      "status": 200,
+      "sha256": "5b2a39dab8ca0e3216b39e093f0dc99b2bdb1841239a94d929b8995081ec1e00",
+      "requestedCardID": "swshp-SWSH113",
+      "identity": {
+        "id": "swshp-SWSH113",
+        "name": "Inteleon",
+        "localId": "SWSH113",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH114",
+      "status": 200,
+      "sha256": "00034409b10569064b3461e06a01e6b0ca6e0cb6eacab471af10100dce180c46",
+      "requestedCardID": "swshp-SWSH114",
+      "identity": {
+        "id": "swshp-SWSH114",
+        "name": "Cresselia",
+        "localId": "SWSH114",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH115",
+      "status": 200,
+      "sha256": "161caa0bdb3fcbf70a01da8cecb11b99cfdebfd809bab1f508060585bd147154",
+      "requestedCardID": "swshp-SWSH115",
+      "identity": {
+        "id": "swshp-SWSH115",
+        "name": "Passimian",
+        "localId": "SWSH115",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH116",
+      "status": 200,
+      "sha256": "de0e98f90cd21c59dd1d7963be20de8b7f57f51db1bbf42e7f79c239a025b834",
+      "requestedCardID": "swshp-SWSH116",
+      "identity": {
+        "id": "swshp-SWSH116",
+        "name": "Morpeko",
+        "localId": "SWSH116",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH117",
+      "status": 200,
+      "sha256": "e3fde1c9bed10abedd961d98d9a4aeea99bb1944ae4eec1eec07013b67a0b3e7",
+      "requestedCardID": "swshp-SWSH117",
+      "identity": {
+        "id": "swshp-SWSH117",
+        "name": "Phanpy",
+        "localId": "SWSH117",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH118",
+      "status": 200,
+      "sha256": "b478bea3a7becd7b85165fb8404c01b82840d6dbc8bbf33dcf955f09663c8a18",
+      "requestedCardID": "swshp-SWSH118",
+      "identity": {
+        "id": "swshp-SWSH118",
+        "name": "Eevee",
+        "localId": "SWSH118",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH119",
+      "status": 200,
+      "sha256": "7cd8b810014e1beedaf8e000af24803fa67d87d70ef5c50c19e0465ec2b66bb3",
+      "requestedCardID": "swshp-SWSH119",
+      "identity": {
+        "id": "swshp-SWSH119",
+        "name": "Snorlax",
+        "localId": "SWSH119",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH120",
+      "status": 200,
+      "sha256": "c2d7b75cd7bf730ef7f671ffb011f00432c96ee269a2a1ed94d33ff96fe19a61",
+      "requestedCardID": "swshp-SWSH120",
+      "identity": {
+        "id": "swshp-SWSH120",
+        "name": "Marnie",
+        "localId": "SWSH120",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH121",
+      "status": 200,
+      "sha256": "b3484842569f8d7eadb777d258bc23a1d96b64fdccd1f9823f2b4e0b51e942fb",
+      "requestedCardID": "swshp-SWSH121",
+      "identity": {
+        "id": "swshp-SWSH121",
+        "name": "Marnie",
+        "localId": "SWSH121",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH122",
+      "status": 200,
+      "sha256": "3015060aadb8af168f2de19eb31e7a6b7dfab99518bfd0bec997df93c2c40c5c",
+      "requestedCardID": "swshp-SWSH122",
+      "identity": {
+        "id": "swshp-SWSH122",
+        "name": "Flaaffy",
+        "localId": "SWSH122",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH123",
+      "status": 200,
+      "sha256": "7c331789d281eba812a617263d47a05e653fff2ac06783674bc3c8a85861715b",
+      "requestedCardID": "swshp-SWSH123",
+      "identity": {
+        "id": "swshp-SWSH123",
+        "name": "Galarian Articuno",
+        "localId": "SWSH123",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH124",
+      "status": 200,
+      "sha256": "713929470498fc52a71a87c3e33b93c9eef50259820f484efe5c789013c84e4c",
+      "requestedCardID": "swshp-SWSH124",
+      "identity": {
+        "id": "swshp-SWSH124",
+        "name": "Galarian Zapdos",
+        "localId": "SWSH124",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH125",
+      "status": 200,
+      "sha256": "2b653b32e0d74711aa1135dc2282e91a305c6a12162e77c39ac75ba061a05c1f",
+      "requestedCardID": "swshp-SWSH125",
+      "identity": {
+        "id": "swshp-SWSH125",
+        "name": "Galarian Moltres",
+        "localId": "SWSH125",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH126",
+      "status": 200,
+      "sha256": "d225056128557d0fda6232cb980d69a14e13a37dc5cdeffb99518b4046e17b8e",
+      "requestedCardID": "swshp-SWSH126",
+      "identity": {
+        "id": "swshp-SWSH126",
+        "name": "Galarian Slowpoke",
+        "localId": "SWSH126",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH127",
+      "status": 200,
+      "sha256": "3a6c5bae6de3211213615d7f214138de70c4a276801ff4d80574537b3daab443",
+      "requestedCardID": "swshp-SWSH127",
+      "identity": {
+        "id": "swshp-SWSH127",
+        "name": "Eevee",
+        "localId": "SWSH127",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH128",
+      "status": 200,
+      "sha256": "900fbf8c5836e29a8427ac81be12f9a51c4204bf760cc4283f469246f59808fd",
+      "requestedCardID": "swshp-SWSH128",
+      "identity": {
+        "id": "swshp-SWSH128",
+        "name": "Eiscue",
+        "localId": "SWSH128",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH129",
+      "status": 200,
+      "sha256": "8a11ce44456bdecf25691d3111bac8bb53aa25c165a1345f778ead2390d063a4",
+      "requestedCardID": "swshp-SWSH129",
+      "identity": {
+        "id": "swshp-SWSH129",
+        "name": "Umbreon",
+        "localId": "SWSH129",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH130",
+      "status": 200,
+      "sha256": "0c919782706b55675ac3b2f09081336692e5a40a2c203ee9af060d701f800457",
+      "requestedCardID": "swshp-SWSH130",
+      "identity": {
+        "id": "swshp-SWSH130",
+        "name": "Ice Rider Calyrex V",
+        "localId": "SWSH130",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 574296,
+              "tcgplayer": 245870
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH131",
+      "status": 200,
+      "sha256": "41fc4960bc492b55a36c28cb32ee1c49f9508e367179c7cddacbef7027c4b0cf",
+      "requestedCardID": "swshp-SWSH131",
+      "identity": {
+        "id": "swshp-SWSH131",
+        "name": "Shadow Rider Calyrex V",
+        "localId": "SWSH131",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 574297,
+              "tcgplayer": 245869
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH132",
+      "status": 200,
+      "sha256": "cd21bdbe8b3d86927f7d725925a2d8ea5efd5623e5110e18b6501f048e7b8da2",
+      "requestedCardID": "swshp-SWSH132",
+      "identity": {
+        "id": "swshp-SWSH132",
+        "name": "Dragapult",
+        "localId": "SWSH132",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 576905,
+              "tcgplayer": 252817
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH133",
+      "status": 200,
+      "sha256": "172d59586fac035a37420863dc83bf898df62ec0a58fcd61b788ae8bce14cd9d",
+      "requestedCardID": "swshp-SWSH133",
+      "identity": {
+        "id": "swshp-SWSH133",
+        "name": "Lance's Charizard V",
+        "localId": "SWSH133",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 576906,
+              "tcgplayer": 251104
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH134",
+      "status": 200,
+      "sha256": "1f92edbdbc17d5d733a7e3abf09805001dcdf74a247d1c9b7fb9c21ec619eeac",
+      "requestedCardID": "swshp-SWSH134",
+      "identity": {
+        "id": "swshp-SWSH134",
+        "name": "Dark Sylveon V",
+        "localId": "SWSH134",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 576907,
+              "tcgplayer": 251105
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH135",
+      "status": 200,
+      "sha256": "b39093bbd6ac50c42a9d03caeb80cef8853e0869589b5586dffd9c4b40ead5d3",
+      "requestedCardID": "swshp-SWSH135",
+      "identity": {
+        "id": "swshp-SWSH135",
+        "name": "Zacian",
+        "localId": "SWSH135",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH136",
+      "status": 200,
+      "sha256": "a4332faac4fead2e00b8f1220552b058f537331169c695d2ffb41fb2245111d1",
+      "requestedCardID": "swshp-SWSH136",
+      "identity": {
+        "id": "swshp-SWSH136",
+        "name": "Mimikyu",
+        "localId": "SWSH136",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 576908,
+              "tcgplayer": 260878
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH137",
+      "status": 200,
+      "sha256": "22d02e953052ee8e03670e9cccf5a890c0725a4a04522dffb828fcc4194756de",
+      "requestedCardID": "swshp-SWSH137",
+      "identity": {
+        "id": "swshp-SWSH137",
+        "name": "Light Toxtricity",
+        "localId": "SWSH137",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 576909,
+              "tcgplayer": 260877
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH138",
+      "status": 200,
+      "sha256": "33f8deca8143305ebde219f1b2a628adf153505237dff46df099dbba66c1f464",
+      "requestedCardID": "swshp-SWSH138",
+      "identity": {
+        "id": "swshp-SWSH138",
+        "name": "Hydreigon C",
+        "localId": "SWSH138",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "25th-celebration"
+            ],
+            "thirdParty": {
+              "cardmarket": 576910,
+              "tcgplayer": 260879
+            },
+            "variantId": "29252prgmnb5rnr8wrd7ziqyxtx"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH139",
+      "status": 200,
+      "sha256": "662bcd62a2d7be9cdf24c646f7e6f6aa4cf5fcff613a96f1405b9a77820f45b1",
+      "requestedCardID": "swshp-SWSH139",
+      "identity": {
+        "id": "swshp-SWSH139",
+        "name": "Pikachu V-UNION",
+        "localId": "SWSH139",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576911,
+              "tcgplayer": 251100
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH140",
+      "status": 200,
+      "sha256": "c21b32c65e1171a7978e086fb6133ea51edbad9472ac0737e8f5b292a1ab4b11",
+      "requestedCardID": "swshp-SWSH140",
+      "identity": {
+        "id": "swshp-SWSH140",
+        "name": "Pikachu V-UNION",
+        "localId": "SWSH140",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH141",
+      "status": 200,
+      "sha256": "d9d7d1c5a5996e612ba89184ede9c940456be006d799761d15caa438e99cffd3",
+      "requestedCardID": "swshp-SWSH141",
+      "identity": {
+        "id": "swshp-SWSH141",
+        "name": "Pikachu V-UNION",
+        "localId": "SWSH141",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH142",
+      "status": 200,
+      "sha256": "6ffb010104c4170a6270283f4432acbb50a7a4109e0c21e3fc390e8353a2b192",
+      "requestedCardID": "swshp-SWSH142",
+      "identity": {
+        "id": "swshp-SWSH142",
+        "name": "Pikachu V-UNION",
+        "localId": "SWSH142",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH143",
+      "status": 200,
+      "sha256": "9c562ee6b86e4e579e225d6879658763c2411ac9fa0c73fffe57b1a52eaa4f47",
+      "requestedCardID": "swshp-SWSH143",
+      "identity": {
+        "id": "swshp-SWSH143",
+        "name": "Pikachu V",
+        "localId": "SWSH143",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH144",
+      "status": 200,
+      "sha256": "79fe49f47f8aacad1e58226bb2be4183e5bcc2b99e43adf4048fffae749d601e",
+      "requestedCardID": "swshp-SWSH144",
+      "identity": {
+        "id": "swshp-SWSH144",
+        "name": "Greninja ☆",
+        "localId": "SWSH144",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH145",
+      "status": 200,
+      "sha256": "896133d1080f551b55153f2cb064a40e6d1a79aa5447bb2fc1f99bf8329b207d",
+      "requestedCardID": "swshp-SWSH145",
+      "identity": {
+        "id": "swshp-SWSH145",
+        "name": "Pikachu V",
+        "localId": "SWSH145",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH146",
+      "status": 200,
+      "sha256": "38194bf9fb5992fddfd9845242aef55257dd5fe13d24340029e3084bd8129358",
+      "requestedCardID": "swshp-SWSH146",
+      "identity": {
+        "id": "swshp-SWSH146",
+        "name": "Poké Ball",
+        "localId": "SWSH146",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH147",
+      "status": 200,
+      "sha256": "779137fb055d2e5a7add4796827e83dc321261c8c3f05a36e9462a7672818192",
+      "requestedCardID": "swshp-SWSH147",
+      "identity": {
+        "id": "swshp-SWSH147",
+        "name": "Rayquaza V",
+        "localId": "SWSH147",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH148",
+      "status": 200,
+      "sha256": "39ad5625b46266436a89060d6b568b958a667b19a21d10cce2a2e8cbdf60deaa",
+      "requestedCardID": "swshp-SWSH148",
+      "identity": {
+        "id": "swshp-SWSH148",
+        "name": "Noivern V",
+        "localId": "SWSH148",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH149",
+      "status": 200,
+      "sha256": "51065b52662debfd7422a58982d6404e7cb31c8d60de631ec5e854991d39926f",
+      "requestedCardID": "swshp-SWSH149",
+      "identity": {
+        "id": "swshp-SWSH149",
+        "name": "Flareon V",
+        "localId": "SWSH149",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH150",
+      "status": 200,
+      "sha256": "8dfc24bfcbd729dfef39c2c9058e1b3a1a9c7cfec22943dd3a509792492168e2",
+      "requestedCardID": "swshp-SWSH150",
+      "identity": {
+        "id": "swshp-SWSH150",
+        "name": "Vaporeon V",
+        "localId": "SWSH150",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH151",
+      "status": 200,
+      "sha256": "0eec171cfcbce39e52e085c2f3660cda94acbb1c3873cb2428e36555a0b4422c",
+      "requestedCardID": "swshp-SWSH151",
+      "identity": {
+        "id": "swshp-SWSH151",
+        "name": "Jolteon V",
+        "localId": "SWSH151",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH152",
+      "status": 200,
+      "sha256": "08a3dfa972f643ab830f9baf2d3633fbc69f448ae67d68307a8e80a0ffacf469",
+      "requestedCardID": "swshp-SWSH152",
+      "identity": {
+        "id": "swshp-SWSH152",
+        "name": "Professor's Research",
+        "localId": "SWSH152",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH153",
+      "status": 200,
+      "sha256": "08277ffa1448cef767dbd678d07b1be9a2fbeb16c7ef87045ba2a4c3ce97bbff",
+      "requestedCardID": "swshp-SWSH153",
+      "identity": {
+        "id": "swshp-SWSH153",
+        "name": "Pikachu",
+        "localId": "SWSH153",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH154",
+      "status": 200,
+      "sha256": "49febba529de1a2b825f36a072ad83ad61052ca4fb911ccb29773b509d353efe",
+      "requestedCardID": "swshp-SWSH154",
+      "identity": {
+        "id": "swshp-SWSH154",
+        "name": "Dragonite V",
+        "localId": "SWSH154",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576726,
+              "tcgplayer": 253421
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH155",
+      "status": 200,
+      "sha256": "cc78c704a31ca37bd7777ca0b5eae34024b73726b630df1ec93ef0372fb834d3",
+      "requestedCardID": "swshp-SWSH155",
+      "identity": {
+        "id": "swshp-SWSH155",
+        "name": "Greninja V-UNION",
+        "localId": "SWSH155",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576912,
+              "tcgplayer": 250251
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH156",
+      "status": 200,
+      "sha256": "deeffc86aca12af2498744b66d99f5fa8618116bc1df43bcf72fe9abc0398991",
+      "requestedCardID": "swshp-SWSH156",
+      "identity": {
+        "id": "swshp-SWSH156",
+        "name": "Greninja V-UNION",
+        "localId": "SWSH156",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH157",
+      "status": 200,
+      "sha256": "a0b39ed966e3c76073df42c167c436195f8152ab43716dfec96f56a4d12dbf61",
+      "requestedCardID": "swshp-SWSH157",
+      "identity": {
+        "id": "swshp-SWSH157",
+        "name": "Greninja V-UNION",
+        "localId": "SWSH157",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH158",
+      "status": 200,
+      "sha256": "cf4c1e739ae4c4f1af52749829bc5a6e12af9f5ede579487dbda2773d7a314a6",
+      "requestedCardID": "swshp-SWSH158",
+      "identity": {
+        "id": "swshp-SWSH158",
+        "name": "Greninja V-UNION",
+        "localId": "SWSH158",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH159",
+      "status": 200,
+      "sha256": "1d095e025a64975e4ab4d2426e6fa88fbd8eaff9276b679340aa57b0921ec238",
+      "requestedCardID": "swshp-SWSH159",
+      "identity": {
+        "id": "swshp-SWSH159",
+        "name": "Mewtwo V-UNION",
+        "localId": "SWSH159",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576913,
+              "tcgplayer": 250252
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH160",
+      "status": 200,
+      "sha256": "f4a20cfdb3751c79d3077aecaf9acb065a6f380fbb208b690f821bcc7d74ead7",
+      "requestedCardID": "swshp-SWSH160",
+      "identity": {
+        "id": "swshp-SWSH160",
+        "name": "Mewtwo V-UNION",
+        "localId": "SWSH160",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH161",
+      "status": 200,
+      "sha256": "fb78aa86b55aedc86775130a427649f0c4d022cbb1366cd32f5743e71d7689ca",
+      "requestedCardID": "swshp-SWSH161",
+      "identity": {
+        "id": "swshp-SWSH161",
+        "name": "Mewtwo V-UNION",
+        "localId": "SWSH161",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH162",
+      "status": 200,
+      "sha256": "d987c32af1793870936581ab57123411539ca8690996951deca0368f494d0d19",
+      "requestedCardID": "swshp-SWSH162",
+      "identity": {
+        "id": "swshp-SWSH162",
+        "name": "Mewtwo V-UNION",
+        "localId": "SWSH162",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH163",
+      "status": 200,
+      "sha256": "9fe7dba11062b3dbd6f605188847513b4f9141ec1e89117bef7adafcb7daad48",
+      "requestedCardID": "swshp-SWSH163",
+      "identity": {
+        "id": "swshp-SWSH163",
+        "name": "Zacian V-UNION",
+        "localId": "SWSH163",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 576915,
+              "tcgplayer": 250253
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH164",
+      "status": 200,
+      "sha256": "9b1fafc8590b8a93ece95f948e0e59fabc4a58c7488af04507464077aecd1dd9",
+      "requestedCardID": "swshp-SWSH164",
+      "identity": {
+        "id": "swshp-SWSH164",
+        "name": "Zacian V-UNION",
+        "localId": "SWSH164",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH165",
+      "status": 200,
+      "sha256": "42ff0a04ac6091b541293cba6dfb84bb73b8a35e67eed70faa00fd97bc923b36",
+      "requestedCardID": "swshp-SWSH165",
+      "identity": {
+        "id": "swshp-SWSH165",
+        "name": "Zacian V-UNION",
+        "localId": "SWSH165",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH166",
+      "status": 200,
+      "sha256": "3175742b2f258538c83f0b42708831eda4937a028092880ceb4f03eff571b182",
+      "requestedCardID": "swshp-SWSH166",
+      "identity": {
+        "id": "swshp-SWSH166",
+        "name": "Zacian V-UNION",
+        "localId": "SWSH166",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH167",
+      "status": 200,
+      "sha256": "a216551f71509d95ae3ebd707879722c3f92a14bb4cc95428b118f467af2aa80",
+      "requestedCardID": "swshp-SWSH167",
+      "identity": {
+        "id": "swshp-SWSH167",
+        "name": "Professor Burnet",
+        "localId": "SWSH167",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH168",
+      "status": 200,
+      "sha256": "1b832fa51fb022a091f786b71db92ce15a54a853779592e197e473d0206c8b10",
+      "requestedCardID": "swshp-SWSH168",
+      "identity": {
+        "id": "swshp-SWSH168",
+        "name": "Oricorio",
+        "localId": "SWSH168",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH169",
+      "status": 200,
+      "sha256": "649e78a6edec78850b65065ec880442935418825b3305dafdd48e1bc55deb17b",
+      "requestedCardID": "swshp-SWSH169",
+      "identity": {
+        "id": "swshp-SWSH169",
+        "name": "Pyukumuku",
+        "localId": "SWSH169",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH170",
+      "status": 200,
+      "sha256": "b260c04c8a565aab523df9f7dd2d6d593f51260eb63b84052b9426a286e4fa45",
+      "requestedCardID": "swshp-SWSH170",
+      "identity": {
+        "id": "swshp-SWSH170",
+        "name": "Deoxys",
+        "localId": "SWSH170",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH171",
+      "status": 200,
+      "sha256": "da33f4939decdb6b13778b96d31f35ff6caac9514e149b411c9eaa3da5478ae5",
+      "requestedCardID": "swshp-SWSH171",
+      "identity": {
+        "id": "swshp-SWSH171",
+        "name": "Latias",
+        "localId": "SWSH171",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH172",
+      "status": 200,
+      "sha256": "d7b76da6cd55ca3fe960327405f57e5be5edcdae67b3d22ac51a6370bbbb2cd4",
+      "requestedCardID": "swshp-SWSH172",
+      "identity": {
+        "id": "swshp-SWSH172",
+        "name": "Tepig",
+        "localId": "SWSH172",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH173",
+      "status": 200,
+      "sha256": "8dcc34c4fb941d281fc5b3f6895721425af547084aabe3199c70291a020cee71",
+      "requestedCardID": "swshp-SWSH173",
+      "identity": {
+        "id": "swshp-SWSH173",
+        "name": "Blitzle",
+        "localId": "SWSH173",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH174",
+      "status": 200,
+      "sha256": "206f332014c2a6aad2eb5cd8c2bef243622748cccc955b477bb7a6c9bf437d9f",
+      "requestedCardID": "swshp-SWSH174",
+      "identity": {
+        "id": "swshp-SWSH174",
+        "name": "Espeon",
+        "localId": "SWSH174",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH175",
+      "status": 200,
+      "sha256": "cf0ba8c2f59b5407fb7d06edc294dc612cf552a681750f72cd6f2d45c864f6a3",
+      "requestedCardID": "swshp-SWSH175",
+      "identity": {
+        "id": "swshp-SWSH175",
+        "name": "Eevee",
+        "localId": "SWSH175",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH176",
+      "status": 200,
+      "sha256": "79d15c1ba4d37548596dd7e7b5cd961ffa8ed4cf30d4dad2f1baa73c2d0754f5",
+      "requestedCardID": "swshp-SWSH176",
+      "identity": {
+        "id": "swshp-SWSH176",
+        "name": "Hoopa V",
+        "localId": "SWSH176",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 583684,
+              "tcgplayer": 253420
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH177",
+      "status": 200,
+      "sha256": "704a2d56a0bd7dceda71983574e83be61ddf9d521391898c097cd6bde1514420",
+      "requestedCardID": "swshp-SWSH177",
+      "identity": {
+        "id": "swshp-SWSH177",
+        "name": "Special Delivery Bidoof",
+        "localId": "SWSH177",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH178",
+      "status": 200,
+      "sha256": "6dceff57fe7e9e540322156abcb22531be700794d8d52b2446d8737c9d8c39a8",
+      "requestedCardID": "swshp-SWSH178",
+      "identity": {
+        "id": "swshp-SWSH178",
+        "name": "Professor's Research",
+        "localId": "SWSH178",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH179",
+      "status": 200,
+      "sha256": "71048c1d6a8283f3429b82414e170c284b88525d5e3d3d54d65d30cb84e099e1",
+      "requestedCardID": "swshp-SWSH179",
+      "identity": {
+        "id": "swshp-SWSH179",
+        "name": "Flareon V",
+        "localId": "SWSH179",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH180",
+      "status": 200,
+      "sha256": "44579705a618b931f9f2de488587526a3456f0675ea1cbe63828c4b9fc62101a",
+      "requestedCardID": "swshp-SWSH180",
+      "identity": {
+        "id": "swshp-SWSH180",
+        "name": "Flareon VMAX",
+        "localId": "SWSH180",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 605843,
+              "tcgplayer": 257709
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH181",
+      "status": 200,
+      "sha256": "a033810d2199187aaedb426fde45bf98ec47eb1a8ec6f02a26572672cff3e301",
+      "requestedCardID": "swshp-SWSH181",
+      "identity": {
+        "id": "swshp-SWSH181",
+        "name": "Vaporeon V",
+        "localId": "SWSH181",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH182",
+      "status": 200,
+      "sha256": "e99d1bf3d3a86cf62136742935be678d674fc39983e5092ded29c6d11240a567",
+      "requestedCardID": "swshp-SWSH182",
+      "identity": {
+        "id": "swshp-SWSH182",
+        "name": "Vaporeon VMAX",
+        "localId": "SWSH182",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 605844,
+              "tcgplayer": 257708
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH183",
+      "status": 200,
+      "sha256": "bbb84f9fb88567f8b350bed006772e96b1bfe1c7562795a972ff8092a1f31d9e",
+      "requestedCardID": "swshp-SWSH183",
+      "identity": {
+        "id": "swshp-SWSH183",
+        "name": "Jolteon V",
+        "localId": "SWSH183",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH184",
+      "status": 200,
+      "sha256": "fd21b66e04acc7320999c7ce78c2830b8281bfa7103fb62b699633f0205624f9",
+      "requestedCardID": "swshp-SWSH184",
+      "identity": {
+        "id": "swshp-SWSH184",
+        "name": "Jolteon VMAX",
+        "localId": "SWSH184",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 605845,
+              "tcgplayer": 257710
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH185",
+      "status": 200,
+      "sha256": "461c49edc5458926dfb15261dffbce568437e18dc9133794b34be5171d92a75a",
+      "requestedCardID": "swshp-SWSH185",
+      "identity": {
+        "id": "swshp-SWSH185",
+        "name": "Moltres",
+        "localId": "SWSH185",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH186",
+      "status": 200,
+      "sha256": "2cacd5d4ee9a7ef1e8cd4240f4fa2ddca850a8cc5d720308a1506e78ff05cb31",
+      "requestedCardID": "swshp-SWSH186",
+      "identity": {
+        "id": "swshp-SWSH186",
+        "name": "Lucario",
+        "localId": "SWSH186",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH187",
+      "status": 200,
+      "sha256": "20d60d0ae86d0f3a2b9b6e4db0a3770683475bb286b9cb51fed218d3784c3554",
+      "requestedCardID": "swshp-SWSH187",
+      "identity": {
+        "id": "swshp-SWSH187",
+        "name": "Liepard",
+        "localId": "SWSH187",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH188",
+      "status": 200,
+      "sha256": "15029d5b1860c2feda66613c0c28bb7a4edf81e0ae0909477bc8d08e2f63c556",
+      "requestedCardID": "swshp-SWSH188",
+      "identity": {
+        "id": "swshp-SWSH188",
+        "name": "Bibarel",
+        "localId": "SWSH188",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH189",
+      "status": 200,
+      "sha256": "636fad1c0d3107baf7fba16d2d33802e9894441156699bc7e6ad7e0199d988c0",
+      "requestedCardID": "swshp-SWSH189",
+      "identity": {
+        "id": "swshp-SWSH189",
+        "name": "Flapple",
+        "localId": "SWSH189",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH190",
+      "status": 200,
+      "sha256": "9273202cf6697affab434d1cb5afd7645ca395689651e845db717456a8b54681",
+      "requestedCardID": "swshp-SWSH190",
+      "identity": {
+        "id": "swshp-SWSH190",
+        "name": "Eevee",
+        "localId": "SWSH190",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH191",
+      "status": 200,
+      "sha256": "dccd631131e7c76a42c3a1292e9feb8b8cfb1dbd2a8da30e97a417f326d1991b",
+      "requestedCardID": "swshp-SWSH191",
+      "identity": {
+        "id": "swshp-SWSH191",
+        "name": "Leafeon",
+        "localId": "SWSH191",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH192",
+      "status": 200,
+      "sha256": "5707c1eb42b5927abbd45c279c0c422b98fd8bd71802be35588041a0f443fff8",
+      "requestedCardID": "swshp-SWSH192",
+      "identity": {
+        "id": "swshp-SWSH192",
+        "name": "Glaceon",
+        "localId": "SWSH192",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH193",
+      "status": 200,
+      "sha256": "cfc610bcaeaebffe439928f9deff2beb9b9492298ee09ff7ffb9629fd028eb54",
+      "requestedCardID": "swshp-SWSH193",
+      "identity": {
+        "id": "swshp-SWSH193",
+        "name": "Galarian Obstagoon",
+        "localId": "SWSH193",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH194",
+      "status": 200,
+      "sha256": "c01cc330379ffa2ad1577d8dc2889502824a15e5a5f0210e8c02ecb185292605",
+      "requestedCardID": "swshp-SWSH194",
+      "identity": {
+        "id": "swshp-SWSH194",
+        "name": "Leafeon V",
+        "localId": "SWSH194",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH195",
+      "status": 200,
+      "sha256": "935201d2fbfd4da0444d24892ac859a57b68f6bca96c0319f261b999907c0699",
+      "requestedCardID": "swshp-SWSH195",
+      "identity": {
+        "id": "swshp-SWSH195",
+        "name": "Leafeon VSTAR",
+        "localId": "SWSH195",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 605846,
+              "tcgplayer": 263260
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH196",
+      "status": 200,
+      "sha256": "a98cf91d52ac56a8b13763bbe038405e0d006b185e8a475ababdc14aeb3539b4",
+      "requestedCardID": "swshp-SWSH196",
+      "identity": {
+        "id": "swshp-SWSH196",
+        "name": "Glaceon V",
+        "localId": "SWSH196",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH197",
+      "status": 200,
+      "sha256": "2572e1d7ea40e5ecc89d0f3eca08c563e048ebb0300bd9dbe90bdc6668477fe8",
+      "requestedCardID": "swshp-SWSH197",
+      "identity": {
+        "id": "swshp-SWSH197",
+        "name": "Glaceon VSTAR",
+        "localId": "SWSH197",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 605847,
+              "tcgplayer": 263261
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH198",
+      "status": 200,
+      "sha256": "8ed91415264749e254dbe9393dd865c40fa7c8c23a6f3ebcd457cb571a51fbbc",
+      "requestedCardID": "swshp-SWSH198",
+      "identity": {
+        "id": "swshp-SWSH198",
+        "name": "Pikachu V",
+        "localId": "SWSH198",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 605848,
+              "tcgplayer": 260712
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH199",
+      "status": 200,
+      "sha256": "60b8aca671603b75fb48d846b4edbae317d0d75e29dc9b630cef3fd1425e6965",
+      "requestedCardID": "swshp-SWSH199",
+      "identity": {
+        "id": "swshp-SWSH199",
+        "name": "Lycanroc V",
+        "localId": "SWSH199",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH200",
+      "status": 200,
+      "sha256": "ce89c3970d2fbcba3084bdd616ac784c1d1145ddff8089c8165c82916610e4ef",
+      "requestedCardID": "swshp-SWSH200",
+      "identity": {
+        "id": "swshp-SWSH200",
+        "name": "Corviknight V",
+        "localId": "SWSH200",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH201",
+      "status": 200,
+      "sha256": "44f9c4fc67f727dd6419775f3adaa94c137beaa6d104bd5529df0bbf35ebeb48",
+      "requestedCardID": "swshp-SWSH201",
+      "identity": {
+        "id": "swshp-SWSH201",
+        "name": "Espeon V",
+        "localId": "SWSH201",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH202",
+      "status": 200,
+      "sha256": "df10e4152c18714703d065d3b9561bd438f1e61f1bc76ae998acb2d28ee49cdc",
+      "requestedCardID": "swshp-SWSH202",
+      "identity": {
+        "id": "swshp-SWSH202",
+        "name": "Sylveon V",
+        "localId": "SWSH202",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH203",
+      "status": 200,
+      "sha256": "6d7a7a1c108e29c7106aa539b6cc333a263b9dc367bdfc8ea20e247cbb24a492",
+      "requestedCardID": "swshp-SWSH203",
+      "identity": {
+        "id": "swshp-SWSH203",
+        "name": "Umbreon V",
+        "localId": "SWSH203",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH204",
+      "status": 200,
+      "sha256": "fdc95e5829b165ba4a013db781f9592f376445ce51f7dfa6b5bedb8640f7c046",
+      "requestedCardID": "swshp-SWSH204",
+      "identity": {
+        "id": "swshp-SWSH204",
+        "name": "Arceus V",
+        "localId": "SWSH204",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH205",
+      "status": 200,
+      "sha256": "3750137f010d50fd5402e0740ac1a9f15488fe2825390f42db487ed28b532065",
+      "requestedCardID": "swshp-SWSH205",
+      "identity": {
+        "id": "swshp-SWSH205",
+        "name": "Hisuian Basculegion",
+        "localId": "SWSH205",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH206",
+      "status": 200,
+      "sha256": "af4e028353d02e6ffb55d17f65d26b7aaaab70cf216b5248c997417be3a96ece",
+      "requestedCardID": "swshp-SWSH206",
+      "identity": {
+        "id": "swshp-SWSH206",
+        "name": "Wyrdeer",
+        "localId": "SWSH206",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH207",
+      "status": 200,
+      "sha256": "b90e798eb065267891c426d867c5a31abace7e55619ec01e7cb51f2ad3613dc4",
+      "requestedCardID": "swshp-SWSH207",
+      "identity": {
+        "id": "swshp-SWSH207",
+        "name": "Hisuian Samurott",
+        "localId": "SWSH207",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH208",
+      "status": 200,
+      "sha256": "8241fa97f9c90f145384f641daf6403b366572cd05348c52144413f86fc2d346",
+      "requestedCardID": "swshp-SWSH208",
+      "identity": {
+        "id": "swshp-SWSH208",
+        "name": "Magnezone",
+        "localId": "SWSH208",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH209",
+      "status": 200,
+      "sha256": "ed9c3ff75e29ce0fcfd08aa400810da668ff7736b5bb1371710639f8ee9c2d94",
+      "requestedCardID": "swshp-SWSH209",
+      "identity": {
+        "id": "swshp-SWSH209",
+        "name": "Toxel",
+        "localId": "SWSH209",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH210",
+      "status": 200,
+      "sha256": "18d1c6ef8dbc4be6c583a5ae37c05bddb29dcfbcab7766c79be16575b3c5edfc",
+      "requestedCardID": "swshp-SWSH210",
+      "identity": {
+        "id": "swshp-SWSH210",
+        "name": "Oricorio",
+        "localId": "SWSH210",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH211",
+      "status": 200,
+      "sha256": "bebc2db446c2faf9cfa445a89377ac99c69d99c4c56fc1b447973be51f72d7bd",
+      "requestedCardID": "swshp-SWSH211",
+      "identity": {
+        "id": "swshp-SWSH211",
+        "name": "Sylveon",
+        "localId": "SWSH211",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH212",
+      "status": 200,
+      "sha256": "f9ce23e2e581b51f3e56bcf668e9f8af71623303865c6c5df6fd515276f9aece",
+      "requestedCardID": "swshp-SWSH212",
+      "identity": {
+        "id": "swshp-SWSH212",
+        "name": "Eevee",
+        "localId": "SWSH212",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH213",
+      "status": 200,
+      "sha256": "9ecd3d4f95a44a45b1d98fdda823207c4678ef5a8bdc5bccbb8223e7d915d5f5",
+      "requestedCardID": "swshp-SWSH213",
+      "identity": {
+        "id": "swshp-SWSH213",
+        "name": "Lucario V",
+        "localId": "SWSH213",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH214",
+      "status": 200,
+      "sha256": "3c6270619f3faca187a313b296f1afb8e45484d9302d1bb5437c24897fdc8670",
+      "requestedCardID": "swshp-SWSH214",
+      "identity": {
+        "id": "swshp-SWSH214",
+        "name": "Lucario VSTAR",
+        "localId": "SWSH214",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 606785,
+              "tcgplayer": 268305
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH215",
+      "status": 200,
+      "sha256": "65c476d2d905bf3a77f6b0adb7f844d1715f50b43dc5f0cf94784c1af7e95abe",
+      "requestedCardID": "swshp-SWSH215",
+      "identity": {
+        "id": "swshp-SWSH215",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH215",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 651357,
+              "tcgplayer": 268449
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH216",
+      "status": 200,
+      "sha256": "0ad55463d021a6a3639919775fe37b75f5af52072b0e38d75ec183b120569577",
+      "requestedCardID": "swshp-SWSH216",
+      "identity": {
+        "id": "swshp-SWSH216",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH216",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH217",
+      "status": 200,
+      "sha256": "0f6a5ad5c7127ee55c16575922ea8e88307d7ea5c06cb73fce0cb4c9e1fd7426",
+      "requestedCardID": "swshp-SWSH217",
+      "identity": {
+        "id": "swshp-SWSH217",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH217",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH218",
+      "status": 200,
+      "sha256": "ac570c6944a28478a55c9e2797e2c1a29ae5921a21a1c9f5057bdbfb799164ca",
+      "requestedCardID": "swshp-SWSH218",
+      "identity": {
+        "id": "swshp-SWSH218",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH218",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH219",
+      "status": 200,
+      "sha256": "e965ece20676d6ae37e19c2ef1efbbf04fcf7731a025c6ffe63fef0c593d8862",
+      "requestedCardID": "swshp-SWSH219",
+      "identity": {
+        "id": "swshp-SWSH219",
+        "name": "Boltund V",
+        "localId": "SWSH219",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 608110,
+              "tcgplayer": 276051
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH220",
+      "status": 200,
+      "sha256": "ebb38c908b96d6d0e53858a72d6dfee5b08d1871c830ec4236d2061d8bb15152",
+      "requestedCardID": "swshp-SWSH220",
+      "identity": {
+        "id": "swshp-SWSH220",
+        "name": "Rowlet",
+        "localId": "SWSH220",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH221",
+      "status": 200,
+      "sha256": "eb7aeb4441f83c0c8ad68ed9bd1e03d6f777afae37abab4c96a7af2a129ad66a",
+      "requestedCardID": "swshp-SWSH221",
+      "identity": {
+        "id": "swshp-SWSH221",
+        "name": "Cyndaquil",
+        "localId": "SWSH221",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH222",
+      "status": 200,
+      "sha256": "ebb283591c86b33ca0ff06e8fe9496fc7b31750c5d77600f458d785eefa1ee18",
+      "requestedCardID": "swshp-SWSH222",
+      "identity": {
+        "id": "swshp-SWSH222",
+        "name": "Oshawott",
+        "localId": "SWSH222",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH223",
+      "status": 200,
+      "sha256": "09ef4ac6dd38e048089530b8eaaf42cc81949a205c1fa194592b5c555cdf58d7",
+      "requestedCardID": "swshp-SWSH223",
+      "identity": {
+        "id": "swshp-SWSH223",
+        "name": "Mewtwo V",
+        "localId": "SWSH223",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH224",
+      "status": 200,
+      "sha256": "7c8e1b25af10ae5cde46ccc2eab9c7b0e192bb786e647b4fcff3a39256de2987",
+      "requestedCardID": "swshp-SWSH224",
+      "identity": {
+        "id": "swshp-SWSH224",
+        "name": "Melmetal V",
+        "localId": "SWSH224",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH225",
+      "status": 200,
+      "sha256": "c3d610f637994832b0641305bc16cf88c1c5cfa8a4d0964e35d3bc81b656fed5",
+      "requestedCardID": "swshp-SWSH225",
+      "identity": {
+        "id": "swshp-SWSH225",
+        "name": "Alolan Exeggutor V",
+        "localId": "SWSH225",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "stamp": [
+              "set-logo"
+            ],
+            "thirdParty": {
+              "cardmarket": 668989,
+              "tcgplayer": 279028
+            },
+            "variantId": "7g4cbxtmtngwhnkbcgz"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH226",
+      "status": 200,
+      "sha256": "603ec8abe71571428aea583267bee0526cbf383d6c27df63aa3182756b6cc86f",
+      "requestedCardID": "swshp-SWSH226",
+      "identity": {
+        "id": "swshp-SWSH226",
+        "name": "Spark",
+        "localId": "SWSH226",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH227",
+      "status": 200,
+      "sha256": "7d9f263e6f341e43f727122a2cc6195c6e568af85a1c5363566dde3e1cbfbe80",
+      "requestedCardID": "swshp-SWSH227",
+      "identity": {
+        "id": "swshp-SWSH227",
+        "name": "Blanche",
+        "localId": "SWSH227",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH228",
+      "status": 200,
+      "sha256": "a5ff4c18298463d19e0c539b96d4d7582a9def58a250989f00886fa363a48c5c",
+      "requestedCardID": "swshp-SWSH228",
+      "identity": {
+        "id": "swshp-SWSH228",
+        "name": "Candela",
+        "localId": "SWSH228",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH229",
+      "status": 200,
+      "sha256": "61671a6647b412a95fc91ebaa3d1fd1a12eb2c37a981644d1efc4682547a4e8f",
+      "requestedCardID": "swshp-SWSH229",
+      "identity": {
+        "id": "swshp-SWSH229",
+        "name": "Mewtwo V",
+        "localId": "SWSH229",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH230",
+      "status": 200,
+      "sha256": "22c110a24a25e3524fd641b7538bcb5f3aafac83f6b2dc87c8f43cc399656d54",
+      "requestedCardID": "swshp-SWSH230",
+      "identity": {
+        "id": "swshp-SWSH230",
+        "name": "Radiant Eevee",
+        "localId": "SWSH230",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH231",
+      "status": 200,
+      "sha256": "8d61517d3689b5b8d383935699db2f5dcbfdeee60433f55d40a92fc2795f8e02",
+      "requestedCardID": "swshp-SWSH231",
+      "identity": {
+        "id": "swshp-SWSH231",
+        "name": "Bulbasaur",
+        "localId": "SWSH231",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH232",
+      "status": 200,
+      "sha256": "b4564088a5b904d6b1cf52aad7e12bf4a65317a6973e88b650418061e01528fc",
+      "requestedCardID": "swshp-SWSH232",
+      "identity": {
+        "id": "swshp-SWSH232",
+        "name": "Charmander",
+        "localId": "SWSH232",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH233",
+      "status": 200,
+      "sha256": "5437f7a47ccaced9992f8f03d8f80aa57a7ccca95f5dc8bb1f9f18b097062088",
+      "requestedCardID": "swshp-SWSH233",
+      "identity": {
+        "id": "swshp-SWSH233",
+        "name": "Squirtle",
+        "localId": "SWSH233",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH234",
+      "status": 200,
+      "sha256": "763c7d95e8e63e6fd57b3554dd9821aa1ea58ec0f4bac3663543658f17b5bfab",
+      "requestedCardID": "swshp-SWSH234",
+      "identity": {
+        "id": "swshp-SWSH234",
+        "name": "Pikachu",
+        "localId": "SWSH234",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH235",
+      "status": 200,
+      "sha256": "b92b5a6fe3255efe665601790cd314ec7af002839b07d5e5224f97d8922f3a07",
+      "requestedCardID": "swshp-SWSH235",
+      "identity": {
+        "id": "swshp-SWSH235",
+        "name": "Dragonite V",
+        "localId": "SWSH235",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH236",
+      "status": 200,
+      "sha256": "96f8db991334ad9406f7a77c9856976fbf4b206eaff7454e8e34b14ecd0274ce",
+      "requestedCardID": "swshp-SWSH236",
+      "identity": {
+        "id": "swshp-SWSH236",
+        "name": "Dragonite VSTAR",
+        "localId": "SWSH236",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH237",
+      "status": 200,
+      "sha256": "dd1bba4eaf77f7667694a0263441966ae074a41de51bf45194e73bd975694b34",
+      "requestedCardID": "swshp-SWSH237",
+      "identity": {
+        "id": "swshp-SWSH237",
+        "name": "Hisuian Typhlosion V",
+        "localId": "SWSH237",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH238",
+      "status": 200,
+      "sha256": "007d235fcd8aa4a75bde12f973c651ad771f93af85bbf7ae3f82e7b9b7a70ad5",
+      "requestedCardID": "swshp-SWSH238",
+      "identity": {
+        "id": "swshp-SWSH238",
+        "name": "Hisuian Decidueye V",
+        "localId": "SWSH238",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH239",
+      "status": 200,
+      "sha256": "f8b6fbfad20a4ec706fb975daa52c1828dbe1223810b150c4925ebb61f6b39f8",
+      "requestedCardID": "swshp-SWSH239",
+      "identity": {
+        "id": "swshp-SWSH239",
+        "name": "Hisuian Samurott V",
+        "localId": "SWSH239",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH240",
+      "status": 200,
+      "sha256": "3fb0fb1cab7ec08c8afb4ffba6c63ca32bd2af32c0c3463bebd6920c9c2494ff",
+      "requestedCardID": "swshp-SWSH240",
+      "identity": {
+        "id": "swshp-SWSH240",
+        "name": "Finneon",
+        "localId": "SWSH240",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH241",
+      "status": 200,
+      "sha256": "b2527605d4538fead1baee0eec3d57bbabf77ea28a404badd0d92f86ddd6ba2d",
+      "requestedCardID": "swshp-SWSH241",
+      "identity": {
+        "id": "swshp-SWSH241",
+        "name": "Gengar",
+        "localId": "SWSH241",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH242",
+      "status": 200,
+      "sha256": "25ca7db043822aa1d66e1900b0e412c3968c71ab461d7dc6f25fc1a1f2eaa66a",
+      "requestedCardID": "swshp-SWSH242",
+      "identity": {
+        "id": "swshp-SWSH242",
+        "name": "Comfey",
+        "localId": "SWSH242",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH243",
+      "status": 200,
+      "sha256": "4a2e0aa257ce4cd3ce0d7cf01bdaa92513970f03448b6bdd1d881020eae0e493",
+      "requestedCardID": "swshp-SWSH243",
+      "identity": {
+        "id": "swshp-SWSH243",
+        "name": "Machamp",
+        "localId": "SWSH243",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH244",
+      "status": 200,
+      "sha256": "348f92ab746feba76a6877854a4d728b87a72afe9fd0349d1c800669fd6acd4a",
+      "requestedCardID": "swshp-SWSH244",
+      "identity": {
+        "id": "swshp-SWSH244",
+        "name": "Scorbunny",
+        "localId": "SWSH244",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH245",
+      "status": 200,
+      "sha256": "01743fbd806c7b049e75402f05949426daa16a7c07aef44ae75dfa1dc3efea66",
+      "requestedCardID": "swshp-SWSH245",
+      "identity": {
+        "id": "swshp-SWSH245",
+        "name": "Croagunk",
+        "localId": "SWSH245",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH246",
+      "status": 200,
+      "sha256": "a8a692a1a06b5729dbbacc79b1f3fdc199f16bc1c1ca0fc43913f310b4229d34",
+      "requestedCardID": "swshp-SWSH246",
+      "identity": {
+        "id": "swshp-SWSH246",
+        "name": "Weavile",
+        "localId": "SWSH246",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH247",
+      "status": 200,
+      "sha256": "af8a99bed8f596cfe40e26cd9d6709f5fd17a4bf85c011ec6dbcfd0685c51f04",
+      "requestedCardID": "swshp-SWSH247",
+      "identity": {
+        "id": "swshp-SWSH247",
+        "name": "Regigigas",
+        "localId": "SWSH247",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH248",
+      "status": 200,
+      "sha256": "dce153157d8bdc3cf9bb8e6ddf42c5301816df1a26f9c133baa5f9abe933e44b",
+      "requestedCardID": "swshp-SWSH248",
+      "identity": {
+        "id": "swshp-SWSH248",
+        "name": "Kleavor V",
+        "localId": "SWSH248",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH249",
+      "status": 200,
+      "sha256": "b1ace9488fb6df5647112b50e6e39dc801855fd8ddffcb88970a28ead992a15e",
+      "requestedCardID": "swshp-SWSH249",
+      "identity": {
+        "id": "swshp-SWSH249",
+        "name": "Kleavor VSTAR",
+        "localId": "SWSH249",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 660943,
+              "tcgplayer": 276050
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH250",
+      "status": 200,
+      "sha256": "6813826f39ed168675d4b91abd8dce2e372483fd1796d6162e4678fb13e658f3",
+      "requestedCardID": "swshp-SWSH250",
+      "identity": {
+        "id": "swshp-SWSH250",
+        "name": "Lumineon V",
+        "localId": "SWSH250",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH251",
+      "status": 200,
+      "sha256": "9ed59768215fe96a0311957c639648376872890dfb49e0a074315dd16875c1c2",
+      "requestedCardID": "swshp-SWSH251",
+      "identity": {
+        "id": "swshp-SWSH251",
+        "name": "Boss's Orders",
+        "localId": "SWSH251",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH252",
+      "status": 200,
+      "sha256": "081b06cb4a76d436d21fa87637a91001b315792c872d40a2d334c4d8ef8ca4be",
+      "requestedCardID": "swshp-SWSH252",
+      "identity": {
+        "id": "swshp-SWSH252",
+        "name": "Infernape V",
+        "localId": "SWSH252",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 665993,
+              "tcgplayer": 284499
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH253",
+      "status": 200,
+      "sha256": "e4c7543c0e5a8d444bef88b0dd8c0a7641a0b7fd20ec39290f8fc4ef38ee46d3",
+      "requestedCardID": "swshp-SWSH253",
+      "identity": {
+        "id": "swshp-SWSH253",
+        "name": "Origin Forme Palkia V",
+        "localId": "SWSH253",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH254",
+      "status": 200,
+      "sha256": "e171f9d48f9debc4079655ccb8895f8821dba1b2e1913482d6f0c55c2eea7b3b",
+      "requestedCardID": "swshp-SWSH254",
+      "identity": {
+        "id": "swshp-SWSH254",
+        "name": "Origin Forme Palkia VSTAR",
+        "localId": "SWSH254",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 669482,
+              "tcgplayer": 449514
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH255",
+      "status": 200,
+      "sha256": "0f4b13050f7a6c25fa6081af5f920438e2290f1c16f10a091936e4af61992cc0",
+      "requestedCardID": "swshp-SWSH255",
+      "identity": {
+        "id": "swshp-SWSH255",
+        "name": "Origin Forme Dialga V",
+        "localId": "SWSH255",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH256",
+      "status": 200,
+      "sha256": "ab208c4b97fccae528bd80c3f61b8ca7567303ded3625b62b8b4bdcab6157cb8",
+      "requestedCardID": "swshp-SWSH256",
+      "identity": {
+        "id": "swshp-SWSH256",
+        "name": "Origin Forme Dialga VSTAR",
+        "localId": "SWSH256",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 669485,
+              "tcgplayer": 449513
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH257",
+      "status": 200,
+      "sha256": "cc980b02f4662beb19a7d726a6671962df319c41d191e8aafdb79eef3c38ee7e",
+      "requestedCardID": "swshp-SWSH257",
+      "identity": {
+        "id": "swshp-SWSH257",
+        "name": "Rotom V",
+        "localId": "SWSH257",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH258",
+      "status": 200,
+      "sha256": "9a010ab24c4544b5dc58dbbd20d2c172abe77cd10c99a53465857c3d8084f363",
+      "requestedCardID": "swshp-SWSH258",
+      "identity": {
+        "id": "swshp-SWSH258",
+        "name": "Gallade V",
+        "localId": "SWSH258",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH259",
+      "status": 200,
+      "sha256": "e36dbffe377d5f018e550075e51dcf5ebca4004545625093d596c15fde1793c7",
+      "requestedCardID": "swshp-SWSH259",
+      "identity": {
+        "id": "swshp-SWSH259",
+        "name": "Giratina V",
+        "localId": "SWSH259",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH260",
+      "status": 200,
+      "sha256": "b7c760587df61942e2f60895794b6821829f49684c3dd1b6b397230335616443",
+      "requestedCardID": "swshp-SWSH260",
+      "identity": {
+        "id": "swshp-SWSH260",
+        "name": "Charizard V",
+        "localId": "SWSH260",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH261",
+      "status": 200,
+      "sha256": "d38ecb15c1abffa3a5ed338e809b5a516d66b36cb5e992197fa137ead255eeb7",
+      "requestedCardID": "swshp-SWSH261",
+      "identity": {
+        "id": "swshp-SWSH261",
+        "name": "Charizard VMAX",
+        "localId": "SWSH261",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH262",
+      "status": 200,
+      "sha256": "a057dadf9f4b157e3f8187346812200d032876845174bfe2ee73a8bc2dc4aa5a",
+      "requestedCardID": "swshp-SWSH262",
+      "identity": {
+        "id": "swshp-SWSH262",
+        "name": "Charizard VSTAR",
+        "localId": "SWSH262",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH263",
+      "status": 200,
+      "sha256": "e8a69b28173499cf51844071e3104625776431e9e667c561e684f0791e233de8",
+      "requestedCardID": "swshp-SWSH263",
+      "identity": {
+        "id": "swshp-SWSH263",
+        "name": "Zeraora V",
+        "localId": "SWSH263",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH264",
+      "status": 200,
+      "sha256": "a5ae6dd0018fff3fc2425a14899dd1f47f559b8c35580d12fb7713dbbd5fdd6c",
+      "requestedCardID": "swshp-SWSH264",
+      "identity": {
+        "id": "swshp-SWSH264",
+        "name": "Zeraora VMAX",
+        "localId": "SWSH264",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH265",
+      "status": 200,
+      "sha256": "093ef9c66a47516462e627db627ac269d87af42a47620d9c5f32433f0621e97d",
+      "requestedCardID": "swshp-SWSH265",
+      "identity": {
+        "id": "swshp-SWSH265",
+        "name": "Zeraora VSTAR",
+        "localId": "SWSH265",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 669841,
+              "tcgplayer": 449524
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH266",
+      "status": 200,
+      "sha256": "c6ffa086ef57d246d15fa8e00f98aeae29d2fd3f7430d00322ccae48808da65d",
+      "requestedCardID": "swshp-SWSH266",
+      "identity": {
+        "id": "swshp-SWSH266",
+        "name": "Deoxys V",
+        "localId": "SWSH266",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH267",
+      "status": 200,
+      "sha256": "1cd685ad8affc67b4ac2432130dd2b56706601472ed059df620f4aeba7c28146",
+      "requestedCardID": "swshp-SWSH267",
+      "identity": {
+        "id": "swshp-SWSH267",
+        "name": "Deoxys VMAX",
+        "localId": "SWSH267",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH268",
+      "status": 200,
+      "sha256": "e6c07045f3c45ce77166a26d785cb71b736dc3fcd887183c3ddd6f84d4ab2f70",
+      "requestedCardID": "swshp-SWSH268",
+      "identity": {
+        "id": "swshp-SWSH268",
+        "name": "Deoxys VSTAR",
+        "localId": "SWSH268",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 669845,
+              "tcgplayer": 449525
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH269",
+      "status": 200,
+      "sha256": "087ecc9d2349195950172b0d171b1dff965b5af4412d9eaf8d146da7398cd16d",
+      "requestedCardID": "swshp-SWSH269",
+      "identity": {
+        "id": "swshp-SWSH269",
+        "name": "Sunflora",
+        "localId": "SWSH269",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH270",
+      "status": 200,
+      "sha256": "e753cf19f57c9ecd0f3ef5a4143a9310957a76cce946bec98c89920e13710d51",
+      "requestedCardID": "swshp-SWSH270",
+      "identity": {
+        "id": "swshp-SWSH270",
+        "name": "Rapidash",
+        "localId": "SWSH270",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH271",
+      "status": 200,
+      "sha256": "7e0e7eef18f1290df551acef872501df1a84893f00a63b272606fb29e6cccd09",
+      "requestedCardID": "swshp-SWSH271",
+      "identity": {
+        "id": "swshp-SWSH271",
+        "name": "Kirlia",
+        "localId": "SWSH271",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH272",
+      "status": 200,
+      "sha256": "6ab49383c193d3db3bfe049abeca8877913297c9112e82d1753d54a504f55f94",
+      "requestedCardID": "swshp-SWSH272",
+      "identity": {
+        "id": "swshp-SWSH272",
+        "name": "Archeops",
+        "localId": "SWSH272",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH273",
+      "status": 200,
+      "sha256": "e2f66d196f72893ae1371bef8abfb8ba9679a71db920f0e4217557ee7203c200",
+      "requestedCardID": "swshp-SWSH273",
+      "identity": {
+        "id": "swshp-SWSH273",
+        "name": "Hisuian Basculin",
+        "localId": "SWSH273",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH274",
+      "status": 200,
+      "sha256": "a0eda53c86e740614a3d7f45f735412d783a076999bdc605ba74f44c6b46f75e",
+      "requestedCardID": "swshp-SWSH274",
+      "identity": {
+        "id": "swshp-SWSH274",
+        "name": "Cranidos",
+        "localId": "SWSH274",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH275",
+      "status": 200,
+      "sha256": "a5969cafb56b488c392809bfce3106a2d90b1c569bad667e5cf9fbdbe6e49140",
+      "requestedCardID": "swshp-SWSH275",
+      "identity": {
+        "id": "swshp-SWSH275",
+        "name": "Manaphy",
+        "localId": "SWSH275",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH276",
+      "status": 200,
+      "sha256": "112649d76e7f41ee4d334f62711b870d5e57c0d78b0873dbfbc41e5a368ceaae",
+      "requestedCardID": "swshp-SWSH276",
+      "identity": {
+        "id": "swshp-SWSH276",
+        "name": "Togetic",
+        "localId": "SWSH276",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH277",
+      "status": 200,
+      "sha256": "d9ce2d6279754e85934185a91fd01bf619dde24cf93f2ee9fc02d4a1feb279ec",
+      "requestedCardID": "swshp-SWSH277",
+      "identity": {
+        "id": "swshp-SWSH277",
+        "name": "Rillaboom",
+        "localId": "SWSH277",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH278",
+      "status": 200,
+      "sha256": "9be902672cfb7f10d46988e9fa1dd257153110171ebdd174f09506bbad918ddb",
+      "requestedCardID": "swshp-SWSH278",
+      "identity": {
+        "id": "swshp-SWSH278",
+        "name": "Cinderace",
+        "localId": "SWSH278",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH279",
+      "status": 200,
+      "sha256": "5251f64d58e5080e74844d82310b3ddbd4bf424a67c682823b63badb11285693",
+      "requestedCardID": "swshp-SWSH279",
+      "identity": {
+        "id": "swshp-SWSH279",
+        "name": "Inteleon",
+        "localId": "SWSH279",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH280",
+      "status": 200,
+      "sha256": "9e9af442993178d5e039afaf975cc19998daf40e11b64e68e6575ca834b10b9f",
+      "requestedCardID": "swshp-SWSH280",
+      "identity": {
+        "id": "swshp-SWSH280",
+        "name": "Regieleki V",
+        "localId": "SWSH280",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 682985,
+              "tcgplayer": 479879
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH281",
+      "status": 200,
+      "sha256": "0fe059be37459242d31481bf4f55474caac790df11d00e0e26be727056afe5c2",
+      "requestedCardID": "swshp-SWSH281",
+      "identity": {
+        "id": "swshp-SWSH281",
+        "name": "Regidrago V",
+        "localId": "SWSH281",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 682986,
+              "tcgplayer": 479880
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH282",
+      "status": 200,
+      "sha256": "21ac14e45d4688267a166f357ded5da0e693a87b741b374d07604765d0d21a04",
+      "requestedCardID": "swshp-SWSH282",
+      "identity": {
+        "id": "swshp-SWSH282",
+        "name": "Galarian Articuno",
+        "localId": "SWSH282",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH283",
+      "status": 200,
+      "sha256": "3811d88aec5e4a6fb3abb7290455c83863dce7849312fb58ea260221ba34cad7",
+      "requestedCardID": "swshp-SWSH283",
+      "identity": {
+        "id": "swshp-SWSH283",
+        "name": "Galarian Zapdos",
+        "localId": "SWSH283",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH284",
+      "status": 200,
+      "sha256": "b63c01d3902ebe91eb274e661ee9e393c42df4e2551c50a05b8d864e970ae7f6",
+      "requestedCardID": "swshp-SWSH284",
+      "identity": {
+        "id": "swshp-SWSH284",
+        "name": "Galarian Moltres",
+        "localId": "SWSH284",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH285",
+      "status": 200,
+      "sha256": "3d62e765e00b8c63457ef4f3cff6426e8bc13f23cdb6225d219b55246fb31855",
+      "requestedCardID": "swshp-SWSH285",
+      "identity": {
+        "id": "swshp-SWSH285",
+        "name": "Pikachu V",
+        "localId": "SWSH285",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH286",
+      "status": 200,
+      "sha256": "a0efa4f9d765a1c70ecc05a60ec3cae358a8e92de89c2e39ef9a05240a5f8284",
+      "requestedCardID": "swshp-SWSH286",
+      "identity": {
+        "id": "swshp-SWSH286",
+        "name": "Pikachu VMAX",
+        "localId": "SWSH286",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 701242,
+              "tcgplayer": 478425
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH287",
+      "status": 200,
+      "sha256": "a8a4194ba09c0c1bcbe09ecdff1222f2c57082c86364ea567168616eed915453",
+      "requestedCardID": "swshp-SWSH287",
+      "identity": {
+        "id": "swshp-SWSH287",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH287",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 682981,
+              "tcgplayer": 477069
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH288",
+      "status": 200,
+      "sha256": "b666668462375cb6ef361a008a13893cfecb06e01884fd064b1b60c30d4a08b7",
+      "requestedCardID": "swshp-SWSH288",
+      "identity": {
+        "id": "swshp-SWSH288",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH288",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH289",
+      "status": 200,
+      "sha256": "301d5fa3d811f91c313e863513b46dc659794e05a0cb3865577a78c045b8fafa",
+      "requestedCardID": "swshp-SWSH289",
+      "identity": {
+        "id": "swshp-SWSH289",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH289",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH290",
+      "status": 200,
+      "sha256": "8c48d064693f59fe0e85c1c8281dceb845d00a827347e6d2a810d89e39e2f993",
+      "requestedCardID": "swshp-SWSH290",
+      "identity": {
+        "id": "swshp-SWSH290",
+        "name": "Morpeko V-UNION",
+        "localId": "SWSH290",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH291",
+      "status": 200,
+      "sha256": "cd47df32726fb0c7f076f0530cc695e4313e1114a129d93391adea09cb82d6c7",
+      "requestedCardID": "swshp-SWSH291",
+      "identity": {
+        "id": "swshp-SWSH291",
+        "name": "Lucario VSTAR",
+        "localId": "SWSH291",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH292",
+      "status": 200,
+      "sha256": "07e3a10fe93c2036c1076988297b65eab25d5750351a67cfafc13157bec4d41f",
+      "requestedCardID": "swshp-SWSH292",
+      "identity": {
+        "id": "swshp-SWSH292",
+        "name": "Zacian V",
+        "localId": "SWSH292",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH293",
+      "status": 200,
+      "sha256": "f64f3d0cb02555b9a880c536a32d0a204461ef794c506c74a8ff2d105e1e0098",
+      "requestedCardID": "swshp-SWSH293",
+      "identity": {
+        "id": "swshp-SWSH293",
+        "name": "Zamazenta V",
+        "localId": "SWSH293",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH294",
+      "status": 200,
+      "sha256": "01c720801bf6e9aa16894e660b65b288323453ccc87166091c7ea5448fdbef0f",
+      "requestedCardID": "swshp-SWSH294",
+      "identity": {
+        "id": "swshp-SWSH294",
+        "name": "Hisuian Electrode V",
+        "localId": "SWSH294",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 671807,
+              "tcgplayer": 451116
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH295",
+      "status": 200,
+      "sha256": "44fb94bd3d7bd0677020818eab3b7f2c1aeddadfa209a6ca9d6671361cd7be5a",
+      "requestedCardID": "swshp-SWSH295",
+      "identity": {
+        "id": "swshp-SWSH295",
+        "name": "Virizion V",
+        "localId": "SWSH295",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 669624,
+              "tcgplayer": 449517
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH296",
+      "status": 200,
+      "sha256": "c4835198791cbf288c2ff86388e57b71f9c73e0cd4dacab06821ca29c70f0842",
+      "requestedCardID": "swshp-SWSH296",
+      "identity": {
+        "id": "swshp-SWSH296",
+        "name": "Champions Festival",
+        "localId": "SWSH296",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH297",
+      "status": 200,
+      "sha256": "deb2d47d96ce5655725d04107f367e19a34d10f7c4605c29f752f79a4d97bb24",
+      "requestedCardID": "swshp-SWSH297",
+      "identity": {
+        "id": "swshp-SWSH297",
+        "name": "Hisuian Zoroark V",
+        "localId": "SWSH297",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH298",
+      "status": 200,
+      "sha256": "19a6703e08cdfd09cad3151ecfdee48939ff6668bf98dcbd6e3d815f7a6e838e",
+      "requestedCardID": "swshp-SWSH298",
+      "identity": {
+        "id": "swshp-SWSH298",
+        "name": "Hisuian Zoroark VSTAR",
+        "localId": "SWSH298",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 671772,
+              "tcgplayer": 449528
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH299",
+      "status": 200,
+      "sha256": "043205ffc03dcb49428aab381625e00a29a841c8ddf7011468541eb3a515963b",
+      "requestedCardID": "swshp-SWSH299",
+      "identity": {
+        "id": "swshp-SWSH299",
+        "name": "Jirachi V",
+        "localId": "SWSH299",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 731417,
+              "tcgplayer": 584511
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH300",
+      "status": 200,
+      "sha256": "7a77367ab2d82e4a3ca1f2d6a2760511ea8e478f4cc19d9cb41833bf1c9da9ed",
+      "requestedCardID": "swshp-SWSH300",
+      "identity": {
+        "id": "swshp-SWSH300",
+        "name": "Unown V",
+        "localId": "SWSH300",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH301",
+      "status": 200,
+      "sha256": "279309c015912795a741172a53944634a37657f82759a9461f03da32208ee2f0",
+      "requestedCardID": "swshp-SWSH301",
+      "identity": {
+        "id": "swshp-SWSH301",
+        "name": "Lugia V",
+        "localId": "SWSH301",
+        "jumboDetails": [
+          {
+            "type": "holo",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 719677,
+              "tcgplayer": 506006
+            },
+            "variantId": "slwlv6rn87"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH302",
+      "status": 200,
+      "sha256": "3f0070161ca7be20d2d4402ec6d34d110626f243f2e382516e48f3ec0693292e",
+      "requestedCardID": "swshp-SWSH302",
+      "identity": {
+        "id": "swshp-SWSH302",
+        "name": "Klara",
+        "localId": "SWSH302",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH303",
+      "status": 200,
+      "sha256": "5305eb6f0113558a8bb88f9193630fc7d593f4880aa286cbad8138dee756c764",
+      "requestedCardID": "swshp-SWSH303",
+      "identity": {
+        "id": "swshp-SWSH303",
+        "name": "Bulbasaur",
+        "localId": "SWSH303",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH304",
+      "status": 200,
+      "sha256": "3bdb33badd43f99835cdd30bffd3bb5dd2757ec73642066f2a2040a2a7558b3a",
+      "requestedCardID": "swshp-SWSH304",
+      "identity": {
+        "id": "swshp-SWSH304",
+        "name": "Arcanine",
+        "localId": "SWSH304",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH305",
+      "status": 200,
+      "sha256": "de25855e65dcc56ab2d08be38f928e42227912a57e2a0381bcb349b82297fd26",
+      "requestedCardID": "swshp-SWSH305",
+      "identity": {
+        "id": "swshp-SWSH305",
+        "name": "Greninja",
+        "localId": "SWSH305",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH306",
+      "status": 200,
+      "sha256": "a3072346e39559e3b06e75a35ac8979851afbc6df40e0f776fef4eec23bcf9dd",
+      "requestedCardID": "swshp-SWSH306",
+      "identity": {
+        "id": "swshp-SWSH306",
+        "name": "Arceus V",
+        "localId": "SWSH306",
+        "jumboDetails": []
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/swshp-SWSH307",
+      "status": 200,
+      "sha256": "a8411fb21ae8259bbcd57cba47d88bbc925b824bb82f586bd933663e2b1c4ba1",
+      "requestedCardID": "swshp-SWSH307",
+      "identity": {
+        "id": "swshp-SWSH307",
+        "name": "Arceus VSTAR",
+        "localId": "SWSH307",
+        "jumboDetails": []
+      }
+    }
+  ]
+}

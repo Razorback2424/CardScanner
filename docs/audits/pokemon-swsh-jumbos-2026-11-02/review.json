@@ -1,0 +1,471 @@
+[
+  {
+    "providerCardID": "swshp-SWSH001",
+    "name": "Grookey",
+    "tcgplayerProductID": 231458,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH002",
+    "name": "Scorbunny",
+    "tcgplayerProductID": 231466,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH003",
+    "name": "Sobble",
+    "tcgplayerProductID": 231468,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH005",
+    "name": "Meowth VMAX",
+    "tcgplayerProductID": 205467,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH014",
+    "name": "Rillaboom V",
+    "tcgplayerProductID": 220754,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH015",
+    "name": "Cinderace V",
+    "tcgplayerProductID": 220755,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH016",
+    "name": "Inteleon V",
+    "tcgplayerProductID": 220753,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH017",
+    "name": "Toxtricity V",
+    "tcgplayerProductID": 206426,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH021",
+    "name": "Polteageist V",
+    "tcgplayerProductID": 214236,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH030",
+    "name": "Copperajah V",
+    "tcgplayerProductID": 214229,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH043",
+    "name": "Galarian Sirfetch'd V",
+    "tcgplayerProductID": 220274,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH045",
+    "name": "Eternatus VMAX",
+    "tcgplayerProductID": 220282,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH049",
+    "name": "Dubwool V",
+    "tcgplayerProductID": 223753,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH055",
+    "name": "Hatterene V",
+    "tcgplayerProductID": 223756,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH057",
+    "name": "Grimmsnarl V",
+    "tcgplayerProductID": 229436,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH061",
+    "name": "Pikachu V",
+    "tcgplayerProductID": 232443,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH078",
+    "name": "Orbeetle V",
+    "tcgplayerProductID": 227026,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH083",
+    "name": "Alakazam V",
+    "tcgplayerProductID": 228981,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH084",
+    "name": "Eldegoss V",
+    "tcgplayerProductID": 251623,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict"
+  },
+  {
+    "providerCardID": "swshp-SWSH085",
+    "name": "Boltund V",
+    "tcgplayerProductID": 243659,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH086",
+    "name": "Cramorant V",
+    "tcgplayerProductID": 251622,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH097",
+    "name": "Dragapult VMAX",
+    "tcgplayerProductID": 232609,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH099",
+    "name": "Crobat VMAX",
+    "tcgplayerProductID": 232614,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH102",
+    "name": "Venusaur VMAX",
+    "tcgplayerProductID": 234375,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH103",
+    "name": "Blastoise VMAX",
+    "tcgplayerProductID": 234376,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH106",
+    "name": "Single Strike Urshifu V",
+    "tcgplayerProductID": 234377,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH107",
+    "name": "Rapid Strike Urshifu V",
+    "tcgplayerProductID": 234378,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH111",
+    "name": "Galarian Rapidash V",
+    "tcgplayerProductID": 236055,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH130",
+    "name": "Ice Rider Calyrex V",
+    "tcgplayerProductID": 245870,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH131",
+    "name": "Shadow Rider Calyrex V",
+    "tcgplayerProductID": 245869,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH132",
+    "name": "Dragapult",
+    "tcgplayerProductID": 252817,
+    "disposition": "prepared-signed-authoring-input",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH133",
+    "name": "Lance's Charizard V",
+    "tcgplayerProductID": 251104,
+    "disposition": "prepared-signed-authoring-input",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH134",
+    "name": "Dark Sylveon V",
+    "tcgplayerProductID": 251105,
+    "disposition": "prepared-signed-authoring-input",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH136",
+    "name": "Mimikyu",
+    "tcgplayerProductID": 260878,
+    "disposition": "prepared-signed-authoring-input",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH137",
+    "name": "Light Toxtricity",
+    "tcgplayerProductID": 260877,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH138",
+    "name": "Hydreigon C",
+    "tcgplayerProductID": 260879,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict",
+    "requiredProviderStamps": [
+      "25th-celebration"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH139",
+    "name": "Pikachu V-UNION",
+    "tcgplayerProductID": 251100,
+    "disposition": "hold-composite-four-card-identity"
+  },
+  {
+    "providerCardID": "swshp-SWSH154",
+    "name": "Dragonite V",
+    "tcgplayerProductID": 253421,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH155",
+    "name": "Greninja V-UNION",
+    "tcgplayerProductID": 250251,
+    "disposition": "hold-composite-four-card-identity"
+  },
+  {
+    "providerCardID": "swshp-SWSH159",
+    "name": "Mewtwo V-UNION",
+    "tcgplayerProductID": 250252,
+    "disposition": "hold-composite-four-card-identity"
+  },
+  {
+    "providerCardID": "swshp-SWSH163",
+    "name": "Zacian V-UNION",
+    "tcgplayerProductID": 250253,
+    "disposition": "hold-composite-four-card-identity"
+  },
+  {
+    "providerCardID": "swshp-SWSH176",
+    "name": "Hoopa V",
+    "tcgplayerProductID": 253420,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH180",
+    "name": "Flareon VMAX",
+    "tcgplayerProductID": 257709,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH182",
+    "name": "Vaporeon VMAX",
+    "tcgplayerProductID": 257708,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH184",
+    "name": "Jolteon VMAX",
+    "tcgplayerProductID": 257710,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH195",
+    "name": "Leafeon VSTAR",
+    "tcgplayerProductID": 263260,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH197",
+    "name": "Glaceon VSTAR",
+    "tcgplayerProductID": 263261,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH198",
+    "name": "Pikachu V",
+    "tcgplayerProductID": 260712,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH214",
+    "name": "Lucario VSTAR",
+    "tcgplayerProductID": 268305,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH215",
+    "name": "Morpeko V-UNION",
+    "tcgplayerProductID": 268449,
+    "disposition": "hold-composite-four-card-identity"
+  },
+  {
+    "providerCardID": "swshp-SWSH219",
+    "name": "Boltund V",
+    "tcgplayerProductID": 276051,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH225",
+    "name": "Alolan Exeggutor V",
+    "tcgplayerProductID": 279028,
+    "disposition": "prepared-signed-authoring-input",
+    "requiredProviderStamps": [
+      "set-logo"
+    ]
+  },
+  {
+    "providerCardID": "swshp-SWSH226",
+    "name": "Spark",
+    "tcgplayerProductID": null,
+    "disposition": "hold-no-exact-marketplace-product"
+  },
+  {
+    "providerCardID": "swshp-SWSH227",
+    "name": "Blanche",
+    "tcgplayerProductID": null,
+    "disposition": "hold-no-exact-marketplace-product"
+  },
+  {
+    "providerCardID": "swshp-SWSH228",
+    "name": "Candela",
+    "tcgplayerProductID": null,
+    "disposition": "hold-no-exact-marketplace-product"
+  },
+  {
+    "providerCardID": "swshp-SWSH230",
+    "name": "Radiant Eevee",
+    "tcgplayerProductID": null,
+    "disposition": "hold-no-exact-marketplace-product"
+  },
+  {
+    "providerCardID": "swshp-SWSH249",
+    "name": "Kleavor VSTAR",
+    "tcgplayerProductID": 276050,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH252",
+    "name": "Infernape V",
+    "tcgplayerProductID": 284499,
+    "disposition": "prepared-signed-authoring-input",
+    "reviewNote": "Marketplace number attribute omits H (SWS252); productName and inspected image footer show SWSH252, agreeing with provider."
+  },
+  {
+    "providerCardID": "swshp-SWSH254",
+    "name": "Origin Forme Palkia VSTAR",
+    "tcgplayerProductID": 449514,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH256",
+    "name": "Origin Forme Dialga VSTAR",
+    "tcgplayerProductID": 449513,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH265",
+    "name": "Zeraora VSTAR",
+    "tcgplayerProductID": 449524,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH268",
+    "name": "Deoxys VSTAR",
+    "tcgplayerProductID": 449525,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH280",
+    "name": "Regieleki V",
+    "tcgplayerProductID": 479879,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH281",
+    "name": "Regidrago V",
+    "tcgplayerProductID": 479880,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH286",
+    "name": "Pikachu VMAX",
+    "tcgplayerProductID": 478425,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH287",
+    "name": "Morpeko V-UNION",
+    "tcgplayerProductID": 477069,
+    "disposition": "hold-composite-four-card-identity"
+  },
+  {
+    "providerCardID": "swshp-SWSH292",
+    "name": "Zacian V",
+    "tcgplayerProductID": null,
+    "disposition": "hold-no-exact-marketplace-product"
+  },
+  {
+    "providerCardID": "swshp-SWSH293",
+    "name": "Zamazenta V",
+    "tcgplayerProductID": null,
+    "disposition": "hold-no-exact-marketplace-product"
+  },
+  {
+    "providerCardID": "swshp-SWSH294",
+    "name": "Hisuian Electrode V",
+    "tcgplayerProductID": 451116,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH295",
+    "name": "Virizion V",
+    "tcgplayerProductID": 449517,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH298",
+    "name": "Hisuian Zoroark VSTAR",
+    "tcgplayerProductID": 449528,
+    "disposition": "prepared-signed-authoring-input"
+  },
+  {
+    "providerCardID": "swshp-SWSH299",
+    "name": "Jirachi V",
+    "tcgplayerProductID": 584511,
+    "disposition": "hold-provider-holo-versus-marketplace-normal-only-conflict"
+  },
+  {
+    "providerCardID": "swshp-SWSH301",
+    "name": "Lugia V",
+    "tcgplayerProductID": 506006,
+    "disposition": "prepared-signed-authoring-input"
+  }
+]

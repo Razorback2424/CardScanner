@@ -1,0 +1,404 @@
+[
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/487439/details",
+    "status": 200,
+    "sha256": "1ce2de7c2c0726221e4b0862a6862785fd5175967e15aeb7e72dff94de0c3717",
+    "requestedProductID": 487439,
+    "identity": {
+      "productId": 487439.0,
+      "productName": "Mimikyu ex",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "004"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/497721/details",
+    "status": 200,
+    "sha256": "8d3c6c1997cb599f21053fe95b3f40a24678963262969d1181823a39a91627e5",
+    "requestedProductID": 497721,
+    "identity": {
+      "productId": 497721.0,
+      "productName": "Cyclizar ex",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "018"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/520722/details",
+    "status": 200,
+    "sha256": "56133e1afe4ca25303dad1cbf5ff491ce93c6004a834e5ae33a9cb1409da3bf1",
+    "requestedProductID": 520722,
+    "identity": {
+      "productId": 520722.0,
+      "productName": "Zapdos ex - 049",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "049"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/529857/details",
+    "status": 200,
+    "sha256": "173bf80191d741e9f8f6c1ba4dee5258599a450e804cabb8f3037148d3bd4e73",
+    "requestedProductID": 529857,
+    "identity": {
+      "productId": 529857.0,
+      "productName": "Roaring Moon ex - 067",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "067"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/531864/details",
+    "status": 200,
+    "sha256": "2c66ab314be3a0fc26cfc930f0570debced0d6815846a2d0c221299fdf55391c",
+    "requestedProductID": 531864,
+    "identity": {
+      "productId": 531864.0,
+      "productName": "Iron Valiant ex - 068",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "068"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/537976/details",
+    "status": 200,
+    "sha256": "381180c26a70b7bec41a85675e90e2a22b8c681edb644db89c2a519bbf52d345",
+    "requestedProductID": 537976,
+    "identity": {
+      "productId": 537976.0,
+      "productName": "Skeledirge ex - 081",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "081"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/537977/details",
+    "status": 200,
+    "sha256": "a1ce8d478effbfff39dd3d64ee33bba665f22d8182e9088b17d0647e057de64e",
+    "requestedProductID": 537977,
+    "identity": {
+      "productId": 537977.0,
+      "productName": "Quaquaval ex - 084",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "084"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/537979/details",
+    "status": 200,
+    "sha256": "f68db274485b90c643f91ee02d9cb7492e9fc29c59689cca92b920d4ffaa22ac",
+    "requestedProductID": 537979,
+    "identity": {
+      "productId": 537979.0,
+      "productName": "Meowscarada ex - 078",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "078"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/543638/details",
+    "status": 200,
+    "sha256": "937e811329e9de53b0ea4c8fe4e01a46c506ff142ae9c61971ba07ad53103a7b",
+    "requestedProductID": 543638,
+    "identity": {
+      "productId": 543638.0,
+      "productName": "Mabosstiff ex - Jumbo Card",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "086"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/548540/details",
+    "status": 200,
+    "sha256": "3454c37160838dd2762b70b4a19f38c2ba5916ac3205ad3427f02e8a985e405d",
+    "requestedProductID": 548540,
+    "identity": {
+      "productId": 548540.0,
+      "productName": "Grafaiai ex - 100 (SV: Scarlet & Violet Promo Cards)",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "100"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/560085/details",
+    "status": 200,
+    "sha256": "39ee24344a84ea9262a2bcceeee32235b45aa1fff255cada3166b07d6acc2748",
+    "requestedProductID": 560085,
+    "identity": {
+      "productId": 560085.0,
+      "productName": "Palafin ex - 126",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "126"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/581987/details",
+    "status": 200,
+    "sha256": "0ae50c81cbabceda68a52bb499ac85213556baffcd0638b4761d0c3ed7d363d1",
+    "requestedProductID": 581987,
+    "identity": {
+      "productId": 581987.0,
+      "productName": "Charizard ex - 125/197",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "125/197"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/595035/details",
+    "status": 200,
+    "sha256": "75c9ea1080094fdf4eaf0363481b276a0c6f5a8bb972882eb7d45b7bc0c449a4",
+    "requestedProductID": 595035,
+    "identity": {
+      "productId": 595035.0,
+      "productName": "Terapagos & Friends",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": ""
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/595474/details",
+    "status": 200,
+    "sha256": "d103d2b662effea1fa0d9d85643b6c48e3f6a3d48f991e042eff4572bbecee45",
+    "requestedProductID": 595474,
+    "identity": {
+      "productId": 595474.0,
+      "productName": "Bloodmoon Ursaluna ex - 177",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "141/167"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/596423/details",
+    "status": 200,
+    "sha256": "f8ef62d7b5cedb6816365a53630bf17016f33b6471a83206b737b00bdb58ba80",
+    "requestedProductID": 596423,
+    "identity": {
+      "productId": 596423.0,
+      "productName": "Houndstone ex - 162",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "162"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/625633/details",
+    "status": 200,
+    "sha256": "70735aea49c6a649f2a4a2821904ef065dfdb0915e4d4c5635f30e20f7fc1698",
+    "requestedProductID": 625633,
+    "identity": {
+      "productId": 625633.0,
+      "productName": "Hop's Zacian ex - SVP193",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SVP193"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/639951/details",
+    "status": 200,
+    "sha256": "c96ee316e9b38210dedd98d8578cae5cd3bc2838b3143eb4a8871771535209ee",
+    "requestedProductID": 639951,
+    "identity": {
+      "productId": 639951.0,
+      "productName": "Team Rocket's Mewtwo ex",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "205"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/641615/details",
+    "status": 200,
+    "sha256": "037bab1e42d6ed6b3184d4bbea6d542d91e3f6f35d3b94d723db06f174765ec7",
+    "requestedProductID": 641615,
+    "identity": {
+      "productId": 641615.0,
+      "productName": "Charizard ex -196",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "196"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/646170/details",
+    "status": 200,
+    "sha256": "e98a3e2419d5287d0facb79a64a8af53bb14815d57989779a6ee6700a615a7ad",
+    "requestedProductID": 646170,
+    "identity": {
+      "productId": 646170.0,
+      "productName": "Victini - 208",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "208"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/666593/details",
+    "status": 200,
+    "sha256": "91bc1bcc7c436bc858ac78701d802bcce52a7ab6eb5b33ad854ffbff92a57242",
+    "requestedProductID": 666593,
+    "identity": {
+      "productId": 666593.0,
+      "productName": "Great Tusk ex - 072 (Paldean Fates Stamped)",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "072"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/714357/details",
+    "status": 200,
+    "sha256": "bdb97f722c3d07f4e088d5153e0c091ac951571dca8c82e8454fd2cf0f306806",
+    "requestedProductID": 714357,
+    "identity": {
+      "productId": 714357.0,
+      "productName": "Eevee - 116/128",
+      "setId": 24722.0,
+      "setCode": "30C",
+      "setName": "ME: 30th Celebration",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "116/128"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/717879/details",
+    "status": 200,
+    "sha256": "e529dbe60e0651922d658b0c0f0c08e7012289407e00222ba3768ea9c89fcd9d",
+    "requestedProductID": 717879,
+    "identity": {
+      "productId": 717879.0,
+      "productName": "Eevee - 116/128 (30th Celebration) (Cosmos Holo)",
+      "setId": 2289.0,
+      "setCode": "BLE",
+      "setName": "Blister Exclusives",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "116/128"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/791832/details",
+    "status": 400,
+    "error": "HTTP Error 400: Bad Request",
+    "requestedProductID": 791832
+  }
+]

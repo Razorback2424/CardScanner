@@ -1,0 +1,74 @@
+{
+  "scope": "54 exact SWSH Jumbo additions only; no app/publisher algorithm changes; unsigned and unpublished",
+  "checkoutHEAD": "9413e906cab65c1d8c61882d8eb6f137bf44617e",
+  "activeRevision": 19,
+  "activeEnvelopeSHA256": "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333",
+  "baselineSignatureVerifiedBy": "Normal native publisher; production environment and Config/PokemonCatalogProduction.xcconfig public trust keys",
+  "inputSHA256": "f0077b53fd6860aa9907c949aeeb722ca1607db430a8526a8b7aa1f6b36a0147",
+  "previousInputSHA256": "093ad2ff6a7dced6dd1152078f30363300ba20932a1b5f4bd6ac905949faa386",
+  "changedInputDescriptors": [
+    "swshp"
+  ],
+  "newJumboEntries": 54,
+  "previousTwentySupplementsPreserved": true,
+  "allOtherInputFieldsPreserved": true,
+  "familySummary": {
+    "members": 307,
+    "successfulCardReceipts": 307,
+    "jumboCardIdentities": 73,
+    "jumboDetailedObjects": 73,
+    "requestedProducts": 67,
+    "successfulProductReceipts": 67,
+    "failures": []
+  },
+  "evidenceUtilitySHA256": "8a56329ed6e3afcfaf5166a69845cc0081fff313260e222aca875f7049911a71",
+  "sharedReceiptUtilitySHA256": "55a0f3054f960802a4d263b6b6f390fe21f8caf167460ba8c1a334b69381d459",
+  "candidate": {
+    "revision": 20,
+    "generatedAt": "2026-11-03T01:44:24Z",
+    "setCount": 75,
+    "numberedCardCount": 6675,
+    "additionalVariants": 74,
+    "jumboEntries": 73,
+    "cosmosEntries": 1,
+    "changeClass": "newSet",
+    "authorityChangedProviderSetIDs": [
+      "30th",
+      "sv03",
+      "svp",
+      "swshp"
+    ],
+    "contentChangedProviderSetIDs": [
+      "30th-c",
+      "me02",
+      "mep"
+    ],
+    "all33ExistingProviderFingerprintsUnchanged": true,
+    "payloadSHA256": "db1a57e5285d0486f77eb7288073e16ac024e4fbcb0970ff7b1bb286fa1567bf",
+    "snapshotSHA256": "16eea4f71ce7eb3c2a5ce12db9119470016bb8f29448348e1ea358fecedae1fe",
+    "nativeReviewSHA256": "af4fcdcfece0df1a75a3ebf5e38983b6bf8a290811f13e07a372f887d625fc87"
+  },
+  "nativeValidation": {
+    "initialResult": "exit 1: TCGdex HTTP 502 cards/sv08.5-117; no candidate artifacts produced",
+    "singleEndpointRecovery": {
+      "url": "https://api.tcgdex.net/v2/en/cards/sv08.5-117",
+      "status": 200,
+      "sha256": "7cbb36505688509076ea5a531c98c4406c36b005a5d867d518691872b7acbe46",
+      "identity": {
+        "id": "sv08.5-117",
+        "name": "Maximum Belt"
+      },
+      "observedAtUTC": "2026-11-03T01:44:18.900680+00:00"
+    },
+    "retryResult": "exit 0: ordinary full validate --live true against verified production baseline",
+    "warnings": [
+      "Ambiguous secondary artwork matches tk2a/tk2b retained",
+      "One secondary /v2/cards HTTP 500 warning; candidate was accepted and reports secondaryProviderAvailable true"
+    ],
+    "appCoreTestsRerun": false,
+    "testBoundary": "Data-only batch; normal native candidate validation checks all 54 exact base identities and unique matching Jumbo physical rows. Previous app/Core test results are historical; no physical camera or live paid quote claim."
+  },
+  "published": false,
+  "signed": false,
+  "remainingGlobalCoverageGoalComplete": false
+}

@@ -1,0 +1,68 @@
+{
+  "status": "Local unsigned native candidate validated; no publication",
+  "checkoutHEAD": "9413e906cab65c1d8c61882d8eb6f137bf44617e",
+  "generatedAt": "2026-11-03T04:47:28Z",
+  "inputSHA256": "b72c8ca9220ead96326af9e4a1225b25f037796c17a8c3b9e9a0470f7e824baa",
+  "validation": {
+    "nativePublisherExitCode": 0,
+    "activeProductionRevision": 19,
+    "activeEnvelopeSHA256": "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333",
+    "activeSignatureVerifiedByNormalNativePublisher": true,
+    "candidateRevision": 20,
+    "changeClass": "newSet",
+    "descriptors": 75,
+    "numberedSummaries": 6675,
+    "protectedRecords": 95,
+    "allAuthoringCorrectionsExactlyCarried": true,
+    "previousProviderFingerprintsUnchanged": 33,
+    "secondaryProviderAvailable": true,
+    "ambiguousSecondaryMatches": [
+      "tk2a",
+      "tk2b"
+    ]
+  },
+  "artworkContinuity": {
+    "allPriorCardArtworkMappingsRetainedExactly": true,
+    "priorMappingsBySet": {
+      "30th-c": 30,
+      "bwp": 3,
+      "smp": 64
+    },
+    "priorMappingCount": 97,
+    "newMappingsBySet": {
+      "tk-ex-latia": 10,
+      "tk-ex-latio": 10,
+      "pop6": 2,
+      "2011bw": 12,
+      "2012bw": 12,
+      "2016xy": 12,
+      "2019sm": 12,
+      "2021swsh": 25,
+      "2022swsh": 15,
+      "mep": 40,
+      "svp": 19
+    },
+    "earlier97MappingOmissionAppliesToThisCandidate": false,
+    "limitation": "Mapping continuity does not establish public image URL health, product-camera correctness or release readiness"
+  },
+  "artifacts": {
+    "root": "/Volumes/T7/CodexBuilds/CardScannerMythicalPublisher20261102",
+    "payloadSHA256": "dd4d6e77c304d5c326f239636839600f59be9eccc359c86d5c81010d35640ae4",
+    "snapshotSHA256": "1fc3764a1391c97b4c930d636db57de9856e344326433e4ca25cb73931e9c863",
+    "nativeReviewSHA256": "8b07109d0cc7983e48cda2b613eb904a96737d144d296869a61a6876aa14ce3a",
+    "repositoryNativeReviewSHA256": "dbae6806e8c0807559ed152f7e2e74e28e743cf3a3d59ee72342f41049151e57",
+    "repositoryNativeReviewNormalization": "One final newline added; parsed JSON is identical to the native artifact"
+  },
+  "verificationBoundary": {
+    "appOrCoreCodeChangedInThisBatch": false,
+    "mechanismTestsRerunForDataOnlyBatch": false,
+    "priorMilestoneSharedPassed": 88,
+    "priorMilestoneSharedSkipped": 1,
+    "priorMilestoneIOSPassed": 80,
+    "physicalCameraAccepted": false,
+    "paidQuotesAccepted": false,
+    "signed": false,
+    "published": false,
+    "committed": false
+  }
+}

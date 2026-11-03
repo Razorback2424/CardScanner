@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "purpose": "Review queue only; not publisher input or a signed release",
+  "cards": [
+    {
+      "catalogID": "sv03-125",
+      "name": "Charizard ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 749033,
+        "tcgplayer": 581987
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/sv03-125",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/581987/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 581987
+    },
+    {
+      "catalogID": "svp-004",
+      "name": "Mimikyu ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 701131,
+        "tcgplayer": 487439
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-004",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/487439/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 487439
+    },
+    {
+      "catalogID": "svp-018",
+      "name": "Cyclizar ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 703189,
+        "tcgplayer": 497721
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-018",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/497721/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 497721
+    },
+    {
+      "catalogID": "svp-049",
+      "name": "Zapdos ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 720393,
+        "tcgplayer": 520722
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-049",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/520722/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 520722
+    },
+    {
+      "catalogID": "svp-067",
+      "name": "Roaring Moon ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 740408,
+        "tcgplayer": 529857
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-067",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/529857/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 529857
+    },
+    {
+      "catalogID": "svp-068",
+      "name": "Iron Valiant ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 740410,
+        "tcgplayer": 531864
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-068",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/531864/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 531864
+    },
+    {
+      "catalogID": "svp-072",
+      "name": "Great Tusk ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 866036,
+        "tcgplayer": 666593
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-072",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/666593/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 666593,
+      "reviewNotes": "Jumbo has Paldean Fates set-logo stamp; exact stamp is required."
+    },
+    {
+      "catalogID": "svp-078",
+      "name": "Meowscarada ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 782679,
+        "tcgplayer": 537979
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-078",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/537979/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 537979
+    },
+    {
+      "catalogID": "svp-081",
+      "name": "Skeledirge ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 751806,
+        "tcgplayer": 537976
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-081",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/537976/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 537976
+    },
+    {
+      "catalogID": "svp-084",
+      "name": "Quaquaval ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 782681,
+        "tcgplayer": 537977
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-084",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/537977/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 537977
+    },
+    {
+      "catalogID": "svp-086",
+      "name": "Mabosstiff ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 751811,
+        "tcgplayer": 543638
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-086",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/543638/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 543638
+    },
+    {
+      "catalogID": "svp-100",
+      "name": "Grafaiai ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 764545,
+        "tcgplayer": 548540
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-100",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/548540/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 548540
+    },
+    {
+      "catalogID": "svp-126",
+      "name": "Palafin ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 769424,
+        "tcgplayer": 560085
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-126",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/560085/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 560085
+    },
+    {
+      "catalogID": "svp-162",
+      "name": "Houndstone ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "tcgplayer": 791832
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-162",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/596423/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 596423,
+      "reviewNotes": "Reviewed replacement 596423 for provider handle 791832; quotes attached to 791832 are rejected."
+    },
+    {
+      "catalogID": "svp-177",
+      "name": "Bloodmoon Ursaluna ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 800150,
+        "tcgplayer": 595474
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-177",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/595474/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 595474,
+      "reviewNotes": "Product number attribute 141/167 conflicts with its name; inspected oversized image footer confirms SVP 177."
+    },
+    {
+      "catalogID": "svp-193",
+      "name": "Hop's Zacian ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 819345,
+        "tcgplayer": 625633
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-193",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/625633/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 625633
+    },
+    {
+      "catalogID": "svp-196",
+      "name": "Charizard ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "lenticular",
+      "providerProductHandles": {
+        "cardmarket": 821617,
+        "tcgplayer": 641615
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-196",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/641615/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 641615
+    },
+    {
+      "catalogID": "svp-205",
+      "name": "Team Rocket's Mewtwo ex",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 830111,
+        "tcgplayer": 639951
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-205",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/639951/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 639951
+    },
+    {
+      "catalogID": "svp-208",
+      "name": "Victini",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "holo",
+      "providerProductHandles": {
+        "cardmarket": 836654,
+        "tcgplayer": 646170
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-208",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/646170/details",
+      "sourceReview": "corroborated-two-independent-primary-catalogs",
+      "signingDisposition": "prepared-in-protected-additionalVariants-awaiting-signing",
+      "applied": true,
+      "reviewedTCGplayerProductID": 646170
+    },
+    {
+      "catalogID": "svp-500",
+      "name": "Terapagos & Friends",
+      "proposedVariantLabel": "Jumbo",
+      "physicalTreatmentEvidence": "normal",
+      "providerProductHandles": {
+        "cardmarket": 784943,
+        "tcgplayer": 595035
+      },
+      "primaryEvidenceURL": "https://api.tcgdex.net/v2/en/cards/svp-500",
+      "corroboratingEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/595035/details",
+      "sourceReview": "physical-object-corroborated-numberless-printing-held",
+      "signingDisposition": "hold-provider-500-is-not-a-printed-number",
+      "applied": false,
+      "reviewedTCGplayerProductID": 595035
+    }
+  ],
+  "appliedMeaning": "Present in local signed authoring input; no production signature or publication",
+  "published": false
+}

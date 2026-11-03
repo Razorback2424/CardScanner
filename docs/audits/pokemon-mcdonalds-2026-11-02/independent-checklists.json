@@ -1,0 +1,920 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "sets": [
+    {
+      "year": 2011,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2011_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Snivy"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Maractus"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Tepig"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Oshawott"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Alomomola"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Blitzle"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Munna"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Sandile"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Zorua"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Klink"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Pidove"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Audino"
+        }
+      ]
+    },
+    {
+      "year": 2012,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2012_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Servine"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Pansage"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Dwebble"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Pignite"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Dewott"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Emolga"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Woobat"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Drilbur"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Purrloin"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Scraggy"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Klang"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Axew"
+        }
+      ]
+    },
+    {
+      "year": 2014,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2014_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Weedle"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Chespin"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Fennekin"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Froakie"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Pikachu"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Inkay"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Honedge"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Snubbull"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Swirlix"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Bunnelby"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Fletchling"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Furfrou"
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2015_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Treecko"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Lotad"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Torchic"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Staryu"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Mudkip"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Pikachu"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Electrike"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Rhyhorn"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Meditite"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Marill"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Zigzagoon"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Skitty"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2016_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Vulpix"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Torchic"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Fennekin"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Magikarp"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Totodile"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Pikachu"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Scraggy"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Jigglypuff"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Togepi"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Dedenne"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Meowth"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Eevee"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2017_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Rowlet"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Grubbin"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Litten"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Popplio"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Pikachu"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Cosmog"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Crabrawler"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Alolan Meowth"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Alolan Diglett"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Cutiefly"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Pikipek"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Yungoos"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2018_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Growlithe"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Psyduck"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Horsea"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Pikachu"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Slowpoke"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Machop"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Cubone"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Magnemite"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Dratini"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Chansey"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Eevee"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Porygon"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2019_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Caterpie"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Alolan Exeggutor"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Magmar"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Alolan Sandshrew"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Lapras"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Pikachu"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Gastly"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Mankey"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Onix"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Alolan Meowth"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Alolan Dugtrio"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Eevee"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2021_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 25,
+          "name": "Bulbasaur"
+        },
+        {
+          "number": 2,
+          "denominator": 25,
+          "name": "Chikorita"
+        },
+        {
+          "number": 3,
+          "denominator": 25,
+          "name": "Treecko"
+        },
+        {
+          "number": 4,
+          "denominator": 25,
+          "name": "Turtwig"
+        },
+        {
+          "number": 5,
+          "denominator": 25,
+          "name": "Snivy"
+        },
+        {
+          "number": 6,
+          "denominator": 25,
+          "name": "Chespin"
+        },
+        {
+          "number": 7,
+          "denominator": 25,
+          "name": "Rowlet"
+        },
+        {
+          "number": 8,
+          "denominator": 25,
+          "name": "Grookey"
+        },
+        {
+          "number": 9,
+          "denominator": 25,
+          "name": "Charmander"
+        },
+        {
+          "number": 10,
+          "denominator": 25,
+          "name": "Cyndaquil"
+        },
+        {
+          "number": 11,
+          "denominator": 25,
+          "name": "Torchic"
+        },
+        {
+          "number": 12,
+          "denominator": 25,
+          "name": "Chimchar"
+        },
+        {
+          "number": 13,
+          "denominator": 25,
+          "name": "Tepig"
+        },
+        {
+          "number": 14,
+          "denominator": 25,
+          "name": "Fennekin"
+        },
+        {
+          "number": 15,
+          "denominator": 25,
+          "name": "Litten"
+        },
+        {
+          "number": 16,
+          "denominator": 25,
+          "name": "Scorbunny"
+        },
+        {
+          "number": 17,
+          "denominator": 25,
+          "name": "Squirtle"
+        },
+        {
+          "number": 18,
+          "denominator": 25,
+          "name": "Totodile"
+        },
+        {
+          "number": 19,
+          "denominator": 25,
+          "name": "Mudkip"
+        },
+        {
+          "number": 20,
+          "denominator": 25,
+          "name": "Piplup"
+        },
+        {
+          "number": 21,
+          "denominator": 25,
+          "name": "Oshawott"
+        },
+        {
+          "number": 22,
+          "denominator": 25,
+          "name": "Froakie"
+        },
+        {
+          "number": 23,
+          "denominator": 25,
+          "name": "Popplio"
+        },
+        {
+          "number": 24,
+          "denominator": 25,
+          "name": "Sobble"
+        },
+        {
+          "number": 25,
+          "denominator": 25,
+          "name": "Pikachu"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2022_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 15,
+          "name": "Ledyba"
+        },
+        {
+          "number": 2,
+          "denominator": 15,
+          "name": "Rowlet"
+        },
+        {
+          "number": 3,
+          "denominator": 15,
+          "name": "Gossifleur"
+        },
+        {
+          "number": 4,
+          "denominator": 15,
+          "name": "Growlithe"
+        },
+        {
+          "number": 5,
+          "denominator": 15,
+          "name": "Victini"
+        },
+        {
+          "number": 6,
+          "denominator": 15,
+          "name": "Lapras"
+        },
+        {
+          "number": 7,
+          "denominator": 15,
+          "name": "Pikachu"
+        },
+        {
+          "number": 8,
+          "denominator": 15,
+          "name": "Chinchou"
+        },
+        {
+          "number": 9,
+          "denominator": 15,
+          "name": "Flaaffy"
+        },
+        {
+          "number": 10,
+          "denominator": 15,
+          "name": "Tynamo"
+        },
+        {
+          "number": 11,
+          "denominator": 15,
+          "name": "Cutiefly"
+        },
+        {
+          "number": 12,
+          "denominator": 15,
+          "name": "Bewear"
+        },
+        {
+          "number": 13,
+          "denominator": 15,
+          "name": "Pangoro"
+        },
+        {
+          "number": 14,
+          "denominator": 15,
+          "name": "Drampa"
+        },
+        {
+          "number": 15,
+          "denominator": 15,
+          "name": "Smeargle"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2023_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 15,
+          "name": "Sprigatito"
+        },
+        {
+          "number": 2,
+          "denominator": 15,
+          "name": "Fuecoco"
+        },
+        {
+          "number": 3,
+          "denominator": 15,
+          "name": "Quaxly"
+        },
+        {
+          "number": 4,
+          "denominator": 15,
+          "name": "Cetoddle"
+        },
+        {
+          "number": 5,
+          "denominator": 15,
+          "name": "Cetitan"
+        },
+        {
+          "number": 6,
+          "denominator": 15,
+          "name": "Pikachu"
+        },
+        {
+          "number": 7,
+          "denominator": 15,
+          "name": "Pawmi"
+        },
+        {
+          "number": 8,
+          "denominator": 15,
+          "name": "Kilowattrel"
+        },
+        {
+          "number": 9,
+          "denominator": 15,
+          "name": "Flittle"
+        },
+        {
+          "number": 10,
+          "denominator": 15,
+          "name": "Sandaconda"
+        },
+        {
+          "number": 11,
+          "denominator": 15,
+          "name": "Klawf"
+        },
+        {
+          "number": 12,
+          "denominator": 15,
+          "name": "Blissey"
+        },
+        {
+          "number": 13,
+          "denominator": 15,
+          "name": "Tandemaus"
+        },
+        {
+          "number": 14,
+          "denominator": 15,
+          "name": "Cyclizar"
+        },
+        {
+          "number": 15,
+          "denominator": 15,
+          "name": "Kirlia"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2024_(TCG)",
+      "access": "web tool rendered checklist; English denominator only",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 15,
+          "name": "Charizard"
+        },
+        {
+          "number": 2,
+          "denominator": 15,
+          "name": "Pikachu"
+        },
+        {
+          "number": 3,
+          "denominator": 15,
+          "name": "Miraidon"
+        },
+        {
+          "number": 4,
+          "denominator": 15,
+          "name": "Jigglypuff"
+        },
+        {
+          "number": 5,
+          "denominator": 15,
+          "name": "Hatenna"
+        },
+        {
+          "number": 6,
+          "denominator": 15,
+          "name": "Dragapult"
+        },
+        {
+          "number": 7,
+          "denominator": 15,
+          "name": "Quagsire"
+        },
+        {
+          "number": 8,
+          "denominator": 15,
+          "name": "Koraidon"
+        },
+        {
+          "number": 9,
+          "denominator": 15,
+          "name": "Umbreon"
+        },
+        {
+          "number": 10,
+          "denominator": 15,
+          "name": "Hydreigon"
+        },
+        {
+          "number": 11,
+          "denominator": 15,
+          "name": "Roaring Moon"
+        },
+        {
+          "number": 12,
+          "denominator": 15,
+          "name": "Dragonite"
+        },
+        {
+          "number": 13,
+          "denominator": 15,
+          "name": "Eevee"
+        },
+        {
+          "number": 14,
+          "denominator": 15,
+          "name": "Rayquaza"
+        },
+        {
+          "number": 15,
+          "denominator": 15,
+          "name": "Drampa"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,701 @@
+{
+  "observedAtUTC": "2026-11-03T04:42:26.777762+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY185",
+      "status": 200,
+      "sha256": "49e357e3106a200ee5eb187760c48098392edf93e34df469745d7815de23c5c0",
+      "requestedCardID": "xyp-XY185",
+      "identity": {
+        "id": "xyp-XY185",
+        "localId": "XY185",
+        "name": "Volcanion",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY186",
+      "status": 200,
+      "sha256": "bc23bae82a540266acbc8ab25ac21879c88568c7f1b397433ab51cda31c3a64d",
+      "requestedCardID": "xyp-XY186",
+      "identity": {
+        "id": "xyp-XY186",
+        "localId": "XY186",
+        "name": "Magearna",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY187",
+      "status": 200,
+      "sha256": "4ff189d87fa1431f91861dfc884b9a4d8d906cb25f9c0df0bc69b5910c8e96d9",
+      "requestedCardID": "xyp-XY187",
+      "identity": {
+        "id": "xyp-XY187",
+        "localId": "XY187",
+        "name": "Celebi",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY188",
+      "status": 200,
+      "sha256": "5cfb6ba18487417ca8585208bc20279af4812fc0c35b14824b26932772b1c182",
+      "requestedCardID": "xyp-XY188",
+      "identity": {
+        "id": "xyp-XY188",
+        "localId": "XY188",
+        "name": "Shaymin",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY189",
+      "status": 200,
+      "sha256": "03e06f7f7c7b4a377efc6250aecbcc43d19faf1442d32356b6cce179f0372fc4",
+      "requestedCardID": "xyp-XY189",
+      "identity": {
+        "id": "xyp-XY189",
+        "localId": "XY189",
+        "name": "Victini",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY190",
+      "status": 200,
+      "sha256": "3bb3ce657a8d019db60df2c1cfa562c14e1c3d21ac1fbb984cc8d6f8c4a7ca5f",
+      "requestedCardID": "xyp-XY190",
+      "identity": {
+        "id": "xyp-XY190",
+        "localId": "XY190",
+        "name": "Manaphy",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY191",
+      "status": 200,
+      "sha256": "61c10729fa05938812dae67709456e0fb09f7a4c7cb44e889962633134d1d249",
+      "requestedCardID": "xyp-XY191",
+      "identity": {
+        "id": "xyp-XY191",
+        "localId": "XY191",
+        "name": "Keldeo",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY192",
+      "status": 200,
+      "sha256": "ef2ddbf0402c54258ae0254e0cc828a10b6ed518330c44cc87b80318a3d92ca6",
+      "requestedCardID": "xyp-XY192",
+      "identity": {
+        "id": "xyp-XY192",
+        "localId": "XY192",
+        "name": "Mew",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY193",
+      "status": 200,
+      "sha256": "caa408317be90de921729e8655e59c59fc30772e4ebed031b96015ad3d50215c",
+      "requestedCardID": "xyp-XY193",
+      "identity": {
+        "id": "xyp-XY193",
+        "localId": "XY193",
+        "name": "Meloetta",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY194",
+      "status": 200,
+      "sha256": "6ebbb3baaa09e82455a138f6432bf62efca1c9d9258889093f58d23cf31a547b",
+      "requestedCardID": "xyp-XY194",
+      "identity": {
+        "id": "xyp-XY194",
+        "localId": "XY194",
+        "name": "Darkrai",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY195",
+      "status": 200,
+      "sha256": "2b8439dc17e45cdebbab976cc26e83aa34bb7f4f1e9ed112e24b7725cab37574",
+      "requestedCardID": "xyp-XY195",
+      "identity": {
+        "id": "xyp-XY195",
+        "localId": "XY195",
+        "name": "Jirachi",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY196",
+      "status": 200,
+      "sha256": "fe4f77197bb2a915901322f55b9d3bb0e9178e95fb16891450c5fd4eb0fd6720",
+      "requestedCardID": "xyp-XY196",
+      "identity": {
+        "id": "xyp-XY196",
+        "localId": "XY196",
+        "name": "Genesect",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY197",
+      "status": 200,
+      "sha256": "64911fa7e0a8515c60563dd9d31361bed18687f34a7af5e4a7b202a35dae665c",
+      "requestedCardID": "xyp-XY197",
+      "identity": {
+        "id": "xyp-XY197",
+        "localId": "XY197",
+        "name": "Arceus",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    }
+  ],
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127128/details",
+      "status": 200,
+      "sha256": "b86d01b335d46d107a42bb37124ab00ca61239be31a92ae2de09655e8002a839",
+      "requestedProductID": 127128,
+      "identity": {
+        "productId": 127128.0,
+        "productName": "Arceus - XY197",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY197"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127129/details",
+      "status": 200,
+      "sha256": "4d065afbf6e8e5474f723bbbbf156ec1d22464fae2c7500dad1ac1238b275f43",
+      "requestedProductID": 127129,
+      "identity": {
+        "productId": 127129.0,
+        "productName": "Celebi - XY187",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY187"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127130/details",
+      "status": 200,
+      "sha256": "b9b3c7e763576e107e96e3d4cec51e3a8722b1bd6278924f71af7650579c003b",
+      "requestedProductID": 127130,
+      "identity": {
+        "productId": 127130.0,
+        "productName": "Darkrai - XY194",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY194"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127131/details",
+      "status": 200,
+      "sha256": "5b396af80f5267a9f1b6461f93e302114a22b437d6f671232025efe1df255df0",
+      "requestedProductID": 127131,
+      "identity": {
+        "productId": 127131.0,
+        "productName": "Genesect - XY196",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY196"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127132/details",
+      "status": 200,
+      "sha256": "c0dba9089abb2bb98ba9f891ca0db1a7b910a93f4e5a6822ebb3211126d6d562",
+      "requestedProductID": 127132,
+      "identity": {
+        "productId": 127132.0,
+        "productName": "Jirachi - XY195",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY195"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127133/details",
+      "status": 200,
+      "sha256": "3d40f14c40e17f28dc8bb4d70c7ee6f575243b3b1771c509bb836ffc6a18c702",
+      "requestedProductID": 127133,
+      "identity": {
+        "productId": 127133.0,
+        "productName": "Keldeo - XY191",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY191"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127134/details",
+      "status": 200,
+      "sha256": "50bd1f2e1beb38d009f67aac0598d19988008d78eef3e3dfdc1a77e5a212f428",
+      "requestedProductID": 127134,
+      "identity": {
+        "productId": 127134.0,
+        "productName": "Manaphy - XY190",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY190"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127135/details",
+      "status": 200,
+      "sha256": "f09341b26d8361ed77703501ee15cc5ea5e083224bb5452ee349651a626e5213",
+      "requestedProductID": 127135,
+      "identity": {
+        "productId": 127135.0,
+        "productName": "Mew - XY192",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY192"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127136/details",
+      "status": 200,
+      "sha256": "d5413f70b0c35992ef92dce55ed4afbc8af4b14c71ad542623639910a9b54d58",
+      "requestedProductID": 127136,
+      "identity": {
+        "productId": 127136.0,
+        "productName": "Shaymin - XY188",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY188"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127137/details",
+      "status": 200,
+      "sha256": "bad10a7bbc9c48a2578a7b5075054baefa1407ac1a3185f5d16b4c120dbe46b5",
+      "requestedProductID": 127137,
+      "identity": {
+        "productId": 127137.0,
+        "productName": "Victini - XY189",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY189"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127138/details",
+      "status": 200,
+      "sha256": "8f97bd643d3d4185618bd6c37e5f7e11b64ea962b41fc0bedd623cf6c85eb88c",
+      "requestedProductID": 127138,
+      "identity": {
+        "productId": 127138.0,
+        "productName": "Magearna - XY186",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY186"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127139/details",
+      "status": 200,
+      "sha256": "471da57c6b154937d8e619808cefbef644bb81185bc0db954bd09a0ace9a88f8",
+      "requestedProductID": 127139,
+      "identity": {
+        "productId": 127139.0,
+        "productName": "Volcanion - XY185",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY185"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/152950/details",
+      "status": 200,
+      "sha256": "05a83c2fdf642017aa2b8672ac789dd7e22e4e664b00b4d6e11edd43dfcee8ec",
+      "requestedProductID": 152950,
+      "identity": {
+        "productId": 152950.0,
+        "productName": "Meloetta - XY193",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY193"
+      }
+    }
+  ],
+  "manufacturerPDFAccess": {
+    "url": "https://deviramericas.com/wp-content/uploads/2016/10/Volcanion_Magearna_Mythical_Collection_Sell_Sheet.pdf",
+    "status": 403,
+    "scope": "Normal public GET failed; PDF not downloaded or visually inspected"
+  }
+}

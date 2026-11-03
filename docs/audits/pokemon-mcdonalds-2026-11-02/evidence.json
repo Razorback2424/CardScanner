@@ -1,0 +1,1268 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "independentInputSHA256": "ebed56c8b542e0ac5d5a3b014e22a84e1cb1c5d49046737b13c2cc2730a7f509",
+  "directorySHA256": "5d1d49cc20ff35b5b93bd14226d80e9298b6ab33ce086ab128fbb6bd8cb5c79a",
+  "sets": [
+    {
+      "providerSetID": "2011bw",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2011bw",
+      "sourceSHA256": "5441c3d3259318a71b974b1d2e1efc5177aa407d9cee582f0e52ad152698eefb",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2011_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2011bw-1",
+          "providerName": "Snivy",
+          "corroboratingName": "Snivy",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2011bw-2",
+          "providerName": "Maractus",
+          "corroboratingName": "Maractus",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2011bw-3",
+          "providerName": "Tepig",
+          "corroboratingName": "Tepig",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2011bw-4",
+          "providerName": "Oshawott",
+          "corroboratingName": "Oshawott",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2011bw-5",
+          "providerName": "Alomomola",
+          "corroboratingName": "Alomomola",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2011bw-6",
+          "providerName": "Blitzle",
+          "corroboratingName": "Blitzle",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2011bw-7",
+          "providerName": "Munna",
+          "corroboratingName": "Munna",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2011bw-8",
+          "providerName": "Sandile",
+          "corroboratingName": "Sandile",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2011bw-9",
+          "providerName": "Zorua",
+          "corroboratingName": "Zorua",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2011bw-10",
+          "providerName": "Klink",
+          "corroboratingName": "Klink",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2011bw-11",
+          "providerName": "Pidove",
+          "corroboratingName": "Pidove",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2011bw-12",
+          "providerName": "Audino",
+          "corroboratingName": "Audino",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2012bw",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2012bw",
+      "sourceSHA256": "ed6402534ba9f2f58e5fb82b1ecc5d54b6bac140791ca71d81284dbab037637b",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2012_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2012bw-1",
+          "providerName": "Servine",
+          "corroboratingName": "Servine",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2012bw-2",
+          "providerName": "Pansage",
+          "corroboratingName": "Pansage",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2012bw-3",
+          "providerName": "Dwebble",
+          "corroboratingName": "Dwebble",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2012bw-4",
+          "providerName": "Pignite",
+          "corroboratingName": "Pignite",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2012bw-5",
+          "providerName": "Dewott",
+          "corroboratingName": "Dewott",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2012bw-6",
+          "providerName": "Emolga",
+          "corroboratingName": "Emolga",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2012bw-7",
+          "providerName": "Woobat",
+          "corroboratingName": "Woobat",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2012bw-8",
+          "providerName": "Drilbur",
+          "corroboratingName": "Drilbur",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2012bw-9",
+          "providerName": "Purrloin",
+          "corroboratingName": "Purrloin",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2012bw-10",
+          "providerName": "Scraggy",
+          "corroboratingName": "Scraggy",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2012bw-11",
+          "providerName": "Klang",
+          "corroboratingName": "Klang",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2012bw-12",
+          "providerName": "Axew",
+          "corroboratingName": "Axew",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2014xy",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2014xy",
+      "sourceSHA256": "1ad0c04dc81e22922f68f0dbae3632bb3d85befe1ebb6e9f670e538a4deb5b37",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2014_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2014xy-1",
+          "providerName": "Weedle",
+          "corroboratingName": "Weedle",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2014xy-2",
+          "providerName": "Chespin",
+          "corroboratingName": "Chespin",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2014xy-3",
+          "providerName": "Fennekin",
+          "corroboratingName": "Fennekin",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2014xy-4",
+          "providerName": "Froakie",
+          "corroboratingName": "Froakie",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2014xy-5",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2014xy-6",
+          "providerName": "Inkay",
+          "corroboratingName": "Inkay",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2014xy-7",
+          "providerName": "Honedge",
+          "corroboratingName": "Honedge",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2014xy-8",
+          "providerName": "Snubbull",
+          "corroboratingName": "Snubbull",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2014xy-9",
+          "providerName": "Swirlix",
+          "corroboratingName": "Swirlix",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2014xy-10",
+          "providerName": "Bunnelby",
+          "corroboratingName": "Bunnelby",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2014xy-11",
+          "providerName": "Fletchling",
+          "corroboratingName": "Fletchling",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2014xy-12",
+          "providerName": "Furfrou",
+          "corroboratingName": "Furfrou",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2015xy",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2015xy",
+      "sourceSHA256": "6f881a8398e0678d3d6378db6fc2173fd07f65e851754c3edf86bcf485de8faa",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2015_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2015xy-1",
+          "providerName": "Treecko",
+          "corroboratingName": "Treecko",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2015xy-2",
+          "providerName": "Lotad",
+          "corroboratingName": "Lotad",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2015xy-3",
+          "providerName": "Torchic",
+          "corroboratingName": "Torchic",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2015xy-4",
+          "providerName": "Staryu",
+          "corroboratingName": "Staryu",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2015xy-5",
+          "providerName": "Mudkip",
+          "corroboratingName": "Mudkip",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2015xy-6",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2015xy-7",
+          "providerName": "Electrike",
+          "corroboratingName": "Electrike",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2015xy-8",
+          "providerName": "Rhyhorn",
+          "corroboratingName": "Rhyhorn",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2015xy-9",
+          "providerName": "Meditite",
+          "corroboratingName": "Meditite",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2015xy-10",
+          "providerName": "Marill",
+          "corroboratingName": "Marill",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2015xy-11",
+          "providerName": "Zigzagoon",
+          "corroboratingName": "Zigzagoon",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2015xy-12",
+          "providerName": "Skitty",
+          "corroboratingName": "Skitty",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2016xy",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2016xy",
+      "sourceSHA256": "3efc0b8a698b35a5a6f86f36f936c096b95378d3d37ce155038151568c00b168",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2016_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2016xy-1",
+          "providerName": "Vulpix",
+          "corroboratingName": "Vulpix",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2016xy-2",
+          "providerName": "Torchic",
+          "corroboratingName": "Torchic",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2016xy-3",
+          "providerName": "Fennekin",
+          "corroboratingName": "Fennekin",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2016xy-4",
+          "providerName": "Magikarp",
+          "corroboratingName": "Magikarp",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2016xy-5",
+          "providerName": "Totodile",
+          "corroboratingName": "Totodile",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2016xy-6",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2016xy-7",
+          "providerName": "Scraggy",
+          "corroboratingName": "Scraggy",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2016xy-8",
+          "providerName": "Jigglypuff",
+          "corroboratingName": "Jigglypuff",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2016xy-9",
+          "providerName": "Togepi",
+          "corroboratingName": "Togepi",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2016xy-10",
+          "providerName": "Dedenne",
+          "corroboratingName": "Dedenne",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2016xy-11",
+          "providerName": "Meowth",
+          "corroboratingName": "Meowth",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2016xy-12",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2017sm",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2017sm",
+      "sourceSHA256": "d7c415be68e0b1ceea7e0c82365e7e9c43931ca501a8dbbb4e46236fde77a9a6",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2017_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2017sm-1",
+          "providerName": "Rowlet",
+          "corroboratingName": "Rowlet",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2017sm-2",
+          "providerName": "Grubbin",
+          "corroboratingName": "Grubbin",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2017sm-3",
+          "providerName": "Litten",
+          "corroboratingName": "Litten",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2017sm-4",
+          "providerName": "Popplio",
+          "corroboratingName": "Popplio",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2017sm-5",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2017sm-6",
+          "providerName": "Cosmog",
+          "corroboratingName": "Cosmog",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2017sm-7",
+          "providerName": "Crabrawler",
+          "corroboratingName": "Crabrawler",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2017sm-8",
+          "providerName": "Alolan Meowth",
+          "corroboratingName": "Alolan Meowth",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2017sm-9",
+          "providerName": "Alolan Diglett",
+          "corroboratingName": "Alolan Diglett",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2017sm-10",
+          "providerName": "Cutiefly",
+          "corroboratingName": "Cutiefly",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2017sm-11",
+          "providerName": "Pikipek",
+          "corroboratingName": "Pikipek",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2017sm-12",
+          "providerName": "Yungoos",
+          "corroboratingName": "Yungoos",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2018sm",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2018sm",
+      "sourceSHA256": "6382c6eab656b2ca91a1513c5495e54bc6c12a1c2a3517596b588b983b5c4b41",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2018_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2018sm-1",
+          "providerName": "Growlithe",
+          "corroboratingName": "Growlithe",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2018sm-2",
+          "providerName": "Psyduck",
+          "corroboratingName": "Psyduck",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2018sm-3",
+          "providerName": "Horsea",
+          "corroboratingName": "Horsea",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2018sm-4",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2018sm-5",
+          "providerName": "Slowpoke",
+          "corroboratingName": "Slowpoke",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2018sm-6",
+          "providerName": "Machop",
+          "corroboratingName": "Machop",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2018sm-7",
+          "providerName": "Cubone",
+          "corroboratingName": "Cubone",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2018sm-8",
+          "providerName": "Magnemite",
+          "corroboratingName": "Magnemite",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2018sm-9",
+          "providerName": "Dratini",
+          "corroboratingName": "Dratini",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2018sm-10",
+          "providerName": "Chansey",
+          "corroboratingName": "Chansey",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2018sm-11",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2018sm-12",
+          "providerName": "Porygon",
+          "corroboratingName": "Porygon",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2019sm",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2019sm",
+      "sourceSHA256": "78d86812cb4b1d28faac34c711c4a21b4f5e04d7126d11f028f4b598773642c0",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2019_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2019sm-1",
+          "providerName": "Caterpie",
+          "corroboratingName": "Caterpie",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "2019sm-2",
+          "providerName": "Alolan Exeggutor",
+          "corroboratingName": "Alolan Exeggutor",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "2019sm-3",
+          "providerName": "Magmar",
+          "corroboratingName": "Magmar",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "2019sm-4",
+          "providerName": "Alolan Sandshrew",
+          "corroboratingName": "Alolan Sandshrew",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "2019sm-5",
+          "providerName": "Lapras",
+          "corroboratingName": "Lapras",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "2019sm-6",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "2019sm-7",
+          "providerName": "Gastly",
+          "corroboratingName": "Gastly",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "2019sm-8",
+          "providerName": "Mankey",
+          "corroboratingName": "Mankey",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "2019sm-9",
+          "providerName": "Onix",
+          "corroboratingName": "Onix",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "2019sm-10",
+          "providerName": "Alolan Meowth",
+          "corroboratingName": "Alolan Meowth",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "2019sm-11",
+          "providerName": "Alolan Dugtrio",
+          "corroboratingName": "Alolan Dugtrio",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "2019sm-12",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2021swsh",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2021swsh",
+      "sourceSHA256": "0a9982aa10d7362d2f9fc064b99c0ff8ddf580a758a74a0341b6297db1ddff14",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2021_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2021swsh-1",
+          "providerName": "Bulbasaur",
+          "corroboratingName": "Bulbasaur",
+          "printedNumber": "1/25"
+        },
+        {
+          "providerCardID": "2021swsh-2",
+          "providerName": "Chikorita",
+          "corroboratingName": "Chikorita",
+          "printedNumber": "2/25"
+        },
+        {
+          "providerCardID": "2021swsh-3",
+          "providerName": "Treecko",
+          "corroboratingName": "Treecko",
+          "printedNumber": "3/25"
+        },
+        {
+          "providerCardID": "2021swsh-4",
+          "providerName": "Turtwig",
+          "corroboratingName": "Turtwig",
+          "printedNumber": "4/25"
+        },
+        {
+          "providerCardID": "2021swsh-5",
+          "providerName": "Snivy",
+          "corroboratingName": "Snivy",
+          "printedNumber": "5/25"
+        },
+        {
+          "providerCardID": "2021swsh-6",
+          "providerName": "Chespin",
+          "corroboratingName": "Chespin",
+          "printedNumber": "6/25"
+        },
+        {
+          "providerCardID": "2021swsh-7",
+          "providerName": "Rowlet",
+          "corroboratingName": "Rowlet",
+          "printedNumber": "7/25"
+        },
+        {
+          "providerCardID": "2021swsh-8",
+          "providerName": "Grookey",
+          "corroboratingName": "Grookey",
+          "printedNumber": "8/25"
+        },
+        {
+          "providerCardID": "2021swsh-9",
+          "providerName": "Charmander",
+          "corroboratingName": "Charmander",
+          "printedNumber": "9/25"
+        },
+        {
+          "providerCardID": "2021swsh-10",
+          "providerName": "Cyndaquil",
+          "corroboratingName": "Cyndaquil",
+          "printedNumber": "10/25"
+        },
+        {
+          "providerCardID": "2021swsh-11",
+          "providerName": "Torchic",
+          "corroboratingName": "Torchic",
+          "printedNumber": "11/25"
+        },
+        {
+          "providerCardID": "2021swsh-12",
+          "providerName": "Chimchar",
+          "corroboratingName": "Chimchar",
+          "printedNumber": "12/25"
+        },
+        {
+          "providerCardID": "2021swsh-13",
+          "providerName": "Tepig",
+          "corroboratingName": "Tepig",
+          "printedNumber": "13/25"
+        },
+        {
+          "providerCardID": "2021swsh-14",
+          "providerName": "Fennekin",
+          "corroboratingName": "Fennekin",
+          "printedNumber": "14/25"
+        },
+        {
+          "providerCardID": "2021swsh-15",
+          "providerName": "Litten",
+          "corroboratingName": "Litten",
+          "printedNumber": "15/25"
+        },
+        {
+          "providerCardID": "2021swsh-16",
+          "providerName": "Scorbunny",
+          "corroboratingName": "Scorbunny",
+          "printedNumber": "16/25"
+        },
+        {
+          "providerCardID": "2021swsh-17",
+          "providerName": "Squirtle",
+          "corroboratingName": "Squirtle",
+          "printedNumber": "17/25"
+        },
+        {
+          "providerCardID": "2021swsh-18",
+          "providerName": "Totodile",
+          "corroboratingName": "Totodile",
+          "printedNumber": "18/25"
+        },
+        {
+          "providerCardID": "2021swsh-19",
+          "providerName": "Mudkip",
+          "corroboratingName": "Mudkip",
+          "printedNumber": "19/25"
+        },
+        {
+          "providerCardID": "2021swsh-20",
+          "providerName": "Piplup",
+          "corroboratingName": "Piplup",
+          "printedNumber": "20/25"
+        },
+        {
+          "providerCardID": "2021swsh-21",
+          "providerName": "Oshawott",
+          "corroboratingName": "Oshawott",
+          "printedNumber": "21/25"
+        },
+        {
+          "providerCardID": "2021swsh-22",
+          "providerName": "Froakie",
+          "corroboratingName": "Froakie",
+          "printedNumber": "22/25"
+        },
+        {
+          "providerCardID": "2021swsh-23",
+          "providerName": "Popplio",
+          "corroboratingName": "Popplio",
+          "printedNumber": "23/25"
+        },
+        {
+          "providerCardID": "2021swsh-24",
+          "providerName": "Sobble",
+          "corroboratingName": "Sobble",
+          "printedNumber": "24/25"
+        },
+        {
+          "providerCardID": "2021swsh-25",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "25/25"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2022swsh",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2022swsh",
+      "sourceSHA256": "0203c2e51e3d3f8abbe40eef2efc622d888b4b7d606d35ea8b0ce4daf9d25214",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2022_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2022swsh-1",
+          "providerName": "Ledyba",
+          "corroboratingName": "Ledyba",
+          "printedNumber": "1/15"
+        },
+        {
+          "providerCardID": "2022swsh-2",
+          "providerName": "Rowlet",
+          "corroboratingName": "Rowlet",
+          "printedNumber": "2/15"
+        },
+        {
+          "providerCardID": "2022swsh-3",
+          "providerName": "Gossifleur",
+          "corroboratingName": "Gossifleur",
+          "printedNumber": "3/15"
+        },
+        {
+          "providerCardID": "2022swsh-4",
+          "providerName": "Growlithe",
+          "corroboratingName": "Growlithe",
+          "printedNumber": "4/15"
+        },
+        {
+          "providerCardID": "2022swsh-5",
+          "providerName": "Victini",
+          "corroboratingName": "Victini",
+          "printedNumber": "5/15"
+        },
+        {
+          "providerCardID": "2022swsh-6",
+          "providerName": "Lapras",
+          "corroboratingName": "Lapras",
+          "printedNumber": "6/15"
+        },
+        {
+          "providerCardID": "2022swsh-7",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "7/15"
+        },
+        {
+          "providerCardID": "2022swsh-8",
+          "providerName": "Chinchou",
+          "corroboratingName": "Chinchou",
+          "printedNumber": "8/15"
+        },
+        {
+          "providerCardID": "2022swsh-9",
+          "providerName": "Flaaffy",
+          "corroboratingName": "Flaaffy",
+          "printedNumber": "9/15"
+        },
+        {
+          "providerCardID": "2022swsh-10",
+          "providerName": "Tynamo",
+          "corroboratingName": "Tynamo",
+          "printedNumber": "10/15"
+        },
+        {
+          "providerCardID": "2022swsh-11",
+          "providerName": "Cutiefly",
+          "corroboratingName": "Cutiefly",
+          "printedNumber": "11/15"
+        },
+        {
+          "providerCardID": "2022swsh-12",
+          "providerName": "Bewear",
+          "corroboratingName": "Bewear",
+          "printedNumber": "12/15"
+        },
+        {
+          "providerCardID": "2022swsh-13",
+          "providerName": "Pangoro",
+          "corroboratingName": "Pangoro",
+          "printedNumber": "13/15"
+        },
+        {
+          "providerCardID": "2022swsh-14",
+          "providerName": "Drampa",
+          "corroboratingName": "Drampa",
+          "printedNumber": "14/15"
+        },
+        {
+          "providerCardID": "2022swsh-15",
+          "providerName": "Smeargle",
+          "corroboratingName": "Smeargle",
+          "printedNumber": "15/15"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2023sv",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2023sv",
+      "sourceSHA256": "44a260029cfde67a31bdc8fd0fed2f9241b1c22fd0914975b690cff9a3e9f848",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2023_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2023sv-1",
+          "providerName": "Sprigatito",
+          "corroboratingName": "Sprigatito",
+          "printedNumber": "1/15"
+        },
+        {
+          "providerCardID": "2023sv-2",
+          "providerName": "Fuecoco",
+          "corroboratingName": "Fuecoco",
+          "printedNumber": "2/15"
+        },
+        {
+          "providerCardID": "2023sv-3",
+          "providerName": "Quaxly",
+          "corroboratingName": "Quaxly",
+          "printedNumber": "3/15"
+        },
+        {
+          "providerCardID": "2023sv-4",
+          "providerName": "Cetoddle",
+          "corroboratingName": "Cetoddle",
+          "printedNumber": "4/15"
+        },
+        {
+          "providerCardID": "2023sv-5",
+          "providerName": "Cetitan",
+          "corroboratingName": "Cetitan",
+          "printedNumber": "5/15"
+        },
+        {
+          "providerCardID": "2023sv-6",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "6/15"
+        },
+        {
+          "providerCardID": "2023sv-7",
+          "providerName": "Pawmi",
+          "corroboratingName": "Pawmi",
+          "printedNumber": "7/15"
+        },
+        {
+          "providerCardID": "2023sv-8",
+          "providerName": "Kilowattrel",
+          "corroboratingName": "Kilowattrel",
+          "printedNumber": "8/15"
+        },
+        {
+          "providerCardID": "2023sv-9",
+          "providerName": "Flittle",
+          "corroboratingName": "Flittle",
+          "printedNumber": "9/15"
+        },
+        {
+          "providerCardID": "2023sv-10",
+          "providerName": "Sandaconda",
+          "corroboratingName": "Sandaconda",
+          "printedNumber": "10/15"
+        },
+        {
+          "providerCardID": "2023sv-11",
+          "providerName": "Klawf",
+          "corroboratingName": "Klawf",
+          "printedNumber": "11/15"
+        },
+        {
+          "providerCardID": "2023sv-12",
+          "providerName": "Blissey",
+          "corroboratingName": "Blissey",
+          "printedNumber": "12/15"
+        },
+        {
+          "providerCardID": "2023sv-13",
+          "providerName": "Tandemaus",
+          "corroboratingName": "Tandemaus",
+          "printedNumber": "13/15"
+        },
+        {
+          "providerCardID": "2023sv-14",
+          "providerName": "Cyclizar",
+          "corroboratingName": "Cyclizar",
+          "printedNumber": "14/15"
+        },
+        {
+          "providerCardID": "2023sv-15",
+          "providerName": "Kirlia",
+          "corroboratingName": "Kirlia",
+          "printedNumber": "15/15"
+        }
+      ]
+    },
+    {
+      "providerSetID": "2024sv",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/2024sv",
+      "sourceSHA256": "506c44e190de76d758d22b45d0592d42a51b8f8caf5d3319647f6af8e19a07b0",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/McDonald%27s_Collection_2024_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "2024sv-1",
+          "providerName": "Charizard",
+          "corroboratingName": "Charizard",
+          "printedNumber": "1/15"
+        },
+        {
+          "providerCardID": "2024sv-2",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "2/15"
+        },
+        {
+          "providerCardID": "2024sv-3",
+          "providerName": "Miraidon",
+          "corroboratingName": "Miraidon",
+          "printedNumber": "3/15"
+        },
+        {
+          "providerCardID": "2024sv-4",
+          "providerName": "Jigglypuff",
+          "corroboratingName": "Jigglypuff",
+          "printedNumber": "4/15"
+        },
+        {
+          "providerCardID": "2024sv-5",
+          "providerName": "Hatenna",
+          "corroboratingName": "Hatenna",
+          "printedNumber": "5/15"
+        },
+        {
+          "providerCardID": "2024sv-6",
+          "providerName": "Dragapult",
+          "corroboratingName": "Dragapult",
+          "printedNumber": "6/15"
+        },
+        {
+          "providerCardID": "2024sv-7",
+          "providerName": "Quagsire",
+          "corroboratingName": "Quagsire",
+          "printedNumber": "7/15"
+        },
+        {
+          "providerCardID": "2024sv-8",
+          "providerName": "Koraidon",
+          "corroboratingName": "Koraidon",
+          "printedNumber": "8/15"
+        },
+        {
+          "providerCardID": "2024sv-9",
+          "providerName": "Umbreon",
+          "corroboratingName": "Umbreon",
+          "printedNumber": "9/15"
+        },
+        {
+          "providerCardID": "2024sv-10",
+          "providerName": "Hydreigon",
+          "corroboratingName": "Hydreigon",
+          "printedNumber": "10/15"
+        },
+        {
+          "providerCardID": "2024sv-11",
+          "providerName": "Roaring Moon",
+          "corroboratingName": "Roaring Moon",
+          "printedNumber": "11/15"
+        },
+        {
+          "providerCardID": "2024sv-12",
+          "providerName": "Dragonite",
+          "corroboratingName": "Dragonite",
+          "printedNumber": "12/15"
+        },
+        {
+          "providerCardID": "2024sv-13",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "13/15"
+        },
+        {
+          "providerCardID": "2024sv-14",
+          "providerName": "Rayquaza",
+          "corroboratingName": "Rayquaza",
+          "printedNumber": "14/15"
+        },
+        {
+          "providerCardID": "2024sv-15",
+          "providerName": "Drampa",
+          "corroboratingName": "Drampa",
+          "printedNumber": "15/15"
+        }
+      ]
+    }
+  ],
+  "detailedCardSHA256": {
+    "2011bw-1": "6a4bf0e8803c527a28c5cb543342a9a2de97fffb68e3472df3bd81f34944f1af",
+    "2011bw-2": "abeb0fc31ddf8c04552e5483be0b4f8c538eb8fb2bc5a020bfa0042ebb24a352",
+    "2011bw-3": "aa04c38c28286cad3228aeea54f95f000f7147997469f93acf3e5d9953318f57",
+    "2011bw-4": "f59f6e5da482935ca3be9417a1e676b990bf79f3df28cb08d4272ea1a4c96e1c",
+    "2011bw-5": "865608763b723b01eaeee0a263159f9724a7f1060179764e90c8704d3ce0481b",
+    "2011bw-6": "9e83a7e2b579632a8062816bea4c11f84a1bac6717bec6f4aa6f807c349ae027",
+    "2011bw-7": "b1ffeaf174766d79b267afa072494904da830e81940be7c93b8ccf50b074c4b3",
+    "2011bw-8": "5c082ffd9bfd76c032818bc323290b2b78e164c5db83f093de4cebad2ac67b65",
+    "2011bw-9": "d8772ec99b4d63c515e234eed60af254174e563e6773093d190276667fba57a9",
+    "2011bw-10": "823a750e2d00e15ea58c44ab081af015586467a9987a7e51c2bbb4f959753a0c",
+    "2011bw-11": "a58d62f12b41cf2b71c5bb51a1dab8657d40bafa529dacfcf483995245107136",
+    "2011bw-12": "d0b5a5bae0a53e51d138865f928581c1e3449e92900a60b3f9334d781799b020",
+    "2012bw-1": "b455da3a6ba723e5ab9d1205a12cd9d5654fd2a5751c7cddcd5c05413618f67b",
+    "2012bw-2": "1e4ed1ae5e440c2ff96b12be7ebeaa10006598020e36c394e39d50548b5796bb",
+    "2012bw-3": "6a20c46d0c1a78b08b5b1d834c7d3934de887ccb69729e6998b1613b243e1348",
+    "2012bw-4": "a8ca73e6782a9f26c512a50739e475b68c48c675a0eb7edec85cf297db5715a1",
+    "2012bw-5": "0cff2b0a9456b90c035f173571d9db54437ca164fd7a7fa65edda56f6b8c105f",
+    "2012bw-6": "5916939aa8c5f9e195736330a9adaec79ca796351bd06d1e0f924fb64c4e8f5e",
+    "2012bw-7": "cdda043413b20fb978ff94709dc1e204298ff1daf740660d4b923fb1d98587a8",
+    "2012bw-8": "ff60cf0ea7b22e891a00891afde767b3dc91e5f258b2c5162bb80f977f66624a",
+    "2012bw-9": "a0c7267d939755ac1bda3924c6a2d9c97eb590ccac6f1f7761b5ffc359076209",
+    "2012bw-10": "81c3c9ccf0610e996e48324b5c7309c743dfc9e251ca439c4e2b5dceb5a2f04f",
+    "2012bw-11": "7fb039084a230c3ec33ba0afd9f285ef724c5cb323ce991e99e08d6cf443cc86",
+    "2012bw-12": "1efb4e670a4987c551fe9a679bbabb4bea860bac85ecf9672d12a383d112aba6",
+    "2014xy-1": "1b211d5c1265eeec7770ffe7a93b7c24c5aab2c9a66ecb5e4a79f827077c7812",
+    "2014xy-2": "bc66a24b8d4c7d6a559e5e7bd49a59116cdec93357b68719ad278b6f598b3d9d",
+    "2014xy-3": "841cfa4c2b17a3bac5f5796c3db5c3cbf52ae3fa196ede6c0c21ee28f0381a52",
+    "2014xy-4": "d30545c43a4e21264687f330d7a7c048ce99449ebc3f85272e991aede1143b5b",
+    "2014xy-5": "97fbbebb69b23672ea60bdc7bdf463c443224faf9de3ce3989aaedf8737b786d",
+    "2014xy-6": "45d73bf280835ecdc6ce0783b6447abbdd9722a8481174c3edd3bd2e0706dca7",
+    "2014xy-7": "73827dfa5e5b31f293b27496490ac751a04d372f44722c432511106c1b5cfc02",
+    "2014xy-8": "60b559e8203acc9fe61706aeb2c5aa2ca7dff35bb937711dd3adf09bd04f030b",
+    "2014xy-9": "7f07d7867b2c200a03c557f36c60e0ff56271e30b0b8625f8a431d64b98219bf",
+    "2014xy-10": "332bdcb7bdb8558533c24a29ea49b57a1cab3e96cfbbf308d03087eb8f0f7b41",
+    "2014xy-11": "5a0a2393e208ec2af0774ce0d0c64885395177471d122034f34462c4ecaa04cf",
+    "2014xy-12": "2fb00cdb9d924281ce059feca9ff89102f482de43d6653df51ed10ea9662dd8d",
+    "2015xy-1": "29581773f3e6453f649a92763ec96329f0908d38210ebbeb9a6a1f5391ac752b",
+    "2015xy-2": "ff11e2d6aa4cddeeb7f8ad8989bdefa6ae42f347baeeb4f35ce0885ea63ee299",
+    "2015xy-3": "6f58c151ca71dea14fdda04e6b8d5e1309278d1eeaeba7b630ee5207b0862774",
+    "2015xy-4": "4117b2e536722bc63008c4b8de1a6b7e27342989e5d7ca8e032806fe4bde15ea",
+    "2015xy-5": "f583b470733daf7c756bf0a943e834b5141b7f9a7a3a642328f3d1dc0849774f",
+    "2015xy-6": "2fab82a2a956a96fde01bdeef92aee02aa8d6d88f5c026242356a9fae2b12fc1",
+    "2015xy-7": "503e9b8cf38d2d2fc2a274278cbbf26fe9229aa5ae617dc5d4cea920af94d2eb",
+    "2015xy-8": "bea5ca2adaeac1df63d903e1a2ecf3a636c9abe0fe2be25a82ff2c92a21ecd35",
+    "2015xy-9": "6bfe532c3bc4dc11056cbbcf4055a170a6dd0aa31bb5d112c2184ae9ad5dbdf8",
+    "2015xy-10": "36324f966ed270c300bc21f17888d6b6ea50881136b9624d9cc89db2c511091f",
+    "2015xy-11": "88b7fedee02f08d5d8795c108200f03b020d223fa24c2da940580c1f905747fb",
+    "2015xy-12": "fc71ec76578bf188a241335ae9bb277125d98c297fd5860f49c0ee6d300c1072",
+    "2016xy-1": "4634ac68271f4690e2d51e5c76ece8b21d28677f5f2c64942d0befe556c08a35",
+    "2016xy-2": "bb53f825708048ac056a8eb36773cb6ae99ac539a18d33abe20407de991517ca",
+    "2016xy-3": "5038b72930a1262e35f46387cf4e64f21b2e14e6939451044503a7165060ba8f",
+    "2016xy-4": "f6d9982315fddeb716e15606e403fbd9c2a3c488ada09df192d6b976b148e2c4",
+    "2016xy-5": "ae5483762f098f5d0cf5b22493a9663eda1d2125adf7d21a5fc1508d9f015bee",
+    "2016xy-6": "f9e25a3c65dbc51cc4c70326e65a3c984fe07313f8de67bba4e1a49819aaa656",
+    "2016xy-7": "e84122d19385a0021b43816377bde1db425465b0cb9a5a573cb51f933cbb928b",
+    "2016xy-8": "911bed5c6fca6e3fa5cfcdcf5e41fb0f3d2bb8a5aff72b1a948abcd267d1cf41",
+    "2016xy-9": "5d40db4026e1843ccede3e5eb071e20dea95e06727df197afbc204489604225a",
+    "2016xy-10": "341b5994ee73dddcc8117c9a0eb5a225b3bb322cabf74fc832fc8ea64f5b9d2a",
+    "2016xy-11": "badfecbd9811a4c8c61b602a63a7cecf42ba9111f4d5fcf0c2707fe3e703adfb",
+    "2016xy-12": "4540a6ef8c1cdd344e924bc56c52ad124a344cca6418fb62aebc7de7f84ccb0f",
+    "2017sm-1": "173738576ebac517c102c2612a756c8f01002befec935314b33ca345ae73f23a",
+    "2017sm-2": "9bc9afc95e34f1caecf1b0ee0dec8e2949499c5d8a77fd47e32ba9d439a73c8e",
+    "2017sm-3": "db89689123e75f18f430a17309f63809d41d4558ac90ef9b5fe802fe0a9699c0",
+    "2017sm-4": "d1fc8d84e1cbba3344b41a7239821493d9ba44498127167a7b7aa7d41facc031",
+    "2017sm-5": "8e21ba9c4804b0a0572a4394db8b2f873f8886d442b4b602dd333f06800b4111",
+    "2017sm-6": "9a74d9e05eb3920c5ffc99882121c6ad553cf9bde2a1740f6d34da09c211d666",
+    "2017sm-7": "17974b369488dd89dcc61a4acc9e0a7d3317178e2a3092c4bab22ce0378fe13c",
+    "2017sm-8": "1516c9813e3d37579d7d84e1840f648414abf3f117b49379d62c0aaf5aed3db3",
+    "2017sm-9": "c424915691f3c39c21c929eeea0768ce16a1604bc46bcec36b6fbd1eebdca7ff",
+    "2017sm-10": "5d0e67e1960ddea83654d598bd1a49423249093b4da8c1a079d9abbf9035532a",
+    "2017sm-11": "fef4bfc946e37222dbf66a044422d1d21a8afee15fe9f87c1f36bcd7004b6ceb",
+    "2017sm-12": "ac0876048608ce145ea9dc5b4ce39aee7dbce98c1e32ae2a35a97c461f8f2291",
+    "2018sm-1": "9c502df962c5654f37fa35eb1125b75f77249f4f173f300d0b1e8b0dff0e8de9",
+    "2018sm-2": "3ff8c257af9dfcc9c82b3091312e45ef58a05bfb1d83c008119e727c6682a52f",
+    "2018sm-3": "9ae3516ff3f1b9e327e4971acd7243a8f97e1cc53873cd4066facb5e3c1f54cb",
+    "2018sm-4": "664a519a4dc4267428d3c5bbe243f214ae474b760c72cc8e74f4a1e079db6936",
+    "2018sm-5": "f12676f81134d89d899958498d6b318778623ac7539cc7928ddb4e66ef0bea59",
+    "2018sm-6": "b62fd4af9be1dc651d84daa06535fa76aff8ee0cec7dc12a9daca4a001ff42df",
+    "2018sm-7": "0f57b784a48be03a5c6b982f0c2828e417271cf600833d9c0c49abdfce34d219",
+    "2018sm-8": "00d01125923b76451e830dee373f7bfcc179d062a5a0d8ade59d38f4e008e876",
+    "2018sm-9": "a869ee20b9c99123f8f01e95a01ad9514d81be4f67abc142744d0db23326db2f",
+    "2018sm-10": "21edd1ebc5847c40b2e6f2a3f494f318e52c92228fa43ac7cd654636c8e354ba",
+    "2018sm-11": "af7297e39b708301055e9ad4575536359b7708ce78d1bcfe735f82db86a2d223",
+    "2018sm-12": "179eeeea2958db6a4a7eee0255c47a9c40928ae6973c5667aebe4bdf4c0c7e5a",
+    "2019sm-1": "f87737f09d319de7890ddeef83adfa13872e6f1c7890408329a428ebf6322355",
+    "2019sm-2": "9928a007d2f54062d9c5b215e7c8fe7d63753f97d9fbd8d36bc9ac4e03bcb1d3",
+    "2019sm-3": "bd425b1a67a7568f5e5356c143a96690440b3bbf063250bf50349bae8111fb67",
+    "2019sm-4": "c93a5809e6d815a178cb07d1f235011a0959bc8a3fe5aa2dd88e1ba631751d85",
+    "2019sm-5": "88b677b9e1dbf02a9b93107917c56fce66b7a298b06e3cd1c31908f15b30cf11",
+    "2019sm-6": "535ebc28d8b5b43bee962f1b08edd18a386c03ae2a0faae83630f7346e38ee9d",
+    "2019sm-7": "3320db068f70abeba0e94dc01a6279fe35af19ba6fcd1d4cbcf3ba2119680f56",
+    "2019sm-8": "75d6ba30e9409616e562001fb40fb9f3db6a7346f5f746444050a8c1d98d1442",
+    "2019sm-9": "51206b06fe5c98be7aac20a07b1c823e633ef81d82275cb3099ea2bfb66085f1",
+    "2019sm-10": "f1c69bd8668570d54a0fb2b169e32cd99f6bdedf022be64b680523a6e284c981",
+    "2019sm-11": "09ce10239ee2e86003a7728b28d358ac7ff31b9ad151ae9a869d7318277177ef",
+    "2019sm-12": "12c8a9006d4dbcf05d24a7a6c6837a7e19ff3aeebe7389857a1203b565ff069c",
+    "2021swsh-1": "dca89f9d605b50098d453de913859a62ddfa8a4e69ba22917ad7bf3f49bb7f0d",
+    "2021swsh-2": "14f71914a0f81ee791fd4887b236063fa5b6e9f6b76a7cabcf39318621c046a2",
+    "2021swsh-3": "54a4f0991104556139220b46928457e8fc519fe4f20fe1ecf1247f9e2ebf3868",
+    "2021swsh-4": "70bed3c1967a2ac96a82379a63547b05bf45e909ad3fa384c80fb96938990b85",
+    "2021swsh-5": "58fc6d5d0a0fe3020814e0884dc44df9b467d37347e0d0306a2a2475bfef2e33",
+    "2021swsh-6": "8393fd8dbce7be59cbaad8cb5704f80a37a1a2ec63874ed1bfb54893ea219fd0",
+    "2021swsh-7": "1c31a61bc3b4944579b0c81a920c37e786ad18fc7675e674a1439413add876a3",
+    "2021swsh-8": "2f0607fb4d49bebbf36b713f155b1954c503755118233a0030eb0170652d8bfd",
+    "2021swsh-9": "3d5d5beaea5ea1a6a89a784e186bebd81d05a6a19ce0fe581a135a85ba07bdff",
+    "2021swsh-10": "21d8fcb9174d03ee7946927fd92138795eb7b19a4ebeae1c4508c7df7f621c2b",
+    "2021swsh-11": "07977edba7aa20612bf1bde75fd0228be09788924a313258e7761c7c8a30c553",
+    "2021swsh-12": "620c90f7b71fe9e55045530acf269330e704b5dacea01f6eaadd1cb478556fef",
+    "2021swsh-13": "a5573f8981de4a070ff567cbc75bb49e9429721738516cb4f11c8327d60790bc",
+    "2021swsh-14": "acb7181a0ac1fc33c89a2a44848736e4b1d1800149a1e30665917cabe594a8bc",
+    "2021swsh-15": "4af9c0136162c73f5b7288aab12801a7ec94c02737fa4d09483a51e79b39b79f",
+    "2021swsh-16": "a455443572fa19a39723ff26f525d2632b2f6e0d59e187d2031fb8335395965a",
+    "2021swsh-17": "c6c93d8a7fc58b2e3d126d09780b77d7c33bc383ab7941ab68b0a0760c1cf973",
+    "2021swsh-18": "3bbfe1101d907e9852c3de605fc5de8779d260c5d266088e650508e130b6b5f4",
+    "2021swsh-19": "171ffb85e8ede9382a98c2fba3c1d13204308e4fdb36a3887888e80cc42fa506",
+    "2021swsh-20": "03918951afab9065229d27d6802a03c38cdff0285a0357d044cc303c2f75072e",
+    "2021swsh-21": "8fd47255bb3f7b3531d29ad6cf9bb6c976cb8c7c05f2aefeeb23a82ed2d0cd24",
+    "2021swsh-22": "b7587771cc764e7c10d39c4db9114d27d2388f7f932e8f986cc8814f003f4145",
+    "2021swsh-23": "87acb589ec59e3faeba35439b2cff765dadfe807d72ad8e5db8f4072164b254c",
+    "2021swsh-24": "ec61129762e537afb18b40b4ccdf5f64f89bd3eb789329da30c9c8e37028c1e8",
+    "2021swsh-25": "76f45c846f846deaa7563aab5805a9e5bbd7eb59a792949247c513dbad1447d5",
+    "2022swsh-1": "d398ffb6c547bd4369caffded123481a741f9995a71b74e321a2244e41b2d76e",
+    "2022swsh-2": "b33e7e008f6d50d350709c1c54def4c029b0accfae27479950028e8f6014ecaf",
+    "2022swsh-3": "b326d4dc64f8df7cf9325cf2b67498225368892b6b2b487698c33a15fad412d9",
+    "2022swsh-4": "c9a40fb058759be66deafe480641a9c9a8e494331e60e098c1f87265f9c541e6",
+    "2022swsh-5": "9902cd0f02d4804c95d4388d0c8167ef24a5e96712104030b0a7055cc20f6410",
+    "2022swsh-6": "7fc853461d53a7f6ff53f2cedc9eb7ede254d377fc58a31688acc71d51c11bae",
+    "2022swsh-7": "abb5c1dd06f8375089a656ad822d01bc9ada1bcd07b10aa897beba16a19c05a8",
+    "2022swsh-8": "6c262d49693f711ca0d493231bc1f0493f0317b141ec421e65f59cd84312cadf",
+    "2022swsh-9": "01e4bbff7bfbb71122e464d5962d4c8177eec3e2318541f92b41552522b3bd09",
+    "2022swsh-10": "44e0c7d0e96df5e6ac7569c845bb3e4c5e6597cc33a08d9f3693dcb3d2a0a08c",
+    "2022swsh-11": "62a780a65cbc9ae0d1ae2fe905dd3a2ece51bc855f0772c4c293af29d8d67297",
+    "2022swsh-12": "38fc93c9d188025d5ecc792efc1fae3d776f79a56b599c61c98fb859fc7f92f0",
+    "2022swsh-13": "47402debd1d844b08aded50afa8e13cfa51d2a5b1a0b4f5f282dd09dade08ded",
+    "2022swsh-14": "b40ef4cddfe14de2293c1c3c9ba8b7b9f05f3752e05126343f5139cc2a9fc43d",
+    "2022swsh-15": "944af56f4a9eda81150320222b696fe1154a462f428edbfb687de45dbc92b85e",
+    "2023sv-1": "4cec0cf636ae60360942ecd266bcae0e851a54d5ea81364263d4226b875c340a",
+    "2023sv-2": "1192ae61696e6a3728c7970a47b28abfe44f554b203da96538f9758324b41044",
+    "2023sv-3": "687bad5037d0a943135de7b186d68d45ea73b4625aa602833e82940c96b3ff08",
+    "2023sv-4": "85f07314d1e0318a975e5e1839f3b820fc48c49681a90c8bb9f6714cb1be37ee",
+    "2023sv-5": "af1d0e0752439e7cfd875dc79d09c701df9da3a04c12d534c9a944f49a204133",
+    "2023sv-6": "9d6647069b6951c381ec75aa0d2785cf8f512443fe145e9e417d2555a8008073",
+    "2023sv-7": "52af2801fb3302030b1f450544e38f12f767c6008d49d89d9c2e49446ef370cb",
+    "2023sv-8": "4ba1b51364be355ec921f75d4ae59fa143f86255d2a23389cb57bf11ea1ad339",
+    "2023sv-9": "519b50b0197f91228dda6c2e80fb675e0dd6c4505ff14f2950d09dbb819bc203",
+    "2023sv-10": "85f2b0f1166719a381a08bd75a46d15e386ccfebff49065c88a0d72597939ae4",
+    "2023sv-11": "e11f8b3e9661bbe1905375940585414eff7ef77ff98ff8f7a2d37e75e7d17c58",
+    "2023sv-12": "d7b239018e12db5d9e6b84776809108db3b2ce683b2a60e10a29b0d996615081",
+    "2023sv-13": "b22b237312af7869aca2c3c5d17ac752cb2be6e8861b7cbd83d98c151579a365",
+    "2023sv-14": "fd6091da8f0ead24aa74219049236c23efb66a527b1d1b685eb4665769108e5d",
+    "2023sv-15": "f94ce58e4033dc95e08cf41c0f0fdb33734bd94cc30cdae12467ab008093ece2",
+    "2024sv-1": "1597fb3033a698ab5832867156c4c340f5f51f3f8c8d761afa6dc894aea70ee5",
+    "2024sv-2": "c3cdaf800fdbbb121fcdbebf9c2f164f909f6b590930397a295f96cceac9e175",
+    "2024sv-3": "15f7cf06827b104238f8673722419d499ccec6e28ad8e4590963c9df5de75b02",
+    "2024sv-4": "56aad7bb5ae06be8dc931e068e8cff975015e9c1ab8778ff9176590ee21e6c52",
+    "2024sv-5": "4f422bfa41e0f160044bc645b5354e2d5d5b2e4afc5568cc826002ab3911f11a",
+    "2024sv-6": "4ba2d1b3a7b44666cee0220f84c88abb4825a40d6374816bbc9562e6cebbbc4a",
+    "2024sv-7": "2e222897ad098f038ed2104764a84bbf261137a909a2b02df9931e30f8b9b944",
+    "2024sv-8": "7ecf4c0b9c54dbe6749a5e6344cde6e2ba3980ae1fc254326fe76ff703fc331e",
+    "2024sv-9": "ab652c79fbf08f9b67cc049d4788797e170f7f98baf35e0cc2227d9d918b5deb",
+    "2024sv-10": "62fb6537f514b4fc586fd3e07c3de75c058cd87c530a19ab97bd1619a1fa6af9",
+    "2024sv-11": "900bc0396caecaf276b1c7b3ca5e743e59d549386eddfc45876f13c0862fc6c6",
+    "2024sv-12": "d7329f8d483475aeaa0e3f0c7b6cd0a590d1b17b671f934a7487f67e118170e2",
+    "2024sv-13": "a8c3a0b7b234b4bb211cc76abafd364caf7b5a4b2746311c821ac1e0ff50c00d",
+    "2024sv-14": "8eed2506095fdfd37d0695c46fa7a526cdd8fadd89ecd740635b3d3a5215d635",
+    "2024sv-15": "298b23a5670102b272826bd405cac7c4f3985e6dc3ae918ca6947aa26a287a35"
+  }
+}

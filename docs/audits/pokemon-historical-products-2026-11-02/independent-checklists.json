@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "energyNameNote": "Serebii type-only labels are expanded to type + Energy; Energy is the printed title. EX Latias Fire 10/10 illustration was inspected.",
+  "sets": [
+    {
+      "providerSetID": "si1",
+      "sourceURL": "https://www.serebii.net/card/southernislands/",
+      "sourceSHA256": "571e9abfaeae59f353331a6e636a2a4199c2256bd1af660cda7474e1956cc581",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 18,
+          "name": "Mew"
+        },
+        {
+          "number": 2,
+          "denominator": 18,
+          "name": "Pidgeot"
+        },
+        {
+          "number": 3,
+          "denominator": 18,
+          "name": "Onix"
+        },
+        {
+          "number": 4,
+          "denominator": 18,
+          "name": "Togepi"
+        },
+        {
+          "number": 5,
+          "denominator": 18,
+          "name": "Ivysaur"
+        },
+        {
+          "number": 6,
+          "denominator": 18,
+          "name": "Raticate"
+        },
+        {
+          "number": 7,
+          "denominator": 18,
+          "name": "Ledyba"
+        },
+        {
+          "number": 8,
+          "denominator": 18,
+          "name": "Jigglypuff"
+        },
+        {
+          "number": 9,
+          "denominator": 18,
+          "name": "Butterfree"
+        },
+        {
+          "number": 10,
+          "denominator": 18,
+          "name": "Tentacruel"
+        },
+        {
+          "number": 11,
+          "denominator": 18,
+          "name": "Marill"
+        },
+        {
+          "number": 12,
+          "denominator": 18,
+          "name": "Lapras"
+        },
+        {
+          "number": 13,
+          "denominator": 18,
+          "name": "Exeggutor"
+        },
+        {
+          "number": 14,
+          "denominator": 18,
+          "name": "Slowking"
+        },
+        {
+          "number": 15,
+          "denominator": 18,
+          "name": "Wartortle"
+        },
+        {
+          "number": 16,
+          "denominator": 18,
+          "name": "Lickitung"
+        },
+        {
+          "number": 17,
+          "denominator": 18,
+          "name": "Vileplume"
+        },
+        {
+          "number": 18,
+          "denominator": 18,
+          "name": "Primeape"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "sourceURL": "https://www.serebii.net/card/extrainerkitlatias/",
+      "sourceSHA256": "df6d8ad2084b5679a4a45ba216f22f0ba1565ca72f3ca0d54b36e92d6d296c9d",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 10,
+          "name": "Bagon"
+        },
+        {
+          "number": 2,
+          "denominator": 10,
+          "name": "Combusken"
+        },
+        {
+          "number": 3,
+          "denominator": 10,
+          "name": "Delcatty"
+        },
+        {
+          "number": 4,
+          "denominator": 10,
+          "name": "Latias"
+        },
+        {
+          "number": 5,
+          "denominator": 10,
+          "name": "Numel"
+        },
+        {
+          "number": 6,
+          "denominator": 10,
+          "name": "Skitty"
+        },
+        {
+          "number": 7,
+          "denominator": 10,
+          "name": "Torchic"
+        },
+        {
+          "number": 8,
+          "denominator": 10,
+          "name": "Potion"
+        },
+        {
+          "number": 9,
+          "denominator": 10,
+          "name": "Energy Search"
+        },
+        {
+          "number": 10,
+          "denominator": 10,
+          "name": "Fire Energy"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-latio",
+      "sourceURL": "https://www.serebii.net/card/extrainerkitlatios/",
+      "sourceSHA256": "b2163d847340d4c4aea79f2ce8738fbd4400c317484375ef46377b9e517d03cc",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 10,
+          "name": "Electrike"
+        },
+        {
+          "number": 2,
+          "denominator": 10,
+          "name": "Latios"
+        },
+        {
+          "number": 3,
+          "denominator": 10,
+          "name": "Linoone"
+        },
+        {
+          "number": 4,
+          "denominator": 10,
+          "name": "Magnemite"
+        },
+        {
+          "number": 5,
+          "denominator": 10,
+          "name": "Magneton"
+        },
+        {
+          "number": 6,
+          "denominator": 10,
+          "name": "Pikachu"
+        },
+        {
+          "number": 7,
+          "denominator": 10,
+          "name": "Zigzagoon"
+        },
+        {
+          "number": 8,
+          "denominator": 10,
+          "name": "Potion"
+        },
+        {
+          "number": 9,
+          "denominator": 10,
+          "name": "Energy Search"
+        },
+        {
+          "number": 10,
+          "denominator": 10,
+          "name": "Lightning Energy"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-m",
+      "sourceURL": "https://www.serebii.net/card/extrainerkitminun/",
+      "sourceSHA256": "70dfa508b4ffa7a455f55d178a264f49f0623c3a3c6f5ee5b11eaa08545a9ba6",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Arcanine"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Charmander"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Charmeleon"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Growlithe"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Mareep"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Minun"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Vulpix"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Celio's Network"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Energy Search"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Potion"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Fire Energy"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Lightning Energy"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-p",
+      "sourceURL": "https://www.serebii.net/card/extrainerkitplusle/",
+      "sourceSHA256": "d51e6d9f59170f69dd39ca60dc4906f115765a45037704086cd07586cc7f6bf0",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Beldum"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Electrike"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Grumpig"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Meowth"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Metang"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Plusle"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Spoink"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Energy Search"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Potion"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Professor Cozmo's Discovery"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Psychic Energy"
+        }
+      ]
+    }
+  ]
+}

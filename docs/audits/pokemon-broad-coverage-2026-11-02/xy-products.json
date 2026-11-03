@@ -1,0 +1,4862 @@
+{
+  "observedAtUTC": "2026-11-03T02:42:01.016578+00:00",
+  "discoveryURL": "https://www.decktradr.com/sets/pokemon/1451-xy-promos",
+  "discoverySHA256": "e8f84c1a1ea83275164b366b636a73bedb60fb4ee9f6c3fa8ebc0c7631b4ea9d",
+  "discoveryPurpose": "IDs only; not physical or price corroboration",
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84270/details",
+      "status": 200,
+      "sha256": "7dd9a71832ebaa15ebf862a0bfffb1d2b76b5ea6110f85e606d19e3f451557ba",
+      "requestedProductID": 84270,
+      "identity": {
+        "productId": 84270.0,
+        "productName": "Chespin - XY01",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY01"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85410/details",
+      "status": 200,
+      "sha256": "8b6c6cb78cd09c617d102c6683310cae06b0f7e84cd81fc69379290e84c0d78b",
+      "requestedProductID": 85410,
+      "identity": {
+        "productId": 85410.0,
+        "productName": "Fennekin",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY02"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85568/details",
+      "status": 200,
+      "sha256": "3fce1fdc27528367ab24994b2959020c40eda10f444dec75d12f04092e4fab8a",
+      "requestedProductID": 85568,
+      "identity": {
+        "productId": 85568.0,
+        "productName": "Froakie - XY03",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY03"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89729/details",
+      "status": 200,
+      "sha256": "3404b0c785271575dd3bfa91f503faa703dff41b8064a8ebc6139e1e97342056",
+      "requestedProductID": 89729,
+      "identity": {
+        "productId": 89729.0,
+        "productName": "Sylveon - XY04",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY04"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90670/details",
+      "status": 200,
+      "sha256": "c26ba3807776517a7ba71e0114478d1f95db32c1a59b8e8c5f40220cbc623da2",
+      "requestedProductID": 90670,
+      "identity": {
+        "productId": 90670.0,
+        "productName": "Xerneas - XY05",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY05"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90673/details",
+      "status": 200,
+      "sha256": "d842f6270fe6c1f6f8d6d8c81c64f5193948c27bf01b26640bf5d51ce0a0fdde",
+      "requestedProductID": 90673,
+      "identity": {
+        "productId": 90673.0,
+        "productName": "Xerneas EX - XY07",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY07"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90698/details",
+      "status": 200,
+      "sha256": "4a6fc4131160dc79e01d81f456a1862cd45d5fe2da1065f86bacdb92118ce8a4",
+      "requestedProductID": 90698,
+      "identity": {
+        "productId": 90698.0,
+        "productName": "Yveltal - XY06",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY06"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90701/details",
+      "status": 200,
+      "sha256": "24524dad95d00a193fdf8d3b6f74d6ffa9929eda0e2bb77b2e25dcfbbae36446",
+      "requestedProductID": 90701,
+      "identity": {
+        "productId": 90701.0,
+        "productName": "Yveltal EX - XY08",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY08"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96369/details",
+      "status": 200,
+      "sha256": "c55226691278896d70266570c61c4c83d6f67cfd5529c9c166a46ca17bbf9ca8",
+      "requestedProductID": 96369,
+      "identity": {
+        "productId": 96369.0,
+        "productName": "Garchomp EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY09"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96370/details",
+      "status": 200,
+      "sha256": "4652ef2df3f19d223efcf97b873aa4e7e0b02c41629cb141922e9416a6414f8c",
+      "requestedProductID": 96370,
+      "identity": {
+        "productId": 96370.0,
+        "productName": "Dragalge - XY10 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY10"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96371/details",
+      "status": 200,
+      "sha256": "8545b6177149ded2499d17b80bcb72d5ea69d908251366f2a05c14cb0380bb5d",
+      "requestedProductID": 96371,
+      "identity": {
+        "productId": 96371.0,
+        "productName": "Dragalge - XY10 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY10"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96372/details",
+      "status": 200,
+      "sha256": "ec63f6342b38ffc383b530d7d92f2f1ed8516b647326f187ff2720c8bc838e77",
+      "requestedProductID": 96372,
+      "identity": {
+        "productId": 96372.0,
+        "productName": "Skiddo - XY11",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY11"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96373/details",
+      "status": 200,
+      "sha256": "ba0bf2379f55aeabb800f7cb079ad2e035471442b76369774f65ea2754993ca0",
+      "requestedProductID": 96373,
+      "identity": {
+        "productId": 96373.0,
+        "productName": "Honedge - XY12",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY12"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96374/details",
+      "status": 200,
+      "sha256": "8e449cf764473a6a885310c537a224eba65fba625a3d94f949781ea5aaf2d7f4",
+      "requestedProductID": 96374,
+      "identity": {
+        "productId": 96374.0,
+        "productName": "Machamp - XY13 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY13"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96375/details",
+      "status": 200,
+      "sha256": "0d53aa3ab9ae864a5acc08380d6b42b351746f606d0e60506c4fdfa99aea1e9c",
+      "requestedProductID": 96375,
+      "identity": {
+        "productId": 96375.0,
+        "productName": "Machamp - XY13 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY13"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96376/details",
+      "status": 200,
+      "sha256": "e5ebd50d1611952b7d99229b72d5ead708b0b7bc3adcbc9319ec4c17e761f66c",
+      "requestedProductID": 96376,
+      "identity": {
+        "productId": 96376.0,
+        "productName": "Trevenant - XY14",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY14"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96377/details",
+      "status": 200,
+      "sha256": "fa54ac10fdae775a04eb17326efac30f1f3d92e5a429c176e4cd323ac1451d21",
+      "requestedProductID": 96377,
+      "identity": {
+        "productId": 96377.0,
+        "productName": "Slurpuff - XY15",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY15"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96378/details",
+      "status": 200,
+      "sha256": "c089fbd4f4d7f11390de896a3c91c797a7ea06f0997a143cfe573b5b1ee66a32",
+      "requestedProductID": 96378,
+      "identity": {
+        "productId": 96378.0,
+        "productName": "Gogoat - XY16",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY16"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96379/details",
+      "status": 200,
+      "sha256": "f613fe32afa4307138e7614ecea3e26de2d96ec34cac808f40e9fc345cf8812a",
+      "requestedProductID": 96379,
+      "identity": {
+        "productId": 96379.0,
+        "productName": "Charizard EX - XY17",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96380/details",
+      "status": 200,
+      "sha256": "f51c815753f9afbfe5eed8156eab4890e0756b3c22f92cc2126448565d5856f4",
+      "requestedProductID": 96380,
+      "identity": {
+        "productId": 96380.0,
+        "productName": "Chesnaught EX - XY18",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96381/details",
+      "status": 200,
+      "sha256": "040a50ff082c9ad243280d51594c83e7dbfe8799e0ee214e3044160f788c8431",
+      "requestedProductID": 96381,
+      "identity": {
+        "productId": 96381.0,
+        "productName": "Delphox EX - XY19",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY19"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96382/details",
+      "status": 200,
+      "sha256": "31d54c9104383e4bba26b8f544162cb8db7aba021b86edea67c9fc50e3139968",
+      "requestedProductID": 96382,
+      "identity": {
+        "productId": 96382.0,
+        "productName": "Greninja EX - XY20",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY20"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96383/details",
+      "status": 200,
+      "sha256": "fbdbf3ec813e80a0028c339bcbf5b3b00067567f4b546544bce1c4be4a3f2044",
+      "requestedProductID": 96383,
+      "identity": {
+        "productId": 96383.0,
+        "productName": "Bronzong - XY21 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY21"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96384/details",
+      "status": 200,
+      "sha256": "c4da3125e6a1f73c2285b97bcdaabbfcff943316fe38bc5268e9b1b57c5b0d08",
+      "requestedProductID": 96384,
+      "identity": {
+        "productId": 96384.0,
+        "productName": "Bronzong - XY21 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY21"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96385/details",
+      "status": 200,
+      "sha256": "3667dd86cf54cfe35c3a998ddf3355a5f260f54a0389445a4b74f244513377cb",
+      "requestedProductID": 96385,
+      "identity": {
+        "productId": 96385.0,
+        "productName": "Darkrai - XY22",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY22"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96386/details",
+      "status": 200,
+      "sha256": "e98e075e707c83cd1c63534b87296b309e6c9d2e9ffdc838bb42dd3e02fb9146",
+      "requestedProductID": 96386,
+      "identity": {
+        "productId": 96386.0,
+        "productName": "Shiftry - XY23",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY23"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96387/details",
+      "status": 200,
+      "sha256": "5684acb25643843f77f3e3f7757db650ffe241339f4b2d2b7550a1ea7b0adfe4",
+      "requestedProductID": 96387,
+      "identity": {
+        "productId": 96387.0,
+        "productName": "Greninja - XY24",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY24"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96388/details",
+      "status": 200,
+      "sha256": "06d0fba7809dc281aa4d2a520165b367e0bbe264732ccb51b0da48cba0043b3e",
+      "requestedProductID": 96388,
+      "identity": {
+        "productId": 96388.0,
+        "productName": "Krookodile EX - XY25",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96389/details",
+      "status": 200,
+      "sha256": "0390aa059d75f2975893fe43fc7adb2eba49e005305875b323d412d21087360d",
+      "requestedProductID": 96389,
+      "identity": {
+        "productId": 96389.0,
+        "productName": "Pyroar - XY26",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY26"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96390/details",
+      "status": 200,
+      "sha256": "dde12d4a82f634320137d7961228f0382655cab974b95bb89e45f32fac2f57ee",
+      "requestedProductID": 96390,
+      "identity": {
+        "productId": 96390.0,
+        "productName": "Champions Festival - XY27 (2014)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96391/details",
+      "status": 200,
+      "sha256": "c2316cac3bd63c3b195aae4632c237c7563d125bbd5b47ef22fb5702f26876ee",
+      "requestedProductID": 96391,
+      "identity": {
+        "productId": 96391.0,
+        "productName": "Venusaur EX - XY28",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96392/details",
+      "status": 200,
+      "sha256": "60aae876697e8014b23301d0b35a15563b88ff12e56bd10f46e20e3edf7dcf42",
+      "requestedProductID": 96392,
+      "identity": {
+        "productId": 96392.0,
+        "productName": "Charizard EX - XY29",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY29"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96393/details",
+      "status": 200,
+      "sha256": "a1d03341e3f8b83458be4d490539af5c4ef37e204e684a4b9922aaf792e3d1b8",
+      "requestedProductID": 96393,
+      "identity": {
+        "productId": 96393.0,
+        "productName": "Blastoise EX - XY30",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY30"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96394/details",
+      "status": 200,
+      "sha256": "404f247a59eb6b017ad6da3d8016e66eb43436f5f07ae9b3b49ee88c7bdb4f0b",
+      "requestedProductID": 96394,
+      "identity": {
+        "productId": 96394.0,
+        "productName": "Xerneas - XY31",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY31"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96395/details",
+      "status": 200,
+      "sha256": "319bfb41e5d6a2f1830f1453db10a20a6b1286bbd960945f885a51eec3ecd8d0",
+      "requestedProductID": 96395,
+      "identity": {
+        "productId": 96395.0,
+        "productName": "Yveltal - XY32",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY32"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96396/details",
+      "status": 200,
+      "sha256": "b2bd25dab5aa65f46a5e61fea80d0c3c3979a9cfb29fc673f4fa693fb2edb356",
+      "requestedProductID": 96396,
+      "identity": {
+        "productId": 96396.0,
+        "productName": "Trevor - XY33",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY33"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96397/details",
+      "status": 200,
+      "sha256": "5b359e23ecdc67c722676b160b3101fdce4b8eb3d128883d0551649be5b62cc7",
+      "requestedProductID": 96397,
+      "identity": {
+        "productId": 96397.0,
+        "productName": "Metagross EX (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY34"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96398/details",
+      "status": 200,
+      "sha256": "cd911d5e632f8f8293c4ee6e6fd6c5072ff2683a37bc2d5d71daee6c71fdceae",
+      "requestedProductID": 96398,
+      "identity": {
+        "productId": 96398.0,
+        "productName": "M Metagross EX (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY35"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96413/details",
+      "status": 200,
+      "sha256": "784e1371851a8fc9ddc3f64d91eecc3f489ca35fb0e879bb4c11cdfdaf044311",
+      "requestedProductID": 96413,
+      "identity": {
+        "productId": 96413.0,
+        "productName": "Kingdra - XY39 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY39"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96414/details",
+      "status": 200,
+      "sha256": "840342ff76f60e5ab635e1109a2afef7fa4f7769957437aac3cd841d37d97604",
+      "requestedProductID": 96414,
+      "identity": {
+        "productId": 96414.0,
+        "productName": "Kingdra - XY39 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY39"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96415/details",
+      "status": 200,
+      "sha256": "67289c92a9ed8e9ed1f4041d5f5d6c16b013d6e1fa1e2fe496dc10a8f40d1daa",
+      "requestedProductID": 96415,
+      "identity": {
+        "productId": 96415.0,
+        "productName": "Ditto",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY40"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96416/details",
+      "status": 200,
+      "sha256": "39002e781960b1d43dc835e4defb1ae349a3b3e9a2650cde7452707ffe5f4854",
+      "requestedProductID": 96416,
+      "identity": {
+        "productId": 96416.0,
+        "productName": "Diancie EX - XY43",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY43"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96417/details",
+      "status": 200,
+      "sha256": "b955d8d0113ebd2e0062251dedd054a1bc3b92178466325cc3ad09d1fcb7d2a4",
+      "requestedProductID": 96417,
+      "identity": {
+        "productId": 96417.0,
+        "productName": "M Diancie EX - XY44",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY44"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96418/details",
+      "status": 200,
+      "sha256": "16dc92c094cc8c17d6c6c4764f221a82083c7b81c16bec065862eebca8fe88fe",
+      "requestedProductID": 96418,
+      "identity": {
+        "productId": 96418.0,
+        "productName": "Gallade EX - XY45",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY45"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96419/details",
+      "status": 200,
+      "sha256": "93fb138e07ba8d1fdc9db3337a8bd3bd62e426f02129de544b9ed72d5ba15712",
+      "requestedProductID": 96419,
+      "identity": {
+        "productId": 96419.0,
+        "productName": "Treecko - XY36",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY36"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96420/details",
+      "status": 200,
+      "sha256": "ab6616b88b35065513799c32c9619a9cbd96230008f354445fa8c3c04d6209a9",
+      "requestedProductID": 96420,
+      "identity": {
+        "productId": 96420.0,
+        "productName": "Torchic - XY37",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY37"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96421/details",
+      "status": 200,
+      "sha256": "432567bd138442880914f87a1ce6a9873ed62f86625932900414f5d0173f77b2",
+      "requestedProductID": 96421,
+      "identity": {
+        "productId": 96421.0,
+        "productName": "Mudkip - XY38",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY38"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96479/details",
+      "status": 200,
+      "sha256": "68fa36cdffaea14b38179c97da7cc9ad93434e3575c1bcf2e26724d43749a994",
+      "requestedProductID": 96479,
+      "identity": {
+        "productId": 96479.0,
+        "productName": "Champions Festival - XY27 (2014 Top Thirty-Two)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96480/details",
+      "status": 200,
+      "sha256": "5ef001691989c30efc5d2899b4be4299a0307809efcfb192de74a48909bb0107",
+      "requestedProductID": 96480,
+      "identity": {
+        "productId": 96480.0,
+        "productName": "Champions Festival - XY27 (2014 Top Sixteen)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96481/details",
+      "status": 200,
+      "sha256": "3f8318adf33f2e3d8f33e253ac60512922eb88ac0fe9758125b0bce8253cb8d1",
+      "requestedProductID": 96481,
+      "identity": {
+        "productId": 96481.0,
+        "productName": "Champions Festival - XY27 (2014 Quarter Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96482/details",
+      "status": 200,
+      "sha256": "1dffca2bc16af3379ac69ab8d68cee12feff67d10f5375a8d02db3cbcf04b630",
+      "requestedProductID": 96482,
+      "identity": {
+        "productId": 96482.0,
+        "productName": "Champions Festival - XY27 (2014 Semi-Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96483/details",
+      "status": 200,
+      "sha256": "16a33fa3409d2d5dabf9c72db109f0cddac3702cc8962fbaea6c7d173290509c",
+      "requestedProductID": 96483,
+      "identity": {
+        "productId": 96483.0,
+        "productName": "Champions Festival - XY27 (2014 Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96484/details",
+      "status": 200,
+      "sha256": "73cf8d3d4835e786cfc209c4e7ba9206f5ab4be97847468cfeccdec350b20eca",
+      "requestedProductID": 96484,
+      "identity": {
+        "productId": 96484.0,
+        "productName": "Champions Festival - XY27 (2014 Champion)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96485/details",
+      "status": 200,
+      "sha256": "c59b49c37e1e9b9e67aebc5fd30141e5e1499499bcf68f66d8c0a82809e481d6",
+      "requestedProductID": 96485,
+      "identity": {
+        "productId": 96485.0,
+        "productName": "Champions Festival - XY27 (2014 Staff)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/98732/details",
+      "status": 200,
+      "sha256": "d61dd442aa17bcea2c4498ee9743f2637f21c471c786d315a64a3b07d0f79904",
+      "requestedProductID": 98732,
+      "identity": {
+        "productId": 98732.0,
+        "productName": "Kyogre - XY51",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY51"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/98733/details",
+      "status": 200,
+      "sha256": "c5dddea66be30ceda5132bbc8c1fe9079615d5b74278a486f47450b1632a91c0",
+      "requestedProductID": 98733,
+      "identity": {
+        "productId": 98733.0,
+        "productName": "Groudon - XY52",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY52"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/98734/details",
+      "status": 200,
+      "sha256": "29fb6454951f5f9878aadbe36019853f6486f85dd267fdcde1a0c7d2c07b4acf",
+      "requestedProductID": 98734,
+      "identity": {
+        "productId": 98734.0,
+        "productName": "Flygon EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY61"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100503/details",
+      "status": 200,
+      "sha256": "df9839d5a62d453397f76e9a2847b8c2eb7f74a0bb5b39a524d46a29a09833ac",
+      "requestedProductID": 100503,
+      "identity": {
+        "productId": 100503.0,
+        "productName": "Altaria - XY46 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY46"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100504/details",
+      "status": 200,
+      "sha256": "43e8d7e088786f6c0ec9a3762b3e504342f9c8173093d6181c0fa4f629d85053",
+      "requestedProductID": 100504,
+      "identity": {
+        "productId": 100504.0,
+        "productName": "Altaria - XY46 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY46"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100505/details",
+      "status": 200,
+      "sha256": "78e49cb9303f35329df5784d87b120803421a89d9e8a7bab3ce89761e8a4d4b2",
+      "requestedProductID": 100505,
+      "identity": {
+        "productId": 100505.0,
+        "productName": "Heliolisk - XY47",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY47"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100506/details",
+      "status": 200,
+      "sha256": "df628db3868c23d71e3d38d181862cef4d66778caf8364b7f32fd2c6422d0915",
+      "requestedProductID": 100506,
+      "identity": {
+        "productId": 100506.0,
+        "productName": "Meowstic - XY48",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY48"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100507/details",
+      "status": 200,
+      "sha256": "d14ceae00efba551548ef5e009a2a3678058a5ae0331b6a22b8d971f22c4c4f8",
+      "requestedProductID": 100507,
+      "identity": {
+        "productId": 100507.0,
+        "productName": "Regirock - XY49",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY49"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100508/details",
+      "status": 200,
+      "sha256": "b2f68297fb0e69ac1685f2720e38eb716c9153544ef9f57422857ec87cf3fc39",
+      "requestedProductID": 100508,
+      "identity": {
+        "productId": 100508.0,
+        "productName": "Pangoro - XY50",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100509/details",
+      "status": 200,
+      "sha256": "637024b08e0faa0dc7ba0eae430f5e28b76267eefedf616d0eda5d796b1fb8c1",
+      "requestedProductID": 100509,
+      "identity": {
+        "productId": 100509.0,
+        "productName": "Sceptile EX - XY53",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100510/details",
+      "status": 200,
+      "sha256": "dfba5e59f90a8fa21de753ee82795eb5a7b0f8e3e0376082fe9233b4400ebce6",
+      "requestedProductID": 100510,
+      "identity": {
+        "productId": 100510.0,
+        "productName": "Blaziken EX - XY54",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY54"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100511/details",
+      "status": 200,
+      "sha256": "b18379ccf50f7f0376b8cb1acfbc9acd034991588072dc617fef2257869bdaea",
+      "requestedProductID": 100511,
+      "identity": {
+        "productId": 100511.0,
+        "productName": "Swampert EX - XY55",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY55"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100512/details",
+      "status": 200,
+      "sha256": "54f75b7fd87794c46fdf2955cfc00e89b005bf21068f944ddfe013d6eafe72f6",
+      "requestedProductID": 100512,
+      "identity": {
+        "productId": 100512.0,
+        "productName": "Absol EX - XY62",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY62"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100513/details",
+      "status": 200,
+      "sha256": "e2a29ac9ce68f0cf43905a5048dfb5ffb3fcec5e7511decec98256056ad60b8d",
+      "requestedProductID": 100513,
+      "identity": {
+        "productId": 100513.0,
+        "productName": "M Absol EX - XY63",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY63"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100514/details",
+      "status": 200,
+      "sha256": "036e3072c3fd09c16df7d95e2faaa927b40892cf29a36d6249d91e2b8943022c",
+      "requestedProductID": 100514,
+      "identity": {
+        "productId": 100514.0,
+        "productName": "Rayquaza - XY64",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY64"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100515/details",
+      "status": 200,
+      "sha256": "7b5ebbd74925a00dfad6014cab78ba7af73b51a224451d140c37c079dd7f9d42",
+      "requestedProductID": 100515,
+      "identity": {
+        "productId": 100515.0,
+        "productName": "Rayquaza EX - XY66",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY66"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/102802/details",
+      "status": 200,
+      "sha256": "9c5ff18485b3b4cc46932a7f6b865eaf01c12dbbf5050fa283f09239fcc569f7",
+      "requestedProductID": 102802,
+      "identity": {
+        "productId": 102802.0,
+        "productName": "Gyarados - XY60 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY60"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/102803/details",
+      "status": 200,
+      "sha256": "d24ccf5c52ea25a75c688082c7a844c42724267f8333d1f91a33e4d4a857362c",
+      "requestedProductID": 102803,
+      "identity": {
+        "productId": 102803.0,
+        "productName": "Gyarados - XY60 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY60"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/102804/details",
+      "status": 200,
+      "sha256": "1216cc9ac398cc0d23f1184c989e760d541e4f4d094fbb9ca4507bc280c10184",
+      "requestedProductID": 102804,
+      "identity": {
+        "productId": 102804.0,
+        "productName": "Latios - XY65",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY65"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/104053/details",
+      "status": 200,
+      "sha256": "464f2fd797c42a48eb51487fd9af4f2980b749c11b182e385d0efcab1cb1c406",
+      "requestedProductID": 104053,
+      "identity": {
+        "productId": 104053.0,
+        "productName": "Malamar - XY58",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY58"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108591/details",
+      "status": 200,
+      "sha256": "dd65ce8c96027323d0758103d440c4edf3056a2a7878df2ce0954fff3f1845b0",
+      "requestedProductID": 108591,
+      "identity": {
+        "productId": 108591.0,
+        "productName": "Kyogre EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY41"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108592/details",
+      "status": 200,
+      "sha256": "9803ab845f8110b89cf4108834338cf7c60301b202f4c72565190bfe4b19aa33",
+      "requestedProductID": 108592,
+      "identity": {
+        "productId": 108592.0,
+        "productName": "Groudon EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY42"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108593/details",
+      "status": 200,
+      "sha256": "15a658aeb2b7d0bc7301bd96d0536170333ab10631839b7bee84b25419095d4a",
+      "requestedProductID": 108593,
+      "identity": {
+        "productId": 108593.0,
+        "productName": "Blissey - XY56",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY56"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108594/details",
+      "status": 200,
+      "sha256": "753e2636b7a6a1e59a96af9818585fc97c4a97fc5b75919717e8f609f7d0498a",
+      "requestedProductID": 108594,
+      "identity": {
+        "productId": 108594.0,
+        "productName": "Fearow",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY57"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108595/details",
+      "status": 200,
+      "sha256": "34106e437cda2b9148adb8f605af9bf719f10df23518cb2b86961190714b0422",
+      "requestedProductID": 108595,
+      "identity": {
+        "productId": 108595.0,
+        "productName": "Salamence - XY59",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY59"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108596/details",
+      "status": 200,
+      "sha256": "2585d1b98b073fc38d0bb3d18b8adf87da9a9d5d7b55c3630693a19ae6da0001",
+      "requestedProductID": 108596,
+      "identity": {
+        "productId": 108596.0,
+        "productName": "Jirachi - XY67",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY67"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108597/details",
+      "status": 200,
+      "sha256": "30376e69eec96ad15d7db1c499e23a6748fa48efc6479fd8b71eceb2664c424c",
+      "requestedProductID": 108597,
+      "identity": {
+        "productId": 108597.0,
+        "productName": "Chesnaught (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY68"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108598/details",
+      "status": 200,
+      "sha256": "e2e5ff2a47b9a4b4dee02d9f8434941c1ff872d0342338d6ad953508b58e1aa9",
+      "requestedProductID": 108598,
+      "identity": {
+        "productId": 108598.0,
+        "productName": "Chesnaught - XY68 (Prerelease [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY68"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108599/details",
+      "status": 200,
+      "sha256": "53016f83874494c03e8fa492d89f6593310dd7f4410f941ba7611724c171d59c",
+      "requestedProductID": 108599,
+      "identity": {
+        "productId": 108599.0,
+        "productName": "Rayquaza EX (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY69"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108600/details",
+      "status": 200,
+      "sha256": "b52b1fabae6620c289710c0d3ae48b0d6c9b5531f648b5aee8558e8d24bb2a45",
+      "requestedProductID": 108600,
+      "identity": {
+        "productId": 108600.0,
+        "productName": "Tyrantrum EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY70"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108601/details",
+      "status": 200,
+      "sha256": "e476664086111b471322d9da22ff57cab8fad4ca03d8f6f8f707912347647b62",
+      "requestedProductID": 108601,
+      "identity": {
+        "productId": 108601.0,
+        "productName": "Hoopa EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY71"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108602/details",
+      "status": 200,
+      "sha256": "aa4c54454b3413ca428817040d07b14c166a90af3c71dd72cf05315f5406145e",
+      "requestedProductID": 108602,
+      "identity": {
+        "productId": 108602.0,
+        "productName": "Latios EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY72"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108603/details",
+      "status": 200,
+      "sha256": "142a44124e785c5446dcf27dd7adce7faa6cafae40c0108f09d4b441d6c7c8b9",
+      "requestedProductID": 108603,
+      "identity": {
+        "productId": 108603.0,
+        "productName": "Rayquaza EX (XY73)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY73"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108604/details",
+      "status": 200,
+      "sha256": "11109bee47813877296764f8c5f0f7b9196464c8387a3943b191f4000596d9f2",
+      "requestedProductID": 108604,
+      "identity": {
+        "productId": 108604.0,
+        "productName": "Reshiram (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY74"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108605/details",
+      "status": 200,
+      "sha256": "43935b080463a50720445ad1281497449fc50c63d96a1b8e97a311a7ad64edaf",
+      "requestedProductID": 108605,
+      "identity": {
+        "productId": 108605.0,
+        "productName": "Palkia (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY75"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108606/details",
+      "status": 200,
+      "sha256": "708566197fe980827055902c429e6b2b23b20a290e33cef7cb89ed6e1d1258a8",
+      "requestedProductID": 108606,
+      "identity": {
+        "productId": 108606.0,
+        "productName": "Zekrom (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY76"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108607/details",
+      "status": 200,
+      "sha256": "a7371d505ed6825604c6532af2568db78f6fdc789500a24c87258b320be2f5dd",
+      "requestedProductID": 108607,
+      "identity": {
+        "productId": 108607.0,
+        "productName": "Dialga (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY77"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108608/details",
+      "status": 200,
+      "sha256": "2253d915c023fc8c87bf017106f8a21638cd72f65199be54c4089c815a1d60ae",
+      "requestedProductID": 108608,
+      "identity": {
+        "productId": 108608.0,
+        "productName": "Latias (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY78"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108609/details",
+      "status": 200,
+      "sha256": "b46884de5ecb9f7ec1f34567f38742bb49f2c84fc6b90a688c9eea34f8e4c890",
+      "requestedProductID": 108609,
+      "identity": {
+        "productId": 108609.0,
+        "productName": "Latios (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY79"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108610/details",
+      "status": 200,
+      "sha256": "2ff0785d7cd656a73ba427ea496a0b9adad3c609e47304f66e360688fa779324",
+      "requestedProductID": 108610,
+      "identity": {
+        "productId": 108610.0,
+        "productName": "Black Kyurem - XY80",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY80"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108611/details",
+      "status": 200,
+      "sha256": "d71e9ea24164280ddac64b62a2febe03d6c97118428dbcf3f2a6b03bc2a2f25a",
+      "requestedProductID": 108611,
+      "identity": {
+        "productId": 108611.0,
+        "productName": "White Kyurem (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY81"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108612/details",
+      "status": 200,
+      "sha256": "1f1a0e59f0e04683d2e9114c7d8d7e1f450c23eab358156f90d5b76929ead8a4",
+      "requestedProductID": 108612,
+      "identity": {
+        "productId": 108612.0,
+        "productName": "Regigigas (Full Art Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108613/details",
+      "status": 200,
+      "sha256": "d2c0b28ad0c68cdbcc2fa64e7d1e9d47635c1cb5e213f24b33bf16e905e3adde",
+      "requestedProductID": 108613,
+      "identity": {
+        "productId": 108613.0,
+        "productName": "Arceus - XY83",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY83"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108614/details",
+      "status": 200,
+      "sha256": "d898b785cd7a45fcec8bc89070b713d8e0c8cd70e0c8cea9f090a621cd3a98f7",
+      "requestedProductID": 108614,
+      "identity": {
+        "productId": 108614.0,
+        "productName": "Pikachu EX - XY84",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY84"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108615/details",
+      "status": 200,
+      "sha256": "9d27466ce2fa5c6e29f4ba5601bb7a5e10b708c04a5ea748047b693aa719a4fc",
+      "requestedProductID": 108615,
+      "identity": {
+        "productId": 108615.0,
+        "productName": "Hoopa EX (Collection Promo)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY85"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108616/details",
+      "status": 200,
+      "sha256": "7838ee2a47b530b093e9a9dba40755b1a67761a0247a8b346b21fafaa3245501",
+      "requestedProductID": 108616,
+      "identity": {
+        "productId": 108616.0,
+        "productName": "M Blaziken EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY86"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108617/details",
+      "status": 200,
+      "sha256": "330114e7fece6865327e17f54767a4351663cd162588b713191509888b2ee249",
+      "requestedProductID": 108617,
+      "identity": {
+        "productId": 108617.0,
+        "productName": "M Swampert EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY87"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108618/details",
+      "status": 200,
+      "sha256": "16e202cb323ac6091079f6851f71d9590c518f88ec59043cd1931953ca6765a5",
+      "requestedProductID": 108618,
+      "identity": {
+        "productId": 108618.0,
+        "productName": "Chespin (Collector Chest)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY88"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108619/details",
+      "status": 200,
+      "sha256": "985a3b7f2d2569fc57d383d7239526092b6034a95892008130239f07c9b61b81",
+      "requestedProductID": 108619,
+      "identity": {
+        "productId": 108619.0,
+        "productName": "Pikachu (Collector Chest)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY89"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108620/details",
+      "status": 200,
+      "sha256": "7ad7cb958e36096a65852382ba0dcccebd3ede0cad46f0628ea494ad093c21a2",
+      "requestedProductID": 108620,
+      "identity": {
+        "productId": 108620.0,
+        "productName": "Hoopa (Collector Chest)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY90"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108621/details",
+      "status": 200,
+      "sha256": "3b10f2796659f475ae6a88a24473ae23e0a43db393a9a014c1f799c4ac9b08a2",
+      "requestedProductID": 108621,
+      "identity": {
+        "productId": 108621.0,
+        "productName": "Sableye - XY92",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY92"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108622/details",
+      "status": 200,
+      "sha256": "0379c3a224231be55fa610b20f3227eee5a9ef05524dd962d3cdc8dab19fa57d",
+      "requestedProductID": 108622,
+      "identity": {
+        "productId": 108622.0,
+        "productName": "Celebi - XY93",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY93"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108623/details",
+      "status": 200,
+      "sha256": "00504880a9530b9ed68d0ead5459f52fb7db2121a12918c79dbf6f7b288c4e1c",
+      "requestedProductID": 108623,
+      "identity": {
+        "productId": 108623.0,
+        "productName": "Mewtwo - XY100",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY100"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108624/details",
+      "status": 200,
+      "sha256": "520e5d3c530f5445c31d517a67dc6f8aa5170336221d6cd24cf8e93c61fdcb93",
+      "requestedProductID": 108624,
+      "identity": {
+        "productId": 108624.0,
+        "productName": "Mewtwo - XY101",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY101"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114004/details",
+      "status": 200,
+      "sha256": "9fb51618af2c71052c4990750d10faa91c97d135c591918e0559e12cb199f82b",
+      "requestedProductID": 114004,
+      "identity": {
+        "productId": 114004.0,
+        "productName": "Pikachu",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114005/details",
+      "status": 200,
+      "sha256": "76d9f5f205454d952fa4cbbaac05a553424c49c1e9f31e66efe744eed0362203",
+      "requestedProductID": 114005,
+      "identity": {
+        "productId": 114005.0,
+        "productName": "Umbreon",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY96"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114006/details",
+      "status": 200,
+      "sha256": "d1729bc970c30955f6a8005e9ca1ded77ffc5beb4e5aecabd3cff07bd17ddbc8",
+      "requestedProductID": 114006,
+      "identity": {
+        "productId": 114006.0,
+        "productName": "Mew - XY110",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY110"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114007/details",
+      "status": 200,
+      "sha256": "74679f4f58b58250f12ea6b8b265a673c6a832fe0a9b42fb83e5c3975ff41013",
+      "requestedProductID": 114007,
+      "identity": {
+        "productId": 114007.0,
+        "productName": "Aerodactyl EX - XY97",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY97"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114008/details",
+      "status": 200,
+      "sha256": "4d000c7dc17439a41dcc02ba1ec1d127f3767aa4ac6fb2ffb0d98650e3625993",
+      "requestedProductID": 114008,
+      "identity": {
+        "productId": 114008.0,
+        "productName": "M Aerodactyl EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY98"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114009/details",
+      "status": 200,
+      "sha256": "a0f5710455da887997a1fa98b95c2c027a0baa69e731c734fd9ce09ca3173e6e",
+      "requestedProductID": 114009,
+      "identity": {
+        "productId": 114009.0,
+        "productName": "Aerodactyl Spirit Link - XY99",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY99"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114010/details",
+      "status": 200,
+      "sha256": "b1e492a6f64e3ab4800b6168f086a71770e403be4ee0308d9802b064cffda6e2",
+      "requestedProductID": 114010,
+      "identity": {
+        "productId": 114010.0,
+        "productName": "Aurorus EX - XY102",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY102"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114011/details",
+      "status": 200,
+      "sha256": "0252b71d02d330772a21aaf777ff8fe14b73333c42a2faf230ab3064eee73358",
+      "requestedProductID": 114011,
+      "identity": {
+        "productId": 114011.0,
+        "productName": "Empoleon BREAK",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY134"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114012/details",
+      "status": 200,
+      "sha256": "bd6634ce2c25fe439c28cc8a8f788ffdf69c49434dd1b2eb1330952b8c0606d8",
+      "requestedProductID": 114012,
+      "identity": {
+        "productId": 114012.0,
+        "productName": "Beheeyem BREAK - XY135",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY135"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114013/details",
+      "status": 200,
+      "sha256": "636c1579c7b48ceb3be71e217691b1dc184b895a25339971ee6469e490d16836",
+      "requestedProductID": 114013,
+      "identity": {
+        "productId": 114013.0,
+        "productName": "Noctowl BREAK",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY136"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114014/details",
+      "status": 200,
+      "sha256": "08d6b9bccf7dc525985a1098da299cf4dd899280f8a728c0e4edb084d5a180ad",
+      "requestedProductID": 114014,
+      "identity": {
+        "productId": 114014.0,
+        "productName": "Trevenant (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY94"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114015/details",
+      "status": 200,
+      "sha256": "071960fdafcb77d02178856e0cbeb3bc55f03b6e373cef7e350c427f1009eb65",
+      "requestedProductID": 114015,
+      "identity": {
+        "productId": 114015.0,
+        "productName": "Trevenant - XY94 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY94"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/114526/details",
+      "status": 200,
+      "sha256": "b410141093eca55bf7446459fcb7c2325bb76e8078ab3c2295acebd516991c67",
+      "requestedProductID": 114526,
+      "identity": {
+        "productId": 114526.0,
+        "productName": "Celebi - XY111",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY111"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/116779/details",
+      "status": 200,
+      "sha256": "9e4ee5769b2fa9e99f45876dffe1000f6413819715cec5077315c2baa9f3a071",
+      "requestedProductID": 116779,
+      "identity": {
+        "productId": 116779.0,
+        "productName": "Magikarp",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY143"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/117266/details",
+      "status": 200,
+      "sha256": "0e3a08a828147942d8b34b1d231a98ef4f48e5bcc2773d26c14422c4e0966afd",
+      "requestedProductID": 117266,
+      "identity": {
+        "productId": 117266.0,
+        "productName": "Jirachi - XY112",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY112"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/117267/details",
+      "status": 200,
+      "sha256": "7a297e17aba04c22208621873772eb1dffa9569e8b2afd2fe70588a80e5cb763",
+      "requestedProductID": 117267,
+      "identity": {
+        "productId": 117267.0,
+        "productName": "Charizard EX - XY121",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY121"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/117701/details",
+      "status": 200,
+      "sha256": "8cc8b25171ffb008983b28fa1eda41605fb727a74bbb394a5d61e23132a1452e",
+      "requestedProductID": 117701,
+      "identity": {
+        "productId": 117701.0,
+        "productName": "Gyarados EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY106"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/117702/details",
+      "status": 200,
+      "sha256": "ab3bf0e4c560b1d5ea719b4ff5d75636add48667e02d82885256974a99d72536",
+      "requestedProductID": 117702,
+      "identity": {
+        "productId": 117702.0,
+        "productName": "Mewtwo EX - XY107",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY107"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/117703/details",
+      "status": 200,
+      "sha256": "3aa9718cc6b61c0154dfb67ddee5558f724a37627e80dcbe6d1a2a44295c2363",
+      "requestedProductID": 117703,
+      "identity": {
+        "productId": 117703.0,
+        "productName": "Machamp EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118858/details",
+      "status": 200,
+      "sha256": "cfefc447ac1537787ae46fbead4836447fe51276b43acb40c36c0789ef1e5adb",
+      "requestedProductID": 118858,
+      "identity": {
+        "productId": 118858.0,
+        "productName": "Mawile Spirit Link",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY105"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118859/details",
+      "status": 200,
+      "sha256": "e3a940d8708dc2c260100e47a5318d1a5f83d94655569abe5c8eb7eda290354c",
+      "requestedProductID": 118859,
+      "identity": {
+        "productId": 118859.0,
+        "productName": "Mawile EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY103"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118860/details",
+      "status": 200,
+      "sha256": "d166990556f6ad2bc8a1689896c6f00bcf7d25fa58fc9a275a22818e6908f9e9",
+      "requestedProductID": 118860,
+      "identity": {
+        "productId": 118860.0,
+        "productName": "M Mawile EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY104"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118861/details",
+      "status": 200,
+      "sha256": "8e6dadd67dae7ef5042cf0bf6532924def12f1bda43d2ff78e8e4d79f107cadc",
+      "requestedProductID": 118861,
+      "identity": {
+        "productId": 118861.0,
+        "productName": "Manaphy",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY113"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118862/details",
+      "status": 200,
+      "sha256": "e5bc9de8d1febdf79c36378dcabca5174f601348d6bbc5b5300b415b3755744f",
+      "requestedProductID": 118862,
+      "identity": {
+        "productId": 118862.0,
+        "productName": "Blastoise EX - XY122",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY122"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118863/details",
+      "status": 200,
+      "sha256": "43349c90cf3a801da2982d955a2353dc6f08cd3da40ec73a2c136e2bd832d144",
+      "requestedProductID": 118863,
+      "identity": {
+        "productId": 118863.0,
+        "productName": "Moltres (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY127"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118864/details",
+      "status": 200,
+      "sha256": "ef8c283fe01b5283947ac8371afda925e64d5b8b6e56b62b60ce0f3b7ab6d1fb",
+      "requestedProductID": 118864,
+      "identity": {
+        "productId": 118864.0,
+        "productName": "Moltres - XY127 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY127"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118865/details",
+      "status": 200,
+      "sha256": "b60a4c67d03f69bf17b910cd00256d604734c47f1e7f1845786ad1f3af5043ae",
+      "requestedProductID": 118865,
+      "identity": {
+        "productId": 118865.0,
+        "productName": "White Kyurem (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY128"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118866/details",
+      "status": 200,
+      "sha256": "1891fad0d60ce1d636d31b783f968f7fc6b3cfb9d348b5c8b17dcc94a21e22e8",
+      "requestedProductID": 118866,
+      "identity": {
+        "productId": 118866.0,
+        "productName": "White Kyurem - XY128 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY128"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118867/details",
+      "status": 200,
+      "sha256": "e05f9e7fe88e5dad9a56482df1868048970c2a00ef1c24386512ef65370cfff1",
+      "requestedProductID": 118867,
+      "identity": {
+        "productId": 118867.0,
+        "productName": "Zygarde - XY129 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY129"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118868/details",
+      "status": 200,
+      "sha256": "252c6a87424ad199c937d0dbeb86ceedf64e3df39842467bb1c34e836d9fec00",
+      "requestedProductID": 118868,
+      "identity": {
+        "productId": 118868.0,
+        "productName": "Zygarde (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY129"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118869/details",
+      "status": 200,
+      "sha256": "85e10961ef516c64737b71b15275731243b6c66304646173903181413ba81f59",
+      "requestedProductID": 118869,
+      "identity": {
+        "productId": 118869.0,
+        "productName": "Tyranitar (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY130"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118870/details",
+      "status": 200,
+      "sha256": "5118c58acafa2532ae774316da1deae47c347407159b7340dc2106ea0f0afc7f",
+      "requestedProductID": 118870,
+      "identity": {
+        "productId": 118870.0,
+        "productName": "Tyranitar - XY130 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY130"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118871/details",
+      "status": 200,
+      "sha256": "2b2bb9e7fa4a6c0c5c5f480475f129a00278363bb01fe7dbabd95c23fb3b725a",
+      "requestedProductID": 118871,
+      "identity": {
+        "productId": 118871.0,
+        "productName": "Ash-Greninja EX - XY133",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY133"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118872/details",
+      "status": 200,
+      "sha256": "9f764c4cec43d1d9b5ac3e530fd08415132aa755af4d0d0fd33ea43aefd39173",
+      "requestedProductID": 118872,
+      "identity": {
+        "productId": 118872.0,
+        "productName": "Pansear",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY131"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118873/details",
+      "status": 200,
+      "sha256": "aa5218033fe789fb4143512d3a34e8573b244fd9ef8ed96521a199f52468ec1b",
+      "requestedProductID": 118873,
+      "identity": {
+        "productId": 118873.0,
+        "productName": "Gastly",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118874/details",
+      "status": 200,
+      "sha256": "30bc9961d2c97ec5f89063fb2a3a7fd38636327d6f86c0c9d901167b51842b7e",
+      "requestedProductID": 118874,
+      "identity": {
+        "productId": 118874.0,
+        "productName": "Vivillon",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY137"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118875/details",
+      "status": 200,
+      "sha256": "1ed34d95b9dd26eb802da33c261c85b7732020e3b1328da0c79c2f9a21d7889b",
+      "requestedProductID": 118875,
+      "identity": {
+        "productId": 118875.0,
+        "productName": "Froakie - XY138",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY138"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/120115/details",
+      "status": 200,
+      "sha256": "b944de874fb4da7972f2f06095e20c052acd7c6a2caa682d4313cf0b71998e30",
+      "requestedProductID": 120115,
+      "identity": {
+        "productId": 120115.0,
+        "productName": "Shaymin - XY115",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY115"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/120701/details",
+      "status": 200,
+      "sha256": "bf32d112dd3d0f09178d08a3af02b66b219c245e42cd1520ff0c9ebf65fd66da",
+      "requestedProductID": 120701,
+      "identity": {
+        "productId": 120701.0,
+        "productName": "Venusaur EX - XY123",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY123"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121364/details",
+      "status": 200,
+      "sha256": "7cfb29e9f24d122029add1d671d9e74630f41668aa6ca35f3a8f13d9054de496",
+      "requestedProductID": 121364,
+      "identity": {
+        "productId": 121364.0,
+        "productName": "Arceus - XY116",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY116"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121946/details",
+      "status": 200,
+      "sha256": "b32abd6cfc698f49683d4227f541708b1ca3e2f40892cc058a0fb42a1393bfde",
+      "requestedProductID": 121946,
+      "identity": {
+        "productId": 121946.0,
+        "productName": "Darkrai - XY114",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY114"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121947/details",
+      "status": 200,
+      "sha256": "c2ec6726e352c1c63879a0677bf3e198acbd5664af7e01cdbc4e034f8012e5d7",
+      "requestedProductID": 121947,
+      "identity": {
+        "productId": 121947.0,
+        "productName": "Shaymin EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY148"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121948/details",
+      "status": 200,
+      "sha256": "2390d0f0626fc2b5c816212f7f64c4d4f638a564a98617a17b7219aa94f4f42a",
+      "requestedProductID": 121948,
+      "identity": {
+        "productId": 121948.0,
+        "productName": "Ho-Oh",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY153"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121949/details",
+      "status": 200,
+      "sha256": "6750837f210a11c23f8fe0ad47cd0bf50d211296bf661dc67749a0da34d02066",
+      "requestedProductID": 121949,
+      "identity": {
+        "productId": 121949.0,
+        "productName": "Ho-Oh BREAK",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY154"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121950/details",
+      "status": 200,
+      "sha256": "e7f58fee26e964d49b55804c113674058d5db1ca5fe378f1b3286a157c1ad12b",
+      "requestedProductID": 121950,
+      "identity": {
+        "productId": 121950.0,
+        "productName": "Lugia",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY156"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121952/details",
+      "status": 200,
+      "sha256": "5921b11db312f6fba91a4cc57eb53a0ccd22d8bfcb66ca6c61342e9c12ee09ea",
+      "requestedProductID": 121952,
+      "identity": {
+        "productId": 121952.0,
+        "productName": "Xerneas EX - XY149 (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY149"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121953/details",
+      "status": 200,
+      "sha256": "c46917f4d1e6d0a4357a898131ba436ad36f79fa56ec4c8131f474876186a7ec",
+      "requestedProductID": 121953,
+      "identity": {
+        "productId": 121953.0,
+        "productName": "Yveltal EX - XY150 (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY150"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121954/details",
+      "status": 200,
+      "sha256": "0e27b520923dfb9276868ac38c12a38f3c4f11f35806147467ac825cc691dc00",
+      "requestedProductID": 121954,
+      "identity": {
+        "productId": 121954.0,
+        "productName": "Zygarde EX (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY151"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121955/details",
+      "status": 200,
+      "sha256": "f7388e89a007e85eb43b4aae0ff1d719f77ad93339212de253c4ce02d5ae8f8e",
+      "requestedProductID": 121955,
+      "identity": {
+        "productId": 121955.0,
+        "productName": "Zygarde",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY152"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121963/details",
+      "status": 200,
+      "sha256": "5b1e3c692a1f7adbebc69a7f07f970b52a6632fc312d150ad9ec92fb3441c5b6",
+      "requestedProductID": 121963,
+      "identity": {
+        "productId": 121963.0,
+        "productName": "Wobbuffet BREAK",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY155"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123434/details",
+      "status": 200,
+      "sha256": "1eb831770beec2d00c4ecf924662cb6cda6efa84c0447c9a97fdedc2077586b5",
+      "requestedProductID": 123434,
+      "identity": {
+        "productId": 123434.0,
+        "productName": "Mew EX - XY126",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY126"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123435/details",
+      "status": 200,
+      "sha256": "d2d98714acc0b6c02e0f1327b5ecea488a71e7798f552bb7c54cdc9d87cebabc",
+      "requestedProductID": 123435,
+      "identity": {
+        "productId": 123435.0,
+        "productName": "Mewtwo EX - XY125",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY125"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123436/details",
+      "status": 200,
+      "sha256": "cd5559db422310d06ef84b7d18a734fa055cbec87ac09677fc736ca3be199e23",
+      "requestedProductID": 123436,
+      "identity": {
+        "productId": 123436.0,
+        "productName": "Pikachu EX - XY124",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY124"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123437/details",
+      "status": 200,
+      "sha256": "7647ff7318d50bd77f7a9d82fcfd2f0fbfbb5c330770fff0590596abf8020f02",
+      "requestedProductID": 123437,
+      "identity": {
+        "productId": 123437.0,
+        "productName": "Victini - XY117",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY117"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123438/details",
+      "status": 200,
+      "sha256": "d4212f824ea61758c9379bb63a8a380a9d7f130c5a42fcd684fc850939ba4b8c",
+      "requestedProductID": 123438,
+      "identity": {
+        "productId": 123438.0,
+        "productName": "Karen",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY177"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123453/details",
+      "status": 200,
+      "sha256": "fdfa8f177972145ab645edcb9c0a66e709af566a8d7668be507a91287ea7314f",
+      "requestedProductID": 123453,
+      "identity": {
+        "productId": 123453.0,
+        "productName": "Magearna EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY175"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123454/details",
+      "status": 200,
+      "sha256": "f51028a91ce0410bf9f03dfc41ae8a78e7dcc839eda2fbb672418f12fedf4f22",
+      "requestedProductID": 123454,
+      "identity": {
+        "productId": 123454.0,
+        "productName": "Pikachu EX - XY174",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY174"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123455/details",
+      "status": 200,
+      "sha256": "22783e867636765cae13984c158b7c3901a3e5ad4d3f8a6b911eeaf17a590753",
+      "requestedProductID": 123455,
+      "identity": {
+        "productId": 123455.0,
+        "productName": "Volcanion EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY173"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123479/details",
+      "status": 200,
+      "sha256": "780c192fd7d4633c98cb4455650cd4eee0f916a51d3cf398ccec4a1937a914ac",
+      "requestedProductID": 123479,
+      "identity": {
+        "productId": 123479.0,
+        "productName": "Floette",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY139"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123636/details",
+      "status": 200,
+      "sha256": "42df31812b9c8ad2c138109a97cc733d27625ecc5139a54afeff5bb1e6cd0281",
+      "requestedProductID": 123636,
+      "identity": {
+        "productId": 123636.0,
+        "productName": "Azelf - XY142",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY142"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125159/details",
+      "status": 200,
+      "sha256": "18d4d23ec06d3f73adec22f096bc9eca3d899363375db08889e7ebc928d4a359",
+      "requestedProductID": 125159,
+      "identity": {
+        "productId": 125159.0,
+        "productName": "Black Kyurem - XY160",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY160"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125160/details",
+      "status": 200,
+      "sha256": "ea5043e3dc63a057f9728279be02139676911f4668b78047277266908d34a61c",
+      "requestedProductID": 125160,
+      "identity": {
+        "productId": 125160.0,
+        "productName": "Braixen - XY161",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY161"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125251/details",
+      "status": 200,
+      "sha256": "ab46ce2849dccaecf553d973f49f8e900504c73c532387250df7a48cfe772c65",
+      "requestedProductID": 125251,
+      "identity": {
+        "productId": 125251.0,
+        "productName": "Volcanion - XY164",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY164"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125252/details",
+      "status": 200,
+      "sha256": "ab0454b14a38364fd7c96c6eae2365a989aed99fb9d0c02f458cc0bc6d0897e1",
+      "requestedProductID": 125252,
+      "identity": {
+        "productId": 125252.0,
+        "productName": "Magearna - XY165",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY165"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125253/details",
+      "status": 200,
+      "sha256": "b15b1339b30208754fe5539189d642fa250979eea642476b9d0a158162bdae23",
+      "requestedProductID": 125253,
+      "identity": {
+        "productId": 125253.0,
+        "productName": "M Gengar EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY166"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125254/details",
+      "status": 200,
+      "sha256": "93d58d856690d682f147e24b9c9770f2a03f397a6b128583aac22ad7bd36378a",
+      "requestedProductID": 125254,
+      "identity": {
+        "productId": 125254.0,
+        "productName": "Mewtwo EX - XY183",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY183"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125322/details",
+      "status": 200,
+      "sha256": "8934898e671d528889412e15160d0f28e1f6538689c073e5bd447824bc8abd4d",
+      "requestedProductID": 125322,
+      "identity": {
+        "productId": 125322.0,
+        "productName": "Genesect",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY119"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125564/details",
+      "status": 200,
+      "sha256": "6fc46df3c301272226270c12cbff69d4f0e88fb6a64d72dbbb62afa84a9cce6b",
+      "requestedProductID": 125564,
+      "identity": {
+        "productId": 125564.0,
+        "productName": "Beedrill Spirit Link - XY159",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY159"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125565/details",
+      "status": 200,
+      "sha256": "95fddf0935c7b827347101e0cd9b32daad8ea64747aa30814f936f0b961107af",
+      "requestedProductID": 125565,
+      "identity": {
+        "productId": 125565.0,
+        "productName": "Beedrill EX - XY157",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY157"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125566/details",
+      "status": 200,
+      "sha256": "daed6fb44a9e4281676bda90f0159f9aa26d558dda058f813b4733b579a908e5",
+      "requestedProductID": 125566,
+      "identity": {
+        "productId": 125566.0,
+        "productName": "M Beedrill EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY158"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/125898/details",
+      "status": 200,
+      "sha256": "97cddc61ac0f1290b1cd64db5bf44413b4f5b9fe098e4607bece5181e6a59d73",
+      "requestedProductID": 125898,
+      "identity": {
+        "productId": 125898.0,
+        "productName": "Meloetta - XY120",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY120"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126018/details",
+      "status": 200,
+      "sha256": "3e222187cc2b9707e061b8935141f7b1eb4293b6152ac8828254f290f8223fba",
+      "requestedProductID": 126018,
+      "identity": {
+        "productId": 126018.0,
+        "productName": "Machamp (XY Evolutions Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "59/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126019/details",
+      "status": 200,
+      "sha256": "29f31cacc8931a2ec2acc9e9bb30a4d097fba4d1fd6f2ec7fc68ec0b8beacfde",
+      "requestedProductID": 126019,
+      "identity": {
+        "productId": 126019.0,
+        "productName": "Machamp - 59/108 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "59/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126020/details",
+      "status": 200,
+      "sha256": "364ad4ee742c477fefaf855b3086a1e2daa50b8b44b625b391a3ca33c0265aec",
+      "requestedProductID": 126020,
+      "identity": {
+        "productId": 126020.0,
+        "productName": "Mewtwo (XY Evolutions Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "51/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126021/details",
+      "status": 200,
+      "sha256": "df268b1d86afee9df33212f66b666185aef75c4895d0610932bbc64176a6c4a1",
+      "requestedProductID": 126021,
+      "identity": {
+        "productId": 126021.0,
+        "productName": "Mewtwo - 51/108 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "51/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126022/details",
+      "status": 200,
+      "sha256": "1359ffc78f4f6e01b471719c151979c0827a8c596910a80bde037bc7babfb40a",
+      "requestedProductID": 126022,
+      "identity": {
+        "productId": 126022.0,
+        "productName": "Charizard (XY Evolutions Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "11/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126023/details",
+      "status": 200,
+      "sha256": "1c341af0802e010d5dafeec34a5f8e32e9b092f276602aa7f915893d544b094c",
+      "requestedProductID": 126023,
+      "identity": {
+        "productId": 126023.0,
+        "productName": "Charizard - 11/108 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "11/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126024/details",
+      "status": 200,
+      "sha256": "4962c1fcfea6b780779f5dd9a896edc151ffc6d74c3bf0e13ca3440e30fd0ba8",
+      "requestedProductID": 126024,
+      "identity": {
+        "productId": 126024.0,
+        "productName": "Gyarados (XY Evolutions Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "34/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126025/details",
+      "status": 200,
+      "sha256": "89aff960ecefbddf32548fd215e67e59976ced8544f4ad1c5638f03290ca4f2f",
+      "requestedProductID": 126025,
+      "identity": {
+        "productId": 126025.0,
+        "productName": "Gyarados - 34/108 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "34/108"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126028/details",
+      "status": 200,
+      "sha256": "32aa50c1dab4f561a9b3191f28d6c3187de9bf7da3ce0ff682dd6652c9c2d75b",
+      "requestedProductID": 126028,
+      "identity": {
+        "productId": 126028.0,
+        "productName": "Snorlax - XY179",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY179"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126034/details",
+      "status": 200,
+      "sha256": "ddee71f2fff6818f9827f1159149577360cd49714a84d5df8aa64e117fa5ffd6",
+      "requestedProductID": 126034,
+      "identity": {
+        "productId": 126034.0,
+        "productName": "Keldeo - XY118",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY118"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126210/details",
+      "status": 200,
+      "sha256": "f47531e9a3c4f75e57edd73e728c17ca15b73c8d0a43023e1b83156726786465",
+      "requestedProductID": 126210,
+      "identity": {
+        "productId": 126210.0,
+        "productName": "Greninja - XY162",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY162"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126558/details",
+      "status": 200,
+      "sha256": "1f2356a377784aca1da56ae162b0be02a53b816c32d5f684afec8835549e179a",
+      "requestedProductID": 126558,
+      "identity": {
+        "productId": 126558.0,
+        "productName": "Giratina - XY184",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY184"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126559/details",
+      "status": 200,
+      "sha256": "1714663285b74fddc257879e9441a8c5bb8b3569e011013472daa4d3529ea589",
+      "requestedProductID": 126559,
+      "identity": {
+        "productId": 126559.0,
+        "productName": "Arcanine BREAK - XY180",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY180"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126560/details",
+      "status": 200,
+      "sha256": "48216333a1054168cd48127c882ced1dca010cba3e537dd0b056e9a1c45d7072",
+      "requestedProductID": 126560,
+      "identity": {
+        "productId": 126560.0,
+        "productName": "Crobat BREAK",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY181"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126561/details",
+      "status": 200,
+      "sha256": "d34558b2ad08c2fda8016cb3493a5bc52366625f33692c58fbc8acc4f1842d8b",
+      "requestedProductID": 126561,
+      "identity": {
+        "productId": 126561.0,
+        "productName": "Mandibuzz BREAK",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY182"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126562/details",
+      "status": 200,
+      "sha256": "d78c67553cb21be09f04e89f1daf52d6e04d8392bc17db3c947678ef4d4057d9",
+      "requestedProductID": 126562,
+      "identity": {
+        "productId": 126562.0,
+        "productName": "Garchomp EX - XY167",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY167"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126563/details",
+      "status": 200,
+      "sha256": "dd9d25802eb476bb2c745d8c84259c3952db9a6cfcfaae7a37590f3cadd685b5",
+      "requestedProductID": 126563,
+      "identity": {
+        "productId": 126563.0,
+        "productName": "M Garchomp EX - XY168",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY168"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126564/details",
+      "status": 200,
+      "sha256": "2fee6c531b98e7549936144abcfc75d7fa53d68d84256a5b6e8c94c5a816b9b6",
+      "requestedProductID": 126564,
+      "identity": {
+        "productId": 126564.0,
+        "productName": "Garchomp Spirit Link",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY169"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126565/details",
+      "status": 200,
+      "sha256": "a675f16f600a1fdcd875b84e3a4db6cdf35787c349778c08cd5232db48f87a4e",
+      "requestedProductID": 126565,
+      "identity": {
+        "productId": 126565.0,
+        "productName": "Salamence EX - XY170",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY170"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126566/details",
+      "status": 200,
+      "sha256": "d4b21cfa7c2b53514608f88e9803dae522be3496b4dfa79afecbf9d5cf847e45",
+      "requestedProductID": 126566,
+      "identity": {
+        "productId": 126566.0,
+        "productName": "M Salamence EX - XY171",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY171"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126567/details",
+      "status": 200,
+      "sha256": "2c15dd69a332d6a4eddf2843409d50178d880204767e307dd67a90ae7620c8b7",
+      "requestedProductID": 126567,
+      "identity": {
+        "productId": 126567.0,
+        "productName": "Salamence Spirit Link",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY172"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127128/details",
+      "status": 200,
+      "sha256": "b86d01b335d46d107a42bb37124ab00ca61239be31a92ae2de09655e8002a839",
+      "requestedProductID": 127128,
+      "identity": {
+        "productId": 127128.0,
+        "productName": "Arceus - XY197",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY197"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127129/details",
+      "status": 200,
+      "sha256": "4d065afbf6e8e5474f723bbbbf156ec1d22464fae2c7500dad1ac1238b275f43",
+      "requestedProductID": 127129,
+      "identity": {
+        "productId": 127129.0,
+        "productName": "Celebi - XY187",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY187"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127130/details",
+      "status": 200,
+      "sha256": "aef7acf33d7b62875140586eea9a06d8ca60b449721a19133948fd696a8b9bd8",
+      "requestedProductID": 127130,
+      "identity": {
+        "productId": 127130.0,
+        "productName": "Darkrai - XY194",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY194"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127131/details",
+      "status": 200,
+      "sha256": "26b745510a8b04832b22d5767b4e36dadf78935bec118530f1bb4f1486532cf7",
+      "requestedProductID": 127131,
+      "identity": {
+        "productId": 127131.0,
+        "productName": "Genesect - XY196",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY196"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127132/details",
+      "status": 200,
+      "sha256": "c0dba9089abb2bb98ba9f891ca0db1a7b910a93f4e5a6822ebb3211126d6d562",
+      "requestedProductID": 127132,
+      "identity": {
+        "productId": 127132.0,
+        "productName": "Jirachi - XY195",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY195"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127133/details",
+      "status": 200,
+      "sha256": "c42e231f66a0f6180d55db514d502f3d572102ef2452150da6109eb18a86b7b8",
+      "requestedProductID": 127133,
+      "identity": {
+        "productId": 127133.0,
+        "productName": "Keldeo - XY191",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY191"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127134/details",
+      "status": 200,
+      "sha256": "50bd1f2e1beb38d009f67aac0598d19988008d78eef3e3dfdc1a77e5a212f428",
+      "requestedProductID": 127134,
+      "identity": {
+        "productId": 127134.0,
+        "productName": "Manaphy - XY190",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY190"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127135/details",
+      "status": 200,
+      "sha256": "c5e10294eb474691a54b4081557259f9022373992f45df1719f011fa463b5240",
+      "requestedProductID": 127135,
+      "identity": {
+        "productId": 127135.0,
+        "productName": "Mew - XY192",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY192"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127136/details",
+      "status": 200,
+      "sha256": "d274e7e6da038025ac0eafde6ac94067b6850fb13269be6b0aec89bb2ce769fe",
+      "requestedProductID": 127136,
+      "identity": {
+        "productId": 127136.0,
+        "productName": "Shaymin - XY188",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY188"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127137/details",
+      "status": 200,
+      "sha256": "bad10a7bbc9c48a2578a7b5075054baefa1407ac1a3185f5d16b4c120dbe46b5",
+      "requestedProductID": 127137,
+      "identity": {
+        "productId": 127137.0,
+        "productName": "Victini - XY189",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY189"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127138/details",
+      "status": 200,
+      "sha256": "8f97bd643d3d4185618bd6c37e5f7e11b64ea962b41fc0bedd623cf6c85eb88c",
+      "requestedProductID": 127138,
+      "identity": {
+        "productId": 127138.0,
+        "productName": "Magearna - XY186",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY186"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127139/details",
+      "status": 200,
+      "sha256": "6a0d24eb877705cf31685097dacd1362753445eee6c922dd128754e35409e5a9",
+      "requestedProductID": 127139,
+      "identity": {
+        "productId": 127139.0,
+        "productName": "Volcanion - XY185",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY185"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127141/details",
+      "status": 200,
+      "sha256": "c1a7be10281882c95dd374c5a83b9cf54ad31f95c4bc8be3bb4cd131e9912d85",
+      "requestedProductID": 127141,
+      "identity": {
+        "productId": 127141.0,
+        "productName": "Gym Badge (Brock)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY203"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127142/details",
+      "status": 200,
+      "sha256": "68ca35d28b91b28ba01e0becc8a57be3ba8dc89f4d72bf21fc5fd86c790bdc74",
+      "requestedProductID": 127142,
+      "identity": {
+        "productId": 127142.0,
+        "productName": "Gym Badge (Misty)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY204"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127143/details",
+      "status": 200,
+      "sha256": "ea33cdf8475ce0f2f1347ae47861778d58806031982e31b4e820771957c036af",
+      "requestedProductID": 127143,
+      "identity": {
+        "productId": 127143.0,
+        "productName": "Gym Badge (Lt. Surge)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY205"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127144/details",
+      "status": 200,
+      "sha256": "f7637090ae1b2cb631828061bd98cd6ce451885c1b55eeb6bab3a2410bf1e65b",
+      "requestedProductID": 127144,
+      "identity": {
+        "productId": 127144.0,
+        "productName": "Gym Badge (Erika)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY206"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127145/details",
+      "status": 200,
+      "sha256": "5494f0310121e3bb66f3569d13a04a52528bba7505f23ac71dc7f86a90cb7f34",
+      "requestedProductID": 127145,
+      "identity": {
+        "productId": 127145.0,
+        "productName": "Gym Badge (Koga)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY207"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129374/details",
+      "status": 200,
+      "sha256": "146ca51f03ca555d8468175cae45d1461d98aebe8d285d3c7e3ffbd731af4bc0",
+      "requestedProductID": 129374,
+      "identity": {
+        "productId": 129374.0,
+        "productName": "Yanmega (XY Steam Siege Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY144"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129375/details",
+      "status": 200,
+      "sha256": "40ba8b2dfe8b76c3c5ffae98b69d42c1f25e1715b223e865d4aa19b030a52c8c",
+      "requestedProductID": 129375,
+      "identity": {
+        "productId": 129375.0,
+        "productName": "Yanmega - XY144 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY144"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129376/details",
+      "status": 200,
+      "sha256": "8e548b5e2b6a7fb337a0646a94b7329680f0ade36a08ce9d6a07b427c19fb5ae",
+      "requestedProductID": 129376,
+      "identity": {
+        "productId": 129376.0,
+        "productName": "Volcanion (XY Steam Siege Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY145"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129377/details",
+      "status": 200,
+      "sha256": "c8e5e959ffee89982911151c471415efea83111358f2946f3ad35248ad5808a9",
+      "requestedProductID": 129377,
+      "identity": {
+        "productId": 129377.0,
+        "productName": "Volcanion - XY145 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY145"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129378/details",
+      "status": 200,
+      "sha256": "44c2cb49b7c893ae195b2c9dbd915807ec0a8e83e7c82e78b793f2bf6399f110",
+      "requestedProductID": 129378,
+      "identity": {
+        "productId": 129378.0,
+        "productName": "Clawitzer (XY Steam Siege Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY146"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129379/details",
+      "status": 200,
+      "sha256": "1bc48939bd3c28d3551ead525493523d43e0db31108da34b34613f819b484ea3",
+      "requestedProductID": 129379,
+      "identity": {
+        "productId": 129379.0,
+        "productName": "Clawitzer - XY146 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY146"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129380/details",
+      "status": 200,
+      "sha256": "2a66ee8401d9f705f43752fa19dec05e71e9f98d559a192f7d64d6d78e69f4bf",
+      "requestedProductID": 129380,
+      "identity": {
+        "productId": 129380.0,
+        "productName": "Hoopa (XY Steam Siege Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY147"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129381/details",
+      "status": 200,
+      "sha256": "d7ac71d5cfa6164cd95df4e7034d5144207c7ed9116f472cd8b64dd7d08aee73",
+      "requestedProductID": 129381,
+      "identity": {
+        "productId": 129381.0,
+        "productName": "Hoopa - XY147 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY147"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129718/details",
+      "status": 200,
+      "sha256": "3cf7f92b284379fd1794875f13929981fed4966b744fd9f4f0cfa02699fb5800",
+      "requestedProductID": 129718,
+      "identity": {
+        "productId": 129718.0,
+        "productName": "Gym Badge (Blaine)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY209"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129719/details",
+      "status": 200,
+      "sha256": "a73e778b3ec132a954dd60b5deaaa18c0dc4788add65f0fd93e13bdd143f3995",
+      "requestedProductID": 129719,
+      "identity": {
+        "productId": 129719.0,
+        "productName": "Gym Badge (Giovanni)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY210"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129720/details",
+      "status": 200,
+      "sha256": "ca5524be9c149f504afd8ad93a05021841cc5a4d2cd5be4150bc03d1ae0b715a",
+      "requestedProductID": 129720,
+      "identity": {
+        "productId": 129720.0,
+        "productName": "Gym Badge (Sabrina)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY208"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129898/details",
+      "status": 200,
+      "sha256": "26223869db8b7db6b6b657fc343db05e5c9462ec253d3f72ae5c7a5962407679",
+      "requestedProductID": 129898,
+      "identity": {
+        "productId": 129898.0,
+        "productName": "M Camerupt EX - XY198",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY198"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129899/details",
+      "status": 200,
+      "sha256": "ab06e0075842f90b841d42e2f2e1fd5cf876ee327c42c58a4137788abe200a9a",
+      "requestedProductID": 129899,
+      "identity": {
+        "productId": 129899.0,
+        "productName": "Camerupt Spirit Link - XY199",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY199"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129900/details",
+      "status": 200,
+      "sha256": "284fb8761bf7876fc0aee8fc74b343e23acbe4da7a87b9b576b4bae97df1aaf2",
+      "requestedProductID": 129900,
+      "identity": {
+        "productId": 129900.0,
+        "productName": "Sharpedo Spirit Link",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY201"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/129901/details",
+      "status": 200,
+      "sha256": "2e65c8ed1c6a4a06c473951f83cf7685ccf4b9dd9b7300bd49af61a535e49b93",
+      "requestedProductID": 129901,
+      "identity": {
+        "productId": 129901.0,
+        "productName": "M Sharpedo EX - XY200",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY200"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/131694/details",
+      "status": 200,
+      "sha256": "3487d473d59a955bbfe899332fc395125b50e2340742c9cbb5b0bf2b19769461",
+      "requestedProductID": 131694,
+      "identity": {
+        "productId": 131694.0,
+        "productName": "Lucario Spirit Link",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY211"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/134921/details",
+      "status": 200,
+      "sha256": "98125f0f63857108ce0a287b2ad2d079908d60e7ac665740647b1d2bf96f3eb7",
+      "requestedProductID": 134921,
+      "identity": {
+        "productId": 134921.0,
+        "productName": "Lucario - XY140",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY140"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/134922/details",
+      "status": 200,
+      "sha256": "d7fb93ce15fb956e00eb33329a90a778d6a6275357c93dec8dcb81c9f9a742d5",
+      "requestedProductID": 134922,
+      "identity": {
+        "productId": 134922.0,
+        "productName": "Rayquaza - XY141",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY141"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/147098/details",
+      "status": 200,
+      "sha256": "60d0a753e2a5647b5b74e7be34e75c33459090ab3e7f80181c5a9c515d0a6840",
+      "requestedProductID": 147098,
+      "identity": {
+        "productId": 147098.0,
+        "productName": "Weezing - XY163",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY163"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/152950/details",
+      "status": 200,
+      "sha256": "e59e68fc27d2d65fc72ab858eaa5ce658b94a3433e9b829eba44d329447a1755",
+      "requestedProductID": 152950,
+      "identity": {
+        "productId": 152950.0,
+        "productName": "Meloetta - XY193",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY193"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/158183/details",
+      "status": 200,
+      "sha256": "5747aebccca6d09ae7db00cc3a57ca5aa5e5134879da14080882687ef616ef31",
+      "requestedProductID": 158183,
+      "identity": {
+        "productId": 158183.0,
+        "productName": "Absol - XY178",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY178"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/177110/details",
+      "status": 200,
+      "sha256": "509b0b3afd10f9a0b86b4c494b3a08f6f7bd5a519b1e95d8527d68be652efe36",
+      "requestedProductID": 177110,
+      "identity": {
+        "productId": 177110.0,
+        "productName": "Gyarados - XY109",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY109"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199311/details",
+      "status": 200,
+      "sha256": "a0b9a8d13dfc24dabbd9b768ea94a952a202351bcc8636d45411df320e9c5aa3",
+      "requestedProductID": 199311,
+      "identity": {
+        "productId": 199311.0,
+        "productName": "Champions Festival (2015)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199312/details",
+      "status": 200,
+      "sha256": "e3f223f84a240708d7d9e4b4f910a933a917513c564ef11bf8dbabed38831cef",
+      "requestedProductID": 199312,
+      "identity": {
+        "productId": 199312.0,
+        "productName": "Champions Festival (2015) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199314/details",
+      "status": 200,
+      "sha256": "d667bbc3d6447e34e786b1597db74d734e693ad61e64bc027ed85b5a5da3b7ed",
+      "requestedProductID": 199314,
+      "identity": {
+        "productId": 199314.0,
+        "productName": "Champions Festival (2015 Top Thirty-Two)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199315/details",
+      "status": 200,
+      "sha256": "33eb3ac79514f0ac83f532f7ec455fddb625ba2ddeea36bf659407493315a47d",
+      "requestedProductID": 199315,
+      "identity": {
+        "productId": 199315.0,
+        "productName": "Champions Festival (2015 Top Sixteen)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199317/details",
+      "status": 200,
+      "sha256": "bbf32701de567e2e0c551d4c02cdcc5c1b84a6de4e5f17989a89edba5c01072f",
+      "requestedProductID": 199317,
+      "identity": {
+        "productId": 199317.0,
+        "productName": "Champions Festival (2015 Quarter Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199318/details",
+      "status": 200,
+      "sha256": "942be51e009b53e4306bd1d8e806c4a69b14bf9ab68a9771fdb5784105e08037",
+      "requestedProductID": 199318,
+      "identity": {
+        "productId": 199318.0,
+        "productName": "Champions Festival (2015 Semi-Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199319/details",
+      "status": 200,
+      "sha256": "4a4de07259328c33f0feab295faf0a56e6880bcdae538e0cc3a40f287cba4ac7",
+      "requestedProductID": 199319,
+      "identity": {
+        "productId": 199319.0,
+        "productName": "Champions Festival (2015 Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199320/details",
+      "status": 200,
+      "sha256": "475e42e6a0a5b66d34183fab7da62b0afe8597323876383ca7a62bb9c6e7df0a",
+      "requestedProductID": 199320,
+      "identity": {
+        "productId": 199320.0,
+        "productName": "Champions Festival (2015 Champion)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199321/details",
+      "status": 200,
+      "sha256": "33b8cdb8cae45faf14cd7e72075fe304b09a9fcc2d2c58cb2c93411762484b2a",
+      "requestedProductID": 199321,
+      "identity": {
+        "productId": 199321.0,
+        "productName": "Champions Festival (2016 Champion)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199322/details",
+      "status": 200,
+      "sha256": "bfc9cf556e9d00529aeb6681c783b9987d568bb20e5c42b96d543375664bd515",
+      "requestedProductID": 199322,
+      "identity": {
+        "productId": 199322.0,
+        "productName": "Champions Festival (2016 Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199324/details",
+      "status": 200,
+      "sha256": "f49c00d3a19d3498ae8c3df72bea57612d9300071aff094c69450d841221ca8b",
+      "requestedProductID": 199324,
+      "identity": {
+        "productId": 199324.0,
+        "productName": "Champions Festival (2016 Semi-Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199325/details",
+      "status": 200,
+      "sha256": "5a2f851fef48089a1abeda6760ed0cb3b978456eea630f10dc6ee3eb48dbb91c",
+      "requestedProductID": 199325,
+      "identity": {
+        "productId": 199325.0,
+        "productName": "Champions Festival (2016 Quarter Finalist)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199327/details",
+      "status": 200,
+      "sha256": "8203a3bf02b7aeb86f9824e0f2449ced4e498277f1f6bab9aebc87b8209ec81c",
+      "requestedProductID": 199327,
+      "identity": {
+        "productId": 199327.0,
+        "productName": "Champions Festival (2016 Top Sixteen)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199328/details",
+      "status": 200,
+      "sha256": "8a4d18a10e32c5b31bd3a4ba4a3c8abdcbb840ab90d1346435507c57c4c78735",
+      "requestedProductID": 199328,
+      "identity": {
+        "productId": 199328.0,
+        "productName": "Champions Festival (2016 Top Thirty-Two)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199329/details",
+      "status": 200,
+      "sha256": "6bef28fa9ca8753686a0d014c6e2903f0968f7472837e9c705c45838610274dc",
+      "requestedProductID": 199329,
+      "identity": {
+        "productId": 199329.0,
+        "productName": "Champions Festival (2016) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/199330/details",
+      "status": 200,
+      "sha256": "18f1f10271b37186b4704c771d130012aef68ce048b2b3fce031bd9c0b9436b8",
+      "requestedProductID": 199330,
+      "identity": {
+        "productId": 199330.0,
+        "productName": "Champions Festival (2016)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "XY176"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/237531/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 237531
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/243195/details",
+      "status": 200,
+      "sha256": "1d03cba689e52d16ad92fd890c54f9f0330281b0c64e7f98a5d3b5874ef0fd9e",
+      "requestedProductID": 243195,
+      "identity": {
+        "productId": 243195.0,
+        "productName": "Aegislash - 86/146 (Prerelease)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "86/146"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/243196/details",
+      "status": 200,
+      "sha256": "4a6ce902cf621782f7a8ad26aef527c04842fbe718c34d73b38b6f7a8e755a12",
+      "requestedProductID": 243196,
+      "identity": {
+        "productId": 243196.0,
+        "productName": "Aegislash - 86/146 (Prerelease) [Staff]",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "86/146"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/250035/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 250035
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/252737/details",
+      "status": 200,
+      "sha256": "9c659c5a7c683e48bf64ac9bf2b408412de9039afb5b9247ed2ea65d9cf0c349",
+      "requestedProductID": 252737,
+      "identity": {
+        "productId": 252737.0,
+        "productName": "Poncho-wearing Pikachu - 208/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "208/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/252738/details",
+      "status": 200,
+      "sha256": "07415bcf975c1ee3e8a00f63672f82be70fbd13eee40f0f5101c5c381510f155",
+      "requestedProductID": 252738,
+      "identity": {
+        "productId": 252738.0,
+        "productName": "Poncho-wearing Pikachu - 207/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "207/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268123/details",
+      "status": 200,
+      "sha256": "387f8f372780506b6d9d0cc0b8d542d3d60fba41188f6c67151a0f2423c7038a",
+      "requestedProductID": 268123,
+      "identity": {
+        "productId": 268123.0,
+        "productName": "Poncho-wearing Pikachu - 203/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "203/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268124/details",
+      "status": 200,
+      "sha256": "69c1e988705e09dbcb3b4419a05185900548a77791674afcdc8862180832654f",
+      "requestedProductID": 268124,
+      "identity": {
+        "productId": 268124.0,
+        "productName": "Poncho-wearing Pikachu - 230/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "230/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268126/details",
+      "status": 200,
+      "sha256": "698356e2b15d8d20cfc3dab04bc535daab8f9bcbc18f839d13583cfd237fa0fe",
+      "requestedProductID": 268126,
+      "identity": {
+        "productId": 268126.0,
+        "productName": "Poncho-wearing Pikachu - 231/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "231/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268127/details",
+      "status": 200,
+      "sha256": "9e50a810547c11e2eff4b060db4ea9b36056fab40358189d8627c728c986e4ac",
+      "requestedProductID": 268127,
+      "identity": {
+        "productId": 268127.0,
+        "productName": "Poncho-wearing Pikachu - 274/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "274/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268258/details",
+      "status": 200,
+      "sha256": "925620c457b366911cdca7fab6c6ccd6f50a44b7e0982c76bcaf17153c7ad892",
+      "requestedProductID": 268258,
+      "identity": {
+        "productId": 268258.0,
+        "productName": "Poncho-wearing Pikachu - 275/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "275/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268259/details",
+      "status": 200,
+      "sha256": "5291517995bac3c144ac8c74e6af7a92e3f5879721b2396c7bcfde725f1748e8",
+      "requestedProductID": 268259,
+      "identity": {
+        "productId": 268259.0,
+        "productName": "Pretend Gyarados Pikachu - 151/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "151/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268260/details",
+      "status": 200,
+      "sha256": "22eac5c1dacb04676be7df2744d010b5bde6dae2530bab31e4641cd12f4cd7ea",
+      "requestedProductID": 268260,
+      "identity": {
+        "productId": 268260.0,
+        "productName": "Pretend Magikarp Pikachu - 150/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "150/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268261/details",
+      "status": 200,
+      "sha256": "83802e9cb8f4e022da904f5b3653178fc0a38d7b55a9f5944b062cdfeb872e75",
+      "requestedProductID": 268261,
+      "identity": {
+        "productId": 268261.0,
+        "productName": "Mega Tokyo's Pikachu - 98/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "98/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/268262/details",
+      "status": 200,
+      "sha256": "52a2c9abe1e8e6e7d777ebc86f23c825406b1364851570fa25cc178df41a9e14",
+      "requestedProductID": 268262,
+      "identity": {
+        "productId": 268262.0,
+        "productName": "Mega Tokyo's Pikachu - 204/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "204/XY-P"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/489917/details",
+      "status": 200,
+      "sha256": "ac57520a52e175f3881d19d6314458c274a3f9e32081806706ff41a323c68569",
+      "requestedProductID": 489917,
+      "identity": {
+        "productId": 489917.0,
+        "productName": "Hoopa - 155/XY-P",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "155/XY-P"
+      }
+    }
+  ]
+}

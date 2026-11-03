@@ -1,0 +1,1208 @@
+[
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/205467/details",
+    "status": 200,
+    "sha256": "1d374fff7c9312e7275b40171cf4bacd6e0a5fbde3e115f25a85d7428fcc62cf",
+    "requestedProductID": 205467,
+    "identity": {
+      "productId": 205467.0,
+      "productName": "Meowth VMAX - SWSH005",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH005"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/206426/details",
+    "status": 200,
+    "sha256": "63f3104cf8e91837baaef2984fe3d942b17b20d42e7aa0b7ced4e260b6ad3eb0",
+    "requestedProductID": 206426,
+    "identity": {
+      "productId": 206426.0,
+      "productName": "Toxtricity V - SWSH017",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH017"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/214229/details",
+    "status": 200,
+    "sha256": "f13c13c146d2dced10cd1e2e6e83f000e3f31e64dcaae5d1c684ff96d808cd3b",
+    "requestedProductID": 214229,
+    "identity": {
+      "productId": 214229.0,
+      "productName": "Copperajah V - SWSH030",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH030"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/214236/details",
+    "status": 200,
+    "sha256": "475219e28eeeefc2afa5d07e0a18efc1f87b623e03bd1b4fcbf8bac9bae2cb5c",
+    "requestedProductID": 214236,
+    "identity": {
+      "productId": 214236.0,
+      "productName": "Polteageist V - SWSH021",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH021"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/220274/details",
+    "status": 200,
+    "sha256": "03c53cafeabd6b884d32a97f71238268fa41b2cbfb0d9cd6713452067224d963",
+    "requestedProductID": 220274,
+    "identity": {
+      "productId": 220274.0,
+      "productName": "Galarian Sirfetch'd V - SWSH043",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH043"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/220282/details",
+    "status": 200,
+    "sha256": "dc05652150cc0a360062d9a4da4f35d012b40caaad39228cce474502485ed64e",
+    "requestedProductID": 220282,
+    "identity": {
+      "productId": 220282.0,
+      "productName": "Eternatus VMAX - SWSH045",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH045"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/220753/details",
+    "status": 200,
+    "sha256": "0f2ca84dcaa0d6cf81d8800be9002d419b4667dbff5acae9d0b7b55128f2d305",
+    "requestedProductID": 220753,
+    "identity": {
+      "productId": 220753.0,
+      "productName": "Inteleon V - SWSH016",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH016"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/220754/details",
+    "status": 200,
+    "sha256": "d4d57562a57aa78031844998b048d783d060aa171bfc6ab15215edd97a43deac",
+    "requestedProductID": 220754,
+    "identity": {
+      "productId": 220754.0,
+      "productName": "Rillaboom V - SWSH014",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH014"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/220755/details",
+    "status": 200,
+    "sha256": "5a5b920974e9d3f0cc6674b9de4c0f152eb3518f69f60d14ee21a6635d488f4d",
+    "requestedProductID": 220755,
+    "identity": {
+      "productId": 220755.0,
+      "productName": "Cinderace V - SWSH015",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH015"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/223753/details",
+    "status": 200,
+    "sha256": "9ba18a84ccb12c74f7c84eb67d2f8fd29482fb43dcaabd25d1eac27bcd7248d1",
+    "requestedProductID": 223753,
+    "identity": {
+      "productId": 223753.0,
+      "productName": "Dubwool V - SWSH049",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH049"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/223756/details",
+    "status": 200,
+    "sha256": "f4e89b647402041a49e5fb4d25a28dcb4722ac9d449a537ad8e6b25f61c8eee0",
+    "requestedProductID": 223756,
+    "identity": {
+      "productId": 223756.0,
+      "productName": "Hatterene V - SWSH055",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH055"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/227026/details",
+    "status": 200,
+    "sha256": "bae3edfff7fff17084e0eb1884e717310a6bf61224c3cd3c1020c6e4a1d4daf5",
+    "requestedProductID": 227026,
+    "identity": {
+      "productId": 227026.0,
+      "productName": "Orbeetle V - SWSH078",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH078"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/228981/details",
+    "status": 200,
+    "sha256": "c8304a04b71184f0b9138d2efb032455a01ed6d2e9f058519de146484bbc77b9",
+    "requestedProductID": 228981,
+    "identity": {
+      "productId": 228981.0,
+      "productName": "Alakazam V - SWSH083",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH083"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/229436/details",
+    "status": 200,
+    "sha256": "2c0e903e116d86eff3813c74891d48c7ffd6add2c39dfcac12cf5863b906908c",
+    "requestedProductID": 229436,
+    "identity": {
+      "productId": 229436.0,
+      "productName": "Grimmsnarl V - SWSH057",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH057"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/231458/details",
+    "status": 200,
+    "sha256": "cb67ee3a634ef7b9d5d59f538c984cf64417afa77ded6a4369c1e7f630fd383b",
+    "requestedProductID": 231458,
+    "identity": {
+      "productId": 231458.0,
+      "productName": "Grookey",
+      "setId": 2776.0,
+      "setCode": "FPP",
+      "setName": "First Partner Pack",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH001"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/231466/details",
+    "status": 200,
+    "sha256": "8b01914e7f7bb343d417431843d8c0e0a0d76663e0306a9689e6885a0d97fca2",
+    "requestedProductID": 231466,
+    "identity": {
+      "productId": 231466.0,
+      "productName": "Scorbunny",
+      "setId": 2776.0,
+      "setCode": "FPP",
+      "setName": "First Partner Pack",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH002"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/231468/details",
+    "status": 200,
+    "sha256": "18a93b04a4433bdd66422fb4029073f60054b249ab36e5ae50c06c728e1f7619",
+    "requestedProductID": 231468,
+    "identity": {
+      "productId": 231468.0,
+      "productName": "Sobble",
+      "setId": 2776.0,
+      "setCode": "FPP",
+      "setName": "First Partner Pack",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH003"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/232443/details",
+    "status": 200,
+    "sha256": "17e94ba92d7114617eb3232fba17bb4171e82131edfa3a6a08f1f271fc9578fe",
+    "requestedProductID": 232443,
+    "identity": {
+      "productId": 232443.0,
+      "productName": "Pikachu V - SWSH061",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH061"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/232609/details",
+    "status": 200,
+    "sha256": "2437eac4cd840554648e114213a9d33ca0d5c9dd86c9c07cf5e45736deabef9c",
+    "requestedProductID": 232609,
+    "identity": {
+      "productId": 232609.0,
+      "productName": "Dragapult VMAX - SWSH097",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH097"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/232614/details",
+    "status": 200,
+    "sha256": "77b9db0b045fb67a7a3eb13613755af4e1abe520693bce3c4163454316fd0a5d",
+    "requestedProductID": 232614,
+    "identity": {
+      "productId": 232614.0,
+      "productName": "Crobat VMAX - SWSH099",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH099"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/234375/details",
+    "status": 200,
+    "sha256": "2b19d7c568f9b59533baf10ce3fa010c4e12f3b26f03968799ad5e06c4bd464f",
+    "requestedProductID": 234375,
+    "identity": {
+      "productId": 234375.0,
+      "productName": "Venusaur VMAX - SWSH102",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH102"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/234376/details",
+    "status": 200,
+    "sha256": "683f47ff3ecdf4f9c34001cbeec8234170109dabdc17d32f52c55d6d4e30ee54",
+    "requestedProductID": 234376,
+    "identity": {
+      "productId": 234376.0,
+      "productName": "Blastoise VMAX - SWSH103",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH103"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/234377/details",
+    "status": 200,
+    "sha256": "4fe68dfb7d10fb568606992e98dd1a648a9329b17d811b2902404b83601fe0a5",
+    "requestedProductID": 234377,
+    "identity": {
+      "productId": 234377.0,
+      "productName": "Single Strike Urshifu V - SWSH106",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH106"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/234378/details",
+    "status": 200,
+    "sha256": "79681536080f044199fe83d0d60f2dd278f0ced62f31536692eacfd5047a8e9e",
+    "requestedProductID": 234378,
+    "identity": {
+      "productId": 234378.0,
+      "productName": "Rapid Strike Urshifu V - SWSH107",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH107"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/236055/details",
+    "status": 200,
+    "sha256": "7aeb600702c712f5c327c986843d056c2795d7e0f14166cfe619325a8f1c9f32",
+    "requestedProductID": 236055,
+    "identity": {
+      "productId": 236055.0,
+      "productName": "Galarian Rapidash V - SWSH111",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH111"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/243659/details",
+    "status": 200,
+    "sha256": "95a30e8c03a7dcd9cd42f985516f3de9fb7c3dec00e64ecce22368ca0fa22c65",
+    "requestedProductID": 243659,
+    "identity": {
+      "productId": 243659.0,
+      "productName": "Boltund V - SWSH085",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH085"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/245869/details",
+    "status": 200,
+    "sha256": "e2f5b8b500b4019c2725c8c7ca8ac0bc016f35bda2891e7d2ce95fa3e48bee80",
+    "requestedProductID": 245869,
+    "identity": {
+      "productId": 245869.0,
+      "productName": "Shadow Rider Calyrex V - SWSH131",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH131"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/245870/details",
+    "status": 200,
+    "sha256": "3ff30678e02f1f2e0ca1eb7a36984c242efe087e75fddb6d6aa34ec822c995e0",
+    "requestedProductID": 245870,
+    "identity": {
+      "productId": 245870.0,
+      "productName": "Ice Rider Calyrex V - SWSH130",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH130"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/250251/details",
+    "status": 200,
+    "sha256": "b836cd9810407cb9e349474b1b1e9a39330c15f2bdc2fb348c1d99bbe2bad9cf",
+    "requestedProductID": 250251,
+    "identity": {
+      "productId": 250251.0,
+      "productName": "Greninja V-UNION",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": ""
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/250252/details",
+    "status": 200,
+    "sha256": "3eab7272d624200de17552eeabce43cb39782d8604d4f69eb5b2ed14ad1732a7",
+    "requestedProductID": 250252,
+    "identity": {
+      "productId": 250252.0,
+      "productName": "Mewtwo V-UNION",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": ""
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/250253/details",
+    "status": 200,
+    "sha256": "3f9e247e2a7edc7f79858d851963b28060dcd8b8c89bce7608147a0c72294228",
+    "requestedProductID": 250253,
+    "identity": {
+      "productId": 250253.0,
+      "productName": "Zacian V-UNION",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": ""
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/251100/details",
+    "status": 200,
+    "sha256": "1c85931805f8d6644378b6073dda02ef22ed3194ac6ff47a6ed6a12b4bf5e73a",
+    "requestedProductID": 251100,
+    "identity": {
+      "productId": 251100.0,
+      "productName": "Pikachu V-UNION",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": ""
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/251104/details",
+    "status": 200,
+    "sha256": "defc43ae5e6095a97171d051100a2f054da718b9ae2c1072042b37dca2fb285c",
+    "requestedProductID": 251104,
+    "identity": {
+      "productId": 251104.0,
+      "productName": "Lance's Charizard V - SWSH133",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH133"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/251105/details",
+    "status": 200,
+    "sha256": "6db2a491b837a629eb94dcedd8645594fb11d0b659b6bb281845c2e008241d1f",
+    "requestedProductID": 251105,
+    "identity": {
+      "productId": 251105.0,
+      "productName": "Dark Sylveon V - SWSH134",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH134"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/251622/details",
+    "status": 200,
+    "sha256": "54f9a90a3850e07c4938b5636a407a7d6e679bc6bcfd00dad345fec2f605c42a",
+    "requestedProductID": 251622,
+    "identity": {
+      "productId": 251622.0,
+      "productName": "Cramorant V - SWSH086",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH086"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/251623/details",
+    "status": 200,
+    "sha256": "2c3f710b7101ba5bf4976c17f0d0df45b89f7bcbbc11b5d8eec5b6afba521154",
+    "requestedProductID": 251623,
+    "identity": {
+      "productId": 251623.0,
+      "productName": "Eldegoss V - SWSH084",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH084"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/252817/details",
+    "status": 200,
+    "sha256": "dfd1c2a3a3de1f25b579df5de3e331360f41bc82d212a786667f3e9579f3f4c7",
+    "requestedProductID": 252817,
+    "identity": {
+      "productId": 252817.0,
+      "productName": "Dragapult (Prime) - SWSH132",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH132"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/253420/details",
+    "status": 200,
+    "sha256": "8598473097cc235599a654108fe4bfbed7f3016c9b64e273e0f2b0030b7cbc8d",
+    "requestedProductID": 253420,
+    "identity": {
+      "productId": 253420.0,
+      "productName": "Hoopa V - SWSH176",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH176"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/253421/details",
+    "status": 200,
+    "sha256": "371edc04e36c68b1d0da6d3c3a28c1a7289af5b484a196d9f7a7c63592d43d7b",
+    "requestedProductID": 253421,
+    "identity": {
+      "productId": 253421.0,
+      "productName": "Dragonite V - SWSH154",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH154"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/257708/details",
+    "status": 200,
+    "sha256": "9c64d817591681f63f4c348cbc2e323683e70aa396b593552e3b128f7d0119b0",
+    "requestedProductID": 257708,
+    "identity": {
+      "productId": 257708.0,
+      "productName": "Vaporeon VMAX - SWSH182",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH182"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/257709/details",
+    "status": 200,
+    "sha256": "52740f14b338f88a2d8b1d5ae884ef811e9fcc8a53eda96f2afe1c6ae366d98e",
+    "requestedProductID": 257709,
+    "identity": {
+      "productId": 257709.0,
+      "productName": "Flareon VMAX - SWSH180",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH180"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/257710/details",
+    "status": 200,
+    "sha256": "66e6b0bc1f69a2c6b68a26915ccc318922495f2d140ad31a74273e29c1f525f7",
+    "requestedProductID": 257710,
+    "identity": {
+      "productId": 257710.0,
+      "productName": "Jolteon VMAX - SWSH184",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH184"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/260712/details",
+    "status": 200,
+    "sha256": "2cbf8393fb4bcd07cf46ed403a1ab4d6bf2f97e6c48c770015586e589bdb843c",
+    "requestedProductID": 260712,
+    "identity": {
+      "productId": 260712.0,
+      "productName": "Pikachu V - SWSH198",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH198"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/260877/details",
+    "status": 200,
+    "sha256": "0baab336cb9aab36b6035e109db210f5eecbd53415447b4255a90e53d86456f5",
+    "requestedProductID": 260877,
+    "identity": {
+      "productId": 260877.0,
+      "productName": "Light Toxtricity - SWSH137",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH137"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/260878/details",
+    "status": 200,
+    "sha256": "4b539c49a22f6b4f51eca3cbd23ebed1ab0b028e0a8092414ea56c3715bcf0bd",
+    "requestedProductID": 260878,
+    "identity": {
+      "productId": 260878.0,
+      "productName": "Mimikyu (Delta Species) - SWSH136",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH136"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/260879/details",
+    "status": 200,
+    "sha256": "2de40cb4ea1466ff5d44952a84c4d3dd4c4d30a7f916f0b131a8be2dcee29191",
+    "requestedProductID": 260879,
+    "identity": {
+      "productId": 260879.0,
+      "productName": "Hydreigon C - SWSH138",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH138"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/263260/details",
+    "status": 200,
+    "sha256": "54bd10c55d1c5c6b773b38c7c2f30b7988ab4266db5f4ee2d79a76405b6f3ded",
+    "requestedProductID": 263260,
+    "identity": {
+      "productId": 263260.0,
+      "productName": "Leafeon VSTAR - SWSH195",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH195"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/263261/details",
+    "status": 200,
+    "sha256": "8b399202e4e95002cf7c55dd8d130c16cfe1bdad57f26a2e6cc3bcc13a1c6182",
+    "requestedProductID": 263261,
+    "identity": {
+      "productId": 263261.0,
+      "productName": "Glaceon VSTAR - SWSH197",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH197"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/268305/details",
+    "status": 200,
+    "sha256": "4d33c79bf755b49f153b75c0e3ff3ee06be7a9de3f16cbec337e60dbe18fba28",
+    "requestedProductID": 268305,
+    "identity": {
+      "productId": 268305.0,
+      "productName": "Lucario VSTAR - SWSH214",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH214"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/268449/details",
+    "status": 200,
+    "sha256": "5f456610d7d4bb93b988bef33207c157c2eaf03c50838186e871027a349a1428",
+    "requestedProductID": 268449,
+    "identity": {
+      "productId": 268449.0,
+      "productName": "Morpeko V-UNION (SWSH215-218)",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": ""
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/276050/details",
+    "status": 200,
+    "sha256": "ddb9e5a49c1837797b02caf4258ae02b3fd6e819b2c08e4fd1f15e6647722eb5",
+    "requestedProductID": 276050,
+    "identity": {
+      "productId": 276050.0,
+      "productName": "Kleavor VSTAR - SWSH249",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH249"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/276051/details",
+    "status": 200,
+    "sha256": "73e4627f9ebcfbad0aae174a401eca2f24f5eae54495c04d7aa7a1d768b293c5",
+    "requestedProductID": 276051,
+    "identity": {
+      "productId": 276051.0,
+      "productName": "Boltund V - SWSH219",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH219"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/279028/details",
+    "status": 200,
+    "sha256": "2d77681ae4eab19ccc621ad132958f82fd4c1a4c3cd45b0ce4babe7852b6e755",
+    "requestedProductID": 279028,
+    "identity": {
+      "productId": 279028.0,
+      "productName": "Alolan Exeggutor V - SWSH225",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH225"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/284499/details",
+    "status": 200,
+    "sha256": "b1b2086bba75ebc85c5ebbfac53d109fe15fab106c02b855960d07bf798e994e",
+    "requestedProductID": 284499,
+    "identity": {
+      "productId": 284499.0,
+      "productName": "Infernape V - SWSH252",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWS252"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/449513/details",
+    "status": 200,
+    "sha256": "80d4eb93313d47c46960c2de2c9a35666e7c272e3b12eb8c80e95e9ab954494e",
+    "requestedProductID": 449513,
+    "identity": {
+      "productId": 449513.0,
+      "productName": "Origin Forme Dialga VSTAR - SWSH256",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH256"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/449514/details",
+    "status": 200,
+    "sha256": "961268ded1f0baade332cb05f20dde2bde42dfb4e4547c7920dda8450422601a",
+    "requestedProductID": 449514,
+    "identity": {
+      "productId": 449514.0,
+      "productName": "Origin Forme Palkia VSTAR - SWSH254",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH254"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/449517/details",
+    "status": 200,
+    "sha256": "fd85caefd5b3e87e9b67281d6b00417192ff2f333ec394a42b08d99373c484d3",
+    "requestedProductID": 449517,
+    "identity": {
+      "productId": 449517.0,
+      "productName": "Virizion V - SWSH295",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH295"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/449524/details",
+    "status": 200,
+    "sha256": "e6f6584e9bc861f9ee938704ce3a07915fac575aa1df9ab2800aabff71a59038",
+    "requestedProductID": 449524,
+    "identity": {
+      "productId": 449524.0,
+      "productName": "Zeraora VSTAR - SWSH265",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH265"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/449525/details",
+    "status": 200,
+    "sha256": "49ae7496246b5ebb1d690a5c8cc0e1446e06ccdee4909cc26f9dbee5f2b16ee2",
+    "requestedProductID": 449525,
+    "identity": {
+      "productId": 449525.0,
+      "productName": "Deoxys VSTAR - SWSH268",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH268"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/449528/details",
+    "status": 200,
+    "sha256": "7f2d74a62d7fc35fde8c9982e91dccaf0904d88e72c32e3e43c43a67eb15502f",
+    "requestedProductID": 449528,
+    "identity": {
+      "productId": 449528.0,
+      "productName": "Hisuian Zoroark VSTAR - SWSH298",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH298"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/451116/details",
+    "status": 200,
+    "sha256": "7f526c9efd549158d2c5559c83927436a6f5809b891e90343c209cbd720e38a4",
+    "requestedProductID": 451116,
+    "identity": {
+      "productId": 451116.0,
+      "productName": "Hisuian Electrode V - SWSH294",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH294"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/477069/details",
+    "status": 200,
+    "sha256": "52ea7fa8b97ebedf8089943b16356b26c70d147a1d65dab25e388829483112ae",
+    "requestedProductID": 477069,
+    "identity": {
+      "productId": 477069.0,
+      "productName": "Morpeko V-Union (SWSH287-290)",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH290"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/478425/details",
+    "status": 200,
+    "sha256": "f2358ac076d365978a37173558411fcbc054c7cfae0cf03cd5a03201120f09d7",
+    "requestedProductID": 478425,
+    "identity": {
+      "productId": 478425.0,
+      "productName": "Pikachu VMAX - SWSH286",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH286"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/479879/details",
+    "status": 200,
+    "sha256": "0743561fe83d17d470e5177c1790da24324929f093aeca69ba4e6c8119ea4ee0",
+    "requestedProductID": 479879,
+    "identity": {
+      "productId": 479879.0,
+      "productName": "Regieleki V - SWSH280",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH280"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/479880/details",
+    "status": 200,
+    "sha256": "3d56797ce08d92f5bccc6be0f76533c9ff4acfcaacf2c94335a34fa2741ff67a",
+    "requestedProductID": 479880,
+    "identity": {
+      "productId": 479880.0,
+      "productName": "Regidrago V - SWSH281",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH281"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/506006/details",
+    "status": 200,
+    "sha256": "60a8f67425a1cef038f5e052df3524b4b03e03e1506199f05451f8a3078e7259",
+    "requestedProductID": 506006,
+    "identity": {
+      "productId": 506006.0,
+      "productName": "Lugia V - SWSH301",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "SWSH301"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/584511/details",
+    "status": 200,
+    "sha256": "0cb20c02b75fdbbfe80fc71ebeb9a3c3b86f017a58f18eb3fef09e09bbc824db",
+    "requestedProductID": 584511,
+    "identity": {
+      "productId": 584511.0,
+      "productName": "Jirachi V - 299",
+      "setId": 1528.0,
+      "setCode": "PR",
+      "setName": "Jumbo Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "SWSH299"
+    }
+  }
+]

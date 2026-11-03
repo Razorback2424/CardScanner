@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "scope": "Provider numbering census, not independent physical-printing proof",
+  "sets": [
+    {
+      "providerSetID": "tk-ex-latia",
+      "name": "EX trainer Kit (Latias)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-latia",
+      "sourceSHA256": "102e96df35e9680dfd52e71b7b91814931722da8743fd6652f6f8c1e74e366e2",
+      "officialCount": 10,
+      "providedCount": 10,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-ex-latio",
+      "name": "EX trainer Kit (Latios)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-latio",
+      "sourceSHA256": "f8c5f88c26d1b83880df83bf8d2333acea15a76cda454cff8ca090be00a37e77",
+      "officialCount": 10,
+      "providedCount": 10,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-ex-m",
+      "name": "EX trainer Kit 2 (Minun)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-m",
+      "sourceSHA256": "0a17b0e7abf3d27287bf695f1558111594c3c37c229a4c2b280006c8ed3c5780",
+      "officialCount": 12,
+      "providedCount": 12,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-ex-p",
+      "name": "EX trainer Kit 2 (Plusle)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-p",
+      "sourceSHA256": "38e774b2380f417a340428e7d13017bfd4da51ff41ecb401298c403d08737ebe",
+      "officialCount": 12,
+      "providedCount": 12,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-dp-l",
+      "name": "DP trainer Kit (Lucario)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-dp-l",
+      "sourceSHA256": "36c96b337a75341d695864ccb47b4d3a480df705a6e75280b8db80c936675c47",
+      "officialCount": 11,
+      "providedCount": 11,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-dp-m",
+      "name": "DP trainer Kit (Manaphy)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-dp-m",
+      "sourceSHA256": "28157145cd4b17db4469b66957d1cb2cb7175c346242fee6a703a46367abbce6",
+      "officialCount": 12,
+      "providedCount": 12,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-hs-r",
+      "name": "HS trainer Kit (Raichu)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-hs-r",
+      "sourceSHA256": "78475d975e23fc94060fd59bbbc5ac2b37eaa45682dd7ee1ed4d5f4e876af491",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-hs-g",
+      "name": "HS trainer Kit (Gyarados)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-hs-g",
+      "sourceSHA256": "464139ae53c235ba4e53497ffe4b4b42332acac3052a8df9f1503266d9f7db86",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-bw-e",
+      "name": "BW trainer Kit (Excadrill)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-bw-e",
+      "sourceSHA256": "b2854558c6b298074f3848634406e35107d847558ffa81cded2467f091e4e51e",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-bw-z",
+      "name": "BW trainer Kit (Zoroark)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-bw-z",
+      "sourceSHA256": "deb983a912702ad076c3c29c1496a1a977acbd6a70f9da4229d2df44861cba27",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-n",
+      "name": "XY trainer Kit (Noivern)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-n",
+      "sourceSHA256": "1fec52d70cabb425f6aa5efe5cb8b498b7bfe3b690ad9aa0e81b4bd74c512146",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-sy",
+      "name": "XY trainer Kit (Sylveon)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-sy",
+      "sourceSHA256": "dffee9156b830292469e04359c6ef5d6cf7fce8a0da45c5e85b70fcf00b1b085",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-b",
+      "name": "XY trainer Kit (Bisharp)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-b",
+      "sourceSHA256": "3d00e4d3239ace65418bb486148feea31b58126687ab52f27466aa83be055200",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-w",
+      "name": "XY trainer Kit (Wigglytuff)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-w",
+      "sourceSHA256": "6ab361b879b7d96122c41c3046eaf415499c14596886bcb9374e7899fda25dba",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-latio",
+      "name": "XY trainer Kit (Latios)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-latio",
+      "sourceSHA256": "0b08c626ce17e991aef03843116c6cb8093a6aa37624de4bbd924c90ef77d2f7",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-latia",
+      "name": "XY trainer Kit (Latias)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-latia",
+      "sourceSHA256": "0f1560884721157768a57b3d9b1b9de8a595d4d88b6e4aca14fa94f0c8331a9c",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-p",
+      "name": "XY trainer Kit (Pikachu Libre)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-p",
+      "sourceSHA256": "bf6acb39f027257195ba26f94b6b651b2bdc2c85195c3496c75b4f983493b497",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-xy-su",
+      "name": "XY trainer Kit (Suicune)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-su",
+      "sourceSHA256": "deaedd88ff43cbe948cb5d611cc9297dbdbdada2e75027d2c8f0ade393c36ccb",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-sm-r",
+      "name": "SM trainer Kit (Alolan Raichu)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-sm-r",
+      "sourceSHA256": "2ccd5f8549bd10f9f6e9f84e6b95e33afd067b213738bee54bf05b443c13b0c5",
+      "officialCount": 30,
+      "providedCount": 30,
+      "missingLocalIDs": []
+    },
+    {
+      "providerSetID": "tk-sm-l",
+      "name": "SM trainer Kit (Lycanroc)",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-sm-l",
+      "sourceSHA256": "a58b6c38118f6635aeffca51e36a2b361511e98f1abd50c0b951fa404ac135ac",
+      "officialCount": 30,
+      "providedCount": 18,
+      "missingLocalIDs": [
+        2,
+        3,
+        6,
+        7,
+        8,
+        9,
+        10,
+        17,
+        20,
+        24,
+        26,
+        28
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3443 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "independentInputSHA256": "d60ee4ced6a16fd96d7eae0d9161a4ab50c2b113ff4199b47ce364fef98dc33e",
+  "directorySHA256": "5d1d49cc20ff35b5b93bd14226d80e9298b6ab33ce086ab128fbb6bd8cb5c79a",
+  "sets": [
+    {
+      "providerSetID": "tk-dp-m",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-dp-m",
+      "sourceSHA256": "28157145cd4b17db4469b66957d1cb2cb7175c346242fee6a703a46367abbce6",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/Diamond_%26_Pearl_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-dp-m-1",
+          "providerName": "Buizel",
+          "corroboratingName": "Buizel",
+          "printedNumber": "1/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-2",
+          "providerName": "Floatzel",
+          "corroboratingName": "Floatzel",
+          "printedNumber": "2/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-3",
+          "providerName": "Goldeen",
+          "corroboratingName": "Goldeen",
+          "printedNumber": "3/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-4",
+          "providerName": "Manaphy",
+          "corroboratingName": "Manaphy",
+          "printedNumber": "4/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-5",
+          "providerName": "Piplup",
+          "corroboratingName": "Piplup",
+          "printedNumber": "5/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-6",
+          "providerName": "Prinplup",
+          "corroboratingName": "Prinplup",
+          "printedNumber": "6/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-7",
+          "providerName": "Seaking",
+          "corroboratingName": "Seaking",
+          "printedNumber": "7/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-8",
+          "providerName": "Totodile",
+          "corroboratingName": "Totodile",
+          "printedNumber": "8/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-9",
+          "providerName": "Dusk Ball",
+          "corroboratingName": "Dusk Ball",
+          "printedNumber": "9/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-10",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "10/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-11",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "11/12",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-m-12",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "12/12",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-dp-l",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-dp-l",
+      "sourceSHA256": "36c96b337a75341d695864ccb47b4d3a480df705a6e75280b8db80c936675c47",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/Diamond_%26_Pearl_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-dp-l-1",
+          "providerName": "Geodude",
+          "corroboratingName": "Geodude",
+          "printedNumber": "1/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-2",
+          "providerName": "Graveler",
+          "corroboratingName": "Graveler",
+          "printedNumber": "2/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-3",
+          "providerName": "Lucario",
+          "corroboratingName": "Lucario",
+          "printedNumber": "3/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-4",
+          "providerName": "Machoke",
+          "corroboratingName": "Machoke",
+          "printedNumber": "4/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-5",
+          "providerName": "Machop",
+          "corroboratingName": "Machop",
+          "printedNumber": "5/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-6",
+          "providerName": "Riolu",
+          "corroboratingName": "Riolu",
+          "printedNumber": "6/61",
+          "physicalSources": [
+            "https://bulbapedia.bulbagarden.net/wiki/Riolu_(Diamond_%26_Pearl_61)",
+            "https://facetofacegames.com/products/riolu-661-common-non-holo"
+          ]
+        },
+        {
+          "providerCardID": "tk-dp-l-7",
+          "providerName": "Starly",
+          "corroboratingName": "Starly",
+          "printedNumber": "7/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-8",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "8/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-9",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "9/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-10",
+          "providerName": "Quick Ball",
+          "corroboratingName": "Quick Ball",
+          "printedNumber": "10/11",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-dp-l-11",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "11/11",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-hs-g",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-hs-g",
+      "sourceSHA256": "464139ae53c235ba4e53497ffe4b4b42332acac3052a8df9f1503266d9f7db86",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/HS_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-hs-g-1",
+          "providerName": "Totodile",
+          "corroboratingName": "Totodile",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-2",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-3",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-4",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-5",
+          "providerName": "Bill",
+          "corroboratingName": "Bill",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-6",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-7",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-8",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-9",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-10",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-11",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-12",
+          "providerName": "Magikarp",
+          "corroboratingName": "Magikarp",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-13",
+          "providerName": "Croconaw",
+          "corroboratingName": "Croconaw",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-14",
+          "providerName": "Totodile",
+          "corroboratingName": "Totodile",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-15",
+          "providerName": "Marill",
+          "corroboratingName": "Marill",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-16",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-17",
+          "providerName": "Croconaw",
+          "corroboratingName": "Croconaw",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-18",
+          "providerName": "Bill",
+          "corroboratingName": "Bill",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-19",
+          "providerName": "Magikarp",
+          "corroboratingName": "Magikarp",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-20",
+          "providerName": "Gyarados",
+          "corroboratingName": "Gyarados",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-21",
+          "providerName": "Energy Switch",
+          "corroboratingName": "Energy Switch",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-22",
+          "providerName": "Pokémon Communication",
+          "corroboratingName": "Pokémon Communication",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-23",
+          "providerName": "Poké Ball",
+          "corroboratingName": "Poké Ball",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-24",
+          "providerName": "Marill",
+          "corroboratingName": "Marill",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-25",
+          "providerName": "Professor Elm's Training Method",
+          "corroboratingName": "Professor Elm's Training Method",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-26",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-27",
+          "providerName": "Pokémon Communication",
+          "corroboratingName": "Pokémon Communication",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-28",
+          "providerName": "Switch",
+          "corroboratingName": "Switch",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-29",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-g-30",
+          "providerName": "Gyarados",
+          "corroboratingName": "Gyarados",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-hs-r",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-hs-r",
+      "sourceSHA256": "78475d975e23fc94060fd59bbbc5ac2b37eaa45682dd7ee1ed4d5f4e876af491",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/HS_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-hs-r-1",
+          "providerName": "Moomoo Milk",
+          "corroboratingName": "Moomoo Milk",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-2",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-3",
+          "providerName": "Flaaffy",
+          "corroboratingName": "Flaaffy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-4",
+          "providerName": "Meowth",
+          "corroboratingName": "Meowth",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-5",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-6",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-7",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-8",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-9",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-10",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-11",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-12",
+          "providerName": "Meowth",
+          "corroboratingName": "Meowth",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-13",
+          "providerName": "Mareep",
+          "corroboratingName": "Mareep",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-14",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-15",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-16",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-17",
+          "providerName": "Flaaffy",
+          "corroboratingName": "Flaaffy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-18",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-19",
+          "providerName": "Raichu",
+          "corroboratingName": "Raichu",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-20",
+          "providerName": "Mareep",
+          "corroboratingName": "Mareep",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-21",
+          "providerName": "Copycat",
+          "corroboratingName": "Copycat",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-22",
+          "providerName": "Pokémon Collector",
+          "corroboratingName": "Pokémon Collector",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-23",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-24",
+          "providerName": "Switch",
+          "corroboratingName": "Switch",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-25",
+          "providerName": "Poké Ball",
+          "corroboratingName": "Poké Ball",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-26",
+          "providerName": "Moomoo Milk",
+          "corroboratingName": "Moomoo Milk",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-27",
+          "providerName": "Pokémon Collector",
+          "corroboratingName": "Pokémon Collector",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-28",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-29",
+          "providerName": "Energy Switch",
+          "corroboratingName": "Energy Switch",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-hs-r-30",
+          "providerName": "Raichu",
+          "corroboratingName": "Raichu",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-bw-e",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-bw-e",
+      "sourceSHA256": "b2854558c6b298074f3848634406e35107d847558ffa81cded2467f091e4e51e",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/Black_%26_White_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-bw-e-1",
+          "providerName": "Lillipup",
+          "corroboratingName": "Lillipup",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-2",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-3",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-4",
+          "providerName": "Energy Switch",
+          "corroboratingName": "Energy Switch",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-5",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-6",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-7",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-8",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-9",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-10",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-11",
+          "providerName": "Timburr",
+          "corroboratingName": "Timburr",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-12",
+          "providerName": "Audino",
+          "corroboratingName": "Audino",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-13",
+          "providerName": "Drilbur",
+          "corroboratingName": "Drilbur",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-14",
+          "providerName": "Gurdurr",
+          "corroboratingName": "Gurdurr",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-15",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-16",
+          "providerName": "PlusPower",
+          "corroboratingName": "PlusPower",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-17",
+          "providerName": "Excadrill",
+          "corroboratingName": "Excadrill",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-18",
+          "providerName": "Audino",
+          "corroboratingName": "Audino",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-19",
+          "providerName": "Herdier",
+          "corroboratingName": "Herdier",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-20",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-21",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-22",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-23",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-24",
+          "providerName": "Pokémon Communication",
+          "corroboratingName": "Pokémon Communication",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-25",
+          "providerName": "Drilbur",
+          "corroboratingName": "Drilbur",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-26",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-27",
+          "providerName": "Lillipup",
+          "corroboratingName": "Lillipup",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-28",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-29",
+          "providerName": "Timburr",
+          "corroboratingName": "Timburr",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-e-30",
+          "providerName": "Excadrill",
+          "corroboratingName": "Excadrill",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-bw-z",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-bw-z",
+      "sourceSHA256": "deb983a912702ad076c3c29c1496a1a977acbd6a70f9da4229d2df44861cba27",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/Black_%26_White_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-bw-z-1",
+          "providerName": "Purrloin",
+          "corroboratingName": "Purrloin",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-2",
+          "providerName": "Watchog",
+          "corroboratingName": "Watchog",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-3",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-4",
+          "providerName": "Minccino",
+          "corroboratingName": "Minccino",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-5",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-6",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-7",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-8",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-9",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-10",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-11",
+          "providerName": "PlusPower",
+          "corroboratingName": "PlusPower",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-12",
+          "providerName": "Patrat",
+          "corroboratingName": "Patrat",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-13",
+          "providerName": "Zorua",
+          "corroboratingName": "Zorua",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-14",
+          "providerName": "Pidove",
+          "corroboratingName": "Pidove",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-15",
+          "providerName": "Tranquill",
+          "corroboratingName": "Tranquill",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-16",
+          "providerName": "Energy Retrieval",
+          "corroboratingName": "Energy Retrieval",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-17",
+          "providerName": "Zoroark",
+          "corroboratingName": "Zoroark",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-18",
+          "providerName": "Pokémon Communication",
+          "corroboratingName": "Pokémon Communication",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-19",
+          "providerName": "Minccino",
+          "corroboratingName": "Minccino",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-20",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-21",
+          "providerName": "Pidove",
+          "corroboratingName": "Pidove",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-22",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-23",
+          "providerName": "Zorua",
+          "corroboratingName": "Zorua",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-24",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-25",
+          "providerName": "Purrloin",
+          "corroboratingName": "Purrloin",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-26",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-27",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-28",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-29",
+          "providerName": "Patrat",
+          "corroboratingName": "Patrat",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-bw-z-30",
+          "providerName": "Zoroark",
+          "corroboratingName": "Zoroark",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-sy",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-sy",
+      "sourceSHA256": "dffee9156b830292469e04359c6ef5d6cf7fce8a0da45c5e85b70fcf00b1b085",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-sy-1",
+          "providerName": "Fletchling",
+          "corroboratingName": "Fletchling",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-2",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-3",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-4",
+          "providerName": "Switch",
+          "corroboratingName": "Switch",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-5",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-6",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-7",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-8",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-9",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-10",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-11",
+          "providerName": "Snubbull",
+          "corroboratingName": "Snubbull",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-12",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-13",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-14",
+          "providerName": "Granbull",
+          "corroboratingName": "Granbull",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-15",
+          "providerName": "Sylveon",
+          "corroboratingName": "Sylveon",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-16",
+          "providerName": "Furfrou",
+          "corroboratingName": "Furfrou",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-17",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-18",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-19",
+          "providerName": "Fletchling",
+          "corroboratingName": "Fletchling",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-20",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-21",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-22",
+          "providerName": "Furfrou",
+          "corroboratingName": "Furfrou",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-23",
+          "providerName": "Pokémon Catcher",
+          "corroboratingName": "Pokémon Catcher",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-24",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-25",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-26",
+          "providerName": "Poké Ball",
+          "corroboratingName": "Poké Ball",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-27",
+          "providerName": "Snubbull",
+          "corroboratingName": "Snubbull",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-28",
+          "providerName": "Professor’s Letter",
+          "corroboratingName": "Professor's Letter",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-29",
+          "providerName": "Granbull",
+          "corroboratingName": "Granbull",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-sy-30",
+          "providerName": "Sylveon",
+          "corroboratingName": "Sylveon",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-n",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-n",
+      "sourceSHA256": "1fec52d70cabb425f6aa5efe5cb8b498b7bfe3b690ad9aa0e81b4bd74c512146",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-n-1",
+          "providerName": "Spoink",
+          "corroboratingName": "Spoink",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-2",
+          "providerName": "Gourgeist",
+          "corroboratingName": "Gourgeist",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-3",
+          "providerName": "Arbok",
+          "corroboratingName": "Arbok",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-4",
+          "providerName": "Bunnelby",
+          "corroboratingName": "Bunnelby",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-5",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-6",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-7",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-8",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-9",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-10",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-11",
+          "providerName": "Pumpkaboo",
+          "corroboratingName": "Pumpkaboo",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-12",
+          "providerName": "Noibat",
+          "corroboratingName": "Noibat",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-13",
+          "providerName": "Noivern",
+          "corroboratingName": "Noivern",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-14",
+          "providerName": "Pokémon Catcher",
+          "corroboratingName": "Pokémon Catcher",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-15",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-16",
+          "providerName": "Ekans",
+          "corroboratingName": "Ekans",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-17",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-18",
+          "providerName": "Pumpkaboo",
+          "corroboratingName": "Pumpkaboo",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-19",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-20",
+          "providerName": "Furfrou",
+          "corroboratingName": "Furfrou",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-21",
+          "providerName": "Poké Ball",
+          "corroboratingName": "Poké Ball",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-22",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-23",
+          "providerName": "Noibat",
+          "corroboratingName": "Noibat",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-24",
+          "providerName": "Professor’s Letter",
+          "corroboratingName": "Professor's Letter",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-25",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-26",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-27",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-28",
+          "providerName": "Darkness Energy",
+          "corroboratingName": "Darkness Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-29",
+          "providerName": "Switch",
+          "corroboratingName": "Switch",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-n-30",
+          "providerName": "Noivern",
+          "corroboratingName": "Noivern",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-b",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-b",
+      "sourceSHA256": "3d00e4d3239ace65418bb486148feea31b58126687ab52f27466aa83be055200",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Bisharp_%26_Wigglytuff_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-b-1",
+          "providerName": "Fletchling",
+          "corroboratingName": "Fletchling",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-2",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-3",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-4",
+          "providerName": "Vigoroth",
+          "corroboratingName": "Vigoroth",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-5",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-6",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-7",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-8",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-9",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-10",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-11",
+          "providerName": "Honedge",
+          "corroboratingName": "Honedge",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-12",
+          "providerName": "Bidoof",
+          "corroboratingName": "Bidoof",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-13",
+          "providerName": "Pawniard",
+          "corroboratingName": "Pawniard",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-14",
+          "providerName": "Doublade",
+          "corroboratingName": "Doublade",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-15",
+          "providerName": "Slakoth",
+          "corroboratingName": "Slakoth",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-16",
+          "providerName": "Bisharp",
+          "corroboratingName": "Bisharp",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-17",
+          "providerName": "Patrat",
+          "corroboratingName": "Patrat",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-18",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-19",
+          "providerName": "Tierno",
+          "corroboratingName": "Tierno",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-20",
+          "providerName": "Trevor",
+          "corroboratingName": "Trevor",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-21",
+          "providerName": "Pawniard",
+          "corroboratingName": "Pawniard",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-22",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-23",
+          "providerName": "Doublade",
+          "corroboratingName": "Doublade",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-24",
+          "providerName": "Metal Energy",
+          "corroboratingName": "Metal Energy",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-25",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-26",
+          "providerName": "Slakoth",
+          "corroboratingName": "Slakoth",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-27",
+          "providerName": "Honedge",
+          "corroboratingName": "Honedge",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-28",
+          "providerName": "Vigoroth",
+          "corroboratingName": "Vigoroth",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-29",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-b-30",
+          "providerName": "Bisharp",
+          "corroboratingName": "Bisharp",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-w",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-w",
+      "sourceSHA256": "6ab361b879b7d96122c41c3046eaf415499c14596886bcb9374e7899fda25dba",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Bisharp_%26_Wigglytuff_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-w-1",
+          "providerName": "Swirlix",
+          "corroboratingName": "Swirlix",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-2",
+          "providerName": "Pidgeotto",
+          "corroboratingName": "Pidgeotto",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-3",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-4",
+          "providerName": "Sentret",
+          "corroboratingName": "Sentret",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-5",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-6",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-7",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-8",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-9",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-10",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-11",
+          "providerName": "Pidgey",
+          "corroboratingName": "Pidgey",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-12",
+          "providerName": "Jigglypuff",
+          "corroboratingName": "Jigglypuff",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-13",
+          "providerName": "Clefairy",
+          "corroboratingName": "Clefairy",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-14",
+          "providerName": "Wigglytuff",
+          "corroboratingName": "Wigglytuff",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-15",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-16",
+          "providerName": "Clefable",
+          "corroboratingName": "Clefable",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-17",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-18",
+          "providerName": "Swirlix",
+          "corroboratingName": "Swirlix",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-19",
+          "providerName": "Clefairy",
+          "corroboratingName": "Clefairy",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-20",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-21",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-22",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-23",
+          "providerName": "Pidgeotto",
+          "corroboratingName": "Pidgeotto",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-24",
+          "providerName": "Trevor",
+          "corroboratingName": "Trevor",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-25",
+          "providerName": "Jigglypuff",
+          "corroboratingName": "Jigglypuff",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-26",
+          "providerName": "Tierno",
+          "corroboratingName": "Tierno",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-27",
+          "providerName": "Fairy Energy",
+          "corroboratingName": "Fairy Energy",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-28",
+          "providerName": "Clefable",
+          "corroboratingName": "Clefable",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-29",
+          "providerName": "Pidgey",
+          "corroboratingName": "Pidgey",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-w-30",
+          "providerName": "Wigglytuff",
+          "corroboratingName": "Wigglytuff",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-latia",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-latia",
+      "sourceSHA256": "0f1560884721157768a57b3d9b1b9de8a595d4d88b6e4aca14fa94f0c8331a9c",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Latias_%26_Latios_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-latia-1",
+          "providerName": "Grass Energy",
+          "corroboratingName": "Grass Energy",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-2",
+          "providerName": "Grass Energy",
+          "corroboratingName": "Grass Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-3",
+          "providerName": "Grass Energy",
+          "corroboratingName": "Grass Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-4",
+          "providerName": "Fletchling",
+          "corroboratingName": "Fletchling",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-5",
+          "providerName": "Grass Energy",
+          "corroboratingName": "Grass Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-6",
+          "providerName": "Lombre",
+          "corroboratingName": "Lombre",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-7",
+          "providerName": "Treecko",
+          "corroboratingName": "Treecko",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-8",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-9",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-10",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-11",
+          "providerName": "Lotad",
+          "corroboratingName": "Lotad",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-12",
+          "providerName": "Tangrowth",
+          "corroboratingName": "Tangrowth",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-13",
+          "providerName": "Tangela",
+          "corroboratingName": "Tangela",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-14",
+          "providerName": "Latias",
+          "corroboratingName": "Latias",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-15",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-16",
+          "providerName": "Surskit",
+          "corroboratingName": "Surskit",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-17",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-18",
+          "providerName": "Grovyle",
+          "corroboratingName": "Grovyle",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-19",
+          "providerName": "Grass Energy",
+          "corroboratingName": "Grass Energy",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-20",
+          "providerName": "Acro Bike",
+          "corroboratingName": "Acro Bike",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-21",
+          "providerName": "Lombre",
+          "corroboratingName": "Lombre",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-22",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-23",
+          "providerName": "Lotad",
+          "corroboratingName": "Lotad",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-24",
+          "providerName": "Treecko",
+          "corroboratingName": "Treecko",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-25",
+          "providerName": "Tangrowth",
+          "corroboratingName": "Tangrowth",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-26",
+          "providerName": "Tangela",
+          "corroboratingName": "Tangela",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-27",
+          "providerName": "Grovyle",
+          "corroboratingName": "Grovyle",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-28",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-29",
+          "providerName": "Acro Bike",
+          "corroboratingName": "Acro Bike",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latia-30",
+          "providerName": "Latias",
+          "corroboratingName": "Latias",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-latio",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-latio",
+      "sourceSHA256": "0b08c626ce17e991aef03843116c6cb8093a6aa37624de4bbd924c90ef77d2f7",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Latias_%26_Latios_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-latio-1",
+          "providerName": "Skitty",
+          "corroboratingName": "Skitty",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-2",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-3",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-4",
+          "providerName": "Rhydon",
+          "corroboratingName": "Rhydon",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-5",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-6",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-7",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-8",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-9",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-10",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-11",
+          "providerName": "Machop",
+          "corroboratingName": "Machop",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-12",
+          "providerName": "Solrock",
+          "corroboratingName": "Solrock",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-13",
+          "providerName": "Latios",
+          "corroboratingName": "Latios",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-14",
+          "providerName": "Machoke",
+          "corroboratingName": "Machoke",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-15",
+          "providerName": "Rhyhorn",
+          "corroboratingName": "Rhyhorn",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-16",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-17",
+          "providerName": "Fighting Energy",
+          "corroboratingName": "Fighting Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-18",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-19",
+          "providerName": "Delcatty",
+          "corroboratingName": "Delcatty",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-20",
+          "providerName": "Acro Bike",
+          "corroboratingName": "Acro Bike",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-21",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-22",
+          "providerName": "Machoke",
+          "corroboratingName": "Machoke",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-23",
+          "providerName": "Rhyhorn",
+          "corroboratingName": "Rhyhorn",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-24",
+          "providerName": "Delcatty",
+          "corroboratingName": "Delcatty",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-25",
+          "providerName": "Rhydon",
+          "corroboratingName": "Rhydon",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-26",
+          "providerName": "Solrock",
+          "corroboratingName": "Solrock",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-27",
+          "providerName": "Skitty",
+          "corroboratingName": "Skitty",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-28",
+          "providerName": "Machop",
+          "corroboratingName": "Machop",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-29",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-latio-30",
+          "providerName": "Latios",
+          "corroboratingName": "Latios",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-p",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-p",
+      "sourceSHA256": "bf6acb39f027257195ba26f94b6b651b2bdc2c85195c3496c75b4f983493b497",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Pikachu_Libre_%26_Suicune_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-p-1",
+          "providerName": "Glameow",
+          "corroboratingName": "Glameow",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-2",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-3",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-4",
+          "providerName": "Electivire",
+          "corroboratingName": "Electivire",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-5",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-6",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-7",
+          "providerName": "Taillow",
+          "corroboratingName": "Taillow",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-8",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-9",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-10",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-11",
+          "providerName": "Electrike",
+          "corroboratingName": "Electrike",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-12",
+          "providerName": "Blitzle",
+          "corroboratingName": "Blitzle",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-13",
+          "providerName": "Manectric",
+          "corroboratingName": "Manectric",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-14",
+          "providerName": "Pikachu Libre",
+          "corroboratingName": "Pikachu Libre",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-15",
+          "providerName": "Electabuzz",
+          "corroboratingName": "Electabuzz",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-16",
+          "providerName": "Fletchling",
+          "corroboratingName": "Fletchling",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-17",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-18",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-19",
+          "providerName": "Purugly",
+          "corroboratingName": "Purugly",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-20",
+          "providerName": "Tierno",
+          "corroboratingName": "Tierno",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-21",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-22",
+          "providerName": "Manectric",
+          "corroboratingName": "Manectric",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-23",
+          "providerName": "Electabuzz",
+          "corroboratingName": "Electabuzz",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-24",
+          "providerName": "Purugly",
+          "corroboratingName": "Purugly",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-25",
+          "providerName": "Electivire",
+          "corroboratingName": "Electivire",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-26",
+          "providerName": "Blitzle",
+          "corroboratingName": "Blitzle",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-27",
+          "providerName": "Glameow",
+          "corroboratingName": "Glameow",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-28",
+          "providerName": "Electrike",
+          "corroboratingName": "Electrike",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-29",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-p-30",
+          "providerName": "Pikachu Libre",
+          "corroboratingName": "Pikachu Libre",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-su",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-xy-su",
+      "sourceSHA256": "deaedd88ff43cbe948cb5d611cc9297dbdbdada2e75027d2c8f0ade393c36ccb",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Pikachu_Libre_%26_Suicune_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-xy-su-1",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-2",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-3",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-4",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-5",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-6",
+          "providerName": "Frogadier",
+          "corroboratingName": "Frogadier",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-7",
+          "providerName": "Ducklett",
+          "corroboratingName": "Ducklett",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-8",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-9",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-10",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-11",
+          "providerName": "Froakie",
+          "corroboratingName": "Froakie",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-12",
+          "providerName": "Seaking",
+          "corroboratingName": "Seaking",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-13",
+          "providerName": "Goldeen",
+          "corroboratingName": "Goldeen",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-14",
+          "providerName": "Suicune",
+          "corroboratingName": "Suicune",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-15",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-16",
+          "providerName": "Piplup",
+          "corroboratingName": "Piplup",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-17",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-18",
+          "providerName": "Swanna",
+          "corroboratingName": "Swanna",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-19",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-20",
+          "providerName": "Tierno",
+          "corroboratingName": "Tierno",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-21",
+          "providerName": "Frogadier",
+          "corroboratingName": "Frogadier",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-22",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-23",
+          "providerName": "Froakie",
+          "corroboratingName": "Froakie",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-24",
+          "providerName": "Ducklett",
+          "corroboratingName": "Ducklett",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-25",
+          "providerName": "Seaking",
+          "corroboratingName": "Seaking",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-26",
+          "providerName": "Goldeen",
+          "corroboratingName": "Goldeen",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-27",
+          "providerName": "Swanna",
+          "corroboratingName": "Swanna",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-28",
+          "providerName": "Water Energy",
+          "corroboratingName": "Water Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-29",
+          "providerName": "Tierno",
+          "corroboratingName": "Tierno",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-xy-su-30",
+          "providerName": "Suicune",
+          "corroboratingName": "Suicune",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-sm-r",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-sm-r",
+      "sourceSHA256": "2ccd5f8549bd10f9f6e9f84e6b95e33afd067b213738bee54bf05b443c13b0c5",
+      "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/Sun_%26_Moon_Trainer_Kit:_Lycanroc_%26_Alolan_Raichu_(TCG)",
+      "cards": [
+        {
+          "providerCardID": "tk-sm-r-1",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "1/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-2",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "2/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-3",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "3/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-4",
+          "providerName": "Stufful",
+          "corroboratingName": "Stufful",
+          "printedNumber": "4/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-5",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "5/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-6",
+          "providerName": "Golbat",
+          "corroboratingName": "Golbat",
+          "printedNumber": "6/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-7",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "7/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-8",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "8/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-9",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "9/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-10",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "10/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-11",
+          "providerName": "Zubat",
+          "corroboratingName": "Zubat",
+          "printedNumber": "11/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-12",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "12/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-13",
+          "providerName": "Spearow",
+          "corroboratingName": "Spearow",
+          "printedNumber": "13/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-14",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "14/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-15",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "15/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-16",
+          "providerName": "Grubbin",
+          "corroboratingName": "Grubbin",
+          "printedNumber": "16/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-17",
+          "providerName": "Alolan Raichu",
+          "corroboratingName": "Alolan Raichu",
+          "printedNumber": "17/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-18",
+          "providerName": "Bewear",
+          "corroboratingName": "Bewear",
+          "printedNumber": "18/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-19",
+          "providerName": "Hau",
+          "corroboratingName": "Hau",
+          "printedNumber": "19/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-20",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "20/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-21",
+          "providerName": "Great Ball",
+          "corroboratingName": "Great Ball",
+          "printedNumber": "21/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-22",
+          "providerName": "Drowzee",
+          "corroboratingName": "Drowzee",
+          "printedNumber": "22/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-23",
+          "providerName": "Hau",
+          "corroboratingName": "Hau",
+          "printedNumber": "23/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-24",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "24/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-25",
+          "providerName": "Great Ball",
+          "corroboratingName": "Great Ball",
+          "printedNumber": "25/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-26",
+          "providerName": "Togedemaru",
+          "corroboratingName": "Togedemaru",
+          "printedNumber": "26/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-27",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "27/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-28",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "28/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-29",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "29/30",
+          "physicalSources": []
+        },
+        {
+          "providerCardID": "tk-sm-r-30",
+          "providerName": "Alolan Raichu",
+          "corroboratingName": "Alolan Raichu",
+          "printedNumber": "30/30",
+          "physicalSources": []
+        }
+      ]
+    }
+  ],
+  "heldSets": [
+    {
+      "providerSetID": "tk-sm-l",
+      "reason": "Provider has only 18/30 card records; all 12 omitted numbered slots are Fighting Energy in independent table. Do not invent provider IDs or sign partial membership."
+    }
+  ],
+  "detailedCardSHA256": {
+    "tk-dp-m-1": "1f085748cee4b263d31129fb5727d21ce05b91f881fb72444b6e794db629da88",
+    "tk-dp-m-2": "843f611903154a190609d06369b1cfe7effd2742b6f9d85cb43531db64d3f456",
+    "tk-dp-m-3": "bf72be7585087664eaef9aed0a97c0c56a723184879542053ac1d7a6ae2e3cab",
+    "tk-dp-m-4": "14a11da8f3174319c7651e42d057277355ac158f01834cad45e5d1f3d532d5a2",
+    "tk-dp-m-5": "bb99270233467df6301863aeeaf6ce386c49eb3ef0e5f41b09db95955594f5ce",
+    "tk-dp-m-6": "1cab254020f7a4a768c3622a37b9be7deca33dddf4b6935363882876c040f711",
+    "tk-dp-m-7": "737f9a30333bf3385a7908c94a6761d683953571706d1ccff4d7016df0112ffe",
+    "tk-dp-m-8": "4a71f81bc57050ec23c72b774e6fe829b201bb49b21d68d8e8d9ec27fd8bd4fc",
+    "tk-dp-m-9": "f74d6151b42dec3ce5d7ff5a1401e1d1f9246c9e859efdce5e527d93f8ccc47a",
+    "tk-dp-m-10": "62bc69fbb528e8ef8fd4cf0ce2139d24450951437f15c45db8642c32897426a3",
+    "tk-dp-m-11": "a0a0e391b7cbb181fcadd463fa55cfb2b4f2040752cb6a2292e5d81e016a6aa1",
+    "tk-dp-m-12": "57995dc554d46a39a4b3553abdc13f4cc5d47351ba993005f02f69c69a1390a8",
+    "tk-dp-l-1": "bed20e31545ffd965b9aaf9d8d579900713048d00c9ef8e692745e2f6a52da4c",
+    "tk-dp-l-2": "5f84dc377d6abf9dcb8bd271b85920411ab46423465aaddbe4cd006a8db91c0c",
+    "tk-dp-l-3": "40b817a7ab6b365936518d651728fd0f0de4bead2c884d60a0cd0b2fdb7a99a0",
+    "tk-dp-l-4": "2d6166608c862a25a4bcc7588f11b09bd30b4b7527f34853b51971f6f596664a",
+    "tk-dp-l-5": "1531a469407419ffcb18f89a791f7608862890cf1f813fd43f688a98d7096534",
+    "tk-dp-l-6": "6332844af32a15c2aabd87893b4364590b43ffc32f6d479f453c5507fc32cb21",
+    "tk-dp-l-7": "1bc94ced4e6f30d408844728df3039bf577544f9d63f35e31e9ad8566421a0f8",
+    "tk-dp-l-8": "b23a7b55b36c745e89111b0e5e9eaae1f901dfe4ed0837fedb1033c94beb2927",
+    "tk-dp-l-9": "1bbfa35fd800102eed7d40de8b704fdef5d59de848ac1716a1a05f9060236960",
+    "tk-dp-l-10": "81766ae7f3503489271db05e2e65d450bd6ebc50d27850dc8d945d95c02d6a6e",
+    "tk-dp-l-11": "146082ef1d4aab82ddfe33cdca559afaee58662c666f35137a5b63b68aac76dc",
+    "tk-hs-g-1": "31a1dcbffb240a76cc39b5b1e06c4f715d0fdf845ee35bc0f3564c8807f7f15d",
+    "tk-hs-g-2": "1079f5d45ebb821ae655c0751dfe656fee5c3198933871ad3209c2b42b851ebe",
+    "tk-hs-g-3": "5dd284ba70e4b81a0ac9b155c7b6b5f3c9f53c158334393657c0fb847c08a10f",
+    "tk-hs-g-4": "51e02f724ab1de6e006b579926fcb06334f706bc443b490c74ccb68d78119413",
+    "tk-hs-g-5": "62c7f715c6e41c1577a76ca9f40be4abd192d339b3a48f1bdc0cb1878d31a931",
+    "tk-hs-g-6": "d0a1bcb3bce0df8a8ff7207e969b5e7aa37561396f04bad817470666dd9332ce",
+    "tk-hs-g-7": "e9911920f0a0e25c300042ad0db06711eb85f59e9f80838d1374e3f9cf3374e9",
+    "tk-hs-g-8": "ad4d9016bd1cf042820fb2caaee3720fc318e6406e25cfb0db255873039e5ee6",
+    "tk-hs-g-9": "0c98df124328960f4b9fc2125e7e085f630e2f3fa68514b83906b26e31258ad5",
+    "tk-hs-g-10": "9eee2873da1dbbbfe0cf872e3cbabc4af7d63561fdf7da45a29ac86165074da9",
+    "tk-hs-g-11": "d60b54c3a4ccc7585ee00898a88d2474d41973e9881f43aea97be5a776a2bc1d",
+    "tk-hs-g-12": "3784b94806c8e8a1f12825a91aaa000d6f9e90e1c67cbe97c892c0e19f229d09",
+    "tk-hs-g-13": "b043b0965b3ba81a5230c99e3f522393ae7b27721c5d0d8ebb59aa261e9912e5",
+    "tk-hs-g-14": "333161b0f7bb7fa9831effec4ba79a0bae788df4debdcdfd737725c39497a7de",
+    "tk-hs-g-15": "5015de148cf65ebd202990ffec1a09b556b200fdedee602efc5ddb4b6acd3213",
+    "tk-hs-g-16": "9639e074f96b59fa087e40d69d7b77a4baa99a5b9cff875b1997d45b7615fefa",
+    "tk-hs-g-17": "5023b14ce5a1d73799637b47b9eef69087bdd05417e55c2da774371e1e74591f",
+    "tk-hs-g-18": "b09dfd752980748ece371a16269e0a6692c1d61e6cc81e970834f3348c213f3f",
+    "tk-hs-g-19": "2e7eedeb8f57ef1fa8a0d0665086d15d5e3cc6a72a9d37c617a23640b438bed4",
+    "tk-hs-g-20": "506cd134d05c44b7781c95e07f859a92d0e1dc600ab74b1b226e53f64d2651b0",
+    "tk-hs-g-21": "762efd381e06024e589b6e25237821d7dd0430da312f7d778d76f86fb8c9e46d",
+    "tk-hs-g-22": "f7884b22cfdfbb4b41fd8c180cd576ebbded500154cbac26d591c6755eab465a",
+    "tk-hs-g-23": "57cf0e0f91d7ee50167e5d712e618faf85c99f3fcd2950b13e91a21644363f10",
+    "tk-hs-g-24": "65db0a9e26dc809b6ba24a69246858f59ced06bd365d253c5289a777d3eae3e1",
+    "tk-hs-g-25": "16b86e62b88be94a923c09946a0a2473509b007632c688569837d79f899e0f99",
+    "tk-hs-g-26": "0941288367a0889eaae89c386323cc1d95feda6b25a5bf399b2e2133f5b4dc75",
+    "tk-hs-g-27": "c22be3f33607cbed5a915401dd4d4174c1116b0ab6187aceebdc2776af5ccfb9",
+    "tk-hs-g-28": "abf83006c8d1213898edfb52348e6f09866eaf63b2bba219494943d684684109",
+    "tk-hs-g-29": "577ae2a6dd44f53321555a193e25652a1c798ba71abd29ec6ca6c393b66fd9ab",
+    "tk-hs-g-30": "1f9fcddbf852b1a828e8a0d7e9a975cab4e631b51269c7e377bdc4937f336cea",
+    "tk-hs-r-1": "69e07e5d53d6c7978fe3350d26df9310cf087f46af3c2e4ac4f993daa7608d93",
+    "tk-hs-r-2": "88a2b25f9928b82dd407d045157532645a0ac1d7bb231ee0aebd69401667a7a0",
+    "tk-hs-r-3": "aaca3d88ec6d39f950261bcdd47e928ed99677a9a7684f5a634a80e6868caf5e",
+    "tk-hs-r-4": "c1666b11b13dbbeface5f1b67abd14c8403de44c1cddb9af2eeb40d9ba9763c1",
+    "tk-hs-r-5": "803f8adda44c9268d61165a0b195b26b326dd44faeacc8d89810da874db893cb",
+    "tk-hs-r-6": "349818b588adcc2c153ad3876103f0e5968d794ec0234af63d0f077c07efa35d",
+    "tk-hs-r-7": "6d0d21d364e43c7718b0ff39627f004169f54b1c57f1fa793b664e89b54b5a43",
+    "tk-hs-r-8": "98534280586a11909788855b2a37783753fb96106251c1bc05ba0c8aad6a0bab",
+    "tk-hs-r-9": "6e9d8f6b53a5830d85c4b10b11a7028f53472d9cf5a63cad2c67b9bcea5d4e4d",
+    "tk-hs-r-10": "bdffaa6d059c00f5e77ccaef7185ee5d45b2f9acc6d45a12a5a662a49a94037c",
+    "tk-hs-r-11": "240db6d18a98acd89afd24d47e54cf057aff1ad8301c51f62bef04500347fb19",
+    "tk-hs-r-12": "0907db1c4f39a62ae72746d8a6b374096ba00f9e126cd9196b5269a0e19f1b93",
+    "tk-hs-r-13": "13bedd8c759d89f571f31d8c0723031c5f98eae22efb3127c0b095fc690fbd89",
+    "tk-hs-r-14": "fdd3d90fcf8ce5eb8d7644b1f320c13068a3b467d2e58db74900b765dd7f5b15",
+    "tk-hs-r-15": "ec536d5b277903b06cc6d96c8309be0fd57343e0405cc5d4284382ce0fb13fcb",
+    "tk-hs-r-16": "adcb612426fd296bfbb3701b79d7dc188a2341265dae11124b55da1bcb315a1a",
+    "tk-hs-r-17": "92ef3cdb99d9b6a19eb02bb003c2bd8673741732797cea7a5a77bf785de0bdc7",
+    "tk-hs-r-18": "51fd066f979a4b1b6b3d990253d8f717b724ad06ade064eaadad53b2dd14dd92",
+    "tk-hs-r-19": "c41cb4ab2728fdebfb45179ffefdad1d71f97024b6a93fdd74f77344e64a36ce",
+    "tk-hs-r-20": "c94af308c21c6d8e18fec7c7a77c218b4ccdf33fa2d7516f5c5da4b72d9cfed8",
+    "tk-hs-r-21": "09bb13db5ac8be380abf604acdd56f4373ddc756c3213db4aa6198f6cda922c0",
+    "tk-hs-r-22": "eb53fe6a70d70f9db018a240b6b4c3ee87ef81031ca71f7a07d10de1bfc7ab8e",
+    "tk-hs-r-23": "7a5b1a7b6ef9f851c69098cc3641520b35a77c50e4544a025075e0c7965f1a45",
+    "tk-hs-r-24": "82fb6a9983a76252b92b751365cdf1fc31eca152c5438381d22e538b78aaa010",
+    "tk-hs-r-25": "c72238a1ad68ad43c349dbeaa6198b7992e0c3b7044fbdfba184038b46067e47",
+    "tk-hs-r-26": "3451f55d03ada17e7861c879a1e739bd4391f1031be5437cce0f0898f0373bd6",
+    "tk-hs-r-27": "f9af68b35f4b68d9b48f007902761c29b18d5103049cada9a31058afe5f7fbfe",
+    "tk-hs-r-28": "cd5f189cf544cd94371fce46ae8046d64217601400d2c4ac3c19f446f5f5f71d",
+    "tk-hs-r-29": "84cf0f5fe53c833e7f8cb5f6f277a387843c21326ac1bf23119a6f90f8fcd477",
+    "tk-hs-r-30": "83bface5313abbabafc8a4c1d6a98a2d17a3e0d834e8600928689cd26bc73bf0",
+    "tk-bw-e-1": "831285f3567d9e81c5960878827b5d2e35f18a464a27c5a31a7239e01cf2cc7b",
+    "tk-bw-e-2": "ef3017eeee61ddd8712bbd87b839636a1f10bf8b16f114f01cc71b85473a26ee",
+    "tk-bw-e-3": "b97bd2e7431f952db4042b22aee4aa5a0848a27c48ef32fb104d6e6703d5ac4f",
+    "tk-bw-e-4": "ede0feb104d59807652e2e537e05a6d895a6aba685ac425c9ed962132c273df9",
+    "tk-bw-e-5": "41b02ae294fbd06cac509f68afd8b66f69baae6000a0753c091a5d9408d0b868",
+    "tk-bw-e-6": "17240de19be31df4809a3dffde603881acdf57d3133f682fba905796736c8e11",
+    "tk-bw-e-7": "b1856a20f593a466415bdbd30557beab27a29e5812ca99cb266a458ddf6fee83",
+    "tk-bw-e-8": "f829b4d44e82537c8203c584effa86888e8b163760cca265ae7bfa9e974bb332",
+    "tk-bw-e-9": "4e64fa8aa297b17f85ec44f6ec6591880eda85b599f560381ae500f092b7e8f1",
+    "tk-bw-e-10": "817d92521944b1c5028f545ea3477f2accb296cf610282a2f23fc92b2f81843f",
+    "tk-bw-e-11": "274cd5638d7758e08cc47b6bf24c1fce75c982b0dbe5c57577095e4b1f060c0e",
+    "tk-bw-e-12": "ced6696e265767581c35ecfe755d62f34984639014f2ed235ee8cc90b72d0e6f",
+    "tk-bw-e-13": "71d7a1bd718c0a9a1047f70d32fa18b9bd56cd6303968d17687bac2b68f1fae7",
+    "tk-bw-e-14": "d5bdce6be3b6b45f3acc00f7f8278762a17470aad259f935cddc01abbc91fecd",
+    "tk-bw-e-15": "7f8cae6ca7e1c7c03fa1686ea670b34debba39e2fd1db5804e8ebb4bf3627116",
+    "tk-bw-e-16": "664e60c6ff7fa39fe3d01565722f1df979421d55c85c73c82cac9bd400052bce",
+    "tk-bw-e-17": "768a4b29868ca78650f8831407abd9f41fe905625751a4e6971aec547e13125e",
+    "tk-bw-e-18": "8ed3db5d9a47d997a3ca72b8b28d86f770e1a75e6d22d337cfc31ceecbaff00f",
+    "tk-bw-e-19": "d2e3d8358eda18930427b74c3f4cf45c331feaa407c9da789d328fb2e5c2a17c",
+    "tk-bw-e-20": "408af8f5eb0732ab9269da4ebb13593f0d81b63850107e9d5799934000c1e150",
+    "tk-bw-e-21": "7fa7475993d7c7b4ee90fe526aabc8db1fb540ad8c912fd11ea91f2f3f464eb9",
+    "tk-bw-e-22": "235ee05a64a4c4912a25b983eb5af7e7ccec358343c31fb157504c6c9fb7a9e1",
+    "tk-bw-e-23": "0b2385f3b28f81e2ca127df1bf484c76e43710064a181b4139cea724ec521fa3",
+    "tk-bw-e-24": "13bcc9233df518f29417c535dd6e99dc0764fe338278c87e68c81d3d0a60920e",
+    "tk-bw-e-25": "21c36acc5a3ca248a75c99ff97d397fab4eb72b7c8d2ab7ee95926ce45a30953",
+    "tk-bw-e-26": "ba63d333042117ba0b727d5897bbcefdba49e573c0a7df6afa20d8faf5fb85e3",
+    "tk-bw-e-27": "cd3cd01bfc2e0a45e78717b10ff8e65a82897eabde7be03a135792609dbd0331",
+    "tk-bw-e-28": "55eec2f42ad437c9b7e80fd32bc8e5bde3a48428f1ebd5e88495241a32081691",
+    "tk-bw-e-29": "1a1de9c73e092641b636f8e16684e731a61dda573311f689c325efe429d8d9c3",
+    "tk-bw-e-30": "39483619e06b1f81baf40edd4d10508743c59eac72e1c497fed40beb1ffc5015",
+    "tk-bw-z-1": "c13e8c722ec7f947e6fb94b5656bd40bd938af6b7bb27dc2f77da721a3ae1515",
+    "tk-bw-z-2": "8a19d3d97466328a881430aa781857b7b8d0dee21112ae3e94f9a333e840112f",
+    "tk-bw-z-3": "ee6bae92e450258d9c5c0e9006075336664c4473a4c85f60278be74679fd0226",
+    "tk-bw-z-4": "09af042bc81158b93b3d3b65352ff8405c32d5b2aef3d8dac07a2fe710b186e0",
+    "tk-bw-z-5": "745142480fe6e22741601accd365d986388dde75dd6640f146867772d63ff393",
+    "tk-bw-z-6": "bf605b71c46972d3b1685ac41fb629ad18062bc0acd1a8db38ad30166dd6edde",
+    "tk-bw-z-7": "57e8cf91ebd10f4656c7ea1d5412789720931241b68e6725188dbc6d756f4e97",
+    "tk-bw-z-8": "c114a05fa049c384c16ea9bccb029549cea53d8bdc6add2a7ed401fd204b6468",
+    "tk-bw-z-9": "f5563bb28a17defaa57627e30370b7ce27d2ab1279eee70fb85fd160e13246fc",
+    "tk-bw-z-10": "95436761aca79d4a77060eab97f782e1a944e19064b7b0919059514131c75096",
+    "tk-bw-z-11": "ae10cfc3f5c23296e228144e59cece94939e7516b2eb92eb92fe31327587a45f",
+    "tk-bw-z-12": "e57ad67e44e3ecfd432e2f6814947fc95f2b304818c4d579d9957ee5d758b260",
+    "tk-bw-z-13": "e21567eae8b1b7e03dff09173d6103d1f6b9f53021e37e622b1338d806e90117",
+    "tk-bw-z-14": "7b9c996306760f3256608b3af9564a7ca23f9c89b2632480e27cadf435d93a2e",
+    "tk-bw-z-15": "599b8ff72f730b66525e124c0647ed6fbe752be11cc5372965dd25b15d25088d",
+    "tk-bw-z-16": "b53431dba4dc9272f99c9b95438008b4f97598474cf70b070358ad345cba983f",
+    "tk-bw-z-17": "ee3d85f98b2f3263a1da443c2b9bc80c6e97e0b3f54cd6b68b9288b7e506ec08",
+    "tk-bw-z-18": "dc35c00fbed21f0a1f61d6f40febe3b38375a08d984ecb072bff334ed512de56",
+    "tk-bw-z-19": "1e2a3dc5cc5f653ef61a6d2abc5eda88b3d401f309653abb816b80de690085d1",
+    "tk-bw-z-20": "e9f5c943322b7b3d84f4376c9573b8dbe54f772b64542869656b796e53aa992a",
+    "tk-bw-z-21": "cffa5ad0ff8e1e4ab65ba092d63bec0b51be48c0315706fe5f30e860daa6bfc5",
+    "tk-bw-z-22": "28758ea4caf553aa1ee25295a85a77d785982585ac2b92aee53b4fda5e23183d",
+    "tk-bw-z-23": "c9e28410a15dea2e44cb03a72dc554d07954315d94afe0b8537a284b875ba74b",
+    "tk-bw-z-24": "6170e7f660f6f069f9f1829dd9a1ef677a1aec493875a602d39e5a5f68def437",
+    "tk-bw-z-25": "31e13a38136a41e731884c38516af6dc4621622f3d434fc821f8b327cf52de0b",
+    "tk-bw-z-26": "51c21092d54fe683244c36fc4c27f7bc5857a5a86e41d69bcfeb1c2e5f9584be",
+    "tk-bw-z-27": "ed50aae76645ac98e9670af70eabb2c768e01642c8f4ad9deb3876244a3fb020",
+    "tk-bw-z-28": "09c59fbc992346716eabe013a02df15c83877783c14d0e740d25b149cf216f7a",
+    "tk-bw-z-29": "e6bfaa895651b5dfb8b957627045e33c2659c717d05263f6a8c8bccf073aa748",
+    "tk-bw-z-30": "bd2be7f88a452bfb874acb014b930ecef61786490427c9846e7374c5ff1e84cd",
+    "tk-xy-sy-1": "a391d34c2f5fe9103f58aaca274b283d4bd1004905c7b49d156f2115f28552a8",
+    "tk-xy-sy-2": "1cdafd49bfbd7511301ae737f2b60d25f03d21c52b06414002fd781f1016979f",
+    "tk-xy-sy-3": "19423fa33de79b34f4190c918a168a2b22085822cc42f8d829a7f9c0a9377409",
+    "tk-xy-sy-4": "25eafba2c53eebd63630ce9270681e09e0cea10cefbb03986a43f5e6f0479d9d",
+    "tk-xy-sy-5": "20a745aad3a447657ebe42387431d8dedba8641bbf1a531d67de782b4675bf27",
+    "tk-xy-sy-6": "50e380e4e301f45887587a4943de19b89d8fb0d024d131c273e39c414d4a8703",
+    "tk-xy-sy-7": "08760db3ea8daff56b74d34db9e0a31ef5504a7cc9ce8814cd6706ea83e13409",
+    "tk-xy-sy-8": "a33616b4985479617cba28ac69c0ab2ea2f1680f8f96424fb11c08f328bad203",
+    "tk-xy-sy-9": "312f7f00287730211adfdff2c725ad44f533e937677b63a76c9c9ce056b8c1aa",
+    "tk-xy-sy-10": "b4569c28d95c5a10a2c0eaac9d001aa6906d471ec3eec72c60821c00d7ec7a52",
+    "tk-xy-sy-11": "c6a144c43fbbda23d28b0745cd672c45832db10b0f4c330edeef6134a34b0a8b",
+    "tk-xy-sy-12": "01776bbc65c62be8b22488a9d4bae859f055a57b0bb5f68bfb4ea16044813dcb",
+    "tk-xy-sy-13": "2cdca76c8c6dd299141a71a111eecd43d60bc9fc78074f51a65160b926c465c3",
+    "tk-xy-sy-14": "23149d016115bdccdacdc96dcb100df3a9dd058e798752cde22b2709a50014f4",
+    "tk-xy-sy-15": "2a2b339188395037719c436f79c25d6b51eaa82202bbc1c626a46d48786ba45c",
+    "tk-xy-sy-16": "5a2969a7e3bacb626e4d02dc9b8593bcda6bfbf93dc95fa35b9753c59462d782",
+    "tk-xy-sy-17": "9954f79edef25bc28669262d3ce3b3aea9d65ef464a86622bff7950f8355490f",
+    "tk-xy-sy-18": "a8705ce45f1cd5e4d8a4232d22fe0f765bbf0908408091f48c57fdfbd8f16b61",
+    "tk-xy-sy-19": "89f846df5ac34386380f9d6e1ef79a236e8637113c2fcc61ce04c921d89320bf",
+    "tk-xy-sy-20": "e6766b44caf6338ae9ed2e96cb0122af2cce01da8404a15987e6bb2b4ba9691b",
+    "tk-xy-sy-21": "1f8584af251cfcc9bc4f4f87c8f9e69321298918deb7d12be0e912a3201022f0",
+    "tk-xy-sy-22": "40bd22dadf4e13fd0ff4d093aaba647b5ba425633fb305bf434d2d8e19dd4f81",
+    "tk-xy-sy-23": "857f217465914fb2c34d01479ebc2d6844f20ca0f8ac9c9743eb04a34e001da4",
+    "tk-xy-sy-24": "5f37f73f2e6ee6215b3bde1ac8a8623e3584d8c8896130c301311486f16c3280",
+    "tk-xy-sy-25": "4d00683bb417ff134044520861e11603bbd2b405d1ca078725b2f47f8d6d1904",
+    "tk-xy-sy-26": "9ad6880cd4a8f70edef347e81871bed76fe34fba08aa88e733386693f0fe7021",
+    "tk-xy-sy-27": "1a58bd69c8659f4acf968b8c6d247b8d58d32a50804a337a0f8ab0cde863a2ce",
+    "tk-xy-sy-28": "6f46666647d79c2b795d98d6fa954e15bf8bffa76ac1945f13ca5265d613ea39",
+    "tk-xy-sy-29": "e71ffc387ca6bf7cf6c06e029147cb9a11189e9e66348e1f73b7020eb4b49d5f",
+    "tk-xy-sy-30": "ebeb55cd3ab215d0595c616dbbd0aa4efda0031c90f05a013e8bf6c0f441db58",
+    "tk-xy-n-1": "6f90a781479aaacf9ebcd0f8ef307599f3dd901bf37284fc66e79682db98164a",
+    "tk-xy-n-2": "c5063ceef85514bad117dab821521ed26915388c2f1894b6168abd9e2acbb02b",
+    "tk-xy-n-3": "d1030fff82b7943c161c352ab8e1d6c5320be5a48c241e9c3ec5821c39e76655",
+    "tk-xy-n-4": "6b6fa52f1078c60253ee8d7c28f28cab97b9141e116f7b5e18c8b248b35bd77f",
+    "tk-xy-n-5": "6dcf016fc41ebe7eccae730eb34e202f0d8fa0014b38b74b94a643cff7359892",
+    "tk-xy-n-6": "198c5bc3cd12e30c2b62f41110debc26b631fb40f262adf96878a29f48da3d99",
+    "tk-xy-n-7": "23a912fb0e393b6b7f1c653025ed7e2c9dd82fe74d2493bf8e6e5032f41abc5e",
+    "tk-xy-n-8": "c7bdd87f8ff266f09bac60b64184ae52f297334ff93485c6163ebef61cf2cb78",
+    "tk-xy-n-9": "26547e9fdceb38f14c1c80504ca02a6d4a3c888e89d9a9abd2d5456da1b7b159",
+    "tk-xy-n-10": "d7680f4859d70fa3119c2bcd95acbfaf5ce2aaae9d7a7d8010f21db8cec8630b",
+    "tk-xy-n-11": "2886bc1ae5ca389e7f396d8b3a645af6f8ba9b5efd971c935af9c1578ffa25b6",
+    "tk-xy-n-12": "b6f42668474ec4c51d6b9e154527a21addf683775e643bed8288bed6696910ba",
+    "tk-xy-n-13": "cbeaa165481ea03639a311c3b892740fdbc2dcd955b7b9a961dad6d9e85966c4",
+    "tk-xy-n-14": "845c33ee2632409e1e3ec232d37ced2754628e536694566832269d0eb0d53a46",
+    "tk-xy-n-15": "af28c8efdbaa36afae66579373a35ecd3178faf4ef9eec9f7b2bacc6807fe2f0",
+    "tk-xy-n-16": "0eff3b046482feb81421f79f3ec0ad3503ffa3b212e56c7df6ada172032577fd",
+    "tk-xy-n-17": "c395355cb830f35f8854a0cbd63ef2a88a434ff0e66b590f6e5b3677f7bcbfc2",
+    "tk-xy-n-18": "754c467690e6fb2b834387f9a7d39e5bd9584e0fa34551498054a19dbea83cd8",
+    "tk-xy-n-19": "e953615b57b1b8e514904dabb5e756643023d9fbbca379dee487233b0b745aef",
+    "tk-xy-n-20": "eb1a620d52f82ac43509882622a310c81cc4282a6113b0d72f8d26d170eab30a",
+    "tk-xy-n-21": "d7e930fb1687b1f4abbf1f1dcfa28629548da5bd295d78eb88bd974f700b947b",
+    "tk-xy-n-22": "e3a69238883113d5a37664ad569e57d0fdd468f2a6ba5b1b7a303740e69a7a47",
+    "tk-xy-n-23": "21d57aed451df581d1101b820bedefe06daf7fe9a85ab999fff302d61074a2ca",
+    "tk-xy-n-24": "e7bd3e30e9e957a3fc86f6f62f5ae902a2ac39451bf8c8e1f87394f708af87bd",
+    "tk-xy-n-25": "219ac9c73aaad3c05b784200b4347e726e38bb6643bf1d6ea119932f3d5e1019",
+    "tk-xy-n-26": "6d748220ba5f524e0c557c61ebefdf59f23f7d8b2ab3668bbc3d642a344b2f94",
+    "tk-xy-n-27": "3d024e01069617fcdbdd92d8049f667fff3b2f7e2d2509232264e075473f8e91",
+    "tk-xy-n-28": "6cdd285d0fd0bd9fb25da4dddad69d42a653b48c26bc21f5c480bd709241d6a6",
+    "tk-xy-n-29": "ee7d9d454dcba69410cf9050ae7f1652165752121e39ae7aed0e91ee49f157b9",
+    "tk-xy-n-30": "04f3d0b7fb67c2381ccd44699d655ae79c40270bd6d0154ec9b5d058ce3b63e3",
+    "tk-xy-b-1": "1c65a50e993d73eabfdeff1084b4b861637acb4d6bf4d425dfcafa0a1b795841",
+    "tk-xy-b-2": "fb59184a25dce6e88fd786ac37f7f1ae6d0f3c86673d54bb0664aa7bae128271",
+    "tk-xy-b-3": "d8d62b3b4e860f6ce2b2e98b492ea5acdae53f8ee3a38dc30b7b8141208223e8",
+    "tk-xy-b-4": "c7bb812b40d6d06c2ef70153bd147d4a310a0355824395ee6767e50c62a64237",
+    "tk-xy-b-5": "516c3382e85f2f4430bd09b7c97d8f536fe53e367f4d37b32e6be6903358deea",
+    "tk-xy-b-6": "723ad908a41f4983e4f62d35ed15e3cfe04503ea24d53131b01017992bf278a0",
+    "tk-xy-b-7": "828e836d03712b47e1329bae4c4cd6f387f6c8652d7cfeeee715dbf7ed6a242d",
+    "tk-xy-b-8": "4739c528d702a038033f8eac73e4ef1876814266357f9e3c250fd2ffca4fd8b2",
+    "tk-xy-b-9": "c1a114ac42bbc5f1389ce76d236b90d61a440c28bdc908447a710375ad4befb0",
+    "tk-xy-b-10": "1752b59251affd8364f338fbaeeb2068202482120b575f3e2346becf4fb29593",
+    "tk-xy-b-11": "cb09a8d9ec6a5a859a21321aa1b0ff3ef6397864b7e521292c55880e4cf9d3a2",
+    "tk-xy-b-12": "44e2f41653030dc8c8f2f65203839f9793a7ac7b6c01fa01ef19b8662ebc37a8",
+    "tk-xy-b-13": "bbd3ccafa302e2cc342dd57b9f711411553e4e4e946c0c936a2a60c2003bd18a",
+    "tk-xy-b-14": "cf7c8edc3de0ff2a0da69a9397c6f83296555a167b606087d05989dfaa461d9e",
+    "tk-xy-b-15": "d4f4b4ece3cb9272eca9060f3e87d23c943bbd50d081e9eed6dc0c1c76c266d3",
+    "tk-xy-b-16": "33e88601342fdd3a1b7a0dd74f60f5c9d8b9f016f73b3778c2ed3ca593ef1581",
+    "tk-xy-b-17": "ce835755d4dd922643756a91caa1d80472af9d4531ca5f20321bd688f0fc784b",
+    "tk-xy-b-18": "70deb799c0e26d153f99e37941d5d79c959178278475c94361fd093ffd97a24f",
+    "tk-xy-b-19": "3b0539832720f517d2950d5f945a7f6f71f14746f3cd8015c18d2d245c9f8617",
+    "tk-xy-b-20": "ed35c472e52c613ac8b7d8157500e42d8d0df09a03b9eee934e503aba4d496a9",
+    "tk-xy-b-21": "f7cb4aaca88be8262a5873c1348ef5af92f03695ff822a3ee915dcd469227a41",
+    "tk-xy-b-22": "b15cab1465373c5bd322852af0332edd241a038882b215a2de86553ca8bf9c2d",
+    "tk-xy-b-23": "0913c18864019b5ead42554d839790ee980848014a82183d6646dd54bcf6ae17",
+    "tk-xy-b-24": "d1622b6538fbe1da36398f40096f00e81b7868b2180cdd7dbaee95e340bdf240",
+    "tk-xy-b-25": "fd9a5fc0343d5b0792dfbcc833690899897f8f404325727ea942db5d9d4e54d8",
+    "tk-xy-b-26": "34559ab1cc30df13d3ae714006039a58e4d85d3985ace5671f4b30478e1ce414",
+    "tk-xy-b-27": "9e4a7f52c879dc668114b97fff209444f8651a4fcf58eace0b376ef4cabaec4c",
+    "tk-xy-b-28": "0863cdecd8320346cab21c280fd6c4a6c63473b3725a48ec2e72df879194549a",
+    "tk-xy-b-29": "21c8bf75dddf0df897403e98690728a50eda7662fa1434913816fe70d12c92a0",
+    "tk-xy-b-30": "fb84c51aafeafe6c6a306473d533e6fb05805effc61a0cc2fc7a4c3ba0bb519a",
+    "tk-xy-w-1": "89f53e1ee39d0efff288b0b448dab5d2bf7b7699801f3e079d3d2c84c65b6f63",
+    "tk-xy-w-2": "601bf51da47f82c9d1a886cee42c558a8c2ed6c1b796a9701edc001517285297",
+    "tk-xy-w-3": "d03294a85727da5d1b775c8e8da8e3d3d030c0363bf41b1b75ad1f9ac960dfb1",
+    "tk-xy-w-4": "1c01e61273cd24fe6385d2686951da0aeda9052d19064710e737bd66206e9329",
+    "tk-xy-w-5": "d9a2ad830c6f277299897d8d25b3dcf7085703a545a7d3ac49f0e33003c009d8",
+    "tk-xy-w-6": "a2ad34af71ff22e60fb53686deee2185135617db4f9ee4f59085d966bddf2e74",
+    "tk-xy-w-7": "ab64962d2f37e650a088e2af3548834e18eb46d3bb3b7ad373a616e246ee7435",
+    "tk-xy-w-8": "caf91fd2b854c399ed476f33b3b4711cab9d04147a1e08738c2783f5cb129fc2",
+    "tk-xy-w-9": "9483338b4e440ee7ba9ea9976b642fd1a26f92642e647d6c6dcfde65ca1de5ef",
+    "tk-xy-w-10": "34585061acfc6470ca374a7e0c537303282b616f71fc694881ad3dafd3ff0f5c",
+    "tk-xy-w-11": "94c36b62553d01ef9c5e544b604500fd2fafa148a5a1a66e4179addfbb6f8be1",
+    "tk-xy-w-12": "fc61d8ed80ea4dd73226e1d8917318a7df0918eb9c23cf85b903f0b89f079962",
+    "tk-xy-w-13": "a48ead6e1ea19ebe75a573a86fbfd58ce199a1b5d68c6a40c0de46117e6dfd77",
+    "tk-xy-w-14": "ac8736f960bc71b1df6a3c65fe012529a9bccf52c7e1a05a8e5ff00a5fcde7ef",
+    "tk-xy-w-15": "31e94ea09cc7a367416ef6c1730e78cf3e5b1624910bdc7be4dafaf4ec3d7551",
+    "tk-xy-w-16": "69b837e76d06a31cef8cac2eab2fe1fcf1a313f45352ba10567290d7f98677fc",
+    "tk-xy-w-17": "6ad718629183fde8329f7e0a22a6818d75c81a2a8a269c6cfef3389284091f84",
+    "tk-xy-w-18": "574bfae87f075f948394657313d928424b60c65a40433bf6e58afe23632f40fc",
+    "tk-xy-w-19": "cedc30255be44e1ad00347bba83043c23c01fd4dedcdc9b8aafe41d89a69c638",
+    "tk-xy-w-20": "a96a96a4c392b11ae52ba8a80eeb276b4b324fa5de35dd210852f89c5a0e7fc6",
+    "tk-xy-w-21": "dce40e561dbc81a97a7d5985695877e9c82c7726b286bb694d3052bc12b5c832",
+    "tk-xy-w-22": "0d2a1ca44dc560aebe464a91a087b477e2900e69993c69832392d1e535c40e9c",
+    "tk-xy-w-23": "28ca3d121d895627661be39caea69308d2302a7d961d04bb58752c79d7a38a0e",
+    "tk-xy-w-24": "4844e81ceb2fe89706a863c3af35de9c34fe626d40563f1f545553f5c6101f32",
+    "tk-xy-w-25": "5517062b847e0487e2d3040c082c76f563616f00d8aaa14d6d7c836be765a0ac",
+    "tk-xy-w-26": "f0996bf1c309df41e7e4d9c8c5e05c6f6e1cea9ae7f6d55eaeb2b1623b0f79b2",
+    "tk-xy-w-27": "7c7e1e1697fdc6a21db2e0aa22cc418e012f41c4dd0d1093dfba5660a9d0a3d7",
+    "tk-xy-w-28": "f685d36db89acaa62b2e3d7347400eedabf96cca9b424e6331ff42da0730c292",
+    "tk-xy-w-29": "47bd1f27cf38a8b3f62723ff259aadca1e566f4a041d7b95f07d4534c977226c",
+    "tk-xy-w-30": "4bb42931aeb235f101029e90f10d5a98a698230705b41e8f692d2b9a56263993",
+    "tk-xy-latia-1": "7ac7b28156589ca3f83ccfdeee06bd825bed9a112a0b414073bd14833613a2d9",
+    "tk-xy-latia-2": "5ead80c582757656d0138861e0ae75a09b6fda10aee5e0c2f1d8d12bbddd9b45",
+    "tk-xy-latia-3": "6ba2ddaf32393451b8981b1e79033e27d3dfb62b6d7d6a657659d7530beaa0ae",
+    "tk-xy-latia-4": "58bb906c032a8a4203b90ebd80fc6987a899f7a6d4c27ee81c4bd7a8c27238d8",
+    "tk-xy-latia-5": "f883028965144685be754c0c5112ed8af5dc087d41fdfbc23a191e454bc268cc",
+    "tk-xy-latia-6": "017e7d502ce44c9a1c0afe21d4689642f2d79c55b08ebfbdf7ffb7b416073a9d",
+    "tk-xy-latia-7": "1f324e12db219c6c33d1879311902074fa50bf593a3efc57e65fd13169baa4ce",
+    "tk-xy-latia-8": "32fe2e5c367340515b798b408b11c4ff1760d8785fd8b1e3f84c864e65616042",
+    "tk-xy-latia-9": "3a56b4afd640a6ace897499ba7f115476dd6db428c2017ce24ddffbb3b84e7ea",
+    "tk-xy-latia-10": "8f32697508574e3313692ae842a5c51b520415dfb4648387d6dc357a7c3aa967",
+    "tk-xy-latia-11": "fc65c3196682d03cbfc1559bfb6033c07fd37aa77360cc9a83038654ced35d37",
+    "tk-xy-latia-12": "e8b87fa28d681e0a8838d95e9b5bbc666fb520aadda5efac0d60065054d52f54",
+    "tk-xy-latia-13": "a5c6c9b03d859352156efbde10925417d2cc82259ef411c7061bfaf3c8fc583c",
+    "tk-xy-latia-14": "ce817a1ddb3bbfdf5775d8320371e6b0f073a13d27ba9af1ce34302162c13a34",
+    "tk-xy-latia-15": "fdbae51bdaf407119b2566461bbc78892b84fb55f61aaaa2ea7c3a9ff82bfdc6",
+    "tk-xy-latia-16": "6b2705d096163e1a4d5d18df8b231c1fb163d31ddb409ede63af3a565e913939",
+    "tk-xy-latia-17": "ba068ce78927cabaad101f607c67eb2c203a1e243687632638ba0d96807b2a5c",
+    "tk-xy-latia-18": "ad703c2a4ffd01529cfd4dc0a72b0515eacb16aa40f0e61194360a151e58543b",
+    "tk-xy-latia-19": "b171d2728034b70275004dcc6df4e2e1b9229948e4beaf33fe804844ad6ac576",
+    "tk-xy-latia-20": "8522407158f5fe0e87d13c899687337b718ddd8659b602036222bc35fb97bff2",
+    "tk-xy-latia-21": "a5c9bc53f207236542787b31f99674235b3b24c57bb333a45bea2a890b3a78da",
+    "tk-xy-latia-22": "e8ac1e8a46f0c87f52304eabc016e03088ae461866fd5cf1d3b3f07854eb5794",
+    "tk-xy-latia-23": "c9f497deb481537d7977ab00c623b6b981960844b255dbc5e0ce5e5acd855db3",
+    "tk-xy-latia-24": "87c79defe98c8e4a0cfb15db033bb022f7afa328ddabf9c3fedf5f1ae8e08732",
+    "tk-xy-latia-25": "5c580d3ebcec2c5a507533afc2a02a315ec01218817e2635fa5a7821b440d53a",
+    "tk-xy-latia-26": "3e580a2c620abe8543d07e3f039c092cf762a501a25ed1e7325a9106e92c40a2",
+    "tk-xy-latia-27": "71e889cc8c44e4b6d1dbb7a81c4e3c2a1dbf3b38d02fff943380d73f6448b40c",
+    "tk-xy-latia-28": "2d4aafdceb643a7b9cf6bcb55c9d6656ff6b03e72c46fdd220c3583c95966687",
+    "tk-xy-latia-29": "ae2df4c6254e3617655ac6b42dd50572b3a46c222059b99cddfaf5cd5980c789",
+    "tk-xy-latia-30": "c0e47ff4cc64e302c0ce0deff187bbd8264630df47009e24f69468a01e53b7fc",
+    "tk-xy-latio-1": "a607fefde2a59c5ed060438e644512389f46c108a36af44be0835d1b15624223",
+    "tk-xy-latio-2": "7d21b23797af152f0b7417f0ada3140d839b09580d7287285281f620368aa4a4",
+    "tk-xy-latio-3": "195e61f3acd1f03dab5f5ea3ce368b979401df7788e7a87d423db81e72081835",
+    "tk-xy-latio-4": "a7173059024538cd69791161bde52c1f1f9b4909784bf2f086b6e31ab136693d",
+    "tk-xy-latio-5": "d0a1e113bda88676ec9dfa2fb58956a1fddf48f6b8c25ba4d88b9bc6d47805a4",
+    "tk-xy-latio-6": "47085debde4bd26f5f379636238f57b3b4340d70b06edbdde4ec922ad8525a23",
+    "tk-xy-latio-7": "1e6959796e2b2d7be645d6f2366c3566fc96235fde91828fa4c04107cda51bf2",
+    "tk-xy-latio-8": "ad404d72e39bf180060706ad7ec3931741f5faf224376e7fffcc4ed9434245dc",
+    "tk-xy-latio-9": "7dcc25745aa4f98b93c1c026412c5e84473b3154c8efc4b0752fb66af397055d",
+    "tk-xy-latio-10": "940d33e62cb48b951628013c54278b4a47f32d2899aa52cd110c88063f7b3cc0",
+    "tk-xy-latio-11": "607358f8d2c1e16527181cdffdc276768af8d3cf3435962df892ed7ffe7a4937",
+    "tk-xy-latio-12": "fa264fd0746489070c4ad861967231cb30dc8e83d0035c6f74c303235edec8dd",
+    "tk-xy-latio-13": "93b33446b228f2d892a47275226a1b87ea70c0843f7b5b9628457720be34d07d",
+    "tk-xy-latio-14": "1467d9e1022cab67c435c3f0fee6746395f0fc1f5a4419bdc303903ac8b58288",
+    "tk-xy-latio-15": "d4829d8e3b8f854af43153ca9f372aac69968dc749d62f06a9f9c4ddc5d890c6",
+    "tk-xy-latio-16": "59b0f0a548b6f9eb1e65dcac48f42ef30eab69223e774de0c3b0eb49a787c588",
+    "tk-xy-latio-17": "63a41bb6d5a068d4eeaa3569a86452aa89ef31d546cce1c232b63c06032700b4",
+    "tk-xy-latio-18": "1f1224d60c410b098e496fc4f77119ed65c9b0b48d9ba536b2a2cb3b0337b2cd",
+    "tk-xy-latio-19": "4121ddc1025e05210c6ff96f1fcb8a1a0fe31db6d4009271727203a01ed0b868",
+    "tk-xy-latio-20": "3201a6d3e460debce13d76294def2df4a9c74198308555e8b215773657de7093",
+    "tk-xy-latio-21": "a1cdad9eb7498b3d8f7c8e2bffdeeff7340d69c84986b4c489af6b75b6bc20b8",
+    "tk-xy-latio-22": "24f08cb742c05bde071d1e6b6dff87f5973398bdc4f4b63c1495520286d22b68",
+    "tk-xy-latio-23": "5bf380175c37c01a426e7bc97712f76bb2c5bad61e28ca3fd312da61b6781a0f",
+    "tk-xy-latio-24": "8d1dac154df1108b6ca5cf0bb32304a95d642e58051f84160f39efa172b2e153",
+    "tk-xy-latio-25": "d0fc0b3f88bd7e13869adb951be51374627c5c529eda5f5c46c2626b792cc18a",
+    "tk-xy-latio-26": "ed79b9bfe790af5417d4eccbe26cc8b18d4f39cb01b4d5bdabb5f4d48390f6c9",
+    "tk-xy-latio-27": "9aa803a319ff2553744a79feb91e6a5448b506374d04e21f36eacf571fe9df95",
+    "tk-xy-latio-28": "3d2304a4d7c3c8a5c69debb10d1dc86e678be68702af08f1171a27f89a9bd9e0",
+    "tk-xy-latio-29": "8afb73b52f5111bbd6fddc32f1c303d740cb17761b64dff63f28fd02ca21cb67",
+    "tk-xy-latio-30": "485bbf3a77ce70c72a81282de06706e9d28f8128d8646f95b5977e7052b7269b",
+    "tk-xy-p-1": "10f64bddf87bf7a3718e5a6ac90dcacb958498b5848c263ae68137e5a1205a2e",
+    "tk-xy-p-2": "ce542f54ed71067a4d21eb15aedcb5c48e6b4b04c0910422d34d7dc5d3ae018d",
+    "tk-xy-p-3": "7ee0b757cf8f978ee6f106c8e9a7e7fe7329c03c5bef592bc725dc10e138a68a",
+    "tk-xy-p-4": "84d38f023e5bd6328beac6091abd6359d84c5bfb1629eaddf09efef05c79db62",
+    "tk-xy-p-5": "4f24a0e1f770303ea4dc6e9ea5b78781384f0530cabf42738fc156df3a7f2916",
+    "tk-xy-p-6": "844a2d2a7896c705e2c76cc8ddb7014e26addd381deb892470657dee4064f601",
+    "tk-xy-p-7": "aa4f5edfa75bf37ec2e364fcef1f8cf2e7197517272749f9c0eef35835c4aa5e",
+    "tk-xy-p-8": "b34143d91f8174ad0638a0cb72359e93f28e719c0e9be754422bcb5704d0ad43",
+    "tk-xy-p-9": "5ff3511f4674ec0aea86bd251fef6b3f439a7c4d0fea671593969695f4ba1115",
+    "tk-xy-p-10": "dd381e79202865fa95224e7ddd296bdfa2579da6ba62630a8a13e946895f77f2",
+    "tk-xy-p-11": "9ade6a0f416442cd0ae85f3c7a55e247479bd1e12d42483636e5d53df8521e88",
+    "tk-xy-p-12": "7cf0bc1130a02917a7c40c4789f6850ced31356a87417371a4afddd9cf9fbbf3",
+    "tk-xy-p-13": "88a284cea2b7db946c6853ed39a88ae29d13df3c11ff94ddfa7d408543b19058",
+    "tk-xy-p-14": "bb8a368192dfa654f15197cc234a9f388fe569cd90284a3bc4cf8f7df0cd0391",
+    "tk-xy-p-15": "187aca1f43f92d318dc4c9b02a47163d718fc0bb383fef90b06d4d84bb88dd7e",
+    "tk-xy-p-16": "e9956d5ff12431b85b3ea8831bd09c93d19ba808022ce61302bf0af8add1fa9d",
+    "tk-xy-p-17": "e2996552b897b94bd61171a5bb6bf590763cb94c30e4861b9debe8a77c34f639",
+    "tk-xy-p-18": "eddd72939be07a8834b5ffd598be15ecab95906c98469ea01cd2b788e4a44c20",
+    "tk-xy-p-19": "78e8daf50edf8ee8562b2b03e38791d9db986acf03fb0bf46bb2c455811ff7dd",
+    "tk-xy-p-20": "1ee60e8f3e22175db9a73a38a6891191d7eed5aa2bc3df5f70660b280f257ac1",
+    "tk-xy-p-21": "9e9462ed1b44ece9247c164da52609851641d4784783482d08d236cda8c2eaa7",
+    "tk-xy-p-22": "d30fbb2e797ae93fa5e530020bbf6d58da5340161f1b462537cbc452a4b24978",
+    "tk-xy-p-23": "a953eb63241bdf8154f45bea3cc9a51c722a20064447fcc709dd5bbc1a05fdc1",
+    "tk-xy-p-24": "384f0beaa142cbe2c915831475f1fddd0802e958d1c66455be3ded921051f774",
+    "tk-xy-p-25": "17957ffd1e8fe1ad3d67144d2386f766cf4910523085f126b65967b8d1c0d65e",
+    "tk-xy-p-26": "919d335f2ba68e28e6d73835d48f047779dd94a4d75ca06d9276ecc6fbb25c63",
+    "tk-xy-p-27": "32d5cd5878d6fdda4a8fa4e4ecdc36166b0c0a11817fb0bfaf6eda2631d1bf94",
+    "tk-xy-p-28": "17a82debe1323b35f6b6f969a3a6449b637c873fa5ec7bd28355f86e595352f4",
+    "tk-xy-p-29": "91d8b4f855cf863761d71849b635b7b66a0b27fde6f8992b799eeb6acf560d03",
+    "tk-xy-p-30": "012f914358254ab785005eee8072dcd9df2d77a256778e6dfa3a4958a5d18eb2",
+    "tk-xy-su-1": "e895e3c52e995b4f1805110213196b855997e8dce633412f0b4acdec0e6eb5a0",
+    "tk-xy-su-2": "cec55c2c26148e86fee9bc144487da7be13b3d1ebd91955c745e275ab5adb6d3",
+    "tk-xy-su-3": "0ceb93bb3fbd37e9e6337780f1be88dad9cf26e3354a5361fcac0799f54e003f",
+    "tk-xy-su-4": "aaf2d259ffb5cbacb593834124b567a42ea48e181e6335abe739d95ac0417f8e",
+    "tk-xy-su-5": "8a1e5cb2e00de1b54a0e7c44c55bf8fa070a40ab1fc99ce689b0ea80076473af",
+    "tk-xy-su-6": "310623114506f552d3f80106e078bec4cbd7f0e2367a806de44838b4c728c7b7",
+    "tk-xy-su-7": "2e7a931af5981b8e5e25b9e6bbece155ba9cb320a6d7076040f9e8f07aa9c95e",
+    "tk-xy-su-8": "5f0e459a3b3f666540f437b0e6f6df4d79e17f0d77139f0d50ea0866fc243047",
+    "tk-xy-su-9": "73eb621d07d1240e65b413c295093526eb4107cbc3ee48f3f60bcdaf43c350a6",
+    "tk-xy-su-10": "d7606b54248323f1eff5082ac14dcbd679c61cf64a703770b3ecbbd94d6b3be0",
+    "tk-xy-su-11": "eabf3fb628e1afc1856cf1143a96e203f57572dd341871fe8cdbe6164432bb52",
+    "tk-xy-su-12": "65186e9c5fff35fae35e51374fc651132eb79d16bd799dd6f392634fd1ab2089",
+    "tk-xy-su-13": "9bfc3bd42ac998d9771446f8af7e70fd796a273de10c9112af7615be6397a22a",
+    "tk-xy-su-14": "107d4913158ccc918273ea1ec4c51d002f2f45f42a7fc8d6d06ee383ae70a1e6",
+    "tk-xy-su-15": "ba1c5b23ecffeeb5ef54e0d3fbb99d36caa3c4bd6521aff9656ebb555045e964",
+    "tk-xy-su-16": "5a098eb7486d52b5d069dbe0357cc98f8b0ff50ba4e4579ff0f355c145a36864",
+    "tk-xy-su-17": "3370a257d61dd1d3bef2d019026d2e4dbc307183ebf85e7a8d3359141c121ae8",
+    "tk-xy-su-18": "4bbc987deca74df6cd3363c22031cc09a806faccc50d2099bfae9e939b205923",
+    "tk-xy-su-19": "6ba452b4def75e8f8cb1cfc2a142d192c0dfe01fbe5a5dd4db6f8cdb3b27eb8f",
+    "tk-xy-su-20": "8852f9266ce72582a3ee66450fdb2f7bec6f140194cf4c1eeeb5733f9abaf658",
+    "tk-xy-su-21": "1f97b9be60e1d09bc86392babe978b3c4aefb56fe55478d4e347f562e637a5f3",
+    "tk-xy-su-22": "7c23f53dbc046750d1d00484c5812becd8774db7113effd52f635aeb346d9dc6",
+    "tk-xy-su-23": "07dcefa0033b438b84ef97bd636cd86672e68ecf6132d1ed75307767ba884092",
+    "tk-xy-su-24": "eeb7faaaaf13628a5e686c6fdcebeafc775152e10e9e70181e7b8ab69bac50e1",
+    "tk-xy-su-25": "953d5802e8cac68829977563a0f91c6ce45a533626c329b7404c4c5b8750d9da",
+    "tk-xy-su-26": "500b6f8becf2713cd648b8ef0da6fc7a646a61856de406eb5b8dbc2b9e0fece4",
+    "tk-xy-su-27": "23ab0897bb5c437f05480abba58645584a29e88e34a94c0cecac4d0ff7f4bac6",
+    "tk-xy-su-28": "310254ba437550d2b8e0dc7e08d860ca1aa1f4a39725ec13e62bf989bcd78fe2",
+    "tk-xy-su-29": "5f00e09ffe14581d05568ef2056697b0250facc321667e483d6e43ffbaf73950",
+    "tk-xy-su-30": "0bc4bf131e1c79515a8682ee0070cc5d33a295f86ebe2947a4d0eca59a43eef4",
+    "tk-sm-r-1": "113648fe477c63455a838b93320dd40034857666cfc765cc38db34926cfe4786",
+    "tk-sm-r-2": "30c439eb082e06511a61366dfff68dbc7f77d20081f6487978485406366e0d6c",
+    "tk-sm-r-3": "ab19a7424dbf64072aa686941c5975950aa73136151be2584af2602886fc0950",
+    "tk-sm-r-4": "aa6a149d5f5f0f716542614eff074f4f13e13eeb43df55648fccf854f5231757",
+    "tk-sm-r-5": "e3345aeca8bf9643ba6ae178adf49e6530a50b5d64b2af1077ffbe630310d9e6",
+    "tk-sm-r-6": "682529ccdda55c2ffbc4fb85798e3de05d318e688547b27a8e8bde251d27b6a4",
+    "tk-sm-r-7": "1cbeb7e3ccf8917f71704ccd65d25b9ddc64e0496ecb82ba6e21eaa7bffb9c5a",
+    "tk-sm-r-8": "ad6c35d0d8401b84eca80830c1669f4e6224796f0ff81786811cd78127dd44f3",
+    "tk-sm-r-9": "7079dacb9b2e3b57f2d4378f73ff32b39d7c3a6ae2709e3724762606fbb54503",
+    "tk-sm-r-10": "fdd39ce764baeb24230e29b6907cb0278de1a0117a474b31cb717438ae920ea1",
+    "tk-sm-r-11": "1f270a4be176cd32d08e0f4df0abccbcffe41111289a612ca2d6993a3e66a98a",
+    "tk-sm-r-12": "551f9a8b011016fbeb7a7880d8f7b2845409ac1b041e104fb6ec0820cbda7758",
+    "tk-sm-r-13": "46049d772c6307e9425d7c1856cb477d9737e3f2b5b9664d55df46abf824c8e5",
+    "tk-sm-r-14": "4eec01e4d5b92d46d560ae791e280cfc9be51ac4f0d40cd15a875569bd5b739f",
+    "tk-sm-r-15": "08f1e5b8db3f9e4077dec681e8f7328540a72c498f323eec6ef6ff6c2270fa11",
+    "tk-sm-r-16": "1db13b5565abd32941147ff32374776015fc1a7b60cc9db951432938fb152a1e",
+    "tk-sm-r-17": "e84ea3a00902e843fef6e9e624f6b7623d00162186e98407e62da19bb1adc4af",
+    "tk-sm-r-18": "cf51a1e6d162c57a804cf934e1806607d8b57fc63ea7d90f9517bc832d8095e9",
+    "tk-sm-r-19": "5506f767cc402431cb618a64c9c671e95ddd9aafdf965fe568176c3fcefb4a16",
+    "tk-sm-r-20": "21f09e1cfa7249120d24ffd7f5cd4b0fc976136ac6b12c5acee392ea9bf550c5",
+    "tk-sm-r-21": "ac235ff3a48d916279783e642c37d177171a8bb1f397ea666996b6d610615969",
+    "tk-sm-r-22": "7cef23d69f99df8f08027a7a4fba87e1a22de701bdbc103cc74dcea8a41512e7",
+    "tk-sm-r-23": "3b7174314ce704233330c627e76f20d64999a827d22025c53773776ff769e238",
+    "tk-sm-r-24": "8fb7f44e896e5f1536a93ad8ae48572e592ac2117feb4a346a4e96168ac1198f",
+    "tk-sm-r-25": "1b7a92286185ef74e7ef793458e04030264bfbe1fbe69e161a79f54aa8db21dd",
+    "tk-sm-r-26": "4923bcf59b0af1326e28308efe6cf4f11cea4275049e32a0e516840f8371d162",
+    "tk-sm-r-27": "15e92064d89df99869fbf227f80ce19310c1cd729e5f665c52150d77fa3e87c7",
+    "tk-sm-r-28": "1dbd16c3e65e87913386f520a7cd76112c4e1f1b95c20144a66bd41af4569456",
+    "tk-sm-r-29": "e839dc6aaf10618cc6722238ba24136c4a81f81ce691377ab2e33e860c0edc5c",
+    "tk-sm-r-30": "6470760f4eb314018c71ba6dca3a9dea723092a2d1ee4ef15cd485de2d337397"
+  }
+}

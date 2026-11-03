@@ -1,0 +1,1006 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "disposition": "unsigned candidate; requires native publisher/runtime validation",
+  "sets": [
+    {
+      "providerSetID": "pop1",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop1",
+      "sourceSHA256": "56c7b9b68ee3c3ba939e1e2ac8478bec7d19dde9dd434a09eb30f1687600ce9a",
+      "corroboratingURL": "https://www.serebii.net/card/popseries1/",
+      "corroboratingSHA256": "cdc3ecd2f129a9d342fd32279494f669e9991553d652a5db2dcc02af13a0d178",
+      "cards": [
+        {
+          "providerCardID": "pop1-1",
+          "providerName": "Blaziken",
+          "corroboratingName": "Blaziken",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop1-2",
+          "providerName": "Metagross",
+          "corroboratingName": "Metagross",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop1-3",
+          "providerName": "Rayquaza",
+          "corroboratingName": "Rayquaza",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop1-4",
+          "providerName": "Sceptile",
+          "corroboratingName": "Sceptile",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop1-5",
+          "providerName": "Swampert",
+          "corroboratingName": "Swampert",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop1-6",
+          "providerName": "Beautifly",
+          "corroboratingName": "Beautifly",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop1-7",
+          "providerName": "Masquerain",
+          "corroboratingName": "Masquerain",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop1-8",
+          "providerName": "Murkrow",
+          "corroboratingName": "Murkrow",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop1-9",
+          "providerName": "Pupitar",
+          "corroboratingName": "Pupitar",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop1-10",
+          "providerName": "Torkoal",
+          "corroboratingName": "Torkoal",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop1-11",
+          "providerName": "Larvitar",
+          "corroboratingName": "Larvitar",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop1-12",
+          "providerName": "Minun",
+          "corroboratingName": "Minun",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop1-13",
+          "providerName": "Plusle",
+          "corroboratingName": "Plusle",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop1-14",
+          "providerName": "Surskit",
+          "corroboratingName": "Surskit",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop1-15",
+          "providerName": "Swellow",
+          "corroboratingName": "Swellow",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop1-16",
+          "providerName": "Armaldo ex",
+          "corroboratingName": "Armaldo  ex",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop1-17",
+          "providerName": "Tyranitar ex",
+          "corroboratingName": "Tyranitar  ex",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop2",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop2",
+      "sourceSHA256": "315678fa85e16f9d8695a2fa42a7452bed7df6553fb638d8f9f63e4af0a62788",
+      "corroboratingURL": "https://www.serebii.net/card/popseries2/",
+      "corroboratingSHA256": "2600c5f29a514792306383eb0368fc33ec2b87b369b2ee5a5415efb4a04ec440",
+      "cards": [
+        {
+          "providerCardID": "pop2-1",
+          "providerName": "Entei",
+          "corroboratingName": "Entei",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop2-2",
+          "providerName": "Pidgeot",
+          "corroboratingName": "Pidgeot",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop2-3",
+          "providerName": "Raikou",
+          "corroboratingName": "Raikou",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop2-4",
+          "providerName": "Suicune",
+          "corroboratingName": "Suicune",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop2-5",
+          "providerName": "Tauros",
+          "corroboratingName": "Tauros",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop2-6",
+          "providerName": "Venusaur",
+          "corroboratingName": "Venusaur",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop2-7",
+          "providerName": "Ivysaur",
+          "corroboratingName": "Ivysaur",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop2-8",
+          "providerName": "Mr. Briney's Compassion",
+          "corroboratingName": "Mr. Briney's Compassion",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop2-9",
+          "providerName": "Multi Technical Machine 01",
+          "corroboratingName": "Multi Technical Machine 01",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop2-10",
+          "providerName": "Pokémon Park",
+          "corroboratingName": "Pokémon Park",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop2-11",
+          "providerName": "TV Reporter",
+          "corroboratingName": "TV Reporter",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop2-12",
+          "providerName": "Bulbasaur",
+          "corroboratingName": "Bulbasaur",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop2-13",
+          "providerName": "Cacnea",
+          "corroboratingName": "Cacnea",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop2-14",
+          "providerName": "Luvdisc",
+          "corroboratingName": "Luvdisc",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop2-15",
+          "providerName": "Phanpy",
+          "corroboratingName": "Phanpy",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop2-16",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop2-17",
+          "providerName": "Celebi ex",
+          "corroboratingName": "Celebi  ex",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop3",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop3",
+      "sourceSHA256": "d9966162d42cd6edb0d846fe8e52f8589a0ee1ea9810a8b43d3c5625a789dc0f",
+      "corroboratingURL": "https://www.serebii.net/card/popseries3/",
+      "corroboratingSHA256": "6cfcb5d4858d725054a308887984093b8ee4d7796bf47f3703ccfaefab970467",
+      "cards": [
+        {
+          "providerCardID": "pop3-1",
+          "providerName": "Blastoise",
+          "corroboratingName": "Blastoise",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop3-2",
+          "providerName": "Flareon",
+          "corroboratingName": "Flareon",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop3-3",
+          "providerName": "Jolteon",
+          "corroboratingName": "Jolteon",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop3-4",
+          "providerName": "Minun",
+          "corroboratingName": "Minun",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop3-5",
+          "providerName": "Plusle",
+          "corroboratingName": "Plusle",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop3-6",
+          "providerName": "Vaporeon",
+          "corroboratingName": "Vaporeon",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop3-7",
+          "providerName": "Combusken",
+          "corroboratingName": "Combusken",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop3-8",
+          "providerName": "Donphan",
+          "corroboratingName": "Donphan",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop3-9",
+          "providerName": "Forretress",
+          "corroboratingName": "Forretress",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop3-10",
+          "providerName": "High Pressure System",
+          "corroboratingName": "High Pressure System",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop3-11",
+          "providerName": "Low Pressure System",
+          "corroboratingName": "Low Pressure System",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop3-12",
+          "providerName": "Ditto",
+          "corroboratingName": "Ditto",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop3-13",
+          "providerName": "Eevee",
+          "corroboratingName": "Eevee",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop3-14",
+          "providerName": "Ivysaur",
+          "corroboratingName": "Ivysaur",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop3-15",
+          "providerName": "Marshtomp",
+          "corroboratingName": "Marshtomp",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop3-16",
+          "providerName": "Pichu Bros.",
+          "corroboratingName": "Pichu  Bros.",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop3-17",
+          "providerName": "Ho-Oh ex",
+          "corroboratingName": "Ho-Oh  ex",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop4",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop4",
+      "sourceSHA256": "9cef1d47e96d6aa2b42850f5bde39bb67f9b7fac41cb70110803afb7828b9c96",
+      "corroboratingURL": "https://www.serebii.net/card/popseries4/",
+      "corroboratingSHA256": "958fc32cd44e1f9c8c903bdc7fb496a30ecfaefa0602135e317fad878938c7bf",
+      "cards": [
+        {
+          "providerCardID": "pop4-1",
+          "providerName": "Chimecho δ",
+          "corroboratingName": "Chimecho   δ",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop4-2",
+          "providerName": "Deoxys δ",
+          "corroboratingName": "Deoxys   δ",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop4-3",
+          "providerName": "Flygon",
+          "corroboratingName": "Flygon",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop4-4",
+          "providerName": "Mew",
+          "corroboratingName": "Mew",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop4-5",
+          "providerName": "Sceptile",
+          "corroboratingName": "Sceptile",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop4-6",
+          "providerName": "Combusken",
+          "corroboratingName": "Combusken",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop4-7",
+          "providerName": "Grovyle",
+          "corroboratingName": "Grovyle",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop4-8",
+          "providerName": "Heal Energy",
+          "corroboratingName": "Heal Energy",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop4-9",
+          "providerName": "Pokémon Fan Club",
+          "corroboratingName": "Pokémon Fan Club",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop4-10",
+          "providerName": "Scramble Energy",
+          "corroboratingName": "Scramble Energy",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop4-11",
+          "providerName": "Mudkip",
+          "corroboratingName": "Mudkip",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop4-12",
+          "providerName": "Pidgey",
+          "corroboratingName": "Pidgey",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop4-13",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop4-14",
+          "providerName": "Squirtle",
+          "corroboratingName": "Squirtle",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop4-15",
+          "providerName": "Treecko δ",
+          "corroboratingName": "Treecko   δ",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop4-16",
+          "providerName": "Wobbuffet",
+          "corroboratingName": "Wobbuffet",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop4-17",
+          "providerName": "Deoxys ex",
+          "corroboratingName": "Deoxys  ex",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop5",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop5",
+      "sourceSHA256": "3238e88521982d00ab5f5654bd83728fbf5343624655d4ff089bcadff18aa536",
+      "corroboratingURL": "https://www.serebii.net/card/popseries5/",
+      "corroboratingSHA256": "826a646ad542c80f8f50cec0952092e8a5dddce0027e0a0ac5f12799f5668128",
+      "cards": [
+        {
+          "providerCardID": "pop5-1",
+          "providerName": "Ho-Oh",
+          "corroboratingName": "Ho-Oh",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop5-2",
+          "providerName": "Lugia",
+          "corroboratingName": "Lugia",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop5-3",
+          "providerName": "Mew δ",
+          "corroboratingName": "Mew   δ",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop5-4",
+          "providerName": "Double Rainbow Energy",
+          "corroboratingName": "Double Rainbow Energy",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop5-5",
+          "providerName": "Charmeleon δ",
+          "corroboratingName": "Charmeleon   δ",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop5-6",
+          "providerName": "Bill's Maintenance",
+          "corroboratingName": "Bill's Maintenance",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop5-7",
+          "providerName": "Rare Candy",
+          "corroboratingName": "Rare Candy",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop5-8",
+          "providerName": "Boost Energy",
+          "corroboratingName": "Boost Energy",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop5-9",
+          "providerName": "δ Rainbow Energy",
+          "corroboratingName": "δ Rainbow Energy",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop5-10",
+          "providerName": "Charmander δ",
+          "corroboratingName": "Charmander   δ",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop5-11",
+          "providerName": "Meowth δ",
+          "corroboratingName": "Meowth   δ",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop5-12",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop5-13",
+          "providerName": "Pikachu δ",
+          "corroboratingName": "Pikachu   δ",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop5-14",
+          "providerName": "Pelipper δ",
+          "corroboratingName": "Pelipper   δ",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop5-15",
+          "providerName": "Zangoose δ",
+          "corroboratingName": "Zangoose   δ",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop5-16",
+          "providerName": "Espeon ★",
+          "corroboratingName": "Espeon",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop5-17",
+          "providerName": "Umbreon ★",
+          "corroboratingName": "Umbreon",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop6",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop6",
+      "sourceSHA256": "fedb2b427515a709d2e6763cdfd5a53611087c9d3545952c155af2d83e076ee1",
+      "corroboratingURL": "https://www.serebii.net/card/popseries6/",
+      "corroboratingSHA256": "5b461c1db9a6198d70820e21a66096aeed1ef6433ea2ad81f19db6bb1c6baf01",
+      "cards": [
+        {
+          "providerCardID": "pop6-1",
+          "providerName": "Bastiodon",
+          "corroboratingName": "Bastiodon",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop6-2",
+          "providerName": "Lucario",
+          "corroboratingName": "Lucario",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop6-3",
+          "providerName": "Manaphy",
+          "corroboratingName": "Manaphy",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop6-4",
+          "providerName": "Pachirisu",
+          "corroboratingName": "Pachirisu",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop6-5",
+          "providerName": "Rampardos",
+          "corroboratingName": "Rampardos",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop6-6",
+          "providerName": "Drifloon",
+          "corroboratingName": "Drifloon",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop6-7",
+          "providerName": "Gible",
+          "corroboratingName": "Gible",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop6-8",
+          "providerName": "Riolu",
+          "corroboratingName": "Riolu",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop6-9",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop6-10",
+          "providerName": "Staravia",
+          "corroboratingName": "Staravia",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop6-11",
+          "providerName": "Bidoof",
+          "corroboratingName": "Bidoof",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop6-12",
+          "providerName": "Buneary",
+          "corroboratingName": "Buneary",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop6-13",
+          "providerName": "Cherubi",
+          "corroboratingName": "Cherubi",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop6-14",
+          "providerName": "Chimchar",
+          "corroboratingName": "Chimchar",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop6-15",
+          "providerName": "Piplup",
+          "corroboratingName": "Piplup",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop6-16",
+          "providerName": "Starly",
+          "corroboratingName": "Starly",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop6-17",
+          "providerName": "Turtwig",
+          "corroboratingName": "Turtwig",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop7",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop7",
+      "sourceSHA256": "3fe6d63fcdb4249e63de28ef0513ee0f2f4c85908991622999ec5570b797873d",
+      "corroboratingURL": "https://www.serebii.net/card/popseries7/",
+      "corroboratingSHA256": "09ad973d22f4262fa018d9d1c9c0fab21ca4b68425c4ed8d629083f9d7ea062f",
+      "cards": [
+        {
+          "providerCardID": "pop7-1",
+          "providerName": "Ampharos",
+          "corroboratingName": "Ampharos",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop7-2",
+          "providerName": "Gallade",
+          "corroboratingName": "Gallade",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop7-3",
+          "providerName": "Latias",
+          "corroboratingName": "Latias",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop7-4",
+          "providerName": "Latios",
+          "corroboratingName": "Latios",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop7-5",
+          "providerName": "Mothim",
+          "corroboratingName": "Mothim",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop7-6",
+          "providerName": "Delibird",
+          "corroboratingName": "Delibird",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop7-7",
+          "providerName": "Flaaffy",
+          "corroboratingName": "Flaaffy",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop7-8",
+          "providerName": "Kirlia",
+          "corroboratingName": "Kirlia",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop7-9",
+          "providerName": "Stantler",
+          "corroboratingName": "Stantler",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop7-10",
+          "providerName": "Wormadam Sandy Cloak",
+          "corroboratingName": "Wormadam  Sandy Cloak",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop7-11",
+          "providerName": "Burmy Plant Cloak",
+          "corroboratingName": "Burmy  Plant Cloak",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop7-12",
+          "providerName": "Burmy Sandy Cloak",
+          "corroboratingName": "Burmy  Sandy Cloak",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop7-13",
+          "providerName": "Corsola",
+          "corroboratingName": "Corsola",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop7-14",
+          "providerName": "Mareep",
+          "corroboratingName": "Mareep",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop7-15",
+          "providerName": "Ralts",
+          "corroboratingName": "Ralts",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop7-16",
+          "providerName": "Sentret",
+          "corroboratingName": "Sentret",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop7-17",
+          "providerName": "Spinda",
+          "corroboratingName": "Spinda",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop8",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop8",
+      "sourceSHA256": "2cc913296d99478b5c17da5eb9bfd0c457cead31238e053e40a21f71f15145fe",
+      "corroboratingURL": "https://www.serebii.net/card/popseries8/",
+      "corroboratingSHA256": "fc516414db20e64bb0f5c71989b0d208fe4b93f01a065118921ab2820b035dab",
+      "cards": [
+        {
+          "providerCardID": "pop8-1",
+          "providerName": "Heatran",
+          "corroboratingName": "Heatran",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop8-2",
+          "providerName": "Lucario",
+          "corroboratingName": "Lucario",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop8-3",
+          "providerName": "Luxray",
+          "corroboratingName": "Luxray",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop8-4",
+          "providerName": "Probopass",
+          "corroboratingName": "Probopass",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop8-5",
+          "providerName": "Yanmega",
+          "corroboratingName": "Yanmega",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop8-6",
+          "providerName": "Cherrim",
+          "corroboratingName": "Cherrim",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop8-7",
+          "providerName": "Carnivine",
+          "corroboratingName": "Carnivine",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop8-8",
+          "providerName": "Luxio",
+          "corroboratingName": "Luxio",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop8-9",
+          "providerName": "Night Maintenance",
+          "corroboratingName": "Night Maintenance",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop8-10",
+          "providerName": "Rare Candy",
+          "corroboratingName": "Rare Candy",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop8-11",
+          "providerName": "Roseanne’s Research",
+          "corroboratingName": "Roseanne's Research",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop8-12",
+          "providerName": "Chimchar",
+          "corroboratingName": "Chimchar",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop8-13",
+          "providerName": "Croagunk",
+          "corroboratingName": "Croagunk",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop8-14",
+          "providerName": "Happiny",
+          "corroboratingName": "Happiny",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop8-15",
+          "providerName": "Piplup",
+          "corroboratingName": "Piplup",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop8-16",
+          "providerName": "Riolu",
+          "corroboratingName": "Riolu",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop8-17",
+          "providerName": "Turtwig",
+          "corroboratingName": "Turtwig",
+          "printedNumber": "17/17"
+        }
+      ]
+    },
+    {
+      "providerSetID": "pop9",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/pop9",
+      "sourceSHA256": "2933d038737aff5fcbfba035cc7a1f31f6934a52773a880a3a0cb60ae694cc4b",
+      "corroboratingURL": "https://www.serebii.net/card/popseries9/",
+      "corroboratingSHA256": "ee5c29bc9e188d4c499e776c453b52c250eb423be0ee2b71ea03ac311a29a4ae",
+      "cards": [
+        {
+          "providerCardID": "pop9-1",
+          "providerName": "Garchomp",
+          "corroboratingName": "Garchomp",
+          "printedNumber": "1/17"
+        },
+        {
+          "providerCardID": "pop9-2",
+          "providerName": "Manaphy",
+          "corroboratingName": "Manaphy",
+          "printedNumber": "2/17"
+        },
+        {
+          "providerCardID": "pop9-3",
+          "providerName": "Raichu",
+          "corroboratingName": "Raichu",
+          "printedNumber": "3/17"
+        },
+        {
+          "providerCardID": "pop9-4",
+          "providerName": "Regigigas",
+          "corroboratingName": "Regigigas",
+          "printedNumber": "4/17"
+        },
+        {
+          "providerCardID": "pop9-5",
+          "providerName": "Rotom",
+          "corroboratingName": "Rotom",
+          "printedNumber": "5/17"
+        },
+        {
+          "providerCardID": "pop9-6",
+          "providerName": "Buizel",
+          "corroboratingName": "Buizel",
+          "printedNumber": "6/17"
+        },
+        {
+          "providerCardID": "pop9-7",
+          "providerName": "Croagunk",
+          "corroboratingName": "Croagunk",
+          "printedNumber": "7/17"
+        },
+        {
+          "providerCardID": "pop9-8",
+          "providerName": "Gabite",
+          "corroboratingName": "Gabite",
+          "printedNumber": "8/17"
+        },
+        {
+          "providerCardID": "pop9-9",
+          "providerName": "Lopunny",
+          "corroboratingName": "Lopunny",
+          "printedNumber": "9/17"
+        },
+        {
+          "providerCardID": "pop9-10",
+          "providerName": "Pachirisu",
+          "corroboratingName": "Pachirisu",
+          "printedNumber": "10/17"
+        },
+        {
+          "providerCardID": "pop9-11",
+          "providerName": "Pichu",
+          "corroboratingName": "Pichu",
+          "printedNumber": "11/17"
+        },
+        {
+          "providerCardID": "pop9-12",
+          "providerName": "Buneary",
+          "corroboratingName": "Buneary",
+          "printedNumber": "12/17"
+        },
+        {
+          "providerCardID": "pop9-13",
+          "providerName": "Chimchar",
+          "corroboratingName": "Chimchar",
+          "printedNumber": "13/17"
+        },
+        {
+          "providerCardID": "pop9-14",
+          "providerName": "Gible",
+          "corroboratingName": "Gible",
+          "printedNumber": "14/17"
+        },
+        {
+          "providerCardID": "pop9-15",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "15/17"
+        },
+        {
+          "providerCardID": "pop9-16",
+          "providerName": "Piplup",
+          "corroboratingName": "Piplup",
+          "printedNumber": "16/17"
+        },
+        {
+          "providerCardID": "pop9-17",
+          "providerName": "Turtwig",
+          "corroboratingName": "Turtwig",
+          "printedNumber": "17/17"
+        }
+      ]
+    }
+  ]
+}

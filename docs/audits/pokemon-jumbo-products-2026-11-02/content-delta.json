@@ -1,0 +1,204 @@
+{
+  "oldSnapshotURL": "https://scanstash-catalog-prod.web.app/v1/releases/19/pokemon-catalog-snapshot.json",
+  "oldSnapshotSHA256": "0ebd45f41191fff322c7a7b98e56153884b4fcb41f6a07b7ec295f5007f87f64",
+  "newSnapshotSHA256": "9e076dc3f432567cfc02024edd9720ad5bd4928b54023d8cdb981b79a46978b8",
+  "limit": "Numbered summaries omit detailed variants, but the separate unchanged signed providerFingerprint covers the physical variant axes consumed by the publisher/device contract. It excludes marketplace product handles and prices; this is not proof of exhaustive physical-printing or pricing coverage.",
+  "sets": {
+    "30th-c": {
+      "oldCount": 30,
+      "newCount": 30,
+      "addedIDs": [],
+      "removedIDs": [],
+      "changedSummaryFields": {},
+      "activeProviderFingerprint": "d25f4d40ba454af9",
+      "candidateProviderFingerprint": "d25f4d40ba454af9",
+      "providerFingerprintUnchanged": true,
+      "changedDescriptorFields": [
+        "artworkFallbackURLs",
+        "cardArtwork",
+        "logoURL",
+        "symbolURL"
+      ],
+      "deltaClass": "artworkMetadataOnly"
+    },
+    "bwp": {
+      "oldCount": 101,
+      "newCount": 101,
+      "addedIDs": [],
+      "removedIDs": [],
+      "changedSummaryFields": {},
+      "activeProviderFingerprint": "852c42b05c1b9ddc",
+      "candidateProviderFingerprint": "852c42b05c1b9ddc",
+      "providerFingerprintUnchanged": true,
+      "changedDescriptorFields": [
+        "cardArtwork"
+      ],
+      "deltaClass": "artworkMetadataOnly"
+    },
+    "me02": {
+      "oldCount": 130,
+      "newCount": 130,
+      "addedIDs": [],
+      "removedIDs": [],
+      "changedSummaryFields": {},
+      "activeProviderFingerprint": "f537495853ac697f",
+      "candidateProviderFingerprint": "f537495853ac697f",
+      "providerFingerprintUnchanged": true,
+      "changedDescriptorFields": [
+        "symbolURL"
+      ],
+      "deltaClass": "artworkMetadataOnly"
+    },
+    "mep": {
+      "oldCount": 89,
+      "newCount": 89,
+      "addedIDs": [],
+      "removedIDs": [],
+      "changedSummaryFields": {
+        "mep-001": [
+          "imageURL"
+        ],
+        "mep-002": [
+          "imageURL"
+        ],
+        "mep-003": [
+          "imageURL"
+        ],
+        "mep-004": [
+          "imageURL"
+        ],
+        "mep-005": [
+          "imageURL"
+        ],
+        "mep-006": [
+          "imageURL"
+        ],
+        "mep-007": [
+          "imageURL"
+        ],
+        "mep-008": [
+          "imageURL"
+        ],
+        "mep-009": [
+          "imageURL"
+        ],
+        "mep-010": [
+          "imageURL"
+        ],
+        "mep-011": [
+          "imageURL"
+        ],
+        "mep-012": [
+          "imageURL"
+        ],
+        "mep-013": [
+          "imageURL"
+        ],
+        "mep-014": [
+          "imageURL"
+        ],
+        "mep-015": [
+          "imageURL"
+        ],
+        "mep-016": [
+          "imageURL"
+        ],
+        "mep-017": [
+          "imageURL"
+        ],
+        "mep-018": [
+          "imageURL"
+        ],
+        "mep-019": [
+          "imageURL"
+        ],
+        "mep-020": [
+          "imageURL"
+        ],
+        "mep-021": [
+          "imageURL"
+        ],
+        "mep-022": [
+          "imageURL"
+        ],
+        "mep-023": [
+          "imageURL"
+        ],
+        "mep-024": [
+          "imageURL"
+        ],
+        "mep-025": [
+          "imageURL"
+        ],
+        "mep-026": [
+          "imageURL"
+        ],
+        "mep-027": [
+          "imageURL"
+        ],
+        "mep-028": [
+          "imageURL"
+        ],
+        "mep-029": [
+          "imageURL"
+        ],
+        "mep-030": [
+          "imageURL"
+        ],
+        "mep-031": [
+          "imageURL"
+        ],
+        "mep-037": [
+          "imageURL"
+        ],
+        "mep-038": [
+          "imageURL"
+        ],
+        "mep-039": [
+          "imageURL"
+        ],
+        "mep-040": [
+          "imageURL"
+        ],
+        "mep-041": [
+          "imageURL"
+        ],
+        "mep-042": [
+          "imageURL"
+        ],
+        "mep-043": [
+          "imageURL"
+        ],
+        "mep-044": [
+          "imageURL"
+        ],
+        "mep-045": [
+          "imageURL"
+        ]
+      },
+      "activeProviderFingerprint": "d0068f5216976403",
+      "candidateProviderFingerprint": "d0068f5216976403",
+      "providerFingerprintUnchanged": true,
+      "changedDescriptorFields": [
+        "artworkFallbackURLs",
+        "cardArtwork"
+      ],
+      "deltaClass": "artworkMetadataOnly"
+    },
+    "smp": {
+      "oldCount": 248,
+      "newCount": 248,
+      "addedIDs": [],
+      "removedIDs": [],
+      "changedSummaryFields": {},
+      "activeProviderFingerprint": "94b8a4ef5cb45242",
+      "candidateProviderFingerprint": "94b8a4ef5cb45242",
+      "providerFingerprintUnchanged": true,
+      "changedDescriptorFields": [
+        "cardArtwork"
+      ],
+      "deltaClass": "artworkMetadataOnly"
+    }
+  },
+  "correction": "Signed descriptor fingerprint comparison supersedes the earlier raw-content hold. All five provider fingerprints are unchanged; the descriptor deltas are artwork metadata only. This file remains the earlier candidate summary comparison, not the latest native candidate."
+}

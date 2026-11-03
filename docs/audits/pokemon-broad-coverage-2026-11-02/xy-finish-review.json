@@ -1,0 +1,1652 @@
+[
+  {
+    "providerCardID": "xyp-XY01",
+    "name": "Chespin",
+    "productID": 84270,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY02",
+    "name": "Fennekin",
+    "productID": 85410,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY03",
+    "name": "Froakie",
+    "productID": 85568,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY04",
+    "name": "Sylveon",
+    "productID": 89729,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY05",
+    "name": "Xerneas",
+    "productID": 90670,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY07",
+    "name": "Xerneas EX",
+    "productID": 90673,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY06",
+    "name": "Yveltal",
+    "productID": 90698,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY08",
+    "name": "Yveltal EX",
+    "productID": 90701,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY09",
+    "name": "Garchomp EX",
+    "productID": 96369,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY11",
+    "name": "Skiddo",
+    "productID": 96372,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY12",
+    "name": "Honedge",
+    "productID": 96373,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY14",
+    "name": "Trevenant",
+    "productID": 96376,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY15",
+    "name": "Slurpuff",
+    "productID": 96377,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY16",
+    "name": "Gogoat",
+    "productID": 96378,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY17",
+    "name": "Charizard EX",
+    "productID": 96379,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY18",
+    "name": "Chesnaught EX",
+    "productID": 96380,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY19",
+    "name": "Delphox EX",
+    "productID": 96381,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY20",
+    "name": "Greninja EX",
+    "productID": 96382,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY22",
+    "name": "Darkrai",
+    "productID": 96385,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY23",
+    "name": "Shiftry",
+    "productID": 96386,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY24",
+    "name": "Greninja",
+    "productID": 96387,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY25",
+    "name": "Krookodile EX",
+    "productID": 96388,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY26",
+    "name": "Pyroar",
+    "productID": 96389,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY28",
+    "name": "Venusaur EX",
+    "productID": 96391,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY29",
+    "name": "Charizard EX",
+    "productID": 96392,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY30",
+    "name": "Blastoise EX",
+    "productID": 96393,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY31",
+    "name": "Xerneas",
+    "productID": 96394,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY32",
+    "name": "Yveltal",
+    "productID": 96395,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY33",
+    "name": "Trevor",
+    "productID": 96396,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY40",
+    "name": "Ditto",
+    "productID": 96415,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY43",
+    "name": "Diancie EX",
+    "productID": 96416,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY44",
+    "name": "M Diancie EX",
+    "productID": 96417,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY45",
+    "name": "Gallade EX",
+    "productID": 96418,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY36",
+    "name": "Treecko",
+    "productID": 96419,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY37",
+    "name": "Torchic",
+    "productID": 96420,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY38",
+    "name": "Mudkip",
+    "productID": 96421,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY51",
+    "name": "Kyogre",
+    "productID": 98732,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY52",
+    "name": "Groudon",
+    "productID": 98733,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY61",
+    "name": "Flygon EX",
+    "productID": 98734,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY47",
+    "name": "Heliolisk",
+    "productID": 100505,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY48",
+    "name": "Meowstic",
+    "productID": 100506,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY49",
+    "name": "Regirock",
+    "productID": 100507,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY50",
+    "name": "Pangoro",
+    "productID": 100508,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY53",
+    "name": "Sceptile EX",
+    "productID": 100509,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY54",
+    "name": "Blaziken EX",
+    "productID": 100510,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY55",
+    "name": "Swampert EX",
+    "productID": 100511,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY62",
+    "name": "Absol EX",
+    "productID": 100512,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY63",
+    "name": "M Absol EX",
+    "productID": 100513,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY64",
+    "name": "Rayquaza",
+    "productID": 100514,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY66",
+    "name": "Rayquaza EX",
+    "productID": 100515,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY65",
+    "name": "Latios",
+    "productID": 102804,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY58",
+    "name": "Malamar",
+    "productID": 104053,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY41",
+    "name": "Kyogre EX",
+    "productID": 108591,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY42",
+    "name": "Groudon EX",
+    "productID": 108592,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY56",
+    "name": "Blissey",
+    "productID": 108593,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY57",
+    "name": "Fearow",
+    "productID": 108594,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY59",
+    "name": "Salamence",
+    "productID": 108595,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY67",
+    "name": "Jirachi",
+    "productID": 108596,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY70",
+    "name": "Tyrantrum EX",
+    "productID": 108600,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY71",
+    "name": "Hoopa EX",
+    "productID": 108601,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY72",
+    "name": "Latios EX",
+    "productID": 108602,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY73",
+    "name": "Rayquaza EX",
+    "productID": 108603,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY80",
+    "name": "Black Kyurem",
+    "productID": 108610,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY83",
+    "name": "Arceus",
+    "productID": 108613,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY84",
+    "name": "Pikachu EX",
+    "productID": 108614,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY86",
+    "name": "M Blaziken EX",
+    "productID": 108616,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY87",
+    "name": "M Swampert EX",
+    "productID": 108617,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY92",
+    "name": "Sableye",
+    "productID": 108621,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY93",
+    "name": "Celebi",
+    "productID": 108622,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY100",
+    "name": "Mewtwo",
+    "productID": 108623,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY101",
+    "name": "Mewtwo",
+    "productID": 108624,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY95",
+    "name": "Pikachu",
+    "productID": 114004,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY96",
+    "name": "Umbreon",
+    "productID": 114005,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY110",
+    "name": "Mew",
+    "productID": 114006,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY97",
+    "name": "Aerodactyl EX",
+    "productID": 114007,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY98",
+    "name": "M Aerodactyl EX",
+    "productID": 114008,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY99",
+    "name": "Aerodactyl Spirit Link",
+    "productID": 114009,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY102",
+    "name": "Aurorus EX",
+    "productID": 114010,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY134",
+    "name": "Empoleon BREAK",
+    "productID": 114011,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY135",
+    "name": "Beheeyem BREAK",
+    "productID": 114012,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY136",
+    "name": "Noctowl BREAK",
+    "productID": 114013,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY111",
+    "name": "Celebi",
+    "productID": 114526,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY143",
+    "name": "Magikarp",
+    "productID": 116779,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY112",
+    "name": "Jirachi",
+    "productID": 117266,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY121",
+    "name": "Charizard EX",
+    "productID": 117267,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY106",
+    "name": "Gyarados EX",
+    "productID": 117701,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY107",
+    "name": "Mewtwo EX",
+    "productID": 117702,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY108",
+    "name": "Machamp EX",
+    "productID": 117703,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY105",
+    "name": "Mawile Spirit Link",
+    "productID": 118858,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY103",
+    "name": "Mawile EX",
+    "productID": 118859,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY104",
+    "name": "M Mawile EX",
+    "productID": 118860,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY113",
+    "name": "Manaphy",
+    "productID": 118861,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY122",
+    "name": "Blastoise EX",
+    "productID": 118862,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY133",
+    "name": "Ash Greninja EX",
+    "productID": 118871,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY131",
+    "name": "Pansear",
+    "productID": 118872,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY132",
+    "name": "Gastly",
+    "productID": 118873,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY137",
+    "name": "Vivillon",
+    "productID": 118874,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY138",
+    "name": "Froakie",
+    "productID": 118875,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY115",
+    "name": "Shaymin",
+    "productID": 120115,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY123",
+    "name": "Venusaur EX",
+    "productID": 120701,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY116",
+    "name": "Arceus",
+    "productID": 121364,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY114",
+    "name": "Darkrai",
+    "productID": 121946,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY148",
+    "name": "Shaymin EX",
+    "productID": 121947,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY153",
+    "name": "Ho Oh",
+    "productID": 121948,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY154",
+    "name": "Ho-Oh BREAK",
+    "productID": 121949,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY156",
+    "name": "Lugia",
+    "productID": 121950,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY152",
+    "name": "Zygarde",
+    "productID": 121955,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY155",
+    "name": "Wobbuffet BREAK",
+    "productID": 121963,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY126",
+    "name": "Mew EX",
+    "productID": 123434,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY125",
+    "name": "Mewtwo EX",
+    "productID": 123435,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY124",
+    "name": "Pikachu EX",
+    "productID": 123436,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY117",
+    "name": "Victini",
+    "productID": 123437,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY177",
+    "name": "Karen",
+    "productID": 123438,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY175",
+    "name": "Magearna-EX",
+    "productID": 123453,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY174",
+    "name": "Pikachu-EX",
+    "productID": 123454,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY173",
+    "name": "Volcanion EX",
+    "productID": 123455,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY139",
+    "name": "Floette",
+    "productID": 123479,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY142",
+    "name": "Azelf",
+    "productID": 123636,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY160",
+    "name": "Black Kyurem",
+    "productID": 125159,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY161",
+    "name": "Braixen",
+    "productID": 125160,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY164",
+    "name": "Volcanion",
+    "productID": 125251,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY165",
+    "name": "Magearna",
+    "productID": 125252,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY166",
+    "name": "M Gengar-EX",
+    "productID": 125253,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY183",
+    "name": "Mewtwo-EX",
+    "productID": 125254,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY119",
+    "name": "Genesect",
+    "productID": 125322,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY159",
+    "name": "Beedrill Spirit Link",
+    "productID": 125564,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY157",
+    "name": "Beedrill EX",
+    "productID": 125565,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY158",
+    "name": "M Beedrill-EX",
+    "productID": 125566,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY120",
+    "name": "Meloetta",
+    "productID": 125898,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY179",
+    "name": "Snorlax",
+    "productID": 126028,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY118",
+    "name": "Keldeo",
+    "productID": 126034,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "two-source-holo-addition-ready-pending-signed-delivery"
+  },
+  {
+    "providerCardID": "xyp-XY162",
+    "name": "Greninja",
+    "productID": 126210,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY184",
+    "name": "Giratina",
+    "productID": 126558,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY180",
+    "name": "Arcanine BREAK",
+    "productID": 126559,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY181",
+    "name": "Crobat BREAK",
+    "productID": 126560,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY182",
+    "name": "Mandibuzz BREAK",
+    "productID": 126561,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY167",
+    "name": "Garchomp-EX",
+    "productID": 126562,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY168",
+    "name": "M Garchomp-EX",
+    "productID": 126563,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY169",
+    "name": "Garchomp Spirit Link",
+    "productID": 126564,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY170",
+    "name": "Salamence EX",
+    "productID": 126565,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY171",
+    "name": "M Salamence-EX",
+    "productID": 126566,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY172",
+    "name": "Salamence Spirit Link",
+    "productID": 126567,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY197",
+    "name": "Arceus",
+    "productID": 127128,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY187",
+    "name": "Celebi",
+    "productID": 127129,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY194",
+    "name": "Darkrai",
+    "productID": 127130,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY196",
+    "name": "Genesect",
+    "productID": 127131,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY195",
+    "name": "Jirachi",
+    "productID": 127132,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY191",
+    "name": "Keldeo",
+    "productID": 127133,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY190",
+    "name": "Manaphy",
+    "productID": 127134,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY192",
+    "name": "Mew",
+    "productID": 127135,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY188",
+    "name": "Shaymin",
+    "productID": 127136,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY189",
+    "name": "Victini",
+    "productID": 127137,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY186",
+    "name": "Magearna",
+    "productID": 127138,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY185",
+    "name": "Volcanion",
+    "productID": 127139,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY198",
+    "name": "M Camerupt-EX",
+    "productID": 129898,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY199",
+    "name": "Camerupt Spirit Link",
+    "productID": 129899,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY201",
+    "name": "Sharpedo Spirit Link",
+    "productID": 129900,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY200",
+    "name": "M Sharpedo-EX",
+    "productID": 129901,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY211",
+    "name": "Lucario Spirit Link",
+    "productID": 131694,
+    "foilOnly": false,
+    "normalOnly": true,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY140",
+    "name": "Lucario",
+    "productID": 134921,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY141",
+    "name": "Rayquaza",
+    "productID": 134922,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY163",
+    "name": "Weezing",
+    "productID": 147098,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY193",
+    "name": "Meloetta",
+    "productID": 152950,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY178",
+    "name": "Absol",
+    "productID": 158183,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  },
+  {
+    "providerCardID": "xyp-XY109",
+    "name": "Gyarados",
+    "productID": 177110,
+    "foilOnly": true,
+    "normalOnly": false,
+    "providerHolo": false,
+    "providerDetailedHolo": false,
+    "status": "primary-marketplace-finish-review-lead"
+  }
+]

@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "independentInputSHA256": "2fc58ce1f41e787fee1a071fa06a05b074b1eca3365731b3d0ee83db6f5d6ec9",
+  "directorySHA256": "5d1d49cc20ff35b5b93bd14226d80e9298b6ab33ce086ab128fbb6bd8cb5c79a",
+  "sets": [
+    {
+      "providerSetID": "si1",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/si1",
+      "sourceSHA256": "90dfca1d0a6478d2e12ec3bc7da43a17f6f1a21bc2164c72badf91dc4e331dd3",
+      "corroboratingURL": "https://www.serebii.net/card/southernislands/",
+      "cards": [
+        {
+          "providerCardID": "si1-1",
+          "providerName": "Mew",
+          "corroboratingName": "Mew",
+          "printedNumber": "1/18"
+        },
+        {
+          "providerCardID": "si1-2",
+          "providerName": "Pidgeot",
+          "corroboratingName": "Pidgeot",
+          "printedNumber": "2/18"
+        },
+        {
+          "providerCardID": "si1-3",
+          "providerName": "Onix",
+          "corroboratingName": "Onix",
+          "printedNumber": "3/18"
+        },
+        {
+          "providerCardID": "si1-4",
+          "providerName": "Togepi",
+          "corroboratingName": "Togepi",
+          "printedNumber": "4/18"
+        },
+        {
+          "providerCardID": "si1-5",
+          "providerName": "Ivysaur",
+          "corroboratingName": "Ivysaur",
+          "printedNumber": "5/18"
+        },
+        {
+          "providerCardID": "si1-6",
+          "providerName": "Raticate",
+          "corroboratingName": "Raticate",
+          "printedNumber": "6/18"
+        },
+        {
+          "providerCardID": "si1-7",
+          "providerName": "Ledyba",
+          "corroboratingName": "Ledyba",
+          "printedNumber": "7/18"
+        },
+        {
+          "providerCardID": "si1-8",
+          "providerName": "Jigglypuff",
+          "corroboratingName": "Jigglypuff",
+          "printedNumber": "8/18"
+        },
+        {
+          "providerCardID": "si1-9",
+          "providerName": "Butterfree",
+          "corroboratingName": "Butterfree",
+          "printedNumber": "9/18"
+        },
+        {
+          "providerCardID": "si1-10",
+          "providerName": "Tentacruel",
+          "corroboratingName": "Tentacruel",
+          "printedNumber": "10/18"
+        },
+        {
+          "providerCardID": "si1-11",
+          "providerName": "Marill",
+          "corroboratingName": "Marill",
+          "printedNumber": "11/18"
+        },
+        {
+          "providerCardID": "si1-12",
+          "providerName": "Lapras",
+          "corroboratingName": "Lapras",
+          "printedNumber": "12/18"
+        },
+        {
+          "providerCardID": "si1-13",
+          "providerName": "Exeggutor",
+          "corroboratingName": "Exeggutor",
+          "printedNumber": "13/18"
+        },
+        {
+          "providerCardID": "si1-14",
+          "providerName": "Slowking",
+          "corroboratingName": "Slowking",
+          "printedNumber": "14/18"
+        },
+        {
+          "providerCardID": "si1-15",
+          "providerName": "Wartortle",
+          "corroboratingName": "Wartortle",
+          "printedNumber": "15/18"
+        },
+        {
+          "providerCardID": "si1-16",
+          "providerName": "Lickitung",
+          "corroboratingName": "Lickitung",
+          "printedNumber": "16/18"
+        },
+        {
+          "providerCardID": "si1-17",
+          "providerName": "Vileplume",
+          "corroboratingName": "Vileplume",
+          "printedNumber": "17/18"
+        },
+        {
+          "providerCardID": "si1-18",
+          "providerName": "Primeape",
+          "corroboratingName": "Primeape",
+          "printedNumber": "18/18"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-latia",
+      "sourceSHA256": "102e96df35e9680dfd52e71b7b91814931722da8743fd6652f6f8c1e74e366e2",
+      "corroboratingURL": "https://www.serebii.net/card/extrainerkitlatias/",
+      "cards": [
+        {
+          "providerCardID": "tk-ex-latia-1",
+          "providerName": "Bagon",
+          "corroboratingName": "Bagon",
+          "printedNumber": "1/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-2",
+          "providerName": "Combusken",
+          "corroboratingName": "Combusken",
+          "printedNumber": "2/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-3",
+          "providerName": "Delcatty",
+          "corroboratingName": "Delcatty",
+          "printedNumber": "3/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-4",
+          "providerName": "Latias",
+          "corroboratingName": "Latias",
+          "printedNumber": "4/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-5",
+          "providerName": "Numel",
+          "corroboratingName": "Numel",
+          "printedNumber": "5/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-6",
+          "providerName": "Skitty",
+          "corroboratingName": "Skitty",
+          "printedNumber": "6/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-7",
+          "providerName": "Torchic",
+          "corroboratingName": "Torchic",
+          "printedNumber": "7/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-8",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "8/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-9",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "9/10"
+        },
+        {
+          "providerCardID": "tk-ex-latia-10",
+          "providerName": "Fire Energy",
+          "corroboratingName": "Fire Energy",
+          "printedNumber": "10/10"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-latio",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-latio",
+      "sourceSHA256": "f8c5f88c26d1b83880df83bf8d2333acea15a76cda454cff8ca090be00a37e77",
+      "corroboratingURL": "https://www.serebii.net/card/extrainerkitlatios/",
+      "cards": [
+        {
+          "providerCardID": "tk-ex-latio-1",
+          "providerName": "Electrike",
+          "corroboratingName": "Electrike",
+          "printedNumber": "1/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-2",
+          "providerName": "Latios",
+          "corroboratingName": "Latios",
+          "printedNumber": "2/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-3",
+          "providerName": "Linoone",
+          "corroboratingName": "Linoone",
+          "printedNumber": "3/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-4",
+          "providerName": "Magnemite",
+          "corroboratingName": "Magnemite",
+          "printedNumber": "4/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-5",
+          "providerName": "Magneton",
+          "corroboratingName": "Magneton",
+          "printedNumber": "5/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-6",
+          "providerName": "Pikachu",
+          "corroboratingName": "Pikachu",
+          "printedNumber": "6/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-7",
+          "providerName": "Zigzagoon",
+          "corroboratingName": "Zigzagoon",
+          "printedNumber": "7/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-8",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "8/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-9",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "9/10"
+        },
+        {
+          "providerCardID": "tk-ex-latio-10",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "10/10"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-m",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-m",
+      "sourceSHA256": "0a17b0e7abf3d27287bf695f1558111594c3c37c229a4c2b280006c8ed3c5780",
+      "corroboratingURL": "https://www.serebii.net/card/extrainerkitminun/",
+      "cards": [
+        {
+          "providerCardID": "tk-ex-m-1",
+          "providerName": "Arcanine",
+          "corroboratingName": "Arcanine",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-2",
+          "providerName": "Charmander",
+          "corroboratingName": "Charmander",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-3",
+          "providerName": "Charmeleon",
+          "corroboratingName": "Charmeleon",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-4",
+          "providerName": "Growlithe",
+          "corroboratingName": "Growlithe",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-5",
+          "providerName": "Mareep",
+          "corroboratingName": "Mareep",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-6",
+          "providerName": "Minun",
+          "corroboratingName": "Minun",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-7",
+          "providerName": "Vulpix",
+          "corroboratingName": "Vulpix",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-8",
+          "providerName": "Celio's Network",
+          "corroboratingName": "Celio's Network",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-9",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-10",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-11",
+          "providerName": "Fire Energy",
+          "corroboratingName": "Fire Energy",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "tk-ex-m-12",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "12/12"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-ex-p",
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-ex-p",
+      "sourceSHA256": "38e774b2380f417a340428e7d13017bfd4da51ff41ecb401298c403d08737ebe",
+      "corroboratingURL": "https://www.serebii.net/card/extrainerkitplusle/",
+      "cards": [
+        {
+          "providerCardID": "tk-ex-p-1",
+          "providerName": "Beldum",
+          "corroboratingName": "Beldum",
+          "printedNumber": "1/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-2",
+          "providerName": "Electrike",
+          "corroboratingName": "Electrike",
+          "printedNumber": "2/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-3",
+          "providerName": "Grumpig",
+          "corroboratingName": "Grumpig",
+          "printedNumber": "3/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-4",
+          "providerName": "Meowth",
+          "corroboratingName": "Meowth",
+          "printedNumber": "4/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-5",
+          "providerName": "Metang",
+          "corroboratingName": "Metang",
+          "printedNumber": "5/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-6",
+          "providerName": "Plusle",
+          "corroboratingName": "Plusle",
+          "printedNumber": "6/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-7",
+          "providerName": "Spoink",
+          "corroboratingName": "Spoink",
+          "printedNumber": "7/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-8",
+          "providerName": "Energy Search",
+          "corroboratingName": "Energy Search",
+          "printedNumber": "8/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-9",
+          "providerName": "Potion",
+          "corroboratingName": "Potion",
+          "printedNumber": "9/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-10",
+          "providerName": "Professor Cozmo's Discovery",
+          "corroboratingName": "Professor Cozmo's Discovery",
+          "printedNumber": "10/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-11",
+          "providerName": "Lightning Energy",
+          "corroboratingName": "Lightning Energy",
+          "printedNumber": "11/12"
+        },
+        {
+          "providerCardID": "tk-ex-p-12",
+          "providerName": "Psychic Energy",
+          "corroboratingName": "Psychic Energy",
+          "printedNumber": "12/12"
+        }
+      ]
+    }
+  ],
+  "detailedCardSHA256": {
+    "si1-1": "b76423a9116b48ed346a86d49fbe8ea9f0789aa9dac8590488ec7b84559131b7",
+    "si1-2": "5b3ba3e449caaef77572e01a7ee64a0566f8c2d5aead33dc625739107bc52c2d",
+    "si1-3": "f9b73332d025e58d53a845ae2af8ee0931f3034555c7ef8c82c3cd2a42ccafb3",
+    "si1-4": "8c6a1ca024f7dcb757e1e8bbb747c56dbf0308704de2886ee7acf55ac5f92651",
+    "si1-5": "4dd9d0b06a98d2127e79f8a23425995c5a616c622f6660e21256845a589bdb54",
+    "si1-6": "4365d206bf6f9deb737505ad03f69ad1ba5764968ca79c984b32451b846eb56a",
+    "si1-7": "9d858e56362ec0d29b5483cc80d2b882ffce38527ef4016b7c6a096e5b4ab167",
+    "si1-8": "76dc85995c42870481ee724d0d07aff7df4012e04f66174f77798477d421ff6d",
+    "si1-9": "bf6e60d728a074471832612cf0508c823b17f511aeba9abe7cf3fb58398b2b4f",
+    "si1-10": "58035acb42304e3a92d64151987948b4a13f460f981ae026a544e2c627e8fbbd",
+    "si1-11": "6141be63a4ccb239e0ef218a6a81f9e7e36a83bfc8da68e8f6d13b7843b7f8c2",
+    "si1-12": "d439b0c1e88fb3d2f84151114bb8233652d289c11022eafc46d34d255365d7fb",
+    "si1-13": "bc92736b84627f8928e3ebea2a739c3733c1bdf549956e28af19d0fa712e205b",
+    "si1-14": "a81a06bebcf7b7a55c9ac7b41634c012e976d69d567ee5162ca401fb7478867f",
+    "si1-15": "c0f22849efe3524f4c64cda2605632fdff467396ced223f3c4299814a793895e",
+    "si1-16": "2546f32fe9519390ba9c9d417f423898c90ceb752605e53bab7bfb2f5efb931f",
+    "si1-17": "07167683dfe98774dd65f0778a0c55f77cb7142249c024965cac82071478640d",
+    "si1-18": "7cfa378cf7a03deec0a2804c8fade7f4e6a8a65e2577f157d6e92601175e27e5",
+    "tk-ex-latia-1": "5db219969ac972410c6110d2177f1c70fd7d7f9be367f7f68a825485d8a751c6",
+    "tk-ex-latia-2": "366150d57fff72d526d09cc39eab143a6a1de920df7207543a58d07579389a13",
+    "tk-ex-latia-3": "8a2053de3bbd77c7b4b6f0da76396d9aef39b504888c93bc82da1ea70e34f56a",
+    "tk-ex-latia-4": "2e9c0837b72cb3e5dc4ceb2d0345ff418a236cbd2c5aa8784c3b5d1f770434a9",
+    "tk-ex-latia-5": "13d3eb1193b745272c717989ccd710c23058e348d6821f4cb75004e2fe6bf7d8",
+    "tk-ex-latia-6": "45820e328094f6b26de85931dbcd8866ba7a270f4f12d147a6c2d2cba91d1810",
+    "tk-ex-latia-7": "4bfc1bf8bfac0a8c62853acdc4d91f3d44e9dd799dd7f4f6e4b3c5b11ed8e3cf",
+    "tk-ex-latia-8": "28f5a20b7fb17343307f00546d50279093dce1976a52726d6446125830adc226",
+    "tk-ex-latia-9": "87d734eb04f86fe530dd76d5f4d148c5e54b1e8022cd91d1085f2b323ec2b109",
+    "tk-ex-latia-10": "da158f580d2a57e786baecf844d70673ceb7373aef6d2af2addaad46f9248b9e",
+    "tk-ex-latio-1": "6abcb551cd5b2c145a2fe46c6242b3dc129d05afb2157df14fd332c684b09aaf",
+    "tk-ex-latio-2": "848e9a78ef239e324f780bf0bb97def0f9287e8fb58cdd94f9bbfecf5bb0ed16",
+    "tk-ex-latio-3": "9cfd57d768fe8f0ed103cc371bf5930e90182f42e47f5d71acc54194b2e35800",
+    "tk-ex-latio-4": "c77883542eda3ae721a9809a5668bd9a5aa7af2e1f9db6bd1530182674f1c68b",
+    "tk-ex-latio-5": "b67d2af1780f954a2efc640749d28dab5423b1848bdfbdeea6329f01d923ad67",
+    "tk-ex-latio-6": "822c14614744b06d19e00220a961680917f84e9347671e47b5f6b3565e55dc87",
+    "tk-ex-latio-7": "8197d5d4051232dda8b44ee76dc832cebec34b3a2be3ba1ede10102988c5d615",
+    "tk-ex-latio-8": "8b5cdf067fe1be459074cfd17e58b8249bd433f6618abed4fc98997425d06704",
+    "tk-ex-latio-9": "c44ded606d0b666cc8ee2e80544616a03ecee04caf06fbb70e19dab7c811fdeb",
+    "tk-ex-latio-10": "2594a7c1b0d0e5097e12923cca41a15d67619081c8a18e90b81d13b7e620c383",
+    "tk-ex-m-1": "45ea4e145e3141ac9976114ea4b5ead5f2ea5c3568645ac649404e222013a1dc",
+    "tk-ex-m-2": "42a1c77b5cac6464f7062422871df614dfec5d01a46d2c2ecde956dd2d4828c1",
+    "tk-ex-m-3": "e05e1e48d792e282180d2e6a51369943b7d868eac2615f6140e2439b4883c9e2",
+    "tk-ex-m-4": "10ca47c2edce6fc9e107b3d4d523968d79178d5005bf85eff2e058b65deda40d",
+    "tk-ex-m-5": "39c0e5a98c0018a8d7ace7484cc75e9b53fc64e11d32f50f49f30773fc5c4a1a",
+    "tk-ex-m-6": "95522b658385fa80673e84287959ec58050490a04467079d22783a7d46aa2b22",
+    "tk-ex-m-7": "d5f07a7517b2cb6c073820b9f7180dc0fbc239c9ecde0b7e5e5ef4626a8b322c",
+    "tk-ex-m-8": "fab1fa1dba256a6c23ca6a448499042285caf87c42462cd4310fae541ab1aea9",
+    "tk-ex-m-9": "9e632c41b2e525ea02e02fdc3d8e96c76eb6550e16409fa773fa9c687bd0726e",
+    "tk-ex-m-10": "9de8ac65ac01cbbab0949eede58fba4abe7b80146c9a96a9faf038812b8e0b19",
+    "tk-ex-m-11": "8ceb8d32709877c94aceca12763b54d440f6f10a91b4bdc5b1d099c56fd5b3f4",
+    "tk-ex-m-12": "d1e9a0af53295afad5b6c876a51414f5b7f6fab5bb46d9b96708181712943f83",
+    "tk-ex-p-1": "c612144930e653b51304b3668ff6763d77dd06bd7179dda1c60c237e1ecd8b5d",
+    "tk-ex-p-2": "173aa775b5a310c3a13bbcbe45db2185b1efdb200ece11fe9d4f89ff56f4b6ad",
+    "tk-ex-p-3": "b75e498f0a8fef1ec19f7e534a84a96de5c72fb2efe9fea725a2fa2cb9d6272b",
+    "tk-ex-p-4": "655666ce480ead5a88c4d70cd83e1d8a325210d9e68eca82a4c5c63e4a3da036",
+    "tk-ex-p-5": "7b8e0b07652f93d973a0a59d4d6684f08d4bd46c9a56874f4f79a1585aa2105e",
+    "tk-ex-p-6": "ae74fb2c7dcd12089ee807924b37898363e4f5f3d21fd208a24d9f078edc30b0",
+    "tk-ex-p-7": "263bc90a6d81c2e529b387dec91ac4bba84ddccfa3128acddd2bdceb81c24014",
+    "tk-ex-p-8": "99a3ff9be9ac302bb1b54b5da08b579ca35cc58ddb5cb629787a4b93ba511ae9",
+    "tk-ex-p-9": "aa756a702e14d63c5eb664bd3e56c4473ab6e8db5775b2d7c7a751664e1e5c6d",
+    "tk-ex-p-10": "76149edcb841766f73d7d5749dea75bfb55a632e9ce79a5231428ea9c5de5d36",
+    "tk-ex-p-11": "c1c35c742d0d0633467c0be48823d57629590b13c98ed23681948abc4eb5137f",
+    "tk-ex-p-12": "5d028a6b7d13d8001d5f76205bd4d54dba055879d3d493aee5ab617ee3316f1c"
+  }
+}

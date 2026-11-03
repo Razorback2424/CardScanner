@@ -1,0 +1,426 @@
+{
+  "sets": [
+    {
+      "providerSetID": "si1",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "si1-1",
+            "canonicalName": "mew",
+            "printedLocalID": "1",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-2",
+            "canonicalName": "pidgeot",
+            "printedLocalID": "2",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-3",
+            "canonicalName": "onix",
+            "printedLocalID": "3",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-4",
+            "canonicalName": "togepi",
+            "printedLocalID": "4",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-5",
+            "canonicalName": "ivysaur",
+            "printedLocalID": "5",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-6",
+            "canonicalName": "raticate",
+            "printedLocalID": "6",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-7",
+            "canonicalName": "ledyba",
+            "printedLocalID": "7",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-8",
+            "canonicalName": "jigglypuff",
+            "printedLocalID": "8",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-9",
+            "canonicalName": "butterfree",
+            "printedLocalID": "9",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-10",
+            "canonicalName": "tentacruel",
+            "printedLocalID": "10",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-11",
+            "canonicalName": "marill",
+            "printedLocalID": "11",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-12",
+            "canonicalName": "lapras",
+            "printedLocalID": "12",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-13",
+            "canonicalName": "exeggutor",
+            "printedLocalID": "13",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-14",
+            "canonicalName": "slowking",
+            "printedLocalID": "14",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-15",
+            "canonicalName": "wartortle",
+            "printedLocalID": "15",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-16",
+            "canonicalName": "lickitung",
+            "printedLocalID": "16",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-17",
+            "canonicalName": "vileplume",
+            "printedLocalID": "17",
+            "printedDenominator": 18
+          },
+          {
+            "providerCardID": "si1-18",
+            "canonicalName": "primeape",
+            "printedLocalID": "18",
+            "printedDenominator": 18
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "tk-ex-latia-1",
+            "canonicalName": "bagon",
+            "printedLocalID": "1",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-2",
+            "canonicalName": "combusken",
+            "printedLocalID": "2",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-3",
+            "canonicalName": "delcatty",
+            "printedLocalID": "3",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-4",
+            "canonicalName": "latias",
+            "printedLocalID": "4",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-5",
+            "canonicalName": "numel",
+            "printedLocalID": "5",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-6",
+            "canonicalName": "skitty",
+            "printedLocalID": "6",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-7",
+            "canonicalName": "torchic",
+            "printedLocalID": "7",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-8",
+            "canonicalName": "potion",
+            "printedLocalID": "8",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-9",
+            "canonicalName": "energy search",
+            "printedLocalID": "9",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latia-10",
+            "canonicalName": "fire energy",
+            "printedLocalID": "10",
+            "printedDenominator": 10
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latio",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "tk-ex-latio-1",
+            "canonicalName": "electrike",
+            "printedLocalID": "1",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-2",
+            "canonicalName": "latios",
+            "printedLocalID": "2",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-3",
+            "canonicalName": "linoone",
+            "printedLocalID": "3",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-4",
+            "canonicalName": "magnemite",
+            "printedLocalID": "4",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-5",
+            "canonicalName": "magneton",
+            "printedLocalID": "5",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-6",
+            "canonicalName": "pikachu",
+            "printedLocalID": "6",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-7",
+            "canonicalName": "zigzagoon",
+            "printedLocalID": "7",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-8",
+            "canonicalName": "potion",
+            "printedLocalID": "8",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-9",
+            "canonicalName": "energy search",
+            "printedLocalID": "9",
+            "printedDenominator": 10
+          },
+          {
+            "providerCardID": "tk-ex-latio-10",
+            "canonicalName": "lightning energy",
+            "printedLocalID": "10",
+            "printedDenominator": 10
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "tk-ex-m",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "tk-ex-m-1",
+            "canonicalName": "arcanine",
+            "printedLocalID": "1",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-2",
+            "canonicalName": "charmander",
+            "printedLocalID": "2",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-3",
+            "canonicalName": "charmeleon",
+            "printedLocalID": "3",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-4",
+            "canonicalName": "growlithe",
+            "printedLocalID": "4",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-5",
+            "canonicalName": "mareep",
+            "printedLocalID": "5",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-6",
+            "canonicalName": "minun",
+            "printedLocalID": "6",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-7",
+            "canonicalName": "vulpix",
+            "printedLocalID": "7",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-8",
+            "canonicalName": "celio s network",
+            "printedLocalID": "8",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-9",
+            "canonicalName": "energy search",
+            "printedLocalID": "9",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-10",
+            "canonicalName": "potion",
+            "printedLocalID": "10",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-11",
+            "canonicalName": "fire energy",
+            "printedLocalID": "11",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-m-12",
+            "canonicalName": "lightning energy",
+            "printedLocalID": "12",
+            "printedDenominator": 12
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "tk-ex-p",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "tk-ex-p-1",
+            "canonicalName": "beldum",
+            "printedLocalID": "1",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-2",
+            "canonicalName": "electrike",
+            "printedLocalID": "2",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-3",
+            "canonicalName": "grumpig",
+            "printedLocalID": "3",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-4",
+            "canonicalName": "meowth",
+            "printedLocalID": "4",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-5",
+            "canonicalName": "metang",
+            "printedLocalID": "5",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-6",
+            "canonicalName": "plusle",
+            "printedLocalID": "6",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-7",
+            "canonicalName": "spoink",
+            "printedLocalID": "7",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-8",
+            "canonicalName": "energy search",
+            "printedLocalID": "8",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-9",
+            "canonicalName": "potion",
+            "printedLocalID": "9",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-10",
+            "canonicalName": "professor cozmo s discovery",
+            "printedLocalID": "10",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-11",
+            "canonicalName": "lightning energy",
+            "printedLocalID": "11",
+            "printedDenominator": 12
+          },
+          {
+            "providerCardID": "tk-ex-p-12",
+            "canonicalName": "psychic energy",
+            "printedLocalID": "12",
+            "printedDenominator": 12
+          }
+        ]
+      }
+    }
+  ]
+}

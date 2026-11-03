@@ -1,5 +1,6 @@
 import XCTest
 import SwiftData
+import PokemonCatalogCore
 @testable import TradingCardScanner
 
 /// Expectations come from the original BOM CSV, independently of the runtime table.
@@ -305,6 +306,403 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         }
         XCTAssertEqual(try reopened.mainContext.fetchCount(FetchDescriptor<CollectionActivity>()), activities)
         XCTAssertEqual(try reopened.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), events)
+    }
+}
+
+private struct RetailVariantSource: PokemonCardSource {
+    let cards: [String: TCGdexCard]
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
+        try XCTUnwrap(cards[setID + "-" + localID])
+    }
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? { nil }
+}
+
+final class RetailVariantTests: XCTestCase {
+    private func usd(_ lookup: PriceLookup) -> Double? {
+        guard case let .price(price) = lookup else { return nil }
+        return price.unitMarketPriceUSD
+    }
+    private func registry(includeSupplements: Bool = true) throws -> PokemonCatalogRegistry {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let rows = try XCTUnwrap(object["sets"] as? [[String: Any]])
+        let descriptors = try rows.filter { ["30th", "svp"].contains($0["providerSetID"] as? String ?? "") }.map { row in
+            var row = row
+            row["officialCount"] = row["claimedOfficialCount"]
+            if !includeSupplements { row.removeValue(forKey: "additionalVariants") }
+            return try JSONDecoder().decode(PokemonCatalogSetDescriptor.self, from: JSONSerialization.data(withJSONObject: row))
+        }
+        let release = PokemonCatalogRelease(revision: includeSupplements ? 2 : 1, generatedAt: .now, sets: descriptors)
+        try PokemonCatalogRegistry.validate(release)
+        return .init(release: release)
+    }
+
+    private func eevee() throws -> TCGdexCard {
+        try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+        {"id":"30th-116","localId":"116","name":"Eevee","image":"https://assets.tcgdex.net/en/me/30th/116",
+         "set":{"id":"30th","name":"30th Celebration","cardCount":{"total":158,"official":128}},
+         "variants":{"firstEdition":false,"normal":true,"holo":false,"reverse":false},
+         "pricing":{"tcgplayer":{"unit":"USD","holofoil":{"marketPrice":1.25,"productId":714357}}}}
+        """#.utf8))
+    }
+
+    private func charizard(jumbo: String = #"{"type":"lenticular","size":"jumbo","languages":["en"],"thirdParty":{"tcgplayer":641615},"pricing":{"tcgplayer":{"unit":"USD","normal":{"marketPrice":7,"productId":641615}}}}"#) throws -> TCGdexCard {
+        let json = #"{"id":"svp-196","localId":"196","name":"Charizard ex","set":{"id":"svp","name":"SV Promos","cardCount":{"total":226,"official":226}},"variants":{"firstEdition":false,"normal":false,"holo":true,"reverse":false},"variants_detailed":[{"type":"holo","size":"standard","thirdParty":{"tcgplayer":641610},"pricing":{"tcgplayer":{"unit":"USD","holofoil":{"marketPrice":2,"productId":641610}}}},"# + jumbo + "]}"
+        return try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+    }
+
+    func testSignedEeveeAddsCosmosWithoutBorrowingHoloPriceOrChangingControls() throws {
+        let registry = try registry()
+        let raw = try eevee()
+        XCTAssertEqual(raw.catalogVariants, [.holo])
+        let card = raw.applyingAdditionalVariants(from: registry)
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        XCTAssertEqual(Set(card.catalogVariants), [.holo, cosmos])
+        let identified = IdentifiedCard.pokemon(card, setCode: "30C")
+        XCTAssertEqual(Set(VariantResolver.options(for: identified.variantEvidence)), [.holo, cosmos])
+        XCTAssertNil(usd(CardPricing.price(for: identified, variant: cosmos, magicTreatments: [])))
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: cosmos, printRun: nil), 717879)
+        XCTAssertTrue(TCGplayerLinkBuilder.destination(for: identified, variant: cosmos).isExactProduct)
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: cosmos).url.path, "/product/717879")
+        XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .holo, magicTreatments: [])), 1.25)
+        let slots = PokemonMasterSetDefinition.requiredVariants(for: card)
+        XCTAssertTrue(try XCTUnwrap(slots.first { $0.variant == cosmos }).isExpanded)
+        XCTAssertFalse(try XCTUnwrap(slots.first { $0.variant == .holo }).isExpanded)
+        XCTAssertNotEqual(identified.collectionKey(variant: cosmos), identified.collectionKey(variant: .holo))
+        XCTAssertEqual(card.applyingAdditionalVariants(from: try self.registry(includeSupplements: false)).catalogVariants, [.holo])
+    }
+
+    func testJumboHasStableLabelDistinctKeysAndExactSizeScopedPrice() throws {
+        let card = try charizard().applyingAdditionalVariants(from: registry())
+        XCTAssertEqual(card.catalogVariants, [.holo, .jumbo])
+        XCTAssertEqual(PhysicalVariant.resolving("jumbo").label, "Jumbo")
+        XCTAssertEqual(try JSONDecoder().decode(PhysicalVariant.self, from: JSONEncoder().encode(PhysicalVariant.jumbo)), .jumbo)
+        let identified = IdentifiedCard.pokemon(card, setCode: "SVP")
+        XCTAssertNotEqual(identified.collectionKey(variant: .jumbo), identified.collectionKey(variant: .holo))
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: nil), 641615)
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .holo, printRun: nil), 641610)
+        XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .jumbo, magicTreatments: [])), 7)
+        XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .holo, magicTreatments: [])), 2)
+        XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: identified, variant: .jumbo), [.tcgplayerID("641615")])
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .jumbo).url.path, "/product/641615")
+        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: identified, variant: nil).isExactProduct)
+        XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: .firstEdition))
+        XCTAssertFalse(PokemonMasterSetDefinition.requiredVariants(for: card).contains { $0.variant == .jumbo })
+    }
+
+    func testJumboRejectsForeignConflictingAmbiguousAndStandardProductEvidence() throws {
+        for jumbo in [
+            #"{"type":"lenticular","size":"jumbo","languages":["ja"],"thirdParty":{"tcgplayer":641615}}"#,
+            #"{"type":"lenticular","size":"jumbo","thirdParty":{"tcgplayer":999999}}"#,
+            #"{"type":"lenticular","size":"jumbo","thirdParty":{"tcgplayer":641610}}"#,
+            #"{"type":"lenticular","size":"jumbo","thirdParty":{"tcgplayer":641615}},{"type":"holo","size":"jumbo","thirdParty":{"tcgplayer":555}}"#
+        ] {
+            let card = try charizard(jumbo: jumbo).applyingAdditionalVariants(from: registry())
+            let identified = IdentifiedCard.pokemon(card, setCode: "SVP")
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: nil), jumbo)
+            XCTAssertNil(usd(CardPricing.price(for: identified, variant: .jumbo, magicTreatments: [])), jumbo)
+        }
+        XCTAssertEqual(try charizard().catalogVariants, [.holo], "Provider data alone cannot authorize the new object")
+    }
+
+    func testAdapterAppliesSignedMembershipToLiveAndCachedReadsAndCanWithdrawIt() async throws {
+        let registry = try registry()
+        let card = try eevee()
+        let source = RetailVariantSource(cards: [card.id: card])
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let adapter = PokemonCatalogAdapter(source: source, resolvedDiskCache: .init(root: root), registry: registry)
+        let identifier = try XCTUnwrap(PokemonScanProfile(registry: registry).parse("30C EN 116/128"))
+        for _ in 0..<2 {
+            guard case let .resolved(result) = try await adapter.lookup(identifier) else { return XCTFail("Expected exact printing") }
+            XCTAssertTrue(result.card.variantEvidence.catalogVariants.contains(.pokemonFoilPattern("cosmos")))
+        }
+        let removed = await adapter.updating(try self.registry(includeSupplements: false))
+        guard case let .resolved(result) = try await removed.lookup(identifier) else { return XCTFail("Expected exact printing") }
+        XCTAssertEqual(result.card.variantEvidence.catalogVariants, [.holo])
+    }
+
+    func testEeveeChecklistProjectionIsAdditiveIdempotentAndLimitedToGrandMaster() throws {
+        var base = CatalogCardSummary(game: .pokemon, providerID: "30th-116",
+            setID: .init(game: .pokemon, providerID: "30th"), setName: "30th Celebration", setCode: "30C",
+            name: "Eevee", collectorNumber: "116", thumbnailURL: nil, imageURL: nil)
+        base.masterSetVariant = .holo
+        base.isSoleSlotForCard = true
+        let registry = try registry()
+        let projected = PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [base], registry: registry)
+        XCTAssertEqual(projected.count, 2)
+        XCTAssertEqual(Set(projected.map(\.id)).count, 2)
+        XCTAssertEqual(projected.filter(\.isExpandedMasterSetVariant).map { $0.masterSetVariant?.id }, ["cosmos"])
+        XCTAssertTrue(projected.allSatisfy { !$0.isSoleSlotForCard })
+        XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: projected, registry: registry), projected)
+        XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [base],
+            registry: try self.registry(includeSupplements: false)), [base])
+    }
+
+    func testCollectionRefreshReappliesCurrentSignedSupplementAndWithdrawal() async throws {
+        let coordinator = PokemonCatalogCoordinator()
+        let registry = try registry()
+        await coordinator.overrideRegistry(registry, revision: registry.revision)
+        let service = PriceQuoteService(registry: .standard,
+            adapters: try GamePriceAdapterRegistry(adapters: [PokemonPriceAdapter()]),
+            pokemonCatalogCoordinator: coordinator)
+        let raw = IdentifiedCard.pokemon(try charizard(), setCode: "SVP")
+        let refreshed = await service.applyingCatalogSupplements(to: raw)
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: refreshed, variant: .jumbo, printRun: nil), 641615)
+        let removed = try self.registry(includeSupplements: false)
+        await coordinator.overrideRegistry(removed, revision: 3)
+        let withdrawn = await service.applyingCatalogSupplements(to: refreshed)
+        XCTAssertFalse(withdrawn.variantEvidence.catalogVariants.contains(.jumbo))
+        XCTAssertNil(CardPricing.tcgplayerProductID(for: withdrawn, variant: .jumbo, printRun: nil))
+    }
+
+    func testReviewedJumboBatchUsesNineteenSizeScopedProductsAndHoldsNumberlessCard() throws {
+        let registry = try registryWithOBF()
+        // Independently reviewed TCGplayer Jumbo product metadata, not IDs read
+        // back from the authoring input being tested.
+        let expected: [(String, String, Int)] = [
+            ("sv03-125", "Charizard ex", 581987), ("svp-004", "Mimikyu ex", 487439),
+            ("svp-018", "Cyclizar ex", 497721), ("svp-049", "Zapdos ex", 520722),
+            ("svp-067", "Roaring Moon ex", 529857), ("svp-068", "Iron Valiant ex", 531864),
+            ("svp-072", "Great Tusk ex", 666593), ("svp-078", "Meowscarada ex", 537979),
+            ("svp-081", "Skeledirge ex", 537976), ("svp-084", "Quaquaval ex", 537977),
+            ("svp-086", "Mabosstiff ex", 543638), ("svp-100", "Grafaiai ex", 548540),
+            ("svp-126", "Palafin ex", 560085), ("svp-162", "Houndstone ex", 596423),
+            ("svp-177", "Bloodmoon Ursaluna ex", 595474), ("svp-193", "Hop's Zacian ex", 625633),
+            ("svp-196", "Charizard ex", 641615), ("svp-205", "Team Rocket's Mewtwo ex", 639951),
+            ("svp-208", "Victini", 646170)
+        ]
+        XCTAssertEqual(registry.descriptors.flatMap { $0.additionalVariants ?? [] }.filter { $0.variantID == "jumbo" }.count, 19)
+        for (id, name, product) in expected {
+            let split = try XCTUnwrap(id.lastIndex(of: "-"))
+            let set = String(id[..<split]), number = String(id[id.index(after: split)...])
+            var detail: [String: Any] = ["type": id == "svp-196" ? "lenticular" : "holo", "size": "jumbo",
+                "languages": ["en"], "thirdParty": ["tcgplayer": id == "svp-162" ? 791832 : product],
+                "pricing": ["tcgplayer": ["unit": "USD", "normal": ["marketPrice": 999, "productId": id == "svp-162" ? 791832 : product]]]]
+            if id == "svp-072" { detail["stamp"] = ["set-logo"] }
+            let object: [String: Any] = ["id": id, "localId": number, "name": name,
+                "set": ["id": set, "name": "Retail fixture", "cardCount": ["total": 226, "official": 197]],
+                "variants": ["normal": false, "holo": true, "reverse": false, "firstEdition": false],
+                "variants_detailed": [detail]]
+            let raw = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object))
+            let card = raw.applyingAdditionalVariants(from: registry)
+            let identified = IdentifiedCard.pokemon(card, setCode: "SVP")
+            XCTAssertTrue(card.catalogVariants.contains(.jumbo), id)
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: nil), product, id)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .jumbo).url.path, "/product/\(product)", id)
+            if id == "svp-162" {
+                XCTAssertNil(usd(CardPricing.price(for: identified, variant: .jumbo, magicTreatments: [])), "Never relabel the replaced product's quote")
+            }
+            if id == "svp-072" {
+                var wrong = detail; wrong["stamp"] = ["horizons"]
+                var wrongCard = object; wrongCard["variants_detailed"] = [wrong]
+                let decoded = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: wrongCard))
+                    .applyingAdditionalVariants(from: registry)
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: .pokemon(decoded, setCode: "SVP"), variant: .jumbo, printRun: nil))
+            }
+            XCTAssertFalse(PokemonMasterSetDefinition.requiredVariants(for: card).contains { $0.variant == .jumbo }, id)
+        }
+        XCTAssertFalse(registry.descriptors.flatMap { $0.additionalVariants ?? [] }.contains { $0.providerCardID == "svp-500" })
+    }
+
+    func testCosmosSignedProductNeverUsesOrdinaryHoloQuoteOrUnknownConflictingHandle() throws {
+        let original = try eevee()
+        let registry = try registry()
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(#"""
+        {"id":"30th-116","localId":"116","name":"Eevee",
+         "set":{"id":"30th","name":"30th Celebration","cardCount":{"total":158,"official":128}},
+         "variants":{"normal":true,"holo":false,"reverse":false,"firstEdition":false}}
+        """#.utf8)) as? [String: Any])
+        for product in [717879, 714357, 999999] {
+            object["variants_detailed"] = [["type": "holo", "foil": "cosmos", "size": "standard", "languages": ["en"],
+                "thirdParty": ["tcgplayer": product],
+                "pricing": ["tcgplayer": ["unit": "USD", "holofoil": ["marketPrice": 3.75, "productId": product]]]]]
+            let card = try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object))
+                .applyingAdditionalVariants(from: registry)
+            let identified = IdentifiedCard.pokemon(card, setCode: "30C")
+            let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: cosmos, printRun: nil), product == 717879 ? 717879 : nil)
+            XCTAssertEqual(usd(CardPricing.price(for: identified, variant: cosmos, magicTreatments: [])), product == 717879 ? 3.75 : nil)
+        }
+        XCTAssertNil(usd(CardPricing.price(for: .pokemon(original.applyingAdditionalVariants(from: registry), setCode: "30C"),
+            variant: .pokemonFoilPattern("cosmos"), magicTreatments: [])))
+    }
+
+    private func ordinaryCorrectionRegistry(includeCorrections: Bool = true) throws -> PokemonCatalogRegistry {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let rows = try XCTUnwrap(object["sets"] as? [[String: Any]])
+        let descriptors = try rows.filter { ["xyp", "sve"].contains($0["providerSetID"] as? String ?? "") }.map { row in
+            var row = row
+            if !includeCorrections { row.removeValue(forKey: "additionalVariants") }
+            return try JSONDecoder().decode(PokemonCatalogSetDescriptor.self, from: JSONSerialization.data(withJSONObject: row))
+        }
+        let release = PokemonCatalogRelease(revision: includeCorrections ? 2 : 1, generatedAt: .now, sets: descriptors)
+        try PokemonCatalogRegistry.validate(release)
+        return .init(release: release)
+    }
+
+    private func ordinaryPromo(number: String = "XY111", name: String = "Celebi", product: Int = 114526,
+                               detailedProduct: Int? = nil) throws -> TCGdexCard {
+        var object: [String: Any] = ["id": "xyp-" + number, "localId": number, "name": name,
+            "set": ["id": "xyp", "name": "XY Promos", "cardCount": ["total": 216, "official": 216]],
+            "variants": ["normal": true, "holo": false, "reverse": false, "firstEdition": false],
+            "pricing": ["tcgplayer": ["unit": "USD", "normal": ["marketPrice": 777, "productId": product]]]]
+        if let detailedProduct {
+            object["variants_detailed"] = [["type": "holo", "size": "standard", "thirdParty": ["tcgplayer": detailedProduct],
+                "pricing": ["tcgplayer": ["unit": "USD", "holofoil": ["marketPrice": 3.75, "productId": detailedProduct]]]]]
+        }
+        return try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object))
+    }
+
+    func testSevenOrdinaryHoloMinimumsRequireChoiceRetainNormalAndUseExactProducts() throws {
+        let registry = try ordinaryCorrectionRegistry()
+        // Expectations from the separate official/marketplace review receipts.
+        for (number, name, product) in [("XY111", "Celebi", 114526), ("XY112", "Jirachi", 117266),
+            ("XY114", "Darkrai", 121946), ("XY116", "Arceus", 121364), ("XY118", "Keldeo", 126034),
+            ("XY119", "Genesect", 125322), ("XY120", "Meloetta", 125898)] {
+            let raw = try ordinaryPromo(number: number, name: name, product: product)
+            let card = raw.applyingAdditionalVariants(from: registry)
+            XCTAssertEqual(card.catalogVariants, [.normal, .holo], number)
+            let identified = IdentifiedCard.pokemon(card, setCode: "XY")
+            XCTAssertEqual(VariantResolver.options(for: identified.variantEvidence), [.holo])
+            XCTAssertFalse(identified.variantEvidence.physicalCoverageVerified)
+            XCTAssertEqual(VariantResolver.resolve(identified.variantEvidence), .needsChoice(options: [.holo], lockDidNotApply: nil))
+            XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: "normal", storedResolution: .uniqueInCatalog,
+                itemKind: .rawCard, printRun: nil, card: identified))
+            XCTAssertNil(usd(CardPricing.price(for: identified, variant: .normal, magicTreatments: [])))
+            XCTAssertNil(usd(CardPricing.price(for: identified, variant: .holo, magicTreatments: [])), "Never borrow the flat Normal quote")
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .normal, printRun: nil))
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .holo, printRun: nil), product)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .holo).url.path, "/product/\(product)")
+            XCTAssertEqual(card.applyingAdditionalVariants(from: try ordinaryCorrectionRegistry(includeCorrections: false)).catalogVariants, [.normal])
+        }
+        let matching = try ordinaryPromo(detailedProduct: 114526).applyingAdditionalVariants(from: registry)
+        XCTAssertEqual(usd(CardPricing.price(for: .pokemon(matching, setCode: "XY"), variant: .holo, magicTreatments: [])), 3.75)
+        let conflicting = try ordinaryPromo(detailedProduct: 999999).applyingAdditionalVariants(from: registry)
+        XCTAssertNil(CardPricing.tcgplayerProductID(for: .pokemon(conflicting, setCode: "XY"), variant: .holo, printRun: nil))
+        XCTAssertNil(usd(CardPricing.price(for: .pokemon(conflicting, setCode: "XY"), variant: .holo, magicTreatments: [])))
+    }
+
+    func testOrdinaryHoloProjectionIsStandardAndExclusionDoesNotInventAMembership() throws {
+        var base = CatalogCardSummary(game: .pokemon, providerID: "xyp-XY111", setID: .init(game: .pokemon, providerID: "xyp"),
+            setName: "XY Promos", setCode: "XY", name: "Celebi", collectorNumber: "XY111", thumbnailURL: nil, imageURL: nil)
+        base.masterSetVariant = .normal; base.isSoleSlotForCard = true
+        let registry = try ordinaryCorrectionRegistry()
+        let projected = PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [base], registry: registry)
+        XCTAssertEqual(Set(projected.compactMap(\.masterSetVariant)), [.normal, .holo])
+        XCTAssertTrue(projected.allSatisfy { !$0.isExpandedMasterSetVariant && !$0.isSoleSlotForCard })
+        XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: projected, registry: registry), projected)
+        let energy = CatalogCardSummary(game: .pokemon, providerID: "sve-002", setID: .init(game: .pokemon, providerID: "sve"),
+            setName: "SV Energy", setCode: "SVE", name: "Fire Energy", collectorNumber: "002", thumbnailURL: nil, imageURL: nil)
+        XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [energy], registry: registry), [energy])
+    }
+
+    func testEnergyExclusionBlocksWrongHandleAndQuoteWithoutAffectingThe010Printing() throws {
+        let registry = try ordinaryCorrectionRegistry()
+        let stamp = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .pokemonFoilPattern("cosmos"), stamps: ["player-rewards-program"]))
+        func energy(_ number: String, product: Int = 651037) throws -> TCGdexCard {
+            let object: [String: Any] = ["id": "sve-" + number, "localId": number, "name": "Fire Energy",
+                "set": ["id": "sve", "name": "SV Energy", "cardCount": ["total": 24, "official": 24]],
+                "variants": ["normal": true, "holo": false, "reverse": true, "firstEdition": false],
+                "variants_detailed": [
+                    ["type": "reverse", "foil": "cosmos", "size": "standard", "stamp": ["player-rewards-program"],
+                     "thirdParty": ["tcgplayer": product], "pricing": ["tcgplayer": ["unit": "USD", "holofoil": ["marketPrice": 5, "productId": product]]]],
+                    ["type": "reverse", "foil": "cosmos", "size": "standard", "thirdParty": ["tcgplayer": 517178],
+                     "pricing": ["tcgplayer": ["unit": "USD", "holofoil": ["marketPrice": 2, "productId": 517178]]]]]]
+            return try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object))
+        }
+        let raw = try energy("002")
+        let corrected = raw.applyingAdditionalVariants(from: registry)
+        XCTAssertEqual(corrected.catalogVariants, raw.catalogVariants, "An exclusion cannot authorize a physical object")
+        let identified = IdentifiedCard.pokemon(corrected, setCode: "SVE")
+        XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: stamp, printRun: nil))
+        XCTAssertNil(usd(CardPricing.price(for: identified, variant: stamp, magicTreatments: [])))
+        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: identified, variant: stamp).isExactProduct)
+        XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .pokemonFoilPattern("cosmos"), magicTreatments: [])), 2)
+        let sibling = IdentifiedCard.pokemon(try energy("010").applyingAdditionalVariants(from: registry), setCode: "SVE")
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: sibling, variant: stamp, printRun: nil), 651037)
+        XCTAssertEqual(usd(CardPricing.price(for: sibling, variant: stamp, magicTreatments: [])), 5)
+        let changed = IdentifiedCard.pokemon(try energy("002", product: 123456).applyingAdditionalVariants(from: registry), setCode: "SVE")
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: changed, variant: stamp, printRun: nil), 123456, "Only the reviewed bad handle is excluded")
+        let withdrawn = IdentifiedCard.pokemon(corrected.applyingAdditionalVariants(from: try ordinaryCorrectionRegistry(includeCorrections: false)), setCode: "SVE")
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: withdrawn, variant: stamp, printRun: nil), 651037)
+    }
+
+    func testOrdinaryCorrectionReappliesOnAdapterCacheReadsAndWithdraws() async throws {
+        let source = RetailVariantSource(cards: ["xyp-XY111": try ordinaryPromo()])
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let adapter = PokemonCatalogAdapter(source: source, resolvedDiskCache: .init(root: root), registry: try ordinaryCorrectionRegistry())
+        let identifier = try XCTUnwrap(PokemonScanProfile(registry: try ordinaryCorrectionRegistry()).parse("XY111"))
+        for _ in 0..<2 {
+            guard case let .resolved(result) = try await adapter.lookup(identifier) else { return XCTFail("Expected promo printing") }
+            XCTAssertEqual(VariantResolver.options(for: result.card.variantEvidence), [.holo])
+            XCTAssertFalse(result.card.variantEvidence.physicalCoverageVerified)
+        }
+        let removed = await adapter.updating(try ordinaryCorrectionRegistry(includeCorrections: false))
+        guard case let .resolved(result) = try await removed.lookup(identifier) else { return XCTFail("Expected promo printing") }
+        XCTAssertEqual(VariantResolver.options(for: result.card.variantEvidence), [.normal])
+    }
+
+    @MainActor
+    func testSignedMinimumDoesNotRekeyStoredNormalHoldingsDuringRefreshOrReopen() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = ModelConfiguration(url: root.appendingPathComponent("holdings.store"))
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let store = CollectionStore(context: container.mainContext)
+        let registry = try ordinaryCorrectionRegistry()
+        var corrected: [String: IdentifiedCard] = [:]
+        for (index, item) in [("XY111", "Celebi", 114526, VariantResolution.userConfirmed),
+            ("XY112", "Jirachi", 117266, .imported), ("XY114", "Darkrai", 121946, .finishLock),
+            ("XY116", "Arceus", 121364, .uniqueInCatalog)].enumerated() {
+            let raw = try ordinaryPromo(number: item.0, name: item.1, product: item.2)
+            let identified = IdentifiedCard.pokemon(raw, setCode: "XY")
+            _ = try store.add(identified, resolved: .init(variant: .normal, resolution: item.3),
+                source: item.3 == .imported ? .csvImport : .scan, quantity: index + 1)
+            corrected[raw.id] = .pokemon(raw.applyingAdditionalVariants(from: registry), setCode: "XY")
+        }
+        let before = try container.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        let saved = Dictionary(uniqueKeysWithValues: before.map { ($0.collectionKey, ($0.quantity, $0.variantResolutionRaw)) })
+        let activityCount = try container.mainContext.fetchCount(FetchDescriptor<CollectionActivity>())
+        let eventCount = try container.mainContext.fetchCount(FetchDescriptor<InventoryEvent>())
+        try container.mainContext.save()
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        let refreshedCards = corrected
+        await worker.setPokemonFetchOverrideForTesting { printing in
+            guard let card = refreshedCards[printing.printingID] else { throw URLError(.resourceUnavailable) }
+            return card
+        }
+        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(result) = outcome else { return XCTFail("Synthetic refresh must complete") }
+        XCTAssertEqual(result.repairedFinishes, 0)
+        let reopened = try ModelContainer(for: CollectionStorageModelSchema.full, configurations: [configuration])
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 4)
+        for row in rows {
+            XCTAssertEqual(row.variantID, "normal")
+            XCTAssertEqual(row.quantity, saved[row.collectionKey]?.0)
+            XCTAssertEqual(row.variantResolutionRaw, saved[row.collectionKey]?.1)
+        }
+        XCTAssertEqual(try reopened.mainContext.fetchCount(FetchDescriptor<CollectionActivity>()), activityCount)
+        XCTAssertEqual(try reopened.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), eventCount)
+    }
+
+    private func registryWithOBF() throws -> PokemonCatalogRegistry {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let rows = try XCTUnwrap(object["sets"] as? [[String: Any]])
+        let descriptors = try rows.filter { ["30th", "svp", "sv03"].contains($0["providerSetID"] as? String ?? "") }.map { row in
+            var row = row; row["officialCount"] = row["claimedOfficialCount"]
+            return try JSONDecoder().decode(PokemonCatalogSetDescriptor.self, from: JSONSerialization.data(withJSONObject: row))
+        }
+        let release = PokemonCatalogRelease(revision: 3, generatedAt: .now, sets: descriptors)
+        try PokemonCatalogRegistry.validate(release)
+        return .init(release: release)
     }
 }
 

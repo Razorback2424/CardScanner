@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAtUTC": "2026-11-03T01:01:16.791563+00:00",
+  "lastRetryAtUTC": "2026-11-03T01:02:53.579019+00:00",
+  "purpose": "Primary-source evidence only; no numeric prices, signatures, or publication",
+  "clientReviewDate": "2026-11-02",
+  "productsRequested": 23,
+  "cardsRequested": 21,
+  "providerTransient503Recovered": 21,
+  "confirmedJumboObjects": 19,
+  "heldNumberlessObject": "svp-500",
+  "signedAuthoringInputSHA256": "d6a52b7f6793b517aa8ad710d891f29f924a0a240074ff55c7bfb930dee48ba8",
+  "corpusCensusSHA256": "ca131df6f62b1fc4bf937c467ee64e8b79dad7e14337ef6ff90ff66ad85870a9",
+  "inspectionNotes": {
+    "svp-162": "TCGplayer 596423 metadata and oversized card image show Houndstone ex SVP 162. Provider handle 791832 returns HTTP 400; replace only that exact reviewed handle, never its quote.",
+    "svp-177": "TCGplayer productName says 177; number attribute says 141/167. Inspected product image footer says SVP 177, agreeing with TCGdex. Attribute conflict is retained in products.json.",
+    "svp-072": "TCGplayer name and image show Paldean Fates stamp, agreeing with provider set-logo stamp.",
+    "svp-500": "Inspected Terapagos & Friends oversized image has SVP mark but no printed collector number. Provider localId 500 is not a printed identity; hold additional variant."
+  },
+  "images": [
+    {
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/595474_400w.jpg",
+      "sha256": "62982d94dfd4dfdc93c4b39932911e366aa759686c356eb3621b2c0f4ea32280"
+    },
+    {
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/596423_400w.jpg",
+      "sha256": "cc47a39c03a77cb1ef5b267925e627743b5a8e0151813fceaaeb4764ff320a8a"
+    },
+    {
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/666593_400w.jpg",
+      "sha256": "92785a373e2163f4505aad0c20fc83cb708edcd9463959280d89ab1911947957"
+    },
+    {
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/595035_400w.jpg",
+      "sha256": "ef49215ec70a1b4b93ae2ba5df37ac37b5fe6c2243d6a8896cb674334f534a43"
+    }
+  ]
+}

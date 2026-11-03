@@ -1,0 +1,1240 @@
+{
+  "observedAtUTC": "2026-11-03T01:35:12.351902+00:00",
+  "method": "Plain GET; decode verification with Pillow; no image files retained",
+  "results": [
+    {
+      "providerCardID": "30th-c-001",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/714372_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 56479,
+      "sha256": "372d4daddc5d604b12d3e06294013b5e5629fa22d88efc8e472af83a080b22ed",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-002",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716156_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 47018,
+      "sha256": "ee88cc86bae10211bccd4b6fc7743932e7e99c026c932a72804b3e5a1c06f7ed",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-003",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716157_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 56811,
+      "sha256": "9815a0c926d8fee7ace895125062663f817a8c98dcf0c8750f64e2099e8610da",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-004",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716158_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 59212,
+      "sha256": "d259a0f88e508f5dd3071ec835c4402bec6bd8df3dbde1ebeec22ca736d191f3",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-005",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716159_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 42821,
+      "sha256": "9d3918d9a10d1e57627bcb0f38a812483314fb748a84c0a7654a73c5516c9b18",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-006",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716160_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 50221,
+      "sha256": "ac641269822c7ff517494d8a20db9d2d7c0351080d56a82c96f29af7d713bb08",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-007",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716161_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 50896,
+      "sha256": "b374ae2e725d0637f6e39a439e2e23ed08dba3f4137a135b47bd7f25ca9ab6d9",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-008",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/714373_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 62928,
+      "sha256": "dc5e343eb7036542b733cec5280d6967b581d6ed9b7cd862fbfc9e6a120db2c8",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-009",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716162_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 35015,
+      "sha256": "f5fd868140db4a2d71f9d437b773eee618a419266aaffc6a8c3159857c25da2d",
+      "dimensions": [
+        400,
+        287
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-010",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716163_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 44047,
+      "sha256": "ad3c37eac87d916ec8caeccbae8825f23dd0a58c638826bac2c144c761c4c4a1",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-011",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716191_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 43051,
+      "sha256": "38adaaa5be1a9a92c73d38233841d5c95fe0bc7334831bd49dd94487adc67818",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-012",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716192_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 43740,
+      "sha256": "e097b84c992fce1fe6eac4358188be9f8e699ca9c6a2c2ae46fe24487dc482d4",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-013",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716193_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 64686,
+      "sha256": "2e6f6904d2bf61fec2fc6a41a6fc4adcaa9ec30e574a148b6e205eec30801c75",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-014",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716194_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 44301,
+      "sha256": "b8e20ed82211245ac00d3d1b46bfbe812940d5b34ae5582f10d705a70ad7d44a",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-015",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716195_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 45359,
+      "sha256": "8e79f0b014c4bb511aa06ad3c7a1dbf19f0305d8676171101410ae8a259e37df",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-016",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716196_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 57731,
+      "sha256": "5f0d32fd4d5464557948bc15fb92c170f9338d9b361d77eee0442f4c7099d680",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-017",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716197_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 70177,
+      "sha256": "3f9820df2302660faf7d52aa14000de7f71f0b845e5960cd228c3ef17239f12a",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-018",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716198_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 45507,
+      "sha256": "9a63d37269f3ad731b1f666148930930cf5110adc1fa56d7ca66b7a88a59cee8",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-019",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716199_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 25692,
+      "sha256": "13c27d4e96a7ce9dd466665be32fb11ad8ba5f0e22d480b86f886af2e9654af3",
+      "dimensions": [
+        400,
+        287
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-020",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716200_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 28399,
+      "sha256": "b927aad636f0cef979b879d9214f8cd675cccdb671afd5ea216c9f0ada0fc679",
+      "dimensions": [
+        400,
+        287
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-021",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716202_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 43601,
+      "sha256": "7a278a281f4fc8f1e31a49ba25bda6571659e54ee1279efd9ece49c189a25a09",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-022",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716203_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 53733,
+      "sha256": "f15d77071a1c3d5de2ae518ab2e67e29e67877dbe1fda330beab82f976469ed8",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-023",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716204_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 62957,
+      "sha256": "d3a25e4e768a00f1849a34d0668e62df28dbac50048ebf4267deac642af9dd5e",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-024",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716205_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 50471,
+      "sha256": "4741f4311d41c01bb9a423e9e86f1af7ff14875318256a6391f4e6dd3562c951",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-025",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716206_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 60223,
+      "sha256": "4330a6a22d715fd51d710ef2897696ee0794e88ebde28dc97e004e664182f14c",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-026",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716207_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 64578,
+      "sha256": "60b47c6f055078fc9559f6c1f20b9d3ec1a0ff4cbbf6c391c9fb4ea670b95a35",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-027",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716208_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 57754,
+      "sha256": "082f50646722053fd7125bce901a729862b9f71c36fdc245fa2e90048aa5a633",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-028",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716209_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 57578,
+      "sha256": "2cfa556e10fc770cc13a7b9ba2d9097d31f2cc6fc42959a8194105dc59e8e1ac",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-029",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/714386_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 47614,
+      "sha256": "60db95d31b99a8f84cb6a0411026c7b58af4ce032ef2ae3c053ee835aadd0b9d",
+      "dimensions": [
+        400,
+        555
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "30th-c-030",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/716210_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 87408,
+      "sha256": "9e5bea01d8375f2869f98280761448569c863f7aa5c366add91e5a1117495aec",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "bwp-BW04",
+      "status": "held-no-exact-product"
+    },
+    {
+      "providerCardID": "bwp-BW05",
+      "status": "held-no-exact-product"
+    },
+    {
+      "providerCardID": "bwp-BW96",
+      "status": "held-no-exact-product"
+    },
+    {
+      "providerCardID": "smp-SM125",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/176944_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 95682,
+      "sha256": "7731845c7068f15c13fd5812df26a4a82dd5f2e0ba35c485a05669a81a7d9cf9",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM135",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/175564_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 77011,
+      "sha256": "1c24641725af996326a75467ed507b1e91e000f6da45322522456457d2cb3370",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM136",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/175563_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 76901,
+      "sha256": "932add59de4a2283662557b82e0fad85ff823ab07421dcab26149cf6b6999c56",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM144",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/180520_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 80104,
+      "sha256": "7606c6faf8b819cabb6d20d1ecb3ef70a5c565f190083ce0d78e710e8400f7c2",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM146",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/177112_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 87451,
+      "sha256": "e2e5dc378f9700e24f03184a5e5778422b88768f122a024c63675bf7398c5377",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM147",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/177111_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 96181,
+      "sha256": "a555cb17d0bed920bd2d76ac53d261ef2e05e477736e7e832f77788924a2e243",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM155",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/178693_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 76546,
+      "sha256": "5e0ef68ad786abba737fe9f21834ceaa41b48e8a75b633ec477ac8789f263585",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM156",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/178692_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 72796,
+      "sha256": "ffffeaad02b3b6e59c019de90e798b007d68df7ed3858a9d7823e7f7436b958d",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM167",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/185984_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 104456,
+      "sha256": "70b901ad0bb621963444a238b86e63994259c9672c5300d9fbb8b7bfce98a52e",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM168",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/185985_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 101945,
+      "sha256": "b394d9c74826f7a18d19f4ebaccb37b1c83ff6fb782f0971c107533b372f4bba",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM169",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/185986_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 107817,
+      "sha256": "c488a06198d98286e72853c01d4115de940e77991e248d24d5fb19be4f83c934",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM170",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/190940_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 67354,
+      "sha256": "7b8beb4dd279db8c8bf1186a1ebec150ea2f94f9e9a4ab2f9d6f7f11909dc4cc",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM179",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189010_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 86278,
+      "sha256": "3d97bd26ea9af911c59c46888df32236da48695a5cb4cb123d34c36af0034a10",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM180",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189012_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 84552,
+      "sha256": "bcd468ca6af5049d5f50ed465c37806d5c2a59e077ba14a5892ef34f9beea276",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM181",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189021_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 87579,
+      "sha256": "f0de26e5c66557d792b8de209d5606484c231c8694d9a81da698673d5d19fab7",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM182",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189022_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 75698,
+      "sha256": "36575be6ab1740b284d74afd8b523f0f852daf935612c5fd7059bb9c260f611a",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM184",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/609698_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 46754,
+      "sha256": "484364c973bdf2a64faabf6592525298d06b6f7fc6aefab6b277572e0afb2b56",
+      "dimensions": [
+        400,
+        559
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM185",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189758_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 76406,
+      "sha256": "ce2bb395ae0a6d1bc6335da76c3b6b170056ec84c19bf237bc434416aa449647",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM186",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189759_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 72073,
+      "sha256": "2b749b0cb2a014647093e2a5afea24a23ff2aeed0d51633231a93c603af2a414",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM188",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/192084_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 87511,
+      "sha256": "62f2d397352d08bb7e6a99b1d6e4c72c8540d3d8f60fd5cc2756cdc9f88eee9c",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM189",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/193277_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 94090,
+      "sha256": "c766ae4e7b3f16add5067e55061efe13e889eac457962475c693157e736476e9",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM190",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/189805_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 54113,
+      "sha256": "adb20a890f8699abb34dd124c71ab28ae2e384135640b68f4eb44d7eb8f34cb8",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM191",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/197856_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 95815,
+      "sha256": "b967d956b838d049b20926498d603bdc0e47d87f5bf8bb30c5adc27329361922",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM192",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/197872_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 103291,
+      "sha256": "6a72b31d28f4c677e19528623a5af10fc3c6d4d0ada14a1f0719115fd9fb3600",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM193",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/197873_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 107327,
+      "sha256": "c97d7cbfde4c3a53ceb9ec312252d305fede40eed8f6cdc1e38e87c520d53b9d",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM194",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/185254_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 62696,
+      "sha256": "b0a12ea19b623f5d40f72ab9b33ff81cd8884e68d6d55e870da07c3eef526b4e",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM195",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/185253_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 105255,
+      "sha256": "88419c06d979ac580430ef7056bf71582c5f306f62c726235cecda7e46171bc7",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM196",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/188165_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 90597,
+      "sha256": "e491a720ff7f5602686a32de0bfb9bb34ea3aae6627be864adb9957152eb4f76",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM197",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/185250_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 110417,
+      "sha256": "7e33d55cce7169375594df2158e19bec9dc3211e3987ea75a0cc411511760160",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM198",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/188320_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 63986,
+      "sha256": "130cf2027b3afc30a426b0427ea7d3fa8dc8b9b109db6dc08936f47eb62296fa",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM199",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/188321_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 50917,
+      "sha256": "d8d1f01c1cd5c8cadd3562c43fd0e75b66b2b11b112c954c6544cb6976dde342",
+      "dimensions": [
+        400,
+        557
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM200",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/188322_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 65725,
+      "sha256": "7ca6a8f550f4f94f1e13c311d7dd65c3bde7c2f1a379030b7deb636b5010b656",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM218",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/201940_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 78756,
+      "sha256": "fc178d54114dae1c3b94c5fbf1023e5d0959aed365b20341f5e93738536e018f",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM219",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/201943_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 80558,
+      "sha256": "be3f52c7d6c536d9aeccd59f24f386840d31cdec9ef5b7835ef5dccf789dc0d3",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM220",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/201938_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 85509,
+      "sha256": "49aaf7fca2c62332f59df1376bbb0df3770e26371b8cb8f20a9d59c227bbc24f",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM221",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/201944_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 77747,
+      "sha256": "71f2c830f3704aa061f4c40ca7d9bc10f7ced3e64de2b9f4601fca2c644b92aa",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM222",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/204985_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 65147,
+      "sha256": "428c0782f1a0b080828599a7b7305c70b47310da3f78a15753fe9153de00065b",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM223",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/204984_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 82766,
+      "sha256": "818bfc530c1fb09c82aead62a7aacc704af095ad5ddb58a5a8fafd1f5c838efb",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM224",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/204973_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 71553,
+      "sha256": "6af3ddce1bf742da23ab6773ebc4ee7987e56a9722be9bae938aea6c51d447be",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM225",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/204966_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 86187,
+      "sha256": "95c89a7f6a3ce0f47a121712d8a33f1d58e869a75a18766ad8b3ce804cd3e759",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM226",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/205171_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 75759,
+      "sha256": "a20eaad1b197fd2ec2d8989dfe257066dba5a3337a44eb91931999eea5f5032e",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM228",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/205169_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 67029,
+      "sha256": "75633eac4d2015c6c6de7a8c4b474471b0221637907c26206c2b24d98513f286",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM229",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/205162_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 98227,
+      "sha256": "c09313dddd36ee1bc3ac36de68e5335bd5da2c6f71e1a0ae4846b1fd1aadf118",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM230",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/205163_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 106452,
+      "sha256": "67de7c7e68bb014146b67cadfe0747f212245c36789003745610fba374133dc6",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM231",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/198360_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 75696,
+      "sha256": "7704ede344d1fb6f720142d1033fdfe7556747b4feec7defe368477cba0a5c6f",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM232",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/200273_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 82349,
+      "sha256": "6c6092a1d9cb80d18c62d06e666d725d3c16be7bac9d33288bb403a7462e23b4",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM233",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/200272_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 88969,
+      "sha256": "34ed0e1cf81fe28c2996bc435f82eba94e579f76a7890361061bc53f2cca3259",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM235",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/200276_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 70490,
+      "sha256": "f00f8e5b6483626566d2125e11264f71f4d4a2810bed76f325344bcfa52a7fa2",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM236",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/207496_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 99641,
+      "sha256": "666a791c615cde33f34f8b02cd569129b0cffd05f49ede16c46b518df2fffc27",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM237",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211627_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 70598,
+      "sha256": "4c5f12417607a1d5d4d3464f8b268a0e54de68d681ec3affd548925189d3c392",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM238",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211628_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 85531,
+      "sha256": "a3dc6178ad7510e90db1e46e575c76b73f59a4329de176e9226378820c04080b",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM239",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211451_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 98955,
+      "sha256": "e4a671b07c9d34861c9255abad968e9fca7dc234d46c8f6f997b98db66af90d8",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM240",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211455_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 92983,
+      "sha256": "bef5569a99cffb03d7f2df34dbf7a7b6086d41b5f6847d18b2ea79710a49cc31",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM241",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211452_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 95135,
+      "sha256": "adfdf918cc4ca1b2026877d977a20a171a861e28230581e2bc6783a725cf9642",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM242",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211456_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 75723,
+      "sha256": "ce862ef9241ae0249cb29e9efc4e19cb1ced45ed1cfcfc62f27dbbb74808f01c",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM243",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/211626_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 70853,
+      "sha256": "05952b21c9e64ccafe657a30e665a085e6aaf464b456b3a7a3e22adc51163b67",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM244",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/214272_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 76566,
+      "sha256": "7908b3bde119521d6d0f1d9e238fe7d2fd50db5ae250a621afb4c7d713525702",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM245",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/245874_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 71220,
+      "sha256": "80220e2349016e48404ee16a6661d75a50b09e64e082d513873f131eb1ced87a",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM246",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/245873_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 80262,
+      "sha256": "21e6651b54c4cf37ec1c217ffc2f72cc341720898a8da2a06e91e4997b94604e",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM247",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/253394_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 97202,
+      "sha256": "4cc262afd2fde3f1239c2cd7f2417c991898434fafec61ebf4d502eb1b80de70",
+      "dimensions": [
+        400,
+        556
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM248",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/253397_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 96624,
+      "sha256": "a5c395ef79e383386fbe1e5cf0b12491ea1dc07f23423be50733c2c1cfc056f6",
+      "dimensions": [
+        400,
+        557
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM89",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/154718_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 83751,
+      "sha256": "6c52fdd2be2dab3212768ea752435b72e88b9faf7191615d06751e551da25d82",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM90",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/155587_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 85375,
+      "sha256": "57541e310a76e46c29b4c1f277c0e6292e9d5e64108b4e5ab45da9611a17c265",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    },
+    {
+      "providerCardID": "smp-SM93",
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/155597_400w.jpg",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 68397,
+      "sha256": "95ba8308d444c0a263512844fe521d223fdb4ed33050b28461ae2f4788c513a6",
+      "dimensions": [
+        400,
+        558
+      ],
+      "status": "image-decoded"
+    }
+  ]
+}

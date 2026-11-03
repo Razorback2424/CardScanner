@@ -1,0 +1,798 @@
+{
+  "addedProviderSetIDs": [
+    "2011bw",
+    "2012bw",
+    "2014xy",
+    "2015xy",
+    "2016xy",
+    "2017sm",
+    "2018sm",
+    "2019sm",
+    "2021swsh",
+    "2022swsh",
+    "2023sv",
+    "2024sv",
+    "pop1",
+    "pop2",
+    "pop3",
+    "pop4",
+    "pop5",
+    "pop6",
+    "pop7",
+    "pop8",
+    "pop9",
+    "si1",
+    "sve",
+    "tk-bw-e",
+    "tk-bw-z",
+    "tk-dp-l",
+    "tk-dp-m",
+    "tk-ex-latia",
+    "tk-ex-latio",
+    "tk-ex-m",
+    "tk-ex-p",
+    "tk-hs-g",
+    "tk-hs-r",
+    "tk-sm-r",
+    "tk-xy-b",
+    "tk-xy-latia",
+    "tk-xy-latio",
+    "tk-xy-n",
+    "tk-xy-p",
+    "tk-xy-su",
+    "tk-xy-sy",
+    "tk-xy-w"
+  ],
+  "ambiguousSecondaryMatches": [],
+  "authorityChangedProviderSetIDs": [
+    "30th",
+    "sv03",
+    "svp",
+    "swshp",
+    "xyp"
+  ],
+  "baselineFingerprintProviderSetIDs": [],
+  "changeClass": "newSet",
+  "changedProviderSetIDs": [
+    "30th",
+    "30th-c",
+    "bwp",
+    "me02",
+    "mep",
+    "smp",
+    "sv03",
+    "svp",
+    "swshp",
+    "xyp"
+  ],
+  "contentChangedProviderSetIDs": [
+    "30th-c",
+    "bwp",
+    "me02",
+    "mep",
+    "smp"
+  ],
+  "excludedProviderSetIDs": [],
+  "generatedAt": "2026-11-03T04:30:45Z",
+  "revision": 20,
+  "schemaVersion": 1,
+  "secondaryProviderAvailable": false,
+  "sets": [
+    {
+      "displayName": "McDonald's Collection 2011",
+      "providerCardCount": 12,
+      "providerFingerprint": "405ee514be8d8cb7",
+      "providerSetID": "2011bw",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2012",
+      "providerCardCount": 12,
+      "providerFingerprint": "91da8381b518fe99",
+      "providerSetID": "2012bw",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2014",
+      "providerCardCount": 12,
+      "providerFingerprint": "3372b9aa397d40c9",
+      "providerSetID": "2014xy",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2015",
+      "providerCardCount": 12,
+      "providerFingerprint": "b97238ec60ab74f4",
+      "providerSetID": "2015xy",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2016",
+      "providerCardCount": 12,
+      "providerFingerprint": "877db9dfac7074e3",
+      "providerSetID": "2016xy",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2017",
+      "providerCardCount": 12,
+      "providerFingerprint": "158be9ccd2d68c65",
+      "providerSetID": "2017sm",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2018",
+      "providerCardCount": 12,
+      "providerFingerprint": "9ccb1ef23814cd72",
+      "providerSetID": "2018sm",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2019",
+      "providerCardCount": 12,
+      "providerFingerprint": "cbcce4b277db0109",
+      "providerSetID": "2019sm",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "McDonald's Collection 2021",
+      "providerCardCount": 25,
+      "providerFingerprint": "555028a0a72035f0",
+      "providerSetID": "2021swsh",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2022",
+      "providerCardCount": 15,
+      "providerFingerprint": "39949e90a431ca13",
+      "providerSetID": "2022swsh",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2023",
+      "providerCardCount": 15,
+      "providerFingerprint": "9b0edbf765085018",
+      "providerSetID": "2023sv",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "McDonald's Collection 2024",
+      "providerCardCount": 15,
+      "providerFingerprint": "70a0b0136523a3e4",
+      "providerSetID": "2024sv",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:tcgdexProbe;symbol:tcgdexProbe",
+      "displayName": "30th Celebration",
+      "officialCount": 128,
+      "printedCode": "30C",
+      "providerCardCount": 158,
+      "providerFingerprint": "5e37f0a3f452c1c9",
+      "providerSetID": "30th",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:configured;symbol:configured",
+      "displayName": "30th Celebration Classic Collection",
+      "printedCode": "30C",
+      "providerCardCount": 30,
+      "providerFingerprint": "d25f4d40ba454af9",
+      "providerSetID": "30th-c",
+      "recognitionKind": "notScannable",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "BW Black Star Promos",
+      "printedCode": "BW",
+      "providerCardCount": 101,
+      "providerFingerprint": "852c42b05c1b9ddc",
+      "providerSetID": "bwp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "DP Black Star Promos",
+      "printedCode": "DP",
+      "providerCardCount": 56,
+      "providerFingerprint": "4ff0e654c3dc5234",
+      "providerSetID": "dpp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "HGSS Black Star Promos",
+      "printedCode": "HGSS",
+      "providerCardCount": 25,
+      "providerFingerprint": "1603995845c53508",
+      "providerSetID": "hgssp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Mega Evolution",
+      "officialCount": 132,
+      "printedCode": "MEG",
+      "providerCardCount": 188,
+      "providerFingerprint": "d0871ffc2e86e4f5",
+      "providerSetID": "me01",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:configured",
+      "displayName": "Phantasmal Flames",
+      "officialCount": 94,
+      "printedCode": "PFL",
+      "providerCardCount": 130,
+      "providerFingerprint": "f537495853ac697f",
+      "providerSetID": "me02",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Ascended Heroes",
+      "officialCount": 217,
+      "printedCode": "ASC",
+      "providerCardCount": 295,
+      "providerFingerprint": "f33cca810862fd1a",
+      "providerSetID": "me02.5",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Perfect Order",
+      "officialCount": 88,
+      "printedCode": "POR",
+      "providerCardCount": 124,
+      "providerFingerprint": "80ea23f947ab4abc",
+      "providerSetID": "me03",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Chaos Rising",
+      "officialCount": 86,
+      "printedCode": "CRI",
+      "providerCardCount": 122,
+      "providerFingerprint": "fe3dbf0de74133a4",
+      "providerSetID": "me04",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Pitch Black",
+      "officialCount": 84,
+      "printedCode": "PBL",
+      "providerCardCount": 120,
+      "providerFingerprint": "50181a86d5091e65",
+      "providerSetID": "me05",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "displayName": "Mega Evolution Energy",
+      "printedCode": "MEE",
+      "providerCardCount": 8,
+      "providerFingerprint": "517d2dda9130c23c",
+      "providerSetID": "mee",
+      "recognitionKind": "energy",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "symbol:tcgdexProbe;cards:tcgdexCDNProbe:001,002,003,004,005,006,007,008,009,010,011,012,013,014,015,016,017,018,019,020,021,022,023,024,025,026,027,028,029,030,031,037,038,039,040,041,042,043,044,045",
+      "displayName": "MEP Black Star Promos",
+      "printedCode": "MEP",
+      "providerCardCount": 89,
+      "providerFingerprint": "d0068f5216976403",
+      "providerSetID": "mep",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 1",
+      "providerCardCount": 17,
+      "providerFingerprint": "36310da5eb2d2839",
+      "providerSetID": "pop1",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 2",
+      "providerCardCount": 17,
+      "providerFingerprint": "e711f607c619b649",
+      "providerSetID": "pop2",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 3",
+      "providerCardCount": 17,
+      "providerFingerprint": "d147f9f3654c5a80",
+      "providerSetID": "pop3",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 4",
+      "providerCardCount": 17,
+      "providerFingerprint": "180eabb791214c57",
+      "providerSetID": "pop4",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 5",
+      "providerCardCount": 17,
+      "providerFingerprint": "c69870d438540294",
+      "providerSetID": "pop5",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 6",
+      "providerCardCount": 17,
+      "providerFingerprint": "29bcfe06c916cb4e",
+      "providerSetID": "pop6",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 7",
+      "providerCardCount": 17,
+      "providerFingerprint": "70e05a83ff1f8c23",
+      "providerSetID": "pop7",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 8",
+      "providerCardCount": 17,
+      "providerFingerprint": "eefcda119db0ac33",
+      "providerSetID": "pop8",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "POP Series 9",
+      "providerCardCount": 17,
+      "providerFingerprint": "c8a783382e81ca85",
+      "providerSetID": "pop9",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Southern Islands",
+      "providerCardCount": 18,
+      "providerFingerprint": "3d6f04c8b5e0aedd",
+      "providerSetID": "si1",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "SM Black Star Promos",
+      "printedCode": "SM",
+      "providerCardCount": 248,
+      "providerFingerprint": "94b8a4ef5cb45242",
+      "providerSetID": "smp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Scarlet & Violet",
+      "officialCount": 198,
+      "printedCode": "SVI",
+      "providerCardCount": 258,
+      "providerFingerprint": "759ffae907c46c63",
+      "providerSetID": "sv01",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Paldea Evolved",
+      "officialCount": 193,
+      "printedCode": "PAL",
+      "providerCardCount": 279,
+      "providerFingerprint": "ef4a1ab20f6301b7",
+      "providerSetID": "sv02",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Obsidian Flames",
+      "officialCount": 197,
+      "printedCode": "OBF",
+      "providerCardCount": 230,
+      "providerFingerprint": "53246b009371e0ed",
+      "providerSetID": "sv03",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "151",
+      "officialCount": 165,
+      "printedCode": "MEW",
+      "providerCardCount": 207,
+      "providerFingerprint": "7749d1e5d230109",
+      "providerSetID": "sv03.5",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Paradox Rift",
+      "officialCount": 182,
+      "printedCode": "PAR",
+      "providerCardCount": 266,
+      "providerFingerprint": "c7ee41b4f8eb4e0a",
+      "providerSetID": "sv04",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Paldean Fates",
+      "officialCount": 91,
+      "printedCode": "PAF",
+      "providerCardCount": 245,
+      "providerFingerprint": "a4d4540e7248c115",
+      "providerSetID": "sv04.5",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:signed;symbol:provider",
+      "displayName": "Temporal Forces",
+      "officialCount": 162,
+      "printedCode": "TEF",
+      "providerCardCount": 218,
+      "providerFingerprint": "29ffc36e71804e17",
+      "providerSetID": "sv05",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Twilight Masquerade",
+      "officialCount": 167,
+      "printedCode": "TWM",
+      "providerCardCount": 226,
+      "providerFingerprint": "77695f6d2c6341f5",
+      "providerSetID": "sv06",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Shrouded Fable",
+      "officialCount": 64,
+      "printedCode": "SFA",
+      "providerCardCount": 99,
+      "providerFingerprint": "932dab8b45be203e",
+      "providerSetID": "sv06.5",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:signed",
+      "displayName": "Stellar Crown",
+      "officialCount": 142,
+      "printedCode": "SCR",
+      "providerCardCount": 175,
+      "providerFingerprint": "7c19483f1b646325",
+      "providerSetID": "sv07",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:signed",
+      "displayName": "Surging Sparks",
+      "officialCount": 191,
+      "printedCode": "SSP",
+      "providerCardCount": 252,
+      "providerFingerprint": "be775b622e06a9c6",
+      "providerSetID": "sv08",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:signed",
+      "displayName": "Prismatic Evolutions",
+      "officialCount": 131,
+      "printedCode": "PRE",
+      "providerCardCount": 180,
+      "providerFingerprint": "a4b1c8d90d3518e0",
+      "providerSetID": "sv08.5",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Journey Together",
+      "officialCount": 159,
+      "printedCode": "JTG",
+      "providerCardCount": 190,
+      "providerFingerprint": "91c1196bb98475ea",
+      "providerSetID": "sv09",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Destined Rivals",
+      "officialCount": 182,
+      "printedCode": "DRI",
+      "providerCardCount": 244,
+      "providerFingerprint": "c27fa408b7977ca7",
+      "providerSetID": "sv10",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "Black Bolt",
+      "officialCount": 86,
+      "printedCode": "BLK",
+      "providerCardCount": 172,
+      "providerFingerprint": "803204e0aebafcd0",
+      "providerSetID": "sv10.5b",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "White Flare",
+      "officialCount": 86,
+      "printedCode": "WHT",
+      "providerCardCount": 173,
+      "providerFingerprint": "e394af0adece0364",
+      "providerSetID": "sv10.5w",
+      "recognitionKind": "expansion",
+      "status": "verified"
+    },
+    {
+      "displayName": "Scarlet & Violet Energy",
+      "printedCode": "SVE",
+      "providerCardCount": 24,
+      "providerFingerprint": "cc34c5b8b7b2e977",
+      "providerSetID": "sve",
+      "recognitionKind": "energy",
+      "status": "added"
+    },
+    {
+      "artworkSource": "cards:tcgdexCDNProbe:191,192,196,199,200,201,202,203,204,205,213,214,215,216,217,218,224,225,500",
+      "displayName": "SVP Black Star Promos",
+      "printedCode": "SVP",
+      "providerCardCount": 226,
+      "providerFingerprint": "aac86e1ad5367b83",
+      "providerSetID": "svp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "SWSH Black Star Promos",
+      "printedCode": "SWSH",
+      "providerCardCount": 307,
+      "providerFingerprint": "9794ec4ea3ca22d2",
+      "providerSetID": "swshp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    },
+    {
+      "displayName": "BW trainer Kit (Excadrill)",
+      "providerCardCount": 30,
+      "providerFingerprint": "2fe6fb5546ae6044",
+      "providerSetID": "tk-bw-e",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "BW trainer Kit (Zoroark)",
+      "providerCardCount": 30,
+      "providerFingerprint": "f2f926c870adf726",
+      "providerSetID": "tk-bw-z",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "DP trainer Kit (Lucario)",
+      "providerCardCount": 11,
+      "providerFingerprint": "8448235bb45c91ef",
+      "providerSetID": "tk-dp-l",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "DP trainer Kit (Manaphy)",
+      "providerCardCount": 12,
+      "providerFingerprint": "97048207beb8b012",
+      "providerSetID": "tk-dp-m",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "EX trainer Kit (Latias)",
+      "providerCardCount": 10,
+      "providerFingerprint": "c27d522af915ca4b",
+      "providerSetID": "tk-ex-latia",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "EX trainer Kit (Latios)",
+      "providerCardCount": 10,
+      "providerFingerprint": "a44e5ee218432611",
+      "providerSetID": "tk-ex-latio",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "displayName": "EX trainer Kit 2 (Minun)",
+      "providerCardCount": 12,
+      "providerFingerprint": "baa9f1a840810fa8",
+      "providerSetID": "tk-ex-m",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "EX trainer Kit 2 (Plusle)",
+      "providerCardCount": 12,
+      "providerFingerprint": "beab5eef263c6f77",
+      "providerSetID": "tk-ex-p",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "HS trainer Kit (Gyarados)",
+      "providerCardCount": 30,
+      "providerFingerprint": "64e928df201095ef",
+      "providerSetID": "tk-hs-g",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "HS trainer Kit (Raichu)",
+      "providerCardCount": 30,
+      "providerFingerprint": "5e989e288e13ee08",
+      "providerSetID": "tk-hs-r",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "SM trainer Kit (Alolan Raichu)",
+      "providerCardCount": 30,
+      "providerFingerprint": "dba067e5c0e6bb28",
+      "providerSetID": "tk-sm-r",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Bisharp)",
+      "providerCardCount": 30,
+      "providerFingerprint": "d87ea02cdbaa11c5",
+      "providerSetID": "tk-xy-b",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Latias)",
+      "providerCardCount": 30,
+      "providerFingerprint": "d4d598db7c96ed36",
+      "providerSetID": "tk-xy-latia",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Latios)",
+      "providerCardCount": 30,
+      "providerFingerprint": "2cd3fbfc2f042c70",
+      "providerSetID": "tk-xy-latio",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Noivern)",
+      "providerCardCount": 30,
+      "providerFingerprint": "694d894fe085a0e1",
+      "providerSetID": "tk-xy-n",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Pikachu Libre)",
+      "providerCardCount": 30,
+      "providerFingerprint": "87fbb5fc958b4b64",
+      "providerSetID": "tk-xy-p",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Suicune)",
+      "providerCardCount": 30,
+      "providerFingerprint": "905da8c6a52bc545",
+      "providerSetID": "tk-xy-su",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Sylveon)",
+      "providerCardCount": 30,
+      "providerFingerprint": "4b26d364279bbbc6",
+      "providerSetID": "tk-xy-sy",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "symbol:provider",
+      "displayName": "XY trainer Kit (Wigglytuff)",
+      "providerCardCount": 30,
+      "providerFingerprint": "e8eafada1ebbb3fe",
+      "providerSetID": "tk-xy-w",
+      "recognitionKind": "notScannable",
+      "status": "added"
+    },
+    {
+      "artworkSource": "logo:provider;symbol:provider",
+      "displayName": "XY Black Star Promos",
+      "printedCode": "XY",
+      "providerCardCount": 216,
+      "providerFingerprint": "825b239a95b62d13",
+      "providerSetID": "xyp",
+      "recognitionKind": "promo",
+      "status": "verified"
+    }
+  ]
+}

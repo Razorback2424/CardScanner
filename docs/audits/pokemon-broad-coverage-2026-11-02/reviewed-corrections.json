@@ -1,0 +1,120 @@
+{
+  "status": "Concrete review proposal only; no production data or app/publisher code changed",
+  "ordinaryHoloAdditions": [
+    {
+      "providerCardID": "xyp-XY111",
+      "canonicalName": "Celebi",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 114526,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY111",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/114526/details",
+      "officialProductURL": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mythical-pokemon-collection-celebi/",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    },
+    {
+      "providerCardID": "xyp-XY112",
+      "canonicalName": "Jirachi",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 117266,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY112",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/117266/details",
+      "officialProductURL": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-jirachi",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    },
+    {
+      "providerCardID": "xyp-XY116",
+      "canonicalName": "Arceus",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 121364,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY116",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/121364/details",
+      "officialProductURL": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mythical-pokemon-collection-arceus",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    },
+    {
+      "providerCardID": "xyp-XY114",
+      "canonicalName": "Darkrai",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 121946,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY114",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/121946/details",
+      "officialProductURL": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-darkrai",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    },
+    {
+      "providerCardID": "xyp-XY119",
+      "canonicalName": "Genesect",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 125322,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY119",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/125322/details",
+      "officialProductURL": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-genesect/",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    },
+    {
+      "providerCardID": "xyp-XY120",
+      "canonicalName": "Meloetta",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 125898,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY120",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/125898/details",
+      "officialProductURL": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-meloetta",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    },
+    {
+      "providerCardID": "xyp-XY118",
+      "canonicalName": "Keldeo",
+      "confirmedAdditionalVariant": "holo",
+      "reviewedTCGplayerProductID": 126034,
+      "providerURL": "https://api.tcgdex.net/v2/en/cards/xyp-XY118",
+      "marketplaceURL": "https://mp-search-api.tcgplayer.com/v1/product/126034/details",
+      "officialProductURL": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-keldeo",
+      "officialObservation": "Official indexed product body identifies a foil promo of this Pokemon; marketplace identifies the exact XY number and Holo-only product.",
+      "officialAccess": "Web search index of official product page; no raw body hash claimed",
+      "retainedNormalDisposition": "No deletion or automatic rekey; physical/product review required",
+      "installed": false
+    }
+  ],
+  "exactProductExclusion": {
+    "providerCardID": "sve-002",
+    "physicalAxes": {
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamp": [
+        "player-rewards-program"
+      ],
+      "size": "standard"
+    },
+    "rejectedTCGplayerProductID": 651037,
+    "reason": "Primary product number is 010; the provider also assigns it to sve-010. SVE002 cannot borrow the distinct printed product.",
+    "providerURL": "https://api.tcgdex.net/v2/en/cards/sve-002",
+    "independentProductURL": "https://mp-search-api.tcgplayer.com/v1/product/651037/details",
+    "replaceWithGuessedProduct": false,
+    "deletePhysicalVariant": false,
+    "installed": false
+  },
+  "minimalSupportNeeded": [
+    "Deliver ordinary finish minimums through signed data using existing physical-review behavior",
+    "Deliver exact physical-object product exclusions and discard excluded quotes",
+    "Preserve protected authority classification, signature validation, cache withdrawal and existing holdings"
+  ],
+  "constraint": "Owner prohibits underlying scanner/portfolio/catalog logic changes beyond catalog data. Current explicit signed support implements Jumbo and Cosmos only; broader signed corrections need a scope decision."
+}

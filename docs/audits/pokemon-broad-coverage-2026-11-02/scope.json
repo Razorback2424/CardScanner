@@ -1,0 +1,3168 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "sourceReceipts": {
+    "https://api.tcgdex.net/v2/en/sets": {
+      "sha256": "5d1d49cc20ff35b5b93bd14226d80e9298b6ab33ce086ab128fbb6bd8cb5c79a"
+    },
+    "https://api.tcgdex.net/v2/en/series/tcgp": {
+      "sha256": "6f9959038b30271ec4480f1d8929216a78b16fcb6778467471ba4fa91c1a0ded"
+    },
+    "https://scanstash-catalog-prod.web.app/v1/current.json": {
+      "sha256": "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333"
+    }
+  },
+  "servedRevision": 19,
+  "servedGeneratedAt": "2026-11-02T16:00:17Z",
+  "signatureVerification": "not performed by this census",
+  "counts": {
+    "directory": 220,
+    "pocketOnly": 15,
+    "physical": 205,
+    "servedDescriptors": 33,
+    "configuredDescriptors": 75,
+    "bundledSets": 146
+  },
+  "configuredNotServed": [
+    "2011bw",
+    "2012bw",
+    "2014xy",
+    "2015xy",
+    "2016xy",
+    "2017sm",
+    "2018sm",
+    "2019sm",
+    "2021swsh",
+    "2022swsh",
+    "2023sv",
+    "2024sv",
+    "pop1",
+    "pop2",
+    "pop3",
+    "pop4",
+    "pop5",
+    "pop6",
+    "pop7",
+    "pop8",
+    "pop9",
+    "si1",
+    "sve",
+    "tk-bw-e",
+    "tk-bw-z",
+    "tk-dp-l",
+    "tk-dp-m",
+    "tk-ex-latia",
+    "tk-ex-latio",
+    "tk-ex-m",
+    "tk-ex-p",
+    "tk-hs-g",
+    "tk-hs-r",
+    "tk-sm-r",
+    "tk-xy-b",
+    "tk-xy-latia",
+    "tk-xy-latio",
+    "tk-xy-n",
+    "tk-xy-p",
+    "tk-xy-su",
+    "tk-xy-sy",
+    "tk-xy-w"
+  ],
+  "servedNotConfigured": [],
+  "physicalWithoutServedDescriptor": [
+    "miscp",
+    "base1",
+    "base2",
+    "basep",
+    "wp",
+    "base3",
+    "jumbo",
+    "base4",
+    "base5",
+    "gym1",
+    "gym2",
+    "neo1",
+    "neo2",
+    "si1",
+    "neo3",
+    "neo4",
+    "lc",
+    "sp",
+    "ecard1",
+    "bog",
+    "ecard2",
+    "ecard3",
+    "ex1",
+    "ex2",
+    "np",
+    "ex3",
+    "ex4",
+    "ex5",
+    "tk-ex-latia",
+    "tk-ex-latio",
+    "ex5.5",
+    "ex6",
+    "pop1",
+    "ex7",
+    "ex8",
+    "ex9",
+    "pop2",
+    "ex10",
+    "exu",
+    "ex11",
+    "ex12",
+    "tk-ex-m",
+    "tk-ex-p",
+    "pop3",
+    "ex13",
+    "pop4",
+    "ex14",
+    "ex15",
+    "ex16",
+    "pop5",
+    "dp1",
+    "dp2",
+    "tk-dp-l",
+    "tk-dp-m",
+    "pop6",
+    "dp3",
+    "dp4",
+    "pop7",
+    "dp5",
+    "dp6",
+    "pop8",
+    "dp7",
+    "pl1",
+    "pop9",
+    "pl2",
+    "pl3",
+    "pl4",
+    "ru1",
+    "hgss1",
+    "tk-hs-r",
+    "tk-hs-g",
+    "hgss2",
+    "hgss3",
+    "hgss4",
+    "col1",
+    "bw1",
+    "2011bw",
+    "bw2",
+    "tk-bw-e",
+    "tk-bw-z",
+    "bw3",
+    "bw4",
+    "bw5",
+    "2012bw",
+    "bw6",
+    "dv1",
+    "bw7",
+    "bw8",
+    "bw9",
+    "bw10",
+    "rc",
+    "bw11",
+    "xy0",
+    "xy1",
+    "xya",
+    "tk-xy-n",
+    "tk-xy-sy",
+    "xy2",
+    "2014xy",
+    "xy3",
+    "tk-xy-b",
+    "tk-xy-w",
+    "xy4",
+    "xy5",
+    "dc1",
+    "tk-xy-latio",
+    "tk-xy-latia",
+    "xy6",
+    "xy7",
+    "xy8",
+    "2015xy",
+    "xy9",
+    "g1",
+    "tk-xy-p",
+    "tk-xy-su",
+    "xy10",
+    "xy11",
+    "2016xy",
+    "xy12",
+    "sm1",
+    "tk-sm-r",
+    "tk-sm-l",
+    "sm2",
+    "2017sm",
+    "sm3",
+    "sm3.5",
+    "sm4",
+    "sm5",
+    "sm6",
+    "sm7",
+    "sm7.5",
+    "2018sm",
+    "sm8",
+    "sm9",
+    "det1",
+    "sm10",
+    "sm11",
+    "sma",
+    "sm115",
+    "2019sm",
+    "sm12",
+    "swsh1",
+    "swsh2",
+    "swsh3",
+    "fut2020",
+    "swsh3.5",
+    "swsh4",
+    "2021swsh",
+    "swsh4.5",
+    "swsh4.5sv",
+    "swsh5",
+    "swsh6",
+    "swsh7",
+    "cel25cc",
+    "cel25",
+    "swsh8",
+    "swsh9tg",
+    "swsh9",
+    "swsh10",
+    "swsh10tg",
+    "swsh10.5",
+    "2022swsh",
+    "swsh11",
+    "swsh11tg",
+    "swsh12",
+    "swsh12tg",
+    "swsh12.5",
+    "swsh12.5gg",
+    "sve",
+    "2023sv",
+    "mfb",
+    "2024sv"
+  ],
+  "physicalWithoutBundledChecklist": [
+    "miscp",
+    "basep",
+    "wp",
+    "jumbo",
+    "si1",
+    "sp",
+    "np",
+    "tk-ex-latia",
+    "tk-ex-latio",
+    "pop1",
+    "pop2",
+    "tk-ex-m",
+    "tk-ex-p",
+    "pop3",
+    "pop4",
+    "pop5",
+    "dpp",
+    "tk-dp-l",
+    "tk-dp-m",
+    "pop6",
+    "pop7",
+    "pop8",
+    "pop9",
+    "hgssp",
+    "tk-hs-r",
+    "tk-hs-g",
+    "bwp",
+    "2011bw",
+    "tk-bw-e",
+    "tk-bw-z",
+    "2012bw",
+    "xyp",
+    "rc",
+    "tk-xy-n",
+    "tk-xy-sy",
+    "2014xy",
+    "tk-xy-b",
+    "tk-xy-w",
+    "tk-xy-latio",
+    "tk-xy-latia",
+    "2015xy",
+    "tk-xy-p",
+    "tk-xy-su",
+    "2016xy",
+    "smp",
+    "tk-sm-r",
+    "tk-sm-l",
+    "2017sm",
+    "2018sm",
+    "2019sm",
+    "swshp",
+    "2021swsh",
+    "2022swsh",
+    "svp",
+    "2023sv",
+    "2024sv",
+    "mep",
+    "30th",
+    "30th-c"
+  ],
+  "sets": [
+    {
+      "providerSetID": "miscp",
+      "name": "Miscellaneous Promos",
+      "providerCardCount": {
+        "total": 1,
+        "official": 1
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "base1",
+      "name": "Base Set",
+      "providerCardCount": {
+        "total": 102,
+        "official": 102
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "base2",
+      "name": "Jungle",
+      "providerCardCount": {
+        "total": 64,
+        "official": 64
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "basep",
+      "name": "Wizards Black Star Promos",
+      "providerCardCount": {
+        "total": 53,
+        "official": 53
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "wp",
+      "name": "W Promotional",
+      "providerCardCount": {
+        "total": 7,
+        "official": 7
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "base3",
+      "name": "Fossil",
+      "providerCardCount": {
+        "total": 62,
+        "official": 62
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "jumbo",
+      "name": "Jumbo cards",
+      "providerCardCount": {
+        "total": 160,
+        "official": 160
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "base4",
+      "name": "Base Set 2",
+      "providerCardCount": {
+        "total": 130,
+        "official": 130
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "base5",
+      "name": "Team Rocket",
+      "providerCardCount": {
+        "total": 83,
+        "official": 82
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "gym1",
+      "name": "Gym Heroes",
+      "providerCardCount": {
+        "total": 132,
+        "official": 132
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "gym2",
+      "name": "Gym Challenge",
+      "providerCardCount": {
+        "total": 132,
+        "official": 132
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "neo1",
+      "name": "Neo Genesis",
+      "providerCardCount": {
+        "total": 111,
+        "official": 111
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "neo2",
+      "name": "Neo Discovery",
+      "providerCardCount": {
+        "total": 75,
+        "official": 75
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "si1",
+      "name": "Southern Islands",
+      "providerCardCount": {
+        "total": 18,
+        "official": 18
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "neo3",
+      "name": "Neo Revelation",
+      "providerCardCount": {
+        "total": 66,
+        "official": 64
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "neo4",
+      "name": "Neo Destiny",
+      "providerCardCount": {
+        "total": 113,
+        "official": 105
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "lc",
+      "name": "Legendary Collection",
+      "providerCardCount": {
+        "total": 110,
+        "official": 110
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sp",
+      "name": "Sample",
+      "providerCardCount": {
+        "total": 10,
+        "official": 10
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ecard1",
+      "name": "Expedition Base Set",
+      "providerCardCount": {
+        "total": 165,
+        "official": 165
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bog",
+      "name": "Best of game",
+      "providerCardCount": {
+        "total": 9,
+        "official": 9
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ecard2",
+      "name": "Aquapolis",
+      "providerCardCount": {
+        "total": 186,
+        "official": 147
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ecard3",
+      "name": "Skyridge",
+      "providerCardCount": {
+        "total": 182,
+        "official": 144
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex1",
+      "name": "Ruby & Sapphire",
+      "providerCardCount": {
+        "total": 109,
+        "official": 109
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex2",
+      "name": "Sandstorm",
+      "providerCardCount": {
+        "total": 100,
+        "official": 100
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "np",
+      "name": "Nintendo Black Star Promos",
+      "providerCardCount": {
+        "total": 40,
+        "official": 40
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ex3",
+      "name": "Dragon",
+      "providerCardCount": {
+        "total": 100,
+        "official": 97
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex4",
+      "name": "Team Magma vs Team Aqua",
+      "providerCardCount": {
+        "total": 97,
+        "official": 95
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex5",
+      "name": "Hidden Legends",
+      "providerCardCount": {
+        "total": 102,
+        "official": 101
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "name": "EX trainer Kit (Latias)",
+      "providerCardCount": {
+        "total": 10,
+        "official": 10
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-ex-latio",
+      "name": "EX trainer Kit (Latios)",
+      "providerCardCount": {
+        "total": 10,
+        "official": 10
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ex5.5",
+      "name": "Pok\u00e9 Card Creator Pack",
+      "providerCardCount": {
+        "total": 5,
+        "official": 5
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex6",
+      "name": "FireRed & LeafGreen",
+      "providerCardCount": {
+        "total": 116,
+        "official": 112
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop1",
+      "name": "POP Series 1",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ex7",
+      "name": "Team Rocket Returns",
+      "providerCardCount": {
+        "total": 111,
+        "official": 109
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex8",
+      "name": "Deoxys",
+      "providerCardCount": {
+        "total": 108,
+        "official": 107
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex9",
+      "name": "Emerald",
+      "providerCardCount": {
+        "total": 107,
+        "official": 106
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop2",
+      "name": "POP Series 2",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ex10",
+      "name": "Unseen Forces",
+      "providerCardCount": {
+        "total": 117,
+        "official": 115
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "exu",
+      "name": "Unseen Forces Unown Collection",
+      "providerCardCount": {
+        "total": 28,
+        "official": 28
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex11",
+      "name": "Delta Species",
+      "providerCardCount": {
+        "total": 114,
+        "official": 113
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex12",
+      "name": "Legend Maker",
+      "providerCardCount": {
+        "total": 93,
+        "official": 92
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-ex-m",
+      "name": "EX trainer Kit 2 (Minun)",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-ex-p",
+      "name": "EX trainer Kit 2 (Plusle)",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "pop3",
+      "name": "POP Series 3",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ex13",
+      "name": "Holon Phantoms",
+      "providerCardCount": {
+        "total": 111,
+        "official": 110
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop4",
+      "name": "POP Series 4",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "ex14",
+      "name": "Crystal Guardians",
+      "providerCardCount": {
+        "total": 100,
+        "official": 100
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex15",
+      "name": "Dragon Frontiers",
+      "providerCardCount": {
+        "total": 101,
+        "official": 101
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ex16",
+      "name": "Power Keepers",
+      "providerCardCount": {
+        "total": 108,
+        "official": 108
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop5",
+      "name": "POP Series 5",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "dpp",
+      "name": "DP Black Star Promos",
+      "providerCardCount": {
+        "total": 56,
+        "official": 56
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "dp1",
+      "name": "Diamond & Pearl",
+      "providerCardCount": {
+        "total": 130,
+        "official": 130
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "dp2",
+      "name": "Mysterious Treasures",
+      "providerCardCount": {
+        "total": 124,
+        "official": 123
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-dp-l",
+      "name": "DP trainer Kit (Lucario)",
+      "providerCardCount": {
+        "total": 11,
+        "official": 11
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-dp-m",
+      "name": "DP trainer Kit (Manaphy)",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "pop6",
+      "name": "POP Series 6",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "dp3",
+      "name": "Secret Wonders",
+      "providerCardCount": {
+        "total": 132,
+        "official": 132
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "dp4",
+      "name": "Great Encounters",
+      "providerCardCount": {
+        "total": 106,
+        "official": 106
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop7",
+      "name": "POP Series 7",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "dp5",
+      "name": "Majestic Dawn",
+      "providerCardCount": {
+        "total": 100,
+        "official": 100
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "dp6",
+      "name": "Legends Awakened",
+      "providerCardCount": {
+        "total": 146,
+        "official": 146
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop8",
+      "name": "POP Series 8",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "dp7",
+      "name": "Stormfront",
+      "providerCardCount": {
+        "total": 106,
+        "official": 100
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pl1",
+      "name": "Platinum",
+      "providerCardCount": {
+        "total": 133,
+        "official": 127
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pop9",
+      "name": "POP Series 9",
+      "providerCardCount": {
+        "total": 17,
+        "official": 17
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "pl2",
+      "name": "Rising Rivals",
+      "providerCardCount": {
+        "total": 120,
+        "official": 111
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pl3",
+      "name": "Supreme Victors",
+      "providerCardCount": {
+        "total": 153,
+        "official": 147
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "pl4",
+      "name": "Arceus",
+      "providerCardCount": {
+        "total": 111,
+        "official": 99
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "ru1",
+      "name": "Pok\u00e9mon Rumble",
+      "providerCardCount": {
+        "total": 16,
+        "official": 16
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "hgss1",
+      "name": "HeartGold SoulSilver",
+      "providerCardCount": {
+        "total": 124,
+        "official": 123
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "hgssp",
+      "name": "HGSS Black Star Promos",
+      "providerCardCount": {
+        "total": 25,
+        "official": 25
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-hs-r",
+      "name": "HS trainer Kit (Raichu)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-hs-g",
+      "name": "HS trainer Kit (Gyarados)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "hgss2",
+      "name": "Unleashed",
+      "providerCardCount": {
+        "total": 96,
+        "official": 95
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "hgss3",
+      "name": "Undaunted",
+      "providerCardCount": {
+        "total": 91,
+        "official": 90
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "hgss4",
+      "name": "Triumphant",
+      "providerCardCount": {
+        "total": 103,
+        "official": 102
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "col1",
+      "name": "Call of Legends",
+      "providerCardCount": {
+        "total": 106,
+        "official": 95
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw1",
+      "name": "Black & White",
+      "providerCardCount": {
+        "total": 115,
+        "official": 114
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bwp",
+      "name": "BW Black Star Promos",
+      "providerCardCount": {
+        "total": 101,
+        "official": 101
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "2011bw",
+      "name": "McDonald's Collection 2011",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "bw2",
+      "name": "Emerging Powers",
+      "providerCardCount": {
+        "total": 98,
+        "official": 98
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-bw-e",
+      "name": "BW trainer Kit (Excadrill)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-bw-z",
+      "name": "BW trainer Kit (Zoroark)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "bw3",
+      "name": "Noble Victories",
+      "providerCardCount": {
+        "total": 102,
+        "official": 101
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw4",
+      "name": "Next Destinies",
+      "providerCardCount": {
+        "total": 103,
+        "official": 99
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw5",
+      "name": "Dark Explorers",
+      "providerCardCount": {
+        "total": 111,
+        "official": 108
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2012bw",
+      "name": "McDonald's Collection 2012",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "bw6",
+      "name": "Dragons Exalted",
+      "providerCardCount": {
+        "total": 128,
+        "official": 124
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "dv1",
+      "name": "Dragon Vault",
+      "providerCardCount": {
+        "total": 21,
+        "official": 20
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw7",
+      "name": "Boundaries Crossed",
+      "providerCardCount": {
+        "total": 153,
+        "official": 149
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw8",
+      "name": "Plasma Storm",
+      "providerCardCount": {
+        "total": 138,
+        "official": 135
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw9",
+      "name": "Plasma Freeze",
+      "providerCardCount": {
+        "total": 122,
+        "official": 116
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "bw10",
+      "name": "Plasma Blast",
+      "providerCardCount": {
+        "total": 105,
+        "official": 101
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xyp",
+      "name": "XY Black Star Promos",
+      "providerCardCount": {
+        "total": 216,
+        "official": 211
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "rc",
+      "name": "Radiant Collection",
+      "providerCardCount": {
+        "total": 25,
+        "official": 25
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "bw11",
+      "name": "Legendary Treasures",
+      "providerCardCount": {
+        "total": 140,
+        "official": 113
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xy0",
+      "name": "Kalos Starter Set",
+      "providerCardCount": {
+        "total": 39,
+        "official": 39
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xy1",
+      "name": "XY",
+      "providerCardCount": {
+        "total": 146,
+        "official": 146
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xya",
+      "name": "Yellow A Alternate",
+      "providerCardCount": {
+        "total": 6,
+        "official": 6
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-xy-n",
+      "name": "XY trainer Kit (Noivern)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-xy-sy",
+      "name": "XY trainer Kit (Sylveon)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy2",
+      "name": "Flashfire",
+      "providerCardCount": {
+        "total": 110,
+        "official": 106
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2014xy",
+      "name": "McDonald's Collection 2014",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy3",
+      "name": "Furious Fists",
+      "providerCardCount": {
+        "total": 114,
+        "official": 111
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-xy-b",
+      "name": "XY trainer Kit (Bisharp)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-xy-w",
+      "name": "XY trainer Kit (Wigglytuff)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy4",
+      "name": "Phantom Forces",
+      "providerCardCount": {
+        "total": 124,
+        "official": 119
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xy5",
+      "name": "Primal Clash",
+      "providerCardCount": {
+        "total": 164,
+        "official": 160
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "dc1",
+      "name": "Double Crisis",
+      "providerCardCount": {
+        "total": 34,
+        "official": 34
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-xy-latio",
+      "name": "XY trainer Kit (Latios)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-xy-latia",
+      "name": "XY trainer Kit (Latias)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy6",
+      "name": "Roaring Skies",
+      "providerCardCount": {
+        "total": 112,
+        "official": 108
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xy7",
+      "name": "Ancient Origins",
+      "providerCardCount": {
+        "total": 101,
+        "official": 98
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xy8",
+      "name": "BREAKthrough",
+      "providerCardCount": {
+        "total": 165,
+        "official": 162
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2015xy",
+      "name": "McDonald's Collection 2015",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy9",
+      "name": "BREAKpoint",
+      "providerCardCount": {
+        "total": 126,
+        "official": 122
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "g1",
+      "name": "Generations",
+      "providerCardCount": {
+        "total": 117,
+        "official": 83
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "tk-xy-p",
+      "name": "XY trainer Kit (Pikachu Libre)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-xy-su",
+      "name": "XY trainer Kit (Suicune)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy10",
+      "name": "Fates Collide",
+      "providerCardCount": {
+        "total": 129,
+        "official": 124
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "xy11",
+      "name": "Steam Siege",
+      "providerCardCount": {
+        "total": 116,
+        "official": 114
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2016xy",
+      "name": "McDonald's Collection 2016",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "xy12",
+      "name": "Evolutions",
+      "providerCardCount": {
+        "total": 113,
+        "official": 108
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm1",
+      "name": "Sun & Moon",
+      "providerCardCount": {
+        "total": 172,
+        "official": 149
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "smp",
+      "name": "SM Black Star Promos",
+      "providerCardCount": {
+        "total": 248,
+        "official": 248
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-sm-r",
+      "name": "SM trainer Kit (Alolan Raichu)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "tk-sm-l",
+      "name": "SM trainer Kit (Lycanroc)",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sm2",
+      "name": "Guardians Rising",
+      "providerCardCount": {
+        "total": 169,
+        "official": 145
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2017sm",
+      "name": "McDonald's Collection 2017",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sm3",
+      "name": "Burning Shadows",
+      "providerCardCount": {
+        "total": 169,
+        "official": 147
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm3.5",
+      "name": "Shining Legends",
+      "providerCardCount": {
+        "total": 78,
+        "official": 73
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm4",
+      "name": "Crimson Invasion",
+      "providerCardCount": {
+        "total": 125,
+        "official": 111
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm5",
+      "name": "Ultra Prism",
+      "providerCardCount": {
+        "total": 173,
+        "official": 156
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm6",
+      "name": "Forbidden Light",
+      "providerCardCount": {
+        "total": 146,
+        "official": 131
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm7",
+      "name": "Celestial Storm",
+      "providerCardCount": {
+        "total": 183,
+        "official": 168
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm7.5",
+      "name": "Dragon Majesty",
+      "providerCardCount": {
+        "total": 78,
+        "official": 70
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2018sm",
+      "name": "McDonald's Collection 2018",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sm8",
+      "name": "Lost Thunder",
+      "providerCardCount": {
+        "total": 236,
+        "official": 214
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm9",
+      "name": "Team Up",
+      "providerCardCount": {
+        "total": 196,
+        "official": 181
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "det1",
+      "name": "Detective Pikachu",
+      "providerCardCount": {
+        "total": 18,
+        "official": 18
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm10",
+      "name": "Unbroken Bonds",
+      "providerCardCount": {
+        "total": 234,
+        "official": 214
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm11",
+      "name": "Unified Minds",
+      "providerCardCount": {
+        "total": 258,
+        "official": 236
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sma",
+      "name": "Hidden Fates Shiny Vault",
+      "providerCardCount": {
+        "total": 94,
+        "official": 94
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sm115",
+      "name": "Hidden Fates",
+      "providerCardCount": {
+        "total": 69,
+        "official": 68
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2019sm",
+      "name": "McDonald's Collection 2019",
+      "providerCardCount": {
+        "total": 12,
+        "official": 12
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sm12",
+      "name": "Cosmic Eclipse",
+      "providerCardCount": {
+        "total": 271,
+        "official": 236
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swshp",
+      "name": "SWSH Black Star Promos",
+      "providerCardCount": {
+        "total": 307,
+        "official": 307
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "swsh1",
+      "name": "Sword & Shield",
+      "providerCardCount": {
+        "total": 216,
+        "official": 202
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh2",
+      "name": "Rebel Clash",
+      "providerCardCount": {
+        "total": 209,
+        "official": 192
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh3",
+      "name": "Darkness Ablaze",
+      "providerCardCount": {
+        "total": 201,
+        "official": 189
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "fut2020",
+      "name": "Pok\u00e9mon Futsal 2020",
+      "providerCardCount": {
+        "total": 5,
+        "official": 5
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh3.5",
+      "name": "Champion's Path",
+      "providerCardCount": {
+        "total": 80,
+        "official": 73
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh4",
+      "name": "Vivid Voltage",
+      "providerCardCount": {
+        "total": 203,
+        "official": 185
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2021swsh",
+      "name": "McDonald's Collection 2021",
+      "providerCardCount": {
+        "total": 25,
+        "official": 25
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "swsh4.5",
+      "name": "Shining Fates",
+      "providerCardCount": {
+        "total": 73,
+        "official": 72
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh4.5sv",
+      "name": "Shining Fates Shiny Vault",
+      "providerCardCount": {
+        "total": 122,
+        "official": 122
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh5",
+      "name": "Battle Styles",
+      "providerCardCount": {
+        "total": 183,
+        "official": 163
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh6",
+      "name": "Chilling Reign",
+      "providerCardCount": {
+        "total": 233,
+        "official": 198
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh7",
+      "name": "Evolving Skies",
+      "providerCardCount": {
+        "total": 237,
+        "official": 203
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "cel25cc",
+      "name": "Celebrations Classic Collection",
+      "providerCardCount": {
+        "total": 25,
+        "official": 25
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "cel25",
+      "name": "Celebrations",
+      "providerCardCount": {
+        "total": 25,
+        "official": 25
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh8",
+      "name": "Fusion Strike",
+      "providerCardCount": {
+        "total": 284,
+        "official": 264
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh9tg",
+      "name": "Brilliant Stars Trainer Gallery",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh9",
+      "name": "Brilliant Stars",
+      "providerCardCount": {
+        "total": 186,
+        "official": 172
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh10",
+      "name": "Astral Radiance",
+      "providerCardCount": {
+        "total": 216,
+        "official": 189
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh10tg",
+      "name": "Astral Radiance Trainer Gallery",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh10.5",
+      "name": "Pok\u00e9mon GO",
+      "providerCardCount": {
+        "total": 88,
+        "official": 78
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2022swsh",
+      "name": "McDonald's Collection 2022",
+      "providerCardCount": {
+        "total": 15,
+        "official": 15
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "swsh11",
+      "name": "Lost Origin",
+      "providerCardCount": {
+        "total": 217,
+        "official": 196
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh11tg",
+      "name": "Lost Origin Trainer Gallery",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh12",
+      "name": "Silver Tempest",
+      "providerCardCount": {
+        "total": 215,
+        "official": 195
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh12tg",
+      "name": "Silver Tempest Trainer Gallery",
+      "providerCardCount": {
+        "total": 30,
+        "official": 30
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh12.5",
+      "name": "Crown Zenith",
+      "providerCardCount": {
+        "total": 160,
+        "official": 159
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "swsh12.5gg",
+      "name": "Crown Zenith Galarian Gallery",
+      "providerCardCount": {
+        "total": 70,
+        "official": 70
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv01",
+      "name": "Scarlet & Violet",
+      "providerCardCount": {
+        "total": 258,
+        "official": 198
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sve",
+      "name": "Scarlet & Violet Energy",
+      "providerCardCount": {
+        "total": 24,
+        "official": 24
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "svp",
+      "name": "SVP Black Star Promos",
+      "providerCardCount": {
+        "total": 226,
+        "official": 225
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv02",
+      "name": "Paldea Evolved",
+      "providerCardCount": {
+        "total": 279,
+        "official": 193
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2023sv",
+      "name": "McDonald's Collection 2023",
+      "providerCardCount": {
+        "total": 15,
+        "official": 15
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv03",
+      "name": "Obsidian Flames",
+      "providerCardCount": {
+        "total": 230,
+        "official": 197
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv03.5",
+      "name": "151",
+      "providerCardCount": {
+        "total": 207,
+        "official": 165
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "mfb",
+      "name": "My First Battle",
+      "providerCardCount": {
+        "total": 48,
+        "official": 48
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv04",
+      "name": "Paradox Rift",
+      "providerCardCount": {
+        "total": 266,
+        "official": 182
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv04.5",
+      "name": "Paldean Fates",
+      "providerCardCount": {
+        "total": 245,
+        "official": 91
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv05",
+      "name": "Temporal Forces",
+      "providerCardCount": {
+        "total": 218,
+        "official": 162
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv06",
+      "name": "Twilight Masquerade",
+      "providerCardCount": {
+        "total": 226,
+        "official": 167
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv06.5",
+      "name": "Shrouded Fable",
+      "providerCardCount": {
+        "total": 99,
+        "official": 64
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv07",
+      "name": "Stellar Crown",
+      "providerCardCount": {
+        "total": 175,
+        "official": 142
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "P-A",
+      "name": "Promos-A",
+      "providerCardCount": {
+        "total": 100,
+        "official": 0
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "A1",
+      "name": "Genetic Apex",
+      "providerCardCount": {
+        "total": 286,
+        "official": 226
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv08",
+      "name": "Surging Sparks",
+      "providerCardCount": {
+        "total": 252,
+        "official": 191
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "2024sv",
+      "name": "McDonald's Collection 2024",
+      "providerCardCount": {
+        "total": 15,
+        "official": 15
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": null,
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "A1a",
+      "name": "Mythical Island",
+      "providerCardCount": {
+        "total": 86,
+        "official": 68
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv08.5",
+      "name": "Prismatic Evolutions",
+      "providerCardCount": {
+        "total": 180,
+        "official": 131
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "A2",
+      "name": "Space-Time Smackdown",
+      "providerCardCount": {
+        "total": 207,
+        "official": 140
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "A2a",
+      "name": "Triumphant Light",
+      "providerCardCount": {
+        "total": 96,
+        "official": 75
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "A2b",
+      "name": "Shining Revelry",
+      "providerCardCount": {
+        "total": 111,
+        "official": 72
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv09",
+      "name": "Journey Together",
+      "providerCardCount": {
+        "total": 190,
+        "official": 159
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "A3",
+      "name": "Celestial Guardians",
+      "providerCardCount": {
+        "total": 239,
+        "official": 155
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "A3a",
+      "name": "Extradimensional Crisis",
+      "providerCardCount": {
+        "total": 103,
+        "official": 69
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv10",
+      "name": "Destined Rivals",
+      "providerCardCount": {
+        "total": 244,
+        "official": 182
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "A3b",
+      "name": "Eevee Grove",
+      "providerCardCount": {
+        "total": 107,
+        "official": 69
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "sv10.5b",
+      "name": "Black Bolt",
+      "providerCardCount": {
+        "total": 172,
+        "official": 86
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "sv10.5w",
+      "name": "White Flare",
+      "providerCardCount": {
+        "total": 173,
+        "official": 86
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "A4",
+      "name": "Wisdom of Sea and Sky",
+      "providerCardCount": {
+        "total": 241,
+        "official": 161
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "A4a",
+      "name": "Secluded Springs",
+      "providerCardCount": {
+        "total": 105,
+        "official": 71
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "mee",
+      "name": "Mega Evolution Energy",
+      "providerCardCount": {
+        "total": 8,
+        "official": 8
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "energy",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "me01",
+      "name": "Mega Evolution",
+      "providerCardCount": {
+        "total": 188,
+        "official": 132
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "mep",
+      "name": "MEP Black Star Promos",
+      "providerCardCount": {
+        "total": 89,
+        "official": 0
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "promo",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "B1",
+      "name": "Mega Rising",
+      "providerCardCount": {
+        "total": 331,
+        "official": 226
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "me02",
+      "name": "Phantasmal Flames",
+      "providerCardCount": {
+        "total": 130,
+        "official": 94
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "B1a",
+      "name": "Crimson Blaze",
+      "providerCardCount": {
+        "total": 103,
+        "official": 69
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "B2",
+      "name": "Fantastical Parade",
+      "providerCardCount": {
+        "total": 234,
+        "official": 155
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "me02.5",
+      "name": "Ascended Heroes",
+      "providerCardCount": {
+        "total": 295,
+        "official": 217
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "B2a",
+      "name": "Paldean Wonders",
+      "providerCardCount": {
+        "total": 131,
+        "official": 93
+      },
+      "pocketOnly": true,
+      "servedRecognitionKind": null,
+      "configured": false,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "me03",
+      "name": "Perfect Order",
+      "providerCardCount": {
+        "total": 124,
+        "official": 88
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "me04",
+      "name": "Chaos Rising",
+      "providerCardCount": {
+        "total": 122,
+        "official": 86
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "me05",
+      "name": "Pitch Black",
+      "providerCardCount": {
+        "total": 120,
+        "official": 84
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": true,
+      "ignoredHistoricalDiscovery": true
+    },
+    {
+      "providerSetID": "30th",
+      "name": "30th Celebration",
+      "providerCardCount": {
+        "total": 158,
+        "official": 128
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "expansion",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    },
+    {
+      "providerSetID": "30th-c",
+      "name": "30th Classic Collection",
+      "providerCardCount": {
+        "total": 30,
+        "official": 0
+      },
+      "pocketOnly": false,
+      "servedRecognitionKind": "notScannable",
+      "configured": true,
+      "bundledChecklist": false,
+      "ignoredHistoricalDiscovery": false
+    }
+  ]
+}

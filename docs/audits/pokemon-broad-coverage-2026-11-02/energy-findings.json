@@ -1,0 +1,372 @@
+{
+  "patternCounts": [
+    {
+      "setID": "sve",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "count": 24
+    },
+    {
+      "setID": "sve",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "count": 16
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "count": 8
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "count": 16
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "count": 8
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "count": 16
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "count": 8
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "count": 8
+    },
+    {
+      "setID": "sve",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "count": 8
+    },
+    {
+      "setID": "mee",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "count": 8
+    },
+    {
+      "setID": "mee",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "count": 8
+    }
+  ],
+  "missingProductHandles": [
+    {
+      "card": "sve-009",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-009",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-010",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-010",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-011",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-011",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-012",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-012",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-013",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-013",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-014",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-014",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-015",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-015",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-016",
+      "detail": {
+        "type": "reverse",
+        "size": "standard",
+        "variantId": "cm4kqul3x1bwlz1f"
+      }
+    },
+    {
+      "card": "sve-016",
+      "detail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "professor-program"
+        ],
+        "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+      }
+    },
+    {
+      "card": "sve-017",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836972
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-018",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836973
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-019",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836974
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-020",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836975
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-021",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836976
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-022",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836977
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-023",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836978
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    },
+    {
+      "card": "sve-024",
+      "detail": {
+        "type": "reverse",
+        "foil": "tinsel",
+        "size": "standard",
+        "thirdParty": {
+          "cardmarket": 836979
+        },
+        "variantId": "4gbl53whsjw1y7o4q5scl5q"
+      }
+    }
+  ],
+  "numberMismatches": [
+    {
+      "providerCardID": "sve-002",
+      "providerDetail": {
+        "type": "reverse",
+        "foil": "cosmos",
+        "size": "standard",
+        "stamp": [
+          "player-rewards-program"
+        ],
+        "thirdParty": {
+          "tcgplayer": 651037
+        },
+        "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+      },
+      "productID": 651037,
+      "productName": "Basic Fire Energy - 010 (Cosmos Holo)",
+      "productNumber": "010",
+      "productSetName": "Prize Pack Series Cards"
+    }
+  ],
+  "crossCardSharedProducts": {
+    "651037": [
+      "sve-002",
+      "sve-010"
+    ]
+  }
+}

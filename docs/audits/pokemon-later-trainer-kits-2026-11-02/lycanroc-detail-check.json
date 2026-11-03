@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-02",
+  "scope": "Read-only live check of every omitted Lycanroc slot; expected names independently transcribed",
+  "expectedName": "Fighting Energy",
+  "cards": [
+    {
+      "number": 2,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-2",
+      "status": 404
+    },
+    {
+      "number": 3,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-3",
+      "status": 404
+    },
+    {
+      "number": 6,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-6",
+      "status": 404
+    },
+    {
+      "number": 7,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-7",
+      "status": 404
+    },
+    {
+      "number": 8,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-8",
+      "status": 404
+    },
+    {
+      "number": 9,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-9",
+      "status": 404
+    },
+    {
+      "number": 10,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-10",
+      "status": 404
+    },
+    {
+      "number": 17,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-17",
+      "status": 404
+    },
+    {
+      "number": 20,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-20",
+      "status": 404
+    },
+    {
+      "number": 24,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-24",
+      "status": 404
+    },
+    {
+      "number": 26,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-26",
+      "status": 404
+    },
+    {
+      "number": 28,
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/tk-sm-l-28",
+      "status": 404
+    }
+  ]
+}

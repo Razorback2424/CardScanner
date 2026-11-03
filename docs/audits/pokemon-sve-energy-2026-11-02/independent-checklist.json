@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/SVE_Basic_Energies_%28TCG%29",
+  "access": "Web tool numbered table, English SVE collection",
+  "cards": [
+    {
+      "number": "001",
+      "printedName": "Basic Grass Energy"
+    },
+    {
+      "number": "002",
+      "printedName": "Basic Fire Energy"
+    },
+    {
+      "number": "003",
+      "printedName": "Basic Water Energy"
+    },
+    {
+      "number": "004",
+      "printedName": "Basic Lightning Energy"
+    },
+    {
+      "number": "005",
+      "printedName": "Basic Psychic Energy"
+    },
+    {
+      "number": "006",
+      "printedName": "Basic Fighting Energy"
+    },
+    {
+      "number": "007",
+      "printedName": "Basic Darkness Energy"
+    },
+    {
+      "number": "008",
+      "printedName": "Basic Metal Energy"
+    },
+    {
+      "number": "009",
+      "printedName": "Basic Grass Energy"
+    },
+    {
+      "number": "010",
+      "printedName": "Basic Fire Energy"
+    },
+    {
+      "number": "011",
+      "printedName": "Basic Water Energy"
+    },
+    {
+      "number": "012",
+      "printedName": "Basic Lightning Energy"
+    },
+    {
+      "number": "013",
+      "printedName": "Basic Psychic Energy"
+    },
+    {
+      "number": "014",
+      "printedName": "Basic Fighting Energy"
+    },
+    {
+      "number": "015",
+      "printedName": "Basic Darkness Energy"
+    },
+    {
+      "number": "016",
+      "printedName": "Basic Metal Energy"
+    },
+    {
+      "number": "017",
+      "printedName": "Basic Grass Energy"
+    },
+    {
+      "number": "018",
+      "printedName": "Basic Fire Energy"
+    },
+    {
+      "number": "019",
+      "printedName": "Basic Water Energy"
+    },
+    {
+      "number": "020",
+      "printedName": "Basic Lightning Energy"
+    },
+    {
+      "number": "021",
+      "printedName": "Basic Psychic Energy"
+    },
+    {
+      "number": "022",
+      "printedName": "Basic Fighting Energy"
+    },
+    {
+      "number": "023",
+      "printedName": "Basic Darkness Energy"
+    },
+    {
+      "number": "024",
+      "printedName": "Basic Metal Energy"
+    }
+  ]
+}

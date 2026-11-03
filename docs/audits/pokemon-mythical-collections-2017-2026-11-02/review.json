@@ -1,0 +1,161 @@
+{
+  "scope": "Complete ordinary numbered promo contents of the two 2017 Mythical Collections; no wider XY finish or foil-pattern inference",
+  "observedAtUTC": "2026-11-03T04:42:26.777762+00:00",
+  "liveEvidenceFileSHA256": "f49bd8dc2873248dd3cb9f68aa06c38ff11be71c712c34740490442388dbf511",
+  "independentPhysicalSource": {
+    "url": "https://www.pokebeach.com/2017/01/volcanion-magearna-mythical-collections-releasing-next-week-photos",
+    "author": "Water Pok\u00e9mon Master",
+    "publicationDate": "2017-01-13",
+    "accessMethod": "web page text, successful public open",
+    "basis": "Contemporary primary release reporting explicitly pairs promo names with collector numbers and describes foil contents in each box",
+    "volcanionCollectorNumbers": [
+      "XY185",
+      "XY187",
+      "XY189",
+      "XY191",
+      "XY194",
+      "XY195"
+    ],
+    "magearnaCollectorNumbers": [
+      "XY186",
+      "XY188",
+      "XY190",
+      "XY192",
+      "XY193",
+      "XY196",
+      "XY197"
+    ],
+    "imagesVisuallyInspected": false,
+    "manufacturerPDFUsedAsCorroboration": false
+  },
+  "records": [
+    {
+      "providerCardID": "xyp-XY185",
+      "canonicalName": "Volcanion",
+      "tcgplayerProductID": 127139,
+      "box": "Volcanion",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY186",
+      "canonicalName": "Magearna",
+      "tcgplayerProductID": 127138,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY187",
+      "canonicalName": "Celebi",
+      "tcgplayerProductID": 127129,
+      "box": "Volcanion",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY188",
+      "canonicalName": "Shaymin",
+      "tcgplayerProductID": 127136,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY189",
+      "canonicalName": "Victini",
+      "tcgplayerProductID": 127137,
+      "box": "Volcanion",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY190",
+      "canonicalName": "Manaphy",
+      "tcgplayerProductID": 127134,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY191",
+      "canonicalName": "Keldeo",
+      "tcgplayerProductID": 127133,
+      "box": "Volcanion",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY192",
+      "canonicalName": "Mew",
+      "tcgplayerProductID": 127135,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY193",
+      "canonicalName": "Meloetta",
+      "tcgplayerProductID": 152950,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY194",
+      "canonicalName": "Darkrai",
+      "tcgplayerProductID": 127130,
+      "box": "Volcanion",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY195",
+      "canonicalName": "Jirachi",
+      "tcgplayerProductID": 127132,
+      "box": "Volcanion",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY196",
+      "canonicalName": "Genesect",
+      "tcgplayerProductID": 127131,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    },
+    {
+      "providerCardID": "xyp-XY197",
+      "canonicalName": "Arceus",
+      "tcgplayerProductID": 127128,
+      "box": "Magearna",
+      "providerNormalOnly": true,
+      "marketplaceFoilOnly": true,
+      "independentReportExactNumberAndFoil": true
+    }
+  ],
+  "inputBeforeSHA256": "3051cc5838bd3aa21a63daa296fd799f421fbb8886e6a2559f96b79f365f3167",
+  "inputAfterSHA256": "b72c8ca9220ead96326af9e4a1225b25f037796c17a8c3b9e9a0470f7e824baa",
+  "deltaAssertions": {
+    "onlyExistingXYPAdditionalVariantsAppended": true,
+    "newRecords": 13,
+    "previousRecordsPreserved": 82,
+    "otherInputFieldsUnchanged": true,
+    "descriptorCount": 75,
+    "protectedRecordCount": 95,
+    "ordinaryHoloMinimumCount": 20
+  }
+}

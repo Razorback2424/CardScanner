@@ -1,0 +1,90 @@
+{
+  "reviewedAtUTC": "2026-11-03T02:48:25.630131+00:00",
+  "scopeLimit": "Full English identity/finish/edition/special Energy and pricing goal remains open. Directory entries are not a reconciled physical-printing denominator; no completeness percentage.",
+  "inputSHA256": "f0077b53fd6860aa9907c949aeeb722ca1607db430a8526a8b7aa1f6b36a0147",
+  "releaseInventory": {
+    "directory": 220,
+    "pocketExcluded": 15,
+    "nonPocketDirectoryEntries": 205,
+    "bundledSets": 146,
+    "authoringDescriptors": 75,
+    "servedDescriptors": 33,
+    "outsideBundledOrAuthored": [
+      "miscp",
+      "basep",
+      "wp",
+      "jumbo",
+      "sp",
+      "np",
+      "rc",
+      "tk-sm-l"
+    ]
+  },
+  "ordinaryFinishes": {
+    "existingBoundedMinimumIDs": 457,
+    "existingBoundedMinimumSets": [
+      "dc1",
+      "det1",
+      "dv1",
+      "ru1",
+      "sm3.5",
+      "sm6",
+      "sm7.5",
+      "xy12"
+    ],
+    "xyProviderCards": 216,
+    "primaryProductRequests": 271,
+    "primarySuccesses": 269,
+    "exactOrdinaryNameNumberRows": 165,
+    "missingHoloPrimarySignals": 155,
+    "twoSourceReadyHoloAdditions": 7
+  },
+  "specialEnergy": {
+    "baseCards": 32,
+    "detailedPhysicalRows": 128,
+    "distinctPrimaryProducts": 95,
+    "rowsWithoutTCGplayerHandles": 24,
+    "confirmedCrossNumberProductConflict": 1
+  },
+  "stamps": {
+    "compiledTrickOrTradeEntriesByYear": {
+      "2022": 30,
+      "2023": 30,
+      "2024": 30,
+      "2025": 0,
+      "2026": 0
+    },
+    "status": "Later years require reconciliation with generic provider stamps and actual releases. W, Staff, Prize Pack, Professor, Pokemon Center and retailer inventories remain separate work."
+  },
+  "editionsAndPrintRuns": {
+    "status": "First Edition, Unlimited, Shadowless and W representations exist; exhaustive family/price reconciliation remains open."
+  },
+  "subsetsAndSpecialNumbering": {
+    "status": "Existing SV/TG/GG/RC and Classic memberships remain. Bare-number, numberless, alternate-letter and composite scan routes require review."
+  },
+  "oversized": {
+    "localSignedJumbos": 73,
+    "additionalCosmos": 1,
+    "xySMProviderCardsRead": 464,
+    "xySMPrimaryJumboProductsRead": 90,
+    "newXYSMJumbosInstalled": 0,
+    "status": "Earlier 87 count was an inventory/marketplace candidate count, not a completed installable finish cohort."
+  },
+  "pricingAndHoldings": {
+    "status": "Exact identifiers do not verify paid quotes. Wrong-number SVE handle needs exclusion without holding changes; no guessed replacement."
+  },
+  "rolloutAndPhysicalAcceptance": {
+    "lastFullNativeCandidateSets": 75,
+    "lastFullNativeCandidateCards": 6675,
+    "lastFullNativeCandidateSupplements": 74,
+    "productionRevision": 19,
+    "publishedThisWork": false,
+    "status": "Earlier native run passed; not rerun in this read-only batch. Physical camera, paid pricing and production publication remain open."
+  },
+  "nextPriority": [
+    "Ordinary finish and exact Energy-product corrections",
+    "Independent stamped product/release inventories",
+    "Vintage editions and historical/numbering gaps",
+    "Continue oversized work alongside the other dimensions"
+  ]
+}

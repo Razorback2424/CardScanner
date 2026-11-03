@@ -1,0 +1,1023 @@
+[
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/30th-116",
+    "status": 200,
+    "sha256": "bddd5a4d672c4b87cfcef66a00d2c96da8a6ed98178514362d27b3aa9230f225",
+    "requestedCardID": "30th-116",
+    "identity": {
+      "id": "30th-116",
+      "localId": "116",
+      "name": "Eevee",
+      "set": {
+        "cardCount": {
+          "official": 128,
+          "total": 158
+        },
+        "id": "30th",
+        "name": "30th Celebration"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/sv03-125",
+    "status": 200,
+    "sha256": "d3fb77cb2d03ca9d283817f028c4eb2500e30f0bc4aec6fac567bdedfcd3c760",
+    "requestedCardID": "sv03-125",
+    "identity": {
+      "id": "sv03-125",
+      "localId": "125",
+      "name": "Charizard ex",
+      "set": {
+        "cardCount": {
+          "official": 197,
+          "total": 230
+        },
+        "id": "sv03",
+        "logo": "https://assets.tcgdex.net/en/sv/sv03/logo",
+        "name": "Obsidian Flames",
+        "symbol": "https://assets.tcgdex.net/univ/sv/sv03/symbol"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 725205,
+            "tcgplayer": 509879,
+            "cardtrader": 255810
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 749033,
+            "tcgplayer": 581987
+          },
+          "variantId": "slwlv6rn87"
+        },
+        {
+          "type": "holo",
+          "size": "standard",
+          "stamp": [
+            "player-rewards-program"
+          ],
+          "thirdParty": {
+            "cardmarket": 756342
+          },
+          "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+        },
+        {
+          "type": "holo",
+          "size": "standard",
+          "stamp": [
+            "player-rewards-program"
+          ],
+          "thirdParty": {
+            "cardmarket": 782239
+          },
+          "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+        },
+        {
+          "type": "holo",
+          "size": "standard",
+          "stamp": [
+            "player-rewards-program"
+          ],
+          "thirdParty": {
+            "cardmarket": 811099
+          },
+          "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-004",
+    "status": 200,
+    "sha256": "4265d01b672b7f1f002c301e27e2a3893f45d0197d2c3c2b1b5e136faddac9d1",
+    "requestedCardID": "svp-004",
+    "identity": {
+      "id": "svp-004",
+      "localId": "004",
+      "name": "Mimikyu ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 701130,
+            "tcgplayer": 487435
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 701131,
+            "tcgplayer": 487439
+          },
+          "variantId": "slwlv6rn87"
+        },
+        {
+          "type": "holo",
+          "size": "standard",
+          "stamp": [
+            "player-rewards-program"
+          ],
+          "thirdParty": {
+            "cardmarket": 730153,
+            "tcgplayer": 513798
+          },
+          "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-018",
+    "status": 200,
+    "sha256": "1904ce9ea333bae6336eaa0435c867a7bcdca9d8f5c92f025f882c61aa860ca0",
+    "requestedCardID": "svp-018",
+    "identity": {
+      "id": "svp-018",
+      "localId": "018",
+      "name": "Cyclizar ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 703188,
+            "tcgplayer": 496429
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 703189,
+            "tcgplayer": 497721
+          },
+          "variantId": "slwlv6rn87"
+        },
+        {
+          "type": "holo",
+          "size": "standard",
+          "stamp": [
+            "player-rewards-program"
+          ],
+          "thirdParty": {
+            "cardmarket": 730159,
+            "tcgplayer": 513776
+          },
+          "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-049",
+    "status": 200,
+    "sha256": "ffed9caddf480eba9710ecdb2bb5dcafba4f580275dee96947f1826efc2ff6bc",
+    "requestedCardID": "svp-049",
+    "identity": {
+      "id": "svp-049",
+      "localId": "049",
+      "name": "Zapdos ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 720392,
+            "tcgplayer": 518869
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 720393,
+            "tcgplayer": 520722
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-067",
+    "status": 200,
+    "sha256": "4c4cce9ff7e7cb8b3e51fcdf23136a137d1b731df21d2be6522d3afcb48cabbb",
+    "requestedCardID": "svp-067",
+    "identity": {
+      "id": "svp-067",
+      "localId": "067",
+      "name": "Roaring Moon ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 740407,
+            "tcgplayer": 527878
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 740408,
+            "tcgplayer": 529857
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-068",
+    "status": 200,
+    "sha256": "76e8e15fbb5ee9861e010f18556f8c870992ac4e357d92b8fed7f2abd90a0d8c",
+    "requestedCardID": "svp-068",
+    "identity": {
+      "id": "svp-068",
+      "localId": "068",
+      "name": "Iron Valiant ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 740409,
+            "tcgplayer": 527879
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 740410,
+            "tcgplayer": 531864
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-072",
+    "status": 200,
+    "sha256": "342d8694f8cb378e1b9e6e6bd5cd33265c5746cdcc95217df65df2c4a6c9563b",
+    "requestedCardID": "svp-072",
+    "identity": {
+      "id": "svp-072",
+      "localId": "072",
+      "name": "Great Tusk ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 751796,
+            "tcgplayer": 538684
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "standard",
+          "stamp": [
+            "set-logo"
+          ],
+          "thirdParty": {
+            "cardmarket": 866035,
+            "tcgplayer": 666591
+          },
+          "variantId": "555jb0efopmyclvkikic41"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "stamp": [
+            "set-logo"
+          ],
+          "thirdParty": {
+            "cardmarket": 866036,
+            "tcgplayer": 666593
+          },
+          "variantId": "7g4cbxtmtngwhnkbcgz"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-078",
+    "status": 200,
+    "sha256": "386252411cacda9fff12d03cee1d9d9adb4ae8b4ee3f30149458e2ba585cccd8",
+    "requestedCardID": "svp-078",
+    "identity": {
+      "id": "svp-078",
+      "localId": "078",
+      "name": "Meowscarada ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 751803,
+            "tcgplayer": 537978
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 782679,
+            "tcgplayer": 537979
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-081",
+    "status": 200,
+    "sha256": "900d368babcf5b0987027d96fff3972deab7042f1ba6de034349d21886cc15dc",
+    "requestedCardID": "svp-081",
+    "identity": {
+      "id": "svp-081",
+      "localId": "081",
+      "name": "Skeledirge ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 751806,
+            "tcgplayer": 537975
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 751806,
+            "tcgplayer": 537976
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-084",
+    "status": 200,
+    "sha256": "3f9005df768da149e6a387b94628e9d6a6138a8bbd3be90f947a94c1eaf72096",
+    "requestedCardID": "svp-084",
+    "identity": {
+      "id": "svp-084",
+      "localId": "084",
+      "name": "Quaquaval ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 751809,
+            "tcgplayer": 537973
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 782681,
+            "tcgplayer": 537977
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-086",
+    "status": 200,
+    "sha256": "5455479a4ae1cc81810e08574c667787d74e29078c1f28678214359e94116183",
+    "requestedCardID": "svp-086",
+    "identity": {
+      "id": "svp-086",
+      "localId": "086",
+      "name": "Mabosstiff ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 751810,
+            "tcgplayer": 542255
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 751811,
+            "tcgplayer": 543638
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-100",
+    "status": 200,
+    "sha256": "2700afbad53f0eba82fe0088a75ead5268200efdb420f352da541c7665e4dd5f",
+    "requestedCardID": "svp-100",
+    "identity": {
+      "id": "svp-100",
+      "localId": "100",
+      "name": "Grafaiai ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 764544,
+            "tcgplayer": 546448
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 764545,
+            "tcgplayer": 548540
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-126",
+    "status": 200,
+    "sha256": "31131d3aee947bff43a8ebba341f8348672aac0a68aff376c3fb30e9ad40a436",
+    "requestedCardID": "svp-126",
+    "identity": {
+      "id": "svp-126",
+      "localId": "126",
+      "name": "Palafin ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 769423,
+            "tcgplayer": 556449
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 769424,
+            "tcgplayer": 560085
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-162",
+    "status": 200,
+    "sha256": "dc142dab67ee6cffbab05a6c65c40b6f50310a44d85d5713fe411866ddc7289a",
+    "requestedCardID": "svp-162",
+    "identity": {
+      "id": "svp-162",
+      "localId": "162",
+      "name": "Houndstone ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 791831,
+            "tcgplayer": 591023
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "tcgplayer": 791832
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-177",
+    "status": 200,
+    "sha256": "b4d2eee349e217d614a97fa2f0b9e90777226d30f529f96078c14ba89bd41d13",
+    "requestedCardID": "svp-177",
+    "identity": {
+      "id": "svp-177",
+      "localId": "177",
+      "name": "Bloodmoon Ursaluna ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 796948,
+            "tcgplayer": 595473
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 800150,
+            "tcgplayer": 595474
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-193",
+    "status": 200,
+    "sha256": "dda3e31f8cb0b2f94fdee1218310befb9cc6ca993ed9b4410f792e0a12905d51",
+    "requestedCardID": "svp-193",
+    "identity": {
+      "id": "svp-193",
+      "localId": "193",
+      "name": "Hop's Zacian ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 819265,
+            "tcgplayer": 625631
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 819345,
+            "tcgplayer": 625633
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-196",
+    "status": 200,
+    "sha256": "62041be18421c797ad04ed9d12fc591967b7dfd70aa3c9c002ba9cf2b80b694d",
+    "requestedCardID": "svp-196",
+    "identity": {
+      "id": "svp-196",
+      "localId": "196",
+      "name": "Charizard ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 821616,
+            "tcgplayer": 641610
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "lenticular",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 821617,
+            "tcgplayer": 641615
+          },
+          "variantId": "bnwmvuoa0dnsbnou"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-205",
+    "status": 200,
+    "sha256": "4deba5fdd2518f14a5b2ea516d10bc4aacfd1644cbd01a6e25653ae457344327",
+    "requestedCardID": "svp-205",
+    "identity": {
+      "id": "svp-205",
+      "localId": "205",
+      "name": "Team Rocket's Mewtwo ex",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 830110,
+            "tcgplayer": 637617
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 830111,
+            "tcgplayer": 639951
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-208",
+    "status": 200,
+    "sha256": "e1181285ec339daba5e7837b5ab08d6bfca22c1743690188202b1c95916aafe1",
+    "requestedCardID": "svp-208",
+    "identity": {
+      "id": "svp-208",
+      "localId": "208",
+      "name": "Victini",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 836653,
+            "tcgplayer": 646169
+          },
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "holo",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 836654,
+            "tcgplayer": 646170
+          },
+          "variantId": "slwlv6rn87"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/svp-500",
+    "status": 200,
+    "sha256": "7bb6b6f554f2b1be89a6cd7ad68df4cd9ec637a8f1e797f9d5dbba076bb5aa44",
+    "requestedCardID": "svp-500",
+    "identity": {
+      "id": "svp-500",
+      "localId": "500",
+      "name": "Terapagos & Friends",
+      "set": {
+        "cardCount": {
+          "official": 225,
+          "total": 226
+        },
+        "id": "svp",
+        "name": "SVP Black Star Promos"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "jumbo",
+          "stamp": [
+            "horizons"
+          ],
+          "thirdParty": {
+            "cardmarket": 784943,
+            "tcgplayer": 595035
+          },
+          "variantId": "5itbx6okokf0d7b7qwghq"
+        }
+      ]
+    }
+  }
+]

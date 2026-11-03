@@ -1,0 +1,2325 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "scope": "English numbered tables, with explicit two-source physical footer exception and provider-completeness hold",
+  "sets": [
+    {
+      "providerSetID": "tk-dp-m",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/Diamond_%26_Pearl_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 12,
+          "name": "Buizel"
+        },
+        {
+          "number": 2,
+          "denominator": 12,
+          "name": "Floatzel"
+        },
+        {
+          "number": 3,
+          "denominator": 12,
+          "name": "Goldeen"
+        },
+        {
+          "number": 4,
+          "denominator": 12,
+          "name": "Manaphy"
+        },
+        {
+          "number": 5,
+          "denominator": 12,
+          "name": "Piplup"
+        },
+        {
+          "number": 6,
+          "denominator": 12,
+          "name": "Prinplup"
+        },
+        {
+          "number": 7,
+          "denominator": 12,
+          "name": "Seaking"
+        },
+        {
+          "number": 8,
+          "denominator": 12,
+          "name": "Totodile"
+        },
+        {
+          "number": 9,
+          "denominator": 12,
+          "name": "Dusk Ball"
+        },
+        {
+          "number": 10,
+          "denominator": 12,
+          "name": "Energy Search"
+        },
+        {
+          "number": 11,
+          "denominator": 12,
+          "name": "Potion"
+        },
+        {
+          "number": 12,
+          "denominator": 12,
+          "name": "Water Energy"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-dp-l",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/Diamond_%26_Pearl_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 11,
+          "name": "Geodude"
+        },
+        {
+          "number": 2,
+          "denominator": 11,
+          "name": "Graveler"
+        },
+        {
+          "number": 3,
+          "denominator": 11,
+          "name": "Lucario"
+        },
+        {
+          "number": 4,
+          "denominator": 11,
+          "name": "Machoke"
+        },
+        {
+          "number": 5,
+          "denominator": 11,
+          "name": "Machop"
+        },
+        {
+          "number": 6,
+          "denominator": 11,
+          "name": "Riolu",
+          "printedDenominator": 61,
+          "physicalSources": [
+            "https://bulbapedia.bulbagarden.net/wiki/Riolu_(Diamond_%26_Pearl_61)",
+            "https://facetofacegames.com/products/riolu-661-common-non-holo"
+          ],
+          "physicalNote": "Physical 6/61 printing corroborated; 6/11 is the normalized checklist fraction, not proof of a corrected physical edition."
+        },
+        {
+          "number": 7,
+          "denominator": 11,
+          "name": "Starly"
+        },
+        {
+          "number": 8,
+          "denominator": 11,
+          "name": "Energy Search"
+        },
+        {
+          "number": 9,
+          "denominator": 11,
+          "name": "Potion"
+        },
+        {
+          "number": 10,
+          "denominator": 11,
+          "name": "Quick Ball"
+        },
+        {
+          "number": 11,
+          "denominator": 11,
+          "name": "Fighting Energy"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-hs-g",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/HS_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Totodile"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Bill"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Magikarp"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Croconaw"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Totodile"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Marill"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Croconaw"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Bill"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Magikarp"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Gyarados"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Energy Switch"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Pokémon Communication"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Poké Ball"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Marill"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Professor Elm's Training Method"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Pokémon Communication"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Switch"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Gyarados"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-hs-r",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/HS_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Moomoo Milk"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Pikachu"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Flaaffy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Meowth"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Meowth"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Mareep"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Pikachu"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Flaaffy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Raichu"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Mareep"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Copycat"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Pokémon Collector"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Switch"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Poké Ball"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Moomoo Milk"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Pokémon Collector"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Energy Switch"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Raichu"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-bw-e",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/Black_%26_White_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Lillipup"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Energy Switch"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Timburr"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Audino"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Drilbur"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Gurdurr"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "PlusPower"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Excadrill"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Audino"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Herdier"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Energy Search"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Pokémon Communication"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Drilbur"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Lillipup"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Timburr"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Excadrill"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-bw-z",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/Black_%26_White_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Purrloin"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Watchog"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Minccino"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "PlusPower"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Patrat"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Zorua"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Pidove"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Tranquill"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Energy Retrieval"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Zoroark"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Pokémon Communication"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Minccino"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Pidove"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Zorua"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Purrloin"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Energy Search"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Patrat"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Zoroark"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-sy",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Fletchling"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Switch"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Snubbull"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Eevee"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Granbull"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Sylveon"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Furfrou"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Fletchling"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Eevee"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Furfrou"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Pokémon Catcher"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Poké Ball"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Snubbull"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Professor's Letter"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Granbull"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Sylveon"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-n",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Spoink"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Gourgeist"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Arbok"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Bunnelby"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Pumpkaboo"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Noibat"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Noivern"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Pokémon Catcher"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Ekans"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Pumpkaboo"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Furfrou"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Poké Ball"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Noibat"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Professor's Letter"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Darkness Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Switch"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Noivern"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-b",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Bisharp_%26_Wigglytuff_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Fletchling"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Vigoroth"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Honedge"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Bidoof"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Pawniard"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Doublade"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Slakoth"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Bisharp"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Patrat"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Tierno"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Trevor"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Pawniard"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Doublade"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Metal Energy"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Slakoth"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Honedge"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Vigoroth"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Bisharp"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-w",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Bisharp_%26_Wigglytuff_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Swirlix"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Pidgeotto"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Sentret"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Pidgey"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Jigglypuff"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Clefairy"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Wigglytuff"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Clefable"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Swirlix"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Clefairy"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Pidgeotto"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Trevor"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Jigglypuff"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Tierno"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Fairy Energy"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Clefable"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Pidgey"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Wigglytuff"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-latia",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Latias_%26_Latios_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Grass Energy"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Grass Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Grass Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Fletchling"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Grass Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Lombre"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Treecko"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Lotad"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Tangrowth"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Tangela"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Latias"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Surskit"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Grovyle"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Grass Energy"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Acro Bike"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Lombre"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Lotad"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Treecko"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Tangrowth"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Tangela"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Grovyle"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Acro Bike"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Latias"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-latio",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Latias_%26_Latios_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Skitty"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Rhydon"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Machop"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Solrock"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Latios"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Machoke"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Rhyhorn"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Delcatty"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Acro Bike"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Machoke"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Rhyhorn"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Delcatty"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Rhydon"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Solrock"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Skitty"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Machop"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Latios"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-p",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Pikachu_Libre_%26_Suicune_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Glameow"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Electivire"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Taillow"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Electrike"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Blitzle"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Manectric"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Pikachu Libre"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Electabuzz"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Fletchling"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Purugly"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Tierno"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Manectric"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Electabuzz"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Purugly"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Electivire"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Blitzle"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Glameow"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Electrike"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Pikachu Libre"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-xy-su",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/XY_Trainer_Kit:_Pikachu_Libre_%26_Suicune_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Eevee"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Frogadier"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Ducklett"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Froakie"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Seaking"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Goldeen"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Suicune"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Piplup"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Swanna"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Tierno"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Frogadier"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Froakie"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Ducklett"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Seaking"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Goldeen"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Swanna"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Water Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Tierno"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Suicune"
+        }
+      ]
+    },
+    {
+      "providerSetID": "tk-sm-l",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/Sun_%26_Moon_Trainer_Kit:_Lycanroc_%26_Alolan_Raichu_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Caterpie"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Trumbeak"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Fletchling"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Yungoos"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Fletchinder"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Rockruff"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Pikipek"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Lycanroc"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Makuhita"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Hau"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Great Ball"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Toucannon"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Hau"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Great Ball"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Big Malasada"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Fighting Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Rockruff"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Lycanroc"
+        }
+      ],
+      "hold": "Provider has only 18/30 card records; all 12 omitted numbered slots are Fighting Energy in independent table. Do not invent provider IDs or sign partial membership."
+    },
+    {
+      "providerSetID": "tk-sm-r",
+      "sourceURL": "https://bulbapedia.bulbagarden.net/wiki/Sun_%26_Moon_Trainer_Kit:_Lycanroc_%26_Alolan_Raichu_(TCG)",
+      "cards": [
+        {
+          "number": 1,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 2,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 3,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 4,
+          "denominator": 30,
+          "name": "Stufful"
+        },
+        {
+          "number": 5,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 6,
+          "denominator": 30,
+          "name": "Golbat"
+        },
+        {
+          "number": 7,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 8,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 9,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 10,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 11,
+          "denominator": 30,
+          "name": "Zubat"
+        },
+        {
+          "number": 12,
+          "denominator": 30,
+          "name": "Lightning Energy"
+        },
+        {
+          "number": 13,
+          "denominator": 30,
+          "name": "Spearow"
+        },
+        {
+          "number": 14,
+          "denominator": 30,
+          "name": "Pikachu"
+        },
+        {
+          "number": 15,
+          "denominator": 30,
+          "name": "Potion"
+        },
+        {
+          "number": 16,
+          "denominator": 30,
+          "name": "Grubbin"
+        },
+        {
+          "number": 17,
+          "denominator": 30,
+          "name": "Alolan Raichu"
+        },
+        {
+          "number": 18,
+          "denominator": 30,
+          "name": "Bewear"
+        },
+        {
+          "number": 19,
+          "denominator": 30,
+          "name": "Hau"
+        },
+        {
+          "number": 20,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 21,
+          "denominator": 30,
+          "name": "Great Ball"
+        },
+        {
+          "number": 22,
+          "denominator": 30,
+          "name": "Drowzee"
+        },
+        {
+          "number": 23,
+          "denominator": 30,
+          "name": "Hau"
+        },
+        {
+          "number": 24,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 25,
+          "denominator": 30,
+          "name": "Great Ball"
+        },
+        {
+          "number": 26,
+          "denominator": 30,
+          "name": "Togedemaru"
+        },
+        {
+          "number": 27,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 28,
+          "denominator": 30,
+          "name": "Psychic Energy"
+        },
+        {
+          "number": 29,
+          "denominator": 30,
+          "name": "Pikachu"
+        },
+        {
+          "number": 30,
+          "denominator": 30,
+          "name": "Alolan Raichu"
+        }
+      ]
+    }
+  ]
+}

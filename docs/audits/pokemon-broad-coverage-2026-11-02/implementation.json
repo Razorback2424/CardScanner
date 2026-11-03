@@ -1,0 +1,190 @@
+{
+  "status": "Approved correction support and eight records implemented locally; unsigned and unpublished",
+  "checkoutHEAD": "9413e906cab65c1d8c61882d8eb6f137bf44617e",
+  "authorization": "Owner explicitly allowed minimal signed-catalog correction support for ordinary finish minimums and exact physical-object product exclusions; resumed goal after approval.",
+  "authoringInputSHA256": "3051cc5838bd3aa21a63daa296fd799f421fbb8886e6a2559f96b79f365f3167",
+  "previousInputSHA256": "f0077b53fd6860aa9907c949aeeb722ca1607db430a8526a8b7aa1f6b36a0147",
+  "onlyChangedInputDescriptors": [
+    "sve",
+    "xyp"
+  ],
+  "allPrior74RecordsPreserved": true,
+  "allOtherInputFieldsPreserved": true,
+  "newSignedRecords": [
+    {
+      "providerCardID": "sve-002",
+      "canonicalName": "Fire Energy",
+      "variantID": "pokemonStamp|cosmos|player-rewards-program|",
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "player-rewards-program"
+      ],
+      "excludedTCGplayerProductIDs": [
+        651037
+      ],
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-002",
+        "https://mp-search-api.tcgplayer.com/v1/product/651037/details"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY111",
+      "canonicalName": "Celebi",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 114526,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY111",
+        "https://mp-search-api.tcgplayer.com/v1/product/114526/details",
+        "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mythical-pokemon-collection-celebi/"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY112",
+      "canonicalName": "Jirachi",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 117266,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY112",
+        "https://mp-search-api.tcgplayer.com/v1/product/117266/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-jirachi"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY116",
+      "canonicalName": "Arceus",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 121364,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY116",
+        "https://mp-search-api.tcgplayer.com/v1/product/121364/details",
+        "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mythical-pokemon-collection-arceus"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY114",
+      "canonicalName": "Darkrai",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 121946,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY114",
+        "https://mp-search-api.tcgplayer.com/v1/product/121946/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-darkrai"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY119",
+      "canonicalName": "Genesect",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 125322,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY119",
+        "https://mp-search-api.tcgplayer.com/v1/product/125322/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-genesect/"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY120",
+      "canonicalName": "Meloetta",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 125898,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY120",
+        "https://mp-search-api.tcgplayer.com/v1/product/125898/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-meloetta"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY118",
+      "canonicalName": "Keldeo",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 126034,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY118",
+        "https://mp-search-api.tcgplayer.com/v1/product/126034/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/mythical-pokemon-collection-keldeo"
+      ]
+    }
+  ],
+  "signedRecordCounts": {
+    "total": 82,
+    "memberships": 81,
+    "jumbo": 73,
+    "cosmos": 1,
+    "ordinaryHolo": 7,
+    "productExclusions": 1
+  },
+  "nativeValidation": {
+    "operation": "Normal validate --live true; production environment and public trusted-key config",
+    "result": "exit 0",
+    "activeRevision": 19,
+    "activeEnvelopeSHA256": "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333",
+    "candidateRevision": 20,
+    "generatedAt": "2026-11-03T04:30:45Z",
+    "setCount": 75,
+    "numberedCardCount": 6675,
+    "changeClass": "newSet",
+    "all33PreviousProviderFingerprintsUnchanged": true,
+    "payloadSHA256": "f006a69345e79407c514f1a0663933675a9054c48500d4fc85174e8bfb671f48",
+    "snapshotSHA256": "f43760f298668bc2b840a52be5a7b01d4170c09e6140ee5f466c3301661e2c36",
+    "reviewSHA256": "43d18a1b59de426c3c10cdf9e18ef5356e42434d179ff926991178d62617097e",
+    "secondaryProviderAvailable": false,
+    "publicationHold": "Secondary artwork unavailable; 97 prior card-art mappings omitted. Review artwork continuity before signing/publication."
+  },
+  "verification": {
+    "core": {
+      "passed": 88,
+      "skipped": 1,
+      "failed": 0,
+      "skipReason": "Opt-in live CDN test"
+    },
+    "ios": {
+      "passed": 80,
+      "skipped": 0,
+      "failed": 0,
+      "groups": {
+        "PokemonFinishEvidenceTests": 9,
+        "RetailVariantTests": 13,
+        "TCGplayerLinkTests": 18,
+        "VariantResolverTests": 40
+      },
+      "newRetailMethods": [
+        "testCosmosSignedProductNeverUsesOrdinaryHoloQuoteOrUnknownConflictingHandle",
+        "testEnergyExclusionBlocksWrongHandleAndQuoteWithoutAffectingThe010Printing",
+        "testOrdinaryCorrectionReappliesOnAdapterCacheReadsAndWithdraws",
+        "testOrdinaryHoloProjectionIsStandardAndExclusionDoesNotInventAMembership",
+        "testSevenOrdinaryHoloMinimumsRequireChoiceRetainNormalAndUseExactProducts",
+        "testSignedMinimumDoesNotRekeyStoredNormalHoldingsDuringRefreshOrReopen"
+      ]
+    },
+    "initialIOSAttempt": "App built; new test fixture failed to compile due to immutable summary-field assignments. Corrected before final successful run.",
+    "holdings": "Synthetic persisted user-confirmed, imported, finish-lock and automatic Normal rows retain keys, quantities, provenance, activity and inventory counts after refresh/reopen.",
+    "livePaidPricingAcceptance": false,
+    "physicalCameraAcceptance": false
+  },
+  "remainingScope": [
+    "148 other primary-only XY missing-Holo signals",
+    "Historic editions, special-numbering, stamp and Energy inventories in coverage matrix",
+    "XY/SM Jumbo absence and finish review",
+    "Current-registry reconciliation for saved-only marketplace links",
+    "Artwork continuity and protected production signing/publication",
+    "Exhaustive English physical-printing and paid-quote acceptance"
+  ],
+  "committed": false,
+  "published": false,
+  "productionSigned": false
+}

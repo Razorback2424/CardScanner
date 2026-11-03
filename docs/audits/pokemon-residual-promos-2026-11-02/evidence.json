@@ -1,0 +1,989 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "purpose": "Investigation only; no production bindings changed",
+  "sets": [
+    {
+      "providerSetID": "miscp",
+      "name": "Miscellaneous Promos",
+      "declaredCount": 1,
+      "providedCount": 1,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/miscp",
+      "sourceSHA256": "b71c2fac94b7d3253176cf77252caad1c9ce42fd6064fcac8d71d1bbb7bde6e8",
+      "cards": [
+        {
+          "id": "miscp-001",
+          "localId": "001",
+          "name": "Ancient Mew"
+        }
+      ]
+    },
+    {
+      "providerSetID": "basep",
+      "name": "Wizards Black Star Promos",
+      "declaredCount": 53,
+      "providedCount": 53,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/basep",
+      "sourceSHA256": "4ec8f811f9d76130064c36223a158207276fc7e4e5243155b43d75b9cf21c148",
+      "cards": [
+        {
+          "id": "basep-1",
+          "localId": "1",
+          "name": "Pikachu"
+        },
+        {
+          "id": "basep-2",
+          "localId": "2",
+          "name": "Electabuzz"
+        },
+        {
+          "id": "basep-3",
+          "localId": "3",
+          "name": "Mewtwo"
+        },
+        {
+          "id": "basep-4",
+          "localId": "4",
+          "name": "Pikachu"
+        },
+        {
+          "id": "basep-5",
+          "localId": "5",
+          "name": "Dragonite"
+        },
+        {
+          "id": "basep-6",
+          "localId": "6",
+          "name": "Arcanine"
+        },
+        {
+          "id": "basep-7",
+          "localId": "7",
+          "name": "Jigglypuff"
+        },
+        {
+          "id": "basep-8",
+          "localId": "8",
+          "name": "Mew"
+        },
+        {
+          "id": "basep-9",
+          "localId": "9",
+          "name": "Mew"
+        },
+        {
+          "id": "basep-10",
+          "localId": "10",
+          "name": "Meowth"
+        },
+        {
+          "id": "basep-11",
+          "localId": "11",
+          "name": "Eevee"
+        },
+        {
+          "id": "basep-12",
+          "localId": "12",
+          "name": "Mewtwo"
+        },
+        {
+          "id": "basep-13",
+          "localId": "13",
+          "name": "Venusaur"
+        },
+        {
+          "id": "basep-14",
+          "localId": "14",
+          "name": "Mewtwo"
+        },
+        {
+          "id": "basep-15",
+          "localId": "15",
+          "name": "Cool Porygon"
+        },
+        {
+          "id": "basep-16",
+          "localId": "16",
+          "name": "Computer Error"
+        },
+        {
+          "id": "basep-17",
+          "localId": "17",
+          "name": "Dark Persian"
+        },
+        {
+          "id": "basep-18",
+          "localId": "18",
+          "name": "Team Rocket's Meowth"
+        },
+        {
+          "id": "basep-19",
+          "localId": "19",
+          "name": "Sabrina's Abra"
+        },
+        {
+          "id": "basep-20",
+          "localId": "20",
+          "name": "Psyduck"
+        },
+        {
+          "id": "basep-21",
+          "localId": "21",
+          "name": "Moltres"
+        },
+        {
+          "id": "basep-22",
+          "localId": "22",
+          "name": "Articuno"
+        },
+        {
+          "id": "basep-23",
+          "localId": "23",
+          "name": "Zapdos"
+        },
+        {
+          "id": "basep-24",
+          "localId": "24",
+          "name": "___________'s Pikachu"
+        },
+        {
+          "id": "basep-25",
+          "localId": "25",
+          "name": "Flying Pikachu"
+        },
+        {
+          "id": "basep-26",
+          "localId": "26",
+          "name": "Pikachu"
+        },
+        {
+          "id": "basep-27",
+          "localId": "27",
+          "name": "Pikachu"
+        },
+        {
+          "id": "basep-28",
+          "localId": "28",
+          "name": "Surfing Pikachu"
+        },
+        {
+          "id": "basep-29",
+          "localId": "29",
+          "name": "Marill"
+        },
+        {
+          "id": "basep-30",
+          "localId": "30",
+          "name": "Togepi"
+        },
+        {
+          "id": "basep-31",
+          "localId": "31",
+          "name": "Cleffa"
+        },
+        {
+          "id": "basep-32",
+          "localId": "32",
+          "name": "Smeargle"
+        },
+        {
+          "id": "basep-33",
+          "localId": "33",
+          "name": "Scizor"
+        },
+        {
+          "id": "basep-34",
+          "localId": "34",
+          "name": "Entei"
+        },
+        {
+          "id": "basep-35",
+          "localId": "35",
+          "name": "Pichu"
+        },
+        {
+          "id": "basep-36",
+          "localId": "36",
+          "name": "Igglybuff"
+        },
+        {
+          "id": "basep-37",
+          "localId": "37",
+          "name": "Hitmontop"
+        },
+        {
+          "id": "basep-38",
+          "localId": "38",
+          "name": "Unown [J]"
+        },
+        {
+          "id": "basep-39",
+          "localId": "39",
+          "name": "Misdreavus"
+        },
+        {
+          "id": "basep-40",
+          "localId": "40",
+          "name": "Pok\u00e9mon Center"
+        },
+        {
+          "id": "basep-41",
+          "localId": "41",
+          "name": "Lucky Stadium"
+        },
+        {
+          "id": "basep-42",
+          "localId": "42",
+          "name": "Pok\u00e9mon Tower"
+        },
+        {
+          "id": "basep-43",
+          "localId": "43",
+          "name": "Machamp"
+        },
+        {
+          "id": "basep-44",
+          "localId": "44",
+          "name": "Magmar"
+        },
+        {
+          "id": "basep-45",
+          "localId": "45",
+          "name": "Scyther"
+        },
+        {
+          "id": "basep-46",
+          "localId": "46",
+          "name": "Electabuzz"
+        },
+        {
+          "id": "basep-47",
+          "localId": "47",
+          "name": "Mew"
+        },
+        {
+          "id": "basep-48",
+          "localId": "48",
+          "name": "Articuno"
+        },
+        {
+          "id": "basep-49",
+          "localId": "49",
+          "name": "Snorlax"
+        },
+        {
+          "id": "basep-50",
+          "localId": "50",
+          "name": "Celebi"
+        },
+        {
+          "id": "basep-51",
+          "localId": "51",
+          "name": "Rapidash"
+        },
+        {
+          "id": "basep-52",
+          "localId": "52",
+          "name": "Ho-oh"
+        },
+        {
+          "id": "basep-53",
+          "localId": "53",
+          "name": "Suicune"
+        }
+      ]
+    },
+    {
+      "providerSetID": "wp",
+      "name": "W Promotional",
+      "declaredCount": 7,
+      "providedCount": 0,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/wp",
+      "sourceSHA256": "7f04c760a87f6fb4c57f7d57ad94a1c3b09320f15a44b2f34d2ecfdcfd8ba25e",
+      "cards": []
+    },
+    {
+      "providerSetID": "jumbo",
+      "name": "Jumbo cards",
+      "declaredCount": 160,
+      "providedCount": 0,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/jumbo",
+      "sourceSHA256": "a88ff7ee1e529de75eca798cb03a716e3980c66bb315224103617f5cf02eba6f",
+      "cards": []
+    },
+    {
+      "providerSetID": "sp",
+      "name": "Sample",
+      "declaredCount": 10,
+      "providedCount": 0,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/sp",
+      "sourceSHA256": "005a1ca66f3b14165c663aaffdc4f5003eeef950df42a956fb16ac4e3f6269c1",
+      "cards": []
+    },
+    {
+      "providerSetID": "np",
+      "name": "Nintendo Black Star Promos",
+      "declaredCount": 40,
+      "providedCount": 40,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/np",
+      "sourceSHA256": "8e07a1d4bc5c8f3f58277d425c2334d732e2504279c6fe2e7fcac301ae3b3057",
+      "cards": [
+        {
+          "id": "np-1",
+          "localId": "1",
+          "name": "Kyogre ex"
+        },
+        {
+          "id": "np-2",
+          "localId": "2",
+          "name": "Groudon ex"
+        },
+        {
+          "id": "np-3",
+          "localId": "3",
+          "name": "Treecko"
+        },
+        {
+          "id": "np-4",
+          "localId": "4",
+          "name": "Grovyle"
+        },
+        {
+          "id": "np-5",
+          "localId": "5",
+          "name": "Mudkip"
+        },
+        {
+          "id": "np-6",
+          "localId": "6",
+          "name": "Torchic"
+        },
+        {
+          "id": "np-7",
+          "localId": "7",
+          "name": "Treecko"
+        },
+        {
+          "id": "np-8",
+          "localId": "8",
+          "name": "Torchic"
+        },
+        {
+          "id": "np-9",
+          "localId": "9",
+          "name": "Combusken"
+        },
+        {
+          "id": "np-10",
+          "localId": "10",
+          "name": "Mudkip"
+        },
+        {
+          "id": "np-11",
+          "localId": "11",
+          "name": "Marshtomp"
+        },
+        {
+          "id": "np-12",
+          "localId": "12",
+          "name": "Pikachu"
+        },
+        {
+          "id": "np-13",
+          "localId": "13",
+          "name": "Meowth"
+        },
+        {
+          "id": "np-14",
+          "localId": "14",
+          "name": "Latias"
+        },
+        {
+          "id": "np-15",
+          "localId": "15",
+          "name": "Latios"
+        },
+        {
+          "id": "np-16",
+          "localId": "16",
+          "name": "Treecko"
+        },
+        {
+          "id": "np-17",
+          "localId": "17",
+          "name": "Torchic"
+        },
+        {
+          "id": "np-18",
+          "localId": "18",
+          "name": "Mudkip"
+        },
+        {
+          "id": "np-19",
+          "localId": "19",
+          "name": "Whismur"
+        },
+        {
+          "id": "np-20",
+          "localId": "20",
+          "name": "Ludicolo"
+        },
+        {
+          "id": "np-21",
+          "localId": "21",
+          "name": "Jirachi"
+        },
+        {
+          "id": "np-22",
+          "localId": "22",
+          "name": "Beldum"
+        },
+        {
+          "id": "np-23",
+          "localId": "23",
+          "name": "Metang"
+        },
+        {
+          "id": "np-24",
+          "localId": "24",
+          "name": "Chimecho"
+        },
+        {
+          "id": "np-25",
+          "localId": "25",
+          "name": "Flygon"
+        },
+        {
+          "id": "np-26",
+          "localId": "26",
+          "name": "Tropical Wind"
+        },
+        {
+          "id": "np-27",
+          "localId": "27",
+          "name": "Tropical Tidal Wave"
+        },
+        {
+          "id": "np-28",
+          "localId": "28",
+          "name": "Championship Arena"
+        },
+        {
+          "id": "np-29",
+          "localId": "29",
+          "name": "Celebi"
+        },
+        {
+          "id": "np-30",
+          "localId": "30",
+          "name": "Suicune"
+        },
+        {
+          "id": "np-31",
+          "localId": "31",
+          "name": "Moltres ex"
+        },
+        {
+          "id": "np-32",
+          "localId": "32",
+          "name": "Articuno ex"
+        },
+        {
+          "id": "np-33",
+          "localId": "33",
+          "name": "Zapdos ex"
+        },
+        {
+          "id": "np-34",
+          "localId": "34",
+          "name": "Typhlosion"
+        },
+        {
+          "id": "np-35",
+          "localId": "35",
+          "name": "Pikachu \u03b4"
+        },
+        {
+          "id": "np-36",
+          "localId": "36",
+          "name": "Tropical Tidal Wave"
+        },
+        {
+          "id": "np-37",
+          "localId": "37",
+          "name": "Kyogre ex"
+        },
+        {
+          "id": "np-38",
+          "localId": "38",
+          "name": "Groudon ex"
+        },
+        {
+          "id": "np-39",
+          "localId": "39",
+          "name": "Rayquaza ex"
+        },
+        {
+          "id": "np-40",
+          "localId": "40",
+          "name": "Mew"
+        }
+      ]
+    },
+    {
+      "providerSetID": "rc",
+      "name": "Radiant Collection",
+      "declaredCount": 25,
+      "providedCount": 0,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/rc",
+      "sourceSHA256": "9b1bf3d6863d1502f313791e07b0c389de10933d326cc5d2e40354f9d2251488",
+      "cards": []
+    },
+    {
+      "providerSetID": "tk-sm-l",
+      "name": "SM trainer Kit (Lycanroc)",
+      "declaredCount": 30,
+      "providedCount": 18,
+      "sourceURL": "https://api.tcgdex.net/v2/en/sets/tk-sm-l",
+      "sourceSHA256": "a58b6c38118f6635aeffca51e36a2b361511e98f1abd50c0b951fa404ac135ac",
+      "cards": [
+        {
+          "id": "tk-sm-l-1",
+          "localId": "1",
+          "name": "Caterpie"
+        },
+        {
+          "id": "tk-sm-l-4",
+          "localId": "4",
+          "name": "Trumbeak"
+        },
+        {
+          "id": "tk-sm-l-5",
+          "localId": "5",
+          "name": "Fighting Energy"
+        },
+        {
+          "id": "tk-sm-l-11",
+          "localId": "11",
+          "name": "Fletchling"
+        },
+        {
+          "id": "tk-sm-l-12",
+          "localId": "12",
+          "name": "Yungoos"
+        },
+        {
+          "id": "tk-sm-l-13",
+          "localId": "13",
+          "name": "Fletchinder"
+        },
+        {
+          "id": "tk-sm-l-14",
+          "localId": "14",
+          "name": "Rockruff"
+        },
+        {
+          "id": "tk-sm-l-15",
+          "localId": "15",
+          "name": "Pikipek"
+        },
+        {
+          "id": "tk-sm-l-16",
+          "localId": "16",
+          "name": "Lycanroc"
+        },
+        {
+          "id": "tk-sm-l-18",
+          "localId": "18",
+          "name": "Makuhita"
+        },
+        {
+          "id": "tk-sm-l-19",
+          "localId": "19",
+          "name": "Hau"
+        },
+        {
+          "id": "tk-sm-l-21",
+          "localId": "21",
+          "name": "Great Ball"
+        },
+        {
+          "id": "tk-sm-l-22",
+          "localId": "22",
+          "name": "Toucannon"
+        },
+        {
+          "id": "tk-sm-l-23",
+          "localId": "23",
+          "name": "Hau"
+        },
+        {
+          "id": "tk-sm-l-25",
+          "localId": "25",
+          "name": "Great Ball"
+        },
+        {
+          "id": "tk-sm-l-27",
+          "localId": "27",
+          "name": "Big Malasada"
+        },
+        {
+          "id": "tk-sm-l-29",
+          "localId": "29",
+          "name": "Rockruff"
+        },
+        {
+          "id": "tk-sm-l-30",
+          "localId": "30",
+          "name": "Lycanroc"
+        }
+      ]
+    }
+  ],
+  "wStampOriginals": [
+    {
+      "providerCardID": "base2-60",
+      "name": "Pikachu",
+      "localId": "60",
+      "printedDenominator": 64,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 273857,
+            "tcgplayer": 45163
+          },
+          "quoteProductIDs": {
+            "1st-edition": 45163,
+            "unlimited": 45163
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "cardmarket": 273857,
+            "tcgplayer": 45163
+          },
+          "quoteProductIDs": {
+            "1st-edition": 45163,
+            "unlimited": 45163
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "pikachu-tail"
+          ],
+          "quoteProductIDs": {}
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "wotc"
+          ],
+          "quoteProductIDs": {}
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/base2-60",
+      "sourceSHA256": "8e611d99b8cdac14be6efd901d70e6e93285c9d4b6865c9addb8d278a182b9fa",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": []
+    },
+    {
+      "providerCardID": "base3-50",
+      "name": "Kabuto",
+      "localId": "50",
+      "printedDenominator": 62,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 273911,
+            "tcgplayer": 44452
+          },
+          "quoteProductIDs": {
+            "1st-edition": 44452,
+            "unlimited": 44452
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "cardmarket": 273911,
+            "tcgplayer": 44452
+          },
+          "quoteProductIDs": {
+            "1st-edition": 44452,
+            "unlimited": 44452
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "wotc"
+          ],
+          "quoteProductIDs": {}
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "subtype": "1999-2000-copyright",
+          "quoteProductIDs": {}
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/base3-50",
+      "sourceSHA256": "455256dd0c2312df168a21b0e7a7697c7910105501074a8fa73d0b57d354f866",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": []
+    },
+    {
+      "providerCardID": "base4-63",
+      "name": "Wartortle",
+      "localId": "63",
+      "printedDenominator": 130,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 273986,
+            "tcgplayer": 42526
+          },
+          "quoteProductIDs": {
+            "normal": 42526
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "wotc"
+          ],
+          "quoteProductIDs": {}
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/base4-63",
+      "sourceSHA256": "1f8c8951d7505783242d0e8d88a93dc8d4f2211b279fe7cb050236e7253d4c54",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": []
+    },
+    {
+      "providerCardID": "base5-19",
+      "name": "Dark Arbok",
+      "localId": "19",
+      "printedDenominator": 82,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 274055,
+            "tcgplayer": 84564
+          },
+          "quoteProductIDs": {
+            "1st-edition": 84564,
+            "unlimited": 84564
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "cardmarket": 274055,
+            "tcgplayer": 84564
+          },
+          "quoteProductIDs": {
+            "1st-edition": 84564,
+            "unlimited": 84564
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "wotc"
+          ],
+          "quoteProductIDs": {}
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/base5-19",
+      "sourceSHA256": "c5592b1abd5f0f4022c48997f5f80196bc35e014ae0f7b9a06574e84f97acb17",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": []
+    },
+    {
+      "providerCardID": "base5-32",
+      "name": "Dark Charmeleon",
+      "localId": "32",
+      "printedDenominator": 82,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 274085,
+            "tcgplayer": 84574
+          },
+          "quoteProductIDs": {
+            "1st-edition": 84574,
+            "unlimited": 84574
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "cardmarket": 274085,
+            "tcgplayer": 84574
+          },
+          "quoteProductIDs": {
+            "1st-edition": 84574,
+            "unlimited": 84574
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "w-promo"
+          ],
+          "quoteProductIDs": {}
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/base5-32",
+      "sourceSHA256": "450f92f4e14f2029a866a35cbe827cc034078becbd3a273d9b59f1f29bc9a17a",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": []
+    },
+    {
+      "providerCardID": "gym1-54",
+      "name": "Misty's Psyduck",
+      "localId": "54",
+      "printedDenominator": 132,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "tcgplayer": 87539
+          },
+          "quoteProductIDs": {
+            "1st-edition": 87539,
+            "unlimited": 87539
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "tcgplayer": 87539,
+            "cardmarket": 274190
+          },
+          "quoteProductIDs": {
+            "1st-edition": 87539,
+            "unlimited": 87539
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "wotc"
+          ],
+          "thirdParty": {
+            "tcgplayer": 87539,
+            "cardmarket": 274190
+          },
+          "quoteProductIDs": {
+            "1st-edition": 87539,
+            "unlimited": 87539
+          }
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/gym1-54",
+      "sourceSHA256": "20131194788a8af8d2530953a23042aab8041cb0ddbdacaed107d3ca5815162d",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": [
+        87539
+      ]
+    },
+    {
+      "providerCardID": "gym2-37",
+      "name": "Brock's Vulpix",
+      "localId": "37",
+      "printedDenominator": 132,
+      "details": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "thirdParty": {
+            "tcgplayer": 83986
+          },
+          "quoteProductIDs": {
+            "1st-edition": 83986,
+            "unlimited": 83986
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "tcgplayer": 83986,
+            "cardmarket": 274305
+          },
+          "quoteProductIDs": {
+            "1st-edition": 83986,
+            "unlimited": 83986
+          }
+        },
+        {
+          "type": "normal",
+          "size": "standard",
+          "stamp": [
+            "wotc"
+          ],
+          "thirdParty": {
+            "tcgplayer": 83986,
+            "cardmarket": 274305
+          },
+          "quoteProductIDs": {
+            "1st-edition": 83986,
+            "unlimited": 83986
+          }
+        }
+      ],
+      "sourceURL": "https://api.tcgdex.net/v2/en/cards/gym2-37",
+      "sourceSHA256": "f13f59b81617fc26fa322840b5a3d9410d9841dc926f49e93788c81cf8aa2d70",
+      "wStampedDetailCount": 1,
+      "sharedOrdinaryTCGplayerHandles": [
+        83986
+      ]
+    }
+  ],
+  "errors": []
+}

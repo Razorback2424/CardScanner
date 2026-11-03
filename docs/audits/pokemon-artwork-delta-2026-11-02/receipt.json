@@ -1,0 +1,170 @@
+{
+  "reviewedAtUTC": "2026-11-03T01:36:36.997475+00:00",
+  "checkoutHEAD": "9413e906cab65c1d8c61882d8eb6f137bf44617e",
+  "scope": "Artwork-only follow-up; no new physical memberships, product overrides, app logic, signature or deployment",
+  "activeRevision": 19,
+  "activeEnvelopeSHA256": "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333",
+  "authoringInputSHA256": "093ad2ff6a7dced6dd1152078f30363300ba20932a1b5f4bd6ac905949faa386",
+  "inputChangesThisBatch": {
+    "me02": {
+      "symbolURL": {
+        "old": null,
+        "new": "https://assets.tcgdex.net/en/me/me02/symbol.png"
+      }
+    },
+    "30th-c": {
+      "logoURL": {
+        "old": null,
+        "new": "https://assets.tcgdex.net/en/me/30th/logo.png"
+      },
+      "symbolURL": {
+        "old": null,
+        "new": "https://assets.tcgdex.net/en/me/30th/symbol.png"
+      }
+    }
+  },
+  "setArtworkURLChecks": [
+    {
+      "url": "https://assets.tcgdex.net/en/me/30th/logo.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 219227,
+      "sha256": "15119a32b5e137776c85e70cf903ff0262ea811a609f37e120de21250308d98d"
+    },
+    {
+      "url": "https://assets.tcgdex.net/en/me/30th/symbol.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 2342,
+      "sha256": "d97430543c10f3015a608dd1fcd3adecb3e275b620b1d842be83c4c8df646090"
+    },
+    {
+      "url": "https://assets.tcgdex.net/en/me/me02/symbol.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 4686,
+      "sha256": "0af13c6e2f6940314414da40b6604c8cc2969a6f10609fc979a8f1e138ffeb0f"
+    }
+  ],
+  "descriptorComparison": {
+    "30th-c": {
+      "activeProviderFingerprint": "d25f4d40ba454af9",
+      "earlierCandidateProviderFingerprint": "d25f4d40ba454af9",
+      "latestCandidateProviderFingerprint": "d25f4d40ba454af9",
+      "earlierChangedDescriptorFields": [
+        "artworkFallbackURLs",
+        "cardArtwork",
+        "logoURL",
+        "symbolURL"
+      ],
+      "latestChangedDescriptorFields": [
+        "logoURL",
+        "symbolURL"
+      ],
+      "activeCardArtworkCount": 30,
+      "earlierCandidateCardArtworkCount": 0,
+      "latestCandidateCardArtworkCount": 30
+    },
+    "bwp": {
+      "activeProviderFingerprint": "852c42b05c1b9ddc",
+      "earlierCandidateProviderFingerprint": "852c42b05c1b9ddc",
+      "latestCandidateProviderFingerprint": "852c42b05c1b9ddc",
+      "earlierChangedDescriptorFields": [
+        "cardArtwork"
+      ],
+      "latestChangedDescriptorFields": [],
+      "activeCardArtworkCount": 3,
+      "earlierCandidateCardArtworkCount": 0,
+      "latestCandidateCardArtworkCount": 3
+    },
+    "me02": {
+      "activeProviderFingerprint": "f537495853ac697f",
+      "earlierCandidateProviderFingerprint": "f537495853ac697f",
+      "latestCandidateProviderFingerprint": "f537495853ac697f",
+      "earlierChangedDescriptorFields": [
+        "symbolURL"
+      ],
+      "latestChangedDescriptorFields": [
+        "symbolURL"
+      ],
+      "activeCardArtworkCount": 0,
+      "earlierCandidateCardArtworkCount": 0,
+      "latestCandidateCardArtworkCount": 0
+    },
+    "mep": {
+      "activeProviderFingerprint": "d0068f5216976403",
+      "earlierCandidateProviderFingerprint": "d0068f5216976403",
+      "latestCandidateProviderFingerprint": "d0068f5216976403",
+      "earlierChangedDescriptorFields": [
+        "artworkFallbackURLs",
+        "cardArtwork"
+      ],
+      "latestChangedDescriptorFields": [
+        "artworkFallbackURLs",
+        "cardArtwork"
+      ],
+      "activeCardArtworkCount": 0,
+      "earlierCandidateCardArtworkCount": 40,
+      "latestCandidateCardArtworkCount": 40
+    },
+    "smp": {
+      "activeProviderFingerprint": "94b8a4ef5cb45242",
+      "earlierCandidateProviderFingerprint": "94b8a4ef5cb45242",
+      "latestCandidateProviderFingerprint": "94b8a4ef5cb45242",
+      "earlierChangedDescriptorFields": [
+        "cardArtwork"
+      ],
+      "latestChangedDescriptorFields": [],
+      "activeCardArtworkCount": 64,
+      "earlierCandidateCardArtworkCount": 0,
+      "latestCandidateCardArtworkCount": 64
+    }
+  },
+  "allExistingProviderFingerprintsUnchanged": true,
+  "existingDescriptorsCompared": 33,
+  "latestCandidate": {
+    "revision": 20,
+    "generatedAt": "2026-11-03T01:30:37Z",
+    "setCount": 75,
+    "numberedCardCount": 6675,
+    "additionalVariants": 20,
+    "allPriorSupplementsUnchanged": true,
+    "changeClass": "newSet",
+    "contentChangedProviderSetIDs": [
+      "30th-c",
+      "me02",
+      "mep"
+    ],
+    "authorityChangedProviderSetIDs": [
+      "30th",
+      "sv03",
+      "svp"
+    ],
+    "secondaryProviderAvailable": true,
+    "payloadSHA256": "ba84a8b58b65fd56ca621cad72b669aa9c4540e5ba8c3839a2c45306bb0d3293",
+    "snapshotSHA256": "c08f1b0c98386a8b92cfcff293720beeb5df3c87fca051bcf2bec83b1db9b592",
+    "nativeReviewSHA256": "6f88fa87cbccb49a58bf9270f72edb756fc2c1c280aa578cefe4dd71f5b7034e",
+    "unsigned": true,
+    "unpublished": true
+  },
+  "legacyAssetProbeSummary": {
+    "cardIdentities": 97,
+    "urls": 194,
+    "http403": 194,
+    "scopeLimit": "Observed in this execution environment; not proof of failure on every device. Latest native candidate retains all 97 existing mappings."
+  },
+  "replacementCandidateSummary": {
+    "rows": 97,
+    "tcgdexIdentityReceipts": 97,
+    "independentTCGplayerIdentityReceipts": 94,
+    "decodedMarketplaceImages": 94,
+    "unresolvedExactProducts": [
+      "bwp-BW04",
+      "bwp-BW05",
+      "bwp-BW96"
+    ],
+    "installed": false,
+    "limit": "Metadata joins and decoded images are review candidates only; no visual inspection of all 94 card images or per-card artwork override installation is claimed."
+  },
+  "validation": "Normal native publisher validate --live true against signature-verified production revision 19 exited 0. No app or Core source changed in this artwork-only batch; earlier test counts are historical, not rerun."
+}

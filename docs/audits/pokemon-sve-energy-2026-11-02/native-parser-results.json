@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-02",
+  "resultBundle": "/Volumes/T7/CodexBuilds/CardScannerSVE20261102.xcresult",
+  "reader": "xcresulttool legacy object reader; modern summary failed on Library/Caches write",
+  "executed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "tests": [
+    {
+      "identifier": "ScanParserTests/testEnergySplitObservationsRequireNearbyGeometry()",
+      "status": "Success"
+    },
+    {
+      "identifier": "ScanParserTests/testProductionSVEAuthorityRegistersAll24EnergyFootersWithoutChangingSeed()",
+      "status": "Success"
+    },
+    {
+      "identifier": "ScanParserTests/testRegisteredEnergyFootersAndSafeNegativeEvidence()",
+      "status": "Success"
+    }
+  ]
+}

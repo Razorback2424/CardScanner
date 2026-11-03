@@ -1,0 +1,49 @@
+{
+  "status": "review-evidence-only; no physical card or variant change",
+  "independentReferenceURL": "https://bulbapedia.bulbagarden.net/wiki/MEP_Black_Star_Promos_(TCG)",
+  "officialProductURL": "https://www.pokemon.com/uk/news/pokemon-tcg-30th-celebration-product-showcase",
+  "additionalReferenceURL": "https://tcgpromos.com/cards/pokemon-mep-097",
+  "providerChecks": [
+    {
+      "id": "mep-094",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-094",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-095",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-095",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-096",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-096",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-097",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-097",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-098",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-098",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-099",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-099",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-100",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-100",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "mep-101",
+      "url": "https://api.tcgdex.net/v2/en/cards/mep-101",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ],
+  "limit": "All eight requested provider endpoints returned 404. This receipt does not establish finish/size/product identity for admission. Do not invent local provider detail records."
+}

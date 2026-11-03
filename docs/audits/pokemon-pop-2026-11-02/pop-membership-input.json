@@ -1,0 +1,1012 @@
+{
+  "sets": [
+    {
+      "providerSetID": "pop1",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop1-1",
+            "canonicalName": "blaziken",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-2",
+            "canonicalName": "metagross",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-3",
+            "canonicalName": "rayquaza",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-4",
+            "canonicalName": "sceptile",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-5",
+            "canonicalName": "swampert",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-6",
+            "canonicalName": "beautifly",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-7",
+            "canonicalName": "masquerain",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-8",
+            "canonicalName": "murkrow",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-9",
+            "canonicalName": "pupitar",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-10",
+            "canonicalName": "torkoal",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-11",
+            "canonicalName": "larvitar",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-12",
+            "canonicalName": "minun",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-13",
+            "canonicalName": "plusle",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-14",
+            "canonicalName": "surskit",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-15",
+            "canonicalName": "swellow",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-16",
+            "canonicalName": "armaldo ex",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop1-17",
+            "canonicalName": "tyranitar ex",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop2",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop2-1",
+            "canonicalName": "entei",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-2",
+            "canonicalName": "pidgeot",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-3",
+            "canonicalName": "raikou",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-4",
+            "canonicalName": "suicune",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-5",
+            "canonicalName": "tauros",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-6",
+            "canonicalName": "venusaur",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-7",
+            "canonicalName": "ivysaur",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-8",
+            "canonicalName": "mr briney s compassion",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-9",
+            "canonicalName": "multi technical machine 01",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-10",
+            "canonicalName": "pokemon park",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-11",
+            "canonicalName": "tv reporter",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-12",
+            "canonicalName": "bulbasaur",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-13",
+            "canonicalName": "cacnea",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-14",
+            "canonicalName": "luvdisc",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-15",
+            "canonicalName": "phanpy",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-16",
+            "canonicalName": "pikachu",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop2-17",
+            "canonicalName": "celebi ex",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop3",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop3-1",
+            "canonicalName": "blastoise",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-2",
+            "canonicalName": "flareon",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-3",
+            "canonicalName": "jolteon",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-4",
+            "canonicalName": "minun",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-5",
+            "canonicalName": "plusle",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-6",
+            "canonicalName": "vaporeon",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-7",
+            "canonicalName": "combusken",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-8",
+            "canonicalName": "donphan",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-9",
+            "canonicalName": "forretress",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-10",
+            "canonicalName": "high pressure system",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-11",
+            "canonicalName": "low pressure system",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-12",
+            "canonicalName": "ditto",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-13",
+            "canonicalName": "eevee",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-14",
+            "canonicalName": "ivysaur",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-15",
+            "canonicalName": "marshtomp",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-16",
+            "canonicalName": "pichu bros",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop3-17",
+            "canonicalName": "ho oh ex",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop4",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop4-1",
+            "canonicalName": "chimecho δ",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-2",
+            "canonicalName": "deoxys δ",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-3",
+            "canonicalName": "flygon",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-4",
+            "canonicalName": "mew",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-5",
+            "canonicalName": "sceptile",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-6",
+            "canonicalName": "combusken",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-7",
+            "canonicalName": "grovyle",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-8",
+            "canonicalName": "heal energy",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-9",
+            "canonicalName": "pokemon fan club",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-10",
+            "canonicalName": "scramble energy",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-11",
+            "canonicalName": "mudkip",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-12",
+            "canonicalName": "pidgey",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-13",
+            "canonicalName": "pikachu",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-14",
+            "canonicalName": "squirtle",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-15",
+            "canonicalName": "treecko δ",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-16",
+            "canonicalName": "wobbuffet",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop4-17",
+            "canonicalName": "deoxys ex",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop5",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop5-1",
+            "canonicalName": "ho oh",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-2",
+            "canonicalName": "lugia",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-3",
+            "canonicalName": "mew δ",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-4",
+            "canonicalName": "double rainbow energy",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-5",
+            "canonicalName": "charmeleon δ",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-6",
+            "canonicalName": "bill s maintenance",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-7",
+            "canonicalName": "rare candy",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-8",
+            "canonicalName": "boost energy",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-9",
+            "canonicalName": "δ rainbow energy",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-10",
+            "canonicalName": "charmander δ",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-11",
+            "canonicalName": "meowth δ",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-12",
+            "canonicalName": "pikachu",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-13",
+            "canonicalName": "pikachu δ",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-14",
+            "canonicalName": "pelipper δ",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-15",
+            "canonicalName": "zangoose δ",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-16",
+            "canonicalName": "espeon",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop5-17",
+            "canonicalName": "umbreon",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop6",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop6-1",
+            "canonicalName": "bastiodon",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-2",
+            "canonicalName": "lucario",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-3",
+            "canonicalName": "manaphy",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-4",
+            "canonicalName": "pachirisu",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-5",
+            "canonicalName": "rampardos",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-6",
+            "canonicalName": "drifloon",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-7",
+            "canonicalName": "gible",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-8",
+            "canonicalName": "riolu",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-9",
+            "canonicalName": "pikachu",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-10",
+            "canonicalName": "staravia",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-11",
+            "canonicalName": "bidoof",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-12",
+            "canonicalName": "buneary",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-13",
+            "canonicalName": "cherubi",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-14",
+            "canonicalName": "chimchar",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-15",
+            "canonicalName": "piplup",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-16",
+            "canonicalName": "starly",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop6-17",
+            "canonicalName": "turtwig",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop7",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop7-1",
+            "canonicalName": "ampharos",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-2",
+            "canonicalName": "gallade",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-3",
+            "canonicalName": "latias",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-4",
+            "canonicalName": "latios",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-5",
+            "canonicalName": "mothim",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-6",
+            "canonicalName": "delibird",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-7",
+            "canonicalName": "flaaffy",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-8",
+            "canonicalName": "kirlia",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-9",
+            "canonicalName": "stantler",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-10",
+            "canonicalName": "wormadam sandy cloak",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-11",
+            "canonicalName": "burmy plant cloak",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-12",
+            "canonicalName": "burmy sandy cloak",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-13",
+            "canonicalName": "corsola",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-14",
+            "canonicalName": "mareep",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-15",
+            "canonicalName": "ralts",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-16",
+            "canonicalName": "sentret",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop7-17",
+            "canonicalName": "spinda",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop8",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop8-1",
+            "canonicalName": "heatran",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-2",
+            "canonicalName": "lucario",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-3",
+            "canonicalName": "luxray",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-4",
+            "canonicalName": "probopass",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-5",
+            "canonicalName": "yanmega",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-6",
+            "canonicalName": "cherrim",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-7",
+            "canonicalName": "carnivine",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-8",
+            "canonicalName": "luxio",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-9",
+            "canonicalName": "night maintenance",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-10",
+            "canonicalName": "rare candy",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-11",
+            "canonicalName": "roseanne s research",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-12",
+            "canonicalName": "chimchar",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-13",
+            "canonicalName": "croagunk",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-14",
+            "canonicalName": "happiny",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-15",
+            "canonicalName": "piplup",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-16",
+            "canonicalName": "riolu",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop8-17",
+            "canonicalName": "turtwig",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    },
+    {
+      "providerSetID": "pop9",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1,
+      "membershipRecognition": {
+        "members": [
+          {
+            "providerCardID": "pop9-1",
+            "canonicalName": "garchomp",
+            "printedLocalID": "1",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-2",
+            "canonicalName": "manaphy",
+            "printedLocalID": "2",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-3",
+            "canonicalName": "raichu",
+            "printedLocalID": "3",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-4",
+            "canonicalName": "regigigas",
+            "printedLocalID": "4",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-5",
+            "canonicalName": "rotom",
+            "printedLocalID": "5",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-6",
+            "canonicalName": "buizel",
+            "printedLocalID": "6",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-7",
+            "canonicalName": "croagunk",
+            "printedLocalID": "7",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-8",
+            "canonicalName": "gabite",
+            "printedLocalID": "8",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-9",
+            "canonicalName": "lopunny",
+            "printedLocalID": "9",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-10",
+            "canonicalName": "pachirisu",
+            "printedLocalID": "10",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-11",
+            "canonicalName": "pichu",
+            "printedLocalID": "11",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-12",
+            "canonicalName": "buneary",
+            "printedLocalID": "12",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-13",
+            "canonicalName": "chimchar",
+            "printedLocalID": "13",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-14",
+            "canonicalName": "gible",
+            "printedLocalID": "14",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-15",
+            "canonicalName": "pikachu",
+            "printedLocalID": "15",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-16",
+            "canonicalName": "piplup",
+            "printedLocalID": "16",
+            "printedDenominator": 17
+          },
+          {
+            "providerCardID": "pop9-17",
+            "canonicalName": "turtwig",
+            "printedLocalID": "17",
+            "printedDenominator": 17
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,443 @@
+{
+  "purpose": "Product-handle isolation evidence, not numeric quote verification",
+  "rows": [
+    {
+      "providerCardID": "swshp-SWSH005",
+      "jumboProductID": 205467,
+      "standardProviderProductIDs": [
+        205466
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH014",
+      "jumboProductID": 220754,
+      "standardProviderProductIDs": [
+        206421
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH015",
+      "jumboProductID": 220755,
+      "standardProviderProductIDs": [
+        206419
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH016",
+      "jumboProductID": 220753,
+      "standardProviderProductIDs": [
+        206418
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH017",
+      "jumboProductID": 206426,
+      "standardProviderProductIDs": [
+        206425
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH021",
+      "jumboProductID": 214236,
+      "standardProviderProductIDs": [
+        214235
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH030",
+      "jumboProductID": 214229,
+      "standardProviderProductIDs": [
+        214228
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH043",
+      "jumboProductID": 220274,
+      "standardProviderProductIDs": [
+        220273
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH045",
+      "jumboProductID": 220282,
+      "standardProviderProductIDs": [
+        220281
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH049",
+      "jumboProductID": 223753,
+      "standardProviderProductIDs": [
+        223752
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH055",
+      "jumboProductID": 223756,
+      "standardProviderProductIDs": [
+        223755
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH057",
+      "jumboProductID": 229436,
+      "standardProviderProductIDs": [
+        223758
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH061",
+      "jumboProductID": 232443,
+      "standardProviderProductIDs": [
+        232434
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH078",
+      "jumboProductID": 227026,
+      "standardProviderProductIDs": [
+        227025
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH083",
+      "jumboProductID": 228981,
+      "standardProviderProductIDs": [
+        228980
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH085",
+      "jumboProductID": 243659,
+      "standardProviderProductIDs": [
+        232499
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH086",
+      "jumboProductID": 251622,
+      "standardProviderProductIDs": [
+        232503
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH097",
+      "jumboProductID": 232609,
+      "standardProviderProductIDs": [
+        232608
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH099",
+      "jumboProductID": 232614,
+      "standardProviderProductIDs": [
+        232613
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH102",
+      "jumboProductID": 234375,
+      "standardProviderProductIDs": [
+        234298
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH103",
+      "jumboProductID": 234376,
+      "standardProviderProductIDs": [
+        234299
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH106",
+      "jumboProductID": 234377,
+      "standardProviderProductIDs": [
+        234296
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH107",
+      "jumboProductID": 234378,
+      "standardProviderProductIDs": [
+        234297
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH111",
+      "jumboProductID": 236055,
+      "standardProviderProductIDs": [
+        236054,
+        476015
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH130",
+      "jumboProductID": 245870,
+      "standardProviderProductIDs": [
+        245868
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH131",
+      "jumboProductID": 245869,
+      "standardProviderProductIDs": [
+        245867
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH132",
+      "jumboProductID": 252817,
+      "standardProviderProductIDs": [
+        251088
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH133",
+      "jumboProductID": 251104,
+      "standardProviderProductIDs": [
+        251089
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH134",
+      "jumboProductID": 251105,
+      "standardProviderProductIDs": [
+        251090
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH136",
+      "jumboProductID": 260878,
+      "standardProviderProductIDs": [
+        251092
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH154",
+      "jumboProductID": 253421,
+      "standardProviderProductIDs": [
+        247298,
+        542073
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH176",
+      "jumboProductID": 253420,
+      "standardProviderProductIDs": [
+        253412
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH180",
+      "jumboProductID": 257709,
+      "standardProviderProductIDs": [
+        253415
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH182",
+      "jumboProductID": 257708,
+      "standardProviderProductIDs": [
+        253417
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH184",
+      "jumboProductID": 257710,
+      "standardProviderProductIDs": [
+        253419
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH195",
+      "jumboProductID": 263260,
+      "standardProviderProductIDs": [
+        262566,
+        489306
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH197",
+      "jumboProductID": 263261,
+      "standardProviderProductIDs": [
+        262569,
+        489300
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH198",
+      "jumboProductID": 260712,
+      "standardProviderProductIDs": [
+        260711
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH214",
+      "jumboProductID": 268305,
+      "standardProviderProductIDs": [
+        268304
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH219",
+      "jumboProductID": 276051,
+      "standardProviderProductIDs": [
+        270468
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH225",
+      "jumboProductID": 279028,
+      "standardProviderProductIDs": [
+        270723
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH249",
+      "jumboProductID": 276050,
+      "standardProviderProductIDs": [
+        273939
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH252",
+      "jumboProductID": 284499,
+      "standardProviderProductIDs": [
+        283369
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH254",
+      "jumboProductID": 449514,
+      "standardProviderProductIDs": [
+        449511
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH256",
+      "jumboProductID": 449513,
+      "standardProviderProductIDs": [
+        449509
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH265",
+      "jumboProductID": 449524,
+      "standardProviderProductIDs": [
+        449520
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH268",
+      "jumboProductID": 449525,
+      "standardProviderProductIDs": [
+        449523
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH280",
+      "jumboProductID": 479879,
+      "standardProviderProductIDs": [
+        453483
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH281",
+      "jumboProductID": 479880,
+      "standardProviderProductIDs": [
+        453485
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH286",
+      "jumboProductID": 478425,
+      "standardProviderProductIDs": [
+        478424
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH294",
+      "jumboProductID": 451116,
+      "standardProviderProductIDs": [
+        451115
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH295",
+      "jumboProductID": 449517,
+      "standardProviderProductIDs": [
+        449515
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH298",
+      "jumboProductID": 449528,
+      "standardProviderProductIDs": [
+        449527
+      ],
+      "jumboProductReusedByStandardObject": false
+    },
+    {
+      "providerCardID": "swshp-SWSH301",
+      "jumboProductID": 506006,
+      "standardProviderProductIDs": [
+        505996
+      ],
+      "jumboProductReusedByStandardObject": false
+    }
+  ],
+  "sharedProductIDs": [],
+  "missingStandardHandles": []
+}

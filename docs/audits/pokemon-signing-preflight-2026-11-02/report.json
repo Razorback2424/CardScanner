@@ -1,0 +1,23 @@
+{
+  "activeDescriptorsPreserved" : 33,
+  "activeEnvelopeSHA256" : "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333",
+  "activeRevision" : 19,
+  "date" : "2026-11-02",
+  "isolatedCandidateArtifactsConsistent" : true,
+  "isolatedPayloadSHA256" : "a20929dc739d4a862cbcabe92f83cc027d062b0c09af7b3f0712a1c9319202e0",
+  "newDescriptors" : 41,
+  "newMemberships" : 794,
+  "normalChangeClass" : "newSet",
+  "productionInputMembershipMatches" : true,
+  "productionInputSHA256" : "a84f42aeaa43907c20bfc5bf710af25566042a4379e800928b2ab561589470ab",
+  "remainingGates" : [
+    "Full live production candidate",
+    "Protected signing and publication",
+    "Installed scanner\/portfolio and exact-price validation"
+  ],
+  "schemaVersion" : 1,
+  "scope" : "Verified production signature and full descriptor union; not a fresh full-provider candidate",
+  "signedOrPublished" : false,
+  "unionDescriptors" : 74,
+  "verifiedKeyIDPresent" : true
+}

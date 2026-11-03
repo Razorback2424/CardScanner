@@ -1,0 +1,4771 @@
+{
+  "observedAtUTC": "2026-11-03T01:48:47.145084+00:00",
+  "setReceipt": {
+    "url": "https://api.tcgdex.net/v2/en/sets/xyp",
+    "status": 200,
+    "sha256": "3b9c0c79f6504d156f3c8f7aa0d7f6c9e76c9d720887ff06f206a8dfc240b644"
+  },
+  "summary": {
+    "members": 216,
+    "successfulCardReceipts": 216,
+    "jumboCardIdentities": 0,
+    "jumboDetailedObjects": 0,
+    "requestedProducts": 0,
+    "successfulProductReceipts": 0,
+    "failures": []
+  },
+  "cards": [
+    {
+      "providerCardID": "xyp-XY01",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY01",
+      "status": 200,
+      "sha256": "32edbe166cc5301caee72d05c66cb1e8adee53a93e7dbb2522e576d5eb491971",
+      "name": "Chespin",
+      "localID": "XY01",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY02",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY02",
+      "status": 200,
+      "sha256": "00a775846fba2baaf232d1d57e402d1fab4108caff1343001b94ef3a46313724",
+      "name": "Fennekin",
+      "localID": "XY02",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY03",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY03",
+      "status": 200,
+      "sha256": "bef3d31f5e6580bed623628341b34f6e7a6bea21c2e2a4f0abad77d303b55556",
+      "name": "Froakie",
+      "localID": "XY03",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY04",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY04",
+      "status": 200,
+      "sha256": "616e076f6613fd66a586e09eae9d998d74046866006d8c7f5f05321bbb6950aa",
+      "name": "Sylveon",
+      "localID": "XY04",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY05",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY05",
+      "status": 200,
+      "sha256": "d79d65ba6dc925ca890c900012f6e70c512be3608feca6e4fa89a4815011c438",
+      "name": "Xerneas",
+      "localID": "XY05",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY06",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY06",
+      "status": 200,
+      "sha256": "47fc79a731f14ccf70b4a9879e611fd9d6fd9643def575ced8efac29fa736e2a",
+      "name": "Yveltal",
+      "localID": "XY06",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY07",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY07",
+      "status": 200,
+      "sha256": "86e9f35abe68999f602e17f01a439c0fe7c22a039b43d1ee94867125d074a6e8",
+      "name": "Xerneas EX",
+      "localID": "XY07",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY08",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY08",
+      "status": 200,
+      "sha256": "a060184641ace7837984669959e79ae1aebea76c3da2c4ad20fba66a2210776d",
+      "name": "Yveltal EX",
+      "localID": "XY08",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY09",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY09",
+      "status": 200,
+      "sha256": "f663374d3366f355175df83eb964c26f3d7cb082b1fa30673e19699ab448c15f",
+      "name": "Garchomp EX",
+      "localID": "XY09",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY10",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY10",
+      "status": 200,
+      "sha256": "48692d7bd1bc200e24a06f1f16222ab54f2f1e6741af022ee2de1234a83352f9",
+      "name": "Dragalge",
+      "localID": "XY10",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY100",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY100",
+      "status": 200,
+      "sha256": "3d81df59417b48431f23a73cbef3af91a448d5a194d0e0186d92952545b303a2",
+      "name": "Mewtwo",
+      "localID": "XY100",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY101",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY101",
+      "status": 200,
+      "sha256": "5a00d066a6edfeb0863f4cc4c3689fed79b3e22848020d3609d0999ccc161ea4",
+      "name": "Mewtwo",
+      "localID": "XY101",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY102",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY102",
+      "status": 200,
+      "sha256": "fbc30e7808b5a02cc9ee5151694830c6c8a614013772b034663f0f2934b8e6df",
+      "name": "Aurorus EX",
+      "localID": "XY102",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY103",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY103",
+      "status": 200,
+      "sha256": "202584c22e8b34a20a8fc21b9c619fd6241b5cf74a043621d7fe78e09533158b",
+      "name": "Mawile EX",
+      "localID": "XY103",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY104",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY104",
+      "status": 200,
+      "sha256": "d18105520cbee092538fc6e469efd4653c62782ffc850eb9085880768c5a937b",
+      "name": "M Mawile EX",
+      "localID": "XY104",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY105",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY105",
+      "status": 200,
+      "sha256": "60ac3daee12a8f1569ca72480a2dce26009afaa8762d6ad2290a631fd7af839d",
+      "name": "Mawile Spirit Link",
+      "localID": "XY105",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY106",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY106",
+      "status": 200,
+      "sha256": "63e8c8d02b68889d1e993fdee1a92a7cfe58bf3c2cee0fa76b35a036cf46be5f",
+      "name": "Gyarados EX",
+      "localID": "XY106",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY107",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY107",
+      "status": 200,
+      "sha256": "bcd841606e1242aebc276a37577c855a3522d8167f7c030c3f98ca481d333fb5",
+      "name": "Mewtwo EX",
+      "localID": "XY107",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY108",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY108",
+      "status": 200,
+      "sha256": "eb0b5bb7ae51d807bcd36aaf46f88642eafb3cc8263cd7a465a60914b06b3f16",
+      "name": "Machamp EX",
+      "localID": "XY108",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY109",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY109",
+      "status": 200,
+      "sha256": "337ded7fa2aa00a960774975d2fb8aec2fe094be7fcfc12c26395e17c2e7c8d5",
+      "name": "Gyarados",
+      "localID": "XY109",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY11",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY11",
+      "status": 200,
+      "sha256": "322cedc086dc7c6e6be8d110a0ada2f0ca3b42de271368527cd84b775d8eebfe",
+      "name": "Skiddo",
+      "localID": "XY11",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY110",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY110",
+      "status": 200,
+      "sha256": "e7bda7c368d60d8c9043f6e3bcb60e0a3e2554024cc942aef6ed144729bc2d38",
+      "name": "Mew",
+      "localID": "XY110",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY111",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY111",
+      "status": 200,
+      "sha256": "3d0053fa977f39224205ebafde3f3ec63b441c6f017ea55332c93608ea011545",
+      "name": "Celebi",
+      "localID": "XY111",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY112",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY112",
+      "status": 200,
+      "sha256": "faf4aa9fe069f6c54bcb1e20e1467c276998083c38c0dd529ef477268190c813",
+      "name": "Jirachi",
+      "localID": "XY112",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY113",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY113",
+      "status": 200,
+      "sha256": "4c7d37ba5e3784e2a210049b944ab900ced3dd45213f781f1ff0ea348980619f",
+      "name": "Manaphy",
+      "localID": "XY113",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY114",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY114",
+      "status": 200,
+      "sha256": "f23d07b88fb3f8a7b69368100d806c690af66b6d8a01599f8aa123996c2b8dfe",
+      "name": "Darkrai",
+      "localID": "XY114",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY115",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY115",
+      "status": 200,
+      "sha256": "23b9eb21e61abb2386f997a2c202b04368d8adecacccf817a9aed9bec64d31a5",
+      "name": "Shaymin",
+      "localID": "XY115",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY116",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY116",
+      "status": 200,
+      "sha256": "b2c0d2a81c3ae3c75662e831cbec4c1a24f41e52c5cb0cae449b5f0f4d359e90",
+      "name": "Arceus",
+      "localID": "XY116",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY117",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY117",
+      "status": 200,
+      "sha256": "e38c42b136c71b6cfd9232ad8f65eda3e8913db1393ff232454b54ef5e3d448a",
+      "name": "Victini",
+      "localID": "XY117",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY118",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY118",
+      "status": 200,
+      "sha256": "263485642593246b51ddf946c8973e9a1a97926ce2bfa64dbbd5c9336a56aadf",
+      "name": "Keldeo",
+      "localID": "XY118",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY119",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY119",
+      "status": 200,
+      "sha256": "2d9572b9225e6cced71ef7f9a51cc6dab564630240996235f59d4a69e3e2268c",
+      "name": "Genesect",
+      "localID": "XY119",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY12",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY12",
+      "status": 200,
+      "sha256": "680f6360041c75f208701fdc578182df411554153476aa5467ad1261e57bbd5e",
+      "name": "Honedge",
+      "localID": "XY12",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY120",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY120",
+      "status": 200,
+      "sha256": "07e9e357a875549f8f9c7cc01c5032f516313ba4a0f16ec27e2a0fb3af0c4e67",
+      "name": "Meloetta",
+      "localID": "XY120",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY121",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY121",
+      "status": 200,
+      "sha256": "2934e3bf7fc0f44ffd5ccd6ede9b9094e60870437d8428b7fe83d82f4ce5646b",
+      "name": "Charizard EX",
+      "localID": "XY121",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY122",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY122",
+      "status": 200,
+      "sha256": "ddb43d7ac67dab3b81207b90e7a234f8caaf3c98783b46c0340f5041a50c9670",
+      "name": "Blastoise EX",
+      "localID": "XY122",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY123",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY123",
+      "status": 200,
+      "sha256": "a5c3134b0c2018a58b978285ec3616de5193a7e83cea99a1368ea4bc3270f568",
+      "name": "Venusaur EX",
+      "localID": "XY123",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY124",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY124",
+      "status": 200,
+      "sha256": "8aa1c72e336b18c9590b18e26d15f43f0f6af3ec40ef0bd93c375d803d0ffb03",
+      "name": "Pikachu EX",
+      "localID": "XY124",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY125",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY125",
+      "status": 200,
+      "sha256": "a292bf06f27387ae2dc4677387819a2092577e8cd55e35ce7bcb7aa5f543ab68",
+      "name": "Mewtwo EX",
+      "localID": "XY125",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY126",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY126",
+      "status": 200,
+      "sha256": "217e0cab1c696cf0d9e87c418917067174cffa3e372c773251959319657fbad5",
+      "name": "Mew EX",
+      "localID": "XY126",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY127",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY127",
+      "status": 200,
+      "sha256": "9f0b1ba6d12980c824b9740c7bd54e588ca3eac331e2b2dc72a55339b83595d1",
+      "name": "Moltres",
+      "localID": "XY127",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY128",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY128",
+      "status": 200,
+      "sha256": "560c00fcfecf85532256e04ca05e99b98cc627ffeb9eda556a247162a6ac615c",
+      "name": "White Kyurem",
+      "localID": "XY128",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY129",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY129",
+      "status": 200,
+      "sha256": "64112e1d766dacebb0045be4a19469ba73a20e56d9dee17a9909b1b298f9653e",
+      "name": "Zygarde",
+      "localID": "XY129",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY13",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY13",
+      "status": 200,
+      "sha256": "6a48781c631b8444e17db19f9df944217dc6940d955e673d8ef9af0a73c8a94d",
+      "name": "Machamp",
+      "localID": "XY13",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY130",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY130",
+      "status": 200,
+      "sha256": "0ede94651b7b8fc399b85b3549a29800c70e1dad6b1247e92debeddbc3a41d54",
+      "name": "Tyranitar",
+      "localID": "XY130",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY131",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY131",
+      "status": 200,
+      "sha256": "c351831060d3bc89c363e19bce03c7e8f226b189e01ead510ccb8fa498ffdf62",
+      "name": "Pansear",
+      "localID": "XY131",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY132",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY132",
+      "status": 200,
+      "sha256": "4e564edc500cd9b73c89970e5a3bd08973e0d54fb6c455e56af41f53d58a9504",
+      "name": "Gastly",
+      "localID": "XY132",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY133",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY133",
+      "status": 200,
+      "sha256": "82a6e66b0a851b6fa804e00a3f9dc8ace560a55e80bcc6a8bd19ba67f0af6ab5",
+      "name": "Ash Greninja EX",
+      "localID": "XY133",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY134",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY134",
+      "status": 200,
+      "sha256": "c8d60fabec3b998f2b7fad64d3c42b2bd5285b4c55c75b685351b841f9c9eaf4",
+      "name": "Empoleon BREAK",
+      "localID": "XY134",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY135",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY135",
+      "status": 200,
+      "sha256": "439123e18e1effe30cd8b4cf83e2a48e76edf86e39781b5e0763374a9e833d5a",
+      "name": "Beheeyem BREAK",
+      "localID": "XY135",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY136",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY136",
+      "status": 200,
+      "sha256": "a0bfd90cad8300a355ff4806b696dabb58e595ad2b1a9d35d3e83476cb5e436d",
+      "name": "Noctowl BREAK",
+      "localID": "XY136",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY137",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY137",
+      "status": 200,
+      "sha256": "6e42bf0b37fd8f10c293a81366a5f53ed343b88e6830f805417304bc3a9b1d6f",
+      "name": "Vivillon",
+      "localID": "XY137",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY138",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY138",
+      "status": 200,
+      "sha256": "73da7699166772cba3b2d1fba9386c33a28b5db04b42ff3733dee6575326bf48",
+      "name": "Froakie",
+      "localID": "XY138",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY139",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY139",
+      "status": 200,
+      "sha256": "cf98f718425aeb99f0bba9bc1ebf1d03dc9cd41f448f4fd4693ab2c4b55c7b56",
+      "name": "Floette",
+      "localID": "XY139",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY14",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY14",
+      "status": 200,
+      "sha256": "7dc381e900cfa9d9c9cb3e192f8dc4971d32887860b305ea2e2e772b44f4f2d3",
+      "name": "Trevenant",
+      "localID": "XY14",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY140",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY140",
+      "status": 200,
+      "sha256": "053ee57649362db0faeb7832dd070cafd1221e90e0d509b0685015dcef33f758",
+      "name": "Lucario",
+      "localID": "XY140",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY141",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY141",
+      "status": 200,
+      "sha256": "d6a67fbc1fdfd656284ad2211594cd8121d46a2ec10ff72b2717880cf23d62c4",
+      "name": "Rayquaza",
+      "localID": "XY141",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY142",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY142",
+      "status": 200,
+      "sha256": "4bad1a378219b37839bfcfc08736f5d6854c36470a67ec3f72168839e2f1d3ee",
+      "name": "Azelf",
+      "localID": "XY142",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY143",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY143",
+      "status": 200,
+      "sha256": "ea5bfd3a828c4521075637044a3b02bdca6d453890c62091d6f7aeb8e62b2718",
+      "name": "Magikarp",
+      "localID": "XY143",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY144",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY144",
+      "status": 200,
+      "sha256": "e280427c2b3a019386fa33d1a184c5dbdbb56d64f0f2c6b35a21df52006b128b",
+      "name": "Yanmega",
+      "localID": "XY144",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY145",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY145",
+      "status": 200,
+      "sha256": "52d23702de8970f3b51222473da8fa75692b77f3e811ac00f9f2545d195ae013",
+      "name": "Volcanion",
+      "localID": "XY145",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY146",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY146",
+      "status": 200,
+      "sha256": "3bb7fc81f1e7e04218a3fb19b787af1322cc9f96e5a9039f790bfbd407b75328",
+      "name": "Clawitzer",
+      "localID": "XY146",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY147",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY147",
+      "status": 200,
+      "sha256": "fab53e4a7e8fca63d6508a50a5a1bd3130a821ded3fe77bfc4aeb5b4d1b5e46d",
+      "name": "Hoopa",
+      "localID": "XY147",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY148",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY148",
+      "status": 200,
+      "sha256": "69a722e75a5807ac73507109c572132eec5b578a50e5a1f1d117c0c1643ceb74",
+      "name": "Shaymin EX",
+      "localID": "XY148",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY149",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY149",
+      "status": 200,
+      "sha256": "9c6b8b762f86963d6fc30d30eabc1c1de5472428fda9f10ca960076a77d549aa",
+      "name": "Xerneas EX",
+      "localID": "XY149",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY15",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY15",
+      "status": 200,
+      "sha256": "b6c7c153bb9e2856d103a7c88c8967ddf62027608bd4ab9531e11fc64734e3ec",
+      "name": "Slurpuff",
+      "localID": "XY15",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY150",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY150",
+      "status": 200,
+      "sha256": "96d62e35121db5ce96366c2029a32ab8727197b97df00b46e3ed64425b708d91",
+      "name": "Yveltal EX",
+      "localID": "XY150",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY150a",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY150a",
+      "status": 200,
+      "sha256": "4455b63fd130cfcc7af5cb6e09c49b843f850b463adafa2c24882c22a3cb5e2a",
+      "name": "Yveltal-EX",
+      "localID": "XY150a",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY151",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY151",
+      "status": 200,
+      "sha256": "1263a21769cba151664c284701e5b06feb00c4945c00d5e88a2efdc2c10e39bd",
+      "name": "Zygarde EX",
+      "localID": "XY151",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY152",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY152",
+      "status": 200,
+      "sha256": "571414542e81ad6dbda3d637ea09588f87e66928e3bbbb5a08f31551df94220e",
+      "name": "Zygarde",
+      "localID": "XY152",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY153",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY153",
+      "status": 200,
+      "sha256": "26e27667c610a08d5ed672fc79a277c2edb2515caf7ef84dbe4ce3ce1d8e2c7b",
+      "name": "Ho Oh",
+      "localID": "XY153",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY154",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY154",
+      "status": 200,
+      "sha256": "ceaa9dc3d17f25e3e7e812b7e3621ee7aae41bd9bbd562e367e1499c22bd3c81",
+      "name": "Ho-Oh BREAK",
+      "localID": "XY154",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY155",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY155",
+      "status": 200,
+      "sha256": "dd0eca5831150b485876896abb2ff419dd21e47dc5bffdd6638664b509aff5f4",
+      "name": "Wobbuffet BREAK",
+      "localID": "XY155",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY156",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY156",
+      "status": 200,
+      "sha256": "fae7afb275a41de4ec01194f2d2903efecf284f82ad9672a71d278c587432393",
+      "name": "Lugia",
+      "localID": "XY156",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY157",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY157",
+      "status": 200,
+      "sha256": "d64a76bb61c07771161653722a23a31da5b706e6c38fa837bd2abd94f919bee2",
+      "name": "Beedrill EX",
+      "localID": "XY157",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY158",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY158",
+      "status": 200,
+      "sha256": "a08a94d880f6e98347cfcf3dcdb4c85dd6a1b3b3d712f9f1bbdf5860c2eb22de",
+      "name": "M Beedrill-EX",
+      "localID": "XY158",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY159",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY159",
+      "status": 200,
+      "sha256": "9abfe6c22f6bf96a5536da046e57e4506d8d06c97f879a946eb169bf78a7a0fc",
+      "name": "Beedrill Spirit Link",
+      "localID": "XY159",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY16",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY16",
+      "status": 200,
+      "sha256": "4d7f64dc848a8ea476dbf777d366b202b1317891da59057dec9014c94264e725",
+      "name": "Gogoat",
+      "localID": "XY16",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY160",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY160",
+      "status": 200,
+      "sha256": "29752a5af3f949ea7340d6f30346019425efa5504c965f6268d04d953b509c07",
+      "name": "Black Kyurem",
+      "localID": "XY160",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY161",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY161",
+      "status": 200,
+      "sha256": "b4a87ad5d0918704431c532c053eb54f18a864c00da76d66189de53db76b0037",
+      "name": "Braixen",
+      "localID": "XY161",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY162",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY162",
+      "status": 200,
+      "sha256": "d49d4d630bd3c7d20fc5107604b4b0cb24d72538de196e5b3f4b16c172dfebd1",
+      "name": "Greninja",
+      "localID": "XY162",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY163",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY163",
+      "status": 200,
+      "sha256": "e19a4ffe6e832a40046254c2e7d48fc874ebbb83fe538470d00c21a9b33e43f5",
+      "name": "Weezing",
+      "localID": "XY163",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY164",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY164",
+      "status": 200,
+      "sha256": "db9d28ce713b44836428c30eaae92dd0a4f438a1b7e1e8871b787defbdbe4fd2",
+      "name": "Volcanion",
+      "localID": "XY164",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY165",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY165",
+      "status": 200,
+      "sha256": "41961d3e3268c208fea991fe59a3521c701d3f6a39c65862d7dc6caa1bc82480",
+      "name": "Magearna",
+      "localID": "XY165",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY166",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY166",
+      "status": 200,
+      "sha256": "3ffcf8d00a2db11949348a9188aea9c2e04cb3fb44e0f8cd7aff5d4d1dba98f4",
+      "name": "M Gengar-EX",
+      "localID": "XY166",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY167",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY167",
+      "status": 200,
+      "sha256": "22db73b61e1d586de6a501e27c8939dc64fc0d1dade2c3903f72ef0090e35a8c",
+      "name": "Garchomp-EX",
+      "localID": "XY167",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY168",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY168",
+      "status": 200,
+      "sha256": "b46a7241c9b9f7442faa2b617ee253c84b991eb1374e0d8dccea2ec38ec6727a",
+      "name": "M Garchomp-EX",
+      "localID": "XY168",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY169",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY169",
+      "status": 200,
+      "sha256": "fd57a0fc417ac871db0a55e471b9199bde5155f5d9db7445c2a50989631d8d11",
+      "name": "Garchomp Spirit Link",
+      "localID": "XY169",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY17",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY17",
+      "status": 200,
+      "sha256": "2de0fcfdce42edd1dc96353457d738f2e293a335c66a21453bdc5581ffa51881",
+      "name": "Charizard EX",
+      "localID": "XY17",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY170",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY170",
+      "status": 200,
+      "sha256": "95eb609c9b0c3e1436073d8ade3e159aaf5e7181a1c46584c9b79ed05b05a20f",
+      "name": "Salamence EX",
+      "localID": "XY170",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY171",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY171",
+      "status": 200,
+      "sha256": "39ae15c61998b1cfdcb00d1fb7ff4e779540f6a757934828e57a4c2a964b6ff6",
+      "name": "M Salamence-EX",
+      "localID": "XY171",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY172",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY172",
+      "status": 200,
+      "sha256": "9af9658218f04f0f0dbec0c99d927f7bdd8ab250650c9b54b2811fc931cb9a28",
+      "name": "Salamence Spirit Link",
+      "localID": "XY172",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY173",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY173",
+      "status": 200,
+      "sha256": "88292d4679c2217dd00bdc65d393215b4f51811e439b12d8b1ecc58355d25c29",
+      "name": "Volcanion EX",
+      "localID": "XY173",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY174",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY174",
+      "status": 200,
+      "sha256": "d982fa4c2a3c28d0ad39389dd0cdf02eddf75283e99b1c8cc3fc43a6eaf794e1",
+      "name": "Pikachu-EX",
+      "localID": "XY174",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY175",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY175",
+      "status": 200,
+      "sha256": "7c9179d67d865b54b3d87f16aedd257e0f1f16d974d9c175b34f6a6ac8c913cf",
+      "name": "Magearna-EX",
+      "localID": "XY175",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY176",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY176",
+      "status": 200,
+      "sha256": "98d5f4b1212faec453ed7a05953360a0eb52cd6c2185b4edb46d419bda92ff4d",
+      "name": "Champions Festival",
+      "localID": "XY176",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY177",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY177",
+      "status": 200,
+      "sha256": "9530cd3e25138ea11a13bae9ac905eb5cfbd58ebf38aa6b20795a757ebdc8b72",
+      "name": "Karen",
+      "localID": "XY177",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY177a",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY177a",
+      "status": 200,
+      "sha256": "aea9e7452c35b372470c48563d976862e5f6f00543642ac356d0cb11cec07275",
+      "name": "Karen",
+      "localID": "XY177a",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY178",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY178",
+      "status": 200,
+      "sha256": "f84a8a23cc84f63835241a74d0bc872cfec4d9d028eb1552728c071dd4ecbdb2",
+      "name": "Absol",
+      "localID": "XY178",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY179",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY179",
+      "status": 200,
+      "sha256": "4a68cc0fca45d9b66334af796153c5b00b661cf85593ff45b8a3f62a4609cfa1",
+      "name": "Snorlax",
+      "localID": "XY179",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY18",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY18",
+      "status": 200,
+      "sha256": "304eb885fd61a246742b642b4c8858d1a70ca5d4b6f606e227a1daa0d0a405c0",
+      "name": "Chesnaught EX",
+      "localID": "XY18",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY180",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY180",
+      "status": 200,
+      "sha256": "5d98dd5efd76dcaa430d3f37ead70416f726fa616c0839aac5411fc2223d26db",
+      "name": "Arcanine BREAK",
+      "localID": "XY180",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY181",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY181",
+      "status": 200,
+      "sha256": "9f1b35d923be5eab63fab47ede7c0b439177b00c2baa5a92a88654315a8d927d",
+      "name": "Crobat BREAK",
+      "localID": "XY181",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY182",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY182",
+      "status": 200,
+      "sha256": "d975e03c57ae631e57f7bb0b985e237db482d171d129418c9bb6d412da7e2b03",
+      "name": "Mandibuzz BREAK",
+      "localID": "XY182",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY183",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY183",
+      "status": 200,
+      "sha256": "7b5246efddff45937aa50ce9c5bd6e249e933460fbbace58efda786ce2c6a91d",
+      "name": "Mewtwo-EX",
+      "localID": "XY183",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY184",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY184",
+      "status": 200,
+      "sha256": "7a71e81017497b941465e44b94ed55e8d859d3e8fa2f25fac547b5994902f356",
+      "name": "Giratina",
+      "localID": "XY184",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY185",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY185",
+      "status": 200,
+      "sha256": "7b55df1bc9b40f8c17b3649cce738e6343db844ea63c118640e1faf128cf3217",
+      "name": "Volcanion",
+      "localID": "XY185",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY186",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY186",
+      "status": 200,
+      "sha256": "40bfd2b9f663454b669d4d7c6f5ce1c04a769cb338c23bd1c05cd6fb2f5a87fb",
+      "name": "Magearna",
+      "localID": "XY186",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY187",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY187",
+      "status": 200,
+      "sha256": "ac38c7f20c59a87953185592a858dfb046028c1185aa59345c1d2a039983e6ef",
+      "name": "Celebi",
+      "localID": "XY187",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY188",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY188",
+      "status": 200,
+      "sha256": "5b46bdce0d41cd143d7182e86b3f5ab97892274442259e3638549f38e59b05f0",
+      "name": "Shaymin",
+      "localID": "XY188",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY189",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY189",
+      "status": 200,
+      "sha256": "8045788e43b9e2b9650b91367eed913a6c99722aa0f85a59c1f475172ca4ecd9",
+      "name": "Victini",
+      "localID": "XY189",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY19",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY19",
+      "status": 200,
+      "sha256": "cb529ef2d6a887ecc032b1d27fcae32201a9180a0168cce68b1de6d06b3d5f88",
+      "name": "Delphox EX",
+      "localID": "XY19",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY190",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY190",
+      "status": 200,
+      "sha256": "8ebd8b9a6710a2911f6665f81f5a7e1051a74cff2d1aeeb48b31fb68164dd995",
+      "name": "Manaphy",
+      "localID": "XY190",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY191",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY191",
+      "status": 200,
+      "sha256": "6dbdf040e1e6bc550b48d84dfdde0df524bc212387fc7df4202b80437648ca43",
+      "name": "Keldeo",
+      "localID": "XY191",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY192",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY192",
+      "status": 200,
+      "sha256": "5a47b05861961875a174bbb59f6534b41cc8d3364ad634ce7810fd4bc8beb0c3",
+      "name": "Mew",
+      "localID": "XY192",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY193",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY193",
+      "status": 200,
+      "sha256": "caa408317be90de921729e8655e59c59fc30772e4ebed031b96015ad3d50215c",
+      "name": "Meloetta",
+      "localID": "XY193",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY194",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY194",
+      "status": 200,
+      "sha256": "145001ca6a836cb515b39c631a42be0a8ea308f70b0f51660bdd788e26e6f7ea",
+      "name": "Darkrai",
+      "localID": "XY194",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY195",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY195",
+      "status": 200,
+      "sha256": "80af265efe1a00d595eb6eed9d2132a73f82005ae6bd5e725d1102d4205d127e",
+      "name": "Jirachi",
+      "localID": "XY195",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY196",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY196",
+      "status": 200,
+      "sha256": "890c776fec9c3a78055a6398ea1e42cf38ee4fe046bd53edae239dd0dd9c0d58",
+      "name": "Genesect",
+      "localID": "XY196",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY197",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY197",
+      "status": 200,
+      "sha256": "eb59e7f28054fdc7e5c4e78a822f257a18376e9979df7644f622e1224adfb6dc",
+      "name": "Arceus",
+      "localID": "XY197",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY198",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY198",
+      "status": 200,
+      "sha256": "c0f7bc395fa7be24cc9a893e51037ce0ef3cacdf2efc8fc4fc49fb8356fc0228",
+      "name": "M Camerupt-EX",
+      "localID": "XY198",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY198a",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY198a",
+      "status": 200,
+      "sha256": "829ad0c3795b3bbe56ad75ae07172abbe183c391e94f0039badbeb1f24ca0f18",
+      "name": "M Camerupt-EX",
+      "localID": "XY198a",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY199",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY199",
+      "status": 200,
+      "sha256": "4d0d8052f3c9d6345656e37cbbca49fae1587a62e45c89a9ef0ac3d94166e042",
+      "name": "Camerupt Spirit Link",
+      "localID": "XY199",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY20",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY20",
+      "status": 200,
+      "sha256": "2022e663ca08f30c991adbee72f9d3f099810e508a360b8612fbb6935ff2b8bf",
+      "name": "Greninja EX",
+      "localID": "XY20",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY200",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY200",
+      "status": 200,
+      "sha256": "ed8a1f67e45b7b9cda74f4847fe9937f247bdffff0bea3fb67e7817f391905ae",
+      "name": "M Sharpedo-EX",
+      "localID": "XY200",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY200a",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY200a",
+      "status": 200,
+      "sha256": "f6a15d310d4bd2a8e6094b8ecae3373caf60d8456bcb6d4403afc6bc0734cfaf",
+      "name": "M Sharpedo-EX",
+      "localID": "XY200a",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY201",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY201",
+      "status": 200,
+      "sha256": "cf0ab53aa0eb38fe8ad3e79ffd962714656b131dad6bb33844c3eb815b83ec31",
+      "name": "Sharpedo Spirit Link",
+      "localID": "XY201",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY202",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY202",
+      "status": 200,
+      "sha256": "3037214c2709c9a4f468c61697d7ca2da033fabc14d21ddf86c188fe0c53525b",
+      "name": "Pikachu",
+      "localID": "XY202",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY203",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY203",
+      "status": 200,
+      "sha256": "49fbebb704ca80ff746b420a018869d658652d8c0e681d0abc3ff6442f36530f",
+      "name": "Gym Badge",
+      "localID": "XY203",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY204",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY204",
+      "status": 200,
+      "sha256": "6385db6c5314337dda142031ba07654ff73058536bf78ce3e66971c45d64d18b",
+      "name": "Gym Badge",
+      "localID": "XY204",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY205",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY205",
+      "status": 200,
+      "sha256": "59dad4a1ca200c3b67ecb96e914ee19f93739794e1119f29ad7ee8574e6bfef9",
+      "name": "Gym Badge",
+      "localID": "XY205",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY206",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY206",
+      "status": 200,
+      "sha256": "bc73c320313c085d8417d2580abc835fd15a0ea520e0fcb02dfe553bf0cfc57e",
+      "name": "Gym Badge",
+      "localID": "XY206",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY207",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY207",
+      "status": 200,
+      "sha256": "44be713caaee634018118d881d36200b07e6b332e78afbb4fd019dd4a4ca2a16",
+      "name": "Gym Badge",
+      "localID": "XY207",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY208",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY208",
+      "status": 200,
+      "sha256": "f25c9f0129f532906610e0eb119a8ad546aaff3c31002987e9b48bedc5841060",
+      "name": "Gym Badge",
+      "localID": "XY208",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY209",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY209",
+      "status": 200,
+      "sha256": "41d0c60a5d275d70e08c91fb67c05971afb38a32e39a21521e5f991f25835e47",
+      "name": "Gym Badge",
+      "localID": "XY209",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY21",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY21",
+      "status": 200,
+      "sha256": "dab5bec232652f00fe68c78ac07580acae6f2d5f12822377276560153ca26f98",
+      "name": "Bronzong",
+      "localID": "XY21",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY210",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY210",
+      "status": 200,
+      "sha256": "608ebc03c10e5a557d59ecaed9a413bf5628c46998911fc3f690a4c7e55f1899",
+      "name": "Gym Badge",
+      "localID": "XY210",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY211",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY211",
+      "status": 200,
+      "sha256": "7c15375eebf3756e5ddabb2594c05b8f3496605a402709ffaf731c62f6b60b6f",
+      "name": "Lucario Spirit Link",
+      "localID": "XY211",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY22",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY22",
+      "status": 200,
+      "sha256": "7d36d5243be0bb8009df26ac4c5f7f2ec9dc52ab7a8b1cb870d19e83c84c8bc0",
+      "name": "Darkrai",
+      "localID": "XY22",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY23",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY23",
+      "status": 200,
+      "sha256": "62f17a8a498e9ca65b6c16d52861cccf54803f4fa695afdb7372b1b7723841bd",
+      "name": "Shiftry",
+      "localID": "XY23",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY24",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY24",
+      "status": 200,
+      "sha256": "f7700b3670f941c2c447ec8265d0defaa711c307d7fae11186f1a053a038ab1c",
+      "name": "Greninja",
+      "localID": "XY24",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY25",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY25",
+      "status": 200,
+      "sha256": "7382985dffb6faf46d2ce939b96d5f1135837fa700d27c602e0f9ad43be49df5",
+      "name": "Krookodile EX",
+      "localID": "XY25",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY26",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY26",
+      "status": 200,
+      "sha256": "591f0e0e9c1a2e19a9c14db1ab1068fdfef3f13239d9454c551067ecbd7b16a7",
+      "name": "Pyroar",
+      "localID": "XY26",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY27",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY27",
+      "status": 200,
+      "sha256": "9d9f64a079cbd7c4aca7c88e7367275c829884aa76f7689b5f35f6b2737da7a1",
+      "name": "Champions Festival",
+      "localID": "XY27",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY28",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY28",
+      "status": 200,
+      "sha256": "c0eb5985403cf36b608955778140aa3bdff6e6ed6afcfdd340b71efac003dd53",
+      "name": "Venusaur EX",
+      "localID": "XY28",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY29",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY29",
+      "status": 200,
+      "sha256": "59232c5d810b1abcab3fdcf0d8e155152660df9b9643613fee79cff32c245723",
+      "name": "Charizard EX",
+      "localID": "XY29",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY30",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY30",
+      "status": 200,
+      "sha256": "9981a8d8a3eb189a2288356a5803228f38ead43ef86b596a15de3b10b3c7a2de",
+      "name": "Blastoise EX",
+      "localID": "XY30",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY31",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY31",
+      "status": 200,
+      "sha256": "7ac08c446fe6460a9560fd76c61aa4b465dc3c40838cfdfb14508202a5fe8c62",
+      "name": "Xerneas",
+      "localID": "XY31",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY32",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY32",
+      "status": 200,
+      "sha256": "4d28bb1c38a23dc285940d75cf20b934e88fdbb30632a551cd395991f99920dc",
+      "name": "Yveltal",
+      "localID": "XY32",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY33",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY33",
+      "status": 200,
+      "sha256": "7ea992ce9ab2253f73eebac85b1918d3c7da5b613571fd1b6b8579f2eb9ef71a",
+      "name": "Trevor",
+      "localID": "XY33",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY34",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY34",
+      "status": 200,
+      "sha256": "c64c5285a217dcbcf907176acfc690236bc5b7f96d38bbe0bc4d6cdaa847c3f7",
+      "name": "Metagross EX",
+      "localID": "XY34",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY35",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY35",
+      "status": 200,
+      "sha256": "533ad44a307421eee26637978aab0a6f329ef613f3492afffaee90587b13b61f",
+      "name": "M Metagross EX",
+      "localID": "XY35",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY36",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY36",
+      "status": 200,
+      "sha256": "b17a351805668c04785871d76b3ca9c78ea3e15d62a9546119e3c36bb5c5e5e4",
+      "name": "Treecko",
+      "localID": "XY36",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY37",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY37",
+      "status": 200,
+      "sha256": "d8b697e971faa8c309ecfb069ba8cebd944f7e8fa685709aa28ddfac53d88463",
+      "name": "Torchic",
+      "localID": "XY37",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY38",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY38",
+      "status": 200,
+      "sha256": "99aa32c10a33d562949dafd217992141fc3131babd1a32f6603dc9e8dbd6d15d",
+      "name": "Mudkip",
+      "localID": "XY38",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY39",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY39",
+      "status": 200,
+      "sha256": "d34c53dbb4c1f37aef528cd2164acb8fad35d92be4626c91edd2b36a2507f9f2",
+      "name": "Kingdra",
+      "localID": "XY39",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY40",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY40",
+      "status": 200,
+      "sha256": "9d268cf4b7639c28d9038ffa6467f3de67ce936a651b5e1b24385fb8aa0fb2de",
+      "name": "Ditto",
+      "localID": "XY40",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY41",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY41",
+      "status": 200,
+      "sha256": "e572f41b51cc8ae2cf80567e61e2c4682338758c9788965e2418ee70c422b1e1",
+      "name": "Kyogre EX",
+      "localID": "XY41",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY42",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY42",
+      "status": 200,
+      "sha256": "bb1279694b4c0f09a9723fd72fb6ecb28d85d6fc3210e411237a16850c060dcf",
+      "name": "Groudon EX",
+      "localID": "XY42",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY43",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY43",
+      "status": 200,
+      "sha256": "60e5af159c977627fbcfac3d7bb748eea088b2abe3a15f592953041428f182c0",
+      "name": "Diancie EX",
+      "localID": "XY43",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY44",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY44",
+      "status": 200,
+      "sha256": "88b6b03e8e13b53d0ee0534426608b6379ec173b69b71082330882031f69bb4f",
+      "name": "M Diancie EX",
+      "localID": "XY44",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY45",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY45",
+      "status": 200,
+      "sha256": "183e7eb46e21e9bd0d100d6774a0c6638245dda89284222a077b4ee0249fd1a0",
+      "name": "Gallade EX",
+      "localID": "XY45",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY46",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY46",
+      "status": 200,
+      "sha256": "8c66545baf7aca2857a3320c95af28b31663325b99512f0816e59a379ab0d5bc",
+      "name": "Altaria",
+      "localID": "XY46",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY47",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY47",
+      "status": 200,
+      "sha256": "55958c3d92d5e07f32311741b8cc0bf1536ce63869bd165101e1da37c6f26b54",
+      "name": "Heliolisk",
+      "localID": "XY47",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY48",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY48",
+      "status": 200,
+      "sha256": "75d78e422e37842e8708b97a3bfd8071c0fa61b016dcd460f97dc056a9ccd8ab",
+      "name": "Meowstic",
+      "localID": "XY48",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY49",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY49",
+      "status": 200,
+      "sha256": "9024e2449fa519b26a0d5a76ac596fe1c7eb872dd4ace8a85471e091e4ed06c2",
+      "name": "Regirock",
+      "localID": "XY49",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY50",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY50",
+      "status": 200,
+      "sha256": "1c368d9c97a64524bb86e519ff249ef65ad68a2ea7e386ac01d46b5b8fcb1688",
+      "name": "Pangoro",
+      "localID": "XY50",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY51",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY51",
+      "status": 200,
+      "sha256": "ea5d4cad97d4dbc56cbb6a0b6f3d43f780dd2bbe8e970123df3a1579f874defc",
+      "name": "Kyogre",
+      "localID": "XY51",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY52",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY52",
+      "status": 200,
+      "sha256": "dc536a6a012e8c904dd7c876a6e3896fa81c43e7e25f3caa081487cbf81f6471",
+      "name": "Groudon",
+      "localID": "XY52",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY53",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY53",
+      "status": 200,
+      "sha256": "8547747424cbdb221d85caafe723ed9eca547539bd3bf4ac0c847393621ac0d3",
+      "name": "Sceptile EX",
+      "localID": "XY53",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY54",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY54",
+      "status": 200,
+      "sha256": "c79d6eaf4d62d62d40e18b2076de30555fa1a63405d07cc3dc9eae1222003d3e",
+      "name": "Blaziken EX",
+      "localID": "XY54",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY55",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY55",
+      "status": 200,
+      "sha256": "92a986f0eddc3b8bdaf682a726a93f146916021a9184d3c2f99d69b2fa0a5851",
+      "name": "Swampert EX",
+      "localID": "XY55",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY56",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY56",
+      "status": 200,
+      "sha256": "9ef54035cd10c8ab36cc5ad38e02caeec19bcb7566ed56e6acc475e24461ee1e",
+      "name": "Blissey",
+      "localID": "XY56",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY57",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY57",
+      "status": 200,
+      "sha256": "01393df2bb399e03268012386ef077b887b38fd66e5c1eaf7bfaf234247a650f",
+      "name": "Fearow",
+      "localID": "XY57",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY58",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY58",
+      "status": 200,
+      "sha256": "f5541927b410535a3bc3eb11dd7734fad70a4f1ca67138ea94cc5a8d5e64624e",
+      "name": "Malamar",
+      "localID": "XY58",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY59",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY59",
+      "status": 200,
+      "sha256": "332bc131e23823f8ea2dbe1b691e91394ce67c1c03a906e0559d924ea215b0dd",
+      "name": "Salamence",
+      "localID": "XY59",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY60",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY60",
+      "status": 200,
+      "sha256": "8ca37579aa49ebb318e7422314b7b1bd12fd3c0d4d9761ed5acc49898ddec750",
+      "name": "Gyarados",
+      "localID": "XY60",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY61",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY61",
+      "status": 200,
+      "sha256": "1d4e051f9ad4e14a2b3e5fe90a8c6777b61a0617561375b4a430097cebc66e76",
+      "name": "Flygon EX",
+      "localID": "XY61",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY62",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY62",
+      "status": 200,
+      "sha256": "d01ce569892ae7d24ea33c0f93f80ad2104b499502ca3eeae2bfdc194ffa84bb",
+      "name": "Absol EX",
+      "localID": "XY62",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY63",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY63",
+      "status": 200,
+      "sha256": "c65f059cde0b13eb989402418e382f189b6bfd52f4a90fd0a283290feb373168",
+      "name": "M Absol EX",
+      "localID": "XY63",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY64",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY64",
+      "status": 200,
+      "sha256": "4b8ca6196e2b5ca6126567f5f05bdbd8335a7b285bf0d1ad8f02e823ad2ff86e",
+      "name": "Rayquaza",
+      "localID": "XY64",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY65",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY65",
+      "status": 200,
+      "sha256": "0bd36ef3cc2b3eab063422770082e07309a2720f8fd97c27f12391e16b9f7eee",
+      "name": "Latios",
+      "localID": "XY65",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY66",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY66",
+      "status": 200,
+      "sha256": "757485fac570289826884ed91627e3e6344d51b3c7982f28ff6f401bd113b866",
+      "name": "Rayquaza EX",
+      "localID": "XY66",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY67",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY67",
+      "status": 200,
+      "sha256": "c30d72ed8acc30b00aa8afbf97a7361aaf804d8f52096395569469c0dfee8274",
+      "name": "Jirachi",
+      "localID": "XY67",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY67a",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY67a",
+      "status": 200,
+      "sha256": "fbf278e606c0582fe85098ac7089e9ad33577a017525ddc0cb4b9f87ba5844ce",
+      "name": "Jirachi",
+      "localID": "XY67a",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY68",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY68",
+      "status": 200,
+      "sha256": "a38c4f6aeb265114ae6ddf4a8b40cc5408c2dcdc32512630ed6ad095edd288e6",
+      "name": "Chesnaught",
+      "localID": "XY68",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY69",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY69",
+      "status": 200,
+      "sha256": "b12240e5fff56e0b8ec680cf31ecfb38efffc37ecc9be25fb164b08c4b75af88",
+      "name": "Rayquaza EX",
+      "localID": "XY69",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY70",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY70",
+      "status": 200,
+      "sha256": "5b2b33b6314ecb07afe8cf91a4ea4f6eda1ef18cdbc4c3c7439177b14f8eee0a",
+      "name": "Tyrantrum EX",
+      "localID": "XY70",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY71",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY71",
+      "status": 200,
+      "sha256": "413414990ab26483848634c00f7590054f21428141a74a57650c8a92028fbaf4",
+      "name": "Hoopa EX",
+      "localID": "XY71",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY72",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY72",
+      "status": 200,
+      "sha256": "45081069c2c7609d59385a321ef53055120379b17512884ddb44acc509e930c0",
+      "name": "Latios EX",
+      "localID": "XY72",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY73",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY73",
+      "status": 200,
+      "sha256": "f904718416eed832445e6984cd3583f5a27a90614f86c39571f906511481ac91",
+      "name": "Rayquaza EX",
+      "localID": "XY73",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY74",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY74",
+      "status": 200,
+      "sha256": "abc7cdca89ea5237f7b5418c541d356bc82475ac1952b255c79b03849cce41a0",
+      "name": "Reshiram",
+      "localID": "XY74",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY75",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY75",
+      "status": 200,
+      "sha256": "aa23bddd48feba1612943b91f03aee72390e29ab8f7a80d1568aa7efed7c2546",
+      "name": "Palkia",
+      "localID": "XY75",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY76",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY76",
+      "status": 200,
+      "sha256": "de4df31ea4c8308a5bc304d66583b860f1f179d9e179684f63aa142fec87faf4",
+      "name": "Zekrom",
+      "localID": "XY76",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY77",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY77",
+      "status": 200,
+      "sha256": "f9d1ccb1a216ba4327e0a212610046d3588b9fef644d62f3c3a1f9083b788e80",
+      "name": "Dialga",
+      "localID": "XY77",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY78",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY78",
+      "status": 200,
+      "sha256": "588173dc2d570ea9695a72fe00bd70ecce9f29dd2ea9c7b2b6480a00de7c3f6d",
+      "name": "Latias",
+      "localID": "XY78",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY79",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY79",
+      "status": 200,
+      "sha256": "603842fe648835fd7086cfeacd19c04157070be3f7d564a8c799e42c3aa0b0bd",
+      "name": "Latios",
+      "localID": "XY79",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY80",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY80",
+      "status": 200,
+      "sha256": "74a8c4b11cba29e30880016d55359c073a620a520f8ace934843a6964ada7bd0",
+      "name": "Black Kyurem",
+      "localID": "XY80",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY81",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY81",
+      "status": 200,
+      "sha256": "6f8906fb9d49f71fc9fd8a548aa4d136a8ec786402399c467639e94981519dd9",
+      "name": "White Kyurem",
+      "localID": "XY81",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY82",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY82",
+      "status": 200,
+      "sha256": "b5a1c009a85584478359e0c77b356eef0988a7f535b7d60563f89b2645589372",
+      "name": "Regigigas",
+      "localID": "XY82",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY83",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY83",
+      "status": 200,
+      "sha256": "073da3eaf6a6252b3b735d654dce1c21f2b9e5a820ee1e0ca0eeef7c469b4c6e",
+      "name": "Arceus",
+      "localID": "XY83",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY84",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY84",
+      "status": 200,
+      "sha256": "526710ec9040ce468f21f035d853b852499a4e242b41e85a4116594174a5843a",
+      "name": "Pikachu EX",
+      "localID": "XY84",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY85",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY85",
+      "status": 200,
+      "sha256": "fdaa2a6fbe415cbae7cb3c869e473d9e975bd363ba605e4b0a314745cbcfd584",
+      "name": "Hoopa EX",
+      "localID": "XY85",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY86",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY86",
+      "status": 200,
+      "sha256": "450192bf66db0ded3eada7ab1ba6168c7eee38c4a23bf477e35bd3e8e8eeac08",
+      "name": "M Blaziken EX",
+      "localID": "XY86",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY87",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY87",
+      "status": 200,
+      "sha256": "411b3718c33eeb7ecfa418a0c6583c2f0d1d1aa4b6e608cbdf54b6491b0a5d47",
+      "name": "M Swampert EX",
+      "localID": "XY87",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY88",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY88",
+      "status": 200,
+      "sha256": "34a4638244360e8d5b76a7e2752865474dee5fe0720387eb48ecaf5258ba98a5",
+      "name": "Chespin",
+      "localID": "XY88",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY89",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY89",
+      "status": 200,
+      "sha256": "e98982e5dc4502b3d569ed95551776926407d2c8ce1c0ae1c66facb20459eab0",
+      "name": "Pikachu",
+      "localID": "XY89",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY90",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY90",
+      "status": 200,
+      "sha256": "c55c67f0381df57a49d519fec8c0de404d2449c2f61354344785018d4138e098",
+      "name": "Hoopa",
+      "localID": "XY90",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY91",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY91",
+      "status": 200,
+      "sha256": "26052a79883660b79a03840e96ba85eca8642d422c787d979b50337c18c98f14",
+      "name": "Champions Festival",
+      "localID": "XY91",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY92",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY92",
+      "status": 200,
+      "sha256": "169aa7abdd174ec4e4797d08f021e2b9d775d0b719d6cba14afdab057e2d1bde",
+      "name": "Sableye",
+      "localID": "XY92",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY93",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY93",
+      "status": 200,
+      "sha256": "0a72f68d9cf75b0a9c1d829f3e1c9389525b1b190fd84c264f944578afa07935",
+      "name": "Celebi",
+      "localID": "XY93",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY94",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY94",
+      "status": 200,
+      "sha256": "dc58b91abcda0cfd91d306d659247a95892366403caccaeb127a9e66179b0680",
+      "name": "Trevenant",
+      "localID": "XY94",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY95",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY95",
+      "status": 200,
+      "sha256": "011982d71927ead8481e15d760e67e0967b19314bc8e2e69010549b9440fbd9f",
+      "name": "Pikachu",
+      "localID": "XY95",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY96",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY96",
+      "status": 200,
+      "sha256": "ef303fa1f15a0fe6b5274f8248efecf414b8be213c068f53b27325b50f6ff896",
+      "name": "Umbreon",
+      "localID": "XY96",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY97",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY97",
+      "status": 200,
+      "sha256": "7e7f744c2cbd9404c18dc7bd3ae7510d321170716a326470e0a8819df309344a",
+      "name": "Aerodactyl EX",
+      "localID": "XY97",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY98",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY98",
+      "status": 200,
+      "sha256": "68d8bdc5bca39cccbed3c311c970c25fe23202428123ac84bfc02f810a127924",
+      "name": "M Aerodactyl EX",
+      "localID": "XY98",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY99",
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY99",
+      "status": 200,
+      "sha256": "7fe65b7cd74f573dce2c54b4842752b073053da998cc043be9dae9d58c5da2a9",
+      "name": "Aerodactyl Spirit Link",
+      "localID": "XY99",
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variantsDetailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    }
+  ]
+}

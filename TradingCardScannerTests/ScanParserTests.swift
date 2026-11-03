@@ -2,6 +2,47 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScanParserTests: XCTestCase {
+    func testProductionSVEAuthorityRegistersAll24EnergyFootersWithoutChangingSeed() throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        let rows = try XCTUnwrap(object["sets"] as? [[String: Any]])
+        let row = try XCTUnwrap(rows.first { $0["providerSetID"] as? String == "sve" })
+        let descriptor = try JSONDecoder().decode(PokemonCatalogSetDescriptor.self,
+            from: JSONSerialization.data(withJSONObject: row))
+        XCTAssertEqual(descriptor.recognitionKind, .energy)
+        XCTAssertEqual(descriptor.printedPrefix, "SVE")
+        XCTAssertEqual(descriptor.localIDPadWidth, 3)
+        XCTAssertNil(descriptor.officialCount, "An Energy footer has no expansion denominator")
+        let release = PokemonCatalogRelease(revision: 1, generatedAt: .now,
+            sets: PokemonCatalogRegistry.bundledSeed.descriptors + [descriptor])
+        try PokemonCatalogRegistry.validate(release)
+        let profile = PokemonScanProfile(registry: .init(release: release))
+        var keys = Set<ScanSuppressionKey>()
+        for number in 1...24 {
+            let digits = String(format: "%03d", number)
+            let identifier = try XCTUnwrap(profile.parse("SVE EN \(digits)"))
+            XCTAssertEqual(identifier.namespace, "energy")
+            XCTAssertEqual(identifier.displayIdentifier, "SVE \(digits)")
+            guard case let .pokemonEnergy(code, localID, definition) = identifier.legacyIdentity else {
+                return XCTFail("SVE must use the existing Energy lookup path")
+            }
+            XCTAssertEqual(code, "SVE")
+            XCTAssertEqual(localID, digits)
+            XCTAssertEqual(definition.tcgdexSetID, "sve")
+            XCTAssertEqual(profile.parse(["SVE", "EN", digits]), identifier)
+            XCTAssertEqual(try JSONDecoder().decode(ScanIdentifierSnapshot.self,
+                from: JSONEncoder().encode(ScanIdentifierSnapshot(identifier: identifier))).identifier(), identifier)
+            keys.insert(identifier.suppressionKey)
+        }
+        XCTAssertEqual(keys.count, 24)
+        XCTAssertNotEqual(profile.parse("SVE EN 001"), profile.parse("MEE EN 001"))
+        for invalid in ["SVE FR 001", "SVE 001/24", "SVE EN 2026", "001"] {
+            XCTAssertNil(profile.parse(invalid), invalid)
+        }
+        XCTAssertNil(PokemonScanProfile.bundledSeed.parse("SVE EN 001"),
+            "Only the signed update grants this new authority")
+    }
+
     func testRegisteredEnergyFootersAndSafeNegativeEvidence() throws {
         let profile = PokemonScanProfile.bundledSeed
         for number in ["001", "005", "007", "008", "009", "013", "015", "016"] {

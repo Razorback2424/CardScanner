@@ -1,0 +1,13 @@
+{
+  "sets": [
+    {
+      "providerSetID": "sve",
+      "recognitionKind": "energy",
+      "printedPrefix": "SVE",
+      "catalogLocalIDPrefix": "",
+      "localIDPadWidth": 3,
+      "scanEnabled": true,
+      "rulesVersion": 2
+    }
+  ]
+}

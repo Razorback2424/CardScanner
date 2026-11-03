@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "providerURL": "https://api.tcgdex.net/v2/en/sets/sve",
+  "providerSHA256": "abf3c98ee82265688d72da957769f757212d7194e14595f926ba09fa1de080ef",
+  "corroboratingURL": "https://bulbapedia.bulbagarden.net/wiki/SVE_Basic_Energies_%28TCG%29",
+  "independentInputSHA256": "7f9db6721b1689bf9c2d667c8d6be9924773f24239930bdcfbc771ac2c0d8bb3",
+  "cards": [
+    {
+      "providerCardID": "sve-001",
+      "providerName": "Grass Energy",
+      "corroboratingPrintedName": "Basic Grass Energy",
+      "printedFooter": "SVE 001",
+      "detailedSHA256": "8c1771901f062723e2856c00204b76a7c398171d8dbf8aa3f641f81bf006e4f0"
+    },
+    {
+      "providerCardID": "sve-002",
+      "providerName": "Fire Energy",
+      "corroboratingPrintedName": "Basic Fire Energy",
+      "printedFooter": "SVE 002",
+      "detailedSHA256": "bf0048e8548328944c615110997fb53b181309a503013b6cb4c062d0c2b1559b"
+    },
+    {
+      "providerCardID": "sve-003",
+      "providerName": "Water Energy",
+      "corroboratingPrintedName": "Basic Water Energy",
+      "printedFooter": "SVE 003",
+      "detailedSHA256": "2d7e85f9bc5f301fb25f55d7cbdbfda47487e8b1b5dfb25d94ce2501fb6f96af"
+    },
+    {
+      "providerCardID": "sve-004",
+      "providerName": "Lightning Energy",
+      "corroboratingPrintedName": "Basic Lightning Energy",
+      "printedFooter": "SVE 004",
+      "detailedSHA256": "6935bb71e4252280214b8668a30c14235b5f4161845fc7ab2754f600adb54501"
+    },
+    {
+      "providerCardID": "sve-005",
+      "providerName": "Psychic Energy",
+      "corroboratingPrintedName": "Basic Psychic Energy",
+      "printedFooter": "SVE 005",
+      "detailedSHA256": "72c8dfaa2a1c77a76b024dbd19fee2f524d0d70fdc8889763b0339a1ea013049"
+    },
+    {
+      "providerCardID": "sve-006",
+      "providerName": "Fighting Energy",
+      "corroboratingPrintedName": "Basic Fighting Energy",
+      "printedFooter": "SVE 006",
+      "detailedSHA256": "acf1598f27ee6016d36a62d97acc2acc23fd188bad5fd9523a2368573f036648"
+    },
+    {
+      "providerCardID": "sve-007",
+      "providerName": "Darkness Energy",
+      "corroboratingPrintedName": "Basic Darkness Energy",
+      "printedFooter": "SVE 007",
+      "detailedSHA256": "07d2c45eae33faf6b818fad9b6de7781c5246986cec44814749851d1a9f6dc05"
+    },
+    {
+      "providerCardID": "sve-008",
+      "providerName": "Metal Energy",
+      "corroboratingPrintedName": "Basic Metal Energy",
+      "printedFooter": "SVE 008",
+      "detailedSHA256": "9b87741b3fbd421188828000b57f568a4aeba26eda329995d3a2ba1a2c028447"
+    },
+    {
+      "providerCardID": "sve-009",
+      "providerName": "Grass Energy",
+      "corroboratingPrintedName": "Basic Grass Energy",
+      "printedFooter": "SVE 009",
+      "detailedSHA256": "d3009bcc0a6e7c8346b701f891bfb62f1df550b72a1995ddd7bd890326481464"
+    },
+    {
+      "providerCardID": "sve-010",
+      "providerName": "Fire Energy",
+      "corroboratingPrintedName": "Basic Fire Energy",
+      "printedFooter": "SVE 010",
+      "detailedSHA256": "b4ef6490c0c6cf0ae9af696515488d99e0967cc627f6052e26d9ced0c87bab6a"
+    },
+    {
+      "providerCardID": "sve-011",
+      "providerName": "Water Energy",
+      "corroboratingPrintedName": "Basic Water Energy",
+      "printedFooter": "SVE 011",
+      "detailedSHA256": "0e90725322efffe767f710f14e37a0b36f26027294eddb9e30f435533a9790b0"
+    },
+    {
+      "providerCardID": "sve-012",
+      "providerName": "Lightning Energy",
+      "corroboratingPrintedName": "Basic Lightning Energy",
+      "printedFooter": "SVE 012",
+      "detailedSHA256": "ae941876790e92bc0ba07f16ddb92adb9dd25e266c8bd2f31a7d7e50c1355389"
+    },
+    {
+      "providerCardID": "sve-013",
+      "providerName": "Psychic Energy",
+      "corroboratingPrintedName": "Basic Psychic Energy",
+      "printedFooter": "SVE 013",
+      "detailedSHA256": "5c994135a31d297c8a5c92588b72517e021d9a7e858e7b9793a6a7345c8899ec"
+    },
+    {
+      "providerCardID": "sve-014",
+      "providerName": "Fighting Energy",
+      "corroboratingPrintedName": "Basic Fighting Energy",
+      "printedFooter": "SVE 014",
+      "detailedSHA256": "904564ff200634ce85de5c3644ea41e1487cbf936b9b73c2436ecdf47f42cade"
+    },
+    {
+      "providerCardID": "sve-015",
+      "providerName": "Darkness Energy",
+      "corroboratingPrintedName": "Basic Darkness Energy",
+      "printedFooter": "SVE 015",
+      "detailedSHA256": "21f317112d7028eeef0e6aa2ba815ea19ed6bc0961419b5c10862ebcf5157c38"
+    },
+    {
+      "providerCardID": "sve-016",
+      "providerName": "Metal Energy",
+      "corroboratingPrintedName": "Basic Metal Energy",
+      "printedFooter": "SVE 016",
+      "detailedSHA256": "a0b2d350fa8170e8bf09dd828fc09640bbf6e00f98aae22874b77046205ffb64"
+    },
+    {
+      "providerCardID": "sve-017",
+      "providerName": "Grass Energy",
+      "corroboratingPrintedName": "Basic Grass Energy",
+      "printedFooter": "SVE 017",
+      "detailedSHA256": "98f116e279e053c60eb76e490ad9946ef1adfa70a1e1223106eae463256d4b08"
+    },
+    {
+      "providerCardID": "sve-018",
+      "providerName": "Fire Energy",
+      "corroboratingPrintedName": "Basic Fire Energy",
+      "printedFooter": "SVE 018",
+      "detailedSHA256": "ae7d1bae315fb5ee0dd341cfc7323522044a64c6427becd8dcb3701f4ed32e82"
+    },
+    {
+      "providerCardID": "sve-019",
+      "providerName": "Water Energy",
+      "corroboratingPrintedName": "Basic Water Energy",
+      "printedFooter": "SVE 019",
+      "detailedSHA256": "01243cef2ce16e125404836640f3a6c8203ed8108304c33f18aa0e765739f2b7"
+    },
+    {
+      "providerCardID": "sve-020",
+      "providerName": "Lightning Energy",
+      "corroboratingPrintedName": "Basic Lightning Energy",
+      "printedFooter": "SVE 020",
+      "detailedSHA256": "23de8fcd2406309c691f0afe19ea74af7d24189bf52538cec530d541c502c6e4"
+    },
+    {
+      "providerCardID": "sve-021",
+      "providerName": "Psychic Energy",
+      "corroboratingPrintedName": "Basic Psychic Energy",
+      "printedFooter": "SVE 021",
+      "detailedSHA256": "9cf1fa3ff0303e737c0c7ba7272b4a64ba9b0aa4e422ac6f2f141113dfac6f91"
+    },
+    {
+      "providerCardID": "sve-022",
+      "providerName": "Fighting Energy",
+      "corroboratingPrintedName": "Basic Fighting Energy",
+      "printedFooter": "SVE 022",
+      "detailedSHA256": "0ebb0b9d73a082c60936bde715ccd5eaf6a4ffd1975f614d5d790e05073d6a19"
+    },
+    {
+      "providerCardID": "sve-023",
+      "providerName": "Darkness Energy",
+      "corroboratingPrintedName": "Basic Darkness Energy",
+      "printedFooter": "SVE 023",
+      "detailedSHA256": "7f34af8a30f5b6ddb06125616171ce69db3a0e4661068616cfad7b3b5cf20833"
+    },
+    {
+      "providerCardID": "sve-024",
+      "providerName": "Metal Energy",
+      "corroboratingPrintedName": "Basic Metal Energy",
+      "printedFooter": "SVE 024",
+      "detailedSHA256": "93f39a0604495cb952a72ee4142a8a19b9a793b5510ce42ae603ec84b24ae951"
+    }
+  ]
+}

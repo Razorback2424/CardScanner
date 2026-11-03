@@ -1,0 +1,1712 @@
+[
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475425/details",
+    "status": 200,
+    "sha256": "8d64c8e38fe0aed1b48d30adc4341862d85c396dfc54b4cff7fa10be921a3436",
+    "requestedProductID": 475425,
+    "identity": {
+      "productId": 475425.0,
+      "productName": "Basic Grass Energy - 001",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "001"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475426/details",
+    "status": 200,
+    "sha256": "86080e1890240a7a7ce6609b68796f8e7ba56abb65ee7ad6002a479a85b59f21",
+    "requestedProductID": 475426,
+    "identity": {
+      "productId": 475426.0,
+      "productName": "Basic Fire Energy - 002",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "002"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475427/details",
+    "status": 200,
+    "sha256": "c79c40059e2b9515e64711581c246d22b6b460211d57afaf366a039b3d682f49",
+    "requestedProductID": 475427,
+    "identity": {
+      "productId": 475427.0,
+      "productName": "Basic Water Energy - 003",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "003"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475428/details",
+    "status": 200,
+    "sha256": "b59a39c534e60827b8dead9abdd51bb67ea8f64df00a163f4ba7544be9cc395b",
+    "requestedProductID": 475428,
+    "identity": {
+      "productId": 475428.0,
+      "productName": "Basic Lightning Energy - 004",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "004"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475429/details",
+    "status": 200,
+    "sha256": "447616e17bd8e11695178f8d6870efc63999cc9ed9da5a37a127b0949c55980f",
+    "requestedProductID": 475429,
+    "identity": {
+      "productId": 475429.0,
+      "productName": "Basic Psychic Energy - 005",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "005"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475430/details",
+    "status": 200,
+    "sha256": "0ff226a59060960c5add50500220c815ae2bfaf91b3e7586ab32408c6e50e7d9",
+    "requestedProductID": 475430,
+    "identity": {
+      "productId": 475430.0,
+      "productName": "Basic Fighting Energy - 006",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "006"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475431/details",
+    "status": 200,
+    "sha256": "ed730cc4931ee1fcfd80cf093ec870c45f308b6638308c7c3831aacd2c20125c",
+    "requestedProductID": 475431,
+    "identity": {
+      "productId": 475431.0,
+      "productName": "Basic Darkness Energy - 007",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "007"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/475432/details",
+    "status": 200,
+    "sha256": "bbe2d79d8aa31217f7c794f4e4f57a69317c6ac03600254bda3f9bff55c45c13",
+    "requestedProductID": 475432,
+    "identity": {
+      "productId": 475432.0,
+      "productName": "Basic Metal Energy - 008",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "008"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515635/details",
+    "status": 200,
+    "sha256": "a3ba38c7581b834160c664241008f9dbe7a799716672b300c0abfb733809ecfd",
+    "requestedProductID": 515635,
+    "identity": {
+      "productId": 515635.0,
+      "productName": "Basic Darkness Energy - 007",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "007"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515638/details",
+    "status": 200,
+    "sha256": "1cd17d16c3c9de1bdbb045d699270a0bb973c8c6ce86a47def5a6fc8570a47a8",
+    "requestedProductID": 515638,
+    "identity": {
+      "productId": 515638.0,
+      "productName": "Basic Fighting Energy - 006",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "006"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515639/details",
+    "status": 200,
+    "sha256": "b9dc714eea322c10c81824d25efc8ee810f1ec804f61406455e1a60b7ba039ac",
+    "requestedProductID": 515639,
+    "identity": {
+      "productId": 515639.0,
+      "productName": "Basic Fire Energy - 002",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "002"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515640/details",
+    "status": 200,
+    "sha256": "578f4b9328ac5b807fba594a11ebf4989b25e3b2ccbda6fe0dbd90bdf5bd88e4",
+    "requestedProductID": 515640,
+    "identity": {
+      "productId": 515640.0,
+      "productName": "Basic Grass Energy - 001",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "001"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515641/details",
+    "status": 200,
+    "sha256": "aff43d62c84515bacfd980641322e8f9367bdbed96d590474035012a4afd20d4",
+    "requestedProductID": 515641,
+    "identity": {
+      "productId": 515641.0,
+      "productName": "Basic Lightning Energy - 004",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "004"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515642/details",
+    "status": 200,
+    "sha256": "8624c27ce49186b2ba5b418239d8c02d879f3bd9378146fa140056c244c4ee76",
+    "requestedProductID": 515642,
+    "identity": {
+      "productId": 515642.0,
+      "productName": "Basic Metal Energy - 008",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "008"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515643/details",
+    "status": 200,
+    "sha256": "4341a856a69127e9a2a0b70c3a53d1fd27af3c98fef0b9e33bd06eaf0b12164b",
+    "requestedProductID": 515643,
+    "identity": {
+      "productId": 515643.0,
+      "productName": "Basic Psychic Energy - 005",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "005"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/515644/details",
+    "status": 200,
+    "sha256": "1ebf56fccf7f4716ddffcbc6ed27bd244085f5504ad25c066f3266566aa455b3",
+    "requestedProductID": 515644,
+    "identity": {
+      "productId": 515644.0,
+      "productName": "Basic Water Energy - 003",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "003"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517177/details",
+    "status": 200,
+    "sha256": "a51480790d2dd59411d678a1ca3c64d2ffb5b0c6a50cdba4d9c8fdc055f75b1d",
+    "requestedProductID": 517177,
+    "identity": {
+      "productId": 517177.0,
+      "productName": "Basic Grass Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "001"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517178/details",
+    "status": 200,
+    "sha256": "1151a0edfa072bc93cf2a4c4e5c2235929696d5e0339ae3c3b954da9b3ba79af",
+    "requestedProductID": 517178,
+    "identity": {
+      "productId": 517178.0,
+      "productName": "Basic Fire Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "002"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517179/details",
+    "status": 200,
+    "sha256": "03a928e8ec37eaa1bf3be4bfa6dff14c30d299b925d75e82081026dc046c4eda",
+    "requestedProductID": 517179,
+    "identity": {
+      "productId": 517179.0,
+      "productName": "Basic Water Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "003"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517180/details",
+    "status": 200,
+    "sha256": "7b1131edb5797cf02589080fb1fadc2aded9ebc2641f051e0d906a1b8c22846e",
+    "requestedProductID": 517180,
+    "identity": {
+      "productId": 517180.0,
+      "productName": "Basic Lightning Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "004"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517181/details",
+    "status": 200,
+    "sha256": "27963a87f7c01210fee33cb0182ce320b910be9a657158568e14d00cce63e003",
+    "requestedProductID": 517181,
+    "identity": {
+      "productId": 517181.0,
+      "productName": "Basic Psychic Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "005"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517182/details",
+    "status": 200,
+    "sha256": "13ba313bdc516e02ac9a2413b8715d14a235fb7bbf237954fd3af34d054bd849",
+    "requestedProductID": 517182,
+    "identity": {
+      "productId": 517182.0,
+      "productName": "Basic Fighting Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "006"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517183/details",
+    "status": 200,
+    "sha256": "acdf9f445928d8f35703f0526cc5e32eab2a910760ec308bf5fdcc4ab9096711",
+    "requestedProductID": 517183,
+    "identity": {
+      "productId": 517183.0,
+      "productName": "Basic Darkness Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "007"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/517184/details",
+    "status": 200,
+    "sha256": "cf5ba8f5a8e5f3b4bcf0c7072e290e9f9e817901e858c0a149369c87fa21b5fc",
+    "requestedProductID": 517184,
+    "identity": {
+      "productId": 517184.0,
+      "productName": "Basic Metal Energy (Cosmos Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "008"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562152/details",
+    "status": 200,
+    "sha256": "5878e52e4f52d108e2560f63255a303d08eef38a0a6b590f0876e4dd7cb3cead",
+    "requestedProductID": 562152,
+    "identity": {
+      "productId": 562152.0,
+      "productName": "Basic Lightning Energy",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "4"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562154/details",
+    "status": 200,
+    "sha256": "bbd1421f79aab57d8f346739e396d1c1e1e87544c06a1480fd56dc0e7f0e6ea2",
+    "requestedProductID": 562154,
+    "identity": {
+      "productId": 562154.0,
+      "productName": "Basic Darkness Energy (Reverse Holofoil)",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "7"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562155/details",
+    "status": 200,
+    "sha256": "0c3fc8dbf6f2eda5650f4e9aa4826aad591e1e3aa4aef198ab4ec8be68339199",
+    "requestedProductID": 562155,
+    "identity": {
+      "productId": 562155.0,
+      "productName": "Basic Grass Energy",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "1"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562157/details",
+    "status": 200,
+    "sha256": "3038c5c91e0de2fac4e3b8baf76d7a38723c2131dbc1fde8c61561d6854ccb45",
+    "requestedProductID": 562157,
+    "identity": {
+      "productId": 562157.0,
+      "productName": "Basic Psychic Energy",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "5"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562158/details",
+    "status": 200,
+    "sha256": "2ea1b36e1b893821aa4218faeb0cdb8827a1909ba2c58bb7df10004f3bd0ea3a",
+    "requestedProductID": 562158,
+    "identity": {
+      "productId": 562158.0,
+      "productName": "Basic Fighting Energy",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "6"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562159/details",
+    "status": 200,
+    "sha256": "e4ed41786e7f1369e2f61fabb4331c639deeae6efbeaf2be3ab0f3994d782880",
+    "requestedProductID": 562159,
+    "identity": {
+      "productId": 562159.0,
+      "productName": "Basic Metal Energy (Reverse Holofoil)",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "8"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/562160/details",
+    "status": 200,
+    "sha256": "69f8e0eeadd0ea4e5ed37ed0fff693f041ebb4dd99e05de3439a21ff2160ed99",
+    "requestedProductID": 562160,
+    "identity": {
+      "productId": 562160.0,
+      "productName": "Basic Fire Energy",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "2"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/563014/details",
+    "status": 200,
+    "sha256": "ba9d850d74cb6639262c78955d01e660c62a0783d93d090ef68d254e44668091",
+    "requestedProductID": 563014,
+    "identity": {
+      "productId": 563014.0,
+      "productName": "Basic Water Energy",
+      "setId": 23529.0,
+      "setCode": "SFA",
+      "setName": "SV: Shrouded Fable",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "3"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578862/details",
+    "status": 200,
+    "sha256": "8297eefd3724c05456870f12ab45f1f3a0e217bf7770f56cada9d99aa31054d7",
+    "requestedProductID": 578862,
+    "identity": {
+      "productId": 578862.0,
+      "productName": "Basic Water Energy - 011",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "011"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578863/details",
+    "status": 200,
+    "sha256": "ff311ddf1a279ebb03fe01553fce1d1140b6fd6a3c0676daf1223737d6e38757",
+    "requestedProductID": 578863,
+    "identity": {
+      "productId": 578863.0,
+      "productName": "Basic Fire Energy - 010",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "010"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578864/details",
+    "status": 200,
+    "sha256": "60440ffb88004b3d3b3e4d19ff8f3363218bf76dc3a4745155c88c086471e352",
+    "requestedProductID": 578864,
+    "identity": {
+      "productId": 578864.0,
+      "productName": "Basic Grass Energy - 009",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "009"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578865/details",
+    "status": 200,
+    "sha256": "4d398cf7f9739b63fbcfd74ca88dfa4d77f4b805488e7f63fd213ce648e748bb",
+    "requestedProductID": 578865,
+    "identity": {
+      "productId": 578865.0,
+      "productName": "Basic Psychic Energy - 013",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "013"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578866/details",
+    "status": 200,
+    "sha256": "aaf84a184dbed80fc583935bcebc877b842b656812bb202cd671c426e6ef09b8",
+    "requestedProductID": 578866,
+    "identity": {
+      "productId": 578866.0,
+      "productName": "Basic Lightning Energy - 012",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "012"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578867/details",
+    "status": 200,
+    "sha256": "050553e17adba09b191c8f354a14ba930a7e546470948f56d0d99ade56abca3e",
+    "requestedProductID": 578867,
+    "identity": {
+      "productId": 578867.0,
+      "productName": "Basic Fighting Energy - 014",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "014"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578868/details",
+    "status": 200,
+    "sha256": "8b22c355164ccc1a112c4b9e8d3b8edfdb49117899caa0424a36a77e3dc36947",
+    "requestedProductID": 578868,
+    "identity": {
+      "productId": 578868.0,
+      "productName": "Basic Darkness Energy - 015",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "015"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/578869/details",
+    "status": 200,
+    "sha256": "ab1fe55630e66e2a6858c006758b9898efd51769e60828cfb145ad3d3767bf84",
+    "requestedProductID": 578869,
+    "identity": {
+      "productId": 578869.0,
+      "productName": "Basic Metal Energy - 016",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "016"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599453/details",
+    "status": 200,
+    "sha256": "1e6e158c1da1d3a4874050a65196fa1ff4a83cf9e99eabe2f958f41be24e65e7",
+    "requestedProductID": 599453,
+    "identity": {
+      "productId": 599453.0,
+      "productName": "Fighting Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "006"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599454/details",
+    "status": 200,
+    "sha256": "39269d965e02c5740d88d6786bfd62708587319d61b26c80b8eadf6de8aee5b2",
+    "requestedProductID": 599454,
+    "identity": {
+      "productId": 599454.0,
+      "productName": "Fire Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "002"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599455/details",
+    "status": 200,
+    "sha256": "f6c8201ba20bce3347c5baad10a73da3adb82572df3ca4515e6a81192260f290",
+    "requestedProductID": 599455,
+    "identity": {
+      "productId": 599455.0,
+      "productName": "Grass Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "001"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599456/details",
+    "status": 200,
+    "sha256": "31d00f342ece2104deb5dba5188f8d598985d4b198b6c991286e454def1adb64",
+    "requestedProductID": 599456,
+    "identity": {
+      "productId": 599456.0,
+      "productName": "Lightning Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "004"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599457/details",
+    "status": 200,
+    "sha256": "02dc5f50d3359e5ff112d720caf22305b722aa5db78ac921cf930599023783d3",
+    "requestedProductID": 599457,
+    "identity": {
+      "productId": 599457.0,
+      "productName": "Psychic Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "005"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599458/details",
+    "status": 200,
+    "sha256": "a7ee5b55de9d6004a5188dee0a439a9602ccbe0a3112f4931bcc0635b0213891",
+    "requestedProductID": 599458,
+    "identity": {
+      "productId": 599458.0,
+      "productName": "Water Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "003"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599459/details",
+    "status": 200,
+    "sha256": "47efa5e93afe011a27b4faaf93a5da82e79d7466d4023ea75eed39c3545ad58e",
+    "requestedProductID": 599459,
+    "identity": {
+      "productId": 599459.0,
+      "productName": "Metal Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "008"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599460/details",
+    "status": 200,
+    "sha256": "9fbfbb0f2530693b2d0a6982cf9c61164cc4b19386f5dd415c0a55339b9a6e71",
+    "requestedProductID": 599460,
+    "identity": {
+      "productId": 599460.0,
+      "productName": "Darkness Energy (2023)",
+      "setId": 2332.0,
+      "setCode": "PPP",
+      "setName": "Professor Program Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "007"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599738/details",
+    "status": 200,
+    "sha256": "db26d6f8e16d21ea47f4e168f0d8fe04a4a2927fe0ba9a2de56a6bbe8b399982",
+    "requestedProductID": 599738,
+    "identity": {
+      "productId": 599738.0,
+      "productName": "Basic Fire Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "010"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599740/details",
+    "status": 200,
+    "sha256": "3aa67dfbda77062e8b098721b21d8f164a42e3b9ae9032a6d69481928167c733",
+    "requestedProductID": 599740,
+    "identity": {
+      "productId": 599740.0,
+      "productName": "Basic Grass Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "009"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599741/details",
+    "status": 200,
+    "sha256": "faf7a50fea70175a53d93f9944105b2a10ffdca42563e8aa59e065c9be6c7664",
+    "requestedProductID": 599741,
+    "identity": {
+      "productId": 599741.0,
+      "productName": "Basic Lightning Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "012"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599742/details",
+    "status": 200,
+    "sha256": "5711d5581974a602dd8b7e59454363d968329c9679c65454af08f8ef294b2d1b",
+    "requestedProductID": 599742,
+    "identity": {
+      "productId": 599742.0,
+      "productName": "Basic Metal Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "016"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599743/details",
+    "status": 200,
+    "sha256": "034f3ac433d0ac532f02d4c64dc5a2c0e8e497640553d31ef38ff676c8d7bdf4",
+    "requestedProductID": 599743,
+    "identity": {
+      "productId": 599743.0,
+      "productName": "Basic Psychic Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "013"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599745/details",
+    "status": 200,
+    "sha256": "0a0ea7da37acc4aa3c73492e5c72b620371cc7eeb707f1b97f946439f36cecd0",
+    "requestedProductID": 599745,
+    "identity": {
+      "productId": 599745.0,
+      "productName": "Basic Water Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "011"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599746/details",
+    "status": 200,
+    "sha256": "c327d1f5bedfdd3b52f95b306f24715181894f1857e5b1ddc99ea73070c49e28",
+    "requestedProductID": 599746,
+    "identity": {
+      "productId": 599746.0,
+      "productName": "Basic Fighting Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "014"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/599747/details",
+    "status": 200,
+    "sha256": "4ca2f4c03cf8dacf18661d5a22774d71cb229e7908bf8feacf76b8524edb0f8e",
+    "requestedProductID": 599747,
+    "identity": {
+      "productId": 599747.0,
+      "productName": "Basic Darkness Energy (Cracked Ice Holo)",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "015"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622935/details",
+    "status": 200,
+    "sha256": "2fb7fe73a49f1f6c437314dd965c3a6fd81df617d11c188bd32c70299d454993",
+    "requestedProductID": 622935,
+    "identity": {
+      "productId": 622935.0,
+      "productName": "Basic Grass Energy - 001 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "001"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622937/details",
+    "status": 200,
+    "sha256": "2c30d4577fe540e03142e1ca61200849970da29ffc42943daa0a1371db88a795",
+    "requestedProductID": 622937,
+    "identity": {
+      "productId": 622937.0,
+      "productName": "Basic Water Energy - 003 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "003"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622938/details",
+    "status": 200,
+    "sha256": "7c74465e2a5ed7f0b694a69b2b18d24c7909caf3fd66d53ac6f70b3d4d53322e",
+    "requestedProductID": 622938,
+    "identity": {
+      "productId": 622938.0,
+      "productName": "Basic Lightning Energy - 004 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "004"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622939/details",
+    "status": 200,
+    "sha256": "b90c762481e019aa5122f828270cdfa033bdba92190a3f65381df95ff5334744",
+    "requestedProductID": 622939,
+    "identity": {
+      "productId": 622939.0,
+      "productName": "Basic Psychic Energy - 005 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "005"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622940/details",
+    "status": 200,
+    "sha256": "497efd394b8fde63eb58b6408a655957ec4953ab8b9da606e4a5218dd7fc288f",
+    "requestedProductID": 622940,
+    "identity": {
+      "productId": 622940.0,
+      "productName": "Basic Fighting Energy - 006 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "006"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622941/details",
+    "status": 200,
+    "sha256": "5369d3293f18f8b350c29cc9578becd7573f64cd2a307dd8e52bcf20dc6f177e",
+    "requestedProductID": 622941,
+    "identity": {
+      "productId": 622941.0,
+      "productName": "Basic Darkness Energy - 007 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "007"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/622942/details",
+    "status": 200,
+    "sha256": "951e0110fd559f0b777d2fa02318412e7db71d343f72157e31d8ef0401bb9b84",
+    "requestedProductID": 622942,
+    "identity": {
+      "productId": 622942.0,
+      "productName": "Basic Metal Energy - 008 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "008"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623649/details",
+    "status": 200,
+    "sha256": "bd2b21d2802571b8fdfe8893ae6c79a8072fb7f5c232b474d0a3f645d6488c7f",
+    "requestedProductID": 623649,
+    "identity": {
+      "productId": 623649.0,
+      "productName": "Basic Grass Energy - 009",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "009"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623650/details",
+    "status": 200,
+    "sha256": "af3b23953999cb3ba023f1c0b049c83476e18a1f98f87635d249c3b2edfa5f2c",
+    "requestedProductID": 623650,
+    "identity": {
+      "productId": 623650.0,
+      "productName": "Basic Fire Energy - 010",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "010"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623651/details",
+    "status": 200,
+    "sha256": "f7e79840e4915e11c4456cf015915352013131f6f1cd2b8cf339b5ab92c759d4",
+    "requestedProductID": 623651,
+    "identity": {
+      "productId": 623651.0,
+      "productName": "Basic Water Energy - 011",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "011"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623652/details",
+    "status": 200,
+    "sha256": "f936a48a672ebe03821485579b366bd3482cef6a012c58ac03756d98f04980b2",
+    "requestedProductID": 623652,
+    "identity": {
+      "productId": 623652.0,
+      "productName": "Basic Lightning Energy - 012",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "012"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623653/details",
+    "status": 200,
+    "sha256": "7068a7f8ddb21d9989cc1482f411ed1a9282243db1cfd5907f0305369fa3c1f1",
+    "requestedProductID": 623653,
+    "identity": {
+      "productId": 623653.0,
+      "productName": "Basic Psychic Energy - 013",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "013"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623654/details",
+    "status": 200,
+    "sha256": "5ebfea33f53ebf03a95edd0c0bd46d7e93b81aa71a94c2287b241e21abfc82b1",
+    "requestedProductID": 623654,
+    "identity": {
+      "productId": 623654.0,
+      "productName": "Basic Fighting Energy - 014",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "014"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/623655/details",
+    "status": 200,
+    "sha256": "1feb82a7f5c564cd3d60aaed6b31dc582cc691f544733b883be23b7734c23011",
+    "requestedProductID": 623655,
+    "identity": {
+      "productId": 623655.0,
+      "productName": "Basic Darkness Energy - 015",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "015"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/627701/details",
+    "status": 200,
+    "sha256": "68d534cd4f5d2461926aa57616935744e32f39ca6893b273f1970e5cc3968fbe",
+    "requestedProductID": 627701,
+    "identity": {
+      "productId": 627701.0,
+      "productName": "Basic Metal Energy - 016",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": true,
+      "number": "016"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645286/details",
+    "status": 200,
+    "sha256": "7d1efa612a68f4c15a5eb80a8a75f331b64cad480c64774c8d8ca235aed2a485",
+    "requestedProductID": 645286,
+    "identity": {
+      "productId": 645286.0,
+      "productName": "Basic Grass Energy - 017",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "017"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645287/details",
+    "status": 200,
+    "sha256": "978947aa15ea6a2599dc8c52c871d33c111e1a8c6977f9a739592a52ba2c75e7",
+    "requestedProductID": 645287,
+    "identity": {
+      "productId": 645287.0,
+      "productName": "Basic Fire Energy - 018",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "018"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645288/details",
+    "status": 200,
+    "sha256": "35aa4b914a32377346f0875524d8d4c3fcecbbffad85a9e59cb632acb3d684ea",
+    "requestedProductID": 645288,
+    "identity": {
+      "productId": 645288.0,
+      "productName": "Basic Water Energy - 019",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "019"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645289/details",
+    "status": 200,
+    "sha256": "e16862bf8f383010e14f4c576ecd88dfb1ce5b0ef289560f52b8bbca9d33052b",
+    "requestedProductID": 645289,
+    "identity": {
+      "productId": 645289.0,
+      "productName": "Basic Lightning Energy - 020",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "020"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645301/details",
+    "status": 200,
+    "sha256": "9e2f2e03972c972f4499115e2e9edde27e61443bf8041da3568f6d5050007a50",
+    "requestedProductID": 645301,
+    "identity": {
+      "productId": 645301.0,
+      "productName": "Basic Psychic Energy - 021",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "021"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645302/details",
+    "status": 200,
+    "sha256": "689ad9ee8ef8bb804b549f75d2a02c2dacf60b61b7dab99ea5fd2cbd06b81378",
+    "requestedProductID": 645302,
+    "identity": {
+      "productId": 645302.0,
+      "productName": "Basic Fighting Energy - 022",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "022"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645303/details",
+    "status": 200,
+    "sha256": "5ca42de07ab56950ca848237b5cfde1f3e4788129963c72beb117dcea9e302ed",
+    "requestedProductID": 645303,
+    "identity": {
+      "productId": 645303.0,
+      "productName": "Basic Darkness Energy - 023",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "023"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/645304/details",
+    "status": 200,
+    "sha256": "249dfefce05bef50de17d0941a654a0c77ce0c30a128ace31939c33457311426",
+    "requestedProductID": 645304,
+    "identity": {
+      "productId": 645304.0,
+      "productName": "Basic Metal Energy - 024",
+      "setId": 24382.0,
+      "setCode": "SVE",
+      "setName": "SVE: Scarlet & Violet Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "024"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651036/details",
+    "status": 200,
+    "sha256": "1c6c67f6d97d5630ef2234e8f243ab76b6a2ee5b9b129a176647a600bd501ad4",
+    "requestedProductID": 651036,
+    "identity": {
+      "productId": 651036.0,
+      "productName": "Basic Darkness Energy - 015 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "015"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651037/details",
+    "status": 200,
+    "sha256": "5ba6bd6ce8a2b58ac4f265f4828650fc8d7c6837eebcdd491b4591228a58b540",
+    "requestedProductID": 651037,
+    "identity": {
+      "productId": 651037.0,
+      "productName": "Basic Fire Energy - 010 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "010"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651096/details",
+    "status": 200,
+    "sha256": "b72377b82a0754e57ec27af9610a1e1e6022af34fd6d50bb7f2fa4b92d1977cc",
+    "requestedProductID": 651096,
+    "identity": {
+      "productId": 651096.0,
+      "productName": "Basic Fighting Energy - 014 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "014"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651098/details",
+    "status": 200,
+    "sha256": "ea30459aaef6ff9151e40387e904bd25365bd3839cc94bc7eea484b7dd08d65f",
+    "requestedProductID": 651098,
+    "identity": {
+      "productId": 651098.0,
+      "productName": "Basic Grass Energy - 009 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "009"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651100/details",
+    "status": 200,
+    "sha256": "759b038ce19919980e579502b1091e3a097091604843039dcf46ce6518833120",
+    "requestedProductID": 651100,
+    "identity": {
+      "productId": 651100.0,
+      "productName": "Basic Lightning Energy - 012 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "012"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651102/details",
+    "status": 200,
+    "sha256": "9f23cd50f2288d493c389b41a05c87f737654f2cadfeee6c872514a409d35710",
+    "requestedProductID": 651102,
+    "identity": {
+      "productId": 651102.0,
+      "productName": "Basic Metal Energy - 016 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "016"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651109/details",
+    "status": 200,
+    "sha256": "8f46d84af523fd90826041cf6e5ff901591ecccf92de155810ea36debad1ff82",
+    "requestedProductID": 651109,
+    "identity": {
+      "productId": 651109.0,
+      "productName": "Basic Psychic Energy - 013 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "013"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/651115/details",
+    "status": 200,
+    "sha256": "dec076d9f6a133f9442de8cea3e400842bea3ae42db55efc0d4f1a5dd0c8656b",
+    "requestedProductID": 651115,
+    "identity": {
+      "productId": 651115.0,
+      "productName": "Basic Water Energy - 011 (Cosmos Holo)",
+      "setId": 22880.0,
+      "setCode": "",
+      "setName": "Prize Pack Series Cards",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "011"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656263/details",
+    "status": 200,
+    "sha256": "a1214962a4679993c628a8bc774d8392d8cde96808eafbdfc5b6dfdc6a2637ba",
+    "requestedProductID": 656263,
+    "identity": {
+      "productId": 656263.0,
+      "productName": "Basic Grass Energy - 001",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "1"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656264/details",
+    "status": 200,
+    "sha256": "f531006d597c5bb1791632ca0687641606adb9deb2b70b348ab41e0f395efa45",
+    "requestedProductID": 656264,
+    "identity": {
+      "productId": 656264.0,
+      "productName": "Basic Fire Energy - 002",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "2"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656265/details",
+    "status": 200,
+    "sha256": "9671bbb982c6e1908b156197359d78c4403660e3587dae96774b3ed6becfade3",
+    "requestedProductID": 656265,
+    "identity": {
+      "productId": 656265.0,
+      "productName": "Basic Water Energy - 003",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "3"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656266/details",
+    "status": 200,
+    "sha256": "68a4707e424ac7fa441d8c05a6af82ce725eac6ae507ce8ae147108ac547a459",
+    "requestedProductID": 656266,
+    "identity": {
+      "productId": 656266.0,
+      "productName": "Basic Lightning Energy - 004",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "4"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656267/details",
+    "status": 200,
+    "sha256": "c1dc8124c55f55a59335ba8afe352a455470b9a0b615713fc75d487e264f67dc",
+    "requestedProductID": 656267,
+    "identity": {
+      "productId": 656267.0,
+      "productName": "Basic Psychic Energy - 005",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "5"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656268/details",
+    "status": 200,
+    "sha256": "c4ebf045e026cecd210441dfd221e374fb51dee27ab13b2e1809207cfd9bbb15",
+    "requestedProductID": 656268,
+    "identity": {
+      "productId": 656268.0,
+      "productName": "Basic Fighting Energy - 006",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "6"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656269/details",
+    "status": 200,
+    "sha256": "b419fb5db53c3ffdafc3cf8b27ae249697539b7577ed2858fc5759f587ef4cf2",
+    "requestedProductID": 656269,
+    "identity": {
+      "productId": 656269.0,
+      "productName": "Basic Darkness Energy - 007",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "7"
+    }
+  },
+  {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/656270/details",
+    "status": 200,
+    "sha256": "fbb746ec67ab89e294ef82f96b9a53aaf6eccc6ba8e186435e4a43cabc507abc",
+    "requestedProductID": 656270,
+    "identity": {
+      "productId": 656270.0,
+      "productName": "Basic Metal Energy - 008",
+      "setId": 24461.0,
+      "setCode": "MEE",
+      "setName": "MEE: Mega Evolution Energies",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": false,
+      "normalOnly": false,
+      "number": "8"
+    }
+  }
+]
