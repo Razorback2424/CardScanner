@@ -10,13 +10,13 @@ import UIKit
 //   price, an optional asking price, and the 3-month trend when there is
 //   enough history to state one.
 //
-// Both images follow one layout: artwork, identity in fixed places, value
-// below a hairline, and every piece of small print in a single footer line.
+// Both images follow one portrait composition: artwork, identity, rarity,
+// value below a hairline, then quieter printing details and attribution.
 
 enum CardShareStyle {
     /// The image is drawn at this size in points and rendered at 3x, giving a
-    /// 1080 x 1350 portrait image that suits Messages, social posts and Discord.
-    static let canvas = CGSize(width: 360, height: 450)
+    /// 1080 x 1920 portrait image, with room for the artwork and its identity.
+    static let canvas = CGSize(width: 360, height: 640)
     static let renderScale: CGFloat = 3
     /// How long the price-check bitmap waits for asking-price typing to pause.
     static let askRenderPause: Duration = .milliseconds(200)
@@ -128,7 +128,11 @@ extension CardShareIdentity {
             setCode: isSealed ? nil : card.setCode,
             setName: card.setName,
             number: isSealed ? nil : CardShareNumber(card.cardNumber),
-            badge: badge
+            badge: badge,
+            rarity: isSealed ? nil : CardShareRarity(raw: card.rarity, game: card.cardGame,
+                pokemonSetID: card.catalogProviderID ?? card.providerID),
+            finish: isSealed ? nil : Self.finishBadge(for: card.variant)?.text,
+            edition: !isSealed && card.cardGame == .pokemon ? card.pokemonPrintRun?.label : nil
         )
     }
 
@@ -144,7 +148,11 @@ extension CardShareIdentity {
             setCode: result.card.setCode,
             setName: result.card.setName,
             number: CardShareNumber(result.card.displayCardNumber),
-            badge: badge
+            badge: badge,
+            rarity: CardShareRarity(raw: result.card.rarity, game: result.card.game,
+                pokemonSetID: result.card.setID),
+            finish: Self.finishBadge(for: result.resolved.variant)?.text,
+            edition: result.card.game == .pokemon ? result.resolvedScan.pokemonPrintRun?.label : nil
         )
     }
 
@@ -196,7 +204,7 @@ struct CollectionShareImage: View {
             if artwork != nil {
                 ShareArtworkView(artwork: artwork, showsFinishSheen: showsFinishSheen, shadowRadius: 18)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.bottom, 17)
+                    .padding(.bottom, 24)
             } else {
                 Spacer(minLength: 24)
             }
@@ -226,10 +234,10 @@ struct CollectionShareImage: View {
                 .padding(.top, 14)
             }
 
-            ShareFooter(source: price?.sourceLine(now: now))
-                .padding(.top, 17)
+            ShareFooter(printing: identity.printingDetail, source: price?.sourceLine(now: now))
+                .padding(.top, 22)
         }
-        .padding(EdgeInsets(top: 26, leading: 24, bottom: 19, trailing: 24))
+        .padding(EdgeInsets(top: 28, leading: 24, bottom: 24, trailing: 24))
         .frame(width: CardShareStyle.canvas.width, height: CardShareStyle.canvas.height)
         .background { ShareGround(glow: true) }
         .foregroundStyle(CardShareStyle.primaryText)
@@ -249,63 +257,74 @@ struct BuyCheckShareImage: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 17) {
-                identityRow
-                stats
-                if let trend {
-                    trendBlock(trend)
+            if trend != nil {
+                historyIdentityRow
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                if artwork != nil {
+                    ShareArtworkView(artwork: artwork, showsFinishSheen: false, shadowRadius: 18)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.bottom, 24)
+                } else {
+                    Spacer(minLength: 24)
                 }
+                ShareIdentityBlock(identity: identity)
+                if artwork == nil { Spacer(minLength: 24) }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: trend == nil ? .leading : .topLeading)
+            stats.padding(.top, 18)
+            if let trend {
+                trendBlock(trend).padding(.top, 18)
+            }
 
-            ShareFooter(source: footerSource)
-                .padding(.top, 17)
+            ShareFooter(printing: identity.printingDetail, source: footerSource)
+                .padding(.top, 22)
         }
-        .padding(EdgeInsets(top: 24, leading: 22, bottom: 19, trailing: 22))
+        .padding(EdgeInsets(top: 28, leading: 24, bottom: 24, trailing: 24))
         .frame(width: CardShareStyle.canvas.width, height: CardShareStyle.canvas.height)
         .background { ShareGround(glow: false) }
         .foregroundStyle(CardShareStyle.primaryText)
         .environment(\.colorScheme, .dark)
     }
 
-    /// With no chart, the card picture grows to fill the space the chart
-    /// would have used.
-    private var thumbnailWidth: CGFloat { trend == nil ? 115 : 75 }
-
-    private var identityRow: some View {
-        HStack(alignment: .center, spacing: 17) {
-            if artwork != nil {
-                ShareArtworkView(artwork: artwork, showsFinishSheen: false, shadowRadius: 10)
-                    .frame(width: thumbnailWidth, height: thumbnailWidth / CardShareStyle.cardAspect)
-            }
-
-            VStack(alignment: .leading, spacing: 7) {
-                Text(identity.name)
-                    .font(.system(size: 23, weight: .heavy))
-                    .tracking(-0.3)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
-                if identity.setCode != nil || identity.number != nil {
+    /// History needs room of its own. Keep the artwork beside the identity
+    /// here, instead of compressing it to a tiny sliver above the chart.
+    @ViewBuilder
+    private var historyIdentityRow: some View {
+        if let artwork {
+            HStack(spacing: 16) {
+                ShareArtworkView(artwork: artwork, showsFinishSheen: false, shadowRadius: 12)
+                    .frame(width: 110, height: 110 / CardShareStyle.cardAspect)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(identity.name)
+                        .font(.system(size: 20, weight: .bold))
+                        .tracking(-0.3)
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.75)
                     HStack(spacing: 8) {
                         if let code = identity.setCode {
-                            ShareSetCodeChip(code: code, size: 11)
+                            ShareSetCodeChip(code: code, size: 10)
                         }
                         if let number = identity.number {
-                            ShareNumberText(number: number, size: 18)
+                            ShareNumberText(number: number, size: 17)
                         }
                     }
+                    if let name = identity.setName {
+                        Text(name)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(CardShareStyle.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let rarity = identity.rarity {
+                        ShareRarityLabel(rarity: rarity)
+                    }
+                    if let grade = identity.gradeBadge {
+                        ShareBadge(badge: grade, size: 12)
+                    }
                 }
-                if let setName = identity.setName {
-                    Text(setName)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(CardShareStyle.secondaryText)
-                        .lineLimit(1)
-                }
-                if let badge = identity.badge {
-                    ShareBadge(badge: badge, size: 12)
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            ShareIdentityBlock(identity: identity)
         }
     }
 
@@ -430,10 +449,10 @@ private struct ShareGround: View {
             CardShareStyle.ground
             if glow {
                 RadialGradient(
-                    colors: [CardShareStyle.iris.opacity(0.24), CardShareStyle.iris.opacity(0)],
+                    colors: [CardShareStyle.iris.opacity(0.18), CardShareStyle.iris.opacity(0)],
                     center: UnitPoint(x: 0.5, y: 0.3),
                     startRadius: 0,
-                    endRadius: 230
+                    endRadius: 300
                 )
             }
         }
@@ -534,37 +553,124 @@ private struct ShareIdentityBlock: View {
         VStack(alignment: .leading, spacing: 9) {
             HStack(alignment: .firstTextBaseline, spacing: 14) {
                 Text(identity.name)
-                    .font(.system(size: 25, weight: .heavy))
-                    .tracking(-0.3)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
+                    .font(.system(size: 24, weight: .bold))
+                    .tracking(-0.4)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.75)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if let number = identity.number {
                     ShareNumberText(number: number, size: 20)
                         .layoutPriority(1)
                 }
             }
-            if identity.setCode != nil || identity.setName != nil || identity.badge != nil {
-                HStack(spacing: 12) {
-                    HStack(spacing: 8) {
-                        if let code = identity.setCode {
-                            ShareSetCodeChip(code: code, size: 12)
-                        }
-                        if let setName = identity.setName {
-                            Text(setName)
-                                .font(.system(size: 17, weight: .semibold))
-                                .foregroundStyle(CardShareStyle.secondaryText)
-                                .lineLimit(1)
-                        }
+            if identity.setCode != nil || identity.setName != nil {
+                HStack(spacing: 8) {
+                    if let code = identity.setCode {
+                        ShareSetCodeChip(code: code, size: 11)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    if let badge = identity.badge {
-                        ShareBadge(badge: badge, size: 13)
-                            .layoutPriority(1)
+                    if let setName = identity.setName {
+                        Text(setName)
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundStyle(CardShareStyle.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
+            if identity.rarity != nil || identity.gradeBadge != nil {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) { rarityAndGrade }
+                        .fixedSize()
+                    VStack(alignment: .leading, spacing: 8) { rarityAndGrade }
+                }
+                .padding(.top, 4)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var rarityAndGrade: some View {
+        if let rarity = identity.rarity {
+            ShareRarityLabel(rarity: rarity)
+        }
+        if let grade = identity.gradeBadge {
+            ShareBadge(badge: grade, size: 12)
+        }
+    }
+}
+
+/// Familiar rarity marks, adapted for a dark ground. The complete name stays
+/// readable independently of color; a star count is never used as a rating.
+private struct ShareRarityLabel: View {
+    let rarity: CardShareRarity
+
+    private var tint: Color {
+        switch rarity.tone {
+        case .neutral: return CardShareStyle.secondaryText
+        case .silver: return Color(red: 216 / 255, green: 228 / 255, blue: 246 / 255)
+        case .gold: return Color(red: 244 / 255, green: 213 / 255, blue: 140 / 255)
+        case .iris: return Color(red: 198 / 255, green: 191 / 255, blue: 255 / 255)
+        case .rose: return CardShareStyle.rose
+        case .ember: return Color(red: 255 / 255, green: 181 / 255, blue: 133 / 255)
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 9) {
+            mark
+                .fixedSize()
+                .accessibilityHidden(true)
+            Text(rarity.label)
+                .font(.system(size: 15, weight: .semibold))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .foregroundStyle(tint)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Rarity")
+        .accessibilityValue(rarity.label)
+    }
+
+    @ViewBuilder
+    private var mark: some View {
+        switch rarity.mark {
+        case .circle:
+            Circle().frame(width: 8, height: 8)
+        case .diamond:
+            Image(systemName: "diamond.fill").font(.system(size: 11))
+        case let .stars(count):
+            stars(count: count, symbol: "star.fill")
+        case let .shinyStars(count):
+            stars(count: count, symbol: "sparkle")
+        case .megaStar:
+            Image(systemName: "star.fill")
+                .font(.system(size: 17))
+                .overlay {
+                    Image(systemName: "star")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(CardShareStyle.ground)
+                }
+        case .attackStars:
+            HStack(spacing: 2) {
+                Image(systemName: "star.fill").foregroundStyle(CardShareStyle.rose)
+                Image(systemName: "star.fill").foregroundStyle(CardShareStyle.mint)
+            }
+            .font(.system(size: 13))
+        case let .code(code):
+            Text(code).font(.system(size: 14, weight: .heavy))
+        case .none:
+            EmptyView()
+        }
+    }
+
+    private func stars(count: Int, symbol: String) -> some View {
+        HStack(spacing: 2) {
+            ForEach(0..<count, id: \.self) { _ in
+                Image(systemName: symbol)
+            }
+        }
+        .font(.system(size: 13))
+        .foregroundStyle(LinearGradient(colors: [tint, tint.opacity(0.85), tint],
+            startPoint: .topLeading, endPoint: .bottomTrailing))
     }
 }
 
@@ -642,26 +748,32 @@ private struct ShareBrandMark: View {
                 .fill(LinearGradient(colors: AppPalette.foil, startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 8, height: 12)
             Text("ScanStash")
-                .font(.system(size: 11, weight: .heavy))
-                .fontWidth(.expanded)
-                .foregroundStyle(CardShareStyle.primaryText.opacity(0.6))
+                .font(.system(size: 12, weight: .semibold))
+                .tracking(0.1)
+                .foregroundStyle(CardShareStyle.primaryText.opacity(0.65))
         }
         .fixedSize()
     }
 }
 
-/// Every piece of small print lives here: source and date on the left, the
-/// mark on the right.
+/// Physical printing and market attribution stay below rarity and value.
 private struct ShareFooter: View {
+    let printing: String?
     let source: String?
 
     var body: some View {
-        HStack(spacing: 10) {
-            Text(source ?? "")
-                .font(.system(size: 12))
-                .foregroundStyle(CardShareStyle.mutedText)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
+        HStack(alignment: .lastTextBaseline, spacing: 10) {
+            VStack(alignment: .leading, spacing: 4) {
+                if let printing {
+                    Text(printing).fontWeight(.medium)
+                }
+                if let source {
+                    Text(source)
+                }
+            }
+            .font(.system(size: 11))
+            .foregroundStyle(CardShareStyle.mutedText)
+            .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
             ShareBrandMark()
         }
@@ -847,7 +959,7 @@ struct CollectionShareSheet: View {
 
     private var priceRowDetail: String {
         guard let price else { return "No market price available yet" }
-        guard includesPrice else { return "Just the card, its name and finish" }
+        guard includesPrice else { return "Card details, without the price" }
         if let source = price.source { return "\(price.basis) from \(source)" }
         return price.basis
     }
@@ -1159,7 +1271,11 @@ struct CardShareReviewView: View {
             setCode: state == "sealed" ? nil : "TST",
             setName: state.contains("long") ? "A Very Long Set Name With Extra Words" : "Test Set",
             number: state == "sealed" ? nil : CardShareNumber("087/165"),
-            badge: state == "graded" ? .grade("PSA 10") : (["normal", "sealed"].contains(state) ? nil : .finish("Reverse"))
+            badge: state == "graded" ? .grade("PSA 10") : (["normal", "sealed"].contains(state) ? nil : .finish("Reverse")),
+            rarity: state == "sealed" ? nil : CardShareRarity(
+                raw: state == "normal" ? "Common" : "Special illustration rare",
+                game: .pokemon, pokemonSetID: "sv08.5"),
+            edition: state == "first-edition" ? "1st Edition" : nil
         )
     }
 

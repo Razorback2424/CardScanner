@@ -342,7 +342,7 @@ final class CardShareRenderTests: XCTestCase {
     private func checkExport<Content: View>(_ content: Content, name: String) throws -> UIImage {
         let image = try XCTUnwrap(CardShareRenderer.render(content))
         XCTAssertEqual(image.cgImage?.width, 1080, name)
-        XCTAssertEqual(image.cgImage?.height, 1350, name)
+        XCTAssertEqual(image.cgImage?.height, 1920, name)
         let attachment = XCTAttachment(image: image)
         attachment.name = name
         attachment.lifetime = .keepAlways

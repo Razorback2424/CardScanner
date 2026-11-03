@@ -7,7 +7,7 @@ import Foundation
 /// What the recipient needs to identify the exact item.
 struct CardShareIdentity: Equatable, Sendable {
     enum Badge: Equatable, Sendable {
-        /// A printed finish worth calling out, such as Holo or Reverse.
+        /// A printed finish, carried in the quieter printing details.
         case finish(String)
         /// A grader and grade, such as PSA 10.
         case grade(String)
@@ -24,23 +24,118 @@ struct CardShareIdentity: Equatable, Sendable {
     let setName: String?
     let number: CardShareNumber?
     let badge: Badge?
+    let rarity: CardShareRarity?
+    let finish: String?
+    let edition: String?
 
-    init(name: String, setCode: String?, setName: String?, number: CardShareNumber?, badge: Badge?) {
+    init(name: String, setCode: String?, setName: String?, number: CardShareNumber?, badge: Badge?,
+         rarity: CardShareRarity? = nil, finish: String? = nil, edition: String? = nil) {
         self.name = name
         self.setCode = setCode?.trimmingCharacters(in: .whitespaces).nilIfEmpty
         self.setName = setName?.trimmingCharacters(in: .whitespaces).nilIfEmpty
         self.number = number
         self.badge = badge
+        self.rarity = rarity
+        let badgeFinish: String?
+        if let badge, case let .finish(label) = badge { badgeFinish = label } else { badgeFinish = nil }
+        self.finish = (finish ?? badgeFinish)?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
+        self.edition = edition?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
     }
 
-    /// The finish badge is only worth space when it says something: the
-    /// standard printing is what a recipient assumes without being told.
+    /// Edition and finish are independent facts. Older rows sometimes carry
+    /// the edition as a variant too; state it just once.
+    var printingDetail: String? {
+        var parts: [String] = []
+        for detail in [edition, finish].compactMap({ $0 }) {
+            for component in detail.components(separatedBy: " · ") {
+                let value = component.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !value.isEmpty, !parts.contains(where: { $0.caseInsensitiveCompare(value) == .orderedSame }) {
+                    parts.append(value)
+                }
+            }
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    var gradeBadge: Badge? {
+        if let badge, case .grade = badge { return badge }
+        return nil
+    }
+
+    /// Standard finishes need no extra label. A known nonstandard finish is
+    /// retained even when rarity or grade occupies the primary metadata row.
     static func finishBadge(for variant: PhysicalVariant?) -> Badge? {
         guard let variant,
               variant.id != PhysicalVariant.normal.id,
               variant.id != PhysicalVariant.nonfoil.id,
               let label = variant.label.trimmingCharacters(in: .whitespaces).nilIfEmpty else { return nil }
         return .finish(label)
+    }
+}
+
+/// Presentation of the catalog's rarity, never inferred from foil, price,
+/// collector number or card name. Unfamiliar values keep their exact label.
+struct CardShareRarity: Equatable, Sendable {
+    enum Mark: Equatable, Sendable {
+        case circle, diamond, stars(Int), shinyStars(Int), megaStar, attackStars, code(String), none
+    }
+
+    enum Tone: Equatable, Sendable {
+        case neutral, silver, gold, iris, rose, ember
+    }
+
+    let label: String
+    let mark: Mark
+    let tone: Tone
+
+    init?(raw: String?, game: CardGame, pokemonSetID: String? = nil) {
+        guard let raw = raw?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else { return nil }
+        let key = raw.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        guard !["none", "unknown", "n/a", "-", "—"].contains(key) else { return nil }
+        let presentation: (String, Mark, Tone)
+        if game == .pokemon {
+            let setID = pokemonSetID?.lowercased() ?? ""
+            let modern = setID.hasPrefix("sv") || setID.hasPrefix("me")
+            let legacy = ["base", "gym", "neo", "ecard", "ex", "dp", "pl", "hgss", "bw", "xy", "sm", "swsh"]
+                .contains(where: { setID.hasPrefix($0) })
+            switch key {
+            case "common": presentation = ("Common", .circle, .neutral)
+            case "uncommon": presentation = ("Uncommon", .diamond, .neutral)
+            case "rare": presentation = ("Rare", .stars(1), .neutral)
+            case "double rare": presentation = ("Double Rare", .stars(2), .neutral)
+            case "ultra rare":
+                presentation = ("Ultra Rare", modern ? .stars(2) : (legacy ? .stars(1) : .none), .silver)
+            case "illustration rare": presentation = ("Illustration Rare", .stars(1), .gold)
+            case "special illustration rare": presentation = ("Special Illustration Rare", .stars(2), .gold)
+            case "hyper rare": presentation = ("Hyper Rare", .stars(3), .gold)
+            case "mega hyper rare": presentation = ("Mega Hyper Rare", .megaStar, .gold)
+            case "mega attack rare": presentation = ("Mega Attack Rare", .attackStars, .silver)
+            case "shiny rare": presentation = ("Shiny Rare", .shinyStars(1), .silver)
+            case "shiny ultra rare": presentation = ("Shiny Ultra Rare", .shinyStars(2), .silver)
+            case "ace spec rare": presentation = ("ACE SPEC Rare", modern ? .stars(1) : .none, .rose)
+            case "radiant rare": presentation = ("Radiant Rare", .stars(1), .silver)
+            case "amazing rare": presentation = ("Amazing Rare", .none, .iris)
+            case "rare holo", "holo rare": presentation = (raw, .stars(1), .silver)
+            case "secret rare": presentation = ("Secret Rare", legacy ? .stars(1) : .none, .gold)
+            case "promo": presentation = ("Promo", .stars(1), .neutral)
+            default: presentation = (raw, .none, .neutral)
+            }
+        } else if game == .magic {
+            // Magic's printed rarity letters and metal colors, rather than
+            // applying Pokémon's star hierarchy to another game.
+            switch key {
+            case "common": presentation = ("Common", .code("C"), .neutral)
+            case "uncommon": presentation = ("Uncommon", .code("U"), .silver)
+            case "rare": presentation = ("Rare", .code("R"), .gold)
+            case "mythic", "mythic rare": presentation = ("Mythic Rare", .code("M"), .ember)
+            default: presentation = (raw, .none, .neutral)
+            }
+        } else {
+            presentation = (raw, .none, .neutral)
+        }
+        label = presentation.0
+        mark = presentation.1
+        tone = presentation.2
     }
 }
 
@@ -316,7 +411,8 @@ enum CardShareSummary {
         let designation = [identity.setName, printed.nilIfEmpty]
             .compactMap { $0 }
             .joined(separator: " ")
-        let firstLine = [identity.name, designation.nilIfEmpty, identity.badge?.text]
+        let firstLine = [identity.name, designation.nilIfEmpty, identity.rarity?.label,
+                         identity.gradeBadge?.text, identity.printingDetail]
             .compactMap { $0 }
             .joined(separator: " · ")
 

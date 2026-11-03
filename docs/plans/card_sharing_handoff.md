@@ -1,8 +1,9 @@
 # Card sharing — implementation hand-off
 
-**Status:** post-merge artwork-recovery follow-up — 2026-10-31. Debug tests,
-Release simulator build and scoped captures pass. Native sharing,
-real-card interaction and physical-device acceptance remain open on `main`.
+**Status:** rarity-first portrait update — 2026-11-02. Implementation is updated;
+post-change tests, builds and simulator verification were skipped at the owner's
+request. Earlier verification below is historical evidence. Native sharing,
+real-card interaction and physical-device acceptance remain open.
 
 [PR #6](https://github.com/Razorback2424/CardScanner/pull/6) merged at
 15:41:17 UTC as `3053218`, after its verified draft state at 15:37. Draft status
@@ -14,7 +15,49 @@ unillustrated sealed products and failed/offline image loads. The original
 guard-only test did not establish a usable recovery path. That behavior is
 repaired separately on `fix/card-share-artwork-recovery`; its evidence follows.
 
-## Post-merge review follow-up — 2026-10-31
+## Rarity and portrait design — 2026-11-02
+
+Research and native SwiftUI design studies ran for over 15 minutes before the
+first implementation edit (19:25–19:41 UTC). Compared 2:3, 3:5 and 9:16 canvases,
+an outlined rarity pill, an open symbol/name row and a split heading; inspected
+small previews, price/history compositions and long metadata.
+
+- The export canvas is now **1080 × 1920 (9:16)**. Artwork retains its aspect
+  ratio and receives the additional space. Price checks with history keep
+  artwork beside identity so the chart does not squeeze the picture away.
+- Rarity gets an open row with its full name and familiar marks. Pokémon uses
+  circle/diamond/star families and restrained neutral, silver, gold and accent
+  tones. Modern Ultra Rare's two-star mark requires known modern set data;
+  unfamiliar values retain their exact name with neutral styling. Magic uses
+  its rarity letters and metal colors. Missing rarity is omitted.
+- Finish and edition remain independent facts in the quieter footer, including
+  on graded cards. Grade retains its own badge. Plain-text and accessibility
+  summaries carry the same rarity and printing details.
+- ScanStash uses natural-width semibold text instead of expanded heavy text.
+  Labels and shapes carry the meaning independently of hue.
+
+Sources: [Pokémon's rarity-symbol guide](https://www.pokemon.com/uk/news/pokemon-tcg-scarlet-and-violet-revamps-pokemon-tcg-card-aesthetic),
+[the example card's catalog record](https://api.tcgdex.net/v2/en/cards/me02.5-279),
+[Magic's rarity colors](https://magic.wizards.com/en/news/announcements/unstable-faqawaslfaqpaftidawabiajtbt-2017-12-06),
+[Apple color guidance](https://developer.apple.com/design/human-interface-guidelines/color)
+and [Apple accessibility guidance](https://developer.apple.com/design/human-interface-guidelines/accessibility).
+
+Before implementation, the focused baseline passed **25/25** tests. The first
+attempt ran out of T7 disk space; only this task's generated configuration
+artifacts were moved to the other external drive and the retry passed. This is
+not verification of the subsequent changes. The existing raster expectation
+was updated to 1920 pixels; no post-edit tests, builds or simulator captures ran.
+The [acceptance checklist](../../references/card_share_rarity_success_checklist.md)
+remains open.
+
+HIG verdict: **RISK** pending rendered verification. Platform patterns, clarity
+and interaction cost pass source/design review; typography and accessibility
+need final captures, and native sharing/spoken VoiceOver remain unverified.
+Top issues: final layout has not been rendered; native target handling and
+spoken accessibility acceptance remain open. Minimal follow-up: inspect actual
+exports and compact/large-text sheets, then exercise those native actions.
+
+## Post-merge review follow-up — 2026-10-31 (historical)
 
 - Based on `main@3053218`. Both sheet images now have an intentional layout
   without artwork, with identity and available prices and no photo placeholder.
@@ -110,12 +153,12 @@ The remaining acceptance work is listed in the unchecked items below.
 
 ## What it does
 
-A Share button replaces screenshots with a rendered 1080 × 1350 image plus the
+A Share button replaces screenshots with a rendered 1080 × 1920 image plus the
 same facts as plain text. The image is chosen by where Share is tapped:
 
 | Entry point | Image | Only control |
 |---|---|---|
-| Collection card detail (pulls, trades) | Artwork — the user's own photo when present — name and collector number, set code and name, finish or grade badge, optional price | **Price** on/off, remembered (`@AppStorage("cardShare.includesPrice")`, default off) |
+| Collection card detail (pulls, trades) | Artwork — the user's own photo when present — name and collector number, set code and name, prominent rarity, grade when applicable, secondary finish/edition, optional price | **Price** on/off, remembered (`@AppStorage("cardShare.includesPrice")`, default off) |
 | Price Check result (should I buy this?) | Card thumbnail and identity, market price, optional asking price, 3-month trend and chart | Optional **Asking price** |
 
 Product rules the code enforces:
@@ -201,7 +244,7 @@ Collection share (card detail → share icon left of the "…" menu):
 - [x] No-price sheet fixture: disabled Price switch and readable explanation, including accessibility3
 - [ ] Price choice persists across sheets; with price off the footer shows only the mark
 - [x] Follow-up: Share is available after rendering the facts, including missing, suspended and failed artwork loads; Retry is visible when a source exists
-- [ ] Native saved image is 1080 × 1350 and matches the preview; text arrives in Messages
+- [ ] Native saved image is 1080 × 1920 and matches the preview; text arrives in Messages
 
 Buy check (Price Check result → share icon, top leading):
 
@@ -263,7 +306,7 @@ Both sheets:
 3. Type asking prices, including `55,00` in Germany; verify live updates, Done
    and preview-tap keyboard dismissal. Perform the spoken VoiceOver checks.
 4. Use Share → Save Image and compare that saved file with the preview,
-   including the foil effect and 1080 × 1350 dimensions. Test slow networking.
+   including the foil effect and 1080 × 1920 dimensions. Test slow networking.
 5. On a real phone, send to Messages, Instagram Stories/feed, Discord and
    Facebook; verify cropping and which targets retain the text. Judge the
    colorful Share button on device.
