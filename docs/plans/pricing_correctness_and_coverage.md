@@ -1,15 +1,62 @@
 # Pricing correctness before coverage expansion
 
+## First-edition finish and stale detail follow-up — 2026-11-02
+
+**Validation base:** `main@9413e906cab65c1d8c61882d8eb6f137bf44617e`,
+plus the local source patch recorded below. Both remaining medium findings were
+confirmed and repaired:
+
+- After a successful TCGCSV snapshot fetch, a cached detail quote takes
+  precedence only while both its detail receipt and market-data evidence are
+  fresh. Repeated sort loads now select the fresh snapshot over a stale detail
+  quote; genuinely fresh detail pricing retains its existing preference.
+- First-edition catalog detail preserves the physical Holo/Normal finish and
+  carries print run separately. When catalog finish metadata is absent, an
+  owned raw finish can supply the row. A generic edition-only quote remains
+  context when no physical finish is known and cannot price a known Holo slot.
+  Display and reconciliation use the same finish selection.
+
+Three new native regressions failed before these fixes and pass afterward.
+The final affected selection executed **298 tests: 297 passed, one expected
+skip, zero failures**, across `PricingTests`, `BrowseFeatureTests`,
+`QuoteCacheTests`, `PokemonTCGCSVPriceTests`, `CollectionStoreDigestTests`,
+`RefreshStructuralWriteTests` and `JustTCGV2GradedSurfaceTests`. The centering
+corpus was excluded by this selection, as requested. This is an affected-suite
+result; the historical full-suite failures below remain recorded.
+
+External SSD evidence uses stem
+`owned-price-followup-final-9413e90-20261102`: `.xcresult`, `.summary.json`,
+`.source.patch` and `.manifest.json`. The manifest records the base SHA, all
+source-file hashes, the source patch captured before `xcodebuild` and verified
+unchanged afterward, the exact command, and the built app/test binary hashes.
+Source-patch SHA-256:
+`ecff788ebabf054588030118ef27d760e07a5ded084432f37500d0518c9d68f7`.
+The native summary confirms the counts independently of stdout. Initial
+`xcresulttool` cache creation failed; reading with a temporary tool cache
+recovered the summary without repeating the successful tests.
+
+Using that same tested app binary, four inspected simulator captures confirm
+first-edition Holo's saved **$713.30** on the production set grid, catalog detail
+and Collection detail, and **$816.38** on catalog detail after newer evidence.
+The catalog row remains Holo, with the correct saved/new source attribution.
+Captures and their hashes are retained with the external evidence; no source
+or layout changes followed the native run.
+
+Set-grid refresh still updates catalog ordering hints, not owned valuations.
+Owned reconciliation remains on detail opening and Collection refresh. These
+repairs do not explain or certify the physical Mega Gengar case, provider
+coverage or any device/release gate.
+
 ## One owned price and honest sort dates — 2026-11-02
 
-**Validation base:** `51b97bc`; implemented locally with focused native and
-simulator evidence. Seven unrelated baseline test failures remain, as below.
-The supplied plan's seven findings are confirmed in the current source: the set
+**Historical implementation checkpoint:** started at `51b97bc`, with focused
+native and simulator evidence. Seven unrelated baseline test failures remain,
+as below. The supplied plan's seven findings were confirmed before repair: the set
 grid, catalog detail and Collection read independent prices; alias promotion can
 bypass the selected record's guards; owned values wait on catalog quotes;
 variant-only state can conflate local entries; Pokémon detail drops cache bypass;
 sort producers discard their evidence dates; the unpriced export omits valued
-cards needed for this investigation. Collection refresh's `priceTarget` has the
+cards needed for this investigation. Collection refresh's `priceTarget` had the
 same alias-promotion defect. A new native regression failed before the fix:
 an older catalog quote replaced the selected $713 legacy value with $0.42 under
 the previously absent primary key.
@@ -62,7 +109,7 @@ fields are needed.
 Verification covers alias retention/promotion, invalidation during a queued
 write, delayed receipts, distinct date captions, projection agreement, owned
 grid inputs, stale detail/bulk/TCGCSV producers, forced-task sharing and the
-valued-card export. The final focused run passed **294 tests with one expected
+valued-card export. That checkpoint's focused run passed **294 tests with one expected
 skip and zero failures** (295 executed), including the removed-owner checkpoint
 regressions and catalog-add alias retention. At the owner's request, subsequent broad runs
 exclude `CardCenteringGroundTruthTests`, `CardCenteringInvariantTests` and
@@ -90,6 +137,10 @@ was seeded or exported. The largest accessibility text size exposed caption
 truncation; the final captures confirm full wrapped captions and history heading
 at Accessibility XXXL. Retry retains the saved-price explanation after another
 check. The detailed visual loop is recorded in `progress.md`.
+
+The 295-case run preceded the final caption/history wrapping edits; that older
+bundle did not validate the final UI source tree. The source-bound 298-case
+follow-up above includes those edits and the two subsequent repairs.
 
 No phone, live-provider, CloudKit or release gate is inferred. The ASC 284 phone
 case still requires an installed build and the new evidence export.

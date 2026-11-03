@@ -5,6 +5,46 @@ import XCTest
 /// A link that occasionally opens the wrong reprint would defeat that entirely,
 /// so most of these tests are about what the builder refuses to do.
 final class TCGplayerLinkTests: XCTestCase {
+    func testEveryGameGetsAnExplicitSearchWithoutInventingMarketplaceIdentity() throws {
+        for game: CardGame in [.pokemon, .magic, .yuGiOh, .lorcana, .onePiece, .init(rawValue: "future-game")] {
+            let row = card(game: game, name: "Farfetch’d & Friends / \"Rare\"", variant: .jumbo)
+            row.pokemonPrintRunRaw = "shadowless"
+            let link = TCGplayerLinkBuilder.destination(for: row)
+            XCTAssertFalse(link.isExactProduct)
+            XCTAssertEqual(link.title, "Search TCGplayer")
+            XCTAssertEqual(link.url.scheme, "https")
+            XCTAssertEqual(link.url.host, "www.tcgplayer.com")
+            let query = try XCTUnwrap(URLComponents(url: link.url, resolvingAgainstBaseURL: false)?.queryItems)
+            let term = try XCTUnwrap(query.first { $0.name == "q" }?.value)
+            for fragment in [row.name, row.setName, row.cardNumber, "Jumbo"] { XCTAssertTrue(term.contains(fragment)) }
+            XCTAssertNil(row.tcgplayerProductID)
+            XCTAssertNil(TCGplayerLinkBuilder.url(for: row), "Search is not exact product evidence")
+        }
+    }
+
+    func testExactDestinationRetainsVerifiedProductAndDoesNotMislabelAProviderSearch() {
+        let row = card(productID: "247241")
+        let product = TCGplayerLinkBuilder.destination(for: row)
+        XCTAssertTrue(product.isExactProduct)
+        XCTAssertEqual(product.title, "View on TCGplayer")
+        XCTAssertEqual(product.url, TCGplayerLinkBuilder.url(for: row))
+        let unverified = card(providerURL: "https://www.tcgplayer.com/search/all/product?q=anything")
+        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: unverified).isExactProduct)
+        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: card(providerURL: "https://evil.example/product/1")).isExactProduct)
+    }
+
+    func testCatalogSummaryCanLinkDuringLoadingAndFailureWithoutAProviderMatch() throws {
+        let summary = CatalogCardSummary(game: .pokemon, providerID: "30th-116",
+            setID: .init(game: .pokemon, providerID: "30th"), setName: "30th Celebration", setCode: "30C",
+            name: "Eevee", collectorNumber: "116/128", thumbnailURL: nil, imageURL: nil,
+            masterSetVariant: .pokemonFoilPattern("cosmos"))
+        let link = TCGplayerLinkBuilder.destination(for: summary)
+        XCTAssertFalse(link.isExactProduct)
+        XCTAssertEqual(link.url.path, "/search/pokemon/product")
+        let query = try XCTUnwrap(URLComponents(url: link.url, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertEqual(query.first { $0.name == "q" }?.value, "Eevee 30th Celebration 116/128 Cosmos")
+        XCTAssertEqual(query.first { $0.name == "productLineName" }?.value, "pokemon")
+    }
 
     private func card(
         game: CardGame = .pokemon,

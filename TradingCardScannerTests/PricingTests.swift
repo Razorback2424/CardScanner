@@ -47,6 +47,63 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testCatalogDetailFirstEditionHoloUsesItsOwnFinishAndRun() throws {
+        let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false},"variants_detailed":[{"type":"holo","stamp":["1st-edition"],"pricing":{"tcgplayer":{"holofoil":{"marketPrice":816}}}}]}"#
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
+        let summary = CatalogCardSummary(game: .pokemon, providerID: card.providerID,
+            setID: .init(game: .pokemon, providerID: "base1", pokemonPrintRun: .firstEdition),
+            setName: card.setName, setCode: card.setCode, name: card.name, collectorNumber: card.cardNumber,
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo, isSoleSlotForCard: false)
+        let date = Date.now
+        let rows: [CatalogOwnershipCardSnapshot] = [
+            (PhysicalVariant.holo, PokemonPrintRun.firstEdition, 713.0),
+            (.normal, .firstEdition, 12.0), (.holo, .unlimited, 100.0)
+        ].map { variant, run, amount in
+            let row = CollectedCard(card: card, resolved: .init(variant: variant, resolution: .userConfirmed))
+            row.pokemonPrintRunRaw = run.rawValue
+            return CatalogOwnershipCardSnapshot(row, selectedPriceKey: row.priceKey,
+                selectedPrice: .init(amount: amount, source: .justTCG, sourceUpdatedAt: date, fetchedAt: date))
+        }
+        let ownership = CatalogOwnershipIndex(rows: rows)
+        let variants = CatalogCardDetailView.priceVariants(for: card, summary: summary)
+        XCTAssertEqual(variants, [.holo])
+        for variant in variants {
+            var slot = summary
+            slot.masterSetVariant = variant
+            let owned = OwnedCatalogPrice(rows: ownership.matchingRows(for: slot))
+            XCTAssertEqual(owned.entries.count, 1)
+            XCTAssertEqual(owned.display.amount, 713)
+            XCTAssertEqual(owned.reconcilableEntries(variant: variant, treatmentIDs: []).first?.variantID, "holo")
+        }
+        var unqualified = summary
+        unqualified.masterSetVariant = nil
+        XCTAssertEqual(CatalogCardDetailView.priceVariants(for: card, summary: unqualified), [.holo])
+    }
+
+    @MainActor
+    func testCatalogDetailDoesNotUseAnEditionOnlyQuoteForAPhysicalHoloSlot() throws {
+        let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants_detailed":[{"type":"firstEdition","pricing":{"tcgplayer":{"holofoil":{"marketPrice":500}}}}]}"#
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
+        let summary = CatalogCardSummary(game: .pokemon, providerID: card.providerID,
+            setID: .init(game: .pokemon, providerID: "base1", pokemonPrintRun: .firstEdition),
+            setName: card.setName, setCode: card.setCode, name: card.name, collectorNumber: card.cardNumber,
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        let variants = CatalogCardDetailView.priceVariants(for: card, summary: summary)
+        XCTAssertEqual(variants, [.holo])
+        for variant in variants {
+            XCTAssertEqual(CardPricing.price(for: card, variant: variant, magicTreatments: [],
+                pokemonPrintRun: .firstEdition), .unavailable(.tcgplayer))
+        }
+        var unqualified = summary
+        unqualified.masterSetVariant = nil
+        XCTAssertEqual(CatalogCardDetailView.priceVariants(for: card, summary: unqualified), [.firstEdition])
+        let row = CollectedCard(card: card, resolved: .init(variant: .holo, resolution: .userConfirmed))
+        row.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+        XCTAssertEqual(CatalogCardDetailView.priceVariants(for: card, summary: unqualified,
+            ownedRows: [CatalogOwnershipCardSnapshot(row)]), [.holo])
+    }
+
+    @MainActor
     func testCatalogAddPreservesSelectedLegacyPriceBeforeAddingAnotherCopy() async throws {
         let (container, context) = try makePriceContext()
         let card = try pokemonCard()

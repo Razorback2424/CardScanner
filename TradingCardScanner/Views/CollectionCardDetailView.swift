@@ -1328,11 +1328,9 @@ private struct CollectionCardDetailContent: View {
 
     @ViewBuilder
     private var marketplaceSection: some View {
-        if let url = exactTCGPlayerPrintingURL {
-            CardDetailMarketplaceButton(url: url)
-                .padding(.horizontal, 16)
-                .padding(.top, 20)
-        }
+        CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(for: card))
+            .padding(.horizontal, 16)
+            .padding(.top, 20)
     }
 
     private var conflictNotice: some View {
@@ -1639,12 +1637,6 @@ private struct CollectionCardDetailContent: View {
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
         )
-    }
-
-    /// The shared builder requires an exact marketplace product or a trusted
-    /// provider URL. Pokémon products are just as eligible as Magic printings.
-    private var exactTCGPlayerPrintingURL: URL? {
-        TCGplayerLinkBuilder.url(for: card)
     }
 
     @MainActor
@@ -1957,17 +1949,19 @@ private struct CardDetailRangeSelector: View {
 }
 
 struct CardDetailMarketplaceButton: View {
-    let url: URL
+    let destination: TCGplayerLinkBuilder.Destination
 
     var body: some View {
-        Link(destination: url) {
+        Link(destination: destination.url) {
             HStack(spacing: 8) {
-                Text("Buy on TCGplayer")
+                Text(destination.title)
                 Image(systemName: "arrow.up.right")
                     .imageScale(.small)
             }
             .font(.headline)
             .foregroundStyle(PortfolioPalette.money)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
             .frame(maxWidth: .infinity, minHeight: 50)
             .background(
                 Color.white.opacity(0.07),
@@ -1978,7 +1972,9 @@ struct CardDetailMarketplaceButton: View {
                     .stroke(PortfolioPalette.money.opacity(0.28), lineWidth: 1)
             }
         }
-        .accessibilityLabel("Buy this exact printing on TCGplayer")
+        .accessibilityLabel(destination.accessibilityLabel)
+        .accessibilityHint("Opens TCGplayer in your browser.")
+        .accessibilityIdentifier("card-detail-tcgplayer-link")
     }
 }
 
@@ -3420,6 +3416,7 @@ struct MovementDetailsView: View {
                 positionSection
                 calculationSection
                 guidanceSection
+                CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(for: card))
             }
             .padding(20)
             .contentWidthLimit(.standard)

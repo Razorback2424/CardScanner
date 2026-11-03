@@ -54,6 +54,8 @@ struct ScanReviewSheet: View {
                         variantSection
                     }
                     scanPrice
+                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(
+                        for: scan.card, variant: variant, pokemonPrintRun: scan.pokemonPrintRun))
 
                     if let correctionFailure {
                         Label(correctionFailure, systemImage: "exclamationmark.triangle.fill")

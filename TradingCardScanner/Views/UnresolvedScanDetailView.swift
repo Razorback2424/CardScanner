@@ -137,6 +137,11 @@ struct UnresolvedScanDetailView: View {
             }
 
             Section {
+                CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.search(
+                    game: scan.game, name: scan.displayIdentifier, setName: "", number: ""))
+            }
+
+            Section {
                 Button("Dismiss", role: .destructive) {
                     onDismissRow()
                     dismiss()

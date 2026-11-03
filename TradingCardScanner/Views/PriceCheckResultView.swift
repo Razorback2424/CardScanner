@@ -29,6 +29,8 @@ struct PriceCheckResultView: View {
                     artwork
                     identity
                     quote
+                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(
+                        for: result.card, variant: result.resolved.variant, pokemonPrintRun: result.pokemonPrintRun))
                 }
                 .padding(20)
                 .contentWidthLimit(.standard)

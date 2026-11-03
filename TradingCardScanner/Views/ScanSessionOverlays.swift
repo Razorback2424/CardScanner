@@ -909,6 +909,9 @@ struct PrintingChoiceDetails: View {
                             if requiresEnglishConfirmation { onChooseEnglish?(selected) } else { onChoose(selected) }
                         })
                         .disabled(requiresEnglishConfirmation && !englishBinding.wrappedValue)
+                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.search(
+                        game: candidate.game, name: candidate.name, setName: candidate.releaseLabel ?? "",
+                        number: candidate.printedIdentifier))
                 }
             }
             .onAppear {

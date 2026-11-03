@@ -70,6 +70,10 @@ struct CatalogCardDetailView: View {
                         }.buttonStyle(.borderedProminent)
                     }
                 }
+                if details == nil {
+                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(for: summary))
+                        .padding(20)
+                }
             }
             .onChange(of: details?.card.id) { _, _ in
 #if DEBUG
@@ -171,13 +175,11 @@ struct CatalogCardDetailView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            if let url = TCGplayerLinkBuilder.url(
+            CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(
                 for: details.card,
                 variant: summary.masterSetVariant,
                 pokemonPrintRun: summary.pokemonPrintRun
-            ) {
-                CardDetailMarketplaceButton(url: url)
-            }
+            ))
 
             if let reason = details.collectionWriteUnavailableReason {
                 Text(reason).font(.footnote).foregroundStyle(.secondary)
@@ -296,13 +298,24 @@ struct CatalogCardDetailView: View {
         return OwnedCatalogPrice(rows: ownership.matchingRows(for: slot))
     }
 
-    private func priceVariants(_ card: IdentifiedCard) -> [PhysicalVariant] {
-        if summary.pokemonPrintRun == .firstEdition { return [.firstEdition] }
+    static func priceVariants(for card: IdentifiedCard, summary: CatalogCardSummary,
+                              ownedRows: [CatalogOwnershipCardSnapshot] = []) -> [PhysicalVariant] {
         var variants = summary.pokemonPrintRun == nil ? card.variantEvidence.catalogVariants
             : card.variantEvidence.excludingFirstEditionPseudoFinish().catalogVariants
+        // Edition is already carried by the summary. Preserve the physical
+        // finish when selecting owned records and requesting exact quotes.
+        if summary.pokemonPrintRun == .firstEdition, variants.isEmpty {
+            for row in ownedRows where row.itemKind == .rawCard {
+                if let variant = row.variant, variant.id != PhysicalVariant.firstEdition.id,
+                   !variants.contains(where: { $0.id == variant.id }) { variants.append(variant) }
+            }
+        }
         if let required = summary.masterSetVariant, !variants.contains(where: { $0.id == required.id }) {
             variants.append(required)
         }
+        // An edition-only quote remains context when no physical finish is
+        // known. It is never substituted for a known Holo or Normal slot.
+        if variants.isEmpty, summary.pokemonPrintRun == .firstEdition { return [.firstEdition] }
         return variants
     }
 
@@ -322,7 +335,8 @@ struct CatalogCardDetailView: View {
     private func priceSection(_ card: IdentifiedCard) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Market prices").font(.headline)
-            ForEach(priceVariants(card)) { variant in
+            ForEach(Self.priceVariants(for: card, summary: summary,
+                ownedRows: ownership.matchingRows(for: summary))) { variant in
                 variantPriceRow(variant)
             }
             priceRetryButton
@@ -394,7 +408,8 @@ struct CatalogCardDetailView: View {
         let generation = CollectionStorageGeneration.shared
         let token = generation.currentToken()
         let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
-        for variant in priceVariants(card) {
+        for variant in Self.priceVariants(for: card, summary: summary,
+            ownedRows: ownership.matchingRows(for: summary)) {
             do {
                 let quote = try await catalog.price(for: summary, variant: variant)
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
@@ -744,7 +759,8 @@ private struct OwnedPriceReviewFixture {
          "variants":{"firstEdition":false,"normal":false,"holo":true,"reverse":false}}
         """#.utf8))
         let identified = IdentifiedCard.pokemon(card, setCode: "FIX")
-        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "fixture"),
+        let printRun: PokemonPrintRun? = state.contains("first-edition") ? .firstEdition : nil
+        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "fixture", pokemonPrintRun: printRun),
             name: "Pricing review", code: "FIX", logoURL: nil, symbolURL: nil,
             cardCount: 1, releaseDate: nil, sortRank: 0)
         summary = CatalogCardSummary(game: .pokemon, providerID: card.id, setID: set.catalogID,
@@ -757,12 +773,13 @@ private struct OwnedPriceReviewFixture {
             setCode: "FIX", cardNumber: "001", rarity: nil, imageURL: nil, thumbnailURL: nil,
             variant: .holo, variantResolution: .userConfirmed)
         row.catalogProviderID = card.id
+        row.pokemonPrintRunRaw = printRun?.rawValue
         container.mainContext.insert(row)
         let date = Date(timeIntervalSince1970: 1_793_469_600) // 2026-10-31 18:00 UTC
         let prices = PriceStore(context: container.mainContext)
         _ = prices.store(.price(.init(unitMarketPriceUSD: 713.30, currencyCode: "USD", source: .justTCG,
             sourceVariantID: "saved", sourceUpdatedAt: date, fetchedAt: date)), game: .pokemon,
-            printingID: card.id, variantID: "holo", at: date)
+            printingID: printRun.map { "\(card.id)@\($0.rawValue)" } ?? card.id, variantID: "holo", at: date)
         guard prices.save() else { throw PriceStore.CheckpointWriteError() }
         quote = state.contains("unavailable") ? .unavailable(.tcgplayer) : .price(.init(unitMarketPriceUSD: 816.38,
             currencyCode: "USD", source: .tcgplayer, sourceVariantID: "holofoil",

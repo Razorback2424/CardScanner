@@ -607,6 +607,47 @@ final class CatalogSetArtworkTests: XCTestCase {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    func testFreshTCGCSVSortQuoteReplacesStaleDetailWithoutDisplacingFreshDetail() async throws {
+        for (receiptAge, sourceAge) in [(172800.0, 172800.0), (0.0, 172800.0), (0.0, 0.0)] {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try priceConsistencyFixture(setID: "30th")
+            let clock = BrowseRefinementClock()
+            let checkedAt = clock.date
+            let sourceDate = ISO8601DateFormatter().string(from: checkedAt.addingTimeInterval(-sourceAge))
+            let card = try decode(TCGdexCard.self, from: """
+            {"id":"30th-001","localId":"001","name":"Ordinary",
+             "set":{"id":"30th","name":"Fixture","cardCount":{"total":1,"official":1}},
+             "variants":{"firstEdition":false,"normal":false,"holo":true,"reverse":false},
+             "pricing":{"tcgplayer":{"updated":"\(sourceDate)","holofoil":{"marketPrice":42}}}}
+            """)
+            var summary = fixture.summary
+            summary.masterSetVariant = .holo
+            let source = SavedSortTCGCSVSource(snapshot: .init(schemaVersion: 1, setID: "30th", feedBuild: "fresh",
+                fetchedAt: checkedAt, validatedAt: checkedAt, valuesByCardID: [card.id: 99]))
+            let cache = CatalogCacheStore(root: root.appendingPathComponent("pages"))
+            let catalog = BrowseCatalog(cache: cache,
+                pokemonTransport: PriceConsistencyTransport(set: fixture.set, card: card), tcgCSVSource: source,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil),
+                now: { clock.date })
+            clock.advance(-receiptAge)
+            _ = try await catalog.details(for: summary)
+            clock.advance(receiptAge)
+
+            for _ in 0..<2 {
+                var last: CatalogPriceUpdate?
+                for await update in catalog.sortPriceUpdates(for: [summary]) { last = update }
+                let expected = sourceAge == 0 ? 42.0 : 99.0
+                XCTAssertEqual(last?.prices[summary.id], expected)
+                XCTAssertTrue(last?.resolvedIDs.contains(summary.id) == true)
+                XCTAssertFalse(last?.unresolvedIDs.contains(summary.id) == true)
+                let hints = await cache.sortPrices(for: summary.setID.id)
+                XCTAssertEqual(hints?.value[summary.id]?.price, expected)
+                XCTAssertEqual(hints?.value[summary.id]?.checkedAt, checkedAt)
+            }
+        }
+    }
+
     func testForcedPriceDetailsWaitForOrdinaryTaskThenBypassCacheAndOrdinaryJoinsForce() async throws {
         for forceFirst in [false, true] {
             let root = try makeTemporaryCacheDirectory()
