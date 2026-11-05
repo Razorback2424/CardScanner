@@ -120,7 +120,7 @@ enum GradedVariantBinding {
         // known deadline disappeared. Preserve it for this exact listing.
         let lifecycle = variant.quoteLifecycle
             ?? (priorEvidence?.variantID == variant.id ? priorEvidence?.lifecycle : nil)
-        let quote: PriceLookup = if let amount = variant.marketPriceUSD,
+        let quote: PriceLookup = if let amount = variant.marketPriceUSD(at: fetchedAt),
             lifecycle?.withdrawsCurrentQuote(at: fetchedAt) != true {
             .price(
                 NormalizedPrice(

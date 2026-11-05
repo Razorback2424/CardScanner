@@ -49,6 +49,15 @@ struct JustTCGRequestLedger: @unchecked Sendable {
         self.defaults = defaults
     }
 
+    /// A non-spending preflight. Availability can change while a request waits
+    /// for the pacer, so the transport must still reserve immediately before HTTP.
+    func availability(lane: JustTCGRequestLane, now: Date = .now) -> Reservation {
+        Self.withLock {
+            rolloverIfNeeded(now: now)
+            return reservationStatus(lane: lane, now: now)
+        }
+    }
+
     /// Take one request from the allowance, or explain why it cannot.
     ///
     /// The lane decides the ceiling: background work stops at 75 so the last 20
@@ -56,25 +65,26 @@ struct JustTCGRequestLedger: @unchecked Sendable {
     func reserve(lane: JustTCGRequestLane, now: Date = .now) -> Reservation {
         Self.withLock {
             rolloverIfNeeded(now: now)
-
-            if let retryAt = defaults.object(forKey: blockedUntilKey) as? Date, retryAt > now {
-                return .rateLimited(retryAt: retryAt)
-            }
-
-            let usedMonth = defaults.integer(forKey: usedMonthKey)
-            guard usedMonth < JustTCGQuota.monthlyHardLimit else {
-                return .monthlyReached(resetAt: nextMonthStart(after: now))
-            }
-
-            let usedToday = defaults.integer(forKey: usedTodayKey)
-            guard usedToday < lane.ceiling else {
-                return .dailyReached(resetAt: nextDayStart(after: now))
-            }
-
-            defaults.set(usedToday + 1, forKey: usedTodayKey)
-            defaults.set(usedMonth + 1, forKey: usedMonthKey)
+            let status = reservationStatus(lane: lane, now: now)
+            guard case .allowed = status else { return status }
+            defaults.set(defaults.integer(forKey: usedTodayKey) + 1, forKey: usedTodayKey)
+            defaults.set(defaults.integer(forKey: usedMonthKey) + 1, forKey: usedMonthKey)
             return .allowed
         }
+    }
+
+    /// Called only while holding the ledger lock.
+    private func reservationStatus(lane: JustTCGRequestLane, now: Date) -> Reservation {
+        if let retryAt = defaults.object(forKey: blockedUntilKey) as? Date, retryAt > now {
+            return .rateLimited(retryAt: retryAt)
+        }
+        guard defaults.integer(forKey: usedMonthKey) < JustTCGQuota.monthlyHardLimit else {
+            return .monthlyReached(resetAt: nextMonthStart(after: now))
+        }
+        guard defaults.integer(forKey: usedTodayKey) < lane.ceiling else {
+            return .dailyReached(resetAt: nextDayStart(after: now))
+        }
+        return .allowed
     }
 
     /// A 429 blocks every lane until the server's own retry moment. Recorded

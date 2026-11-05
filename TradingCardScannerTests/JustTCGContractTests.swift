@@ -177,6 +177,41 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertNil(legacy.quoteLifecycle)
     }
 
+    func testCurrentWireQuoteRejectsAnElapsedDeadlineAndRetainsHistoricalEvidence() throws {
+        let now = Date.now
+        for expiresAt in [now.addingTimeInterval(-60), now.addingTimeInterval(3600)] {
+            let body: [String: Any] = ["markets": [["currency": "USD", "price": 50,
+                "price_status": "current", "last_price": 45,
+                "price_history": [["p": 45, "t": now.addingTimeInterval(-120).timeIntervalSince1970]],
+                "price_expires_at": expiresAt.timeIntervalSince1970]]]
+            let variant = try JSONDecoder().decode(JustTCGVariant.self, from: JSONSerialization.data(withJSONObject: body))
+            XCTAssertEqual(variant.marketPriceUSD, expiresAt > now ? 50 : nil)
+            XCTAssertEqual(variant.quoteLifecycle?.lastPrice, 45)
+            XCTAssertEqual(variant.historyUSD.map(\.p), [45])
+        }
+    }
+
+    func testRetainedGradedVariantRechecksItsDeadlineAndPreservesLegacyQuotes() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let deadline = now.addingTimeInterval(60)
+        let variant = GradedVariant(id: "retained-graded", company: .psa, grade: .init(value: "10"),
+            marketPriceUSD: 50, updatedAt: now,
+            quoteLifecycle: .init(status: "current", lastPrice: 45, lastSaleAt: now, priceExpiresAt: deadline))
+        XCTAssertEqual(variant.marketPriceUSD(at: now), 50)
+        XCTAssertNil(variant.marketPriceUSD(at: deadline))
+        XCTAssertNil(variant.marketPriceUSD(at: deadline.addingTimeInterval(1)))
+        XCTAssertEqual(variant.id, "retained-graded")
+        XCTAssertEqual(variant.quoteLifecycle?.lastPrice, 45)
+        for status in ["expired", "unpriced"] {
+            let unavailable = GradedVariant(id: status, company: .psa, grade: variant.grade,
+                marketPriceUSD: 50, updatedAt: now,
+                quoteLifecycle: .init(status: status, lastPrice: 45, lastSaleAt: now, priceExpiresAt: nil))
+            XCTAssertNil(unavailable.marketPriceUSD(at: now))
+        }
+        let legacy = GradedVariant(id: "legacy", company: .psa, grade: variant.grade, marketPriceUSD: 50, updatedAt: now)
+        XCTAssertEqual(legacy.marketPriceUSD(at: .distantFuture), 50)
+    }
+
     func testGradedDiscoveryRequestsAllNullCardsSoAbsenceDoesNotMeanNoProduct() {
         let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78", finish: .normal)
         for product: String? in [nil, "89455"] {
@@ -2663,8 +2698,120 @@ final class JustTCGContractTests: XCTestCase {
         )
     }
 
-    /// Pacing must not change the transport's existing budget error mapping.
-    func testBudgetReachedStillSurfacesAfterPacing() async throws {
+    func testKnownQuotaBlocksDoNotWaitForAPacingSlot() async throws {
+        for block in ["daily", "monthly", "cooldown"] {
+            let suite = "QuotaPreflight-\(UUID().uuidString)"
+            let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+            defer { defaults.removePersistentDomain(forName: suite) }
+            let ledger = JustTCGRequestLedger(defaults: defaults)
+            _ = ledger.snapshot()
+            switch block {
+            case "daily": defaults.set(JustTCGQuota.dailyHardLimit, forKey: "justTCGRequestsUsedToday")
+            case "monthly": defaults.set(JustTCGQuota.monthlyHardLimit, forKey: "justTCGRequestsUsedThisMonth")
+            default: ledger.recordRateLimit(until: .now.addingTimeInterval(3600))
+            }
+            let before = ledger.snapshot()
+            let pacer = JustTCGPacer()
+            try await pacer.wait(lane: .interactive, minimumInterval: 60)
+            var settings = JustTCGTransport.Configuration()
+            settings.baseURL = URL(string: "https://justtcg.test")!
+            settings.minimumRequestInterval = 60
+            let config = URLSessionConfiguration.ephemeral
+            config.protocolClasses = [RecordingURLProtocol.self]
+            RecordingURLProtocol.reset(body: "{}")
+            let session = URLSession(configuration: config)
+            defer { session.invalidateAndCancel() }
+            let transport = JustTCGTransport(configuration: settings, session: session, ledger: ledger,
+                pacer: pacer, apiKeyOverride: "fixture-key")
+            let rejected = expectation(description: "Known \(block) block returns before pacing")
+            let request = Task {
+                do {
+                    _ = try await transport.get("v1/cards", lane: .interactive, as: EmptyJustTCGResponse.self)
+                    XCTFail("Known block must reject before HTTP")
+                } catch is CancellationError {
+                    return
+                } catch {
+                    switch (block, error) {
+                    case ("daily", JustTCGTransport.TransportError.budgetReached),
+                         ("monthly", JustTCGTransport.TransportError.monthlyBudgetReached),
+                         ("cooldown", JustTCGTransport.TransportError.rateLimited): break
+                    default: XCTFail("Unexpected rejection: \(error)")
+                    }
+                }
+                rejected.fulfill()
+            }
+            await fulfillment(of: [rejected], timeout: 1)
+            request.cancel()
+            await request.value
+            XCTAssertEqual(ledger.snapshot(), before)
+            XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+        }
+    }
+
+    func testRejectedBackgroundRequestDoesNotConsumeAnInteractivePacingSlot() async throws {
+        let suite = "QuotaSlot-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        for _ in 0..<JustTCGQuota.backgroundDailyCeiling { _ = ledger.reserve(lane: .background) }
+        let pacer = JustTCGPacer()
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 60
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        RecordingURLProtocol.reset(body: "{}")
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let transport = JustTCGTransport(configuration: settings, session: session, ledger: ledger,
+            pacer: pacer, apiKeyOverride: "fixture-key")
+        do {
+            _ = try await transport.get("v1/cards", lane: .background, as: EmptyJustTCGResponse.self)
+            XCTFail("Exhausted background budget must reject")
+        } catch JustTCGTransport.TransportError.budgetReached { }
+        let granted = expectation(description: "Interactive slot remains available")
+        let waiter = Task {
+            do { try await pacer.wait(lane: .interactive, minimumInterval: 0); granted.fulfill() }
+            catch is CancellationError { }
+            catch { XCTFail("Unexpected pacing error: \(error)") }
+        }
+        await fulfillment(of: [granted], timeout: 1)
+        waiter.cancel()
+        await waiter.value
+        XCTAssertEqual(ledger.reserve(lane: .interactive), .allowed)
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+    }
+
+    func testQuotaIsRecheckedAfterPacingWhenAnotherCallerSpendsTheAllowance() async throws {
+        let suite = "QuotaRace-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        let pacer = JustTCGPacer()
+        try await pacer.wait(lane: .interactive, minimumInterval: 1)
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 1
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        RecordingURLProtocol.reset(body: "{}")
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let transport = JustTCGTransport(configuration: settings, session: session, ledger: ledger,
+            pacer: pacer, apiKeyOverride: "fixture-key")
+        let request = Task {
+            try await transport.get("v1/cards", lane: .interactive, as: EmptyJustTCGResponse.self)
+        }
+        try await Task.sleep(for: .milliseconds(30))
+        for _ in 0..<JustTCGQuota.dailyHardLimit { XCTAssertEqual(ledger.reserve(lane: .interactive), .allowed) }
+        do { _ = try await request.value; XCTFail("Final reservation must reject newly exhausted quota") }
+        catch JustTCGTransport.TransportError.budgetReached { }
+        XCTAssertEqual(ledger.snapshot().usedToday, JustTCGQuota.dailyHardLimit)
+        XCTAssertTrue(RecordingURLProtocol.recorded().isEmpty)
+    }
+
+    /// Preflight keeps the transport's existing budget error mapping.
+    func testBudgetReachedStillSurfacesBeforeHTTP() async throws {
         let suite = "JustTCGContractTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }

@@ -363,6 +363,7 @@ struct JustTCGVariant: Decodable, Sendable {
     /// could ever contribute to a total.
     var marketPrice: (amount: Double, currency: String)? {
         if let status = quoteLifecycle?.status, status != "current" { return nil }
+        guard quoteLifecycle?.withdrawsCurrentQuote(at: .now) != true else { return nil }
         if let price {
             // v1 normally omits `currency` because its flat price is USD. If
             // it is present, however, it is authoritative and must not be
@@ -696,7 +697,7 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
     /// Only populated after an exact reviewed product response passes the
     /// card and physical-variant checks. It is not an imported marketplace ID.
     let verifiedProductID: String?
-    let marketPriceUSD: Double?
+    private let quotedMarketPriceUSD: Double?
     let updatedAt: Date?
     let quoteLifecycle: JustTCGQuoteLifecycle?
 
@@ -721,9 +722,16 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
         self.printing = printing
         self.language = language
         self.verifiedProductID = verifiedProductID
-        self.marketPriceUSD = marketPriceUSD
+        self.quotedMarketPriceUSD = marketPriceUSD
         self.updatedAt = updatedAt
         self.quoteLifecycle = quoteLifecycle
+    }
+
+    var marketPriceUSD: Double? { marketPriceUSD(at: .now) }
+
+    func marketPriceUSD(at date: Date) -> Double? {
+        guard quoteLifecycle?.withdrawsCurrentQuote(at: date) != true else { return nil }
+        return quotedMarketPriceUSD
     }
 
     /// The existing persisted finish field uses the v1 language-qualified

@@ -676,6 +676,27 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
     }
 
+    func testExpiredGradedQuoteCannotBePresentedOrCachedAsCurrent() async throws {
+        let context = try makeContext()
+        let now = Date.now
+        let variant = GradedVariant(id: "expired-graded", company: .psa, grade: .init(value: "10"),
+            marketPriceUSD: 50, updatedAt: now.addingTimeInterval(-120),
+            quoteLifecycle: .init(status: "current", lastPrice: 45, lastSaleAt: now.addingTimeInterval(-120),
+                priceExpiresAt: now.addingTimeInterval(-60)))
+        let slab = GradedSlabEvidence(company: .psa, grade: variant.grade,
+            certificationNumber: nil, labelCardText: [])
+        let scan = priceCheckScan(variant: .normal, slab: slab, gradedOutcome: .bound(variant))
+        let coordinator = PriceCheckCoordinator(context: context, gradedResolver: StubGradedResolver(outcome: .bound(variant)))
+
+        let result = coordinator.present(scan)
+        XCTAssertEqual(result.quoteState, .gradedGradeNotPriced)
+        XCTAssertNil(result.display.amount)
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .failed(.gradedGradeNotPriced))
+        XCTAssertTrue(try context.fetch(FetchDescriptor<ReferenceQuote>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
     func testGradedPriceCheckRefreshCachesTheVendorVariantKey() async throws {
         let context = try makeContext()
         let gradedVariant = GradedVariant(

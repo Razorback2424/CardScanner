@@ -365,8 +365,6 @@ actor ProductPriceService {
         query: [(String, String)],
         lane: JustTCGRequestLane
     ) async throws -> T {
-        try await pace(lane: lane)
-
         guard var components = URLComponents(
             url: configuration.baseURL.appendingPathComponent(path),
             resolvingAgainstBaseURL: false
@@ -387,16 +385,9 @@ actor ProductPriceService {
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        switch await budget.reserveRequest(lane: lane) {
-        case .allowed:
-            break
-        case .cancelled:
-            throw CancellationError()
-        case let .budgetReached(resetAt):
-            throw ProductPriceError.budgetReached(resetAt)
-        case let .rateLimited(retryAt):
-            throw ProductPriceError.rateLimited(retryAt)
-        }
+        try checkAllowance(await budget.availability(lane: lane))
+        try await pace(lane: lane)
+        try checkAllowance(await budget.reserveRequest(lane: lane))
 
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else {
@@ -418,6 +409,15 @@ actor ProductPriceService {
             throw ProductPriceError.badResponse
         }
         return try JSONDecoder().decode(T.self, from: data)
+    }
+
+    private func checkAllowance(_ reservation: ProductFallbackBudget.Reservation) throws {
+        switch reservation {
+        case .allowed: break
+        case .cancelled: throw CancellationError()
+        case let .budgetReached(resetAt): throw ProductPriceError.budgetReached(resetAt)
+        case let .rateLimited(retryAt): throw ProductPriceError.rateLimited(retryAt)
+        }
     }
 
     /// Hold each request back far enough from the last that the tier's
@@ -476,6 +476,11 @@ actor ProductFallbackBudget {
         self.ledger = JustTCGRequestLedger(defaults: defaults)
     }
 
+    func availability(now: Date = .now, lane: JustTCGRequestLane) -> Reservation {
+        guard !Task.isCancelled else { return .cancelled }
+        return reservationResult(ledger.availability(lane: lane, now: now))
+    }
+
     /// Identity resolution can be interactive (Price Check) or background (a
     /// scheduled refresh). The caller's lane must govern both pacing and quota,
     /// otherwise fallback work would consume the interactive reserve.
@@ -484,7 +489,11 @@ actor ProductFallbackBudget {
         lane: JustTCGRequestLane = .interactive
     ) -> Reservation {
         guard !Task.isCancelled else { return .cancelled }
-        switch ledger.reserve(lane: lane, now: now) {
+        return reservationResult(ledger.reserve(lane: lane, now: now))
+    }
+
+    private func reservationResult(_ reservation: JustTCGRequestLedger.Reservation) -> Reservation {
+        switch reservation {
         case .allowed:
             return .allowed
         case let .dailyReached(resetAt), let .monthlyReached(resetAt):

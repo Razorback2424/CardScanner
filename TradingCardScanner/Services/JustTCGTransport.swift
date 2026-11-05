@@ -316,6 +316,15 @@ actor JustTCGTransport {
         return try await perform(request, lane: lane)
     }
 
+    private func checkAllowance(_ reservation: JustTCGRequestLedger.Reservation) throws {
+        switch reservation {
+        case .allowed: break
+        case let .dailyReached(resetAt): throw TransportError.budgetReached(resetAt: resetAt)
+        case let .monthlyReached(resetAt): throw TransportError.monthlyBudgetReached(resetAt: resetAt)
+        case let .rateLimited(retryAt): throw TransportError.rateLimited(retryAt: retryAt)
+        }
+    }
+
     private func perform<Response: Decodable>(
         _ request: URLRequest,
         lane: JustTCGRequestLane
@@ -328,6 +337,8 @@ actor JustTCGTransport {
         _ request: URLRequest,
         lane: JustTCGRequestLane
     ) async throws -> (value: Response, link: String?) {
+        try Task.checkCancellation()
+        try checkAllowance(ledger.availability(lane: lane))
         // Pace before reserving. If a queued request is cancelled while waiting,
         // it never consumes the day's allowance.
         try await pace(lane: lane)
@@ -335,16 +346,7 @@ actor JustTCGTransport {
 
         // Reserve immediately before the call, never optimistically in advance,
         // so an abandoned plan does not silently consume the day's allowance.
-        switch ledger.reserve(lane: lane) {
-        case .allowed:
-            break
-        case let .dailyReached(resetAt):
-            throw TransportError.budgetReached(resetAt: resetAt)
-        case let .monthlyReached(resetAt):
-            throw TransportError.monthlyBudgetReached(resetAt: resetAt)
-        case let .rateLimited(retryAt):
-            throw TransportError.rateLimited(retryAt: retryAt)
-        }
+        try checkAllowance(ledger.reserve(lane: lane))
 
         let requestID = PerformanceSignpost.makeID()
         let requestPath = request.url?.path ?? "unknown"

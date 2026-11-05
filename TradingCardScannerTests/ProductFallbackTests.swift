@@ -47,6 +47,52 @@ final class ProductFallbackTests: XCTestCase {
 
     // MARK: - What falls through
 
+    func testKnownFallbackQuotaBlocksReturnBeforePacingWithoutHTTP() async throws {
+        for cooldown in [false, true] {
+            let suite = "FallbackPreflight-\(UUID().uuidString)"
+            let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+            defer { defaults.removePersistentDomain(forName: suite) }
+            let ledger = JustTCGRequestLedger(defaults: defaults)
+            let before: JustTCGRequestLedger.Snapshot
+            if cooldown {
+                ledger.recordRateLimit(until: .now.addingTimeInterval(3600))
+            } else {
+                for _ in 0..<JustTCGQuota.backgroundDailyCeiling { _ = ledger.reserve(lane: .background) }
+            }
+            before = ledger.snapshot()
+            let pacer = JustTCGPacer()
+            try await pacer.wait(lane: .background, minimumInterval: 60)
+            let config = URLSessionConfiguration.ephemeral
+            config.protocolClasses = [ProductPriceTestURLProtocol.self]
+            ProductPriceTestURLProtocol.reset()
+            let session = URLSession(configuration: config)
+            defer { session.invalidateAndCancel() }
+            var settings = ProductPriceService.Configuration()
+            settings.baseURL = URL(string: "https://justtcg.test/v1")!
+            settings.minimumRequestInterval = 60
+            let service = ProductPriceService(configuration: settings, session: session, pacer: pacer,
+                budget: ProductFallbackBudget(defaults: defaults), apiKeyOverride: "fixture-key")
+            let subject = ProductPriceSubject(game: .magic, catalogID: "fixture-printing", name: "Fixture",
+                setName: "Fixture Set", cardNumber: "10", japaneseSetID: nil, pokemonPrintRun: nil,
+                vendorCardID: "direct-card", magicTreatmentIDsRaw: [])
+            let rejected = expectation(description: "Known fallback block returns before pacing")
+            let request = Task {
+                let outcome = await service.quote(for: subject, variant: .foil, lane: .background)
+                guard !Task.isCancelled else { return }
+                switch outcome {
+                case .rateLimited where cooldown, .budgetReached where !cooldown: break
+                default: XCTFail("Unexpected outcome: \(outcome)")
+                }
+                rejected.fulfill()
+            }
+            await fulfillment(of: [rejected], timeout: 1)
+            request.cancel()
+            await request.value
+            XCTAssertEqual(ledger.snapshot(), before)
+            XCTAssertNil(ProductPriceTestURLProtocol.requestedURL())
+        }
+    }
+
     func testNewDirectHandleReopensSearchMissOnceThenRespectsKeyedResponseCooldown() throws {
         let store = ProductIdentityStore(context: try makeContext())
         let now = Date.now
