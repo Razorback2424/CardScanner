@@ -1,12 +1,22 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-02
+**Audit date:** 2026-10-02; review evidence updated 2026-11-05
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-02
+## Current authority boundary — updated 2026-11-05
+
+**Browse history retirement — 2026-11-05:** the unconsumed Stage 4A recorder,
+renderer, dataset-stamp request and diagnostics were removed in the 2026-11-05
+refinement based on `40403c1`. The [Browse pricing plan](browse_pricing_coverage_plan.md)
+retains their design as historical; [individual-card provider history](price_history_chart_plan.md)
+remains the chart authority. Original provider-date parsing, current bulk prices,
+ownership/portfolio evidence and existing files are preserved. The
+[fix record](../../app_review_fix_plan.md#high-confidence-refinement-fixes--2026-11-05)
+owns verification, including the rendered-pagination failure reproduced on the
+unmodified original commit. This does not certify a full suite or release.
 
 **Centering existing-card priority — 2026-11-05:** the owner explicitly prioritized
 accuracy on current test images over corpus expansion. Further development on

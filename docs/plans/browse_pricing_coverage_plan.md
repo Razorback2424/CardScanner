@@ -1,5 +1,13 @@
 # Browse Pricing Coverage — Revised Stage 4 Implementation Plan
 
+**Current source — 2026-11-05:** the unconsumed Stage 4A local-history recorder,
+renderer, dataset-stamp fetch and diagnostics have been retired. Individual-card
+charts use the [provider-history path](price_history_chart_plan.md). Bulk current
+pricing and original provider-date parsing remain; existing local history files
+are preserved. The Stage 4A design and dated results below are historical. See
+the [current fix record](../../app_review_fix_plan.md#high-confidence-refinement-fixes--2026-11-05)
+for implementation and verification limits.
+
 **Pricing update — 2026-09-30:** the device-local TCGCSV fallback is implemented
 for `30th` and `30th-c` across Browse, card details, scanning, Price Check, and
 collection refresh. This is a two-set exception to the legacy bulk path below;

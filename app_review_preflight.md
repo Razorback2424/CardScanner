@@ -3,7 +3,13 @@
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task; this is not a substitute for an independent reviewer report.
 
-**Current checkout (2026-09-22):** clean `main@9759050`. The storage, scanner,
+**Current refinement (2026-11-05):** committed implementation on `main`, based
+on clean `40403c1`. The [fix plan](app_review_fix_plan.md#high-confidence-refinement-fixes--2026-11-05)
+owns the current expiry, sealed browsing, quota and unused-history changes and
+their verification. Centering accuracy, publication, device and release gates
+remain open. The dated candidate records below are historical evidence.
+
+**Historical checkout (2026-09-22):** clean `main@9759050`. The storage, scanner,
 price-refresh, and bulk-operation remediation described in the root
 [`app_review_fix_plan.md`](app_review_fix_plan.md) is committed. The focused
 99-test selection (with 1 Simulator-only file-protection skip) and separate

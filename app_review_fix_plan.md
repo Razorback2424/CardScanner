@@ -1,5 +1,73 @@
 # CardScanner App Review Fix Plan
 
+## High-confidence refinement fixes — 2026-11-05
+
+User-authorized implementation following the repository-wide source review at
+clean `40403c1`. This scope includes the small, high-confidence usability and
+removal findings. The implementation is committed and pushed on `main`; no
+publication or release-policy change is authorized by this implementation record.
+
+| Slice | Acceptance and verification | Status |
+| --- | --- | --- |
+| Graded expiry | Wire conversion, retained graded variants, Price Check and collection binding reject elapsed current quotes; preserve legacy responses, historical evidence and new-sale recovery. Focused contract/quote-cache/pricing tests. | Implemented; affected 179-test selection passes |
+| Sealed pagination | Search and set browsing advance by the provider limit, including empty filtered pages and cached continuation. Legacy cached products remain visible offline while incompatible cursors require refresh; fresh terminal pages retain their original freshness. | Implemented; all 11 sealed surface tests pass |
+| Sealed setup | Missing credentials are reported for the requested game even when offline Lorcana is available; cached results remain usable. Search-state tests; HIG gate. | Implemented; affected selection passes |
+| Quota preflight | Known daily/monthly/cooldown refusals precede pacing without spending quota or a pacing slot; final reservation stays atomic. Transport/ledger/cancellation tests. | Final 185-test contract/fallback recheck passes |
+| Unused Browse history | Remove the unconsumed local history renderer/recorder/stamp request and obsolete diagnostic wiring; preserve current market charts, prices, portfolio history and existing files. Browse/history/portfolio tests and Release build. | Implemented; history/chart/portfolio checks and final Release build pass |
+
+Rollback is limited to each slice's source/test diff. Baseline and final build
+artifacts use the external T7 SSD. Baseline: 46 tests passed. All five new
+regression methods failed against unchanged production code (23 assertions).
+After the fixes, 179 affected methods pass with no failures/skips. This includes
+expiry boundaries, history retention, new-sale recovery, cache isolation, empty
+filtered pages, quota cancellation, interactive reserve and post-pacing quota
+revalidation. Prior non-green full-suite evidence is not superseded here.
+The direct-fallback regression separately reproduced both blocked waits before
+its fix; all 54 fallback tests now pass. Its failed run required interruption
+after tests finished because Xcode remained in diagnostic collection; the
+assertions are retained in its log, without claiming a completed result bundle.
+The cleanup retires tests solely for the removed recorder/chart factory, retains
+chart scaling/range/scrubbing checks against provider history, and keeps the
+provider-date parser used by bulk current pricing. Existing history files and
+ownership/portfolio evidence are not deleted or migrated.
+The cleanup selection passed 125/126 methods. One unchanged card-only render
+test observed three requests instead of four. It failed twice in three isolated
+current-tree runs and once in three runs of an isolated, unmodified `40403c1`
+export. Its assertions and pagination implementation remain unchanged; this
+pre-existing timing-sensitive check stays open rather than being weakened.
+The first combined affected run subsequently passed **966 tests, one opt-in aged-store
+benchmark skipped, zero failures** (967 total). Stored result-bundle metrics
+agree with the console counts; all 966 passes have distinct method IDs. The run
+includes all rendered-pagination cases, 29 selected graded/Price Check scanner
+methods, current charts, cache upgrades, collection writes and portfolio replay.
+Final quota fixtures additionally intercept HTTP at a synthetic host so a future
+regression cannot contact a live provider. Their 185-test recheck passes.
+The final cache refinement avoids refreshing a fresh legacy page without a
+continuation, preserving its original timestamp. All 11 sealed surface tests,
+including both migration paths, pass in the exact final affected run.
+That final run executes **968 distinct methods: 966 passed, one opt-in benchmark
+skipped, and the same pre-existing rendered-pagination assertion failed**.
+`FinalAffected.xcresult` metrics agree with the console method records. The
+earlier green combined run predates the terminal-cache refinement and fixture
+hardening; it does not replace this non-green final result. The assertion, its
+test body and the card-pagination implementation remain unchanged.
+The exact final **arm64 Release simulator rebuild passed**
+(`release-final-v2.log`, exit 0). An earlier universal Release build was
+interrupted to finish cache compatibility and is not counted as a passing build.
+The production diff removes 1,281 net lines without a persistence-schema change.
+Final whitespace, project-file syntax and local documentation-link checks pass.
+Artifacts are retained under `/Volumes/T7/CodexBuild/RefinementFixes-20261105`.
+
+- [x] Implement the five scoped fixes and preserve stored data/current charts.
+- [x] Reconcile final simulator test records, retain the baseline render failure,
+  and complete the arm64 Release simulator build.
+
+Source HIG gate: PASS; existing native empty-state copy/navigation and controls
+are retained, with no added prompt or interaction. Rendered/device accessibility
+acceptance is not claimed.
+Centering-reference adjudication, published feed/public URLs and device profiles
+remain evidence-dependent follow-ups, not automatic code fixes.
+
 ## Feed-cache fallback follow-up — 2026-10-31
 
 Based on clean `main@17658c9`, following review of `21e6ec1`:

@@ -1,3 +1,32 @@
+# 2026-11-05 — High-confidence refinement fixes
+
+Implemented the source-proven review fixes from clean `40403c1`: enforce graded
+quote expiry consistently, correct sealed pagination and legacy-cache
+continuations, show missing setup for the requested game, and reject known
+quota/cooldown blocks before pacing in both pricing clients. Removed the unused
+Browse history recorder/chart/stamp request and diagnostics, reducing production
+code by 1,281 net lines. Current market charts, original provider timestamps,
+stored files and ownership/portfolio history are preserved; no persistence
+schema changed. These changes were committed to `main` and pushed to `origin`.
+
+The original regressions reproduced against unchanged production code before
+fixing them. The final contract/fallback recheck passes 185/185 tests, and all
+11 sealed surface tests pass, including cache migration and fresh terminal-page
+reuse. The exact final affected selection executes 968 distinct methods:
+**966 passed, one opt-in benchmark skipped, one pre-existing Browse render
+assertion failed**. Stored result-bundle and console counts agree. That same
+assertion also failed in an isolated unmodified `40403c1` export; its test and
+card-pagination implementation remain unchanged. An earlier combined run passed
+966 with one skip before the last cache refinement and fixture hardening; it
+does not supersede the non-green final result.
+
+The exact final **arm64 Release simulator build passed**. Whitespace, project-file
+syntax and local documentation links pass validation. See the
+[fix record](app_review_fix_plan.md#high-confidence-refinement-fixes--2026-11-05)
+for scope, artifacts and the retained failure. Centering accuracy/reference
+adjudication, publication/public URLs, physical-device profiling, CloudKit,
+archive and release gates remain open.
+
 # 2026-11-02 — Final native verification and repository consolidation
 
 Squash-merged PRs #19, #18 and #20 using the green exact final integration tree. The
