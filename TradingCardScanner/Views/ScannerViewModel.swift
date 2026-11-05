@@ -1116,8 +1116,13 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         )
     }
 
-    /// Adds a failure to the list, folding it into an existing row for the same
-    /// card and keeping every distinct reading so the user can see what it read.
+    private var ownsAcquisitionRecovery: Bool {
+        if case .saveFailed = reason { return true }
+        return pendingCommit != nil || isAdditionalCopy
+    }
+
+    /// Reuses an explicit recovery row or merges ordinary lookup evidence.
+    /// Failed acquisitions retain distinct rows even for the same printing.
     static func merging(
         _ scans: [UnresolvedScan],
         with subject: ScanSubject,
@@ -1128,9 +1133,11 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         isAdditionalCopy: Bool = false,
         sessionID: UUID? = nil,
         resolvedProviderID: String? = nil,
-        matchingID: UUID? = nil
+        matchingID: UUID? = nil,
+        acquisitionID: UUID? = nil
     ) -> [UnresolvedScan] {
         let incoming = UnresolvedScan(
+            id: matchingID ?? acquisitionID ?? pendingCommit?.encounterID ?? UUID(),
             subject: subject,
             reason: reason,
             candidates: candidates,
@@ -1140,9 +1147,10 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             mergeSessionID: sessionID,
             resolvedProviderID: resolvedProviderID ?? pendingCommit?.card.providerID
         )
-        let matchingIndex = matchingID.flatMap { id in
-            scans.firstIndex(where: { $0.id == id })
-        } ?? scans.firstIndex(where: { $0.mergeKey == incoming.mergeKey })
+        let matchingIndex = scans.firstIndex(where: { $0.id == incoming.id })
+            ?? (incoming.ownsAcquisitionRecovery || acquisitionID != nil ? nil : scans.firstIndex {
+                !$0.ownsAcquisitionRecovery && $0.mergeKey == incoming.mergeKey
+            })
         guard let index = matchingIndex else {
             return scans + [incoming]
         }
@@ -1628,7 +1636,7 @@ final class ScannerViewModel: ObservableObject {
     private var activeIdentificationRequestID: UUID?
     private var activeIdentificationRequest: ScanRequest?
     private var pendingResolutionRequests: [UUID: (request: ScanRequest, isAdditionalCopy: Bool)] = [:]
-    private var authorizedWriteRequestIDs: Set<UUID> = []
+    @Published private var authorizedWriteRowIDs: [UUID: UUID] = [:]
     private var oneCardScanIntervals: [UUID: OSSignpostIntervalState] = [:]
     private let sessionMetricsLog: ScanSessionMetricsLog
     private let metricsDefaults: UserDefaults
@@ -2715,7 +2723,7 @@ final class ScannerViewModel: ObservableObject {
         func file(_ request: ScanRequest, candidates: [PokemonCatalogCardIdentity] = [],
                   printingCandidates: [PhysicalPrintingCandidate] = [],
                   pendingCommit: CollectionCommitCandidate? = nil, isAdditionalCopy: Bool = false) {
-            guard !authorizedWriteRequestIDs.contains(request.id),
+            guard authorizedWriteRowIDs[request.id] == nil,
                   filed.insert(request.id).inserted else { return }
             // Until a write is authorized, an existing failed save still owns
             // its resolved candidate and duplicate-check recovery path.
@@ -3421,12 +3429,22 @@ final class ScannerViewModel: ObservableObject {
         committedSessionHistory.removeAll { $0.id == scanID }
     }
 
+    func isUnresolvedWriteInFlight(id: UUID) -> Bool {
+        authorizedWriteRowIDs.values.contains(id)
+    }
+
+    var hasUnresolvedWritesInFlight: Bool {
+        unresolvedScans.contains { isUnresolvedWriteInFlight(id: $0.id) }
+    }
+
     func clearUnresolvedScans() {
+        guard !hasUnresolvedWritesInFlight else { return }
         unresolvedScans.removeAll()
         sessionUnresolvedIDs.removeAll()
     }
 
     func dismissUnresolved(id: UUID) {
+        guard !isUnresolvedWriteInFlight(id: id) else { return }
         unresolvedScans.removeAll { $0.id == id }
         sessionUnresolvedIDs.remove(id)
     }
@@ -3524,7 +3542,8 @@ final class ScannerViewModel: ObservableObject {
     /// Shared by presentation and direct actions. Optional saved availability
     /// is only a negative hint; absent metadata still needs catalog validation.
     func canResolveUnresolved(id: UUID, choice: UnresolvedResolutionChoice) -> Bool {
-        guard let row = unresolvedScans.first(where: { $0.id == id }), !row.isReadOnly else { return false }
+        guard !isUnresolvedWriteInFlight(id: id),
+              let row = unresolvedScans.first(where: { $0.id == id }), !row.isReadOnly else { return false }
         switch choice {
         case let .printing(candidate), let .englishPrinting(candidate):
             guard candidate.game == row.game, row.printingCandidates.contains(candidate) else { return false }
@@ -5215,15 +5234,18 @@ final class ScannerViewModel: ObservableObject {
     private func clearResolvedUnresolvedRows(
         for card: IdentifiedCard,
         sourceRowID: UUID? = nil,
-        suppressionKey: ScanSuppressionKey? = nil
+        suppressionKey: ScanSuppressionKey? = nil,
+        sessionID: UUID? = nil
     ) {
+        let originSessionID = sessionID ?? scannerSessionID
         let removed = unresolvedScans.filter { row in
             guard row.game == card.game else { return false }
             if row.id == sourceRowID { return true }
             // A printing is shared by physical acquisitions. Only an ordinary
             // equivalent recovery in this encounter's session may be coalesced;
             // a failed commit or explicit extra copy owns its own recovery.
-            guard card.legacyIdentity != nil,
+            guard originSessionID == scannerSessionID,
+                  card.legacyIdentity != nil,
                   !row.isAdditionalCopy,
                   row.pendingCommit == nil,
                   row.mergeSessionID == scannerSessionID else { return false }
@@ -5236,7 +5258,9 @@ final class ScannerViewModel: ObservableObject {
         }
         guard !removed.isEmpty else { return }
         let removedIDs = Set(removed.map(\.id))
-        countMetric(.needsAttentionResolved, by: removedIDs.count)
+        if originSessionID == scannerSessionID {
+            countMetric(.needsAttentionResolved, by: removedIDs.count)
+        }
         unresolvedScans.removeAll { removedIDs.contains($0.id) }
         sessionUnresolvedIDs.subtract(removedIDs)
     }
@@ -5483,6 +5507,10 @@ final class ScannerViewModel: ObservableObject {
         authorization: CollectionCommitAuthorization
     ) async -> CollectionCommitOutcome {
         guard !Task.isCancelled else { return .stale }
+        if let rowID = candidate.unresolvedScanID {
+            guard unresolvedScans.contains(where: { $0.id == rowID }),
+                  !isUnresolvedWriteInFlight(id: rowID) else { return .stale }
+        }
         let isAdditionalCopy: Bool
         switch authorization {
         case .automatic: isAdditionalCopy = false
@@ -5521,9 +5549,12 @@ final class ScannerViewModel: ObservableObject {
         }
 
         let writeSessionID = scannerSessionID
-        authorizedWriteRequestIDs.insert(candidate.requestID)
+        // Capture the storage identity before suspension; start() may replace
+        // the view model's current token while this authorized write drains.
+        let writeStorageIsCurrent = writerContinuation
+        authorizedWriteRowIDs[candidate.requestID] = candidate.unresolvedScanID ?? candidate.encounterID
         let writeGeneration = scanGeneration
-        defer { authorizedWriteRequestIDs.remove(candidate.requestID) }
+        defer { authorizedWriteRowIDs.removeValue(forKey: candidate.requestID) }
         scanAcknowledgement = ScanAcknowledgement(
             encounterID: candidate.encounterID,
             subject: candidate.subject,
@@ -5537,17 +5568,23 @@ final class ScannerViewModel: ObservableObject {
             let mutation: CollectionMutation
             let addOverride = collectionAddOverride
             let writer = await collectionWriter?.value
+            let revalidatesAcquisition = Self.revalidatesBundledAcquisition(candidate.identifier.game)
+                || (candidate.identifier.game == .magic && candidate.identifier.namespace.hasPrefix("historical"))
+            if revalidatesAcquisition {
+                try await catalog.validateAcquisition(candidate.acquisitionIdentifier,
+                    printingID: candidate.card.physicalPrintingID,
+                    automatic: candidate.identityResolution != .userSelectedPrinting)
+            }
             let writeCandidate = {
-                if Self.revalidatesBundledAcquisition(candidate.identifier.game)
-                    || (candidate.identifier.game == .magic && candidate.identifier.namespace.hasPrefix("historical")) {
-                    try await self.catalog.validateAcquisition(candidate.acquisitionIdentifier,
-                        printingID: candidate.card.physicalPrintingID,
-                        automatic: candidate.identityResolution != .userSelectedPrinting)
+                if revalidatesAcquisition {
+                    try await self.catalog.validateAcquisitionContext(candidate.acquisitionIdentifier)
                 }
                 if let addOverride {
+                    guard writeStorageIsCurrent() else { throw CollectionStoreError.collectionBusy }
                     return try await addOverride(candidate)
                 }
                 if let writer {
+                    guard writeStorageIsCurrent() else { throw CollectionStoreError.collectionBusy }
                     return try await writer.add(candidate)
                 }
                 throw CollectionStoreError.collectionBusy
@@ -5569,14 +5606,17 @@ final class ScannerViewModel: ObservableObject {
                     try await writeCandidate()
                 }
             }
-            guard writeSessionID == scannerSessionID else {
+            guard writeStorageIsCurrent() else {
                 clearAcknowledgement(for: candidate.encounterID)
-                endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
+                if writeSessionID == scannerSessionID {
+                    endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
+                }
                 return .stale
             }
-            guard isStorageGenerationCurrent else {
+            guard writeSessionID == scannerSessionID else {
+                clearResolvedUnresolvedRows(for: candidate.card,
+                    sourceRowID: candidate.unresolvedScanID, sessionID: writeSessionID)
                 clearAcknowledgement(for: candidate.encounterID)
-                endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
                 return .stale
             }
 
@@ -5627,25 +5667,30 @@ final class ScannerViewModel: ObservableObject {
             diagnostic(candidate.subject.slab == nil ? "collectionCommit" : "gradedCollectionCommit")
             return .committed
         } catch {
-            guard writeSessionID == scannerSessionID, isStorageGenerationCurrent else {
+            guard writeStorageIsCurrent() else {
                 clearAcknowledgement(for: candidate.encounterID)
-                endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
+                if writeSessionID == scannerSessionID {
+                    endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
+                }
                 return .stale
             }
+            let presentsFeedback = writeSessionID == scannerSessionID && writeGeneration == scanGeneration
             if Self.revalidatesBundledAcquisition(candidate.identifier.game), error is CatalogLookupError {
-                fileLorcanaAcquisitionForLookup(candidate, isAdditionalCopy: isAdditionalCopy)
-                return .requiresLookup
+                fileLorcanaAcquisitionForLookup(candidate, isAdditionalCopy: isAdditionalCopy,
+                    sessionID: writeSessionID, presentsFeedback: presentsFeedback)
+                return presentsFeedback ? .requiresLookup : .stale
             }
             fileUnresolved(
                 request: scanRequest(for: candidate),
                 reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
                 candidates: pokemonIdentity(for: candidate.card).map { [$0] } ?? [],
                 pendingCommit: candidate,
-                isAdditionalCopy: isAdditionalCopy
+                isAdditionalCopy: isAdditionalCopy,
+                sessionID: writeSessionID
             )
             // The authorized write owns its recovery record after a transition,
             // but its abandoned presentation must never return to the scanner.
-            guard writeGeneration == scanGeneration else {
+            guard presentsFeedback else {
                 clearAcknowledgement(for: candidate.encounterID)
                 return .stale
             }
@@ -5694,9 +5739,11 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
-    private func fileLorcanaAcquisitionForLookup(_ candidate: CollectionCommitCandidate, isAdditionalCopy: Bool) {
+    private func fileLorcanaAcquisitionForLookup(_ candidate: CollectionCommitCandidate,
+        isAdditionalCopy: Bool, sessionID: UUID? = nil, presentsFeedback: Bool = true) {
         let request = scanRequest(for: candidate)
-        fileUnresolved(request: request, reason: .noCatalogEntry, isAdditionalCopy: isAdditionalCopy)
+        fileUnresolved(request: request, reason: .noCatalogEntry, isAdditionalCopy: isAdditionalCopy,
+            sessionID: sessionID, acquisitionID: candidate.encounterID)
         // Recovery merging normally retains an in-memory failed save. This
         // candidate instead needs new printing evidence, including on Retry.
         let rowID = request.unresolvedScanID ?? request.encounterID
@@ -5707,6 +5754,7 @@ final class ScannerViewModel: ObservableObject {
             row.resolvedProviderID = nil
             unresolvedScans[index] = row
         }
+        guard presentsFeedback else { return }
         clearAcknowledgement(for: candidate.encounterID)
         endOneCardScan(encounterID: candidate.encounterID, outcome: "catalog-acquisition-stale")
         show(ScanNote(text: "The catalog changed. Review this card again in Needs attention.", tone: .problem))
@@ -6256,12 +6304,18 @@ final class ScannerViewModel: ObservableObject {
         printingCandidates: [PhysicalPrintingCandidate] = [],
         pendingCommit: CollectionCommitCandidate? = nil,
         isAdditionalCopy: Bool = false,
-        resolvedProviderID: String? = nil
+        resolvedProviderID: String? = nil,
+        sessionID: UUID? = nil,
+        acquisitionID: UUID? = nil
     ) {
         guard request.purpose == .collection else { return }
+        let originSessionID = sessionID ?? scannerSessionID
+        let belongsToCurrentSession = originSessionID == scannerSessionID
         let previousRowCount = unresolvedScans.count
         defer {
-            countMetric(.needsAttentionFiled, by: max(0, unresolvedScans.count - previousRowCount))
+            if belongsToCurrentSession {
+                countMetric(.needsAttentionFiled, by: max(0, unresolvedScans.count - previousRowCount))
+            }
         }
         if case .opaque = request.identifier.legacyIdentity {
             let rowID = request.unresolvedScanID ?? request.encounterID
@@ -6275,7 +6329,7 @@ final class ScannerViewModel: ObservableObject {
                 printingCandidates: printingCandidates.isEmpty ? previous?.printingCandidates ?? [] : printingCandidates,
                 pendingCommit: pendingCommit ?? previous?.pendingCommit,
                 isAdditionalCopy: isAdditionalCopy || previous?.isAdditionalCopy == true,
-                mergeSessionID: previous?.mergeSessionID ?? scannerSessionID,
+                mergeSessionID: previous?.mergeSessionID ?? originSessionID,
                 resolvedProviderID: resolvedProviderID ?? previous?.resolvedProviderID
             )
             if let index = unresolvedScans.firstIndex(where: { $0.id == rowID }) {
@@ -6283,12 +6337,12 @@ final class ScannerViewModel: ObservableObject {
             } else {
                 unresolvedScans.append(row)
             }
-            sessionUnresolvedIDs.insert(rowID)
+            if belongsToCurrentSession { sessionUnresolvedIDs.insert(rowID) }
             return
         }
         let mergeKey = UnresolvedScan.mergeKey(
             for: request.subject,
-            sessionID: scannerSessionID
+            sessionID: originSessionID
         )
         let requiresCopyConfirmation = isAdditionalCopy || request.unresolvedScanID.map { id in
             unresolvedScans.contains { $0.id == id && $0.isAdditionalCopy }
@@ -6304,14 +6358,15 @@ final class ScannerViewModel: ObservableObject {
             ),
             pendingCommit: pendingCommit,
             isAdditionalCopy: requiresCopyConfirmation,
-            sessionID: scannerSessionID,
+            sessionID: originSessionID,
             resolvedProviderID: resolvedProviderID,
-            matchingID: request.unresolvedScanID
+            matchingID: request.unresolvedScanID,
+            acquisitionID: acquisitionID
         )
-        let row = request.unresolvedScanID.flatMap { id in
+        let row = (request.unresolvedScanID ?? acquisitionID ?? pendingCommit?.encounterID).flatMap { id in
             unresolvedScans.first(where: { $0.id == id })
         } ?? unresolvedScans.first(where: { $0.mergeKey == mergeKey })
-        if let row {
+        if belongsToCurrentSession, let row {
             sessionUnresolvedIDs.insert(row.id)
         }
     }
@@ -6487,7 +6542,8 @@ final class ScannerViewModel: ObservableObject {
 
     /// Reproduce a sustained session without collection writes or the camera.
     private func seedLongSessionFixtureForScreenshot() {
-        let showsAttention = ProcessInfo.processInfo.arguments.contains("attention-session")
+        let showsSaving = ProcessInfo.processInfo.arguments.contains("recovery-saving")
+        let showsAttention = showsSaving || ProcessInfo.processInfo.arguments.contains("attention-session")
         guard showsAttention || ProcessInfo.processInfo.arguments.contains("long-session") else { return }
         let pricedReceipt = receipt
         let card = IdentifiedCard.pokemon(
@@ -6531,6 +6587,9 @@ final class ScannerViewModel: ObservableObject {
         if showsAttention {
             unresolvedScans = (0..<5).map { _ in
                 UnresolvedScan(subject: subject, reason: .noConfirmedMatch)
+            }
+            if showsSaving, let row = unresolvedScans.first {
+                authorizedWriteRowIDs[UUID()] = row.id
             }
         }
     }

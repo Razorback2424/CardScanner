@@ -511,7 +511,9 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
     @MainActor
     func testGeneralHistoricalChoiceWorksForUnlistedPrintingAndNeverAutomaticallyWrites() async throws {
         let card = liveCard()
+        let requests = MagicHistoricalRequestRecorder()
         MagicHistoricalTestProtocol.handler = { request in
+            requests.record(request.url?.path ?? "")
             if request.url?.path == "/cards/search" { return try self.page([card]) }
             return try JSONSerialization.data(withJSONObject: card)
         }
@@ -530,7 +532,14 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: recovery) }
         let adapters = try GameCatalogAdapterRegistry(adapters: [source])
         let model = ScannerViewModel(scanner: CardScanner(), catalog: CardCatalog(gameCatalogAdapters: adapters),
-            unresolvedScanStore: UnresolvedScanStore(fileURL: recovery))
+            unresolvedScanStore: UnresolvedScanStore(fileURL: recovery), collectionAddOverride: { candidate in
+                let attempt = requests.record("write")
+                let suspended = await MainActor.run { PriceRefreshController.shared.isSuspendedForWrite }
+                XCTAssertEqual(suspended, attempt > 1)
+                if attempt == 1 { throw CollectionStoreError.priceIdentityExclusivityRequired }
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                return try await writer.add(candidate)
+            })
         model.start(context: container.mainContext, isSceneActive: true, startCamera: false, shouldRefreshMagicDirectory: false)
         defer { model.viewDisappeared() }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), ScanSubject(identifier: identifier), nil)
@@ -538,12 +547,18 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
         let pending = try XCTUnwrap(model.pendingIdentityChoice)
         XCTAssertTrue(pending.identifier.needsMagicEnglishConfirmation)
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let searchesBeforeSelection = requests.count("/cards/search")
+        let cardsBeforeSelection = requests.count("/cards/\(choices[0].id)")
         model.chooseWithEnglishConfirmation(try XCTUnwrap(pending.displayCandidates.first))
         for _ in 0..<600 where model.recent.isEmpty { try await Task.sleep(for: .milliseconds(5)) }
         let saved = try container.mainContext.fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(saved.count, 1)
         XCTAssertEqual(saved.first?.providerID, card["id"] as? String)
         XCTAssertEqual(saved.first?.quantity, 1)
+        XCTAssertEqual(requests.count("/cards/search") - searchesBeforeSelection, 2,
+            "Selection and acquisition each validate once; exclusive-write retry must not search again")
+        XCTAssertEqual(requests.count("/cards/\(choices[0].id)") - cardsBeforeSelection, 1)
+        XCTAssertEqual(requests.count("write"), 2)
     }
 
     func testGeneralHistoricalTitleOnlyOldFramesLayoutsAndOCRNumberCorrection() async throws {
@@ -1007,6 +1022,20 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
             "name": record.name, "set": record.setCode, "set_name": record.setName, "collector_number": record.collectorNumber,
             "lang": record.language, "digital": false, "oversized": false, "games": ["paper"],
             "layout": record.layout, "released_at": record.releaseDate!, "finishes": record.finishes]
+    }
+}
+
+private final class MagicHistoricalRequestRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var counts: [String: Int] = [:]
+    @discardableResult func record(_ path: String) -> Int {
+        lock.lock(); defer { lock.unlock() }
+        counts[path, default: 0] += 1
+        return counts[path, default: 0]
+    }
+    func count(_ path: String) -> Int {
+        lock.lock(); defer { lock.unlock() }
+        return counts[path, default: 0]
     }
 }
 

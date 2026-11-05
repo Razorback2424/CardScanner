@@ -92,7 +92,9 @@ struct UnresolvedScanDetailView: View {
                 }
 
                 Section("Actions") {
-                    if isPreparingResolution { ProgressView("Checking printing…") }
+                    if model.isUnresolvedWriteInFlight(id: scan.id) {
+                        ProgressView("Saving to your collection…")
+                    } else if isPreparingResolution { ProgressView("Checking printing…") }
                     if let message = model.unresolvedResolutionErrors[scan.id] {
                         Text(message).foregroundStyle(.secondary)
                             .accessibilityIdentifier("recovery-resolution-error")
@@ -151,7 +153,10 @@ struct UnresolvedScanDetailView: View {
         }
         .navigationTitle("Needs attention")
         .navigationBarTitleDisplayMode(.inline)
-        .disabled(isPreparingResolution)
+        .disabled(isPreparingResolution || model.isUnresolvedWriteInFlight(id: scan.id))
+        .onChange(of: model.unresolvedScans.contains(where: { $0.id == scan.id })) { _, exists in
+            if !exists { dismiss() }
+        }
         .onDisappear { resolutionTask?.cancel() }
         .sheet(isPresented: $isShowingPrintingDetails) {
             PrintingChoiceDetails(candidates: scan.printingCandidates, onChoose: { selected in

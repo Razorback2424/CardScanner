@@ -221,9 +221,16 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         reversed = UnresolvedScan.merging(
             reversed,
             with: subject,
-            reason: .saveFailed(inMemoryCandidateID: nil)
+            reason: .saveFailed(inMemoryCandidateID: nil),
+            matchingID: reversed.first?.id
         )
+        XCTAssertEqual(reversed.count, 1, "A retry updates its exact recovery row")
         XCTAssertEqual(reversed.first?.reason, .saveFailed(inMemoryCandidateID: nil))
+        let acquisitionID = UUID()
+        reversed = UnresolvedScan.merging(reversed, with: subject,
+            reason: .saveFailed(inMemoryCandidateID: nil), acquisitionID: acquisitionID)
+        XCTAssertEqual(reversed.count, 2, "A different acquisition must retain its own failed save")
+        XCTAssertEqual(reversed.last?.id, acquisitionID)
     }
 
     func testMergedDirectCodeReadKeepsInferenceGateDisabledAndRetainsTitleEvidence() throws {

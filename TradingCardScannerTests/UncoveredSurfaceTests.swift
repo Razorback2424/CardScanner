@@ -787,6 +787,7 @@ final class CardCenteringSurfaceTests: XCTestCase {
         model.measurement = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
             outer: CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316),
             inner: CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306), warnings: [])
+        model.confirmFrames(reference: .userPrintedBorder)
         let snapshot = try XCTUnwrap(model.exportSnapshot())
         let first = try snapshot.write()
         let original = try Data(contentsOf: first)
@@ -815,6 +816,7 @@ final class CardCenteringSurfaceTests: XCTestCase {
             outer: CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316),
             inner: CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306), warnings: []
         )
+        model.confirmFrames(reference: .userPrintedBorder)
         XCTAssertFalse(try XCTUnwrap(model.measurement).isDeclined)
         model.loadCapturedPhoto(try XCTUnwrap(UncoveredSurfaceFixtures.image().pngData()))
         XCTAssertNil(model.measurement)
@@ -865,6 +867,7 @@ final class CardCenteringSurfaceTests: XCTestCase {
             warnings: []
         )
 
+        model.confirmFrames(reference: .userPrintedBorder)
         let url = try XCTUnwrap(model.makeExportFile())
         defer { try? FileManager.default.removeItem(at: url) }
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))

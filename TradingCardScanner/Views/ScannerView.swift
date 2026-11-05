@@ -233,6 +233,7 @@ struct ScannerView: View {
             }
             if scannerScreenshotRoute == "WholeCardScanner" || scannerScreenshotRoute == "TrustScanReceipt" {
                 model.seedReceiptFixtureForScreenshot()
+                if ProcessInfo.processInfo.arguments.contains("recovery-saving") { isShowingUnresolved = true }
             }
             if scannerScreenshotRoute == "ScanChoiceCancellation" {
                 model.seedVariantChoiceCancellationFixtureForScreenshot()
@@ -314,7 +315,6 @@ struct ScannerView: View {
             UnresolvedScansSheet(
                 model: model,
                 browseCatalog: browseCatalog,
-                scans: model.unresolvedScans,
                 onClear: model.clearUnresolvedScans,
                 onDismiss: model.dismissUnresolved,
                 onResolve: { id, choice in
@@ -1114,12 +1114,15 @@ private struct UnresolvedScansSheet: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var model: ScannerViewModel
     let browseCatalog: BrowseCatalog
-    let scans: [UnresolvedScan]
+    private var scans: [UnresolvedScan] { model.unresolvedScans }
     let onClear: () -> Void
     let onDismiss: (UUID) -> Void
     let onResolve: (UUID, UnresolvedResolutionChoice) -> Void
 
     private var instructions: String {
+        if model.hasUnresolvedWritesInFlight {
+            return "A card is being saved. You can review other cards while it finishes."
+        }
         if scans.contains(where: { $0.reason == .noConfirmedMatch }) {
             return "Nothing in this list was added to your collection. Use the details below to reposition and scan again."
         }
@@ -1159,6 +1162,10 @@ private struct UnresolvedScansSheet: View {
                                 Text(scan.reason.detail)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
+                                if model.isUnresolvedWriteInFlight(id: scan.id) {
+                                    ProgressView("Saving…")
+                                        .font(.caption)
+                                }
                             }
                         }
                         .accessibilityElement(children: .combine)
@@ -1166,6 +1173,7 @@ private struct UnresolvedScansSheet: View {
                             Button("Dismiss", systemImage: "xmark", role: .destructive) {
                                 onDismiss(scan.id)
                             }
+                            .disabled(model.isUnresolvedWriteInFlight(id: scan.id))
                         }
                     }
                 }
@@ -1181,6 +1189,7 @@ private struct UnresolvedScansSheet: View {
                             onClear()
                             dismiss()
                         }
+                        .disabled(model.hasUnresolvedWritesInFlight)
                     }
                 }
             }

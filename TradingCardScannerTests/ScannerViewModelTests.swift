@@ -115,6 +115,12 @@ private actor ScannerCollectionAddGate {
         bypassGateAfterSwitch = true
     }
 
+    func blockNextAdd(outcome: Outcome) {
+        self.outcome = outcome
+        bypassGateAfterSwitch = false
+        hasStarted = false
+    }
+
     func count() -> Int {
         addCount
     }
@@ -1862,6 +1868,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(terminal)
         XCTAssertNil(model.scanAcknowledgement)
         XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertEqual(model.activeScanIntervalCountForTesting, 0)
         let addCount = await addGate.count()
         XCTAssertEqual(addCount, 1)
     }
@@ -1992,6 +1999,9 @@ final class ScannerViewModelTests: XCTestCase {
         for outcome in [ScannerCollectionAddGate.Outcome.success, .failure] {
             let gate = ScannerCollectionAddGate(outcome: outcome, successfulAddsBeforeBlocking: 1)
             let model = try makeModel(variants: [.normal], collectionAddOverride: { try await gate.add($0) })
+            let summaryStore = ScanSessionSummaryStore()
+            model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false,
+                summaryStore: summaryStore)
             let first = UUID()
             confirm(model, scannerIdentifier(), encounterID: first)
             await assertEventually { model.recent.count == 1 }
@@ -2002,15 +2012,32 @@ final class ScannerViewModelTests: XCTestCase {
             model.addAnother()
             await gate.waitUntilStarted()
             model.viewDisappeared()
-            model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false)
+            model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false,
+                summaryStore: summaryStore)
             try await Task.sleep(for: .milliseconds(2200))
+            // A same-card read in the replacement session owns a different row.
+            model.fileUnresolvedForTesting(ScanSubject(identifier: scannerIdentifier()), reason: .lookupFailed)
+            let newRowID = try XCTUnwrap(model.unresolvedScans.first?.id)
             await gate.release()
             await settle()
             XCTAssertNil(model.pendingDuplicateConfirmation)
             XCTAssertNil(model.heldDuplicateOffer)
             XCTAssertTrue(model.recent.isEmpty)
             XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+            if case .failure = outcome {
+                XCTAssertEqual(model.unresolvedScans.count, 2)
+                let recovery = try XCTUnwrap(model.unresolvedScans.first { $0.id != newRowID })
+                XCTAssertTrue(recovery.isAdditionalCopy)
+                XCTAssertNotNil(recovery.pendingCommit)
+                XCTAssertNotEqual(recovery.mergeSessionID, model.unresolvedScans.first { $0.id == newRowID }?.mergeSessionID)
+                await model.waitForUnresolvedPersistenceForTesting()
+                await model.reloadUnresolvedScansForTesting()
+                XCTAssertEqual(model.unresolvedScans.count, 2)
+            } else {
+                XCTAssertEqual(model.unresolvedScans.map(\.id), [newRowID])
+            }
             model.viewDisappeared()
+            await assertEventually { summaryStore.summary?.addedCount == 0 && summaryStore.summary?.unresolvedCount == 1 }
         }
     }
 
@@ -3551,6 +3578,83 @@ final class ScannerViewModelTests: XCTestCase {
         )
         let addCount = await addGate.count()
         XCTAssertEqual(addCount, 2)
+    }
+
+    func testLateSuccessfulRecoveryRetiresOnlyItsRowAndCannotBeRetried() async throws {
+        let gate = ScannerCollectionAddGate(outcome: .failure)
+        let model = try makeModel(variants: [.normal], collectionAddOverride: { [weak self] candidate in
+            _ = try await gate.add(candidate)
+            let container = try await MainActor.run { try XCTUnwrap(self).context().container }
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            return try await writer.add(candidate)
+        })
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        await gate.release()
+        await assertEventually { model.unresolvedScans.count == 1 && !model.isIdentificationProcessingForTesting }
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        // Exercise the explicit additional-copy retry, which cannot rely on
+        // the ordinary-copy containsCollectionEntry check after a late save.
+        model.fileUnresolvedForTesting(row.subject, reason: row.reason, isAdditionalCopy: true,
+            matchingID: row.id, pendingCommit: row.pendingCommit)
+        await gate.blockNextAdd(outcome: .success)
+        model.resolveUnresolved(id: row.id, choice: .retrySave)
+        await assertEventually { model.pendingDuplicateConfirmation != nil }
+        model.addAnother()
+        await gate.waitUntilStarted()
+        XCTAssertTrue(model.isUnresolvedWriteInFlight(id: row.id))
+        XCTAssertFalse(model.canResolveUnresolved(id: row.id, choice: .retrySave))
+        model.dismissUnresolved(id: row.id)
+        model.clearUnresolvedScans()
+        XCTAssertEqual(model.unresolvedScans.count, 1)
+        model.fileUnresolvedForTesting(ScanSubject(identifier: scannerIdentifier(cardNumber: "002")), reason: .lookupFailed)
+        let otherID = try XCTUnwrap(model.unresolvedScans.last?.id)
+        model.dismissUnresolved(id: otherID)
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [row.id])
+
+        model.viewDisappeared()
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false)
+        try await Task.sleep(for: .milliseconds(2200))
+        model.fileUnresolvedForTesting(row.subject, reason: .lookupFailed)
+        let replacementID = try XCTUnwrap(model.unresolvedScans.last?.id)
+        await gate.release()
+        await assertEventually { !model.isUnresolvedWriteInFlight(id: row.id) }
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [replacementID])
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+        model.resolveUnresolved(id: row.id, choice: .retrySave)
+        model.addAnother()
+        await settle()
+        let attempts = await gate.count()
+        XCTAssertEqual(attempts, 2)
+        let cards = try ModelContext(context().container).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(cards.first?.quantity, 1)
+        await model.waitForUnresolvedPersistenceForTesting()
+        await model.reloadUnresolvedScansForTesting()
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [replacementID])
+        model.viewDisappeared()
+    }
+
+    func testLateFailedWriteCannotFileIntoReplacementStorage() async throws {
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        let gate = ScannerCollectionAddGate(outcome: .failure)
+        let model = try makeModel(variants: [.normal], storageGeneration: generation,
+            collectionAddOverride: { try await gate.add($0) })
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        model.viewDisappeared()
+        generation.suspend()
+        generation.installReady(storeID: UUID())
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false,
+            storageGeneration: generation)
+        try await Task.sleep(for: .milliseconds(2200))
+        await gate.release()
+        await settle()
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertNil(model.scanAcknowledgement)
+        model.viewDisappeared()
     }
 
     func testInterruptedRetrySaveRetainsCandidateAndDuplicateProtection() async throws {
