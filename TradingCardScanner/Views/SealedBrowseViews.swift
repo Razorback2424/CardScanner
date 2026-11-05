@@ -209,9 +209,7 @@ final class SealedBrowseModel: ObservableObject {
                     )
                     let page = CatalogPage(
                         items: response.items,
-                        nextCursor: response.hasMore
-                            ? String(response.offset + response.items.count)
-                            : nil
+                        nextCursor: response.nextOffset.map(String.init)
                     )
                     await cache.storeSealedProductPage(
                         page,
@@ -301,9 +299,7 @@ final class SealedBrowseModel: ObservableObject {
             )
             let cachePage = CatalogPage(
                 items: page.items,
-                nextCursor: page.hasMore
-                    ? String(page.offset + page.items.count)
-                    : nil
+                nextCursor: page.nextOffset.map(String.init)
             )
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
             guard token == searchGeneration, !Task.isCancelled,
@@ -521,7 +517,7 @@ final class SealedBrowseModel: ObservableObject {
     private func cachePage(from page: MarketCatalogPage<SealedProductSummary>) -> CatalogPage<SealedProductSummary> {
         CatalogPage(
             items: page.items,
-            nextCursor: page.hasMore ? String(page.offset + page.items.count) : nil
+            nextCursor: page.nextOffset.map(String.init)
         )
     }
 

@@ -125,8 +125,10 @@ final class BrowseViewModel: ObservableObject {
             )
         }
 
-        let sealedWasSkipped = includesSealedProducts && !sealedModel.isConfigured
-            && games.contains { gameRegistry.supports($0, .sealed) && !sealedLaneIsRequested(for: $0) }
+        let sealedWasSkipped = includesSealedProducts && games.contains {
+            gameRegistry.supports($0, .sealed) && !sealedModel.isConfigured(for: $0)
+                && !sealedLaneIsRequested(for: $0)
+        }
         for game in games where sealedLaneIsRequested(for: game) {
             if let lane = sealedModel.searchLanes[game] {
                 statuses.append(

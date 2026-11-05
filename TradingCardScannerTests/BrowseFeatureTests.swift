@@ -2787,6 +2787,34 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testSealedSetupStateUsesRequestedGamesWhenOfflineLorcanaIsAvailable() async throws {
+        let registry = CardGameRegistry(descriptors: ([CardGame.pokemon, .magic, .lorcana]).enumerated().map {
+            .init(game: $0.element, displayName: $0.element.label, sortOrder: $0.offset, capabilities: [.browse, .sealed])
+        })
+        for game: CardGame? in [.pokemon, .magic, .lorcana, nil] {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let client = RecordingJustTCGProviding()
+            let sealed = SealedBrowseModel(client: client, gameRegistry: registry,
+                cache: CatalogCacheStore(root: root), isConfigured: { false })
+            let model = BrowseViewModel(catalog: EmptyBrowseCatalog(gameRegistry: registry),
+                sealedModel: sealed, initialGame: game)
+            model.searchText = "box"
+            let settled = await waitUntil {
+                model.lanes.count == model.searchGames.count
+                    && model.lanes.values.allSatisfy { !$0.isLoading }
+                    && sealed.searchLanes.values.allSatisfy { !$0.isLoading }
+                    && model.searchState != .loading
+            }
+            XCTAssertTrue(settled)
+            XCTAssertEqual(model.searchState, .empty(needsSealedSetup: game != .lorcana))
+            let requested = await client.sealedSearchGames()
+            XCTAssertTrue(requested.allSatisfy { $0 == .lorcana })
+            model.suspendSearch()
+        }
+    }
+
+    @MainActor
     func testSealedSearchPopulatesOneLanePerGameAndHonorsMinimumQueryLength() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }

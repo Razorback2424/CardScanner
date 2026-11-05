@@ -2867,11 +2867,21 @@ actor CatalogCacheStore {
 
     func sealedProductPage(for key: String) -> Cached<CatalogPage<SealedProductSummary>>? {
         let url = sealedPagesDirectory.appendingPathComponent(filename(for: key))
-        guard let cached = load(CatalogPage<SealedProductSummary>.self, from: url, maxAge: Self.sealedProductMaxAge) else {
-            return nil
+        if let cached = load(CatalogPage<SealedProductSummary>.self, from: url, maxAge: Self.sealedProductMaxAge) {
+            touch(url)
+            return cached
         }
-        touch(url)
-        return cached
+        // Older pages advanced by visible row count. Keep their products
+        // available offline, but refresh before trusting their continuation.
+        guard key.hasPrefix(Self.sealedPagePrefix) else { return nil }
+        let legacyKey = "sealed|" + key.dropFirst(Self.sealedPagePrefix.count)
+        let legacyURL = sealedPagesDirectory.appendingPathComponent(filename(for: legacyKey))
+        guard let legacy = load(CatalogPage<SealedProductSummary>.self, from: legacyURL,
+                                maxAge: Self.sealedProductMaxAge) else { return nil }
+        touch(legacyURL)
+        return Cached(value: CatalogPage(items: legacy.value.items, nextCursor: nil),
+                      storedAt: legacy.storedAt,
+                      isFresh: legacy.value.nextCursor == nil && legacy.isFresh)
     }
 
     func storeSealedProductPage(_ page: CatalogPage<SealedProductSummary>, for key: String) {
@@ -2884,7 +2894,7 @@ actor CatalogCacheStore {
     }
 
     static func sealedPageKey(game: CardGame, setID: String?, query: String?, offset: Int) -> String {
-        "sealed|\(game.rawValue)|\(setID ?? "all")|\(query?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? "")|\(offset)"
+        "\(sealedPagePrefix)\(game.rawValue)|\(setID ?? "all")|\(query?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? "")|\(offset)"
     }
 
     private var cardPagesDirectory: URL { root.appendingPathComponent("CardPages", isDirectory: true) }

@@ -506,6 +506,125 @@ final class JustTCGV2GradedSurfaceTests: XCTestCase {
 
 @MainActor
 final class SealedBrowseSurfaceTests: XCTestCase {
+    func testFreshTerminalLegacySealedPagesAvoidUnnecessaryRefresh() async throws {
+        for query: String? in [nil, "box"] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let product = SealedProductSummary(id: "legacy-box", name: "Box", setName: "Set",
+                variantID: "sealed", marketPriceUSD: 10, updatedAt: nil, imageURL: nil)
+            let setID: String? = query == nil ? "set" : nil
+            let legacyKey = "sealed|pokemon|\(setID ?? "all")|\(query ?? "")|0"
+            let cache = CatalogCacheStore(root: root)
+            await cache.storeSealedProductPage(.init(items: [product], nextCursor: nil), for: legacyKey)
+            let originalPage = await cache.sealedProductPage(for: legacyKey)
+            let migratedPage = await cache.sealedProductPage(for: CatalogCacheStore.sealedPageKey(
+                game: .pokemon, setID: setID, query: query, offset: 0))
+            let original = try XCTUnwrap(originalPage)
+            let migrated = try XCTUnwrap(migratedPage)
+            XCTAssertTrue(migrated.isFresh)
+            XCTAssertEqual(migrated.storedAt, original.storedAt)
+            let provider = UncoveredSealedBrowseProvider()
+            for configured in [false, true] {
+                let model = SealedBrowseModel(client: provider, cache: cache, isConfigured: { configured })
+                if let query {
+                    await model.search(query: query, games: [.pokemon])
+                    XCTAssertEqual(model.searchLanes[.pokemon]?.products, [product])
+                    XCTAssertNil(model.searchLanes[.pokemon]?.nextOffset)
+                } else {
+                    await model.loadProducts(game: .pokemon, setID: setID)
+                    XCTAssertEqual(model.products, [product])
+                    XCTAssertFalse(model.hasMore)
+                }
+            }
+            let offsets = await provider.productOffsets()
+            XCTAssertTrue(offsets.isEmpty)
+        }
+    }
+
+    func testLegacySealedPagesStayVisibleOfflineWithoutReusingTheirCursor() async throws {
+        for query: String? in [nil, "box"] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let first = SealedProductSummary(id: "legacy-box", name: "Box", setName: "Set",
+                variantID: "sealed", marketPriceUSD: 10, updatedAt: nil, imageURL: nil)
+            let last = SealedProductSummary(id: "next-box", name: "Next box", setName: "Set",
+                variantID: "next-sealed", marketPriceUSD: 20, updatedAt: nil, imageURL: nil)
+            let setID: String? = query == nil ? "set" : nil
+            let legacyKey = "sealed|pokemon|\(setID ?? "all")|\(query ?? "")|0"
+            let cache = CatalogCacheStore(root: root)
+            await cache.storeSealedProductPage(.init(items: [first], nextCursor: "1"), for: legacyKey)
+            await cache.storeSealedProductPage(.init(items: [first], nextCursor: "21"),
+                for: String(legacyKey.dropLast()) + "20")
+            let provider = UncoveredSealedBrowseProvider(pages: [
+                0: .init(items: [first], total: 40, offset: 0, limit: 20, hasMore: true),
+                20: .init(items: [last], total: 40, offset: 20, limit: 20, hasMore: false)
+            ])
+            let offline = SealedBrowseModel(client: provider, cache: cache, isConfigured: { false })
+            if let query {
+                await offline.search(query: query, games: [.pokemon])
+                XCTAssertEqual(offline.searchLanes[.pokemon]?.products, [first])
+                XCTAssertNil(offline.searchLanes[.pokemon]?.nextOffset)
+            } else {
+                await offline.loadProducts(game: .pokemon, setID: setID)
+                XCTAssertEqual(offline.products, [first])
+                XCTAssertFalse(offline.hasMore)
+            }
+            let offlineOffsets = await provider.productOffsets()
+            XCTAssertTrue(offlineOffsets.isEmpty)
+            let live = SealedBrowseModel(client: provider, cache: cache, isConfigured: { true })
+            if let query {
+                await live.search(query: query, games: [.pokemon])
+                XCTAssertEqual(live.searchLanes[.pokemon]?.nextOffset, 20)
+                await live.loadMoreSearch(game: .pokemon, query: query)
+                XCTAssertEqual(live.searchLanes[.pokemon]?.products, [first, last])
+            } else {
+                await live.loadProducts(game: .pokemon, setID: setID)
+                await live.loadMore(game: .pokemon, setID: setID)
+                XCTAssertEqual(live.products, [first, last])
+            }
+            let liveOffsets = await provider.productOffsets()
+            XCTAssertEqual(liveOffsets, [0, 20])
+            let preserved = await cache.sealedProductPage(for: legacyKey)
+            XCTAssertEqual(preserved?.value.nextCursor, "1", "Legacy files are preserved")
+        }
+    }
+
+    func testFilteredSealedPagesPreserveProviderOffsetsForSetSearchAndCache() async throws {
+        for firstCount in [0, 2] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let first = (0..<firstCount).map { index in
+                SealedProductSummary(id: "box-\(index)", name: "Box \(index)", setName: "Set",
+                    variantID: "sealed-\(index)", marketPriceUSD: 10, updatedAt: nil, imageURL: nil)
+            }
+            let last = SealedProductSummary(id: "box-last", name: "Last box", setName: "Set",
+                variantID: "sealed-last", marketPriceUSD: 20, updatedAt: nil, imageURL: nil)
+            let provider = UncoveredSealedBrowseProvider(pages: [
+                0: .init(items: first, total: 40, offset: 0, limit: 20, hasMore: true),
+                20: .init(items: [last], total: 40, offset: 20, limit: 20, hasMore: false)
+            ])
+            let cache = CatalogCacheStore(root: root)
+            let model = SealedBrowseModel(client: provider, cache: cache, isConfigured: { true })
+            await model.loadProducts(game: .pokemon, setID: "set")
+            let cached = await cache.sealedProductPage(for: CatalogCacheStore.sealedPageKey(
+                game: .pokemon, setID: "set", query: nil, offset: 0))
+            XCTAssertEqual(cached?.value.nextCursor, "20")
+            let reopened = SealedBrowseModel(client: provider, cache: cache, isConfigured: { true })
+            await reopened.loadProducts(game: .pokemon, setID: "set")
+            await reopened.loadMore(game: .pokemon, setID: "set")
+            XCTAssertEqual(reopened.products, first + [last])
+            XCTAssertFalse(reopened.hasMore)
+
+            await model.search(query: "box", games: [.pokemon])
+            XCTAssertEqual(model.searchLanes[.pokemon]?.nextOffset, 20)
+            await model.loadMoreSearch(game: .pokemon, query: "box")
+            XCTAssertEqual(model.searchLanes[.pokemon]?.products, first + [last])
+            XCTAssertNil(model.searchLanes[.pokemon]?.nextOffset)
+            let offsets = await provider.productOffsets()
+            XCTAssertEqual(offsets, [0, 20, 0, 20])
+        }
+    }
+
     func testOnePiecePaginationCacheIsolationAndOfflineDirectoryRetry() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
@@ -1558,6 +1677,7 @@ private actor EmptyUncoveredBrowseCatalog: BrowseCatalogProviding {
 private actor UncoveredSealedBrowseProvider: SealedBrowseProviding {
     private let setsByGame: [CardGame: [SealedSetSummary]]
     private let productsByGame: [CardGame: [SealedProductSummary]]
+    private let pages: [Int: MarketCatalogPage<SealedProductSummary>]?
     private var setRequests = 0
     private var offsets: [Int] = []
     private var error: Error?
@@ -1566,10 +1686,12 @@ private actor UncoveredSealedBrowseProvider: SealedBrowseProviding {
 
     init(
         sets: [SealedSetSummary] = [],
-        products: [SealedProductSummary] = []
+        products: [SealedProductSummary] = [],
+        pages: [Int: MarketCatalogPage<SealedProductSummary>]? = nil
     ) {
         self.setsByGame = [.pokemon: sets, .magic: sets, .onePiece: sets]
         self.productsByGame = [.pokemon: products, .magic: products, .onePiece: products]
+        self.pages = pages
     }
 
     func searchSealedProducts(
@@ -1580,6 +1702,9 @@ private actor UncoveredSealedBrowseProvider: SealedBrowseProviding {
     ) async throws -> MarketCatalogPage<SealedProductSummary> {
         offsets.append(offset)
         if let error { throw error }
+        if let pages {
+            return pages[offset] ?? .init(items: [], total: 40, offset: offset, limit: 20, hasMore: false)
+        }
         let all = productsByGame[game] ?? []
         let items = Array(all.dropFirst(offset).prefix(1))
         return MarketCatalogPage(
