@@ -348,6 +348,84 @@ device listing showed only offline iPhone/iPad devices, so no trace or measured
 duration is available. Keep F9, artwork worker changes, and actor placement
 changes gated on those results; simulator test timings cannot retire this item.
 
+### RF-14 — November production refinement acceptance
+
+**Status:** local implementation and final focused simulator verification complete;
+broader target remains non-green; device and publication gates open —
+2026-11-04, working tree based on `a404f67`.
+
+This checkpoint owns the seven findings from the November whole-production
+review and its approved conservative implementation plan. The October findings
+with the same F-numbers in older documents are separate historical work.
+Existing catalog authoring and Browse lifecycle/pagination changes are retained.
+
+| Finding | Implemented behavior | Verification boundary |
+| --- | --- | --- |
+| Scanner save recovery | Each authorized write captures its storage continuation and original session. Late failure retains a distinct acquisition row; late success retires its exact source row without publishing into a replacement session. Only the affected recovery row is locked against retry/dismissal; Clear is disabled while any recovery write runs. | Delayed success/failure beyond the departure drain, replacement storage, persisted recovery, durable quantity, and replacement-session summary tests. Native saving state and available Back/other-row actions inspected on Simulator. |
+| Artwork latency | Price-only requests skip artwork recovery. Catalog resolution applies signed artwork first. Bulk refresh recovers artwork only for accepted imports needing an image and preserves existing saved artwork when enrichment is absent. Existing Browse/normalization service defaults retain recovery. | Recorded transport tests prove no probes for price-only fetches or rejected identities, signed-artwork ordering, retained saved images, and imported-row backfill. No measured wall-clock speed claim. |
+| Live historical Magic | The adapter owns exact family/candidate validation. Final provider acquisition validation runs before write exclusivity; local context checks remain at the retry boundary. | Scanner selection/save uses two family searches and one exact-card fetch, including a forced exclusive-write retry. Recovery's existing preparation lookup remains a separate validation; no prepared-result cache was added. |
+| All Games set filtering | Selected sets constrain card games, status, results, resume, and pagination. Sealed lanes keep the original game scope. | Single-game and mixed-game filters, explicit-game switching with retained selections, and card/sealed pagination tests. |
+| Unavailable completion checklist | Owned collector numbers remain visible with an unknown denominator. Available empty checklists still mean zero matched slots. | Unchanged-manifest retry test now expects ownership-only progress, then exact progress after restoration. Unknown fractions remain last in Most Complete. Normal catalog publication/reappearance can rebuild; no retry timer was added. |
+| Slab's ungraded reference | The query uses the exact price key, including Magic treatment and Pokémon print run. Same-key duplicate authority selection is retained. | Real SwiftData queries exclude newer quotes for other treatments, omit missing exact references, preserve print-run separation, and exclude ineligible/raw rows. |
+| Release links | Empty target overrides were removed from all five configurations. The existing production xcconfig now owns both empty URL settings. | Release build succeeds; built plist still has empty URLs. Owner-approved public pages, real URL configuration, built-app navigation, and submission metadata remain open under the [publication checks](../legal/README.md). The price-feed endpoint remains deliberately unconfigured. |
+
+Pre-change baseline: 372 selected cases, 369 passed and three scanner cases
+failed (24 assertion failures). The failing cases were
+`testChooseCardFromGradedRowPreservesSlabAndPrintedPrintRun`,
+`testClassicPhotoFootersOfferBothPrintingsBeforeFinishOrCollectionWrite`, and
+`testHeldRepeatIdentityMismatchClearsAcknowledgementWithoutWriting`.
+Do not treat these baseline failures as new findings or claim a green baseline.
+
+Post-change focused checks: 61 passed, followed by 27 passed and three skipped
+in the live-Magic/signed-artwork selection. Debug test build and generic Release
+simulator build passed. One initial regression test caught saved artwork being
+cleared by absent enrichment; the metadata application was corrected and that
+test now passes. The final selection after follow-up changes executed 118 cases:
+115 passed, three skipped, zero failed. The final generic Release simulator
+rebuild also passed. The focused selection includes all 17 recovery-store tests,
+the current-session stale-storage interval cleanup, the exact-row merge contract,
+and all live Magic recognition/choice tests. Shared Magic discovery-family
+validation is retained; removing it broke the multi-oracle title case during
+verification and was reverted before the final green selection.
+
+The broad run attempted 3,110 cases: **3,077 passed, 19 skipped, 14 failed**
+(including one test-host crash), confirmed from the result bundle's metrics.
+It preceded the final exact-row test update and interval cleanup; it is not a
+green full-target result for the final tree. Failure disposition:
+
+| Cases | Evidence / remaining limit |
+| --- | --- |
+| Three scanner cases listed above | Reproduced the pre-change failures. |
+| Historical recovery merge expectation | Updated to identify the exact retry row; distinct failed acquisitions now have an explicit regression assertion. Passes in the final selection. |
+| Jumbo variant expectation | Untouched static expected list omits `.jumbo`, which the unchanged production variant policy includes. Reproduces in isolation. |
+| Three automatic-finish repair/price cases | Reproduce in isolation, including a direct call to unchanged finish-reconciliation logic. Fixtures/policy expectations need a separate reconciliation; do not weaken physical-review rules to make them pass. |
+| Three keychain cases | Fail with `storeFailed(-34018)` in the unsigned simulator test host. No credential fallback was introduced. |
+| Native centering field blur | Two-second blur deadline fails in both broad and isolated runs. The field implementation/test is untouched by these slices. |
+| SwiftData notification characterization | Untouched expected keys omit the observed `historyTokens`; reproduces in isolation. |
+| Duplicate recovery-record test host crash | One broad-run `SIGTRAP` has SwiftData/SwiftUI frames. The exact test and all 17 recovery-store tests pass in fresh runs. The cause is unproven; keep lifecycle/runtime acceptance open. |
+
+Generated logs/results and synthetic screenshots are on the T7 SSD under
+`ScanStash_Refinement_20261104`, outside the repository. Result bundles are
+`Baseline.xcresult`, `FullSuite.xcresult`, `FinalRegression.xcresult`, and
+`FailureIsolation.xcresult`. No full-target or release-readiness claim follows
+from the green focused selection.
+
+Additional centering source/plan edits arrived concurrently after the final
+focused test binary was built. They are preserved and are outside this slice's
+behavioral verification; centering failure evidence above describes the tested
+binary, not those later edits.
+
+The normal-size recovery list/detail were visually checked, including disabled
+Clear, visible Saving status, available Back, and usable other-row actions.
+The largest Dynamic Type message wraps without overlap; its existing native
+large navigation title truncates, and row scrolling was not verified in that
+capture. These observations are not physical-device or VoiceOver acceptance.
+
+Keep RF-1/RF-2/RF-3/RF-8/RF-9/RF-12/RF-13 open. No new queue architecture,
+persistent cache, background artwork worker, completion retry loop, schema
+migration, or speculative performance optimization was introduced. Measure
+remaining launch/OCR/projection/rendering work before changing it.
+
 ## Closed cleanup
 
 `PortfolioHistoryMode` was removed because the product exposes one history

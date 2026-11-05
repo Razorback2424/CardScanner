@@ -6305,3 +6305,528 @@ retain hashes and scope. No app/Core code changed or build/tests rerun for this
 data-only batch; prior mechanism milestone evidence remains 88 shared passes,
 one skip and 80 iOS passes. No signing, publication, commit/push, physical-camera
 or paid-price acceptance is claimed. Comprehensive coverage remains open.
+
+### 2026-11-03 — Pokéween stamp-family review and concrete support proposal
+
+Reviewed the complete named 2025 Spiritomb and 2026 Zubat/Golbat/Crobat event
+cohorts. Four fresh provider reads and nine primary product identity reads all
+succeeded. Primary product images were visually inspected for English footer,
+exact number and pumpkin/Play! marks; independent retailer listings specify
+Reverse Holofoil. Direct manufacturer page access returned challenge wrappers;
+indexed official article text supplies the named distribution corroboration.
+Raw challenge responses, numeric prices and downloaded artwork are not added
+to the repository.
+
+Confirmed three missing 2026 stamped rows and one Spiritomb row/checklist slot
+incorrectly typed Normal with no event TCGplayer handle. Preserved Crobat's
+legitimate ordinary Non-Holo product and all base variants. The
+[review and proposed records](docs/audits/pokemon-pokeween-stamps-2026-11-03/README.md)
+are concrete but uninstalled: normal signing needs a small protected-support
+extension for stamped records and an exact legacy-object review hold. The
+owner's catalog-only constraint requires approval before that extension.
+Authoring remains 75 descriptors / 95 records with the prior input hash intact.
+No app/Core changes, build/tests, signing, publication or commit/push occurred
+in this batch. Comprehensive coverage remains open.
+
+### 2026-11-03 — four ordinary Red & Blue promos corrected
+
+Added ordinary Holo/product minimums for Charizard EX XY121, Blastoise EX XY122,
+Venusaur EX XY123 and Pikachu EX XY124 through already-approved signed support.
+Four fresh provider and four primary marketplace reads succeeded; independent
+official Pokémon/distributor product descriptions corroborate foil promos.
+GTS's indexed product text was reviewed, while its direct HTTP 429 is retained
+as an access limit without bypass or retry. All previous 95 records and other
+authoring fields are preserved. Current input has 75 descriptors and 99 protected
+records, including 24 ordinary Holo minimums and one price-only exclusion.
+
+Normal native full live validation passed against signature-verified revision 19:
+6,675 numbered summaries, all 99 records carried exactly, all 33 prior provider
+fingerprints unchanged and all 97 old card-art mappings retained exactly with
+the secondary source available. [Evidence and receipts](docs/audits/pokemon-red-blue-collections-2016-2026-11-03/README.md)
+retain input/artifact hashes and limitations. No app/Core code change or
+build/tests were needed for this data-only batch; earlier test counts retain
+their mechanism scope. No signing, publication, commit/push, physical-camera or
+paid-provider acceptance is claimed. The separate four-card Pokéween proposal
+remains uninstalled pending support approval; its later installation would bring
+the total to 103. Comprehensive coverage remains open.
+
+### 2026-11-03 — full HGSS promo and adjacent tin identity review
+
+Reviewed all 25 HGSS promo identities and 33 detailed provider objects against
+38 successful primary marketplace identity reads. All 32 populated handles
+match exact numbers and names; the shiny Raikou/Entei/Suicune trio already has
+correct Holo coverage. Five prerelease products in the marketplace group belong
+to other sets and are not extra HGSS Black Star memberships.
+
+Prepared five uninstalled findings: Finalist's missing product 97704,
+Participation's Holo finish label while preserving correct product 90052, and
+three already-represented Secret Wonders Cracked Ice objects' separate products
+153236 / 153238 / 153235. Six fresh adjacent product reads and independent release
+histories confirm ordinary/pattern product separation. Supplemental provider
+observations retain product IDs/presence flags only, not numeric quotes. Do not
+exclude Participation's correct product solely because its provider type is
+Normal. Latias/Latios generic Holo choice semantics remain a separate review lead.
+
+[The retained census and source evidence](docs/audits/pokemon-hgss-promo-family-2026-11-03/README.md)
+record the exact support boundary and next application milestone. Current
+75-descriptor / 99-record authoring bytes are unchanged. This batch changes
+documentation/evidence only; no code, build/tests, new native candidate, signing,
+publication, paid-provider request or physical-camera acceptance is claimed.
+Comprehensive coverage remains open.
+
+### 2026-11-03 — Energy binding review and existing MEE coverage verified
+
+Refreshed 32 primary SVE/MEE identities / 128 detailed objects and verified all
+112 primary product requests successfully. All 32 ordinary Normal handles match
+names and numbers; the already reviewed SVE 002 Cosmos Prize Pack association is
+the sole number conflict. Corroborated its correct positive product 622936 with
+the printed SVE 002/Play! image, preserving the authored 651037 exclusion without
+installing an unsupported positive stamped-pattern record.
+
+MEE 009–016 remain absent upstream but are already represented by eight stable
+`tcgplayer:` identities and bundled Holo slots. Fresh primary metadata, eight
+independent retailer records and all eight printed footers corroborate the
+existing coverage. Do not misclassify this as eight missing app cards. Four
+existing focused simulator tests pass with zero failures/skips, covering
+checklist regeneration, footer rules and representative 013/015 resolution,
+refresh and CSV holding roundtrip. All eight source/bundle rows were compared
+with fresh products. Build reports zero errors and 41 warnings; no code or tests
+were edited and no paid quote or camera acceptance is claimed.
+
+Eight Professor 2024 product identities were matched. Six have consistent Cosmos
+evidence, while Fire's pictured pattern and Lightning's Normal-only marketplace
+printing remain review holds; identity is not equivalent to finish/listing proof.
+Tinsel/bare-Reverse bindings remain separate. [The retained follow-up](docs/audits/pokemon-energy-product-followup-2026-11-03/README.md)
+records source hashes, access failures, validation and exact support boundaries.
+The discovery index's incomplete SVE inventory and two TCGCSV HTTP 401 responses
+are not absence proofs. Authoring remains unchanged at 75 descriptors / 99 records.
+No new native candidate, signing, publication or commit/push occurred in this
+batch. Comprehensive coverage remains open.
+
+### 2026-11-03 — four XY tin families and two adjacent ordinary promo boxes
+
+Added 13 ordinary Holo corrections through approved signed support: XY41/42,
+53–55, 69–73 and 149–151. All 26 fresh primary provider/product reads succeeded;
+exact Holo-only products and independent manufacturer/distributor foil
+descriptions corroborate each change. Three inspected images distinguish black
+XY69, green XY73 and regular XY151; marketplace “Shiny” Zygarde wording does
+not create another variant. All prior 99 records and other input fields survive
+unchanged. Input now has 75 descriptors / 112 records, including 37 ordinary
+Holo minimums. Nine of these 13 belong to the original 155-signal census; four
+fall outside its initial matching scope, leaving 122 original signals.
+
+Normal native live validation passes against newly served, signature-verified
+revision 20: all 75 fingerprints and 95 active corrections retained, 6,675
+numbered summaries and all 112 authoring records carried. The unsigned revision
+21 candidate has an independent artwork continuity hold: 67 active mappings
+missing, four changed, 167 exact and 28 added. No payload was hand-patched.
+[Evidence and hashes](docs/audits/pokemon-xy-tin-families-2026-11-03/README.md)
+separate validation success from publication readiness. No app/Core changes,
+new build/tests, signing, publication or commit/push occurred. Earlier test
+counts remain scoped to their original mechanism runs. Comprehensive coverage
+and the separate pending stamped-support proposal remain open.
+
+### 2026-11-03 — full BW promo census and ordinary Legendary EX corrections
+
+Read all 101 BW provider cards: all expose generated Normal evidence with no
+detailed product handle. Verified all 148 discovered primary marketplace
+products after one retained transient retry; 140 cover 99 distinct BW numbers,
+while eight belong to ordinary-set prerelease/staff cards. Conservative exact
+matching finds 60 foil-only and 12 Normal-only ordinary products. These remain
+finish review leads rather than a blanket Holo correction.
+
+Added ordinary Holo/product/review records for the full BW45/46/47 Legendary EX
+Tin family and adjacent Sylveon XY04, corroborated by primary products and
+manufacturer foil descriptions. All previous 112 records and other parsed input
+values remain exact. Current input has 75 descriptors / 116 records / 41 ordinary
+Holo minimums. The original XY signal queue now has 121 remaining exact pairs.
+Eight Sylveon Collection Cosmos records are reviewed but uninstalled because
+their generated Normal-choice review is outside the current signed contract.
+Contemporary independent reports confirm BW77/BW78 were canceled; no physical
+exclusion or holdings deletion was implemented. [The full review](docs/audits/pokemon-bw-promo-family-2026-11-03/README.md)
+documents concrete support proposals and other named-pattern/stamp leads.
+
+The first native attempt ended on unrelated TCGdex HTTP 503 for sv05-141. One
+retry passes against verified revision 20, carrying all 116 records / 6,675
+summaries and retaining all 95 active corrections / 75 fingerprints. Artwork
+continuity still fails: 12 active McDonald's 2011 mappings missing, 226 exact,
+zero changed, 25 added. This differs from the preceding candidate and does not
+prove URL health. Publication remains held. No app/Core code, new build/tests,
+signing, deployment or commit/push occurred. Comprehensive coverage remains open.
+
+### 2026-11-03 — complete DP promo census and 22 exact product bindings
+
+Read all 56 DP provider cards / 87 detailed objects and 76 discovered primary
+products: 66 succeeded, ten explicit HTTP 400 responses were retained without
+retry. Successful metadata covers 54 DP numbers in 57 products, plus nine
+ordinary-set prerelease/staff products. A separate public identity-only pass
+found no detailed product IDs; only DP20 has a flat product identity. Numeric
+quotes were not retained and no paid provider was called.
+
+Added 19 exact products for the complete currently reviewed DP LV.X cohort's
+existing broad Holo objects, plus three unique Jumbo bindings (DP24/40/50).
+Provider identity/stage/finish, primary marketplace number/name/listing and
+independent release history corroborate the batch. All three Jumbo product
+images were inspected. DP26/27 each have two distinct Jumbo foil objects and
+remain unbound. No finish is invented and no Normal hold is added. Existing
+ordinary supplement semantics can require explicit finish confirmation even for
+an existing Holo object; this is the accuracy/friction tradeoff, not a new
+scanner algorithm or complete named-pattern certification.
+
+The [full DP review](docs/audits/pokemon-dp-promo-family-2026-11-03/README.md)
+retains language exclusions for French-only DP54/55 and six reviewed uninstalled
+Worlds base/staff bindings separately from ranked/number-error and signature
+objects. No catalog row or holding was deleted. All prior 116 records and other
+parsed input values remain exact. Current input is 75 descriptors / 138 records:
+76 Jumbo, Eevee Cosmos, 41 earlier Holo minimums, 19 existing-Holo bindings and
+one exclusion. These are not 138 new physical printings.
+
+Normal native validation passes against verified revision 20: all 138 records,
+6,675 summaries, all 95 active corrections and all 75 fingerprints preserved.
+All 238 active artwork mappings are now retained exactly, with none missing or
+changed and 28 added. This clears continuity for the latest candidate; older
+failure receipts remain historical and URL health is unproven. No app/Core
+changes, new build/tests, signing, deployment or commit/push occurred. Prior
+mechanism test counts are not new all-cohort runtime evidence. Comprehensive
+English coverage remains open.
+
+### 2026-11-03 — POP Series finish/product census and English-only scope
+
+Resumed after the owner pause with English-language physical cards as the only
+catalog scope. Read all nine POP directories, 153 cards and 226 detailed objects.
+Of 225 populated handles, 224 match reviewed names/numbers and one points to a
+different card. All 162 linked and eleven newly discovered primary products
+returned HTTP 200. Discovery inventory contains 160 cards and nine sealed packs;
+four correctly matched World Deck products are not false group conflicts.
+
+Added two approved exact-object product exclusions: Stantler POP 7 9 Cosmos
+cannot use Kirlia 86467, and Umbreon POP 5 17 Holo cannot use independently
+verified English Non-Holo 90153. Serebii plus primary metadata corroborate the
+first; exact Pokumon/CardTrader entries plus provider/primary receipts support
+the second. Both Normal controls remain exact. These price exclusions do not
+remove disputed physical choices or reconcile saved-only historical links.
+All prior 138 records and other parsed input values are preserved; current input
+is 75 descriptors / 140 records, including three exclusions and 137 positives.
+
+The [POP review](docs/audits/pokemon-pop-finishes-2026-11-03/README.md)
+retains all evidence, two inspected adjacent English pattern/stamp products
+uninstalled under the current whitelist, and the exact verification boundary.
+Native attempt one exited 1 on unrelated XY108 HTTP 503. The one retry produced
+the complete final report and three candidate artifacts before pause; its
+session handle was missing on resume, so no observed exit code is claimed.
+Baseline revision 20 was independently signature-reverified with exit 0.
+All 140 authoring records, 95 active corrections, 75 fingerprints and 6,675
+summaries are carried exactly.
+
+Latest artwork continuity fails: 228/238 active mappings exact, ten EX Trainer
+Kit Latias mappings absent after a secondary card-list HTTP 502, zero changed
+and 28 added. Publication remains held; the earlier DP pass is retained for its
+own bytes. No app/Core change, new app build/test, signing, deployment or
+commit/push. English-only DP54/55 filtering still needs the proposed exact-card
+exclusion support. Comprehensive English coverage remains open.
+
+### 2026-11-04 — Conservative production refinement and recovery UI
+
+Implemented the approved November scanner recovery, artwork-request scoping,
+live Magic validation, All Games card-set filter, unavailable-checklist progress,
+and exact slab-reference fixes. Preserved the pre-existing Browse lifecycle and
+catalog authoring work. Release URL settings now live in the existing xcconfig;
+publication, real URLs, and the price-feed activation remain owner gates.
+
+Pre-change selected baseline: 369 passed / 3 failed cases (24 assertions).
+Final focused verification: 115 passed / 3 skipped / zero failed, including
+all 17 recovery-store tests. The Magic request-count test includes a forced
+exclusive-write retry. Saved-artwork preservation and shared Magic discovery
+validation were corrected after regression tests exposed overly broad changes.
+Debug test and final generic Release simulator builds passed.
+Full run: 3,077 passed / 19 skipped / 14 failed, including one host
+crash; it preceded the final follow-ups. The exact-row merge expectation now
+passes, baseline scanner failures recur, and remaining limitations are recorded
+in RF-14. Concurrent centering edits arrived after the focused test binary was
+built; they are preserved and outside these behavioral claims. Generated data
+remains on T7.
+
+Screenshot loop: existing `WholeCardScanner` route plus `recovery-saving` state;
+normal recovery list/detail inspected, saving/Clear/Back states verified, another
+row's actions remain enabled. Largest accessibility text wraps the new message;
+native title truncation is retained, and scrolling at that size is unverified.
+No physical-device or VoiceOver acceptance is claimed. See
+[RF-14](docs/plans/release_followups.md#rf-14--november-production-refinement-acceptance)
+for scope, evidence, and remaining gates. All changes remain uncommitted.
+
+### 2026-11-04 — Centering boundary review and proposed sequence
+
+Reviewed the supplied historical measurement brief against current source,
+tests, product/centering contracts and retained November 1 Gengar evidence.
+The [proposed sequence](docs/plans/centering-boundary-evidence-plan.md) prioritizes
+preserving independent inner lines, explicit reference identity and localized
+human review before native refinement. Automatic reporting remains disabled;
+production code and existing thresholds were not changed.
+
+Executed the independent annotation validator (10/10 records) and compiled an
+unmodified-model geometry probe with artifacts on T7. A 1° synthetic print tilt
+had LR/TB positional spreads of 22.657071/15.676128 pp; automatic squaring reduced
+both to zero while retaining 50/50 headline ratios. This is geometry evidence,
+not a physical accuracy interval. Retained Gengar outputs were inspected, not
+rerun; the exact original historical images/scripts were not located. No sealed
+holdout was opened, and no new iOS build/test or hardware acceptance is claimed.
+The current contract pointer and documentation audit distinguish the proposal
+from implemented behavior and preserve the automatic/guided evidence boundary.
+
+### 2026-11-04 — Centering geometry/review slice, visual iteration
+
+Implemented independent proposal geometry and immutable detector confidence,
+with separate user review and automatic reporting still disabled. Existing
+valid-edit, explicit Square/Undo, rotation and new-input behavior is covered by
+the [slice receipt](docs/audits/centering-guided-repair.md#independent-inner-geometry-and-human-review--2026-11-04).
+The final core selection passes 142 tests with one expected opt-in skip; the
+earlier fixture and obsolete automatic-squaring failures remain recorded.
+
+Screenshot loop 1: `Centering` pending/independent states, dedicated iPhone 17
+Pro Simulator. The normal unowned build correctly presents the paid gate.
+The first local capture build omitted `LOCAL_ONLY_SIGNING` and trapped while
+initializing CloudKit; adding both existing local-only/UI-entitlement flags
+restored launch without changing production code. Normal-size pending and
+confirmed views, actual one-tap confirmation and the independent-edge PNG pass
+inspection. Maximum accessibility text exposed clipped metrics and an oversized
+overlay hiding the photo. The next iteration puts the accessibility layout in
+a scroll view, wraps variation text and stacks controls; normal-size composition
+is retained. Original failing captures remain on T7.
+
+Screenshot loop 2: largest-type labels now wrap, but an actual swipe through
+the photo moved a guide instead of scrolling. The accessibility layout now
+keeps the zoomable/editable canvas in its own pane and scrolls readings and
+controls separately. This preserves visible alignment context and prevents
+reading gestures from changing measurements.
+
+Final visual iteration passes: normal-size independent-edge view/export,
+maximum-text readings and controls, actual scroll without geometry changes,
+Square → Undo restoring variation, and actual Confirm at both sizes. The final
+normal PNG is byte-identical to the inspected export. Rebuilt standard Debug
+after the last layout change: **142 passed / one expected opt-in skip / zero
+failures**, with all 143 selected methods present once in `Final-verified.xcresult`.
+REQ-022 upper median 0.519570 s / maximum 0.570662 s remains within 0.8/1.5 s.
+Combined current-method coverage is 174 passed / one expected skip across the
+broad and final runs, not one full-final-binary suite. Source/binary/input/capture
+hashes and reconciliation remain on T7. No detector threshold change, automatic
+reporting, native-refinement promotion, holdout evaluation or device/release
+acceptance. Documentation links and `git diff --check` pass; no commit or push.
+
+## 2026-11-04 — centering boundary evidence, slice 2
+
+Implementing the second boundary-evidence slice: explicit reference identity,
+immutable native-coordinate alternatives and source provenance, and side-only
+candidate repair. Unsupported designs require a deliberate reference choice;
+that action also confirms reviewed frames. Automatic reporting and native
+refinement defaults remain unchanged. Four focused boundary-model tests pass in
+`Boundary-v1.xcresult`; expanded regression tests and non-debug compilation are
+running. Visual loop targets `Centering` / `CenteringPrecision` with the
+[slice checklist](references/centering_boundary_slice2_checklist.md).
+
+Slice 2 visual loop 1: actual reference selection enables the guided ratios and
+sharing, but the longer primary label truncates in the normal-size horizontal
+control row. Move the unverified guidance above a dedicated action row, wrap the
+estimate caveat, and align the metric/help wording with reference selection.
+The initial capture remains in `ui-pending`; the seven-suite native run is green
+at 179 passes and one expected opt-in skip before this presentation-only repair.
+
+Slice 2 visual loop 2: the complete reference action and estimate caveat now fit;
+maximum text wraps and scrolls with the photo in its separate pane. Actual
+artwork/printed-reference selection, no-reference abstention, side choice and
+Undo work. The final focused run has 147 passes and one expected opt-in skip.
+Manual interaction exposed a stale DEBUG receipt: its starting geometry survived
+later exports. Refresh export receipts from the matched snapshot and distinguish
+synthetic fixtures and user-adjusted guides before the final evidence capture.
+
+Final slice 2 evidence: seven-suite broad pass **179 passed / one expected opt-in
+skip / zero failures**; after presentation repair, core suites + Square + latency
+**147 passed / one expected skip**; after the DEBUG-only receipt correction,
+boundary + export **55/55 passed**. All final selections have exact method
+inventories. Combined latest coverage is 180 methods, not one final-binary broad
+run. Final latency upper median **0.506341 s**, maximum **0.557617 s**; unchanged
+0.8/1.5 s limits pass. Optimized Release compilation passes for final production
+code; the last correction is excluded from Release.
+
+The final rendered loop passes: complete normal-size action, maximum-text
+reference choice/scrolling, no-reference abstention, alternative-edge controls,
+independent lines and labeled PNGs. Actual side choice changes one native line,
+leaves seven fixed and retains detector confidence; matched export evidence
+confirms the result. Actual Undo restores geometry and provenance exactly.
+The DEBUG receipt now describes the exported snapshot and labels synthetic or
+user-adjusted geometry honestly. Source/binary/input/capture hashes and original
+failed receipts remain on T7. No automatic reporting, threshold tuning, holdout
+evaluation, physical-device acceptance, commit or push.
+
+# 2026-11-04 — Centering native research evaluated; promotion withheld
+
+Implemented slice 3's bounded evaluator entirely in the test target, with 36
+recorded signal/scale configurations, competing native tracks, omitted-band
+stability, per-side abstentions, revision cancellation/cache and process-memory
+instrumentation. The existing ten development images produce retained raw
+attachments and per-configuration/subgroup summaries. Their failures show that
+more precise local fitting does not yet identify the correct reference. No
+production detector setting is promoted; the accuracy exit and REQ-040 remain
+open, and the user confirmed no additional capture set is currently available.
+
+Final simulator verification: 92 passed, one expected opt-in V2b performance skip,
+zero failed across 93 selected methods, with exact inventory reconciliation.
+Production upper-median latency is 0.532916 s and maximum 0.585268 s. Research
+cost and process-memory observations remain separate from that production gate.
+Evidence: T7 `CodexBuilds/CardScanner-CenteringSlice3-20261104`; implementation,
+initial failures and limitations are in the
+[research receipt](docs/audits/centering-guided-repair.md#bounded-native-research-evaluation--2026-11-04).
+Proceeding to independent guided geometry/review slices without changing the
+headline ratio convention, opening automatic reporting or reading the holdout.
+
+# 2026-11-04 — Centering common-axis measurement and boundary scenarios
+
+Completed slice 4's model under a prespecified five-position diagnostic contract.
+Common-row/column samples, margin variation and actual interior transform checks
+are separate from the unchanged endpoint-average headline. Explicit one-edge
+alternatives recompute the full transform and both axes; local perturbations
+remain separately labeled assumptions. Invalid scenarios remain rejected and
+unmatched image evidence becomes unknown after edits.
+
+The final eight-suite centering selection executed 193 methods: 192 passed, one
+expected opt-in skip, zero failed, with exact inventory reconciliation. Production
+upper median is 0.498864 s and maximum 0.544352 s. Evidence, initial failures and
+tested source snapshots are retained on T7; see the
+[spatial receipt](docs/audits/centering-guided-repair.md#spatial-measurement-and-explicit-sensitivity--2026-11-04).
+No physical-device or automatic-accuracy acceptance follows. Slice 5's narrow
+presentation amendment is recorded before implementing its optional review UI.
+
+# 2026-11-04 — Centering optional comparison and qualified reporting
+
+Implemented slice 5: optional original/perspective review, focused current versus
+alternative edge inspection with native pixels, recorded support/exclusion bands,
+undoable selection and qualified original-photo PNGs. Common-axis variation is
+separate from explicit boundary-choice sensitivity and unknown accuracy. Revision
+guards retire old comparisons, renders and exports after edits, rotation or new
+input. Default confirmation remains the existing reference choice; pending
+selection never reveals ratios or upgrades detector certainty.
+
+The final ten-suite centering run has 208 passes, one expected opt-in V2b benchmark
+skip, zero failures and exact method reconciliation. Production upper median is
+0.502201 s and maximum 0.555615 s. The 36-setting research accuracy summaries
+exactly match slice 3's failed exit; no setting is promoted. iPhone/iPad normal
+and maximum-text screenshots, actual selection/Undo/reference interaction and
+matched PNG receipts are retained on T7. The final iPad comparison uses the
+available width; the large-text review puts the edge action before explanatory
+copy. See the [review receipt](docs/audits/centering-guided-repair.md#optional-review-and-qualified-reports--2026-11-04)
+and [checklist](references/centering_boundary_slice5_checklist.md).
+The optimized arm64 Release simulator build also passes with standard Release
+conditions; source/binary/input/capture hashes and finalized receipts are retained.
+
+Automatic reporting and production native refinement remain disabled. No
+additional capture set is available; REQ-040, independent/calibrated measurements,
+physical VoiceOver/device checks and release acceptance remain open. No commit
+or push was performed; unrelated user work is preserved.
+
+# 2026-11-04 — Centering display agreement and ordinary review entry verified
+
+Strengthened the existing review test at the actual SwiftUI display surface:
+48 synthetic landmarks across three photo rotations, two panel widths and 2×/3×
+scale meet the unchanged one-device-pixel/half-point limits (worst 0.857242 pixels
+and 0.290788 points). Focused verification has 23 passes, zero skipped/failed and
+exact method reconciliation. Production source is unchanged from the previous
+208-pass/one-skip regression and passing Release build.
+
+Exercised the ordinary More menu paths without the direct review shortcut.
+Perspective review opens/dismisses; Exact Values opens the nested edge comparison,
+selection returns to its parent with updated ratios, Undo restores the original,
+and Done returns to the card. Supplemental receipts, source snapshot and inspected
+screenshots remain on T7; see the [guided repair ledger](docs/audits/centering-guided-repair.md#supplemental-display-and-ordinary-entry-verification).
+No new capture set is available. The failed automatic-accuracy exit, REQ-040 and
+physical-device/VoiceOver gates remain open; automatic reporting stays disabled.
+
+# 2026-11-05 — Existing-card accuracy made explicit; first detector correction
+
+The owner clarified that accuracy on the current test cards is the immediate
+goal and corpus expansion must not block that work. Added a direct production
+accuracy test for untouched initial guides, keeping the existing rectified
+headline convention, 2 pp limits and annotations. Guided/UI test passes are no
+longer the only visible test result for these images.
+
+The first change uses signed border transitions and coherent line scoring only
+for identified classic Pokémon backs. Three LR errors fall from 10.72/24.90/14.12
+pp to 3.20/0.89/0.94 pp. Two of nine annotated references now pass both ratio
+limits; seven still fail. A broader Magic scoring experiment regressed and was
+excluded. The no-reference case remains unavailable and automatic reporting is
+still disabled. The full printed-frame versus artwork-window reference for
+fronts is being clarified; no annotation has been changed.
+
+Focused verification: 139 passed, one expected opt-in skip, one failing accuracy
+method (11 axis assertions), exact method inventory. Source snapshots, measured
+coordinates, inspected overlays and intermediate failed results are retained on
+T7 `CodexBuilds/CardScanner-ExistingCards-20261105`. See the
+[current accuracy receipt](docs/audits/centering-guided-repair.md#existing-card-accuracy-first--2026-11-05).
+This is unfinished accuracy work, not completion or generalization acceptance.
+The separate production latency selector passes: upper median 0.553710 s and
+maximum 1.019690 s, within the existing 0.8/1.5 s limits.
+
+# 2026-11-05 — Magic border selection and native reference-angle audit
+
+Classic Magic backs now retain the first supported dark-to-light printed-field
+boundary, comparing nearby fits within its sampling width. Both historical
+Magic images pass the unchanged 2 pp ratio limits: 0.84/0.88 and 0.40/1.61 pp.
+The current set has four ratio passes, five failures and one correct abstention.
+All 44 available corpus hashes match the manifest; 34 files remain unannotated
+and unscored, including the still-sealed ten-image interim holdout.
+
+The focused simulator run has 140 passed, one expected opt-in skip and one
+failed accuracy method (seven assertions), with exact method reconciliation.
+Production latency passes at 0.544637 s upper median and 0.621313 s maximum.
+Automatic reporting remains disabled; no annotations or tolerances changed.
+
+Overlay review exposed suspect reference identity and angles. The historical
+ground-truth rederivation translates seed lines instead of fitting observed
+edge points. Added a separate native pixel audit which retains observations,
+rejections, hashes and candidate overlays without importing detector output or
+promoting ground truth. Four known-pixel tests pass; ten outer and nine inner
+audits retain unsupported sides explicitly. See the
+[current ledger](docs/audits/centering-guided-repair.md#magic-borders-and-reference-audit--2026-11-05).
+Reference adjudication and the remaining detection work are unfinished.
+
+# 2026-11-05 — Front border coherence and all-image determinism
+
+The profile selector now tests earlier peaks for supported straight boundaries
+before accepting a stronger interior banner. Local observed points and robust
+line consensus preserve independent angles. Zapdos improves from 0.71/26.39 pp
+LR/TB error to 0.27/0.94 pp; the historical set now has five ratio passes, four
+failures and one correct no-reference result. The wider joint-line experiment
+regressed safety and accuracy and was removed; its failed artifacts are retained.
+
+Final focused simulator verification: 142 passed, one expected skip, one failed
+accuracy method (six assertions), with exact inventory reconciliation. Latency
+passes at 0.522911 s upper median and 0.599924 s maximum. A separate two-test
+follow-up passes five-run determinism for each of the ten annotated images and
+exact optimized/reference geometry equivalence. All annotations, acceptance
+limits and the manual reporting gate are unchanged.
+
+Original-image review now covers the other 24 development files. Two additional
+Pokémon backs have independent provisional native line candidates; one Magic
+back has a partial proposal. None is promoted to ground truth or counted as a
+pass. The [current ledger](docs/audits/centering-guided-repair.md#front-border-coherence--2026-11-05)
+records remaining reference concerns, the 44-image scope and retained evidence.
+
+# 2026-11-05 — Bowed printed-border recovery
+
+Clefairy's actual bottom print boundary bows in the photo. A bounded quadratic
+support check now recovers it when the straight fit fails, replacing the internal
+text-bar fallback. At least 25/31 observations across all five bins are required;
+the straight guide retains the real points and their residual. The app explains
+the approximation and declines automatic certainty. Human confirmation leaves
+that confidence unchanged. Unsuccessful tangential-strip experiments were removed.
+
+The focused simulator run has 145 passed, one expected skip and one failed
+historical accuracy method (six assertions), with exact inventory reconciliation.
+The new boundary regression, all-ten-image repeated determinism, optimized/reference
+equivalence, export and corpus checks pass. Latency upper median is 0.557495 s,
+maximum 0.608998 s. Historical ratio acceptance remains 5/9 plus a correct
+no-reference result; annotations, tolerances and automatic reporting are unchanged.
+The initial broad run's test compile typo was corrected before this result.
+
+Corrected the visibly swapped game categories for IMG_0797 and IMG_0803, recording
+the changes in the manifest. All 44 file hashes and holdout assignments remain
+unchanged. The [current ledger](docs/audits/centering-guided-repair.md#bowed-printed-borders--2026-11-05)
+records the approximation, remaining accuracy gaps and retained evidence.

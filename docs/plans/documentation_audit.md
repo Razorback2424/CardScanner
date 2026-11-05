@@ -8,6 +8,58 @@ history.
 
 ## Current authority boundary — updated 2026-11-02
 
+**Centering existing-card priority — 2026-11-05:** the owner explicitly prioritized
+accuracy on current test images over corpus expansion. Further development on
+those exposed cards is authorized; the old REQ-040 production-change prerequisite
+does not block this scope. Generalization and automatic reporting remain separate.
+The [new accuracy receipt](../audits/centering-guided-repair.md#bowed-printed-borders--2026-11-05)
+supersedes any inference of detector completion from the guided/UI test passes:
+only 5/9 annotated references pass both ratio limits after the back/front fixes.
+The latest focused run has 145 passes, one expected skip and one failing
+accuracy method; this is unfinished accuracy work, not a passing acceptance run.
+All-image determinism and exact optimized/reference geometry agreement pass in
+that run. The bowed-border correction fixes Clefairy's text-bar fallback while
+retaining observed curvature and declining automatic certainty for the straight
+approximation. Confirmation does not upgrade that evidence.
+All 44 available files are inventoried; 34 are unannotated/unscored. The older
+REQ-027 rederivation translates seed lines without measuring their angles, and
+front overlays expose suspect boundary identity. The new review-only pixel
+audit supersedes any inference that the old completion label certifies those
+angles. No annotation, tolerance or reporting gate has changed.
+
+**Centering boundary-evidence slice — 2026-11-04:** the
+[review and implementation sequence](centering-boundary-evidence-plan.md) reconciles the
+historical multi-method measurement brief with the current guided product.
+The older centering contract's reusable geometry claim does not establish
+physical boundary identity: the baseline's automatic squaring removed measured
+tilt, and four-corner rectification residuals are numerical checks. Recent guided/UI
+passes also do not supersede the separately retained automatic-accuracy failures.
+The authorized first slice now preserves independent inner geometry and separates
+human review from immutable detector confidence. The model requires confirmation
+for every new measurement; automatic reporting remains disabled. The
+[guided repair ledger](../audits/centering-guided-repair.md#independent-inner-geometry-and-human-review--2026-11-04)
+records implementation and simulator evidence. The authorized second slice now
+adds native candidate/input provenance, explicit reference definitions and
+side-only candidate repair; its newer receipt in that ledger supersedes the
+first-slice deferral of boundary identity. Unsupported designs require a deliberate
+reference choice, and default inner frames remain placement aids. Headline
+aggregation and acceptance tolerances are unchanged. Slice 3 now has a tested
+research evaluator and a retained 36-setting development comparison; its
+identity/accuracy exit failed, so no setting is promoted. This supersedes the
+earlier blanket deferral of native research, not the automatic-accuracy failures
+or REQ-040 prerequisite. Slice 4 now adds a tested common-axis spatial diagnostic
+and explicit one-edge sensitivity model under a prespecified contract; headline
+aggregation remains unchanged. Its 192-pass/one-skip receipt is separate from
+physical-boundary accuracy. Slice 5 now implements optional edge/perspective
+review and qualified reports; the
+[review receipt](../audits/centering-guided-repair.md#optional-review-and-qualified-reports--2026-11-04)
+records 208 passing tests, one expected skip, zero failures and rendered
+iPhone/iPad checks. Physical VoiceOver/device and capture-diverse
+acceptance remain open. See the
+[spatial receipt](../audits/centering-guided-repair.md#spatial-measurement-and-explicit-sensitivity--2026-11-04)
+and the retained
+[research receipt](../audits/centering-guided-repair.md#bounded-native-research-evaluation--2026-11-04).
+
 **First-edition finish and stale detail follow-up — 2026-11-02:** the
 [pricing follow-up](pricing_correctness_and_coverage.md#first-edition-finish-and-stale-detail-follow-up--2026-11-02)
 repairs both remaining medium findings on `main@9413e90`. Its final source-bound
@@ -1809,3 +1861,176 @@ Mapping continuity does not prove public URL health. No app/Core source or tests
 changed in this data-only batch; prior 88 shared passes/one skip and 80 iOS passes
 remain mechanism evidence only. Unsigned/unpublished, physical camera, paid
 pricing, saved-only links and exhaustive English coverage remain open.
+
+### 2026-11-03 event-stamp coverage proposal
+
+The [Pokéween 2025–2026 review](../audits/pokemon-pokeween-stamps-2026-11-03/README.md)
+confirms four separate English Reverse Holofoil event products against primary
+marketplace metadata/images, independent retailer finish listings and indexed
+manufacturer announcements. It records three missing 2026 stamped rows and one
+wrong Normal Spiritomb object in the provider and bundled checklist. This
+resolves the earlier research ambiguity about later-year event distributions;
+it does not establish missing annual 30-card sets or universal seasonal coverage.
+
+The four proposed corrections are not installed. The current 95-record signed
+authoring input is unchanged. The documented support proposal needs ordinary
+stamped memberships and an exact legacy-object physical-review hold, including
+saved-only detail-link checks. Earlier approvals for ordinary minimums and
+product exclusions are not reported as permission for that new support. No
+app/Core change, build/test, signing or publication occurred in this evidence
+batch; previous milestone counts retain their original scope.
+
+### 2026-11-03 approved ordinary Red & Blue additions
+
+While stamped-support approval remains pending, the [four Red & Blue promos](../audits/pokemon-red-blue-collections-2016-2026-11-03/README.md)
+are corrected using already-approved ordinary Holo support. Fresh primary
+identity metadata and independent official/distributor foil-product descriptions
+corroborate all four. Input now has 99 protected records and 24 ordinary Holo
+minimums; earlier 95-record receipts and the stamp proposal's initial 95-to-99
+projection retain their preparation scope. Installing the four stamp proposals
+later would produce 103 records; they remain uninstalled now.
+
+Full normal native live validation passes at 75 descriptors / 6,675 numbered
+summaries, preserving all prior records, all 33 provider fingerprints and all
+97 previous artwork mappings. There is no app/Core code change or new mechanism
+test count for this data-only batch. Production signing/publication, physical
+camera, paid-provider acceptance and exhaustive coverage remain open.
+
+### 2026-11-03 HGSS promo and adjacent tin evidence
+
+The [HGSS family review](../audits/pokemon-hgss-promo-family-2026-11-03/README.md)
+adds a complete current 25-card / 33-object provider census and 38 successful
+primary product reads, with all 32 populated handles matching exact numbers and
+names. Its shiny trio is already represented correctly. The report prepares
+one Finalist binding, one Participation finish-label correction and three
+adjacent Cracked Ice bindings; none is installed. The Participation product is
+correct and must not be reported as an exclusion or wrong-number repair merely
+because its provider type is Normal and its sole marketplace printing is Holo.
+
+This extends research into the HGSS era without changing the current 99-record
+authoring input. Existing stamps/patterns, absent per-object price identities,
+generic Holo choice semantics and offline checklist availability are recorded
+separately. Earlier native/test counts are not new evidence for these findings.
+No app/Core or signing change, new build/test or publication occurred.
+
+### 2026-11-03 Energy provider versus app coverage reconciliation
+
+The [Energy follow-up](../audits/pokemon-energy-product-followup-2026-11-03/README.md)
+refreshes all 32 primary SVE/MEE identities and 128 objects, with 112 successful
+primary product reads. Eight MEE 009–016 endpoint 404s are **not** eight missing
+app cards: existing `tcgplayer:` identities, bundled Holo rows and reviewed
+scanner/Browse/refresh support already cover them. Independent English/Holofoil
+retailer data and all printed footers corroborate the existing entries. Four
+focused tests pass; representative runtime cases are 013/015, with source/bundle
+comparison across all eight. The earlier 32-identity provider census retains its
+source scope rather than being presented as total app coverage.
+
+The report identifies the correct SVE 002 positive product 622936 while keeping
+the authored 651037 exclusion. Positive application is uninstalled. Six Professor
+Cosmos candidates are consistent; Fire's image pattern and Lightning's market
+printing remain reviewed holds. No Normal-only label is treated as proof of a
+wrong product. Tinsel/bare-Reverse questions remain separate. The input hash and
+99-record total are unchanged; no app/Core or test code changed. This milestone
+does not claim paid pricing, camera or release readiness.
+
+### 2026-11-03 XY tin-family batch and newer production baseline
+
+The [13-card ordinary tin/box batch](../audits/pokemon-xy-tin-families-2026-11-03/README.md)
+raises authoring to 112 protected records / 37 ordinary Holo minimums. All prior
+99 records remain exact. Earlier 99-record receipts and Pokéween projections
+retain their preparation scope; adding those four uninstalled proposals now
+would yield 116. Four new exact product matches were outside the original
+155-signal census, so 33 original pairs are admitted and 122 remain, rather
+than subtracting all 37 corrections and claiming 118.
+
+Production is now revision 20 with 75 descriptors / 95 protected records,
+verified by the normal native publisher. Earlier revision-19 / 33-descriptor
+claims remain dated evidence. This work did not publish that external change.
+Native validation passes for the unsigned revision-21 candidate, carrying all
+112 authoring records and retaining all 95 active corrections and 75 provider
+fingerprints. Publication remains held for artwork continuity: 67 active
+mappings missing and four changed, despite secondary-provider availability.
+Older 97-mapping continuity passes do not cover this newer 238-mapping baseline.
+No app/Core code, new build/test, signing or publication occurred in this batch.
+
+### 2026-11-03 BW family census, physical scope and latest continuity result
+
+The [BW promo review](../audits/pokemon-bw-promo-family-2026-11-03/README.md)
+separates 101 provider entries from 99 marketplace-backed printed numbers and
+two canceled physical promos (BW77/BW78), corroborated by contemporary PokéBeach
+and Bulbanews reporting. Digital images/provider rows are not physical release
+proof; no rows or holdings were deleted. Eight non-BW prerelease/staff products
+in the marketplace group are not extra BW Black Star memberships. Sixty
+conservative foil-only ordinary matches are review leads, including named
+patterns, rather than authorization to add 60 plain Holo variants.
+
+Four corroborated ordinary additions raise authoring to 116 protected records /
+41 ordinary Holo minimums. All prior 112 records remain unchanged. The separate
+eight-card Cosmos review needs generated-Normal review support; current
+`normalNeedsReview` accepts ordinary Holo only. Base-card exclusions also lack
+delivery support. These concrete proposals are unimplemented, and the original
+four-card Pokéween proposal remains separately pending. Older counts/projected
+totals retain their preparation scopes.
+
+The first native run failed on unrelated upstream HTTP 503; one retry passed
+with all 116 records, 6,675 summaries, all 95 active corrections and all 75
+fingerprints. Its artwork comparison has 12 active mappings missing, zero
+changed, 226 exact and 25 added. This supersedes the preceding candidate's
+67-missing/four-changed result only for the latest artifact; the older receipt
+is retained, not rewritten. Publication remains held. No app/Core change,
+new build/tests, signing or deployment was performed.
+
+### 2026-11-03 DP evidence, binding counts and artwork continuity reconciliation
+
+The [DP family audit](../audits/pokemon-dp-promo-family-2026-11-03/README.md)
+distinguishes existing Holo membership from missing exact product bindings.
+All 56 provider entries / 87 detailed objects were read, with 66 successful
+primary products and ten retained HTTP 400 responses. Fifty-four marketplace
+numbers do not establish 56 English physical releases: DP54/55 are French-only
+language findings, left unexcluded pending support. Nine non-DP prerelease/staff
+products do not expand DP Black Star membership. Six Worlds base/staff bindings
+are prepared separately from 21 provider objects and other stamped editions.
+
+Current authoring is 138 protected records, including 19 existing-Holo LV.X
+product bindings and three unique Jumbo bindings. Earlier 41 ordinary Holo
+minimum additions retain that scope; the new total of 60 ordinary Holo records
+must not be described as 60 newly added physical finishes. Normal native
+validation carries all records with 6,675 summaries, all 95 active corrections
+and 75 fingerprints preserved. Existing conservative supplement semantics may
+require finish confirmation for the 19 existing Holo objects; no new scanner
+algorithm or price-only positive-record semantics were introduced.
+
+Latest artwork continuity passes: all 238 active mappings remain exact, zero
+missing/changed, 28 added. This supersedes the preceding candidate's 12-missing
+hold only for the latest artifact. Earlier reports are retained, and no URL
+health or future-run stability is inferred. No app/Core code, new build/tests,
+signing or deployment was performed. Physical-camera, paid-quote and exhaustive
+English-printing acceptance remain open.
+
+### 2026-11-03 POP census, latest artwork hold and English-only reconciliation
+
+The [POP 1–9 review](../audits/pokemon-pop-finishes-2026-11-03/README.md)
+compares all 153 provider cards / 226 objects, 225 populated handles and 173
+distinct successful primary product reads. One handle has both wrong name and
+number (Stantler Cosmos points to Kirlia). Independent English Non-Holo evidence
+also invalidates Umbreon's shared product on the Holo object even though primary
+marketplace finish flags are inconclusive. Two scoped product exclusions are
+authored through approved support; Normal controls and all prior 138 records
+remain exact. Current input is 140 records: 137 positives and three exclusions.
+Do not count those exclusions as physical additions, call the disputed Holo
+choice removed, or claim saved-only historical links have been reconciled.
+
+The latest native candidate retains 95 active corrections, 75 fingerprints and
+6,675 summaries. It supersedes the DP continuity pass with a new artifact-specific
+**hold**: ten active EX Trainer Kit Latias mappings missing, 228 retained exactly,
+none changed, 28 added. Secondary set discovery succeeded but a card-list request
+returned HTTP 502. The first run's unrelated XY108 HTTP 503 and the retry's final
+report/artifacts are retained separately. Resume found no session handle; the
+retry exit code is unobserved rather than invented as zero. Normal baseline
+signature reverification separately exits zero. No signing/publication occurred.
+
+The owner reaffirmed English-only physical scope. French-only POP finishes and
+foreign marketplace discovery items are not admissions. Existing provider rows
+with translated names are not necessarily English releases: known French-only
+DP54/55 remain an explicit unresolved filtering requirement alongside proposed
+exact-card exclusion support, rather than a completed English-only gate.
