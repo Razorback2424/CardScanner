@@ -6,6 +6,55 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testUngradedReferenceQueryUsesExactMagicTreatmentKey() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let card = CollectedCard(collectionKey: "graded:magic:printing", game: .magic,
+            providerID: "printing", name: "Fixture", setName: "Fixture", setCode: "FIC", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .foil, variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil])
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        for (treatments, amount) in [(["surgefoil"], 15.0), (["neonink"], 999.0), ([], 200.0)] {
+            let record = PriceRecord(key: PriceRecord.key(game: .magic, printingID: "printing",
+                variantID: "foil", treatmentIDs: treatments), game: .magic, printingID: "printing",
+                variantID: "foil", magicTreatmentIDs: treatments)
+            record.unitMarketPriceUSD = amount
+            context.insert(record)
+        }
+        try context.save()
+        let descriptor = CollectionCardDetailView.ungradedReferenceDescriptor(for: card)
+        let matches = try context.fetch(descriptor)
+        XCTAssertEqual(matches.count, 1)
+        XCTAssertEqual(PriceStore.authoritativeRecord(in: matches)?.effectiveUnitMarketPriceUSD, 15)
+        context.delete(try XCTUnwrap(matches.first))
+        try context.save()
+        XCTAssertTrue(try context.fetch(descriptor).isEmpty, "Other treatments must not substitute for a missing reference")
+    }
+
+    func testUngradedReferenceQueryPreservesPokemonPrintRunAndExcludesRawRows() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let card = CollectedCard(collectionKey: "graded:pokemon:base1-1", game: .pokemon,
+            providerID: "graded:unbound", name: "Fixture", setName: "Base", setCode: "BS", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.catalogProviderID = "base1-1"
+        card.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+        for run in [PokemonPrintRun.firstEdition, .unlimited] {
+            let id = "base1-1@\(run.rawValue)"
+            context.insert(PriceRecord(key: PriceRecord.key(game: .pokemon, printingID: id, variantID: "holo"),
+                game: .pokemon, printingID: id, variantID: "holo"))
+        }
+        try context.save()
+        XCTAssertEqual(try context.fetch(CollectionCardDetailView.ungradedReferenceDescriptor(for: card)).map(\.printingID),
+            ["base1-1@\(PokemonPrintRun.firstEdition.rawValue)"])
+        card.itemKindRaw = CollectionItemKind.rawCard.rawValue
+        XCTAssertTrue(try context.fetch(CollectionCardDetailView.ungradedReferenceDescriptor(for: card)).isEmpty)
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.catalogProviderID = nil
+        XCTAssertTrue(try context.fetch(CollectionCardDetailView.ungradedReferenceDescriptor(for: card)).isEmpty)
+    }
+
     func testPartialGradedFinishCorrectionPreservesOtherAcquisitionsAcrossEntryPoints() throws {
         for entryPoint in 0..<3 {
             for hasDestination in [false, true] {

@@ -119,6 +119,10 @@ struct CollectionCardDetailView: View {
         CollectionCardDetailContent.gradedAcquisitionDescriptor(for: key)
     }
 
+    static func ungradedReferenceDescriptor(for card: CollectedCard) -> FetchDescriptor<PriceRecord> {
+        CollectionCardDetailContent.ungradedReferenceDescriptor(for: card)
+    }
+
     static func gradedVariantEvidence(for card: CollectedCard) -> VariantEvidence {
         CollectionCardDetailContent.gradedVariantEvidence(for: card)
     }
@@ -230,30 +234,7 @@ private struct CollectionCardDetailContent: View {
     ) {
         let resolvedInstrumentKey = instrumentKey ?? card.priceKey
         self._card = Bindable(card)
-        let rawPrintingID = card.catalogProviderID ?? card.providerID
-        let printRunQualifiedID = card.pokemonPrintRun.map {
-            "\(rawPrintingID)@\($0.rawValue)"
-        } ?? rawPrintingID
-        let isUsableRawPrintingID = card.itemKind == .gradedCard
-            && !rawPrintingID.hasPrefix("graded:")
-        if isUsableRawPrintingID {
-            let gameRaw = card.game
-            let rawVariantID = card.variantID
-            self._ungradedReferenceRecords = Query(
-                filter: #Predicate<PriceRecord> {
-                    $0.game == gameRaw
-                        && $0.printingID == printRunQualifiedID
-                        && $0.variantID == rawVariantID
-                },
-                sort: [SortDescriptor(\PriceRecord.key, order: .forward)]
-            )
-        } else {
-            var descriptor = FetchDescriptor<PriceRecord>(
-                predicate: #Predicate<PriceRecord> { $0.key == "__ungraded_reference_disabled__" }
-            )
-            descriptor.fetchLimit = 1
-            self._ungradedReferenceRecords = Query(descriptor)
-        }
+        self._ungradedReferenceRecords = Query(Self.ungradedReferenceDescriptor(for: card))
         let resolvedCollectionKey = card.collectionKey
         if card.itemKind == .gradedCard {
             self._collectionActivities = Query(Self.gradedAcquisitionDescriptor(for: resolvedCollectionKey))
@@ -1320,6 +1301,16 @@ private struct CollectionCardDetailContent: View {
             return "\(name) \(amount.formatted(.currency(code: "USD")))"
         }
         return "JustTCG currently lists: \(grades.joined(separator: ", "))"
+    }
+
+    static func ungradedReferenceDescriptor(for card: CollectedCard) -> FetchDescriptor<PriceRecord> {
+        let rawPrintingID = card.catalogProviderID ?? card.providerID
+        let printingID = card.pokemonPrintRun.map { "\(rawPrintingID)@\($0.rawValue)" } ?? rawPrintingID
+        let key = card.itemKind == .gradedCard && !rawPrintingID.hasPrefix("graded:")
+            ? PriceRecord.key(game: card.cardGame, printingID: printingID, variantID: card.variantID,
+                treatmentIDs: card.magicTreatmentIDs(for: card.variant))
+            : "__ungraded_reference_disabled__"
+        return FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
     }
 
     private var ungradedReferenceRecord: PriceRecord? {
