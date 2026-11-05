@@ -77,6 +77,17 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         locale: TCGdexLocale = .en,
         ignoringCache: Bool = false
     ) async throws -> TCGdexCard {
+        try await fetchCard(setID: setID, localID: localID, locale: locale,
+            ignoringCache: ignoringCache, recoversArtwork: true)
+    }
+
+    func fetchCard(
+        setID: String,
+        localID: String,
+        locale: TCGdexLocale = .en,
+        ignoringCache: Bool = false,
+        recoversArtwork: Bool
+    ) async throws -> TCGdexCard {
         if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(setID: setID, localID: localID) {
             return reviewed
         }
@@ -86,7 +97,7 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
             throw TCGdexError.invalidURL
         }
         return try await fetch(url, expectedID: setID + "-" + localID,
-                               locale: locale, ignoringCache: ignoringCache)
+                               locale: locale, ignoringCache: ignoringCache, recoversArtwork: recoversArtwork)
     }
 
     func fetchSet(id: String, locale: TCGdexLocale = .en) async throws -> TCGdexSetCatalog {
@@ -111,7 +122,8 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         id: String,
         locale: TCGdexLocale = .en,
         ignoringCache: Bool = false,
-        timeout: TimeInterval = 8
+        timeout: TimeInterval = 8,
+        recoversArtwork: Bool = true
     ) async throws -> TCGdexCard {
         if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(providerID: id) {
             return reviewed
@@ -121,7 +133,7 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
             throw TCGdexError.invalidURL
         }
         return try await fetch(url, expectedID: id, locale: locale,
-                               ignoringCache: ignoringCache, timeout: timeout)
+                               ignoringCache: ignoringCache, timeout: timeout, recoversArtwork: recoversArtwork)
     }
 
     private func fetch(
@@ -129,7 +141,8 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         expectedID: String,
         locale: TCGdexLocale,
         ignoringCache: Bool = false,
-        timeout: TimeInterval = 8
+        timeout: TimeInterval = 8,
+        recoversArtwork: Bool
     ) async throws -> TCGdexCard {
         var request = URLRequest(url: url)
         request.timeoutInterval = timeout
@@ -153,11 +166,16 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
             throw TCGdexError.badResponse
         }
 
-        var card = try JSONDecoder().decode(TCGdexCard.self, from: data)
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: data)
         guard card.id.caseInsensitiveCompare(expectedID) == .orderedSame else {
             throw TCGdexError.identityMismatch
         }
-        if card.storedArtworkURL == nil {
+        return recoversArtwork ? await recoveringArtwork(for: card, locale: locale) : card
+    }
+
+    func recoveringArtwork(for source: TCGdexCard, locale: TCGdexLocale = .en) async -> TCGdexCard {
+        var card = source
+        if card.storedArtworkURL == nil, !Task.isCancelled {
             card.recoveredArtwork = await artworkRecovery.artwork(for: card, locale: locale)
         }
         return card

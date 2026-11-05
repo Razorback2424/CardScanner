@@ -61,7 +61,8 @@ struct PokemonPriceAdapter: GamePriceAdapter {
             returned = try await tcgdex.fetchCard(
                 id: card.printingID,
                 locale: CatalogIdentityNormalization.locale(forCatalogCardID: card.printingID),
-                ignoringCache: true
+                ignoringCache: true,
+                recoversArtwork: false
             )
             // A successfully decoded full-card response proves that the
             // host answered, even if its identity does not match the card

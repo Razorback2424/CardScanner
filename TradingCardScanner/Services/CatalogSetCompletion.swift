@@ -131,8 +131,7 @@ actor CatalogSetCompletionBuilder {
                 }
             }()
 
-            if exactCandidateIDs.contains(set.id) {
-                let cards = exactChecklistsBySetID[set.id] ?? []
+            if exactCandidateIDs.contains(set.id), let cards = exactChecklistsBySetID[set.id] {
                 let slots = tier == .standard
                     ? cards.filter { !$0.isExpandedMasterSetVariant }
                     : cards
@@ -142,7 +141,7 @@ actor CatalogSetCompletionBuilder {
                     total: total,
                     unit: "variations"
                 )
-            } else if overflowCandidateIDs.contains(set.id) {
+            } else if exactCandidateIDs.contains(set.id) || overflowCandidateIDs.contains(set.id) {
                 let progress = ownership.progress(for: set)
                 completions[set.id] = SetCompletion(
                     owned: progress.owned,

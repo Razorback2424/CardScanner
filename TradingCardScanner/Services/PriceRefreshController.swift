@@ -303,7 +303,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
 
     private var gamePricing = PriceQuoteService()
     func configureGamePricing(_ service: PriceQuoteService) { gamePricing = service }
-    private let tcgdex = TCGdexService()
+    private var tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
     private let importedResolver = ImportedCardResolver()
     private let fallbackService = ProductPriceService.shared
@@ -336,6 +336,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
 
     func setTCGCSVSourceForTesting(_ source: any PokemonTCGCSVPriceSource) {
         marketPrices = PokemonMarketPriceResolver(source: source)
+    }
+
+    func setTCGdexForTesting(_ service: TCGdexService) {
+        tcgdex = service
+        marketPrices = nil
     }
 
     func run(
@@ -817,7 +822,18 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     let printing = outcome.printing
                     let now = Date.now
                     switch outcome.result {
-                    case let .card(card):
+                    case let .card(fetchedCard):
+                        var card = fetchedCard
+                        if printing.importedIdentity != nil,
+                           case let .pokemon(rawCard, setCode) = card.legacyIdentity,
+                           (importedRowIdentitiesByProviderID[printing.printingID] ?? []).contains(where: \.imageURLIsMissing) {
+                            card = .pokemon(await tcgdex.recoveringArtwork(for: rawCard,
+                                locale: CatalogIdentityNormalization.locale(forCatalogCardID: rawCard.id)), setCode: setCode)
+                            guard storageContinuation?() ?? true, !Task.isCancelled else {
+                                wasCancelled = true
+                                break
+                            }
+                        }
                         if printing.importedIdentity != nil {
                             for importedRow in importedRowIdentitiesByProviderID[printing.printingID] ?? [] {
                                 pendingRowPatches.append(
@@ -1163,7 +1179,13 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                             }
                             switch patch.change {
                             case let .catalogMetadata(metadata, checkedAt):
+                                let savedArtwork = (row.imageURL, row.thumbnailURL)
                                 row.applyCatalogMetadata(metadata)
+                                // Price-only fetches intentionally skip artwork
+                                // recovery. Missing enrichment does not retract
+                                // artwork already saved on the collection row.
+                                row.imageURL = metadata.imageURL ?? savedArtwork.0
+                                row.thumbnailURL = metadata.thumbnailURL ?? savedArtwork.1
                                 CollectionCatalogNormalizer.recordCatalogMetadataCheck(
                                     on: row,
                                     at: checkedAt
@@ -4574,7 +4596,8 @@ final class PriceRefreshController: ObservableObject {
                     // wrong edition turns a priceable card into an unreachable
                     // one.
                     locale: CatalogIdentityNormalization.locale(forCatalogCardID: printing.printingID),
-                    ignoringCache: true
+                    ignoringCache: true,
+                    recoversArtwork: false
                 )
                 // The direct provider id is the exact printing identity. Keep
                 // this guard beside the fetch so a malformed or redirected
@@ -4651,7 +4674,8 @@ private actor ImportedCardResolver {
                 guard let card = try? await tcgdex.fetchCard(
                     setID: set.id,
                     localID: number,
-                    ignoringCache: true
+                    ignoringCache: true,
+                    recoversArtwork: false
                 ),
                       CatalogIdentityNormalization.namesMatch(
                         imported: identity.name,

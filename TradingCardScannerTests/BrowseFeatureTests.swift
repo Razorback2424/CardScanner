@@ -2997,6 +2997,263 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testBrowseTwoCharacterSearchCompletesEveryLane() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root),
+                                       isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        let games = model.searchGames
+
+        model.searchText = "p"
+        try await Task.sleep(for: .milliseconds(150))
+        let singleCharacterRequests = await provider.requestCount
+        XCTAssertEqual(singleCharacterRequests, 0)
+        model.searchText = "pi"
+        let started = await waitUntil { await provider.requestCount == games.count * 2 }
+        XCTAssertTrue(started, "Both result kinds must start for every game after the second letter")
+
+        // Complete the lanes in reverse order, including fast local results
+        // while other providers are still suspended.
+        for game in games.reversed() {
+            await provider.finish(query: "pi", game: game)
+            let published = await waitUntil {
+                model.searchResults.filter { $0.game == game }.count == 2
+            }
+            XCTAssertTrue(published, "A fast lane must publish without waiting for another provider")
+        }
+        XCTAssertEqual(model.searchResults.count, games.count * 2)
+        XCTAssertEqual(model.searchState, .results(hasFailures: false))
+    }
+
+    @MainActor
+    func testBrowseSearchReplacementAndClearIgnoreLateProviderCompletions() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root),
+                                       isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        let laneCount = model.searchGames.count * 2
+
+        model.searchText = "pi"
+        let firstStarted = await waitUntil { await provider.requestCount == laneCount }
+        XCTAssertTrue(firstStarted)
+        model.searchText = "pik"
+        let replacementStarted = await waitUntil { await provider.requestCount == laneCount * 2 }
+        XCTAssertTrue(replacementStarted, "Replacing a query must not wait for cancelled providers")
+        await provider.finish(query: "pik")
+        let replacementPublished = await waitUntil { model.searchResults.count == laneCount }
+        XCTAssertTrue(replacementPublished)
+        XCTAssertTrue(model.searchResults.allSatisfy { $0.name == "pik" })
+
+        // These providers intentionally ignore cancellation until released.
+        await provider.finish(query: "pi")
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertTrue(model.searchResults.allSatisfy { $0.name == "pik" })
+
+        model.searchText = "ch"
+        let thirdStarted = await waitUntil { await provider.requestCount == laneCount * 3 }
+        XCTAssertTrue(thirdStarted)
+        model.searchText = ""
+        await provider.finish(query: "ch")
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertTrue(model.searchResults.isEmpty)
+        XCTAssertTrue(model.lanes.isEmpty)
+        XCTAssertTrue(sealed.searchLanes.isEmpty)
+        XCTAssertEqual(model.searchState, .idle)
+    }
+
+    @MainActor
+    func testCancelledBrowsePaginationDoesNotAppendLatePages() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider(hasNextPage: true)
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        let laneCount = model.searchGames.count * 2
+        model.searchText = "pi"
+        let started = await waitUntil { await provider.requestCount == laneCount }
+        XCTAssertTrue(started)
+        await provider.finish(query: "pi")
+        let loaded = await waitUntil { model.searchResults.count == laneCount }
+        XCTAssertTrue(loaded)
+
+        let pagination = Task { await model.loadMoreSearchResults() }
+        let pagesStarted = await waitUntil { await provider.requestCount == laneCount * 2 }
+        XCTAssertTrue(pagesStarted)
+        pagination.cancel()
+        let cancelled = await waitUntil { await provider.cancellationCount == laneCount }
+        XCTAssertTrue(cancelled)
+        await provider.finish(query: "pi", cursor: "next")
+        await provider.finish(query: "pi", cursor: "1")
+        await pagination.value
+
+        XCTAssertEqual(model.searchResults.count, laneCount, "Cancelled pages must not change the visible results")
+        XCTAssertTrue(model.lanes.values.allSatisfy { $0.cards.count == 1 && $0.cursor == "next" && !$0.isLoading })
+        XCTAssertTrue(sealed.searchLanes.values.allSatisfy { $0.products.count == 1 && $0.nextOffset == 1 && !$0.isLoading })
+        let cancellations = await provider.cancellationCount
+        XCTAssertEqual(cancellations, laneCount)
+    }
+
+    @MainActor
+    func testBrowseRapidTypingStartsOnlyTheFinalQuery() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        for query in ["c", "ch", "cha", "char", "chari", "chariz", "chariza", "charizard"] {
+            model.searchText = query
+            try await Task.sleep(for: .milliseconds(15))
+        }
+        let started = await waitUntil { await provider.requestCount == model.searchGames.count * 2 }
+        XCTAssertTrue(started)
+        let queries = await provider.requestedQueries
+        XCTAssertEqual(queries, ["charizard"])
+        await provider.finish(query: "charizard")
+        let loaded = await waitUntil { model.searchResults.count == model.searchGames.count * 2 }
+        XCTAssertTrue(loaded)
+    }
+
+    @MainActor
+    func testBrowseScopeChangesIgnoreOlderSetAndGameResponses() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed, initialGame: .pokemon)
+        let old = CatalogSetID(game: .pokemon, providerID: "old")
+        let current = CatalogSetID(game: .pokemon, providerID: "current")
+        model.selectedSets = [old]
+        model.searchText = "pi"
+        let firstStarted = await waitUntil { await provider.requestCount == 2 }
+        XCTAssertTrue(firstStarted)
+        model.selectedSets = [current]
+        let setStarted = await waitUntil { await provider.requestCount == 4 }
+        XCTAssertTrue(setStarted)
+        model.selectedGame = .magic
+        let gameStarted = await waitUntil { await provider.requestCount == 6 }
+        XCTAssertTrue(gameStarted)
+        await provider.finish(query: "pi", game: .magic)
+        let loaded = await waitUntil { model.searchResults.count == 2 }
+        XCTAssertTrue(loaded)
+        await provider.finish(query: "pi", game: .pokemon)
+        try await Task.sleep(for: .milliseconds(100))
+        let requestedSets = await provider.requestedCardSetIDs
+        XCTAssertEqual(requestedSets, [[old], [current], []])
+        XCTAssertEqual(Set(model.lanes.keys), [.magic])
+        XCTAssertEqual(Set(sealed.searchLanes.keys), [.magic])
+        XCTAssertTrue(model.searchResults.allSatisfy { $0.game == .magic })
+    }
+
+    @MainActor
+    func testBrowsePartialFailureCanRetryWithoutLosingOtherGames() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        await provider.setFailedGames([.magic])
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        let laneCount = model.searchGames.count * 2
+        model.searchText = "pi"
+        let started = await waitUntil { await provider.requestCount == laneCount }
+        XCTAssertTrue(started)
+        await provider.finish(query: "pi")
+        let partial = await waitUntil {
+            model.searchResults.count == laneCount - 2 && model.searchState == .results(hasFailures: true)
+                && model.lanes[.magic]?.error != nil && sealed.searchLanes[.magic]?.error != nil
+        }
+        XCTAssertTrue(partial)
+        XCTAssertEqual(model.searchResults.count, laneCount - 2)
+        await provider.setFailedGames([])
+        model.retrySearch()
+        // Successful sealed pages are fresh in the cache; retry only needs
+        // the five card lanes and the failed sealed lane.
+        let retryStarted = await waitUntil {
+            await provider.requestCount == laneCount + model.searchGames.count + 1
+        }
+        XCTAssertTrue(retryStarted)
+        await provider.finish(query: "pi")
+        let recovered = await waitUntil {
+            model.searchResults.count == laneCount && model.searchState == .results(hasFailures: false)
+        }
+        XCTAssertTrue(recovered)
+    }
+
+    @MainActor
+    func testBrowseReturningDuringPartialSearchKeepsFinishedLanes() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        let laneCount = model.searchGames.count * 2
+        model.searchText = "pi"
+        let started = await waitUntil { await provider.requestCount == laneCount }
+        XCTAssertTrue(started)
+        await provider.finish(query: "pi", game: .pokemon)
+        let partial = await waitUntil { model.searchResults.count == 2 }
+        XCTAssertTrue(partial)
+        let visible = model.searchResults
+        model.suspendSearch()
+        // Exercise an immediate second departure before the resumed worker
+        // gets its first turn on the main actor.
+        model.resumeSearch()
+        model.suspendSearch()
+        model.resumeSearch()
+        XCTAssertEqual(model.searchResults, visible)
+        let resumed = await waitUntil { await provider.requestCount == laneCount * 2 - 2 }
+        XCTAssertTrue(resumed, "Only unfinished games should request their first page again")
+        XCTAssertEqual(model.searchResults, visible)
+        await provider.finish(query: "pi")
+        let loaded = await waitUntil { model.searchResults.count == laneCount }
+        XCTAssertTrue(loaded)
+    }
+
+    @MainActor
+    func testBrowseSuspendsPendingSearchAndPreservesCompletedResultsOnReturn() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        let laneCount = model.searchGames.count * 2
+        model.searchText = "pi"
+        let started = await waitUntil { await provider.requestCount == laneCount }
+        XCTAssertTrue(started)
+        model.suspendSearch()
+        let cancelled = await waitUntil { await provider.cancellationCount == laneCount }
+        XCTAssertTrue(cancelled)
+        XCTAssertTrue(model.lanes.values.allSatisfy { !$0.isLoading })
+        XCTAssertTrue(sealed.searchLanes.values.allSatisfy { !$0.isLoading })
+        model.resumeSearch()
+        let resumed = await waitUntil { await provider.requestCount == laneCount * 2 }
+        XCTAssertTrue(resumed, "Returning must restart without waiting for old providers to finish")
+        await provider.finish(query: "pi")
+        let loaded = await waitUntil { model.searchResults.count == laneCount }
+        XCTAssertTrue(loaded)
+        try await Task.sleep(for: .milliseconds(100))
+        let completed = model.searchResults
+        model.suspendSearch()
+        model.resumeSearch()
+        try await Task.sleep(for: .milliseconds(450))
+        let requests = await provider.requestCount
+        XCTAssertEqual(requests, laneCount * 2, "Completed results should survive a detail push without refetching")
+        XCTAssertEqual(model.searchResults, completed)
+        XCTAssertEqual(model.searchText, "pi")
+    }
+
+    @MainActor
     func testRecoverySearchDoesNotRequestSealedProducts() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -3079,6 +3336,52 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertNil(model.lanes[.pokemon]?.error)
         let requestedCursors = await catalog.requestedCursors()
         XCTAssertEqual(requestedCursors, [nil, "next"])
+    }
+
+    @MainActor
+    func testAllGamesSetFilterScopesOnlyCardLanesIncludingPagination() async throws {
+        let pokemon = CatalogSetID(game: .pokemon, providerID: "selected-pokemon")
+        let lorcana = CatalogSetID(game: .lorcana, providerID: "selected-lorcana")
+        let yugioh = CatalogSetID(game: .yuGiOh, providerID: "selected-yugioh")
+        let cases: [(CardGame?, Set<CatalogSetID>, [CardGame])] = [
+            (nil, [pokemon], [.pokemon]),
+            (nil, [lorcana, yugioh], [.lorcana, .yuGiOh]),
+            (.magic, [pokemon], [.magic])
+        ]
+        for (selectedGame, selectedSets, expectedCards) in cases {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let provider = HeldBrowseSearchProvider(hasNextPage: true)
+            let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                cache: CatalogCacheStore(root: root), isConfigured: { true })
+            let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+            model.selectedGame = selectedGame
+            model.selectedSets = selectedSets
+            model.searchText = "fixture"
+            XCTAssertEqual(model.cardSearchGames, expectedCards)
+            let requestCount = expectedCards.count + model.searchGames.count
+            let started = await waitUntil { await provider.requestCount == requestCount }
+            XCTAssertTrue(started)
+            await provider.finish(query: "fixture")
+            let loaded = await waitUntil { model.searchResults.count == requestCount }
+            XCTAssertTrue(loaded)
+            XCTAssertEqual(Set(model.lanes.keys), Set(expectedCards))
+            XCTAssertEqual(model.searchState, .results(hasFailures: false))
+            XCTAssertEqual(Set(model.sealedModel.searchLanes.keys), Set(model.searchGames))
+
+            let pagination = Task { await model.loadMoreSearchResults() }
+            let nextStarted = await waitUntil { await provider.requestCount == requestCount * 2 }
+            XCTAssertTrue(nextStarted)
+            await provider.finish(query: "fixture", cursor: "next")
+            await provider.finish(query: "fixture", cursor: "1")
+            await pagination.value
+            XCTAssertEqual(model.searchResults.count, requestCount * 2)
+            XCTAssertFalse(model.hasSearchPagination)
+            let cardFilters = await provider.requestedCardSetIDs
+            for game in expectedCards {
+                XCTAssertEqual(cardFilters.filter { $0 == Set(selectedSets.filter { $0.game == game }) }.count, 2)
+            }
+        }
     }
 
     func testCatalogImageCacheRejectsHTMLMIMEBeforeImageDecode() async throws {
@@ -5417,6 +5720,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
         let requestCounts = await source.requestCounts()
         XCTAssertEqual(requestCounts.primary, 1)
+        let artworkRecoveries = await source.artworkRecoveryCount()
+        XCTAssertEqual(artworkRecoveries, 0, "Signed artwork must be applied before provider recovery")
 
         let providerImage = "https://assets.tcgdex.net/en/sv/sv10/085"
         let providerSource = CountingPokemonCardSource(
@@ -6579,7 +6884,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let builder = CatalogSetCompletionBuilder(checklistStore: checklists)
         let ownership = CatalogOwnershipIndex([card])
         let unavailable = await builder.build(sets: [set], ownership: ownership, tier: .standard)
-        XCTAssertEqual(unavailable.completion(for: set, tier: .standard)?.owned, 0)
+        XCTAssertEqual(unavailable.completion(for: set, tier: .standard), SetCompletion(owned: 1, total: nil, unit: "cards"))
+        XCTAssertTrue(CatalogSetListFilter.started.includes(set, ownership: ownership,
+            completions: unavailable, tier: .standard))
         await checklists.replace(entries: [entry], checklists: [set.id: [slot]])
         let restored = await builder.build(sets: [set], ownership: ownership, tier: .standard)
         XCTAssertEqual(restored.completion(for: set, tier: .standard)?.owned, 1)
@@ -7969,6 +8276,98 @@ private actor RecordingJustTCGProviding: SealedBrowseProviding {
     func sealedSearchGames() -> [CardGame] { searchedGames }
 }
 
+/// Holds each provider independently and deliberately finishes even when its
+/// caller was cancelled, like a local index or an already-completing request.
+private actor HeldBrowseSearchProvider: BrowseCatalogProviding, SealedBrowseProviding {
+    nonisolated let gameRegistry: CardGameRegistry
+    private let hasNextPage: Bool
+    private let returnsEmptyResults: Bool
+    private struct Request {
+        let query: String
+        let game: CardGame
+        let sealed: Bool
+        let cursor: String?
+        let setIDs: Set<CatalogSetID>
+    }
+    private var pending: [UUID: (Request, CheckedContinuation<Void, Never>)] = [:]
+    private var cancellations: Set<UUID> = []
+    private var failedGames: Set<CardGame> = []
+    private(set) var requestCount = 0
+    private(set) var requestedQueries: Set<String> = []
+    private(set) var requestedCardSetIDs: [Set<CatalogSetID>] = []
+    var cancellationCount: Int { cancellations.count }
+
+    init(gameRegistry: CardGameRegistry? = nil, hasNextPage: Bool = false, returnsEmptyResults: Bool = false) {
+        self.gameRegistry = gameRegistry ?? CardGameRegistry(descriptors:
+            ([.pokemon, .magic, .onePiece, .lorcana, .yuGiOh] as [CardGame]).enumerated().map {
+                .init(game: $0.element, displayName: $0.element.label, sortOrder: $0.offset,
+                      capabilities: [.browse, .sealed])
+            })
+        self.hasNextPage = hasNextPage
+        self.returnsEmptyResults = returnsEmptyResults
+    }
+
+    private func hold(query: String, game: CardGame, sealed: Bool, cursor: String?,
+                      setIDs: Set<CatalogSetID> = []) async {
+        let id = UUID()
+        requestCount += 1
+        requestedQueries.insert(query)
+        await withTaskCancellationHandler {
+            await withCheckedContinuation {
+                pending[id] = (Request(query: query, game: game, sealed: sealed, cursor: cursor, setIDs: setIDs), $0)
+            }
+        } onCancel: {
+            Task { await self.recordCancellation(id) }
+        }
+    }
+
+    private func recordCancellation(_ id: UUID) { cancellations.insert(id) }
+    func setFailedGames(_ games: Set<CardGame>) { failedGames = games }
+
+    func finish(query: String, game: CardGame? = nil, cursor: String? = nil,
+                setIDs: Set<CatalogSetID>? = nil) {
+        for id in Array(pending.keys) {
+            guard let (request, _) = pending[id], request.query == query, request.cursor == cursor,
+                  game == nil || request.game == game,
+                  setIDs == nil || request.setIDs == setIDs else { continue }
+            pending.removeValue(forKey: id)?.1.resume()
+        }
+    }
+
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>,
+                     cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        requestedCardSetIDs.append(setIDs)
+        await hold(query: query, game: game, sealed: false, cursor: cursor, setIDs: setIDs)
+        if failedGames.contains(game) { throw TestError.failed }
+        if returnsEmptyResults { return .init(items: [], nextCursor: nil) }
+        let setID = setIDs.sorted { $0.id < $1.id }.first ?? .init(game: game, providerID: "search-regression")
+        return .init(items: [.init(game: game, providerID: "\(query)-\(cursor ?? "first")-\(setID.id)",
+            setID: setID, setName: "Search Fixture",
+            setCode: "TST", name: query, collectorNumber: "1", thumbnailURL: nil, imageURL: nil)],
+            nextCursor: hasNextPage && cursor == nil ? "next" : nil)
+    }
+
+    func searchSealedProducts(game: CardGame, setID: String?, query: String?, offset: Int)
+        async throws -> MarketCatalogPage<SealedProductSummary> {
+        let query = query ?? ""
+        await hold(query: query, game: game, sealed: true, cursor: offset == 0 ? nil : String(offset))
+        if failedGames.contains(game) { throw TestError.failed }
+        return .init(items: [.init(id: "\(query)-\(offset)", name: query, setName: "Search Fixture", variantID: nil,
+            marketPriceUSD: nil, updatedAt: nil, imageURL: nil)], total: hasNextPage ? 2 : 1,
+            offset: offset, limit: 1, hasMore: hasNextPage && offset == 0)
+    }
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] { [] }
+    func sealedSets(game: CardGame) async throws -> [SealedSetSummary] { [] }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { throw TestError.failed }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+}
+
 private actor EmptyBrowseCatalog: BrowseCatalogProviding {
     nonisolated let gameRegistry: CardGameRegistry
     private var searches = 0
@@ -8047,6 +8446,117 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
 
 @MainActor
 final class BrowsePaginationRenderTests: XCTestCase {
+    func testTopLevelBrowseEmptySearchCanBeClearedAndRetyped() async throws {
+        let registry = CardGameRegistry(descriptors: [
+            .init(game: .magic, displayName: "Magic", sortOrder: 0, capabilities: [.browse])
+        ])
+        let provider = HeldBrowseSearchProvider(gameRegistry: registry, returnsEmptyResults: true)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let window = try host(BrowseView(catalog: provider).modelContainer(container), height: 800)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(100))
+        let field = try XCTUnwrap(findTextField(in: window))
+        XCTAssertTrue(field.becomeFirstResponder())
+        for text in ["c", "ch"] {
+            field.text = text
+            field.sendActions(for: .editingChanged)
+            try await Task.sleep(for: .milliseconds(30))
+        }
+        for _ in 0..<100 {
+            if await provider.requestCount == 1 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        await provider.finish(query: "ch")
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(field.text, "ch")
+        XCTAssertTrue(field.isFirstResponder, "Empty results must preserve keyboard focus")
+        field.text = ""
+        field.sendActions(for: .editingChanged)
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertEqual(field.text, "")
+        field.text = "pi"
+        field.sendActions(for: .editingChanged)
+        for _ in 0..<100 {
+            if await provider.requestCount == 2 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let requests = await provider.requestCount
+        await provider.finish(query: "pi")
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(requests, 2)
+        XCTAssertEqual(field.text, "pi")
+        XCTAssertTrue(field.isFirstResponder)
+    }
+
+    func testTopLevelBrowsePaginationKeepsSlowLaneAliveWhenFastLaneFinishes() async throws {
+        let registry = CardGameRegistry(descriptors: [
+            .init(game: .magic, displayName: "Magic", sortOrder: 0, capabilities: [.browse]),
+            .init(game: .pokemon, displayName: "Pokémon", sortOrder: 1, capabilities: [.browse])
+        ])
+        let provider = HeldBrowseSearchProvider(gameRegistry: registry, hasNextPage: true)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let window = try host(BrowseView(catalog: provider).modelContainer(container), height: 2400)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(100))
+        let field = try XCTUnwrap(findTextField(in: window))
+        field.text = "pi"
+        field.sendActions(for: .editingChanged)
+        for _ in 0..<100 {
+            if await provider.requestCount == 2 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        await provider.finish(query: "pi")
+        for _ in 0..<100 {
+            if await provider.requestCount == 4 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let requests = await provider.requestCount
+        XCTAssertEqual(requests, 4, "Both games should have a next-page request in flight")
+        await provider.finish(query: "pi", game: .magic, cursor: "next")
+        try await Task.sleep(for: .milliseconds(250))
+        let cancellations = await provider.cancellationCount
+        await provider.finish(query: "pi", game: .pokemon, cursor: "next")
+        XCTAssertEqual(cancellations, 0, "Publishing one page must not cancel another game's unfinished page")
+    }
+
+    func testTopLevelBrowseTypingAndClosingCancelsSearch() async throws {
+        let registry = CardGameRegistry(descriptors: [
+            .init(game: .magic, displayName: "Magic", sortOrder: 0, capabilities: [.browse])
+        ])
+        let provider = HeldBrowseSearchProvider(gameRegistry: registry)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let window = try host(BrowseView(catalog: provider).modelContainer(container), height: 800)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        for _ in 0..<100 {
+            if findTextField(in: window) != nil { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let field = try XCTUnwrap(findTextField(in: window))
+        for text in ["p", "pi"] {
+            field.text = text
+            field.sendActions(for: .editingChanged)
+            try await Task.sleep(for: .milliseconds(30))
+        }
+        for _ in 0..<100 {
+            if await provider.requestCount == 1 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let requests = await provider.requestCount
+        XCTAssertEqual(requests, 1, "The real Browse field must start the search after the second letter")
+        window.isHidden = true
+        window.rootViewController = nil
+        for _ in 0..<50 {
+            if await provider.cancellationCount == 1 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let cancellations = await provider.cancellationCount
+        await provider.finish(query: "pi")
+        XCTAssertEqual(cancellations, 1, "Leaving Browse must cancel its in-flight catalog search")
+    }
+
     func testSetNavigationFromInitiallyInactivePhoneTabPreservesSafeArea() async throws {
         let set = fixtureSet("first")
         let catalog = RenderPagingCatalog(sets: [set], cardsPerPage: 40, pageCount: 1)
@@ -8616,6 +9126,7 @@ private actor CountingPokemonCardSource: PokemonCardSource {
     private let responseDelayNanoseconds: UInt64
     private var primaryRequests = 0
     private var fallbackRequests = 0
+    private var artworkRequests = 0
 
     init(
         primary: PrimaryResponse,
@@ -8650,4 +9161,11 @@ private actor CountingPokemonCardSource: PokemonCardSource {
     func requestCounts() -> (primary: Int, fallback: Int) {
         (primaryRequests, fallbackRequests)
     }
+
+    func recoveringArtwork(for card: TCGdexCard) async -> TCGdexCard {
+        artworkRequests += 1
+        return card
+    }
+
+    func artworkRecoveryCount() -> Int { artworkRequests }
 }

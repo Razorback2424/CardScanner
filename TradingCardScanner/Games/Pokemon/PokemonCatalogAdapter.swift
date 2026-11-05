@@ -197,7 +197,9 @@ actor PokemonCatalogEngine {
             matching: evidence,
             registry: catalogRegistry
         )
-        return applyingSignedArtwork(to: card)
+        let enriched = await recoveringArtworkIfNeeded(for: applyingSignedArtwork(to: card))
+        try Task.checkCancellation()
+        return applyingSignedArtwork(to: enriched)
     }
 
     func resolution(for identifier: ScanIdentifier) async throws -> CatalogResolution {
@@ -206,7 +208,15 @@ actor PokemonCatalogEngine {
         let resolution = try await fetchResolution(identifier)
         if case .pokemonHistorical = identifier.legacyIdentity,
            identifier.catalogGeneration != catalogGeneration { throw CatalogLookupError.staleCatalog }
-        let card = applyingSignedArtwork(to: resolution.card)
+        var card = applyingSignedArtwork(to: resolution.card)
+        let isHistorical: Bool
+        if case .pokemonHistorical = identifier.legacyIdentity { isHistorical = true } else { isHistorical = false }
+        if resolution.path == .network || (isHistorical && resolution.path == .historicalFallback) {
+            card = await recoveringArtworkIfNeeded(for: card)
+            try Task.checkCancellation()
+            if isHistorical, identifier.catalogGeneration != catalogGeneration { throw CatalogLookupError.staleCatalog }
+            card = applyingSignedArtwork(to: card)
+        }
         let enriched = CatalogResolution(card, isPersistable: resolution.isPersistable,
             retrievedAt: resolution.retrievedAt, path: resolution.path)
         if enriched.isPersistable, case let .pokemon(pokemonCard, setCode) = card.legacyIdentity,
@@ -534,6 +544,12 @@ actor PokemonCatalogEngine {
             .pokemon(card, setCode: prefix),
             path: .historicalFallback
         )
+    }
+
+    private func recoveringArtworkIfNeeded(for identifiedCard: IdentifiedCard) async -> IdentifiedCard {
+        guard case let .pokemon(card, setCode) = identifiedCard.legacyIdentity,
+              card.storedArtworkURL == nil else { return identifiedCard }
+        return .pokemon(await pokemonSource.recoveringArtwork(for: card), setCode: setCode)
     }
 
     private func applyingSignedArtwork(to identifiedCard: IdentifiedCard) -> IdentifiedCard {

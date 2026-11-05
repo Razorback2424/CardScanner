@@ -18,7 +18,7 @@ extension TCGdexService: PokemonHistoricalCatalogSource {
     }
 
     func historicalCard(id: String) async throws -> TCGdexCard {
-        try await fetchCard(id: id)
+        try await fetchCard(id: id, recoversArtwork: false)
     }
 }
 

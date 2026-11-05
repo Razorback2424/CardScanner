@@ -33,6 +33,8 @@ final class BrowseViewModel: ObservableObject {
     @Published private(set) var setErrors: [CardGame: String] = [:]
     @Published private(set) var lanes: [CardGame: Lane] = [:]
     @Published private(set) var searchResults: [CatalogSearchResult] = []
+    @Published private var activeSearchPaginationKey: String?
+    @Published private var searchPaginationRevision: UInt = 0
 
     let catalog: any BrowseCatalogProviding
     var gameRegistry: CardGameRegistry { catalog.gameRegistry }
@@ -40,6 +42,10 @@ final class BrowseViewModel: ObservableObject {
     private let includesSealedProducts: Bool
     private var searchTask: Task<Void, Never>?
     private var searchResultsRefreshTask: Task<Void, Never>?
+    private var searchIsSuspended = false
+    private var needsSearchOnResume = false
+    private var cardGamesToResume: [CardGame]?
+    private var paginationRequestID: UUID?
     private var generation = UUID()
     private var setLoadIDs: [CardGame: UUID] = [:]
     private var sealedModelCancellable: AnyCancellable? = nil
@@ -70,11 +76,16 @@ final class BrowseViewModel: ObservableObject {
         selectedGame.map { [$0] } ?? gameRegistry.games(supporting: .browse)
     }
 
+    var cardSearchGames: [CardGame] {
+        guard selectedGame == nil, !selectedSets.isEmpty else { return searchGames }
+        return searchGames.filter { game in selectedSets.contains { $0.game == game } }
+    }
+
     /// A single deterministic stream assembled from the independently paged
     /// card and sealed lanes. It is refreshed when either lane family changes,
     /// so a render does not sort the same provider pages more than once.
     private func recomputeSearchResults() {
-        let cardResults = searchGames.flatMap { game in
+        let cardResults = cardSearchGames.flatMap { game in
             (lanes[game]?.cards ?? []).map(CatalogSearchResult.card)
         }
         let sealedResults = searchGames.filter { sealedLaneIsRequested(for: $0) }.flatMap { game in
@@ -93,6 +104,7 @@ final class BrowseViewModel: ObservableObject {
 
     private func scheduleSearchResultsRefresh() {
         searchResultsRefreshTask?.cancel()
+        guard !searchIsSuspended else { return }
         searchResultsRefreshTask = Task { @MainActor [weak self] in
             await Task.yield()
             guard !Task.isCancelled, let self else { return }
@@ -103,7 +115,7 @@ final class BrowseViewModel: ObservableObject {
     var searchState: CatalogSearchState {
         guard normalizedQuery.count >= 2 else { return .idle }
         let games = searchGames
-        var statuses: [CatalogSearchLaneStatus] = games.map { game in
+        var statuses: [CatalogSearchLaneStatus] = cardSearchGames.map { game in
             guard let lane = lanes[game] else {
                 return CatalogSearchLaneStatus(isLoading: true)
             }
@@ -138,7 +150,7 @@ final class BrowseViewModel: ObservableObject {
     var hasSearchPagination: Bool {
         guard normalizedQuery.count >= 2 else { return false }
         return searchGames.contains { game in
-            if let lane = lanes[game], lane.cursor != nil, lane.error == nil {
+            if cardSearchGames.contains(game), let lane = lanes[game], lane.cursor != nil, lane.error == nil {
                 return true
             }
             if sealedLaneIsRequested(for: game),
@@ -152,11 +164,53 @@ final class BrowseViewModel: ObservableObject {
     }
 
     var searchPaginationKey: String {
-        searchGames.map { game in
-            let card = lanes[game]?.cursor ?? "-"
+        if let activeSearchPaginationKey { return activeSearchPaginationKey }
+        let cursors = searchGames.map { game in
+            let card = cardSearchGames.contains(game) ? lanes[game]?.cursor ?? "-" : "-"
             let sealed = sealedModel.searchLanes[game]?.nextOffset.map(String.init) ?? "-"
             return [game.rawValue, card, sealed].joined(separator: ":")
         }.joined(separator: "|")
+        return "\(generation)-\(searchPaginationRevision)-\(cursors)"
+    }
+
+    /// Preserve completed results across a detail push or tab change, while
+    /// preventing hidden searches from retaining the screen and spending quota.
+    func suspendSearch() {
+        guard !searchIsSuspended else { return }
+        searchIsSuspended = true
+        needsSearchOnResume = searchTask != nil && normalizedQuery.count >= 2
+        cardGamesToResume = needsSearchOnResume
+            ? cardSearchGames.filter { lanes[$0]?.isLoading != false }
+            : nil
+        searchTask?.cancel()
+        searchTask = nil
+        searchResultsRefreshTask?.cancel()
+        generation = UUID()
+        paginationRequestID = nil
+        activeSearchPaginationKey = nil
+        for (game, var lane) in lanes where lane.isLoading {
+            lane.isLoading = false
+            lanes[game] = lane
+        }
+        sealedModel.cancelSearchRequests()
+        recomputeSearchResults()
+    }
+
+    func resumeSearch() {
+        searchIsSuspended = false
+        guard needsSearchOnResume else { return }
+        needsSearchOnResume = false
+        let query = normalizedQuery
+        guard query.count >= 2 else { return }
+        let token = generation
+        let cardGames = (cardGamesToResume ?? cardSearchGames).filter { cardSearchGames.contains($0) }
+        cardGamesToResume = nil
+        for game in cardGames { lanes[game] = Lane(isLoading: true) }
+        searchTask = Task { [weak self] in
+            guard !Task.isCancelled, let self, self.generation == token else { return }
+            await self.runSearch(query: query, token: token, cardGames: cardGames)
+            if self.generation == token { self.searchTask = nil }
+        }
     }
 
     var availableCompletionSets: [CatalogSet] {
@@ -225,8 +279,8 @@ final class BrowseViewModel: ObservableObject {
         let requestedQuery = normalizedQuery
         let requestedGeneration = generation
         let requestedSetIDs = effectiveSetIDs(for: game)
-        guard requestedQuery.count >= 2,
-              selectedGame == nil || selectedGame == game,
+        guard !Task.isCancelled, !searchIsSuspended, requestedQuery.count >= 2,
+              cardSearchGames.contains(game),
               var lane = lanes[game],
               let cursor = lane.cursor,
               !lane.isLoading else { return }
@@ -246,7 +300,7 @@ final class BrowseViewModel: ObservableObject {
                 setIDs: requestedSetIDs,
                 cursor: cursor
             )
-            guard generation == requestedGeneration,
+            guard !Task.isCancelled, generation == requestedGeneration,
                   CardNameSearch.normalize(searchText) == requestedQuery,
                   var currentLane = lanes[game],
                   currentLane.cursor == cursor else { return }
@@ -274,32 +328,52 @@ final class BrowseViewModel: ObservableObject {
     /// in flight together.
     func loadMoreSearchResults() async {
         let query = normalizedQuery
-        guard query.count >= 2 else { return }
+        guard query.count >= 2, !searchIsSuspended, activeSearchPaginationKey == nil else { return }
         let games = searchGames
+        let token = generation
 
-        await withTaskGroup(of: Void.self) { group in
-            for game in games {
-                if let lane = lanes[game],
-                   lane.cursor != nil,
-                   !lane.isLoading,
-                   lane.error == nil {
-                    group.addTask { [weak self] in
-                        await self?.loadMore(game)
-                    }
-                }
-
-                if sealedLaneIsRequested(for: game),
-                   let lane = sealedModel.searchLanes[game],
-                   lane.nextOffset != nil,
-                   !lane.isLoading,
-                   lane.error == nil {
-                    group.addTask { [weak self] in
-                        guard let self else { return }
-                        await self.sealedModel.loadMoreSearch(game: game, query: query)
-                    }
-                }
+        var tasks: [Task<Void, Never>] = []
+        for game in games {
+            if cardSearchGames.contains(game), let lane = lanes[game],
+               lane.cursor != nil,
+               !lane.isLoading,
+               lane.error == nil {
+                tasks.append(Task { @MainActor [weak self] in
+                    guard !Task.isCancelled, let self, self.generation == token else { return }
+                    await self.loadMore(game)
+                })
             }
-            await group.waitForAll()
+
+            if sealedLaneIsRequested(for: game),
+               let lane = sealedModel.searchLanes[game],
+               lane.nextOffset != nil,
+               !lane.isLoading,
+               lane.error == nil {
+                tasks.append(Task { @MainActor [weak self] in
+                    guard !Task.isCancelled, let self, self.generation == token else { return }
+                    await self.sealedModel.loadMoreSearch(game: game, query: query)
+                })
+            }
+        }
+        let workers = tasks
+        guard !workers.isEmpty else { return }
+        let requestID = UUID()
+        paginationRequestID = requestID
+        // A partial page publishes its cursor immediately. Keep the footer's
+        // task identity stable until the whole batch finishes so that publishing
+        // a fast lane does not cancel the other providers' unfinished pages.
+        activeSearchPaginationKey = searchPaginationKey
+        defer {
+            if paginationRequestID == requestID {
+                paginationRequestID = nil
+                searchPaginationRevision &+= 1
+                activeSearchPaginationKey = nil
+            }
+        }
+        await withTaskCancellationHandler {
+            for worker in workers { await worker.value }
+        } onCancel: {
+            for worker in workers { worker.cancel() }
         }
         recomputeSearchResults()
     }
@@ -310,7 +384,12 @@ final class BrowseViewModel: ObservableObject {
 
     private func scheduleSearch() {
         searchTask?.cancel()
+        searchTask = nil
+        cardGamesToResume = nil
+        needsSearchOnResume = false
         generation = UUID()
+        paginationRequestID = nil
+        activeSearchPaginationKey = nil
         let token = generation
         let query = normalizedQuery
         guard !query.isEmpty else {
@@ -331,24 +410,35 @@ final class BrowseViewModel: ObservableObject {
         lanes = [:]
         sealedModel.clearSearch()
         recomputeSearchResults()
+        needsSearchOnResume = searchIsSuspended
+        guard !searchIsSuspended else { return }
         searchTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(400))
             guard !Task.isCancelled, let self, self.generation == token else { return }
             await self.runSearch(query: query, token: token)
+            if self.generation == token { self.searchTask = nil }
         }
     }
 
-    private func runSearch(query: String, token: UUID) async {
-        let games = searchGames
+    private func runSearch(query: String, token: UUID, cardGames: [CardGame]? = nil) async {
+        let selectedGames = searchGames
+        let games = (cardGames ?? cardSearchGames).filter { cardSearchGames.contains($0) }
         for game in games { lanes[game] = Lane(isLoading: true) }
-        for game in gameRegistry.games(supporting: .browse) where !games.contains(game) { lanes[game] = nil }
+        for game in gameRegistry.games(supporting: .browse) where !cardSearchGames.contains(game) { lanes[game] = nil }
         recomputeSearchResults()
 
-        async let cardSearch: Void = searchCardLanes(games: games, query: query, token: token)
-        if includesSealedProducts {
-            await sealedModel.search(query: query, games: games.filter { gameRegistry.supports($0, .sealed) })
+        // Own and join the workers explicitly. Device Browse crashes reached
+        // AsyncTask.completeFuture while the nested search groups completed;
+        // keep their lifetimes independent of an async-let stack frame.
+        let cardSearch = Task { await searchCardLanes(games: games, query: query, token: token) }
+        await withTaskCancellationHandler {
+            if includesSealedProducts {
+                await sealedModel.search(query: query, games: selectedGames.filter { gameRegistry.supports($0, .sealed) })
+            }
+            await cardSearch.value
+        } onCancel: {
+            cardSearch.cancel()
         }
-        await cardSearch
     }
 
     private func sealedLaneIsRequested(for game: CardGame) -> Bool {
@@ -357,38 +447,33 @@ final class BrowseViewModel: ObservableObject {
     }
 
     private func searchCardLanes(games: [CardGame], query: String, token: UUID) async {
-        await withTaskGroup(of: (CardGame, Result<CatalogPage<CatalogCardSummary>, Error>).self) { group in
-            for game in games {
-                let catalog = catalog
-                let setIDs = effectiveSetIDs(for: game)
-                group.addTask {
-                    do {
-                        return (
-                            game,
-                            .success(
-                                try await catalog.searchCards(
-                                    named: query,
-                                    game: game,
-                                    setIDs: setIDs,
-                                    cursor: nil
-                                )
-                            )
-                        )
-                    } catch {
-                        return (game, .failure(error))
-                    }
+        let tasks = games.map { game in
+            let catalog = catalog
+            let setIDs = effectiveSetIDs(for: game)
+            return Task { @MainActor [weak self] in
+                guard !Task.isCancelled else { return }
+                let result: Result<CatalogPage<CatalogCardSummary>, Error>
+                do {
+                    result = .success(try await catalog.searchCards(
+                        named: query, game: game, setIDs: setIDs, cursor: nil
+                    ))
+                } catch {
+                    result = .failure(error)
                 }
-            }
-            for await (game, result) in group {
-                guard generation == token else { continue }
+                guard !Task.isCancelled, let self, self.generation == token else { return }
                 switch result {
                 case let .success(page):
-                    lanes[game] = Lane(cards: deduplicated(page.items), cursor: page.nextCursor)
+                    self.lanes[game] = Lane(cards: self.deduplicated(page.items), cursor: page.nextCursor)
                 case let .failure(error):
-                    lanes[game] = Lane(error: error.localizedDescription)
+                    self.lanes[game] = Lane(error: error.localizedDescription)
                 }
-                recomputeSearchResults()
+                self.recomputeSearchResults()
             }
+        }
+        await withTaskCancellationHandler {
+            for task in tasks { await task.value }
+        } onCancel: {
+            for task in tasks { task.cancel() }
         }
     }
 
@@ -456,6 +541,8 @@ struct BrowseView: View {
             .safeAreaPadding(.bottom, 24)
         }
         .scrollDismissesKeyboard(.interactively)
+        .onAppear { model.resumeSearch() }
+        .onDisappear { model.suspendSearch() }
         .navigationTitle("Catalog")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)

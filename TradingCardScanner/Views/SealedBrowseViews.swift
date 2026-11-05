@@ -129,6 +129,16 @@ final class SealedBrowseModel: ObservableObject {
         searchLanes = [:]
     }
 
+    /// Invalidate pending responses without discarding already visible products
+    /// or their next-page cursor when Browse moves off screen.
+    func cancelSearchRequests() {
+        searchGeneration = UUID()
+        for (game, var lane) in searchLanes where lane.isLoading {
+            lane.isLoading = false
+            searchLanes[game] = lane
+        }
+    }
+
     /// Loads the requested sealed search lanes from the query that the browse
     /// model has already debounced. Cached pages are usable without
     /// credentials; only a stale or missing page with a configured account
@@ -183,41 +193,41 @@ final class SealedBrowseModel: ObservableObject {
 
         let client = client
         let cache = cache
-        await withTaskGroup(of: (CardGame, Result<CatalogPage<SealedProductSummary>, Error>).self) { group in
-            for game in gamesToFetch {
-                group.addTask {
-                    do {
-                        let response = try await client.searchSealedProducts(
+        // Each worker publishes on the main actor as soon as it finishes.
+        // Explicit handles avoid nested task-group completion lifetimes in
+        // Browse's cancellable search, and are all cancelled and joined below.
+        let tasks = gamesToFetch.map { game in
+            Task { @MainActor [weak self] in
+                guard !Task.isCancelled else { return }
+                let result: Result<CatalogPage<SealedProductSummary>, Error>
+                do {
+                    let response = try await client.searchSealedProducts(
+                        game: game,
+                        setID: nil,
+                        query: normalizedQuery,
+                        offset: 0
+                    )
+                    let page = CatalogPage(
+                        items: response.items,
+                        nextCursor: response.hasMore
+                            ? String(response.offset + response.items.count)
+                            : nil
+                    )
+                    await cache.storeSealedProductPage(
+                        page,
+                        for: CatalogCacheStore.sealedPageKey(
                             game: game,
                             setID: nil,
                             query: normalizedQuery,
                             offset: 0
                         )
-                        let page = CatalogPage(
-                            items: response.items,
-                            nextCursor: response.hasMore
-                                ? String(response.offset + response.items.count)
-                                : nil
-                        )
-                        await cache.storeSealedProductPage(
-                            page,
-                            for: CatalogCacheStore.sealedPageKey(
-                                game: game,
-                                setID: nil,
-                                query: normalizedQuery,
-                                offset: 0
-                            )
-                        )
-                        return (game, .success(page))
-                    } catch {
-                        return (game, .failure(error))
-                    }
+                    )
+                    result = .success(page)
+                } catch {
+                    result = .failure(error)
                 }
-            }
-
-            for await (game, result) in group {
-                guard token == searchGeneration, !Task.isCancelled,
-                      var lane = searchLanes[game] else { continue }
+                guard !Task.isCancelled, let self, token == self.searchGeneration,
+                      var lane = self.searchLanes[game] else { return }
                 lane.isLoading = false
                 switch result {
                 case let .success(page):
@@ -227,8 +237,13 @@ final class SealedBrowseModel: ObservableObject {
                 case let .failure(error):
                     lane.error = Self.message(for: error)
                 }
-                searchLanes[game] = lane
+                self.searchLanes[game] = lane
             }
+        }
+        await withTaskCancellationHandler {
+            for task in tasks { await task.value }
+        } onCancel: {
+            for task in tasks { task.cancel() }
         }
     }
 

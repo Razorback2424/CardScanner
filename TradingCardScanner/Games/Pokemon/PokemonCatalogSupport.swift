@@ -627,6 +627,11 @@ actor PokemonOfflineCatalog {
 protocol PokemonCardSource: Sendable {
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard
     func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard?
+    func recoveringArtwork(for card: TCGdexCard) async -> TCGdexCard
+}
+
+extension PokemonCardSource {
+    func recoveringArtwork(for card: TCGdexCard) async -> TCGdexCard { card }
 }
 
 struct LivePokemonCardSource: PokemonCardSource, Sendable {
@@ -634,9 +639,13 @@ struct LivePokemonCardSource: PokemonCardSource, Sendable {
     private let pokemonTCG = PokemonTCGAPIService()
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
-        // Keep the service default. In particular, do not add a shorter scan
-        // timeout here; the provider default is the shared transport contract.
-        try await tcgdex.fetchCard(setID: setID, localID: localID)
+        // Keep the shared transport timeout. The catalog applies signed
+        // artwork before requesting any missing-artwork enrichment.
+        try await tcgdex.fetchCard(setID: setID, localID: localID, recoversArtwork: false)
+    }
+
+    func recoveringArtwork(for card: TCGdexCard) async -> TCGdexCard {
+        await tcgdex.recoveringArtwork(for: card)
     }
 
     func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? {

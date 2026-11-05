@@ -639,6 +639,54 @@ final class CatalogNormalizationTests: XCTestCase {
         }
     }
 
+    func testPriceOnlyFetchSkipsArtworkAndExplicitEnrichmentPreservesIdentity() async throws {
+        let fixture = ArtworkRecoveryFixture()
+        ArtworkRecoveryURLProtocol.install(fixture)
+        let session = fixture.session
+        defer { session.invalidateAndCancel(); ArtworkRecoveryURLProtocol.install(nil) }
+        let service = TCGdexService(session: session)
+        let card = try await service.fetchCard(id: "svp-196", recoversArtwork: false)
+        let byNumber = try await service.fetchCard(setID: "svp", localID: "196", recoversArtwork: false)
+        XCTAssertNil(card.storedArtworkURL)
+        XCTAssertEqual(fixture.requests, ["/v2/en/cards/svp-196", "/v2/en/sets/svp/196"])
+        let enriched = await service.recoveringArtwork(for: byNumber)
+        XCTAssertEqual(enriched.id, card.id)
+        XCTAssertEqual(enriched.name, card.name)
+        XCTAssertEqual(enriched.catalogVariants, card.catalogVariants)
+        XCTAssertNil(enriched.image)
+        XCTAssertEqual(enriched.highImageURL?.absoluteString, "https://assets.tcgdex.net/en/sv/svp/196/high.png")
+    }
+
+    func testBulkRefreshBackfillsOnlyAcceptedImportsNeedingArtwork() async throws {
+        for hasSavedArtwork in [false, true] {
+            let fixture = ArtworkRecoveryFixture()
+            ArtworkRecoveryURLProtocol.install(fixture)
+            let session = fixture.session
+            defer { session.invalidateAndCancel(); ArtworkRecoveryURLProtocol.install(nil) }
+            let container = try ProductionRowFixtures.makeContainer()
+            self.container = container
+            let context = container.mainContext
+            let accepted = importedCard(setName: "SVP Black Star Promos", cardNumber: "196", name: "Charizard ex")
+            let rejected = importedCard(setName: "SVP Black Star Promos", cardNumber: "200", name: "Wrong card name")
+            if hasSavedArtwork { accepted.imageURL = "https://saved.test/charizard.png" }
+            context.insert(accepted)
+            context.insert(rejected)
+            try context.save()
+            let worker = await PriceRefreshModelActor.makeBackground(modelContainer: container)
+            await worker.setTCGdexForTesting(TCGdexService(session: session))
+            let outcome = await worker.run(PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+                forceUnsupportedRetry: false, sortOldestFirst: true, maximumTargetCount: nil,
+                markRecentlyCheckedIfEmpty: false, intent: .manual), progress: { _ in }, shouldContinue: nil)
+            guard case .completed = outcome else { return XCTFail("Refresh must complete") }
+            let saved = try persistedCard(withKey: accepted.collectionKey, from: context)
+            XCTAssertEqual(saved.imageURL, hasSavedArtwork ? "https://saved.test/charizard.png"
+                : "https://assets.tcgdex.net/en/sv/svp/196/high.png")
+            XCTAssertFalse(fixture.requests.contains { $0.contains("/200/") }, "Rejected identity must never probe artwork")
+            XCTAssertEqual(fixture.requests.filter { $0.hasSuffix("/high.png") }.count, hasSavedArtwork ? 0 : 1)
+            XCTAssertEqual(fixture.requests.filter { $0.hasSuffix("/low.png") }.count, hasSavedArtwork ? 0 : 1)
+        }
+    }
+
     func testMetadataApplyKeepsMainActorResponsiveAndRechecksRetiredStorageAfterLockWait() async throws {
         for retireStorage in [false, true] {
             let container = try ProductionRowFixtures.makeContainer()

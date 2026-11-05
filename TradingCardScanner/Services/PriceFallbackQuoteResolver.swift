@@ -180,7 +180,7 @@ final class PriceFallbackQuoteResolver {
         if input.game == .pokemon, input.exactPhysicalProductID == nil,
            ProductFinish.printing(for: input.variant) == nil, let catalogID = input.catalogID {
             do {
-                let provider = try await TCGdexService().fetchCard(id: catalogID)
+                let provider = try await TCGdexService().fetchCard(id: catalogID, recoversArtwork: false)
                 guard provider.id == catalogID else { return .failed(.notMatched) }
                 let card = IdentifiedCard.pokemon(provider, setCode: "")
                 let quote = CardPricing.price(for: card, variant: input.variant, magicTreatments: [],
