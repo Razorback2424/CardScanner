@@ -1,0 +1,2921 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:42.434384+00:00",
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83542/details",
+      "status": 200,
+      "sha256": "c7a56c50d650a0c217120b433dfb207905e5f59b917677afd96c8bd68a82ffe3",
+      "requestedProductID": 83542,
+      "identity": {
+        "productId": 83542.0,
+        "productName": "Ampharos",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83623/details",
+      "status": 200,
+      "sha256": "e451fe48f807c198f838da87f265246c252f95818b2dbfc97957bbfae4009759",
+      "requestedProductID": 83623,
+      "identity": {
+        "productId": 83623.0,
+        "productName": "Armaldo ex (Non-Holo)",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83735/details",
+      "status": 200,
+      "sha256": "e3dfa4d36b33557727faa8c619754ae952fb1a87946d014a2460539eeb95ff3b",
+      "requestedProductID": 83735,
+      "identity": {
+        "productId": 83735.0,
+        "productName": "Bastiodon",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83756/details",
+      "status": 200,
+      "sha256": "7731f4885db754ff6179fa1b68ece87647c95db0dc379966a1c58c5a98178326",
+      "requestedProductID": 83756,
+      "identity": {
+        "productId": 83756.0,
+        "productName": "Beautifly",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83826/details",
+      "status": 200,
+      "sha256": "4ee10d9c8d21545e91ddc95954858230ba52b43c92ce6278d5e903bcae42a839",
+      "requestedProductID": 83826,
+      "identity": {
+        "productId": 83826.0,
+        "productName": "Bidoof",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83840/details",
+      "status": 200,
+      "sha256": "67b89cf600582fe402f4b0d1a18c51584944c815408aa0249afb1007d983eecb",
+      "requestedProductID": 83840,
+      "identity": {
+        "productId": 83840.0,
+        "productName": "Bill's Maintenance",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83891/details",
+      "status": 200,
+      "sha256": "73934f0aa74ffe3c0e9ba278f9a991d8b0d0a302dc05a983f7c86be2dafadb14",
+      "requestedProductID": 83891,
+      "identity": {
+        "productId": 83891.0,
+        "productName": "Blastoise",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83905/details",
+      "status": 200,
+      "sha256": "10cd722f0fdf0b3b2f1da7e53c16e1cf680e3872f9caa144f3e79d7f64c7f99f",
+      "requestedProductID": 83905,
+      "identity": {
+        "productId": 83905.0,
+        "productName": "Blaziken",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83941/details",
+      "status": 200,
+      "sha256": "a13cc73460b8d8c5b59b444dac2ea53838779856a020d6bafd3741f2863adf50",
+      "requestedProductID": 83941,
+      "identity": {
+        "productId": 83941.0,
+        "productName": "Boost Energy",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84020/details",
+      "status": 200,
+      "sha256": "b6014feea6aab4178407321e07648e2ca6f39f873f4613052fcbc530cfdbe847",
+      "requestedProductID": 84020,
+      "identity": {
+        "productId": 84020.0,
+        "productName": "Buizel",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84031/details",
+      "status": 200,
+      "sha256": "e7dbde44d2add24bcd1e962b2660a06fc61562dd7db89abc76aee3d502239945",
+      "requestedProductID": 84031,
+      "identity": {
+        "productId": 84031.0,
+        "productName": "Bulbasaur",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84038/details",
+      "status": 200,
+      "sha256": "4e29a4ec1c2659b4013a81dc97720f6cdfa841d4f929fb59d699bde5ddaec7b9",
+      "requestedProductID": 84038,
+      "identity": {
+        "productId": 84038.0,
+        "productName": "Buneary",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84042/details",
+      "status": 200,
+      "sha256": "f0c815b77970bc52f459491b74dfd7611889627946c80b397ce72699970bd782",
+      "requestedProductID": 84042,
+      "identity": {
+        "productId": 84042.0,
+        "productName": "Buneary",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84050/details",
+      "status": 200,
+      "sha256": "87f8c20baee04039104cb88f239a2c1d552b49bc9a8335e7279054cee1dded2e",
+      "requestedProductID": 84050,
+      "identity": {
+        "productId": 84050.0,
+        "productName": "Burmy Plant Cloak",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84053/details",
+      "status": 200,
+      "sha256": "554a5eac371001816f864db33d3b93e785cea9d5b77de8f32475425d7f7a54b2",
+      "requestedProductID": 84053,
+      "identity": {
+        "productId": 84053.0,
+        "productName": "Burmy Sandy Cloak",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84072/details",
+      "status": 200,
+      "sha256": "82706f994511f493808d1e3128062fa3e989a2c2e85f068994b7f3f246ed6dcb",
+      "requestedProductID": 84072,
+      "identity": {
+        "productId": 84072.0,
+        "productName": "Cacnea",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84100/details",
+      "status": 200,
+      "sha256": "15e7312500479f18374d057d68a826a6cd215e2d5da54660a812cf71ba47970d",
+      "requestedProductID": 84100,
+      "identity": {
+        "productId": 84100.0,
+        "productName": "Carnivine",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84151/details",
+      "status": 200,
+      "sha256": "02c535cd5701e67fcd05ebafc43733c1c1b03c79479f3ee8cc5f7e73381b8404",
+      "requestedProductID": 84151,
+      "identity": {
+        "productId": 84151.0,
+        "productName": "Celebi ex (Non-Holo)",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84221/details",
+      "status": 200,
+      "sha256": "508dfdc10e1844c8d806c849f6561b7939d040e432c5d6501bcd38d6224c0a64",
+      "requestedProductID": 84221,
+      "identity": {
+        "productId": 84221.0,
+        "productName": "Charmander (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84237/details",
+      "status": 200,
+      "sha256": "264eced0e5f166f85e24b0c627e1903a91f93bcb07db751520032f38cc25046c",
+      "requestedProductID": 84237,
+      "identity": {
+        "productId": 84237.0,
+        "productName": "Charmeleon (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84253/details",
+      "status": 200,
+      "sha256": "60e2577dfe4971ff327d4f3ee2d7be2fdef2e9a871d4eedf25ecc6804121d65a",
+      "requestedProductID": 84253,
+      "identity": {
+        "productId": 84253.0,
+        "productName": "Cherrim",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84260/details",
+      "status": 200,
+      "sha256": "a283849d9f346de63e84ebd2ce8b695a62e7bea22c25f03047e8eda1b92dd80c",
+      "requestedProductID": 84260,
+      "identity": {
+        "productId": 84260.0,
+        "productName": "Cherubi",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84283/details",
+      "status": 200,
+      "sha256": "c09772d8d2768b166d1d344bb2a45d32dab9b72d7ffc44c18359d9099da1a166",
+      "requestedProductID": 84283,
+      "identity": {
+        "productId": 84283.0,
+        "productName": "Chimchar",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84287/details",
+      "status": 200,
+      "sha256": "8728570159efb5e64998827002e5749ee36913e63df9f6e3329aae846e3df116",
+      "requestedProductID": 84287,
+      "identity": {
+        "productId": 84287.0,
+        "productName": "Chimchar",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84289/details",
+      "status": 200,
+      "sha256": "8db84fd57080d00a7bc68d30f6cb767b9bbccb2b111c02c6cae029464496929b",
+      "requestedProductID": 84289,
+      "identity": {
+        "productId": 84289.0,
+        "productName": "Chimchar",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84298/details",
+      "status": 200,
+      "sha256": "76e735142b5cf0b5918f953526830e8c1da4e75591ec4c18f32d84e2af3b563e",
+      "requestedProductID": 84298,
+      "identity": {
+        "productId": 84298.0,
+        "productName": "Chimecho (Delta Species)",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84405/details",
+      "status": 200,
+      "sha256": "339544889992980286bc6bc6d949a84f93b5d0dcfdc785e4d47a37684691bf35",
+      "requestedProductID": 84405,
+      "identity": {
+        "productId": 84405.0,
+        "productName": "Combusken",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84409/details",
+      "status": 200,
+      "sha256": "0a4f3f3672d9b03c9c3e7a40a928e7cb6937c319d03e28e73f2c6a76a47624dd",
+      "requestedProductID": 84409,
+      "identity": {
+        "productId": 84409.0,
+        "productName": "Combusken",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84442/details",
+      "status": 200,
+      "sha256": "64a39daa162d7873fe8467e89c4a7973df84880f1a2fb299cfbdf8f438578464",
+      "requestedProductID": 84442,
+      "identity": {
+        "productId": 84442.0,
+        "productName": "Corsola",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84475/details",
+      "status": 200,
+      "sha256": "4d6597a2a75ea05cf8e46ed374770d3e32d90d7256e27192c617affbe532393d",
+      "requestedProductID": 84475,
+      "identity": {
+        "productId": 84475.0,
+        "productName": "Croagunk",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "13/17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84476/details",
+      "status": 200,
+      "sha256": "4e872a6292be14fcda12fc62afa13aec0ac87b8668c7beecf0bdc4e648ea1ad7",
+      "requestedProductID": 84476,
+      "identity": {
+        "productId": 84476.0,
+        "productName": "Croagunk",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84749/details",
+      "status": 200,
+      "sha256": "533fa9328713c2a4756063fcddd68f09b611cbd97fbe5d18843ba334a49f38f1",
+      "requestedProductID": 84749,
+      "identity": {
+        "productId": 84749.0,
+        "productName": "Delibird",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84756/details",
+      "status": 200,
+      "sha256": "376f9012e74aad2707255c36abc0229b1b30fafed6874325f83ce0399015b2a0",
+      "requestedProductID": 84756,
+      "identity": {
+        "productId": 84756.0,
+        "productName": "Delta Rainbow Energy",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84765/details",
+      "status": 200,
+      "sha256": "33d972081cd6dd29e012703ff96a5763033ff73e7018fc2e018369cbaba535c3",
+      "requestedProductID": 84765,
+      "identity": {
+        "productId": 84765.0,
+        "productName": "Deoxys (Delta Species)",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84774/details",
+      "status": 200,
+      "sha256": "01fa3fae7bdb7b49b067483d8da41661c0f95baaa46b6d01c28e2ff72cc97fd3",
+      "requestedProductID": 84774,
+      "identity": {
+        "productId": 84774.0,
+        "productName": "Deoxys ex",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84842/details",
+      "status": 200,
+      "sha256": "b65bd53d6686602fd2fe2376e5742494e596aa60f5d561d7b8b3cd13c61b0702",
+      "requestedProductID": 84842,
+      "identity": {
+        "productId": 84842.0,
+        "productName": "Ditto",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84874/details",
+      "status": 200,
+      "sha256": "594dd8e3c8c39ce1b44485ec314f56a352b1fd3f4901eef84d27c1bfa9fb9dd7",
+      "requestedProductID": 84874,
+      "identity": {
+        "productId": 84874.0,
+        "productName": "Donphan",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84894/details",
+      "status": 200,
+      "sha256": "6ea0c295e8f0a0b61074807d8a04540cf55607c27d25e95ae01e1ed316531371",
+      "requestedProductID": 84894,
+      "identity": {
+        "productId": 84894.0,
+        "productName": "Double Rainbow Energy",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84954/details",
+      "status": 200,
+      "sha256": "fc39931680059bfd40e9af6b783f8405cda48a3d2cdbf0bacd00eef36acfd57b",
+      "requestedProductID": 84954,
+      "identity": {
+        "productId": 84954.0,
+        "productName": "Drifloon",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85083/details",
+      "status": 200,
+      "sha256": "f0de94708ba6b1b5b591a89a52a87e385b67e05e98d692cf1af345f149388ca9",
+      "requestedProductID": 85083,
+      "identity": {
+        "productId": 85083.0,
+        "productName": "Eevee",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85271/details",
+      "status": 200,
+      "sha256": "760cec2124bdb02d661ceebc2e4401dd97a8d8746942597cc6fb9534f19e615d",
+      "requestedProductID": 85271,
+      "identity": {
+        "productId": 85271.0,
+        "productName": "Entei",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85329/details",
+      "status": 200,
+      "sha256": "69db49628aa9a1b1dd653236b17ccd1c3d5d234169daf3f9f3c1b00770f97cce",
+      "requestedProductID": 85329,
+      "identity": {
+        "productId": 85329.0,
+        "productName": "Espeon Star",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85480/details",
+      "status": 200,
+      "sha256": "80a6dd2b9fae8705dded5bd90ac92b9ecf61cc93d56a581c5307435d3277f4ab",
+      "requestedProductID": 85480,
+      "identity": {
+        "productId": 85480.0,
+        "productName": "Flaaffy",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85495/details",
+      "status": 200,
+      "sha256": "1e777b1364df44caf2e3b272c210b9c2730453be4d93d6a2651e291d9e0e06c9",
+      "requestedProductID": 85495,
+      "identity": {
+        "productId": 85495.0,
+        "productName": "Flareon",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85524/details",
+      "status": 200,
+      "sha256": "135076d60126033bd4bd0fc3544b571588904739a176788e2f8c36776f548554",
+      "requestedProductID": 85524,
+      "identity": {
+        "productId": 85524.0,
+        "productName": "Flygon",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85549/details",
+      "status": 200,
+      "sha256": "1ec9deb23b5de3bfbd9e4d8ac004dbe99c0dc3502e562eddc2996d95d74e360d",
+      "requestedProductID": 85549,
+      "identity": {
+        "productId": 85549.0,
+        "productName": "Forretress",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85598/details",
+      "status": 200,
+      "sha256": "65c3404f31b1c0dbaa0d138bf593974a921320a3b6aa37d42dcd7c306f372f03",
+      "requestedProductID": 85598,
+      "identity": {
+        "productId": 85598.0,
+        "productName": "Gabite",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85605/details",
+      "status": 200,
+      "sha256": "a888339c111f577549ead5849d4f84d67491ff2243fa8727adb76a95899d8a72",
+      "requestedProductID": 85605,
+      "identity": {
+        "productId": 85605.0,
+        "productName": "Gallade",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85622/details",
+      "status": 200,
+      "sha256": "e1d4248ab9dd3bf2ca5ea1a4f305c3f2303f18261063556bff11ea6122d4aa68",
+      "requestedProductID": 85622,
+      "identity": {
+        "productId": 85622.0,
+        "productName": "Garchomp",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85699/details",
+      "status": 200,
+      "sha256": "6fa2d71608d97b027387273a14caad3a0d6e032d3dca72fbbf546b94b144228c",
+      "requestedProductID": 85699,
+      "identity": {
+        "productId": 85699.0,
+        "productName": "Gible",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85700/details",
+      "status": 200,
+      "sha256": "7462ae70e12650d9ca36cc48e405d7c77472bd1f1f6a4ff4e39d14c89b307f3b",
+      "requestedProductID": 85700,
+      "identity": {
+        "productId": 85700.0,
+        "productName": "Gible",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85940/details",
+      "status": 200,
+      "sha256": "0edbe76dc8060163126f71537ed6b050acb0405bb940d573faeb215ae82f52f8",
+      "requestedProductID": 85940,
+      "identity": {
+        "productId": 85940.0,
+        "productName": "Grovyle",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86007/details",
+      "status": 200,
+      "sha256": "1b5f24dcd572fa9eae4f919840c7a85c7e8e093ee0bd2098bb53bb2491b8c6e3",
+      "requestedProductID": 86007,
+      "identity": {
+        "productId": 86007.0,
+        "productName": "Happiny",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86038/details",
+      "status": 200,
+      "sha256": "71f0d5af3bc7860a96777d96455f7547968b2a25b50511abb45b94d1b8fdcaee",
+      "requestedProductID": 86038,
+      "identity": {
+        "productId": 86038.0,
+        "productName": "Heal Energy",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86049/details",
+      "status": 200,
+      "sha256": "1a51ba17f1e90d6e46e5ca4fe88b4c5bf61835586bccc20c701aa69378743622",
+      "requestedProductID": 86049,
+      "identity": {
+        "productId": 86049.0,
+        "productName": "Heatran",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86077/details",
+      "status": 200,
+      "sha256": "b63d7488985517130719e3568498a38fbf0e2ec55235e3aa095149c31fd0f694",
+      "requestedProductID": 86077,
+      "identity": {
+        "productId": 86077.0,
+        "productName": "High Pressure System",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86123/details",
+      "status": 200,
+      "sha256": "09e4db948506c7e8ee1a63bf2e8726b5c162ebf669f290b6b9a8fe184a0eb7c4",
+      "requestedProductID": 86123,
+      "identity": {
+        "productId": 86123.0,
+        "productName": "Ho-Oh",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "001/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86129/details",
+      "status": 200,
+      "sha256": "2aaae8a369e11add30e5c7716b96d66a1cc70202793f261294f1d146992ac3f5",
+      "requestedProductID": 86129,
+      "identity": {
+        "productId": 86129.0,
+        "productName": "Ho-Oh ex (Non-Holo)",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86298/details",
+      "status": 200,
+      "sha256": "75162824e18264daa0379d9914dd6fee5645b87d6196126a38f4fe3985af60e9",
+      "requestedProductID": 86298,
+      "identity": {
+        "productId": 86298.0,
+        "productName": "Ivysaur",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86299/details",
+      "status": 200,
+      "sha256": "fd19a83b83146a829b8fa2bdbc0e388dba31b4e59feecf5d4f90bddf64748089",
+      "requestedProductID": 86299,
+      "identity": {
+        "productId": 86299.0,
+        "productName": "Ivysaur",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86342/details",
+      "status": 200,
+      "sha256": "5fd770912e6e49cc3500bc4396e904706794df9277f44988551ecdfe91f6aed1",
+      "requestedProductID": 86342,
+      "identity": {
+        "productId": 86342.0,
+        "productName": "Jolteon",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86467/details",
+      "status": 200,
+      "sha256": "83cbd8d3c90f2f92ba445af2342788d31d6b5857d03521ef3103a4ddca6e2924",
+      "requestedProductID": 86467,
+      "identity": {
+        "productId": 86467.0,
+        "productName": "Kirlia",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86636/details",
+      "status": 200,
+      "sha256": "360c778568f6f4abc48791e4a3aab5414d2b5ff82b816d215ece77b480f3cd7f",
+      "requestedProductID": 86636,
+      "identity": {
+        "productId": 86636.0,
+        "productName": "Larvitar",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86652/details",
+      "status": 200,
+      "sha256": "08fbd26a309d217f86bfc0f0ff0462f4dc6a333b86927bcd7d5cc902a381deab",
+      "requestedProductID": 86652,
+      "identity": {
+        "productId": 86652.0,
+        "productName": "Latias",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86666/details",
+      "status": 200,
+      "sha256": "75db22dd151dff4b1552a065a74111ed32bd6c989914aa8eb02f8559b86b8eac",
+      "requestedProductID": 86666,
+      "identity": {
+        "productId": 86666.0,
+        "productName": "Latios",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86825/details",
+      "status": 200,
+      "sha256": "f4ecc446649690e8468012d057c105a2c68769c52ca9b5b8fc7000af32e0c787",
+      "requestedProductID": 86825,
+      "identity": {
+        "productId": 86825.0,
+        "productName": "Lopunny",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86847/details",
+      "status": 200,
+      "sha256": "918a4fe86589463ac2a076aa7fb5ca92cea013f67cfc74601847985f7b8875b7",
+      "requestedProductID": 86847,
+      "identity": {
+        "productId": 86847.0,
+        "productName": "Low Pressure System",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86874/details",
+      "status": 200,
+      "sha256": "4df92e0df106dd701b9421ab1e9be54d2d7d2b1095500a8eaeabe7526416e556",
+      "requestedProductID": 86874,
+      "identity": {
+        "productId": 86874.0,
+        "productName": "Lucario",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86877/details",
+      "status": 200,
+      "sha256": "ffa279e1aa651d789183cfe9aed6269c2d73100d13a34436c3935ec2ef6ae18b",
+      "requestedProductID": 86877,
+      "identity": {
+        "productId": 86877.0,
+        "productName": "Lucario",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86907/details",
+      "status": 200,
+      "sha256": "275beaecaf7906c0844d4e2dfb91674fbc3abdc300441b3422704734d1756ee9",
+      "requestedProductID": 86907,
+      "identity": {
+        "productId": 86907.0,
+        "productName": "Lugia",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86934/details",
+      "status": 200,
+      "sha256": "66e499487f8c32e674d7742baebb2a983488ae08fd76edd4d82290967e2eb83f",
+      "requestedProductID": 86934,
+      "identity": {
+        "productId": 86934.0,
+        "productName": "Luvdisc",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86941/details",
+      "status": 200,
+      "sha256": "761dc92af34b2d4fd8bd9cc4cc2d89b8738be39378f26af25ee28ccf00d93d4d",
+      "requestedProductID": 86941,
+      "identity": {
+        "productId": 86941.0,
+        "productName": "Luxio",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86948/details",
+      "status": 200,
+      "sha256": "0ee8754059dc11b1bc30d5b0f9b16a3b0a51c35474bccd69b9014b80de9d2f8a",
+      "requestedProductID": 86948,
+      "identity": {
+        "productId": 86948.0,
+        "productName": "Luxray",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87144/details",
+      "status": 200,
+      "sha256": "e591ec757e511cdda7e3caa08e75d7433e8308b40bc813f7d387b1f405fdf669",
+      "requestedProductID": 87144,
+      "identity": {
+        "productId": 87144.0,
+        "productName": "Manaphy",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87147/details",
+      "status": 200,
+      "sha256": "c2bfde5e07348c726c400884a6e80af472f6b85db0a008a0a20b7ffd68d845ed",
+      "requestedProductID": 87147,
+      "identity": {
+        "productId": 87147.0,
+        "productName": "Manaphy",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87202/details",
+      "status": 200,
+      "sha256": "7dbccefb1615822bf7710ab04f51199f4cac43ded009c5a0298f3583e3932994",
+      "requestedProductID": 87202,
+      "identity": {
+        "productId": 87202.0,
+        "productName": "Mareep",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87236/details",
+      "status": 200,
+      "sha256": "333a6c87651e35d1bb2348a597aa5b9e9578e861a7bad6c90c630bcc3e586aff",
+      "requestedProductID": 87236,
+      "identity": {
+        "productId": 87236.0,
+        "productName": "Marshtomp",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87245/details",
+      "status": 200,
+      "sha256": "979106a5082c0c89ab193566b508e6ca366fd1d908e4e14bfd9df83a659b3d5f",
+      "requestedProductID": 87245,
+      "identity": {
+        "productId": 87245.0,
+        "productName": "Masquerain",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87330/details",
+      "status": 200,
+      "sha256": "7926ea894ea5a6cc3bb862ffa25a27f7dec9b368a7cc2fd6dda0fbec063a4e5f",
+      "requestedProductID": 87330,
+      "identity": {
+        "productId": 87330.0,
+        "productName": "Meowth (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87336/details",
+      "status": 200,
+      "sha256": "391c6346da907b8397af6422ba76aa077049af9aa7fe5c53948e9bddb4666368",
+      "requestedProductID": 87336,
+      "identity": {
+        "productId": 87336.0,
+        "productName": "Metagross",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87401/details",
+      "status": 200,
+      "sha256": "c2ac3f4145bc0f50b2b09335c447c45700ca0c6c8f5cb03d1483dc9ba2d22f76",
+      "requestedProductID": 87401,
+      "identity": {
+        "productId": 87401.0,
+        "productName": "Mew",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87407/details",
+      "status": 200,
+      "sha256": "36f16ea3e5e6ef62fe6626719bbec16954d51cf06bc3bb2d0030f792e04dce5d",
+      "requestedProductID": 87407,
+      "identity": {
+        "productId": 87407.0,
+        "productName": "Mew (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87483/details",
+      "status": 200,
+      "sha256": "5bcda24cb6796eb7395912288481cd30f094ab39751426cb5be53fed1e542776",
+      "requestedProductID": 87483,
+      "identity": {
+        "productId": 87483.0,
+        "productName": "Minun",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87487/details",
+      "status": 200,
+      "sha256": "bd5a6e39db5f5ccd455627da3bb869ffe59aad86ce4b84e22c11c3c82caa2c2f",
+      "requestedProductID": 87487,
+      "identity": {
+        "productId": 87487.0,
+        "productName": "Minun",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87581/details",
+      "status": 200,
+      "sha256": "2072b927e6723882d342b8fbddb42832d950253569576808c420346806a1d28e",
+      "requestedProductID": 87581,
+      "identity": {
+        "productId": 87581.0,
+        "productName": "Mothim",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87586/details",
+      "status": 200,
+      "sha256": "861308de492411488482e63429e199737984fcc01022a697d7b2ed8a8fcf43f8",
+      "requestedProductID": 87586,
+      "identity": {
+        "productId": 87586.0,
+        "productName": "Mr. Briney's Compassion",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87613/details",
+      "status": 200,
+      "sha256": "4570145f453bb80e688804702dc5edfdb256b31c5c1109e4cf32b33cf628777d",
+      "requestedProductID": 87613,
+      "identity": {
+        "productId": 87613.0,
+        "productName": "Mudkip",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87636/details",
+      "status": 200,
+      "sha256": "aecfffd0bf98fe5839f481f3bda0b362307c86f8752fd3d5440bbf1fd55767ed",
+      "requestedProductID": 87636,
+      "identity": {
+        "productId": 87636.0,
+        "productName": "Multi Technical Machine 01",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87650/details",
+      "status": 200,
+      "sha256": "a3fc600c42d03ec537f023c25a78e57be3c219ddc67d692c7969f361e70bd1b6",
+      "requestedProductID": 87650,
+      "identity": {
+        "productId": 87650.0,
+        "productName": "Murkrow",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87752/details",
+      "status": 200,
+      "sha256": "7e978540dfff04fd7438b6696b0ee58d6f3396c23cf98cb03eaf460e55f959d4",
+      "requestedProductID": 87752,
+      "identity": {
+        "productId": 87752.0,
+        "productName": "Night Maintenance",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87898/details",
+      "status": 200,
+      "sha256": "92d0113720bf84b97190e542e0ba67be8fe572d8679d28d8387fdef399db4341",
+      "requestedProductID": 87898,
+      "identity": {
+        "productId": 87898.0,
+        "productName": "Pachirisu",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87902/details",
+      "status": 200,
+      "sha256": "733c56e9a02c89edf641aa6aeeb35d8091ed0fe6abe00a4acd65446735e6f2b0",
+      "requestedProductID": 87902,
+      "identity": {
+        "productId": 87902.0,
+        "productName": "Pachirisu",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87981/details",
+      "status": 200,
+      "sha256": "34fb0283ce5dbad9ef1a8eafff35587ef6c3c269f3827072c116f2b9f3c462f7",
+      "requestedProductID": 87981,
+      "identity": {
+        "productId": 87981.0,
+        "productName": "Pelipper (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88000/details",
+      "status": 200,
+      "sha256": "3eb0b77721dea757db6bf45a6581943681aad5985a7cd0ae754327a179f0154a",
+      "requestedProductID": 88000,
+      "identity": {
+        "productId": 88000.0,
+        "productName": "Phanpy",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88020/details",
+      "status": 200,
+      "sha256": "397e16844d0388d1bf940dd0a1e7987ddef3c185aeda0184dbfa6f21781c70d0",
+      "requestedProductID": 88020,
+      "identity": {
+        "productId": 88020.0,
+        "productName": "Pichu",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88024/details",
+      "status": 200,
+      "sha256": "8c97b6006908527b87bbf981d4d33e6688c534900b8ee519b4dbd6f643b71de5",
+      "requestedProductID": 88024,
+      "identity": {
+        "productId": 88024.0,
+        "productName": "Pichu Bros.",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88032/details",
+      "status": 200,
+      "sha256": "312908241090117199b1c38c23604ef2f1aad8f052bb919bd0db4e161e5546e8",
+      "requestedProductID": 88032,
+      "identity": {
+        "productId": 88032.0,
+        "productName": "Pidgeot",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "002/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88049/details",
+      "status": 200,
+      "sha256": "b10b84e62e7426e789ef7e1aa4bf73b0cca6e41d199711ff483c0c9159d30d40",
+      "requestedProductID": 88049,
+      "identity": {
+        "productId": 88049.0,
+        "productName": "Pidgey",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88081/details",
+      "status": 200,
+      "sha256": "ca1f8d1ca5acecf2ad0fbf789a42ead5ed20314eeecf68668e794735e42e0441",
+      "requestedProductID": 88081,
+      "identity": {
+        "productId": 88081.0,
+        "productName": "Pikachu",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88083/details",
+      "status": 200,
+      "sha256": "d72600ab151c88de3ef8ca9f7f3295d4cf81886737238290f6d5ca5b5ec44224",
+      "requestedProductID": 88083,
+      "identity": {
+        "productId": 88083.0,
+        "productName": "Pikachu",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88085/details",
+      "status": 200,
+      "sha256": "75f30a9d1e9b4496f3ef5670d4975755757d9d4b18f20fe4a55453543e977b14",
+      "requestedProductID": 88085,
+      "identity": {
+        "productId": 88085.0,
+        "productName": "Pikachu",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "012/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88087/details",
+      "status": 200,
+      "sha256": "ec024ea2361852acc2fde4ed8d04099713ee5f9dcbf052ed539fe5c5306f0533",
+      "requestedProductID": 88087,
+      "identity": {
+        "productId": 88087.0,
+        "productName": "Pikachu",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88092/details",
+      "status": 200,
+      "sha256": "0716d1f08c6a058c93be95b6946c0c0673274d9d85b357ee4963fbdf058fcab4",
+      "requestedProductID": 88092,
+      "identity": {
+        "productId": 88092.0,
+        "productName": "Pikachu",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88110/details",
+      "status": 200,
+      "sha256": "ece902ccd3bb5e5341a271a0e7c08556ffab09d7eeb285c0b63f63a05b88116a",
+      "requestedProductID": 88110,
+      "identity": {
+        "productId": 88110.0,
+        "productName": "Pikachu (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88143/details",
+      "status": 200,
+      "sha256": "85f2540d36ebf4047cba8a8a3f3a307464dabcf1283aade72c8e40acba0bd6e9",
+      "requestedProductID": 88143,
+      "identity": {
+        "productId": 88143.0,
+        "productName": "Piplup",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88148/details",
+      "status": 200,
+      "sha256": "5cf1920e8132207eb4d02ee6b456a1c6f0688ff706cc928c1a3f26cda7885239",
+      "requestedProductID": 88148,
+      "identity": {
+        "productId": 88148.0,
+        "productName": "Piplup",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88150/details",
+      "status": 200,
+      "sha256": "658cb6b8b84ade21675056f8ee101731791bfe64e532a72c09b9ba359a58a2a3",
+      "requestedProductID": 88150,
+      "identity": {
+        "productId": 88150.0,
+        "productName": "Piplup",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88163/details",
+      "status": 200,
+      "sha256": "544218c35f8244393bd3ea69ad4ebaec94d78c328abac8b419d6b6de91ce9ed2",
+      "requestedProductID": 88163,
+      "identity": {
+        "productId": 88163.0,
+        "productName": "Plusle",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "013/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88167/details",
+      "status": 200,
+      "sha256": "292536e4328adc8f99230ac59241ac67075890faddccfcc878c7391685726778",
+      "requestedProductID": 88167,
+      "identity": {
+        "productId": 88167.0,
+        "productName": "Plusle",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88226/details",
+      "status": 200,
+      "sha256": "6c2883c458bf473eb47c24d742b8c32ee9ab779a0a5923c1d53c14b82758e915",
+      "requestedProductID": 88226,
+      "identity": {
+        "productId": 88226.0,
+        "productName": "Pokemon Fan Club",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88231/details",
+      "status": 200,
+      "sha256": "94abae3f5da05f3267dba42e88b7eb26d455a7bf9e4992718302161668f48e47",
+      "requestedProductID": 88231,
+      "identity": {
+        "productId": 88231.0,
+        "productName": "Pokemon Park",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88376/details",
+      "status": 200,
+      "sha256": "b38e433785e32ecdab00ae5932fa1db90ec94c6e662ef21f50581cfd052b2baa",
+      "requestedProductID": 88376,
+      "identity": {
+        "productId": 88376.0,
+        "productName": "Probopass",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88448/details",
+      "status": 200,
+      "sha256": "672c3b4b9ed1437993cf8859783c483eda0f9daa5d5fae97c2fa7d23d6379def",
+      "requestedProductID": 88448,
+      "identity": {
+        "productId": 88448.0,
+        "productName": "Pupitar",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88514/details",
+      "status": 200,
+      "sha256": "6cb397611dc4215732845992787aa22e2b7c7bef8ff4a4b003066cec9c7f1e1c",
+      "requestedProductID": 88514,
+      "identity": {
+        "productId": 88514.0,
+        "productName": "Raichu",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88533/details",
+      "status": 200,
+      "sha256": "f2c5982582c5ea7d3cb210813f2d5e1f62ff41cf57e35216ee22e0be69218881",
+      "requestedProductID": 88533,
+      "identity": {
+        "productId": 88533.0,
+        "productName": "Raikou",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88562/details",
+      "status": 200,
+      "sha256": "f94dcb761c28f3e94c6fb667bc089f97012f56c75c4961566bc6f25d4b0b9ef9",
+      "requestedProductID": 88562,
+      "identity": {
+        "productId": 88562.0,
+        "productName": "Ralts",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88570/details",
+      "status": 200,
+      "sha256": "eb769126b6d9dfd972ec393285624c92d2e5ddb3be3b464c9ea6326125538288",
+      "requestedProductID": 88570,
+      "identity": {
+        "productId": 88570.0,
+        "productName": "Rampardos",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88592/details",
+      "status": 200,
+      "sha256": "d19eac093be9d9782acdc949fcc4cf07b4c8a098b202eb36e0474d686feac433",
+      "requestedProductID": 88592,
+      "identity": {
+        "productId": 88592.0,
+        "productName": "Rare Candy",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "007/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88594/details",
+      "status": 200,
+      "sha256": "2a5dc0b5630e795580a5ef040aa32937dbda28e0c6f794f08df89163177bab8e",
+      "requestedProductID": 88594,
+      "identity": {
+        "productId": 88594.0,
+        "productName": "Rare Candy",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88624/details",
+      "status": 200,
+      "sha256": "055a77cfaa6dea430b8c5de64ced3204897b85fb0290f7a43c0585f3ceeb4803",
+      "requestedProductID": 88624,
+      "identity": {
+        "productId": 88624.0,
+        "productName": "Rayquaza",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "003/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88664/details",
+      "status": 200,
+      "sha256": "54d2cace68468c48cf334166b49bb8aabe42645f8b1e2400bf4b7737070284a9",
+      "requestedProductID": 88664,
+      "identity": {
+        "productId": 88664.0,
+        "productName": "Regigigas",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88752/details",
+      "status": 200,
+      "sha256": "07d698094a1539993214df98f3883baaf13e0b8c6c53fc2eab400601c7efa8d0",
+      "requestedProductID": 88752,
+      "identity": {
+        "productId": 88752.0,
+        "productName": "Riolu",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "008/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88755/details",
+      "status": 200,
+      "sha256": "9b83b41e478804a96cfb996bb820b0671fa76d7892608502908fc060d94e2ca4",
+      "requestedProductID": 88755,
+      "identity": {
+        "productId": 88755.0,
+        "productName": "Riolu",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88816/details",
+      "status": 200,
+      "sha256": "12c02d170ce931e2f4004b3cf444e9ec2394936ce5890906ba67a587767a5477",
+      "requestedProductID": 88816,
+      "identity": {
+        "productId": 88816.0,
+        "productName": "Roseanne's Research",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88837/details",
+      "status": 200,
+      "sha256": "dfeb474ba43cc38b87b565d1ac904d4746156bc23460817f4607971075addb60",
+      "requestedProductID": 88837,
+      "identity": {
+        "productId": 88837.0,
+        "productName": "Rotom",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88946/details",
+      "status": 200,
+      "sha256": "cdd46b5c808ff8e37c6f8ab9589b73d391e2628496066ba9cdf40e6569abcaf3",
+      "requestedProductID": 88946,
+      "identity": {
+        "productId": 88946.0,
+        "productName": "Sceptile",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88948/details",
+      "status": 200,
+      "sha256": "751b28456e8dbacc9e93b1963e4ad678182697401cb66d2b78178287c09f74fd",
+      "requestedProductID": 88948,
+      "identity": {
+        "productId": 88948.0,
+        "productName": "Sceptile",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88988/details",
+      "status": 200,
+      "sha256": "625c7c47996635408dcfd681d2f806f21f6500a6b1e1e7ca242530dc0e225e74",
+      "requestedProductID": 88988,
+      "identity": {
+        "productId": 88988.0,
+        "productName": "Scramble Energy",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89067/details",
+      "status": 200,
+      "sha256": "971ef1176a176d5f873c18c5bdd7a355e3ffdbd92e82e741746a0e92902c6859",
+      "requestedProductID": 89067,
+      "identity": {
+        "productId": 89067.0,
+        "productName": "Sentret",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89462/details",
+      "status": 200,
+      "sha256": "07e2c53c65c6e7b2b762492ff9ea120dc110f884c013529066588c9630d2b0e0",
+      "requestedProductID": 89462,
+      "identity": {
+        "productId": 89462.0,
+        "productName": "Spinda",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89493/details",
+      "status": 200,
+      "sha256": "e4fb3145b7dd33abc86ea28b233d4a55793bbf0207053d71b29a629519067065",
+      "requestedProductID": 89493,
+      "identity": {
+        "productId": 89493.0,
+        "productName": "Squirtle",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89505/details",
+      "status": 200,
+      "sha256": "09f9fa34df4618c2b91b97acbe60dc6993af776a1d783ae797503b888a90e929",
+      "requestedProductID": 89505,
+      "identity": {
+        "productId": 89505.0,
+        "productName": "Stantler",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89514/details",
+      "status": 200,
+      "sha256": "f48a392d375d83d239feedd05bd46f99656fbb14085b09093556472dfd61f1d9",
+      "requestedProductID": 89514,
+      "identity": {
+        "productId": 89514.0,
+        "productName": "Staravia",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/015"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89521/details",
+      "status": 200,
+      "sha256": "e93a0a62fb51ab330df25ee7cc46c115088ccc9c75ecb2d12be08115d2f43463",
+      "requestedProductID": 89521,
+      "identity": {
+        "productId": 89521.0,
+        "productName": "Starly",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89602/details",
+      "status": 200,
+      "sha256": "8a3f70a0d2d6810887a6c5a1136ad4d63402271c32ded7d7e41d33aaa4af2629",
+      "requestedProductID": 89602,
+      "identity": {
+        "productId": 89602.0,
+        "productName": "Suicune",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "004/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89647/details",
+      "status": 200,
+      "sha256": "6c472ce161d05e789fc8add829dfdedf06f3bb8bffe24cb3b1f9f52c9a0afcfd",
+      "requestedProductID": 89647,
+      "identity": {
+        "productId": 89647.0,
+        "productName": "Surskit",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "014/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89677/details",
+      "status": 200,
+      "sha256": "1344c02587f65e624c2810383ddbf17a7a6fa204fd256ec1229a86ecf4a6bc02",
+      "requestedProductID": 89677,
+      "identity": {
+        "productId": 89677.0,
+        "productName": "Swampert",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89690/details",
+      "status": 200,
+      "sha256": "61091f28e2fc49f48c68dcb21066e4a4aa9aa1aaa21b9aa634c7148ceec424c8",
+      "requestedProductID": 89690,
+      "identity": {
+        "productId": 89690.0,
+        "productName": "Swellow",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89762/details",
+      "status": 200,
+      "sha256": "5589ff6a8302fb8f729dbc29f1510704c00c415303310a6fb147bb618d20a6c4",
+      "requestedProductID": 89762,
+      "identity": {
+        "productId": 89762.0,
+        "productName": "Tauros",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89967/details",
+      "status": 200,
+      "sha256": "faf16d332d347afd4219278e971c88f2ac8e04dc401403d0435976822bbe3eb3",
+      "requestedProductID": 89967,
+      "identity": {
+        "productId": 89967.0,
+        "productName": "Torkoal",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90045/details",
+      "status": 200,
+      "sha256": "3f2a5975d60d05a9fdbc2c332c60a76c2b485eb78a230dd3350c977bb02bb0fb",
+      "requestedProductID": 90045,
+      "identity": {
+        "productId": 90045.0,
+        "productName": "Treecko (Delta Species)",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90072/details",
+      "status": 200,
+      "sha256": "ac1adc9b27b22e016e14d4c389de9493c5cc976ebe55ab60d186acd048a8b26b",
+      "requestedProductID": 90072,
+      "identity": {
+        "productId": 90072.0,
+        "productName": "Turtwig",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90076/details",
+      "status": 200,
+      "sha256": "27fbe7442596b2b5a8c1666ee3995448f3060fe8e18d0dbad54d692cb9334de8",
+      "requestedProductID": 90076,
+      "identity": {
+        "productId": 90076.0,
+        "productName": "Turtwig",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90078/details",
+      "status": 200,
+      "sha256": "ccec3a70c1134521a7b5a92037bef16b4ca9f65836a343d83d565bf32f5e7577",
+      "requestedProductID": 90078,
+      "identity": {
+        "productId": 90078.0,
+        "productName": "Turtwig",
+        "setId": 1446.0,
+        "setCode": "POP",
+        "setName": "POP Series 9",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90084/details",
+      "status": 200,
+      "sha256": "59a42b5329c60d4853f9d0d01be424a82b90b27f1c2af34e68477690d0e44c7a",
+      "requestedProductID": 90084,
+      "identity": {
+        "productId": 90084.0,
+        "productName": "TV Reporter",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "011/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90124/details",
+      "status": 200,
+      "sha256": "f60156e9d7c8c6f88724e7512410ae15e96ad5832026d8a78f6f5312268f4fa4",
+      "requestedProductID": 90124,
+      "identity": {
+        "productId": 90124.0,
+        "productName": "Tyranitar ex (Holo)",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90153/details",
+      "status": 200,
+      "sha256": "78ab308f8a249b15001b5d72111e47ef06ce991cc7218e3bd3842795b1906cda",
+      "requestedProductID": 90153,
+      "identity": {
+        "productId": 90153.0,
+        "productName": "Umbreon Star",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90283/details",
+      "status": 200,
+      "sha256": "f116ff7d81a96facfe427c2cd6c58b24d1f9b5bd9a11f03c98f01533f0429d91",
+      "requestedProductID": 90283,
+      "identity": {
+        "productId": 90283.0,
+        "productName": "Vaporeon",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90317/details",
+      "status": 200,
+      "sha256": "1bf998a05a701fe83f5feb01b0d163f9ca2e098291859326fad8b3bc3763baf8",
+      "requestedProductID": 90317,
+      "identity": {
+        "productId": 90317.0,
+        "productName": "Venusaur",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "006/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90618/details",
+      "status": 200,
+      "sha256": "0fc34c00a28efdff8f526a521f7d5e72eef2cd43eac6057163f7d41d34f383d4",
+      "requestedProductID": 90618,
+      "identity": {
+        "productId": 90618.0,
+        "productName": "Wobbuffet",
+        "setId": 1452.0,
+        "setCode": "POP",
+        "setName": "POP Series 4",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90643/details",
+      "status": 200,
+      "sha256": "c0d208f6ca0fae97a9df9a132f2d509538d32a71b021b99d64e7e8fcd33fb652",
+      "requestedProductID": 90643,
+      "identity": {
+        "productId": 90643.0,
+        "productName": "Wormadam Sandy Cloak",
+        "setId": 1414.0,
+        "setCode": "POP",
+        "setName": "POP Series 7",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "010/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90691/details",
+      "status": 200,
+      "sha256": "73e3b2da7b88c6cda41311e24285a87d3e3f936eb90a07495e60e445f0749e97",
+      "requestedProductID": 90691,
+      "identity": {
+        "productId": 90691.0,
+        "productName": "Yanmega",
+        "setId": 1450.0,
+        "setCode": "POP",
+        "setName": "POP Series 8",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "005/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90709/details",
+      "status": 200,
+      "sha256": "218f545101677a5ae718612f03cf9b832ef536189f40e68b9b8bfe9d0eb0422d",
+      "requestedProductID": 90709,
+      "identity": {
+        "productId": 90709.0,
+        "productName": "Zangoose (Delta Species)",
+        "setId": 1439.0,
+        "setCode": "POP",
+        "setName": "POP Series 5",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "015/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97806/details",
+      "status": 200,
+      "sha256": "67b61380092917acadf35aa0a34bbeb99fe2c6333d05c7967206978006427909",
+      "requestedProductID": 97806,
+      "identity": {
+        "productId": 97806.0,
+        "productName": "Armaldo ex (Holo)",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "016/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97807/details",
+      "status": 200,
+      "sha256": "b9d23122d153bbef4c11378015f9587f7626a899e809c17ae80b90503ed74a51",
+      "requestedProductID": 97807,
+      "identity": {
+        "productId": 97807.0,
+        "productName": "Tyranitar ex (Non-Holo)",
+        "setId": 1422.0,
+        "setCode": "POP",
+        "setName": "POP Series 1",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97808/details",
+      "status": 200,
+      "sha256": "f6b11c887efd1c07581288c16ec8283a349517f006ac867eebe511f85ed00acc",
+      "requestedProductID": 97808,
+      "identity": {
+        "productId": 97808.0,
+        "productName": "Celebi ex (Holo)",
+        "setId": 1447.0,
+        "setCode": "POP",
+        "setName": "POP Series 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97809/details",
+      "status": 200,
+      "sha256": "2820e9ee1348b3763457cc5181957bf861e6a7ea0fefffe96b7a9b201da29d1b",
+      "requestedProductID": 97809,
+      "identity": {
+        "productId": 97809.0,
+        "productName": "Ho-Oh ex (Holo)",
+        "setId": 1442.0,
+        "setCode": "POP",
+        "setName": "POP Series 3",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "017/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/276377/details",
+      "status": 200,
+      "sha256": "ecffaf51fbbba27f2418aa6fb3fa517c51590d03980019031f94345722479b35",
+      "requestedProductID": 276377,
+      "identity": {
+        "productId": 276377.0,
+        "productName": "Pikachu (Pokemon Day Stamped)",
+        "setId": 1432.0,
+        "setCode": "POP",
+        "setName": "POP Series 6",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "009/017"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/479786/details",
+      "status": 200,
+      "sha256": "d6078fbb0b67700988786a861207d19090ac92384feab91349c53f456f067758",
+      "requestedProductID": 479786,
+      "identity": {
+        "productId": 479786.0,
+        "productName": "Gallade - 2008 (Jason Klaczynski)",
+        "setId": 2282.0,
+        "setCode": "WCD",
+        "setName": "World Championship Decks",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "2/17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/479793/details",
+      "status": 200,
+      "sha256": "5d569a07f92bdd81be4c1a8cbbdf0d35e0cf4658ccb3606d15b58f844335eded",
+      "requestedProductID": 479793,
+      "identity": {
+        "productId": 479793.0,
+        "productName": "Kirlia - 2008 (Jason Klaczynski)",
+        "setId": 2282.0,
+        "setCode": "WCD",
+        "setName": "World Championship Decks",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "8/17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/479810/details",
+      "status": 200,
+      "sha256": "d4631c0da97974f0e6373d25e1d4d0c6149487554a08e980e9d549caf9c1b4e3",
+      "requestedProductID": 479810,
+      "identity": {
+        "productId": 479810.0,
+        "productName": "Ralts (15) - 2008 (Jason Klaczynski)",
+        "setId": 2282.0,
+        "setCode": "WCD",
+        "setName": "World Championship Decks",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "15/17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/480045/details",
+      "status": 200,
+      "sha256": "f54647357b07c71894aae30627edff0ad7ef6b7cb81a9d50f1fb14bf35e8bf1c",
+      "requestedProductID": 480045,
+      "identity": {
+        "productId": 480045.0,
+        "productName": "Gallade - 2010 (Michael Pramawat)",
+        "setId": 2282.0,
+        "setCode": "WCD",
+        "setName": "World Championship Decks",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "2/17"
+      }
+    }
+  ]
+}

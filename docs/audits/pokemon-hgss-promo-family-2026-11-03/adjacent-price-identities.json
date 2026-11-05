@@ -1,0 +1,113 @@
+[
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/dp3-4",
+    "status": 200,
+    "sha256": "428c5e635607ac8eb3cdaf43836d38a780ed8d71315c67dd4b9dc2f8f5bdaf38",
+    "requestedCardID": "dp3-4",
+    "pricingIdentity": {
+      "flatProductIDs": [
+        85272
+      ],
+      "details": [
+        {
+          "type": "holo",
+          "foil": null,
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        },
+        {
+          "type": "reverse",
+          "foil": null,
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        },
+        {
+          "type": "holo",
+          "foil": "cracked-ice",
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/dp3-16",
+    "status": 200,
+    "sha256": "574623441d45c79914e197d1f2bef51efaac4d10e4360f9d225b64216fae731d",
+    "requestedCardID": "dp3-16",
+    "pricingIdentity": {
+      "flatProductIDs": [
+        88534
+      ],
+      "details": [
+        {
+          "type": "holo",
+          "foil": null,
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        },
+        {
+          "type": "reverse",
+          "foil": null,
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        },
+        {
+          "type": "holo",
+          "foil": "cracked-ice",
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/dp3-19",
+    "status": 200,
+    "sha256": "3227c96b799fb302ee3ec2a9a1c4c1ebda3312380207711a67c792fb62b6a8a1",
+    "requestedCardID": "dp3-19",
+    "pricingIdentity": {
+      "flatProductIDs": [
+        89604
+      ],
+      "details": [
+        {
+          "type": "holo",
+          "foil": null,
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        },
+        {
+          "type": "reverse",
+          "foil": null,
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        },
+        {
+          "type": "holo",
+          "foil": "cracked-ice",
+          "stamp": null,
+          "thirdPartyTCGplayer": null,
+          "quoteProductIDs": [],
+          "tcgplayerPricingPresent": false
+        }
+      ]
+    }
+  }
+]

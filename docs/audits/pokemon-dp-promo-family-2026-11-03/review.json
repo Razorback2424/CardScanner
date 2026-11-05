@@ -1,0 +1,582 @@
+{
+  "observedAtUTC": "2026-11-03T15:34:03.108099+00:00",
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "beforeInputSHA256": "2010e87686f36bdc712d3a4f461945da17287818b11292b3923f05299ac4ba32",
+  "afterInputSHA256": "1a7878e2a798ff73ecd64b84bc6df0f0d62d85dcf8394d7640bf07be7ed10f89",
+  "delta": "22 exact product bindings appended only to dpp; all prior 116 records and all other parsed input values unchanged",
+  "counts": {
+    "providerCards": 56,
+    "providerDetailedObjects": 87,
+    "holoObjects": 64,
+    "normalObjects": 23,
+    "jumboObjects": 7,
+    "populatedDetailedHandles": 0,
+    "populatedDetailedPriceProductIDs": 0,
+    "flatTCGplayerProductIDCards": 1,
+    "discoveredMarketplaceProducts": 76,
+    "successfulPrimaryReads": 66,
+    "primaryHTTP400Responses": 10,
+    "DPNumberedPrimaryProducts": 57,
+    "distinctDPPrimaryNumbers": 54,
+    "nonDPPromotionalPrimaryProducts": 9,
+    "newLVXExistingHoloBindings": 19,
+    "newUniqueJumboObjectBindings": 3,
+    "currentDescriptors": 75,
+    "currentProtectedRecords": 138,
+    "ordinaryHoloMinimumRecords": 41,
+    "ordinaryHoloExistingObjectBindingRecords": 19,
+    "jumboAuthorizationRecords": 76
+  },
+  "addedRecords": [
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP53",
+        "canonicalName": "Arceus",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 83605,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/83605/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP53",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Arceus LV.X - DP53"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP56",
+        "canonicalName": "Arceus",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 83606,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/83606/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP56",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Arceus LV.X - DP56"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP45",
+        "canonicalName": "Charizard G",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 84202,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/84202/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP45",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Charizard G LV.X - DP45"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP19",
+        "canonicalName": "Darkrai",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 84712,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/84712/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP19",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Darkrai LV.X - DP19"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP17",
+        "canonicalName": "Dialga",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 84813,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/84813/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP17",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Dialga LV.X - DP17"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP37",
+        "canonicalName": "Dialga",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 84814,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/84814/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP37",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Dialga LV.X - DP37"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP11",
+        "canonicalName": "Empoleon",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 85207,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/85207/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP11",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Empoleon LV.X - DP11"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP46",
+        "canonicalName": "Garchomp C",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 85630,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/85630/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP46",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Garchomp C LV.X - DP46"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP38",
+        "canonicalName": "Giratina",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 85743,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/85743/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP38",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Giratina LV.X - DP38"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP31",
+        "canonicalName": "Heatran",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 86055,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/86055/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP31",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Heatran LV.X - DP31"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP10",
+        "canonicalName": "Infernape",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 86282,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/86282/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP10",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Infernape LV.X - DP10"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP12",
+        "canonicalName": "Lucario",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 86890,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/86890/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP12",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Lucario LV.X - DP12"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP28",
+        "canonicalName": "Mewtwo",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 87434,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/87434/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP28",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Mewtwo LV.X - DP28"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP18",
+        "canonicalName": "Palkia",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 87920,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/87920/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP18",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Palkia LV.X - DP18"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP47",
+        "canonicalName": "Rayquaza C",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 88641,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/88641/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP47",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Rayquaza C LV.X - DP47"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP30",
+        "canonicalName": "Regigigas",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 88670,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/88670/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP30",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Regigigas LV.X - DP30"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP29",
+        "canonicalName": "Rhyperior",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 88750,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/88750/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP29",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Rhyperior LV.X - DP29"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP39",
+        "canonicalName": "Shaymin",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 89116,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/89116/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP39",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Shaymin LV.X - DP39"
+    },
+    {
+      "purpose": "Exact product binding for existing broad Holo; no new finish or Normal review",
+      "record": {
+        "providerCardID": "dpp-DP09",
+        "canonicalName": "Torterra",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 89990,
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/89990/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP09",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      "marketplaceName": "Torterra LV.X - DP09"
+    },
+    {
+      "purpose": "Exact size-scoped product binding for existing unique Jumbo object",
+      "record": {
+        "providerCardID": "dpp-DP24",
+        "canonicalName": "Darkrai",
+        "variantID": "jumbo",
+        "providerType": "holo",
+        "tcgplayerProductID": 211427,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP24",
+          "https://mp-search-api.tcgplayer.com/v1/product/211427/details",
+          "https://bulbapedia.bulbagarden.net/wiki/Giant_cards"
+        ]
+      },
+      "marketplaceName": "Darkrai - DP24 (DP Black Star Promos)"
+    },
+    {
+      "purpose": "Exact size-scoped product binding for existing unique Jumbo object",
+      "record": {
+        "providerCardID": "dpp-DP40",
+        "canonicalName": "Regigigas",
+        "variantID": "jumbo",
+        "providerType": "holo",
+        "tcgplayerProductID": 211505,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP40",
+          "https://mp-search-api.tcgplayer.com/v1/product/211505/details",
+          "https://bulbapedia.bulbagarden.net/wiki/Giant_cards"
+        ]
+      },
+      "marketplaceName": "Regigigas - DP40"
+    },
+    {
+      "purpose": "Exact size-scoped product binding for existing unique Jumbo object",
+      "record": {
+        "providerCardID": "dpp-DP50",
+        "canonicalName": "Arceus",
+        "variantID": "jumbo",
+        "providerType": "holo",
+        "tcgplayerProductID": 211415,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP50",
+          "https://mp-search-api.tcgplayer.com/v1/product/211415/details",
+          "https://bulbapedia.bulbagarden.net/wiki/Giant_cards"
+        ]
+      },
+      "marketplaceName": "Arceus - DP50 (DP Black Star Promos)"
+    }
+  ],
+  "flatIdentityAlreadyPresent": {
+    "providerCardID": "dpp-DP20",
+    "holofoilProductID": 87057,
+    "scope": "Product identity observed; detailed object still has no handle. No claim of a usable live quote or device pricing acceptance"
+  },
+  "independentSourceObservations": [
+    {
+      "url": "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)",
+      "observation": "Extracted full table corroborates all 19 exact LV.X numbers and release families; identifies DP54/55 as French-only. Used as release identity corroboration, not to invent a second Holo printing."
+    },
+    {
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Giant_cards",
+      "observation": "Jumbo list names Darkrai DP24, Regigigas DP40, Arceus DP50 and two foil treatments apiece for Dialga DP26/Palkia DP27."
+    },
+    {
+      "url": "https://www.chaoscards.co.uk/prod/singles-pokemon/darkrai-lv50-jumbo-dp24-pokemon-single-promotional-card",
+      "observation": "Indexed retailer entry identifies DP24 Jumbo English; direct open cache miss, no raw-body hash claimed."
+    },
+    {
+      "url": "https://www.bigorbitcards.co.uk/pokemon/pokemon-promos/dp-black-star-promos/pke-dp-black-star-promos-arceus-jumbo.html",
+      "observation": "Indexed retailer entry identifies DP50 Jumbo Holo; direct open cache miss, no raw-body hash claimed."
+    },
+    {
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Regigigas_(DP_Promo_40)",
+      "observation": "Direct extracted release history identifies ordinary and Jumbo DP40 in the Colossal Box."
+    }
+  ],
+  "reviewHolds": {
+    "FrenchOnly": [
+      {
+        "providerCardID": "dpp-DP54",
+        "canonicalName": "Beginning Door"
+      },
+      {
+        "providerCardID": "dpp-DP55",
+        "canonicalName": "Ultimate Zone"
+      }
+    ],
+    "FrenchEvidenceURLs": [
+      "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)",
+      "https://www.pokebeach.com/2010/03/missing-dp54-and-dp55-promos-found-en-francais"
+    ],
+    "FrenchBoundary": "No catalog exclusion installed; extend the separately proposed exact-card exclusions only after support authorization. English-translated names are not physical English releases.",
+    "AmbiguousJumbo": [
+      {
+        "providerCardID": "dpp-DP26",
+        "candidateProductID": 211429,
+        "providerFoils": [
+          "cracked-ice",
+          "mirror"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP27",
+        "candidateProductID": 211504,
+        "providerFoils": [
+          "cracked-ice",
+          "mirror"
+        ]
+      }
+    ],
+    "AmbiguousJumboBoundary": "Two eligible objects per card; do not collapse them into one exact Jumbo product or weaken the one-object guard.",
+    "WorldsBindingsPrepared": [
+      {
+        "providerCardID": "dpp-DP05",
+        "providerType": "normal",
+        "providerStamps": [
+          "worlds-2007"
+        ],
+        "tcgplayerProductID": 90054,
+        "marketplaceName": "Tropical Wind - DP05 (Worlds 07)",
+        "status": "Corroborated identity/Normal-only product; positive stamped support unapproved/uninstalled",
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/90054/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP05",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP25",
+        "providerType": "normal",
+        "providerStamps": [
+          "worlds-2008"
+        ],
+        "tcgplayerProductID": 90055,
+        "marketplaceName": "Tropical Wind - DP25 (Worlds 08)",
+        "status": "Corroborated identity/Normal-only product; positive stamped support unapproved/uninstalled",
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/90055/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP25",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP48",
+        "providerType": "normal",
+        "providerStamps": [
+          "worlds-2009"
+        ],
+        "tcgplayerProductID": 90056,
+        "marketplaceName": "Tropical Wind - DP48 (Worlds 09)",
+        "status": "Corroborated identity/Normal-only product; positive stamped support unapproved/uninstalled",
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/90056/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP48",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP05",
+        "providerType": "normal",
+        "providerStamps": [
+          "worlds-2007",
+          "staff"
+        ],
+        "tcgplayerProductID": 97810,
+        "marketplaceName": "Tropical Winds - DP05 (Worlds 07) [Staff]",
+        "status": "Corroborated identity/Normal-only product; positive stamped support unapproved/uninstalled",
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/97810/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP05",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP25",
+        "providerType": "normal",
+        "providerStamps": [
+          "worlds-2008",
+          "staff"
+        ],
+        "tcgplayerProductID": 97811,
+        "marketplaceName": "Tropical Wind - DP25 (Worlds 08) [Staff]",
+        "status": "Corroborated identity/Normal-only product; positive stamped support unapproved/uninstalled",
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/97811/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP25",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP48",
+        "providerType": "normal",
+        "providerStamps": [
+          "worlds-2009",
+          "staff"
+        ],
+        "tcgplayerProductID": 97812,
+        "marketplaceName": "Tropical Wind - DP48 (Worlds 09) [Staff]",
+        "status": "Corroborated identity/Normal-only product; positive stamped support unapproved/uninstalled",
+        "evidenceURLs": [
+          "https://mp-search-api.tcgplayer.com/v1/product/97812/details",
+          "https://api.tcgdex.net/v2/en/cards/dpp-DP48",
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+        ]
+      }
+    ],
+    "WorldsBoundary": "Six base/staff products in this group do not account for all 21 published Worlds objects or possible number-error editions. Generic stamped support remains separately pending.",
+    "NamedFoilBoundary": "The 19 Holo bindings target existing broad Holo objects; they do not certify exhaustive Cosmos or other named-pattern representation or create another physical Holo printing.",
+    "DVDNormalBoundary": "Keep DP24/DP40 Normal objects separate from Cosmos and Jumbo. An ordinary Holo-only marketplace product is not evidence that the DVD Normal printing does not exist.",
+    "OtherStampedBoundary": "Named player-signature and countdown-calendar objects remain separate identity/finish review leads; no plain Holo product is assigned to them."
+  },
+  "imageReview": {
+    "observedAtUTC": "2026-11-03T15:29:08.511380+00:00",
+    "images": [
+      {
+        "productID": 211427,
+        "url": "https://product-images.tcgplayer.com/211427.jpg",
+        "status": 200,
+        "sha256": "9c9a9a379b69e4517e3fe0ff1aeba272dcf4c35d81e4267ad9f5e18e02634f6c",
+        "contentType": "image/jpeg",
+        "visuallyInspected": true
+      },
+      {
+        "productID": 211505,
+        "url": "https://product-images.tcgplayer.com/211505.jpg",
+        "status": 200,
+        "sha256": "2686ba2f406c32015e7b179b10a459d25e23c71e61f59e14531d6398fc098f2d",
+        "contentType": "image/jpeg",
+        "visuallyInspected": true
+      },
+      {
+        "productID": 211415,
+        "url": "https://product-images.tcgplayer.com/211415.jpg",
+        "status": 200,
+        "sha256": "3b4aca2b89c24af18ef7c1de58c3a68bd2e7f4176b831b9303fd0ff6ae6ef915",
+        "contentType": "image/jpeg",
+        "visuallyInspected": true
+      }
+    ]
+  },
+  "verificationBoundary": {
+    "appOrCoreCodeChanged": false,
+    "newBuildTests": false,
+    "signedOrPublished": false,
+    "paidProviderUsed": false,
+    "physicalCameraAcceptance": false
+  }
+}

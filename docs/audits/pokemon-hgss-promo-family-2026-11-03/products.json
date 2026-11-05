@@ -1,0 +1,692 @@
+{
+  "observedAtUTC": "2026-11-03T14:04:46.595667+00:00",
+  "discoveryURL": "https://www.decktradr.com/sets/pokemon/1453-hgss-promos",
+  "discoverySHA256": "1717c02b6e9e66f0403f562276aa94a0834533092b5ad138ae8cad32e59f227f",
+  "discoveryPurpose": "Product-ID discovery only; not independent physical proof",
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84368/details",
+      "status": 200,
+      "sha256": "24f8e411071b74c19dec20cdc30db15269bb9eab1b290e5ffcf9b84347f3e53b",
+      "requestedProductID": 84368,
+      "identity": {
+        "productId": 84368.0,
+        "productName": "Cleffa - HGSS12",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS12"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85273/details",
+      "status": 200,
+      "sha256": "709df1f4ca42dd2e550e6df81df23cdae584901394a855c49c107cd9ea3e3443",
+      "requestedProductID": 85273,
+      "identity": {
+        "productId": 85273.0,
+        "productName": "Entei - HGSS20",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS20"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85421/details",
+      "status": 200,
+      "sha256": "070e031abde6763329b539c925d2af4e92de770eb43fbc0f18735a5b3e9e8ca4",
+      "requestedProductID": 85421,
+      "identity": {
+        "productId": 85421.0,
+        "productName": "Feraligatr (Prime) - HGSS07",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS07"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86097/details",
+      "status": 200,
+      "sha256": "e115e4bd2c934ce0e58be942575a6d293254231bce6a56d2cd364b7789b01bd7",
+      "requestedProductID": 86097,
+      "identity": {
+        "productId": 86097.0,
+        "productName": "Hitmonchan - HGSS24",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS24"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86109/details",
+      "status": 200,
+      "sha256": "44277692f0a426d845a21991da00a9b65f20454f1acc2169766c8704f21c293d",
+      "requestedProductID": 86109,
+      "identity": {
+        "productId": 86109.0,
+        "productName": "Hitmonlee - HGSS25",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86125/details",
+      "status": 200,
+      "sha256": "212356b5ed220618cbabb3ec4dfe0bfaf2dcf15b35c300b4da8e0878cdbd5827",
+      "requestedProductID": 86125,
+      "identity": {
+        "productId": 86125.0,
+        "productName": "Ho-Oh - HGSS01",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS01"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86174/details",
+      "status": 200,
+      "sha256": "92056e323e1ce18b698f076bcc876cdb606d6f66396f2bb55d812ace79f2a088",
+      "requestedProductID": 86174,
+      "identity": {
+        "productId": 86174.0,
+        "productName": "Hoothoot - HGSS05",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS05"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86621/details",
+      "status": 200,
+      "sha256": "e6581062659efc2203d0f84661173b91b3838562c297502280e8cdf3ae1efa07",
+      "requestedProductID": 86621,
+      "identity": {
+        "productId": 86621.0,
+        "productName": "Lapras - HGSS14",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS14"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86653/details",
+      "status": 200,
+      "sha256": "9b6e0ea623104ee2a6ee3e2876181d81873851e68108d92383e9df29097ea4f7",
+      "requestedProductID": 86653,
+      "identity": {
+        "productId": 86653.0,
+        "productName": "Latias - HGSS10 (Cosmos Holo)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS10"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86667/details",
+      "status": 200,
+      "sha256": "5efdee7e3621fd818312bfbdc1e89e92e82238f76650b91b1509ff8a2ae7aaaf",
+      "requestedProductID": 86667,
+      "identity": {
+        "productId": 86667.0,
+        "productName": "Latios - HGSS11 (Cosmos Holo)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS11"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86909/details",
+      "status": 200,
+      "sha256": "8071e43d0bc25d30f6dc70c625b1e3694d672a45052f45e3e65da02cad1f8da6",
+      "requestedProductID": 86909,
+      "identity": {
+        "productId": 86909.0,
+        "productName": "Lugia - HGSS02",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS02"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87295/details",
+      "status": 200,
+      "sha256": "18e276863518471fcec63083fea69442b0b68994dbf15ba1195e21483478a56a",
+      "requestedProductID": 87295,
+      "identity": {
+        "productId": 87295.0,
+        "productName": "Meganium (Prime) - HGSS08",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS08"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87492/details",
+      "status": 200,
+      "sha256": "cc66a8c8b811a6b688f5af5cc09d34d388df4a8d3fcf58d8c60a2c4cdea41211",
+      "requestedProductID": 87492,
+      "identity": {
+        "productId": 87492.0,
+        "productName": "Minun - HGSS17",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87795/details",
+      "status": 200,
+      "sha256": "a88c78ce9b02f583edc767178dcf3a34b18eaa57d7866b27759dc374d3e1097d",
+      "requestedProductID": 87795,
+      "identity": {
+        "productId": 87795.0,
+        "productName": "Noctowl - HGSS06",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS06"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88098/details",
+      "status": 200,
+      "sha256": "0b697686aa3d7ef5c50d8f7625796bf90e87db2bce29cab293d4b4461fe2a8a6",
+      "requestedProductID": 88098,
+      "identity": {
+        "productId": 88098.0,
+        "productName": "Pikachu - HGSS03",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS03"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88172/details",
+      "status": 200,
+      "sha256": "df4f0a821294ddca682a3ac8235cbf53edc572d88ec4137c82fec1d97338a6e5",
+      "requestedProductID": 88172,
+      "identity": {
+        "productId": 88172.0,
+        "productName": "Plusle - HGSS16",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS16"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88313/details",
+      "status": 200,
+      "sha256": "6588dd5f04b3f313ae35accccfca05ce9b4835448c8a3f5ba780bdee6d2cb513",
+      "requestedProductID": 88313,
+      "identity": {
+        "productId": 88313.0,
+        "productName": "Porygon - HGSS22",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS22"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88328/details",
+      "status": 200,
+      "sha256": "f5657c54948a162d09ccdb1bf3bac4571aeefd922df574e26931294e7a95603c",
+      "requestedProductID": 88328,
+      "identity": {
+        "productId": 88328.0,
+        "productName": "Porygon2 - HGSS23",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS23"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88535/details",
+      "status": 200,
+      "sha256": "f14d016f014fc88deddead824bb50b2afee677fd24b5304a75154d9886524981",
+      "requestedProductID": 88535,
+      "identity": {
+        "productId": 88535.0,
+        "productName": "Raikou - HGSS19",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS19"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89193/details",
+      "status": 200,
+      "sha256": "160f3985f7d2b8348a79997c4b663e01af5eb7436a75be4fa74694f2723299e7",
+      "requestedProductID": 89193,
+      "identity": {
+        "productId": 89193.0,
+        "productName": "Shuckle - HGSS15",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS15"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89364/details",
+      "status": 200,
+      "sha256": "7be8a5d17d689ff58c8e190637190e227722b815999a9334bc9e1967eb2d1699",
+      "requestedProductID": 89364,
+      "identity": {
+        "productId": 89364.0,
+        "productName": "Smoochum - HGSS13",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS13"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89605/details",
+      "status": 200,
+      "sha256": "68b082d10e72cf8c20f36b5096325daf28b76557269477ea80d0031116864e90",
+      "requestedProductID": 89605,
+      "identity": {
+        "productId": 89605.0,
+        "productName": "Suicune - HGSS21",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS21"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90052/details",
+      "status": 200,
+      "sha256": "a4274e5ca19986f9332d0b3eeb1d65851d5c6b09a3eafaecf251bcbd804e84fe",
+      "requestedProductID": 90052,
+      "identity": {
+        "productId": 90052.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Participation]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90108/details",
+      "status": 200,
+      "sha256": "17b060a6d22f8e4c4dd8cc43f9cf9a156db26932ceafa853549fc07843f20760",
+      "requestedProductID": 90108,
+      "identity": {
+        "productId": 90108.0,
+        "productName": "Typhlosion (Prime) - HGSS09",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS09"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90622/details",
+      "status": 200,
+      "sha256": "bf239346f25a7d343e5dbccca622a866a3a59c1a4cf841574db5977319d9da4d",
+      "requestedProductID": 90622,
+      "identity": {
+        "productId": 90622.0,
+        "productName": "Wobbuffet - HGSS04",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS04"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97699/details",
+      "status": 200,
+      "sha256": "cb9378f57721fcd1b273ee20c20fd4110004393b3eca8cc65b9f80de54c3d9b4",
+      "requestedProductID": 97699,
+      "identity": {
+        "productId": 97699.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Top 32]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97700/details",
+      "status": 200,
+      "sha256": "6f9e6f93b13362b5255dd859550b13d448c9804b4b426edfa73520eb2792f1c4",
+      "requestedProductID": 97700,
+      "identity": {
+        "productId": 97700.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Top 16]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97701/details",
+      "status": 200,
+      "sha256": "ef0a1b84d9404ff14b9076aca3f2b8449ced6f162d041791376e37562d90993d",
+      "requestedProductID": 97701,
+      "identity": {
+        "productId": 97701.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Quarter-Finalist]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97702/details",
+      "status": 200,
+      "sha256": "57a4bb8bd00b3e77704a3d389580dae116ce373601f4729947ab56f2bb48e994",
+      "requestedProductID": 97702,
+      "identity": {
+        "productId": 97702.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Semi-Finalist]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97703/details",
+      "status": 200,
+      "sha256": "c599c077295253964e2740d6ff65a9b46eed9c5dd5fbc3ed643f6549872b24b2",
+      "requestedProductID": 97703,
+      "identity": {
+        "productId": 97703.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Staff]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97704/details",
+      "status": 200,
+      "sha256": "5585eb4c54c9b6644e22f512eb99efe92c0b0c2c55bce09e9d71a4a85b048913",
+      "requestedProductID": 97704,
+      "identity": {
+        "productId": 97704.0,
+        "productName": "Tropical Tidal Wave - HGSS18 (Worlds 10) [Finalist]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "HGSS18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97705/details",
+      "status": 200,
+      "sha256": "d75ac56648e6347b21b31f39f74529ad0a81c9bfed2f0b6a30b4ad5987884cc1",
+      "requestedProductID": 97705,
+      "identity": {
+        "productId": 97705.0,
+        "productName": "Latias - HGSS10 (Cracked Ice Holo)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS10"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97706/details",
+      "status": 200,
+      "sha256": "f0e5e509939b16f50c004f24948c4864e12879cdc2dc35198e7f5c41077bd118",
+      "requestedProductID": 97706,
+      "identity": {
+        "productId": 97706.0,
+        "productName": "Latios - HGSS11 (Cracked Ice Holo)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "HGSS11"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211517/details",
+      "status": 200,
+      "sha256": "8e31ee50e6521ce9c3ff59cc2100de7896e22f183d899b7250367a3c8279738b",
+      "requestedProductID": 211517,
+      "identity": {
+        "productId": 211517.0,
+        "productName": "Blastoise - 13/95 (Prerelease)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "13/95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211518/details",
+      "status": 200,
+      "sha256": "715423788e06665bcc3d69913dbe60ead9469c66d53bab6856c4cf9f2757268c",
+      "requestedProductID": 211518,
+      "identity": {
+        "productId": 211518.0,
+        "productName": "Blastoise - 13/95 (Prerelease) [Staff]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "13/95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/221177/details",
+      "status": 200,
+      "sha256": "9ebd2d97c0aaea2c4b9fa4ecba130327b1851c4aa07586cdfc4e8582950dacdf",
+      "requestedProductID": 221177,
+      "identity": {
+        "productId": 221177.0,
+        "productName": "Leafeon - 17/90 (Prerelease)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "17/90"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/224195/details",
+      "status": 200,
+      "sha256": "ffb6166cc2eedc48c548a26c233294304172e0ea2c3c5fb565d3fc3c0cb05bc6",
+      "requestedProductID": 224195,
+      "identity": {
+        "productId": 224195.0,
+        "productName": "Electivire - 20/102 (Prerelease)",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "20/102"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/224196/details",
+      "status": 200,
+      "sha256": "60ae51f62c11c510776afc272ff7ddc5beb4617d6de8155914bd75992ae496ff",
+      "requestedProductID": 224196,
+      "identity": {
+        "productId": 224196.0,
+        "productName": "Electivire - 20/102 (Prerelease) [Staff]",
+        "setId": 1453.0,
+        "setCode": "PR",
+        "setName": "HGSS Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "20/102"
+      }
+    }
+  ]
+}

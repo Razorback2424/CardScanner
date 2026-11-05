@@ -1,0 +1,55 @@
+{
+  "status": "Normal native live validation passed; unsigned and unpublished",
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "generatedAt": "2026-11-03T13:56:01Z",
+  "inputSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "validation": {
+    "nativePublisherExitCode": 0,
+    "activeProductionRevision": 19,
+    "activeEnvelopeSHA256": "ba47f27434d48983218374538f84550101d70ab0f15e123ab691ae9708087333",
+    "activeSignatureVerifiedByNormalNativePublisher": true,
+    "candidateRevision": 20,
+    "changeClass": "newSet",
+    "descriptors": 75,
+    "numberedSummaries": 6675,
+    "protectedRecords": 99,
+    "allAuthoringCorrectionsExactlyCarried": true,
+    "previousProviderFingerprintsUnchanged": 33,
+    "secondaryProviderAvailable": true,
+    "ambiguousSecondaryMatches": [
+      "tk2a",
+      "tk2b"
+    ]
+  },
+  "artworkContinuity": {
+    "allPriorCardArtworkMappingsRetainedExactly": true,
+    "priorMappingsBySet": {
+      "30th-c": 30,
+      "bwp": 3,
+      "smp": 64
+    },
+    "priorMappingCount": 97,
+    "limitation": "Mapping retention is not public URL health or physical-camera acceptance"
+  },
+  "artifacts": {
+    "root": "/Volumes/T7/CodexBuilds/CardScannerRedBluePublisher20261103",
+    "payloadSHA256": "f35e580d679e0b08e5dc2f537abae8699c116e23c1ef2ac83b82df0501b072f0",
+    "snapshotSHA256": "51a8224115cf80af33e138fe265ed8d370741ccc5bf284b76aa61df14388ee41",
+    "nativeReviewSHA256": "141ad024ae5fcb149d9c43b1c44912cfcad0831f16f8b6b4e2bfc0672f3a0c9b",
+    "repositoryNativeReviewSHA256": "0f281b856bbf4474404fe38c21be2a344227b02f345a0eb3a376f3e5246818d5",
+    "repositoryNativeReviewNormalization": "One final newline added; parsed JSON is identical"
+  },
+  "verificationBoundary": {
+    "appOrCoreCodeChanged": false,
+    "buildTestsRerun": false,
+    "previousSharedPassed": 88,
+    "previousSharedSkipped": 1,
+    "previousIOSPassed": 80,
+    "pendingPokeweenProposalInstalled": false,
+    "physicalCameraAccepted": false,
+    "paidProviderAccepted": false,
+    "signed": false,
+    "published": false,
+    "committedByThisTurn": false
+  }
+}

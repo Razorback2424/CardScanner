@@ -1,0 +1,698 @@
+{
+  "observedAtUTC": "2026-11-03T14:55:58.915631+00:00",
+  "purpose": "Price-free primary provider/product identity and finish review",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY53",
+      "status": 200,
+      "sha256": "c5057383dcbcadd93bc5d94a538926d89f648815c9235d4aa45fee6358ed3ab2",
+      "requestedCardID": "xyp-XY53",
+      "identity": {
+        "id": "xyp-XY53",
+        "localId": "XY53",
+        "name": "Sceptile EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY54",
+      "status": 200,
+      "sha256": "cba679fe9bd533ab7357747bbdcb440469139f7a1a80d6f680739c1f8792723f",
+      "requestedCardID": "xyp-XY54",
+      "identity": {
+        "id": "xyp-XY54",
+        "localId": "XY54",
+        "name": "Blaziken EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY55",
+      "status": 200,
+      "sha256": "0d1e96dc65a6701f16def429f2fe7947ce71e34caa930516431fe2599bb37866",
+      "requestedCardID": "xyp-XY55",
+      "identity": {
+        "id": "xyp-XY55",
+        "localId": "XY55",
+        "name": "Swampert EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY69",
+      "status": 200,
+      "sha256": "31fff5592938f0047743a14cd6d56929a790d682fec619de90e94714b1518354",
+      "requestedCardID": "xyp-XY69",
+      "identity": {
+        "id": "xyp-XY69",
+        "localId": "XY69",
+        "name": "Rayquaza EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY70",
+      "status": 200,
+      "sha256": "5b2b33b6314ecb07afe8cf91a4ea4f6eda1ef18cdbc4c3c7439177b14f8eee0a",
+      "requestedCardID": "xyp-XY70",
+      "identity": {
+        "id": "xyp-XY70",
+        "localId": "XY70",
+        "name": "Tyrantrum EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY71",
+      "status": 200,
+      "sha256": "fb043ba49978ca49295b35b8accbc6528dc45083ddbf4863b18f3d2ddf1776f3",
+      "requestedCardID": "xyp-XY71",
+      "identity": {
+        "id": "xyp-XY71",
+        "localId": "XY71",
+        "name": "Hoopa EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY72",
+      "status": 200,
+      "sha256": "1d626fcd1853ba16cf42ff830c3c04ee655336f809915ec048a1e8aab808e002",
+      "requestedCardID": "xyp-XY72",
+      "identity": {
+        "id": "xyp-XY72",
+        "localId": "XY72",
+        "name": "Latios EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY73",
+      "status": 200,
+      "sha256": "c2e3bbaecce9915212377c49fea0ca9d910251907b61b04f36f469dcd0e4bbc0",
+      "requestedCardID": "xyp-XY73",
+      "identity": {
+        "id": "xyp-XY73",
+        "localId": "XY73",
+        "name": "Rayquaza EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY149",
+      "status": 200,
+      "sha256": "46f81e027fda18f99eebcc782542b0564a299f7b0e37c5b127206be026cba945",
+      "requestedCardID": "xyp-XY149",
+      "identity": {
+        "id": "xyp-XY149",
+        "localId": "XY149",
+        "name": "Xerneas EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY150",
+      "status": 200,
+      "sha256": "a3b1c5393c41e472f98a513e8b0078a5de2f53170a6b340de6bf422b6901d546",
+      "requestedCardID": "xyp-XY150",
+      "identity": {
+        "id": "xyp-XY150",
+        "localId": "XY150",
+        "name": "Yveltal EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY151",
+      "status": 200,
+      "sha256": "e0cb70b898376dcfb2201b655488d756f28a5c2c3013ce0e0e65eaac2ccaa564",
+      "requestedCardID": "xyp-XY151",
+      "identity": {
+        "id": "xyp-XY151",
+        "localId": "XY151",
+        "name": "Zygarde EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY41",
+      "status": 200,
+      "sha256": "579463f9ab0e71599ea94931563f99a32a1ee915a77b7acddf87a014d7691dfe",
+      "requestedCardID": "xyp-XY41",
+      "identity": {
+        "id": "xyp-XY41",
+        "localId": "XY41",
+        "name": "Kyogre EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY42",
+      "status": 200,
+      "sha256": "bb1279694b4c0f09a9723fd72fb6ecb28d85d6fc3210e411237a16850c060dcf",
+      "requestedCardID": "xyp-XY42",
+      "identity": {
+        "id": "xyp-XY42",
+        "localId": "XY42",
+        "name": "Groudon EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    }
+  ],
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100509/details",
+      "status": 200,
+      "sha256": "bef986f9045acadc404ad74eec08d046b626736f1b3c5250d7ebc45061f6784c",
+      "requestedProductID": 100509,
+      "identity": {
+        "productId": 100509.0,
+        "productName": "Sceptile EX - XY53",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100510/details",
+      "status": 200,
+      "sha256": "c53b0dd1c46554a2442a04f1ddabb17ae503a5f7797427b3b6fe2da72f07d375",
+      "requestedProductID": 100510,
+      "identity": {
+        "productId": 100510.0,
+        "productName": "Blaziken EX - XY54",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY54"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/100511/details",
+      "status": 200,
+      "sha256": "05573f06b44af36ea4b72c85c2b1c90e00dbebec6710b3929b636960f329c447",
+      "requestedProductID": 100511,
+      "identity": {
+        "productId": 100511.0,
+        "productName": "Swampert EX - XY55",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY55"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108599/details",
+      "status": 200,
+      "sha256": "dfe0e5fc9c5ff2a140de0e06dca6d5c276d0512042c8ed9a12e6caedb39144a3",
+      "requestedProductID": 108599,
+      "identity": {
+        "productId": 108599.0,
+        "productName": "Rayquaza EX (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY69"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108600/details",
+      "status": 200,
+      "sha256": "30ff8bff955d6fe9cccd1cae1d15a2153ac5cf2aacf9f35ba1a875cd7e0737b2",
+      "requestedProductID": 108600,
+      "identity": {
+        "productId": 108600.0,
+        "productName": "Tyrantrum EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY70"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108601/details",
+      "status": 200,
+      "sha256": "5a6be2b81b34e422c44a845eb4d456deb1ee5b00bd6b9c97bd0b8ef45fd77845",
+      "requestedProductID": 108601,
+      "identity": {
+        "productId": 108601.0,
+        "productName": "Hoopa EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY71"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108602/details",
+      "status": 200,
+      "sha256": "ce05fb3ea3ebbd359fe8fa56f2dd3cdd1d9eda33706b943bc725dfcd3f70181c",
+      "requestedProductID": 108602,
+      "identity": {
+        "productId": 108602.0,
+        "productName": "Latios EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY72"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108603/details",
+      "status": 200,
+      "sha256": "0202d811bd6e01a1dc751137c049a0c860b53146650fab6f1d045bee46d1bf21",
+      "requestedProductID": 108603,
+      "identity": {
+        "productId": 108603.0,
+        "productName": "Rayquaza EX (XY73)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY73"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121952/details",
+      "status": 200,
+      "sha256": "ee867d065bcf62a170e0f28a89fb8cb964dc4f91ce9f25cb622ec0bbda7ce797",
+      "requestedProductID": 121952,
+      "identity": {
+        "productId": 121952.0,
+        "productName": "Xerneas EX - XY149 (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY149"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121953/details",
+      "status": 200,
+      "sha256": "9579eb3dc7a37e857b7a835bb3d3e0d0c6d7ed3002ac732531c04b97ac72fa04",
+      "requestedProductID": 121953,
+      "identity": {
+        "productId": 121953.0,
+        "productName": "Yveltal EX - XY150 (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY150"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121954/details",
+      "status": 200,
+      "sha256": "4de68a5f69a7c752239c143ba2e4aabe3537d0ab389b99c3083bc5c811fa0349",
+      "requestedProductID": 121954,
+      "identity": {
+        "productId": 121954.0,
+        "productName": "Zygarde EX (Shiny)",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY151"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108591/details",
+      "status": 200,
+      "sha256": "dd65ce8c96027323d0758103d440c4edf3056a2a7878df2ce0954fff3f1845b0",
+      "requestedProductID": 108591,
+      "identity": {
+        "productId": 108591.0,
+        "productName": "Kyogre EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY41"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108592/details",
+      "status": 200,
+      "sha256": "f280eb6101f70b5a36ced4e4846dbd40b185e80c3d0ca0bcfddfbc2db393c202",
+      "requestedProductID": 108592,
+      "identity": {
+        "productId": 108592.0,
+        "productName": "Groudon EX",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY42"
+      }
+    }
+  ],
+  "additionalTwoCardReadAtUTC": "2026-11-03T14:59:32.132019+00:00"
+}

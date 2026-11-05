@@ -1,0 +1,1186 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:20.076457+00:00",
+  "purpose": "Physical identity, variant and price-product IDs only; no numeric quotes",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-1",
+      "status": 200,
+      "sha256": "f64e946240b9e3683f7a55ec7243c8f16934c0acbdcb265b3b5a8391248b341d",
+      "requestedCardID": "pop4-1",
+      "identity": {
+        "id": "pop4-1",
+        "localId": "1",
+        "name": "Chimecho δ",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84298
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84298,
+              "cardmarket": 277466
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84298
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-2",
+      "status": 200,
+      "sha256": "405846644aa8a966f025783bd04c61e48ee5382254366a31a10ae27926d72ed3",
+      "requestedCardID": "pop4-2",
+      "identity": {
+        "id": "pop4-2",
+        "localId": "2",
+        "name": "Deoxys δ",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84765,
+            "holofoil": 84765
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84765,
+              "cardmarket": 277467
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84765,
+                "holofoil": 84765
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84765,
+              "cardmarket": 277467
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84765,
+                "holofoil": 84765
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-3",
+      "status": 200,
+      "sha256": "8c7c64730b4d5a37ab5eede470e0e7551f72345a2f1a31008f1892d02058f0d7",
+      "requestedCardID": "pop4-3",
+      "identity": {
+        "id": "pop4-3",
+        "localId": "3",
+        "name": "Flygon",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85524,
+            "holofoil": 85524
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85524,
+              "cardmarket": 277468
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85524,
+                "holofoil": 85524
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85524,
+              "cardmarket": 277468
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85524,
+                "holofoil": 85524
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-4",
+      "status": 200,
+      "sha256": "e31d7636288b5fb2d26a47c487e10d6022dbee3f4679140e695ce3e09e70d856",
+      "requestedCardID": "pop4-4",
+      "identity": {
+        "id": "pop4-4",
+        "localId": "4",
+        "name": "Mew",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87401,
+            "holofoil": 87401
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87401,
+              "cardmarket": 277469
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87401,
+                "holofoil": 87401
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87401,
+              "cardmarket": 277469
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87401,
+                "holofoil": 87401
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-5",
+      "status": 200,
+      "sha256": "8d1783f16376c2b06ba95794d5f5c7fc3b7688571c9877464fcdf8dfdaec9101",
+      "requestedCardID": "pop4-5",
+      "identity": {
+        "id": "pop4-5",
+        "localId": "5",
+        "name": "Sceptile",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88948
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88948,
+              "cardmarket": 277470
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88948
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-6",
+      "status": 200,
+      "sha256": "17b71959dc07ea5ba0a188ac8dd0407852bb092c4d682a125de8d2af2d82d795",
+      "requestedCardID": "pop4-6",
+      "identity": {
+        "id": "pop4-6",
+        "localId": "6",
+        "name": "Combusken",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84409,
+            "holofoil": 84409
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84409,
+              "cardmarket": 277471
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84409,
+                "holofoil": 84409
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84409,
+              "cardmarket": 277471
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84409,
+                "holofoil": 84409
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-7",
+      "status": 200,
+      "sha256": "736994d61075720f380a471c7c48ce2f03c1cd6bd314e08d5a7d4e4d064a749e",
+      "requestedCardID": "pop4-7",
+      "identity": {
+        "id": "pop4-7",
+        "localId": "7",
+        "name": "Grovyle",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85940
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85940,
+              "cardmarket": 277472
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85940
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-8",
+      "status": 200,
+      "sha256": "d6703a3669190a01f67406abe7e4c7ba0d0ba4cecce24791d34774db85e4ada4",
+      "requestedCardID": "pop4-8",
+      "identity": {
+        "id": "pop4-8",
+        "localId": "8",
+        "name": "Heal Energy",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86038
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86038,
+              "cardmarket": 277473
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86038
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-9",
+      "status": 200,
+      "sha256": "45bcd7a829c702f4973d1a1be48a1a0874f7c327d2415b9862ec53f56df09299",
+      "requestedCardID": "pop4-9",
+      "identity": {
+        "id": "pop4-9",
+        "localId": "9",
+        "name": "Pokémon Fan Club",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88226
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88226,
+              "cardmarket": 277474
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88226
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-10",
+      "status": 200,
+      "sha256": "14f67bcf8e6023fc5b2427b7e17aad953dac72e4bd2f1d42fe8715dc0ae426ee",
+      "requestedCardID": "pop4-10",
+      "identity": {
+        "id": "pop4-10",
+        "localId": "10",
+        "name": "Scramble Energy",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88988
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88988,
+              "cardmarket": 277475
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88988
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-11",
+      "status": 200,
+      "sha256": "0e6d0a960576b44709444165ede70c4a671c0e8eed9f7d71fabd1940515e8378",
+      "requestedCardID": "pop4-11",
+      "identity": {
+        "id": "pop4-11",
+        "localId": "11",
+        "name": "Mudkip",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87613,
+            "holofoil": 87613
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87613,
+              "cardmarket": 277476
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87613,
+                "holofoil": 87613
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87613,
+              "cardmarket": 277476
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87613,
+                "holofoil": 87613
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-12",
+      "status": 200,
+      "sha256": "4dd26255b620d3a2b86dc61a45ed83b2af7e1a95a81d634911fa4a76a8740e81",
+      "requestedCardID": "pop4-12",
+      "identity": {
+        "id": "pop4-12",
+        "localId": "12",
+        "name": "Pidgey",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88049
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88049,
+              "cardmarket": 277477
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88049
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-13",
+      "status": 200,
+      "sha256": "d1f0c0948f21a734f7d7845b4437feaeb1b750843953a8ceaf65a4679bcdb985",
+      "requestedCardID": "pop4-13",
+      "identity": {
+        "id": "pop4-13",
+        "localId": "13",
+        "name": "Pikachu",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88083,
+            "holofoil": 88083
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88083,
+              "cardmarket": 277478
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88083,
+                "holofoil": 88083
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88083,
+              "cardmarket": 277478
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88083,
+                "holofoil": 88083
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-14",
+      "status": 200,
+      "sha256": "0b0bf47dc76c99bc1c795b795dd8b62161354a9ba529fe99555be362830a54a2",
+      "requestedCardID": "pop4-14",
+      "identity": {
+        "id": "pop4-14",
+        "localId": "14",
+        "name": "Squirtle",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 89493
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89493,
+              "cardmarket": 277479
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89493
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-15",
+      "status": 200,
+      "sha256": "69974daf4af10b0f4190602b3e610c2eb7c922a9e066eb551963c45095b7134a",
+      "requestedCardID": "pop4-15",
+      "identity": {
+        "id": "pop4-15",
+        "localId": "15",
+        "name": "Treecko δ",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90045
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90045,
+              "cardmarket": 277480
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90045
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-16",
+      "status": 200,
+      "sha256": "1e40de4581038a8520a38e226bd8d5b326e47e012d5ff6238f6fc7683b475d7c",
+      "requestedCardID": "pop4-16",
+      "identity": {
+        "id": "pop4-16",
+        "localId": "16",
+        "name": "Wobbuffet",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90618,
+            "holofoil": 90618
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90618,
+              "cardmarket": 277481
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90618,
+                "holofoil": 90618
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90618,
+              "cardmarket": 277481
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90618,
+                "holofoil": 90618
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop4-17",
+      "status": 200,
+      "sha256": "ba54d106186c49ecbe8680c18ea678cd8d0a40cfcb1a2d2516c2876e714253ee",
+      "requestedCardID": "pop4-17",
+      "identity": {
+        "id": "pop4-17",
+        "localId": "17",
+        "name": "Deoxys ex",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": "EX",
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop4",
+          "logo": "https://assets.tcgdex.net/en/pop/pop4/logo",
+          "name": "POP Series 4",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84774,
+              "cardmarket": 277482
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

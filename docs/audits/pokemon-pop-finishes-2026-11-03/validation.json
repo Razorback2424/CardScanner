@@ -1,0 +1,49 @@
+{
+  "status": "Normal native validation completed and emitted candidate/report; artwork continuity fails; unsigned and unpublished",
+  "inputSHA256": "4ba743210bc5c32fd3083b2ade3cb6b51615cfa6ea27e2139d81e3cbee4cc55c",
+  "beforeInputSHA256": "1a7878e2a798ff73ecd64b84bc6df0f0d62d85dcf8394d7640bf07be7ed10f89",
+  "nativePublisherExitCode": null,
+  "nativeExitReceiptBoundary": "Session handle no longer exists after pause. Do not invent an observed exit code. Complete final stdout report equals the on-disk report and all three candidate artifacts exist; source emits this report after successful build and candidate writes.",
+  "nativeLogSHA256": "49d193bff34ff2eaa17b5a3ebec7bb6359795a210661611accec1765f2de1371",
+  "firstAttempt": {
+    "status": "Terminal failure",
+    "exitCode": 1,
+    "error": "TCGdex returned HTTP 503 for cards/xyp-XY108",
+    "logSHA256": "b0dcd2393d8d61b47981f4a58f9938c34b18c60eded1c7822098a5bcef8354b6"
+  },
+  "activeProductionRevision": 20,
+  "activeEnvelopeSHA256": "2f871edb9061cd2c77c9323664232be4fcffb7ef35293e2b4df64945dae3ec85",
+  "activeSignatureVerified": true,
+  "signatureReverificationExitCode": 0,
+  "activeDescriptors": 75,
+  "activeProtectedRecords": 95,
+  "candidateRevision": 21,
+  "changeClass": "authority",
+  "descriptors": 75,
+  "numberedSummaries": 6675,
+  "protectedRecords": 140,
+  "allAuthoringCorrectionsExactlyCarried": true,
+  "allActiveCorrectionsRetained": true,
+  "previousProviderFingerprintsUnchanged": 75,
+  "secondaryProviderAvailable": true,
+  "secondaryCardListHTTP502": true,
+  "artworkContinuityPassed": false,
+  "artifacts": {
+    "root": "/Volumes/T7/CodexBuilds/CardScannerPOPFinishesPublisherRetry20261103",
+    "payloadSHA256": "116eceece82467213497bcfc04fd1684d632955d0a48b18da8d3e33b8828f49a",
+    "snapshotSHA256": "6d054bdf521d1fd119e1d83360e9dcee298d30a13786f86d97b3e0345a3f4030",
+    "nativeReviewSHA256": "b1cd662f81e72572fdad2d06bf34d0192455a5c520ab64b463754b8aca361461",
+    "repositoryNativeReviewSHA256": "fc728c7e5272b5ebbfe385d79d65201ac072aa742ebeec560b263fce7c11b458",
+    "repositoryNativeReviewNormalization": "One final newline added; parsed JSON identical"
+  },
+  "verificationBoundary": {
+    "appOrCoreCodeChanged": false,
+    "buildTestsRerun": false,
+    "physicalCameraTested": false,
+    "paidQuotesTested": false,
+    "savedOnlyLinkReconciliation": false,
+    "phantomUmbreonHoloChoiceRemoved": false,
+    "published": false,
+    "signed": false
+  }
+}

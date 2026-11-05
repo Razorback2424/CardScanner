@@ -1,0 +1,378 @@
+[
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-grass-energy-009-30th-celebration-mee-009.json",
+    "status": 200,
+    "sha256": "49fd90a1d7d9d86ab60934971ad9ca01b540d073e445c0409c3ec07f12e9bf47",
+    "identity": {
+      "title": "Basic Grass Energy - 009 (30th Celebration) [MEE]",
+      "handle": "basic-grass-energy-009-30th-celebration-mee-009",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696978268223,
+          "product_id": 8365241761855,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696978300991,
+          "product_id": 8365241761855,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696978333759,
+          "product_id": 8365241761855,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-fire-energy-010-30th-celebration-mee-010.json",
+    "status": 200,
+    "sha256": "b07e953f3d4a7995b127963d9f974e3967047d9c446335cf80332672e6b2cd8c",
+    "identity": {
+      "title": "Basic Fire Energy - 010 (30th Celebration) [MEE]",
+      "handle": "basic-fire-energy-010-30th-celebration-mee-010",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696978399295,
+          "product_id": 8365241827391,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696978432063,
+          "product_id": 8365241827391,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696978464831,
+          "product_id": 8365241827391,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-water-energy-011-30th-celebration-mee-011.json",
+    "status": 200,
+    "sha256": "d8079335961e92fd725365ed3145da16d86df3bf7a755de52ede7ca7712968b4",
+    "identity": {
+      "title": "Basic Water Energy - 011 (30th Celebration) [MEE]",
+      "handle": "basic-water-energy-011-30th-celebration-mee-011",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696978595903,
+          "product_id": 8365241925695,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696978628671,
+          "product_id": 8365241925695,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696978661439,
+          "product_id": 8365241925695,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-lightning-energy-012-30th-celebration-mee-012.json",
+    "status": 200,
+    "sha256": "3e3de9432ec07a10fab5fb74300b6d47c8c0886c45bf9b5fafdef055b6048802",
+    "identity": {
+      "title": "Basic Lightning Energy - 012 (30th Celebration) [MEE]",
+      "handle": "basic-lightning-energy-012-30th-celebration-mee-012",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696978825279,
+          "product_id": 8365242023999,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696978858047,
+          "product_id": 8365242023999,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696978890815,
+          "product_id": 8365242023999,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-psychic-energy-013-30th-celebration-mee-013.json",
+    "status": 200,
+    "sha256": "5f26a9163cb92f76380beb2894b33de76c43f9a52d89ba3099459d5651c5055e",
+    "identity": {
+      "title": "Basic Psychic Energy - 013 (30th Celebration) [MEE]",
+      "handle": "basic-psychic-energy-013-30th-celebration-mee-013",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696978923583,
+          "product_id": 8365242056767,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696978956351,
+          "product_id": 8365242056767,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696978989119,
+          "product_id": 8365242056767,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-fighting-energy-014-30th-celebration-mee-014.json",
+    "status": 200,
+    "sha256": "3947b2e22fad2667de7088c3abc243a0fd4a075852caf7d8a2062f947996ea05",
+    "identity": {
+      "title": "Basic Fighting Energy - 014 (30th Celebration) [MEE]",
+      "handle": "basic-fighting-energy-014-30th-celebration-mee-014",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696979054655,
+          "product_id": 8365242122303,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696979087423,
+          "product_id": 8365242122303,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696979120191,
+          "product_id": 8365242122303,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-darkness-energy-015-30th-celebration-mee-015.json",
+    "status": 200,
+    "sha256": "e4b6dcbb5c616f566cf51cac4936d15903b5109416093626a8ac45fddaf5384c",
+    "identity": {
+      "title": "Basic Darkness Energy - 015 (30th Celebration) [MEE]",
+      "handle": "basic-darkness-energy-015-30th-celebration-mee-015",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696979185727,
+          "product_id": 8365242187839,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696979218495,
+          "product_id": 8365242187839,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696979251263,
+          "product_id": 8365242187839,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://www.acecollectibles.com.au/products/basic-metal-energy-016-30th-celebration-mee-016.json",
+    "status": 200,
+    "sha256": "3f60c9b7008844bd7461f1dedc6f4728ff3c620918e7068bb491ebe7c3458a84",
+    "identity": {
+      "title": "Basic Metal Energy - 016 (30th Celebration) [MEE]",
+      "handle": "basic-metal-energy-016-30th-celebration-mee-016",
+      "vendor": "MEE: Mega Evolution Energies",
+      "options": [
+        {
+          "id": 10696979316799,
+          "product_id": 8365242253375,
+          "name": "Condition",
+          "position": 1,
+          "values": [
+            "Near Mint"
+          ]
+        },
+        {
+          "id": 10696979349567,
+          "product_id": 8365242253375,
+          "name": "Language",
+          "position": 2,
+          "values": [
+            "English"
+          ]
+        },
+        {
+          "id": 10696979382335,
+          "product_id": 8365242253375,
+          "name": "Printing",
+          "position": 3,
+          "values": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "variantOptions": [
+        {
+          "title": "Near Mint / English / Holofoil",
+          "option1": "Near Mint",
+          "option2": "English",
+          "option3": "Holofoil"
+        }
+      ]
+    }
+  }
+]

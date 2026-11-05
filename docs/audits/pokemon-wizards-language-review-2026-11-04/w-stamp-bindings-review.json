@@ -1,0 +1,125 @@
+{
+  "count": 7,
+  "bindings": [
+    {
+      "providerCardID": "base2-60",
+      "canonicalName": "Pikachu",
+      "providerType": "normal",
+      "providerStamps": [
+        "wotc"
+      ],
+      "correctProductID": 126209,
+      "currentProductID": null,
+      "wrongOrdinaryProductID": null,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/126209/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": false
+    },
+    {
+      "providerCardID": "base3-50",
+      "canonicalName": "Kabuto",
+      "providerType": "normal",
+      "providerStamps": [
+        "wotc"
+      ],
+      "correctProductID": 123631,
+      "currentProductID": null,
+      "wrongOrdinaryProductID": null,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/123631/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": false
+    },
+    {
+      "providerCardID": "base4-63",
+      "canonicalName": "Wartortle",
+      "providerType": "normal",
+      "providerStamps": [
+        "wotc"
+      ],
+      "correctProductID": 127206,
+      "currentProductID": null,
+      "wrongOrdinaryProductID": null,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/127206/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": false
+    },
+    {
+      "providerCardID": "base5-19",
+      "canonicalName": "Dark Arbok",
+      "providerType": "normal",
+      "providerStamps": [
+        "wotc"
+      ],
+      "correctProductID": 126208,
+      "currentProductID": null,
+      "wrongOrdinaryProductID": null,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/126208/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": false
+    },
+    {
+      "providerCardID": "base5-32",
+      "canonicalName": "Dark Charmeleon",
+      "providerType": "normal",
+      "providerStamps": [
+        "w-promo"
+      ],
+      "correctProductID": 180834,
+      "currentProductID": null,
+      "wrongOrdinaryProductID": null,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/180834/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": false
+    },
+    {
+      "providerCardID": "gym1-54",
+      "canonicalName": "Misty's Psyduck",
+      "providerType": "normal",
+      "providerStamps": [
+        "wotc"
+      ],
+      "correctProductID": 166296,
+      "currentProductID": 87539,
+      "wrongOrdinaryProductID": 87539,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/166296/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": true
+    },
+    {
+      "providerCardID": "gym2-37",
+      "canonicalName": "Brock's Vulpix",
+      "providerType": "normal",
+      "providerStamps": [
+        "wotc"
+      ],
+      "correctProductID": 123632,
+      "currentProductID": 83986,
+      "wrongOrdinaryProductID": 83986,
+      "status": "Prepared, not installed",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/123632/details",
+        "https://bulbapedia.bulbagarden.net/wiki/W_Promotional_cards"
+      ],
+      "imageInspected": true
+    }
+  ],
+  "implementationBoundary": "Generic stamped positive authorizations are unsupported. Adding a notScannable descriptor to a previously unregistered Gym expansion would make registry.isScanDisabled true and remove its live historical scan candidate route. Do not ship that workaround or fabricate a three-character printed expansion code. A safe signed correction carrier must preserve existing fraction recognition."
+}

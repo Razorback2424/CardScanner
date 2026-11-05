@@ -1,0 +1,487 @@
+{
+  "observedAtUTC": "2026-11-03T17:12:16.894098+00:00",
+  "directory": {
+    "url": "https://www.decktradr.com/sets/pokemon/2205-pikachu-world-collection-promos",
+    "status": 200,
+    "sha256": "ce1411bb32c82d61641b92dfa9fb5120e5e01a4d6e04a9a8df04dffa0fab20ca",
+    "links": [
+      "/cards/pokemon/159115-s-pikachu-24",
+      "/cards/pokemon/161747-pikachu-baby-27",
+      "/cards/pokemon/161748-pikachu-base-set-58",
+      "/cards/pokemon/161749-pikachu-flying-25",
+      "/cards/pokemon/161750-pikachu-ivy-1",
+      "/cards/pokemon/161751-pikachu-jungle-60",
+      "/cards/pokemon/161752-pikachu-movie-4",
+      "/cards/pokemon/161753-pikachu-snap-4",
+      "/cards/pokemon/161754-pikachu-surfing-28",
+      "/cards/pokemon/161757-pikachu-world-collection-promo-set",
+      "/cards/pokemon/215153-pikachu-english-pw-1",
+      "/cards/pokemon/215154-pikachu-italian-pw-2",
+      "/cards/pokemon/215155-pikachu-korean-pw-3",
+      "/cards/pokemon/215156-pikachu-spanish-pw-4",
+      "/cards/pokemon/215157-pikachu-japanese-pw-5",
+      "/cards/pokemon/215158-pikachu-german-pw-6",
+      "/cards/pokemon/215159-pikachu-french-pw-7",
+      "/cards/pokemon/215160-pikachu-polish-pw-8",
+      "/cards/pokemon/215161-pikachu-portuguese-pw-9",
+      "/cards/pokemon/215162-pikachu-world-collection-promo-set-2010",
+      "/cards/pokemon/215163-pikachu-japanese-green-pw-5"
+    ],
+    "purpose": "Product ID discovery only"
+  },
+  "discoveredProductIDs": [
+    159115,
+    161747,
+    161748,
+    161749,
+    161750,
+    161751,
+    161752,
+    161753,
+    161754,
+    161757,
+    215153,
+    215154,
+    215155,
+    215156,
+    215157,
+    215158,
+    215159,
+    215160,
+    215161,
+    215162,
+    215163
+  ],
+  "alreadyReadProductIDs": [
+    159115,
+    161747,
+    161749,
+    161750,
+    161752,
+    161753,
+    161754
+  ],
+  "newProducts": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161748/details",
+      "status": 200,
+      "sha256": "eb13ad3e3c5dadff2398a111c8e07d13a96d077800d149593e99b52c232ad14f",
+      "requestedProductID": 161748,
+      "identity": {
+        "productId": 161748.0,
+        "productName": "Pikachu (Base Set)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "58"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161751/details",
+      "status": 200,
+      "sha256": "68a625b5ac7e53f9c73d15218d143e9994eedc1efde1ce1b74ad799e103d7be1",
+      "requestedProductID": 161751,
+      "identity": {
+        "productId": 161751.0,
+        "productName": "Pikachu (Jungle)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "60"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161757/details",
+      "status": 200,
+      "sha256": "a30d7ee5a8d87e8b4d9ebb6388e8c0434a37b4e33058c80327d1f1525113bc11",
+      "requestedProductID": 161757,
+      "identity": {
+        "productId": 161757.0,
+        "productName": "Pikachu World Collection Promo Set",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Sealed Products",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": null
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215153/details",
+      "status": 200,
+      "sha256": "cf6a75080eae38a1a7bec30dfde2452da95d43f523128f485ce603ec48b4c653",
+      "requestedProductID": 215153,
+      "identity": {
+        "productId": 215153.0,
+        "productName": "Pikachu (English)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 1"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215154/details",
+      "status": 200,
+      "sha256": "f5e7feaae44bc1072ee61911ab1b27a8b6412e34619ccdc95d23da1ad9cff919",
+      "requestedProductID": 215154,
+      "identity": {
+        "productId": 215154.0,
+        "productName": "Pikachu (Italian)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 2"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215155/details",
+      "status": 200,
+      "sha256": "710949831446ed713539e81673dc3652b119b6ba332e1b3dbd30e44c25bd014b",
+      "requestedProductID": 215155,
+      "identity": {
+        "productId": 215155.0,
+        "productName": "Pikachu (Korean)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 3"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215156/details",
+      "status": 200,
+      "sha256": "0f1396c0b18ed60c708145c846293155020a138c2ea615b0ee4038be06757c60",
+      "requestedProductID": 215156,
+      "identity": {
+        "productId": 215156.0,
+        "productName": "Pikachu (Spanish)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 4"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215157/details",
+      "status": 200,
+      "sha256": "bd19f106bb997641b85b55b28fbeee28281db492c1e1a0164992ea0c8884ccb7",
+      "requestedProductID": 215157,
+      "identity": {
+        "productId": 215157.0,
+        "productName": "Pikachu (Japanese)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 5"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215158/details",
+      "status": 200,
+      "sha256": "161983dd45444df9ab874a5e430e64531305e3073cada6309f9eed0ccc152803",
+      "requestedProductID": 215158,
+      "identity": {
+        "productId": 215158.0,
+        "productName": "Pikachu (German)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 6"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215159/details",
+      "status": 200,
+      "sha256": "f664e9455c9e6ba3382956632c68ac85d43701af70f737ae39117117dc9577bc",
+      "requestedProductID": 215159,
+      "identity": {
+        "productId": 215159.0,
+        "productName": "Pikachu (French)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 7"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215160/details",
+      "status": 200,
+      "sha256": "67b6449da827a1c667677bb0890065f48bd340b018503b672df57eb92accaa3c",
+      "requestedProductID": 215160,
+      "identity": {
+        "productId": 215160.0,
+        "productName": "Pikachu (Polish)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 8"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215161/details",
+      "status": 200,
+      "sha256": "dca9d63069c48153a3ba7e668c8c1a2d746fe01e190a19d24d842fbb4a540da7",
+      "requestedProductID": 215161,
+      "identity": {
+        "productId": 215161.0,
+        "productName": "Pikachu (Portuguese)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 9"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215162/details",
+      "status": 200,
+      "sha256": "9ff172bce34b8f8842d91c049ce1f4f148640966297eee6458d116a18d09ba5b",
+      "requestedProductID": 215162,
+      "identity": {
+        "productId": 215162.0,
+        "productName": "Pikachu World Collection Promo Set (2010)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Sealed Products",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": null
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/215163/details",
+      "status": 200,
+      "sha256": "b92458b332c0f2da92377e1e366d8aff5163029cf54dc99ac2cf69da587b1ea6",
+      "requestedProductID": 215163,
+      "identity": {
+        "productId": 215163.0,
+        "productName": "Pikachu (Japanese) (Green)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "PW 5"
+      }
+    }
+  ],
+  "baseSetPikachu": {
+    "url": "https://api.tcgdex.net/v2/en/cards/base1-58",
+    "status": 200,
+    "sha256": "4517ad3c3c06b1afcf884c6fe997ace11264deaec0e31079298e1d9d217c509c",
+    "requestedCardID": "base1-58",
+    "identity": {
+      "id": "base1-58",
+      "localId": "58",
+      "name": "Pikachu",
+      "image": "https://assets.tcgdex.net/en/base/base1/58",
+      "variants": {
+        "firstEdition": true,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "set": {
+        "cardCount": {
+          "official": 102,
+          "total": 102
+        },
+        "id": "base1",
+        "logo": "https://assets.tcgdex.net/en/base/base1/logo",
+        "name": "Base Set"
+      },
+      "pricingIdentity": {
+        "present": true,
+        "productIDsByListing": {
+          "normal": 42402
+        },
+        "listingKeys": [
+          "unit",
+          "updated",
+          "normal"
+        ]
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "subtype": "unlimited",
+          "size": "standard",
+          "thirdParty": {
+            "cardmarket": 273753,
+            "tcgplayer": 42402
+          },
+          "variantId": "3a83wf50tz7q114spsx7dw6v5",
+          "pricingIdentity": {
+            "present": true,
+            "productIDsByListing": {
+              "normal": 42402
+            },
+            "listingKeys": [
+              "unit",
+              "updated",
+              "normal"
+            ]
+          }
+        },
+        {
+          "type": "normal",
+          "subtype": "shadowless",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "tcgplayer": 107055,
+            "cardmarket": 660169
+          },
+          "variantId": "gx8bq2hefwadd3utcibq3oc56sjf4jqdz709e",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        },
+        {
+          "type": "normal",
+          "subtype": "shadowless",
+          "size": "standard",
+          "thirdParty": {
+            "tcgplayer": 107055,
+            "cardmarket": 660169
+          },
+          "variantId": "2tszcx1bpt4e79y5us0p570b9n",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        },
+        {
+          "type": "normal",
+          "subtype": "shadowless-red-cheek",
+          "size": "standard",
+          "thirdParty": {
+            "tcgplayer": 147229,
+            "cardmarket": 660170
+          },
+          "variantId": "mtltux8qussk4naabf2sjstrcyez6fa4nvy",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        },
+        {
+          "type": "normal",
+          "subtype": "shadowless-red-cheek",
+          "size": "standard",
+          "stamp": [
+            "1st-edition"
+          ],
+          "thirdParty": {
+            "tcgplayer": 147229,
+            "cardmarket": 660170
+          },
+          "variantId": "3skqdujv9jyo7ijcqeiufs8ut5ygkjq1y1bpa3mn9q4bbjp",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        },
+        {
+          "type": "normal",
+          "subtype": "1999-2000-copyright",
+          "size": "standard",
+          "variantId": "qi4g3e7tzbkcyhfflvx7zmvunxwjcq3pvp",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        },
+        {
+          "type": "normal",
+          "size": "jumbo",
+          "thirdParty": {
+            "cardmarket": 362859
+          },
+          "variantId": "l7orfpmicmyc",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        },
+        {
+          "type": "normal",
+          "subtype": "unlimited",
+          "size": "standard",
+          "stamp": [
+            "poketour-99"
+          ],
+          "thirdParty": {
+            "cardmarket": 275586
+          },
+          "variantId": "jnhspmmj4h1e7ohhxunqpao96lgmqwtl2ts1",
+          "pricingIdentity": {
+            "present": false,
+            "productIDsByListing": {},
+            "listingKeys": []
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,623 @@
+{
+  "ordinaryExactNameNumberMatches": [
+    {
+      "providerCardID": "bwp-BW67",
+      "name": "Ampharos",
+      "productID": 83548,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW10",
+      "name": "Axew",
+      "productID": 83666,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW16",
+      "name": "Axew",
+      "productID": 83667,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW26",
+      "name": "Axew",
+      "productID": 83669,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW39",
+      "name": "Battle City",
+      "productID": 83739,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW58",
+      "name": "Black Kyurem",
+      "productID": 83852,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW62",
+      "name": "Black Kyurem-EX",
+      "productID": 83855,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW72",
+      "name": "Cobalion",
+      "productID": 84379,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW46",
+      "name": "Darkrai-EX",
+      "productID": 84707,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW18",
+      "name": "Darumaka",
+      "productID": 84720,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW64",
+      "name": "Drifblim",
+      "productID": 84950,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW17",
+      "name": "Ducklett",
+      "productID": 84992,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW94",
+      "name": "Eevee",
+      "productID": 85095,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW97",
+      "name": "Eevee",
+      "productID": 85096,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW55",
+      "name": "Elgyem",
+      "productID": 85178,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW21",
+      "name": "Emboar",
+      "productID": 85183,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW56",
+      "name": "Empoleon",
+      "productID": 85202,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW92",
+      "name": "Espeon",
+      "productID": 85326,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW99",
+      "name": "Genesect",
+      "productID": 85663,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW90",
+      "name": "Glaceon",
+      "productID": 85748,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW57",
+      "name": "Haxorus",
+      "productID": 86035,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW65",
+      "name": "Jigglypuff",
+      "productID": 86321,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW91",
+      "name": "Jolteon",
+      "productID": 86348,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW61",
+      "name": "Keldeo-EX",
+      "productID": 86437,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW44",
+      "name": "Kyurem",
+      "productID": 86562,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW37",
+      "name": "Kyurem-EX",
+      "productID": 86567,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW43",
+      "name": "Landorus",
+      "productID": 86592,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW49",
+      "name": "Lilligant",
+      "productID": 86795,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW52",
+      "name": "Lillipup",
+      "productID": 86801,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW27",
+      "name": "Litwick",
+      "productID": 86810,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW85",
+      "name": "Lucario",
+      "productID": 86885,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW68",
+      "name": "Meloetta",
+      "productID": 87300,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW69",
+      "name": "Meloetta",
+      "productID": 87301,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW35",
+      "name": "Meowth",
+      "productID": 87327,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW98",
+      "name": "Mew",
+      "productID": 87406,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW45",
+      "name": "Mewtwo-EX",
+      "productID": 87430,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW66",
+      "name": "Ninetales",
+      "productID": 87779,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW03",
+      "name": "Oshawott",
+      "productID": 87892,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW08",
+      "name": "Oshawott",
+      "productID": 87894,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW11",
+      "name": "Pansage",
+      "productID": 87934,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW14",
+      "name": "Pansage",
+      "productID": 87935,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW15",
+      "name": "Pidove",
+      "productID": 88057,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW47",
+      "name": "Rayquaza-EX",
+      "productID": 88646,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW04",
+      "name": "Reshiram",
+      "productID": 88705,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW23",
+      "name": "Reshiram",
+      "productID": 88706,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW36",
+      "name": "Reshiram-EX",
+      "productID": 88714,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW22",
+      "name": "Samurott",
+      "productID": 88909,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW20",
+      "name": "Serperior",
+      "productID": 89071,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW01",
+      "name": "Snivy",
+      "productID": 89377,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW06",
+      "name": "Snivy",
+      "productID": 89379,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW07",
+      "name": "Tepig",
+      "productID": 89883,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW71",
+      "name": "Terrakion",
+      "productID": 89889,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW41",
+      "name": "Thundurus",
+      "productID": 89904,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW42",
+      "name": "Tornadus",
+      "productID": 89975,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW93",
+      "name": "Umbreon",
+      "productID": 90150,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW89",
+      "name": "Vaporeon",
+      "productID": 90289,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW32",
+      "name": "Victini",
+      "productID": 90346,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW70",
+      "name": "Virizion",
+      "productID": 90389,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW59",
+      "name": "White Kyurem",
+      "productID": 90587,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW63",
+      "name": "White Kyurem-EX",
+      "productID": 90590,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW05",
+      "name": "Zekrom",
+      "productID": 90733,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW24",
+      "name": "Zekrom",
+      "productID": 90734,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW38",
+      "name": "Zekrom-EX",
+      "productID": 90741,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW09",
+      "name": "Zoroark",
+      "productID": 90751,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW19",
+      "name": "Zoroark",
+      "productID": 90752,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW12",
+      "name": "Zorua",
+      "productID": 90760,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW88",
+      "name": "Flareon",
+      "productID": 91599,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW87",
+      "name": "Leafeon",
+      "productID": 91600,
+      "foilOnly": true,
+      "normalOnly": false
+    },
+    {
+      "providerCardID": "bwp-BW33",
+      "name": "Riolu",
+      "productID": 96883,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW60",
+      "name": "Keldeo",
+      "productID": 96885,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW101",
+      "name": "Genesect",
+      "productID": 108421,
+      "foilOnly": false,
+      "normalOnly": true
+    },
+    {
+      "providerCardID": "bwp-BW54",
+      "name": "Pikachu",
+      "productID": 202379,
+      "foilOnly": false,
+      "normalOnly": true
+    }
+  ],
+  "nonBWProducts": [
+    173095,
+    173096,
+    228483,
+    228485,
+    228499,
+    228500,
+    230421,
+    230422
+  ],
+  "numberedMarketplaceCounts": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "9": 1,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 2,
+    "14": 1,
+    "15": 1,
+    "16": 1,
+    "17": 1,
+    "18": 1,
+    "19": 1,
+    "20": 1,
+    "21": 1,
+    "22": 1,
+    "23": 1,
+    "24": 1,
+    "25": 2,
+    "26": 1,
+    "27": 1,
+    "28": 7,
+    "29": 4,
+    "30": 4,
+    "31": 4,
+    "32": 1,
+    "33": 2,
+    "34": 2,
+    "35": 1,
+    "36": 1,
+    "37": 1,
+    "38": 1,
+    "39": 1,
+    "40": 2,
+    "41": 1,
+    "42": 1,
+    "43": 1,
+    "44": 1,
+    "45": 1,
+    "46": 1,
+    "47": 1,
+    "48": 2,
+    "49": 1,
+    "50": 7,
+    "51": 2,
+    "52": 1,
+    "53": 2,
+    "54": 1,
+    "55": 1,
+    "56": 1,
+    "57": 1,
+    "58": 1,
+    "59": 1,
+    "60": 2,
+    "61": 1,
+    "62": 1,
+    "63": 1,
+    "64": 1,
+    "65": 1,
+    "66": 1,
+    "67": 1,
+    "68": 1,
+    "69": 1,
+    "70": 1,
+    "71": 1,
+    "72": 1,
+    "73": 1,
+    "74": 1,
+    "75": 2,
+    "76": 1,
+    "79": 1,
+    "80": 2,
+    "81": 1,
+    "82": 1,
+    "83": 1,
+    "84": 2,
+    "85": 1,
+    "86": 1,
+    "87": 1,
+    "88": 1,
+    "89": 1,
+    "90": 1,
+    "91": 1,
+    "92": 1,
+    "93": 1,
+    "94": 1,
+    "95": 8,
+    "96": 2,
+    "97": 1,
+    "98": 1,
+    "99": 1,
+    "100": 1,
+    "101": 1
+  },
+  "providerNumberWithoutMarketplaceProduct": [
+    77,
+    78
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "status": "Reviewed named-pattern cohort, not installed",
+  "observedAtUTC": "2026-11-03T15:19:00.731932+00:00",
+  "cards": [
+    {
+      "providerCardID": "bwp-BW87",
+      "canonicalName": "Leafeon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 91600,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/91600/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW88",
+      "canonicalName": "Flareon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 91599,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/91599/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW89",
+      "canonicalName": "Vaporeon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 90289,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/90289/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW90",
+      "canonicalName": "Glaceon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 85748,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/85748/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW91",
+      "canonicalName": "Jolteon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 86348,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/86348/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW92",
+      "canonicalName": "Espeon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 85326,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/85326/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW93",
+      "canonicalName": "Umbreon",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 90150,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/90150/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    },
+    {
+      "providerCardID": "bwp-BW94",
+      "canonicalName": "Eevee",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "tcgplayerProductID": 85095,
+      "independentPatternSources": [
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/12331/?page=3",
+        "https://bulbapedia.bulbagarden.net/wiki/XY_TCG_Series_merchandise"
+      ],
+      "manufacturerFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+      "marketplaceEvidenceURL": "https://mp-search-api.tcgplayer.com/v1/product/85095/details",
+      "status": "not installed",
+      "requiredAdditionalBehavior": "Review exact generated Normal choice without rekeying holdings; current normalNeedsReview contract accepts ordinary Holo only"
+    }
+  ],
+  "sourceBoundary": "CGC numbered Cosmos entries observed in indexed registry text; direct registry page did not contain rows. Independent release history also lists each exact numbered Cosmos promo. Manufacturer indexed description confirms foil family, not the pattern. Primary products verify exact numbers and Holo-only listing."
+}

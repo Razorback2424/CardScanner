@@ -1,0 +1,11 @@
+{
+  "url": "https://www.decktradr.com/sets/pokemon/2374-miscellaneous-cards-and-products",
+  "status": 200,
+  "sha256": "729294a4fe83d2ffbc3c6a92eefcadc07a732e3dc0425c580892a46a677c966e",
+  "purpose": "Product-ID discovery only",
+  "candidateLinks": [
+    "/cards/pokemon/153235-suicune-19-132-cracked-ice-holo-019-132",
+    "/cards/pokemon/153236-entei-4-132-cracked-ice-holo-004-132",
+    "/cards/pokemon/153238-raikou-16-132-cracked-ice-holo-016-132"
+  ]
+}

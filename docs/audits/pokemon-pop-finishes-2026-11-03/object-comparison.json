@@ -1,0 +1,4196 @@
+{
+  "method": "Numbers normalized as integers and compared within source group. Name normalization removes market parentheticals/year/player labels and expands star symbols; names are review aids, not new catalog authorizations. The exact δ Rainbow Energy / Delta Rainbow Energy alias is reviewed explicitly. Null comparisons are missing handles, not identity conflicts.",
+  "objects": [
+    {
+      "providerCardID": "pop1-1",
+      "name": "Blaziken",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83905,
+      "marketplaceName": "Blaziken",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83905,
+        "holofoil": 83905
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-1",
+      "name": "Blaziken",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83905,
+      "marketplaceName": "Blaziken",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83905,
+        "holofoil": 83905
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-2",
+      "name": "Metagross",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87336,
+      "marketplaceName": "Metagross",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87336,
+        "holofoil": 87336
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-2",
+      "name": "Metagross",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87336,
+      "marketplaceName": "Metagross",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87336,
+        "holofoil": 87336
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-3",
+      "name": "Rayquaza",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88624,
+      "marketplaceName": "Rayquaza",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88624,
+        "holofoil": 88624
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-3",
+      "name": "Rayquaza",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88624,
+      "marketplaceName": "Rayquaza",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88624,
+        "holofoil": 88624
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-4",
+      "name": "Sceptile",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88946,
+      "marketplaceName": "Sceptile",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88946,
+        "holofoil": 88946
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-4",
+      "name": "Sceptile",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88946,
+      "marketplaceName": "Sceptile",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88946,
+        "holofoil": 88946
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-5",
+      "name": "Swampert",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89677,
+      "marketplaceName": "Swampert",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89677,
+        "holofoil": 89677
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-5",
+      "name": "Swampert",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89677,
+      "marketplaceName": "Swampert",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89677,
+        "holofoil": 89677
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-6",
+      "name": "Beautifly",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83756,
+      "marketplaceName": "Beautifly",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83756
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-7",
+      "name": "Masquerain",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87245,
+      "marketplaceName": "Masquerain",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87245
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-8",
+      "name": "Murkrow",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87650,
+      "marketplaceName": "Murkrow",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87650
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-9",
+      "name": "Pupitar",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88448,
+      "marketplaceName": "Pupitar",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88448
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-10",
+      "name": "Torkoal",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89967,
+      "marketplaceName": "Torkoal",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89967
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-11",
+      "name": "Larvitar",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86636,
+      "marketplaceName": "Larvitar",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86636
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-12",
+      "name": "Minun",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87483,
+      "marketplaceName": "Minun",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87483
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-13",
+      "name": "Plusle",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88163,
+      "marketplaceName": "Plusle",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88163
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-14",
+      "name": "Surskit",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89647,
+      "marketplaceName": "Surskit",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89647
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-15",
+      "name": "Swellow",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89690,
+      "marketplaceName": "Swellow",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89690
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-16",
+      "name": "Armaldo ex",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83623,
+      "marketplaceName": "Armaldo ex (Non-Holo)",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83623
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-16",
+      "name": "Armaldo ex",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 97806,
+      "marketplaceName": "Armaldo ex (Holo)",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "holofoil": 97806
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-17",
+      "name": "Tyranitar ex",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 97807,
+      "marketplaceName": "Tyranitar ex (Non-Holo)",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 97807
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop1-17",
+      "name": "Tyranitar ex",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90124,
+      "marketplaceName": "Tyranitar ex (Holo)",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 1",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "holofoil": 90124
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-1",
+      "name": "Entei",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85271,
+      "marketplaceName": "Entei",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85271,
+        "holofoil": 85271
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-1",
+      "name": "Entei",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85271,
+      "marketplaceName": "Entei",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85271,
+        "holofoil": 85271
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-2",
+      "name": "Pidgeot",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88032,
+      "marketplaceName": "Pidgeot",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88032,
+        "holofoil": 88032
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-2",
+      "name": "Pidgeot",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88032,
+      "marketplaceName": "Pidgeot",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88032,
+        "holofoil": 88032
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-3",
+      "name": "Raikou",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88533,
+      "marketplaceName": "Raikou",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88533,
+        "holofoil": 88533
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-3",
+      "name": "Raikou",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88533,
+      "marketplaceName": "Raikou",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88533,
+        "holofoil": 88533
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-4",
+      "name": "Suicune",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89602,
+      "marketplaceName": "Suicune",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89602,
+        "holofoil": 89602
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-4",
+      "name": "Suicune",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89602,
+      "marketplaceName": "Suicune",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89602,
+        "holofoil": 89602
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-5",
+      "name": "Tauros",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89762,
+      "marketplaceName": "Tauros",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89762,
+        "holofoil": 89762
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-5",
+      "name": "Tauros",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89762,
+      "marketplaceName": "Tauros",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89762,
+        "holofoil": 89762
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-6",
+      "name": "Venusaur",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90317,
+      "marketplaceName": "Venusaur",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90317,
+        "holofoil": 90317
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-6",
+      "name": "Venusaur",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90317,
+      "marketplaceName": "Venusaur",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90317,
+        "holofoil": 90317
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-7",
+      "name": "Ivysaur",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86298,
+      "marketplaceName": "Ivysaur",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86298
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-8",
+      "name": "Mr. Briney's Compassion",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87586,
+      "marketplaceName": "Mr. Briney's Compassion",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87586
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-9",
+      "name": "Multi Technical Machine 01",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87636,
+      "marketplaceName": "Multi Technical Machine 01",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87636
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-10",
+      "name": "Pokémon Park",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88231,
+      "marketplaceName": "Pokemon Park",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88231
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-11",
+      "name": "TV Reporter",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90084,
+      "marketplaceName": "TV Reporter",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90084
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-12",
+      "name": "Bulbasaur",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84031,
+      "marketplaceName": "Bulbasaur",
+      "marketplaceNumber": "012/17",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84031
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-13",
+      "name": "Cacnea",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84072,
+      "marketplaceName": "Cacnea",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84072
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-14",
+      "name": "Luvdisc",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86934,
+      "marketplaceName": "Luvdisc",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86934
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-15",
+      "name": "Phanpy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88000,
+      "marketplaceName": "Phanpy",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88000
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-16",
+      "name": "Pikachu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88081,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88081
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-17",
+      "name": "Celebi ex",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84151,
+      "marketplaceName": "Celebi ex (Non-Holo)",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84151
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop2-17",
+      "name": "Celebi ex",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 97808,
+      "marketplaceName": "Celebi ex (Holo)",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 2",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "holofoil": 97808
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-1",
+      "name": "Blastoise",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83891,
+      "marketplaceName": "Blastoise",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83891,
+        "holofoil": 83891
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-1",
+      "name": "Blastoise",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83891,
+      "marketplaceName": "Blastoise",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83891,
+        "holofoil": 83891
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-2",
+      "name": "Flareon",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85495,
+      "marketplaceName": "Flareon",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85495,
+        "holofoil": 85495
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-2",
+      "name": "Flareon",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85495,
+      "marketplaceName": "Flareon",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85495,
+        "holofoil": 85495
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-3",
+      "name": "Jolteon",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86342,
+      "marketplaceName": "Jolteon",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86342,
+        "holofoil": 86342
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-3",
+      "name": "Jolteon",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86342,
+      "marketplaceName": "Jolteon",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86342,
+        "holofoil": 86342
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-4",
+      "name": "Minun",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87487,
+      "marketplaceName": "Minun",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87487,
+        "holofoil": 87487
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-4",
+      "name": "Minun",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87487,
+      "marketplaceName": "Minun",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87487,
+        "holofoil": 87487
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-5",
+      "name": "Plusle",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88167,
+      "marketplaceName": "Plusle",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88167,
+        "holofoil": 88167
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-5",
+      "name": "Plusle",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88167,
+      "marketplaceName": "Plusle",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88167,
+        "holofoil": 88167
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-6",
+      "name": "Vaporeon",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90283,
+      "marketplaceName": "Vaporeon",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90283,
+        "holofoil": 90283
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-6",
+      "name": "Vaporeon",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90283,
+      "marketplaceName": "Vaporeon",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90283,
+        "holofoil": 90283
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-7",
+      "name": "Combusken",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84405,
+      "marketplaceName": "Combusken",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84405
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-8",
+      "name": "Donphan",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84874,
+      "marketplaceName": "Donphan",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84874
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-9",
+      "name": "Forretress",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85549,
+      "marketplaceName": "Forretress",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85549
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-10",
+      "name": "High Pressure System",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86077,
+      "marketplaceName": "High Pressure System",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86077
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-11",
+      "name": "Low Pressure System",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86847,
+      "marketplaceName": "Low Pressure System",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86847
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-12",
+      "name": "Ditto",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84842,
+      "marketplaceName": "Ditto",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84842
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-13",
+      "name": "Eevee",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85083,
+      "marketplaceName": "Eevee",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85083
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-14",
+      "name": "Ivysaur",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86299,
+      "marketplaceName": "Ivysaur",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86299
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-15",
+      "name": "Marshtomp",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87236,
+      "marketplaceName": "Marshtomp",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87236
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-16",
+      "name": "Pichu Bros.",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88024,
+      "marketplaceName": "Pichu Bros.",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88024
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-17",
+      "name": "Ho-Oh ex",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86129,
+      "marketplaceName": "Ho-Oh ex (Non-Holo)",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86129
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop3-17",
+      "name": "Ho-Oh ex",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 97809,
+      "marketplaceName": "Ho-Oh ex (Holo)",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 3",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "holofoil": 97809
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-1",
+      "name": "Chimecho δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84298,
+      "marketplaceName": "Chimecho (Delta Species)",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84298
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-2",
+      "name": "Deoxys δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84765,
+      "marketplaceName": "Deoxys (Delta Species)",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84765,
+        "holofoil": 84765
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-2",
+      "name": "Deoxys δ",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84765,
+      "marketplaceName": "Deoxys (Delta Species)",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84765,
+        "holofoil": 84765
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-3",
+      "name": "Flygon",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85524,
+      "marketplaceName": "Flygon",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85524,
+        "holofoil": 85524
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-3",
+      "name": "Flygon",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85524,
+      "marketplaceName": "Flygon",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85524,
+        "holofoil": 85524
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-4",
+      "name": "Mew",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87401,
+      "marketplaceName": "Mew",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87401,
+        "holofoil": 87401
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-4",
+      "name": "Mew",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87401,
+      "marketplaceName": "Mew",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87401,
+        "holofoil": 87401
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-5",
+      "name": "Sceptile",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88948,
+      "marketplaceName": "Sceptile",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88948
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-6",
+      "name": "Combusken",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84409,
+      "marketplaceName": "Combusken",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84409,
+        "holofoil": 84409
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-6",
+      "name": "Combusken",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84409,
+      "marketplaceName": "Combusken",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84409,
+        "holofoil": 84409
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-7",
+      "name": "Grovyle",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85940,
+      "marketplaceName": "Grovyle",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85940
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-8",
+      "name": "Heal Energy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86038,
+      "marketplaceName": "Heal Energy",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86038
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-9",
+      "name": "Pokémon Fan Club",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88226,
+      "marketplaceName": "Pokemon Fan Club",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88226
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-10",
+      "name": "Scramble Energy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88988,
+      "marketplaceName": "Scramble Energy",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88988
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-11",
+      "name": "Mudkip",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87613,
+      "marketplaceName": "Mudkip",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87613,
+        "holofoil": 87613
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-11",
+      "name": "Mudkip",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87613,
+      "marketplaceName": "Mudkip",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87613,
+        "holofoil": 87613
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-12",
+      "name": "Pidgey",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88049,
+      "marketplaceName": "Pidgey",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88049
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-13",
+      "name": "Pikachu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88083,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88083,
+        "holofoil": 88083
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-13",
+      "name": "Pikachu",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88083,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88083,
+        "holofoil": 88083
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-14",
+      "name": "Squirtle",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89493,
+      "marketplaceName": "Squirtle",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89493
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-15",
+      "name": "Treecko δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90045,
+      "marketplaceName": "Treecko (Delta Species)",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90045
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-16",
+      "name": "Wobbuffet",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90618,
+      "marketplaceName": "Wobbuffet",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90618,
+        "holofoil": 90618
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-16",
+      "name": "Wobbuffet",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90618,
+      "marketplaceName": "Wobbuffet",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90618,
+        "holofoil": 90618
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop4-17",
+      "name": "Deoxys ex",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84774,
+      "marketplaceName": "Deoxys ex",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 4",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-1",
+      "name": "Ho-Oh",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86123,
+      "marketplaceName": "Ho-Oh",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86123,
+        "holofoil": 86123
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-1",
+      "name": "Ho-Oh",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86123,
+      "marketplaceName": "Ho-Oh",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86123,
+        "holofoil": 86123
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-2",
+      "name": "Lugia",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86907,
+      "marketplaceName": "Lugia",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86907,
+        "holofoil": 86907
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-2",
+      "name": "Lugia",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86907,
+      "marketplaceName": "Lugia",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86907,
+        "holofoil": 86907
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-3",
+      "name": "Mew δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87407,
+      "marketplaceName": "Mew (Delta Species)",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87407,
+        "holofoil": 87407
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-3",
+      "name": "Mew δ",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87407,
+      "marketplaceName": "Mew (Delta Species)",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87407,
+        "holofoil": 87407
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-4",
+      "name": "Double Rainbow Energy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84894,
+      "marketplaceName": "Double Rainbow Energy",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84894,
+        "holofoil": 84894
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-5",
+      "name": "Charmeleon δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84237,
+      "marketplaceName": "Charmeleon (Delta Species)",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84237
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-6",
+      "name": "Bill's Maintenance",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83840,
+      "marketplaceName": "Bill's Maintenance",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83840
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-7",
+      "name": "Rare Candy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88592,
+      "marketplaceName": "Rare Candy",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88592
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-8",
+      "name": "Boost Energy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83941,
+      "marketplaceName": "Boost Energy",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83941
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-9",
+      "name": "δ Rainbow Energy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84756,
+      "marketplaceName": "Delta Rainbow Energy",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84756
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness",
+      "normalizationNote": "Exact reviewed alias: provider δ Rainbow Energy is marketplace Delta Rainbow Energy; the δ prefix here names the Energy card."
+    },
+    {
+      "providerCardID": "pop5-10",
+      "name": "Charmander δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84221,
+      "marketplaceName": "Charmander (Delta Species)",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84221
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-11",
+      "name": "Meowth δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87330,
+      "marketplaceName": "Meowth (Delta Species)",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87330
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-12",
+      "name": "Pikachu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88085,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88085,
+        "holofoil": 88085
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-12",
+      "name": "Pikachu",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88085,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88085,
+        "holofoil": 88085
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-13",
+      "name": "Pikachu δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88110,
+      "marketplaceName": "Pikachu (Delta Species)",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88110
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-14",
+      "name": "Pelipper δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87981,
+      "marketplaceName": "Pelipper (Delta Species)",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87981,
+        "holofoil": 87981
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-14",
+      "name": "Pelipper δ",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87981,
+      "marketplaceName": "Pelipper (Delta Species)",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87981,
+        "holofoil": 87981
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-15",
+      "name": "Zangoose δ",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90709,
+      "marketplaceName": "Zangoose (Delta Species)",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90709,
+        "holofoil": 90709
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-15",
+      "name": "Zangoose δ",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90709,
+      "marketplaceName": "Zangoose (Delta Species)",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90709,
+        "holofoil": 90709
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-16",
+      "name": "Espeon ★",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85329,
+      "marketplaceName": "Espeon Star",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-17",
+      "name": "Umbreon ★",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90153,
+      "marketplaceName": "Umbreon Star",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop5-17",
+      "name": "Umbreon ★",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90153,
+      "marketplaceName": "Umbreon Star",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 5",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-1",
+      "name": "Bastiodon",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83735,
+      "marketplaceName": "Bastiodon",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83735
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-2",
+      "name": "Lucario",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86874,
+      "marketplaceName": "Lucario",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86874
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-3",
+      "name": "Manaphy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87144,
+      "marketplaceName": "Manaphy",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87144,
+        "holofoil": 87144
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-3",
+      "name": "Manaphy",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87144,
+      "marketplaceName": "Manaphy",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87144,
+        "holofoil": 87144
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-4",
+      "name": "Pachirisu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87898,
+      "marketplaceName": "Pachirisu",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87898
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-4",
+      "name": "Pachirisu",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87898,
+      "marketplaceName": "Pachirisu",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87898
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-5",
+      "name": "Rampardos",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88570,
+      "marketplaceName": "Rampardos",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88570
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-6",
+      "name": "Drifloon",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84954,
+      "marketplaceName": "Drifloon",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84954
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-7",
+      "name": "Gible",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85699,
+      "marketplaceName": "Gible",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85699,
+        "holofoil": 85699
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-7",
+      "name": "Gible",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85699,
+      "marketplaceName": "Gible",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85699,
+        "holofoil": 85699
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-8",
+      "name": "Riolu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88752,
+      "marketplaceName": "Riolu",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88752,
+        "holofoil": 88752
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-8",
+      "name": "Riolu",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88752,
+      "marketplaceName": "Riolu",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88752,
+        "holofoil": 88752
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-9",
+      "name": "Pikachu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88087,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88087,
+        "holofoil": 88087
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-9",
+      "name": "Pikachu",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88087,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88087,
+        "holofoil": 88087
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-9",
+      "name": "Pikachu",
+      "objectIndex": 2,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [
+        "pokemon-day"
+      ],
+      "productID": 276377,
+      "marketplaceName": "Pikachu (Pokemon Day Stamped)",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 276377
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-10",
+      "name": "Staravia",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89514,
+      "marketplaceName": "Staravia",
+      "marketplaceNumber": "010/015",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89514
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-11",
+      "name": "Bidoof",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83826,
+      "marketplaceName": "Bidoof",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83826
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-12",
+      "name": "Buneary",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84038,
+      "marketplaceName": "Buneary",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84038
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-13",
+      "name": "Cherubi",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84260,
+      "marketplaceName": "Cherubi",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84260
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-14",
+      "name": "Chimchar",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84283,
+      "marketplaceName": "Chimchar",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84283,
+        "holofoil": 84283
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-14",
+      "name": "Chimchar",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84283,
+      "marketplaceName": "Chimchar",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84283,
+        "holofoil": 84283
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-15",
+      "name": "Piplup",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88143,
+      "marketplaceName": "Piplup",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88143,
+        "holofoil": 88143
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-15",
+      "name": "Piplup",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88143,
+      "marketplaceName": "Piplup",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88143,
+        "holofoil": 88143
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-16",
+      "name": "Starly",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89521,
+      "marketplaceName": "Starly",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89521
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-17",
+      "name": "Turtwig",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90072,
+      "marketplaceName": "Turtwig",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90072,
+        "holofoil": 90072
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop6-17",
+      "name": "Turtwig",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90072,
+      "marketplaceName": "Turtwig",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 6",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90072,
+        "holofoil": 90072
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-1",
+      "name": "Ampharos",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83542,
+      "marketplaceName": "Ampharos",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83542,
+        "holofoil": 83542
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-1",
+      "name": "Ampharos",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 83542,
+      "marketplaceName": "Ampharos",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 83542,
+        "holofoil": 83542
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-2",
+      "name": "Gallade",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85605,
+      "marketplaceName": "Gallade",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85605,
+        "holofoil": 85605
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-2",
+      "name": "Gallade",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85605,
+      "marketplaceName": "Gallade",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85605,
+        "holofoil": 85605
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-2",
+      "name": "Gallade",
+      "objectIndex": 2,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [
+        "jason-klaczynski"
+      ],
+      "productID": 479786,
+      "marketplaceName": "Gallade - 2008 (Jason Klaczynski)",
+      "marketplaceNumber": "2/17",
+      "marketplaceSet": "World Championship Decks",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "World Championship deck product on matching player-stamped Normal object; group difference intentional"
+    },
+    {
+      "providerCardID": "pop7-2",
+      "name": "Gallade",
+      "objectIndex": 3,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [
+        "michael-pramawat"
+      ],
+      "productID": 480045,
+      "marketplaceName": "Gallade - 2010 (Michael Pramawat)",
+      "marketplaceNumber": "2/17",
+      "marketplaceSet": "World Championship Decks",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "World Championship deck product on matching player-stamped Normal object; group difference intentional"
+    },
+    {
+      "providerCardID": "pop7-3",
+      "name": "Latias",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86652,
+      "marketplaceName": "Latias",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86652,
+        "holofoil": 86652
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-3",
+      "name": "Latias",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86652,
+      "marketplaceName": "Latias",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86652,
+        "holofoil": 86652
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-4",
+      "name": "Latios",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86666,
+      "marketplaceName": "Latios",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86666,
+        "holofoil": 86666
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-4",
+      "name": "Latios",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86666,
+      "marketplaceName": "Latios",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86666,
+        "holofoil": 86666
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-5",
+      "name": "Mothim",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87581,
+      "marketplaceName": "Mothim",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87581,
+        "holofoil": 87581
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-5",
+      "name": "Mothim",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 87581,
+      "marketplaceName": "Mothim",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87581,
+        "holofoil": 87581
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-6",
+      "name": "Delibird",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84749,
+      "marketplaceName": "Delibird",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84749
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-7",
+      "name": "Flaaffy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85480,
+      "marketplaceName": "Flaaffy",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85480
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-8",
+      "name": "Kirlia",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86467,
+      "marketplaceName": "Kirlia",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86467,
+        "holofoil": 86467
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-8",
+      "name": "Kirlia",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86467,
+      "marketplaceName": "Kirlia",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86467,
+        "holofoil": 86467
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-8",
+      "name": "Kirlia",
+      "objectIndex": 2,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [
+        "jason-klaczynski"
+      ],
+      "productID": 479793,
+      "marketplaceName": "Kirlia - 2008 (Jason Klaczynski)",
+      "marketplaceNumber": "8/17",
+      "marketplaceSet": "World Championship Decks",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "World Championship deck product on matching player-stamped Normal object; group difference intentional"
+    },
+    {
+      "providerCardID": "pop7-9",
+      "name": "Stantler",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89505,
+      "marketplaceName": "Stantler",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89505
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-9",
+      "name": "Stantler",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86467,
+      "marketplaceName": "Kirlia",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": false,
+      "normalizedBaseNameMatches": false,
+      "embeddedProductIDs": {
+        "normal": 86467,
+        "holofoil": 86467
+      },
+      "classification": "Wrong name and number; exclude Kirlia product only on Stantler Cosmos"
+    },
+    {
+      "providerCardID": "pop7-10",
+      "name": "Wormadam Sandy Cloak",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90643,
+      "marketplaceName": "Wormadam Sandy Cloak",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90643
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-11",
+      "name": "Burmy Plant Cloak",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84050,
+      "marketplaceName": "Burmy Plant Cloak",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84050
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-12",
+      "name": "Burmy Sandy Cloak",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84053,
+      "marketplaceName": "Burmy Sandy Cloak",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84053
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-13",
+      "name": "Corsola",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84442,
+      "marketplaceName": "Corsola",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84442
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-14",
+      "name": "Mareep",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87202,
+      "marketplaceName": "Mareep",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87202
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-15",
+      "name": "Ralts",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88562,
+      "marketplaceName": "Ralts",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88562
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-15",
+      "name": "Ralts",
+      "objectIndex": 1,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [
+        "jason-klaczynski"
+      ],
+      "productID": 479810,
+      "marketplaceName": "Ralts (15) - 2008 (Jason Klaczynski)",
+      "marketplaceNumber": "15/17",
+      "marketplaceSet": "World Championship Decks",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {},
+      "classification": "World Championship deck product on matching player-stamped Normal object; group difference intentional"
+    },
+    {
+      "providerCardID": "pop7-16",
+      "name": "Sentret",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89067,
+      "marketplaceName": "Sentret",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89067
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop7-17",
+      "name": "Spinda",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 89462,
+      "marketplaceName": "Spinda",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 7",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 89462
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-1",
+      "name": "Heatran",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86049,
+      "marketplaceName": "Heatran",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86049,
+        "holofoil": 86049
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-1",
+      "name": "Heatran",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86049,
+      "marketplaceName": "Heatran",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86049,
+        "holofoil": 86049
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-2",
+      "name": "Lucario",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86877,
+      "marketplaceName": "Lucario",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86877,
+        "holofoil": 86877
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-2",
+      "name": "Lucario",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86877,
+      "marketplaceName": "Lucario",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86877,
+        "holofoil": 86877
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-3",
+      "name": "Luxray",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86948,
+      "marketplaceName": "Luxray",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86948,
+        "holofoil": 86948
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-3",
+      "name": "Luxray",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86948,
+      "marketplaceName": "Luxray",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86948,
+        "holofoil": 86948
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-4",
+      "name": "Probopass",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88376,
+      "marketplaceName": "Probopass",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88376,
+        "holofoil": 88376
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-4",
+      "name": "Probopass",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 88376,
+      "marketplaceName": "Probopass",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88376,
+        "holofoil": 88376
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-5",
+      "name": "Yanmega",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90691,
+      "marketplaceName": "Yanmega",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90691,
+        "holofoil": 90691
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-5",
+      "name": "Yanmega",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 90691,
+      "marketplaceName": "Yanmega",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90691,
+        "holofoil": 90691
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-6",
+      "name": "Cherrim",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84253,
+      "marketplaceName": "Cherrim",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84253,
+        "reverse-holofoil": 84253
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-6",
+      "name": "Cherrim",
+      "objectIndex": 1,
+      "providerType": "reverse",
+      "providerFoil": "cracked-ice",
+      "providerStamps": [],
+      "productID": 84253,
+      "marketplaceName": "Cherrim",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84253,
+        "reverse-holofoil": 84253
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-7",
+      "name": "Carnivine",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84100,
+      "marketplaceName": "Carnivine",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84100,
+        "reverse-holofoil": 84100
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-7",
+      "name": "Carnivine",
+      "objectIndex": 1,
+      "providerType": "reverse",
+      "providerFoil": "cracked-ice",
+      "providerStamps": [],
+      "productID": 84100,
+      "marketplaceName": "Carnivine",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84100,
+        "reverse-holofoil": 84100
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-8",
+      "name": "Luxio",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86941,
+      "marketplaceName": "Luxio",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86941,
+        "holofoil": 86941
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-8",
+      "name": "Luxio",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cracked-ice",
+      "providerStamps": [],
+      "productID": 86941,
+      "marketplaceName": "Luxio",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86941,
+        "holofoil": 86941
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-9",
+      "name": "Night Maintenance",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87752,
+      "marketplaceName": "Night Maintenance",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87752
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-10",
+      "name": "Rare Candy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88594,
+      "marketplaceName": "Rare Candy",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88594
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-11",
+      "name": "Roseanne’s Research",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88816,
+      "marketplaceName": "Roseanne's Research",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88816
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-12",
+      "name": "Chimchar",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84287,
+      "marketplaceName": "Chimchar",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84287,
+        "reverse-holofoil": 84287
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-12",
+      "name": "Chimchar",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cracked-ice",
+      "providerStamps": [],
+      "productID": 84287,
+      "marketplaceName": "Chimchar",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84287,
+        "reverse-holofoil": 84287
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-13",
+      "name": "Croagunk",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84475,
+      "marketplaceName": "Croagunk",
+      "marketplaceNumber": "13/17",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84475,
+        "holofoil": 84475
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-13",
+      "name": "Croagunk",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cracked-ice",
+      "providerStamps": [],
+      "productID": 84475,
+      "marketplaceName": "Croagunk",
+      "marketplaceNumber": "13/17",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84475,
+        "holofoil": 84475
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-14",
+      "name": "Happiny",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86007,
+      "marketplaceName": "Happiny",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86007,
+        "holofoil": 86007
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-14",
+      "name": "Happiny",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "providerStamps": [],
+      "productID": 86007,
+      "marketplaceName": "Happiny",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86007,
+        "holofoil": 86007
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-15",
+      "name": "Piplup",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88148,
+      "marketplaceName": "Piplup",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88148
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-16",
+      "name": "Riolu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88755,
+      "marketplaceName": "Riolu",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88755,
+        "reverse-holofoil": 88755
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-16",
+      "name": "Riolu",
+      "objectIndex": 1,
+      "providerType": "reverse",
+      "providerFoil": "cracked-ice",
+      "providerStamps": [],
+      "productID": 88755,
+      "marketplaceName": "Riolu",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88755,
+        "reverse-holofoil": 88755
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop8-17",
+      "name": "Turtwig",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90076,
+      "marketplaceName": "Turtwig",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 8",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90076
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-1",
+      "name": "Garchomp",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85622,
+      "marketplaceName": "Garchomp",
+      "marketplaceNumber": "001/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85622
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-2",
+      "name": "Manaphy",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87147,
+      "marketplaceName": "Manaphy",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87147,
+        "holofoil": 87147
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-2",
+      "name": "Manaphy",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87147,
+      "marketplaceName": "Manaphy",
+      "marketplaceNumber": "002/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87147,
+        "holofoil": 87147
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-3",
+      "name": "Raichu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88514,
+      "marketplaceName": "Raichu",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88514,
+        "reverse-holofoil": 88514
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-3",
+      "name": "Raichu",
+      "objectIndex": 1,
+      "providerType": "reverse",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88514,
+      "marketplaceName": "Raichu",
+      "marketplaceNumber": "003/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88514,
+        "reverse-holofoil": 88514
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-4",
+      "name": "Regigigas",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88664,
+      "marketplaceName": "Regigigas",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88664,
+        "holofoil": 88664
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-4",
+      "name": "Regigigas",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88664,
+      "marketplaceName": "Regigigas",
+      "marketplaceNumber": "004/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88664,
+        "holofoil": 88664
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-5",
+      "name": "Rotom",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88837,
+      "marketplaceName": "Rotom",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88837,
+        "holofoil": 88837
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-5",
+      "name": "Rotom",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88837,
+      "marketplaceName": "Rotom",
+      "marketplaceNumber": "005/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88837,
+        "holofoil": 88837
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-6",
+      "name": "Buizel",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84020,
+      "marketplaceName": "Buizel",
+      "marketplaceNumber": "006/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84020
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-7",
+      "name": "Croagunk",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84476,
+      "marketplaceName": "Croagunk",
+      "marketplaceNumber": "007/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84476
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-8",
+      "name": "Gabite",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85598,
+      "marketplaceName": "Gabite",
+      "marketplaceNumber": "008/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85598
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-9",
+      "name": "Lopunny",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86825,
+      "marketplaceName": "Lopunny",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86825,
+        "holofoil": 86825
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-9",
+      "name": "Lopunny",
+      "objectIndex": 1,
+      "providerType": "holo",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 86825,
+      "marketplaceName": "Lopunny",
+      "marketplaceNumber": "009/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 86825,
+        "holofoil": 86825
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-10",
+      "name": "Pachirisu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 87902,
+      "marketplaceName": "Pachirisu",
+      "marketplaceNumber": "010/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 87902
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-11",
+      "name": "Pichu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88020,
+      "marketplaceName": "Pichu",
+      "marketplaceNumber": "011/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88020
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-12",
+      "name": "Buneary",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84042,
+      "marketplaceName": "Buneary",
+      "marketplaceNumber": "012/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84042
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-13",
+      "name": "Chimchar",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 84289,
+      "marketplaceName": "Chimchar",
+      "marketplaceNumber": "013/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 84289
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-14",
+      "name": "Gible",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 85700,
+      "marketplaceName": "Gible",
+      "marketplaceNumber": "014/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 85700
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-15",
+      "name": "Pikachu",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88092,
+      "marketplaceName": "Pikachu",
+      "marketplaceNumber": "015/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88092
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-15",
+      "name": "Pikachu",
+      "objectIndex": 1,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [
+        "pokemon-day"
+      ],
+      "productID": null,
+      "marketplaceName": null,
+      "marketplaceNumber": null,
+      "marketplaceSet": null,
+      "numberMatches": null,
+      "normalizedBaseNameMatches": null,
+      "embeddedProductIDs": {},
+      "classification": "Missing product handle on Pokemon Day Pikachu; separately reviewed product candidate"
+    },
+    {
+      "providerCardID": "pop9-16",
+      "name": "Piplup",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 88150,
+      "marketplaceName": "Piplup",
+      "marketplaceNumber": "016/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 88150
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    },
+    {
+      "providerCardID": "pop9-17",
+      "name": "Turtwig",
+      "objectIndex": 0,
+      "providerType": "normal",
+      "providerFoil": null,
+      "providerStamps": [],
+      "productID": 90078,
+      "marketplaceName": "Turtwig",
+      "marketplaceNumber": "017/017",
+      "marketplaceSet": "POP Series 9",
+      "numberMatches": true,
+      "normalizedBaseNameMatches": true,
+      "embeddedProductIDs": {
+        "normal": 90078
+      },
+      "classification": "Name/number match; not proof of complete physical finish coverage or quote correctness"
+    }
+  ],
+  "counts": {
+    "objects": 226,
+    "populatedHandles": 225,
+    "numberMismatchObjects": 1,
+    "baseNameMismatchObjects": 1
+  }
+}

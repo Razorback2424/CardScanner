@@ -1,0 +1,140 @@
+[
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/dp3-4",
+    "status": 200,
+    "sha256": "01192e752087d63c6deb7d5b1a1ffaac22818898ae48615258ad33907ed7926d",
+    "requestedCardID": "dp3-4",
+    "identity": {
+      "id": "dp3-4",
+      "localId": "4",
+      "name": "Entei",
+      "set": {
+        "cardCount": {
+          "official": 132,
+          "total": 132
+        },
+        "id": "dp3",
+        "logo": "https://assets.tcgdex.net/en/dp/dp3/logo",
+        "name": "Secret Wonders",
+        "symbol": "https://assets.tcgdex.net/univ/dp/dp3/symbol"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "variantId": "cm4kqul3x1bwlz1f"
+        },
+        {
+          "type": "holo",
+          "foil": "cracked-ice",
+          "size": "standard",
+          "variantId": "2u8sopmue8qbejpv32t9ow7ic"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/dp3-16",
+    "status": 200,
+    "sha256": "388a33ba7f5fa64ca7d10e5013445729781c1f3e66019d1ee21e3d62df4c68e4",
+    "requestedCardID": "dp3-16",
+    "identity": {
+      "id": "dp3-16",
+      "localId": "16",
+      "name": "Raikou",
+      "set": {
+        "cardCount": {
+          "official": 132,
+          "total": 132
+        },
+        "id": "dp3",
+        "logo": "https://assets.tcgdex.net/en/dp/dp3/logo",
+        "name": "Secret Wonders",
+        "symbol": "https://assets.tcgdex.net/univ/dp/dp3/symbol"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "variantId": "cm4kqul3x1bwlz1f"
+        },
+        {
+          "type": "holo",
+          "foil": "cracked-ice",
+          "size": "standard",
+          "variantId": "2u8sopmue8qbejpv32t9ow7ic"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://api.tcgdex.net/v2/en/cards/dp3-19",
+    "status": 200,
+    "sha256": "d53d29483e24de74cff0adf4a020783c95e5d54a12e750091f33bd08ad6742e3",
+    "requestedCardID": "dp3-19",
+    "identity": {
+      "id": "dp3-19",
+      "localId": "19",
+      "name": "Suicune",
+      "set": {
+        "cardCount": {
+          "official": 132,
+          "total": 132
+        },
+        "id": "dp3",
+        "logo": "https://assets.tcgdex.net/en/dp/dp3/logo",
+        "name": "Secret Wonders",
+        "symbol": "https://assets.tcgdex.net/univ/dp/dp3/symbol"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": true,
+        "normal": false,
+        "reverse": true,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "holo",
+          "size": "standard",
+          "variantId": "jr7oetx1mqug9"
+        },
+        {
+          "type": "reverse",
+          "size": "standard",
+          "variantId": "cm4kqul3x1bwlz1f"
+        },
+        {
+          "type": "holo",
+          "foil": "cracked-ice",
+          "size": "standard",
+          "variantId": "2u8sopmue8qbejpv32t9ow7ic"
+        }
+      ]
+    }
+  }
+]

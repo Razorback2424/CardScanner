@@ -1,0 +1,1326 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:20.076457+00:00",
+  "purpose": "Physical identity, variant and price-product IDs only; no numeric quotes",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-1",
+      "status": 200,
+      "sha256": "b0f48c59ee51954d0edc0474f98eaffb06649b3fad7741fef40b9b725a080b93",
+      "requestedCardID": "pop8-1",
+      "identity": {
+        "id": "pop8-1",
+        "localId": "1",
+        "name": "Heatran",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86049,
+            "holofoil": 86049
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278402,
+              "tcgplayer": 86049
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86049,
+                "holofoil": 86049
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278402,
+              "tcgplayer": 86049
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86049,
+                "holofoil": 86049
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-2",
+      "status": 200,
+      "sha256": "96d026a4156bbcf87bbedb61a65644979df08a02053586bb096c28bbdc0dbf4e",
+      "requestedCardID": "pop8-2",
+      "identity": {
+        "id": "pop8-2",
+        "localId": "2",
+        "name": "Lucario",
+        "rarity": "Rare",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86877,
+            "holofoil": 86877
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278403,
+              "tcgplayer": 86877
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86877,
+                "holofoil": 86877
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278403,
+              "tcgplayer": 86877
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86877,
+                "holofoil": 86877
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-3",
+      "status": 200,
+      "sha256": "b0976ca3c159d666e011d1102b149d6b34908e575a25d6833a1fe605d69d6d47",
+      "requestedCardID": "pop8-3",
+      "identity": {
+        "id": "pop8-3",
+        "localId": "3",
+        "name": "Luxray",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86948,
+            "holofoil": 86948
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278404,
+              "tcgplayer": 86948
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86948,
+                "holofoil": 86948
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278404,
+              "tcgplayer": 86948
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86948,
+                "holofoil": 86948
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-4",
+      "status": 200,
+      "sha256": "2a21564ae48c523ac274fe4d6edcd881ca9e8f0527c0d2aa4248c868e26d51b8",
+      "requestedCardID": "pop8-4",
+      "identity": {
+        "id": "pop8-4",
+        "localId": "4",
+        "name": "Probopass",
+        "rarity": "Rare",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88376,
+            "holofoil": 88376
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278405,
+              "tcgplayer": 88376
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88376,
+                "holofoil": 88376
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278405,
+              "tcgplayer": 88376
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88376,
+                "holofoil": 88376
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-5",
+      "status": 200,
+      "sha256": "6ffcee4dea51153e53e3ef92f8e9008ec3800991aceef0d389a652eaa92ebe0b",
+      "requestedCardID": "pop8-5",
+      "identity": {
+        "id": "pop8-5",
+        "localId": "5",
+        "name": "Yanmega",
+        "rarity": "Rare",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90691,
+            "holofoil": 90691
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278406,
+              "tcgplayer": 90691
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90691,
+                "holofoil": 90691
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278406,
+              "tcgplayer": 90691
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90691,
+                "holofoil": 90691
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-6",
+      "status": 200,
+      "sha256": "50a1fe1378a8730a5b42cd866ae117e8c86c231b998fddc1c726eedfe1d8bafd",
+      "requestedCardID": "pop8-6",
+      "identity": {
+        "id": "pop8-6",
+        "localId": "6",
+        "name": "Cherrim",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84253,
+            "reverse-holofoil": 84253
+          },
+          "listingKeys": [
+            "normal",
+            "reverse-holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278407,
+              "tcgplayer": 84253
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84253,
+                "reverse-holofoil": 84253
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          },
+          {
+            "type": "reverse",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278407,
+              "tcgplayer": 84253
+            },
+            "variantId": "1taa1mtxbb835v7njr48v6y8eq20",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84253,
+                "reverse-holofoil": 84253
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-7",
+      "status": 200,
+      "sha256": "ff3e8ee031e977d9a8bdbbeb7c4b91230eb73fb333bdde53923194c205bfbf6c",
+      "requestedCardID": "pop8-7",
+      "identity": {
+        "id": "pop8-7",
+        "localId": "7",
+        "name": "Carnivine",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84100,
+            "reverse-holofoil": 84100
+          },
+          "listingKeys": [
+            "normal",
+            "reverse-holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278408,
+              "tcgplayer": 84100
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84100,
+                "reverse-holofoil": 84100
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          },
+          {
+            "type": "reverse",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278408,
+              "tcgplayer": 84100
+            },
+            "variantId": "1taa1mtxbb835v7njr48v6y8eq20",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84100,
+                "reverse-holofoil": 84100
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-8",
+      "status": 200,
+      "sha256": "c435337e9c7cf5fd1bc7c29f974f0cfb7201e9bbb500d9cbf74221dac95e66d8",
+      "requestedCardID": "pop8-8",
+      "identity": {
+        "id": "pop8-8",
+        "localId": "8",
+        "name": "Luxio",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86941,
+            "holofoil": 86941
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278409,
+              "tcgplayer": 86941
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86941,
+                "holofoil": 86941
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278409,
+              "tcgplayer": 86941
+            },
+            "variantId": "2u8sopmue8qbejpv32t9ow7ic",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86941,
+                "holofoil": 86941
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-9",
+      "status": 200,
+      "sha256": "4eba8a93fecb9b90c15f0b60fbff56887c7d26b448451830748a8c626b8ef354",
+      "requestedCardID": "pop8-9",
+      "identity": {
+        "id": "pop8-9",
+        "localId": "9",
+        "name": "Night Maintenance",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87752
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278410,
+              "tcgplayer": 87752
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87752
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-10",
+      "status": 200,
+      "sha256": "537be3dbaab615474ed3eba0f8ea7f9a1da6ea405da31152cccfac66c2bc3786",
+      "requestedCardID": "pop8-10",
+      "identity": {
+        "id": "pop8-10",
+        "localId": "10",
+        "name": "Rare Candy",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88594
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278411,
+              "tcgplayer": 88594
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88594
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-11",
+      "status": 200,
+      "sha256": "8b554b8ff8c37103ac51d64c4208ee916236216c048992acc2d62bc2d310312c",
+      "requestedCardID": "pop8-11",
+      "identity": {
+        "id": "pop8-11",
+        "localId": "11",
+        "name": "Roseanne’s Research",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88816
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278412,
+              "tcgplayer": 88816
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88816
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-12",
+      "status": 200,
+      "sha256": "c2285d1abb304e868e16fe74edb1a74054a8f73da09c187e5cf07b61698a506a",
+      "requestedCardID": "pop8-12",
+      "identity": {
+        "id": "pop8-12",
+        "localId": "12",
+        "name": "Chimchar",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84287,
+            "reverse-holofoil": 84287
+          },
+          "listingKeys": [
+            "normal",
+            "reverse-holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278413,
+              "tcgplayer": 84287
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84287,
+                "reverse-holofoil": 84287
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278413,
+              "tcgplayer": 84287
+            },
+            "variantId": "2u8sopmue8qbejpv32t9ow7ic",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84287,
+                "reverse-holofoil": 84287
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-13",
+      "status": 200,
+      "sha256": "c44ac5f2db7b6c19a3f7d917556b114248198fca054ec981ca3250d2919572be",
+      "requestedCardID": "pop8-13",
+      "identity": {
+        "id": "pop8-13",
+        "localId": "13",
+        "name": "Croagunk",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84475,
+            "holofoil": 84475
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278414,
+              "tcgplayer": 84475
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84475,
+                "holofoil": 84475
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278414,
+              "tcgplayer": 84475
+            },
+            "variantId": "2u8sopmue8qbejpv32t9ow7ic",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84475,
+                "holofoil": 84475
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-14",
+      "status": 200,
+      "sha256": "bb01bd72009263505175f3e007c087bc45778a563658298f00555b2087b5eede",
+      "requestedCardID": "pop8-14",
+      "identity": {
+        "id": "pop8-14",
+        "localId": "14",
+        "name": "Happiny",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86007,
+            "holofoil": 86007
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278415,
+              "tcgplayer": 86007
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86007,
+                "holofoil": 86007
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278415,
+              "tcgplayer": 86007
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86007,
+                "holofoil": 86007
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-15",
+      "status": 200,
+      "sha256": "f9eb17ae6a30e188581131c45d9cf9292beba0f54aa2e8228d967562862425de",
+      "requestedCardID": "pop8-15",
+      "identity": {
+        "id": "pop8-15",
+        "localId": "15",
+        "name": "Piplup",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88148
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278416,
+              "tcgplayer": 88148
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88148
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-16",
+      "status": 200,
+      "sha256": "03fe43020333796b5470e5108c590fe0e8724cdaa9a962dfc0861655540f79c6",
+      "requestedCardID": "pop8-16",
+      "identity": {
+        "id": "pop8-16",
+        "localId": "16",
+        "name": "Riolu",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88755,
+            "reverse-holofoil": 88755
+          },
+          "listingKeys": [
+            "normal",
+            "reverse-holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278417,
+              "tcgplayer": 88755
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88755,
+                "reverse-holofoil": 88755
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          },
+          {
+            "type": "reverse",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278417,
+              "tcgplayer": 88755
+            },
+            "variantId": "1taa1mtxbb835v7njr48v6y8eq20",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88755,
+                "reverse-holofoil": 88755
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop8-17",
+      "status": 200,
+      "sha256": "e08f6f7a4554dccf8707a2b8db6cb48b308e95e8cf6880a74306a0ad548c9101",
+      "requestedCardID": "pop8-17",
+      "identity": {
+        "id": "pop8-17",
+        "localId": "17",
+        "name": "Turtwig",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop8",
+          "logo": "https://assets.tcgdex.net/en/pop/pop8/logo",
+          "name": "POP Series 8",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop8/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90076
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 278418,
+              "tcgplayer": 90076
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90076
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

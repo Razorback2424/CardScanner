@@ -1,0 +1,383 @@
+{
+  "observedAtUTC": "2026-11-03T13:43:37.268039+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/me01-087",
+      "status": 200,
+      "sha256": "8be24fb6cf91de4cc835ae005b4919d6bebf6f14ac7b7d6e50ac603975a9b387",
+      "requestedCardID": "me01-087",
+      "identity": {
+        "id": "me01-087",
+        "localId": "087",
+        "name": "Spiritomb",
+        "set": {
+          "cardCount": {
+            "official": 132,
+            "total": 188
+          },
+          "id": "me01",
+          "logo": "https://assets.tcgdex.net/en/me/me01/logo",
+          "name": "Mega Evolution",
+          "symbol": "https://assets.tcgdex.net/univ/me/me01/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 851158,
+              "tcgplayer": 654426
+            },
+            "variantId": "endfynwn4n10gzq"
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 851158,
+              "tcgplayer": 654426
+            },
+            "variantId": "cm4kqul3x1bwlz1f"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "trick-or-trade"
+            ],
+            "thirdParty": {
+              "cardmarket": 850911
+            },
+            "variantId": "1jz5lzkp5ftnwh2lzmaeixidf6y9ps"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/me04-049",
+      "status": 200,
+      "sha256": "744be9ccc855c7f6c7e6809a0a882f00ec754f1a431e54e12117bd144766004a",
+      "requestedCardID": "me04-049",
+      "identity": {
+        "id": "me04-049",
+        "localId": "049",
+        "name": "Zubat",
+        "set": {
+          "cardCount": {
+            "official": 86,
+            "total": 122
+          },
+          "id": "me04",
+          "logo": "https://assets.tcgdex.net/en/me/me04/logo",
+          "name": "Chaos Rising",
+          "symbol": "https://assets.tcgdex.net/univ/me/me04/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 886441,
+              "tcgplayer": 693565
+            },
+            "variantId": "endfynwn4n10gzq"
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 886441,
+              "tcgplayer": 693565
+            },
+            "variantId": "cm4kqul3x1bwlz1f"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/me04-050",
+      "status": 200,
+      "sha256": "dbe435d332fc554d2976c23cc037c5c555fb15b7290fb90a31c1844b2325d8a5",
+      "requestedCardID": "me04-050",
+      "identity": {
+        "id": "me04-050",
+        "localId": "050",
+        "name": "Golbat",
+        "set": {
+          "cardCount": {
+            "official": 86,
+            "total": 122
+          },
+          "id": "me04",
+          "logo": "https://assets.tcgdex.net/en/me/me04/logo",
+          "name": "Chaos Rising",
+          "symbol": "https://assets.tcgdex.net/univ/me/me04/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 886442,
+              "tcgplayer": 693493
+            },
+            "variantId": "endfynwn4n10gzq"
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 886442,
+              "tcgplayer": 693493
+            },
+            "variantId": "cm4kqul3x1bwlz1f"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/me04-051",
+      "status": 200,
+      "sha256": "4dddb373ab6c6d676d435e25c8d8eae4d266c031967bec3fbacd23738471cbe3",
+      "requestedCardID": "me04-051",
+      "identity": {
+        "id": "me04-051",
+        "localId": "051",
+        "name": "Crobat",
+        "set": {
+          "cardCount": {
+            "official": 86,
+            "total": 122
+          },
+          "id": "me04",
+          "logo": "https://assets.tcgdex.net/en/me/me04/logo",
+          "name": "Chaos Rising",
+          "symbol": "https://assets.tcgdex.net/univ/me/me04/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 886443,
+              "tcgplayer": 693470
+            },
+            "variantId": "jr7oetx1mqug9"
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 886443,
+              "tcgplayer": 693470
+            },
+            "variantId": "cm4kqul3x1bwlz1f"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 888531,
+              "tcgplayer": 694636
+            },
+            "variantId": "endfynwn4n10gzq"
+          }
+        ]
+      }
+    }
+  ],
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/654426/details",
+      "status": 200,
+      "sha256": "7f81b6ad352fdb3656bdcc716a20dee7a7bf466ffe2f22d4507eccf772223dc8",
+      "requestedProductID": 654426,
+      "identity": {
+        "productId": 654426.0,
+        "productName": "Spiritomb - 087/132",
+        "setId": 24380.0,
+        "setCode": "MEG",
+        "setName": "ME01: Mega Evolution",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "087/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/661700/details",
+      "status": 200,
+      "sha256": "318539c1a0334a48a23267dfe0f387f9aa83c8c8584eb3705f68f9bf548ff907",
+      "requestedProductID": 661700,
+      "identity": {
+        "productId": 661700.0,
+        "productName": "Spiritomb - 087/132 (Pokeween 2025)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "087/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/693470/details",
+      "status": 200,
+      "sha256": "5f690d229b830b1addd3138533c15e7d7b3f31cde9a0ed06e61fd04a72c69edf",
+      "requestedProductID": 693470,
+      "identity": {
+        "productId": 693470.0,
+        "productName": "Crobat - 051/086",
+        "setId": 24655.0,
+        "setCode": "CRI",
+        "setName": "ME04: Chaos Rising",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "051/086"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/693493/details",
+      "status": 200,
+      "sha256": "5f8e6ad7c7aacf405980e679b25c694f61078a2e944acc19fc319ef67dbe9301",
+      "requestedProductID": 693493,
+      "identity": {
+        "productId": 693493.0,
+        "productName": "Golbat",
+        "setId": 24655.0,
+        "setCode": "CRI",
+        "setName": "ME04: Chaos Rising",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "050/086"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/693565/details",
+      "status": 200,
+      "sha256": "52606afe3d1772ee5f844217f48c1d0fd0557b51bbaa7101e6b4dd266f4e815a",
+      "requestedProductID": 693565,
+      "identity": {
+        "productId": 693565.0,
+        "productName": "Zubat",
+        "setId": 24655.0,
+        "setCode": "CRI",
+        "setName": "ME04: Chaos Rising",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": false,
+        "number": "049/086"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/694636/details",
+      "status": 200,
+      "sha256": "6442e8e12b75581378b5bc54ce3f7376c9a4979ebec8dcf646ea8b24233ba8ac",
+      "requestedProductID": 694636,
+      "identity": {
+        "productId": 694636.0,
+        "productName": "Crobat - 051/086 (Non-Holo)",
+        "setId": 1840.0,
+        "setCode": "PR",
+        "setName": "Deck Exclusives",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "051/086"
+      }
+    }
+  ],
+  "discovered2026Products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/722836/details",
+      "status": 200,
+      "sha256": "118930efced02a4b0f685f953276efd134ac3fb3b188df7682d100b2b686403d",
+      "requestedProductID": 722836,
+      "identity": {
+        "productId": 722836.0,
+        "productName": "Zubat - 049/086 (Pokeween 2026)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "049/086"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/722837/details",
+      "status": 200,
+      "sha256": "1c8e1facdf60cf2d386ba990465307ff6080fc6793f5209aad18bea1d8ffcab1",
+      "requestedProductID": 722837,
+      "identity": {
+        "productId": 722837.0,
+        "productName": "Golbat - 050/086 (Pokeween 2026)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "050/086"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/722838/details",
+      "status": 200,
+      "sha256": "b20a17e478a3a9756faba41af17c87fcf94a7d502bc17609f74da0afdbed0a27",
+      "requestedProductID": 722838,
+      "identity": {
+        "productId": 722838.0,
+        "productName": "Crobat - 051/086 (Pokeween 2026)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "051/086"
+      }
+    }
+  ]
+}

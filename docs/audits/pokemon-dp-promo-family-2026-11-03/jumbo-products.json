@@ -1,0 +1,108 @@
+{
+  "observedAtUTC": "2026-11-03T15:27:45.361321+00:00",
+  "discovery": {
+    "url": "https://www.decktradr.com/sets/pokemon/1528-jumbo-cards",
+    "status": 200,
+    "sha256": "40541fb7bd13eb6bfdc41f285a4ddb29d765dd8524387f57f92b0ddcca0d5de5",
+    "purpose": "Product-ID discovery only",
+    "links": [
+      "/cards/pokemon/211415-arceus-dp50-dp-black-star-promos",
+      "/cards/pokemon/211427-darkrai-dp24-dp-black-star-promos",
+      "/cards/pokemon/211429-dialga-dp26-dp-black-star-promo",
+      "/cards/pokemon/211504-palkia-dp27",
+      "/cards/pokemon/211505-regigigas-dp40"
+    ]
+  },
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211415/details",
+      "status": 200,
+      "sha256": "c3f34d5786fdfc12f37ce775cd7ef621218ecb47db5d19c59f6d68d6920132e2",
+      "requestedProductID": 211415,
+      "identity": {
+        "productId": 211415.0,
+        "productName": "Arceus - DP50 (DP Black Star Promos)",
+        "setId": 1528.0,
+        "setCode": "PR",
+        "setName": "Jumbo Cards",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211427/details",
+      "status": 200,
+      "sha256": "e0c7d7957a0703a20015ca8ad22be21290954c12377315914b2bf6a1c903d3e7",
+      "requestedProductID": 211427,
+      "identity": {
+        "productId": 211427.0,
+        "productName": "Darkrai - DP24 (DP Black Star Promos)",
+        "setId": 1528.0,
+        "setCode": "PR",
+        "setName": "Jumbo Cards",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP24"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211429/details",
+      "status": 200,
+      "sha256": "4daa5c41241a51fe3f4240291d9e8ed57a5bcb601778b0eefabac9e4fd3a85ac",
+      "requestedProductID": 211429,
+      "identity": {
+        "productId": 211429.0,
+        "productName": "Dialga - DP26 (DP Black Star Promo)",
+        "setId": 1528.0,
+        "setCode": "PR",
+        "setName": "Jumbo Cards",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP26"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211504/details",
+      "status": 200,
+      "sha256": "e12e5fed652835989815f4303964b9d8255242adf1a83baf3573e016c5a93e13",
+      "requestedProductID": 211504,
+      "identity": {
+        "productId": 211504.0,
+        "productName": "Palkia - DP27",
+        "setId": 1528.0,
+        "setCode": "PR",
+        "setName": "Jumbo Cards",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/211505/details",
+      "status": 200,
+      "sha256": "423c187c4524d4569cb66255db1ffafe3522d187c053d3605b255496787f25de",
+      "requestedProductID": 211505,
+      "identity": {
+        "productId": 211505.0,
+        "productName": "Regigigas - DP40",
+        "setId": 1528.0,
+        "setCode": "PR",
+        "setName": "Jumbo Cards",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP40"
+      }
+    }
+  ]
+}

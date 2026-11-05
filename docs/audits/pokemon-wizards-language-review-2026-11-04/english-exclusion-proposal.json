@@ -1,0 +1,148 @@
+{
+  "status": "Reviewable proposal only; unsupported fields are not installed in publisher input or app code",
+  "reasonAuthorizationNeeded": "The owner permits catalog-data changes and previously approved narrowly bounded signed correction support. Exact physical-object removals and base-card exclusions exceed that implemented transport and original no-logic-change restriction.",
+  "proposedProtectedFields": {
+    "excludedVariants": [
+      {
+        "providerCardID": "basep-1",
+        "canonicalName": "Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "Portuguese",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      },
+      {
+        "providerCardID": "basep-4",
+        "canonicalName": "Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "Dutch",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      },
+      {
+        "providerCardID": "basep-25",
+        "canonicalName": "Flying Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "German",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      },
+      {
+        "providerCardID": "basep-26",
+        "canonicalName": "Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "Spanish",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      },
+      {
+        "providerCardID": "basep-27",
+        "canonicalName": "Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "Italian",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      },
+      {
+        "providerCardID": "basep-28",
+        "canonicalName": "Surfing Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "French",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      },
+      {
+        "providerCardID": "base2-60",
+        "canonicalName": "Pikachu",
+        "variantID": "pokemonStamp|normal|pikachu-tail|",
+        "providerType": "normal",
+        "providerSize": "standard",
+        "providerStamps": [
+          "pikachu-tail"
+        ],
+        "physicalLanguage": "Chinese",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+          "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+        ]
+      }
+    ],
+    "excludedCards": [
+      {
+        "providerCardID": "dpp-DP54",
+        "canonicalName": "Beginning Door",
+        "reason": "French-only physical release; translated provider name does not establish an English card",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)",
+          "https://www.pokebeach.com/2010/03/missing-dp54-and-dp55-promos-found-en-francais"
+        ]
+      },
+      {
+        "providerCardID": "dpp-DP55",
+        "canonicalName": "Ultimate Zone",
+        "reason": "French-only physical release; translated provider name does not establish an English card",
+        "evidenceURLs": [
+          "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)",
+          "https://www.pokebeach.com/2010/03/missing-dp54-and-dp55-promos-found-en-francais"
+        ]
+      }
+    ]
+  },
+  "requiredBehavior": [
+    "Validate exact provider card/name and full standard object selector against source; require two independent authoritative evidence hosts.",
+    "Remove these seven objects and two French-only base cards from new English catalog/checklist/lookup/acquisition choices, including cached and live paths.",
+    "Keep raw provider fingerprints for refresh/change detection and require the normal protected signing process.",
+    "Preserve all English ordinary, edition, W-stamped and Birthday Pikachu objects; no blanket tail-stamp or geography filter.",
+    "Preserve saved holding keys, quantities and provenance; surface existing out-of-scope holdings for review without deleting or rekeying them or changing portfolio calculations.",
+    "Do not fabricate source IDs, printed denominators or successful price acceptance."
+  ],
+  "outsideThisProposal": [
+    "Bare-number scan recognition",
+    "Finish/edition algorithm changes",
+    "Generic stamped positive bindings",
+    "Independent pending Pokéween, Sylveon Cosmos and canceled BW proposals",
+    "Global complete language certification"
+  ]
+}

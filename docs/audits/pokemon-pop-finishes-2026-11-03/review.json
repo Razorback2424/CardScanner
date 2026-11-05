@@ -1,0 +1,147 @@
+{
+  "status": "Two exact price exclusions authored using already approved support; no new physical membership or logic change",
+  "languageScope": "English only. French-only POP Cosmos distributions and other non-English printings are outside this catalog.",
+  "checkout": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "inputBeforeSHA256": "1a7878e2a798ff73ecd64b84bc6df0f0d62d85dcf8394d7640bf07be7ed10f89",
+  "inputAfterSHA256": "4ba743210bc5c32fd3083b2ade3cb6b51615cfa6ea27e2139d81e3cbee4cc55c",
+  "counts": {
+    "sets": 9,
+    "cards": 153,
+    "providerObjects": 226,
+    "populatedHandles": 225,
+    "matchingNamesAndNumbers": 224,
+    "wrongNameAndNumberObjects": 1,
+    "linkedDistinctProducts": 162,
+    "linkedReadsHTTP200": 162,
+    "inventoryDistinctProducts": 169,
+    "inventoryCards": 160,
+    "inventorySealedProducts": 9,
+    "newPrimaryReads": 11,
+    "totalDistinctPrimaryReads": 173,
+    "totalPrimaryReadsHTTP200": 173,
+    "priorRecords": 138,
+    "currentRecords": 140,
+    "positiveRecords": 137,
+    "jumbo": 76,
+    "eeveeCosmos": 1,
+    "ordinaryHoloMinimums": 41,
+    "existingHoloDPBindings": 19,
+    "exactProductExclusions": 3
+  },
+  "authoredCorrections": [
+    {
+      "providerCardID": "pop7-9",
+      "canonicalName": "Stantler",
+      "variantID": "cosmos",
+      "providerType": "holo",
+      "providerFoil": "cosmos",
+      "excludedTCGplayerProductIDs": [
+        86467
+      ],
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/pop7-9",
+        "https://mp-search-api.tcgplayer.com/v1/product/86467/details",
+        "https://www.serebii.net/card/popseries7/"
+      ]
+    },
+    {
+      "providerCardID": "pop5-17",
+      "canonicalName": "Umbreon ★",
+      "variantID": "holo",
+      "providerType": "holo",
+      "excludedTCGplayerProductIDs": [
+        90153
+      ],
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/pop5-17",
+        "https://mp-search-api.tcgplayer.com/v1/product/90153/details",
+        "https://pokumon.com/card/umbreon-gold-star-17-17-pokemon-organized-play-events-pop-series-5/",
+        "https://www.cardtrader.com/en-US/cards/124377-umbreon-gold-star-shiny-non-holo-promo-17-17-pop-series-5"
+      ]
+    }
+  ],
+  "normalControls": [
+    {
+      "providerCardID": "pop7-9",
+      "productID": 89505
+    },
+    {
+      "providerCardID": "pop5-17",
+      "productID": 90153
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.serebii.net/card/popseries7/",
+      "observation": "Number 8 is Kirlia; number 9 is Stantler. Independently agrees with primary product 86467 Kirlia 008/017 and provider pop7-9 Stantler."
+    },
+    {
+      "url": "https://pokumon.com/card/umbreon-gold-star-17-17-pokemon-organized-play-events-pop-series-5/",
+      "observation": "Exact per-card entry identifies English Non-holo, number 17/17, POP Series 5 packs."
+    },
+    {
+      "url": "https://www.cardtrader.com/en-US/cards/124377-umbreon-gold-star-shiny-non-holo-promo-17-17-pop-series-5",
+      "observation": "Exact card title identifies Shiny Non-Holo Promo, number 17/17, with English language option. Generic Holo glossary below is not card-specific evidence."
+    }
+  ],
+  "notInstalled": [
+    {
+      "providerCardID": "pop8-12",
+      "productID": 616999,
+      "reason": "Exact Cracked Ice positive binding unsupported by current approved positive whitelist. Existing product 84287 is not proven wrong merely because a distinct pattern product exists.",
+      "sources": [
+        "https://mp-search-api.tcgplayer.com/v1/product/616999/details",
+        "https://pokumon.com/card/holofoil-chimchar-12-17-trainers-challenge-box-pop-series-8/",
+        "https://bulbapedia.bulbagarden.net/wiki/Chimchar_(Diamond_%26_Pearl_76)"
+      ],
+      "visualObservation": "English Chimchar 12/17; fractured foil outside artwork, consistent with Cracked Ice Reverse release history."
+    },
+    {
+      "providerCardID": "pop9-15",
+      "providerStamp": "pokemon-day",
+      "productID": 701479,
+      "reason": "Generic stamped Normal positive binding unsupported; unmarked 88092 control retained.",
+      "sources": [
+        "https://mp-search-api.tcgplayer.com/v1/product/701479/details",
+        "https://pokumon.com/card/pokemon-day-pikachu-15-17-pokemon-day-pop-series-9/",
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_(POP_Series_9_15)"
+      ],
+      "visualObservation": "English Pikachu 15/17, Pokémon DAY 2009 stamp visible."
+    }
+  ],
+  "imageReceipts": {
+    "observedAtUTC": "2026-11-03T15:47:23.465195+00:00",
+    "images": [
+      {
+        "productID": 616999,
+        "url": "https://product-images.tcgplayer.com/616999.jpg",
+        "status": 200,
+        "sha256": "8daa59d3396c927e1ec2a52988d1b2874bcd9f4d663f454f115f302956dcd897",
+        "contentType": "image/jpeg"
+      },
+      {
+        "productID": 701479,
+        "url": "https://product-images.tcgplayer.com/701479.jpg",
+        "status": 200,
+        "sha256": "7044c19056169af24cbd6cf466fd13a3f09e8a6622dea4c77ad0fba5900115eb",
+        "contentType": "image/jpeg"
+      }
+    ]
+  },
+  "correctWorldDeckProducts": [
+    479786,
+    480045,
+    479793,
+    479810
+  ],
+  "boundaries": [
+    "No Stantler Cosmos replacement is authored: ordinary 89505 is Normal-only and English Cosmos physical existence remains unproven.",
+    "Umbreon 90153 flags neither foil-only nor Normal-only. A simple metadata finish checker misses the independently confirmed Non-Holo mismatch.",
+    "Exclusions remove wrong pricing on exact objects; they do not remove disputed physical choices, delete holdings or rekey Normal.",
+    "Fresh/cached provider consumers can sanitize exact product identities; saved-only historical quotes and outbound detail metadata still need separate acceptance/support.",
+    "All nine current inventories and every populated handle were compared, but independent release-by-release finish coverage remains incomplete.",
+    "Four World Deck products match the appropriate player-stamped objects; their group difference is not a wrong-product finding.",
+    "Espeon pop5-16 already has only Normal and correct product 85329; no change.",
+    "Non-English evidence is retained only to explain exclusions from scope; no foreign physical printing is admitted."
+  ]
+}

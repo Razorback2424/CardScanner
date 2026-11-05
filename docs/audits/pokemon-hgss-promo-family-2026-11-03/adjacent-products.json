@@ -1,0 +1,113 @@
+{
+  "observedAtUTC": "2026-11-03T14:09:36.691729+00:00",
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85272/details",
+      "status": 200,
+      "sha256": "7537546035073e309d5907e990c58f12eedec864dab8a7625df7f6841abb7019",
+      "requestedProductID": 85272,
+      "identity": {
+        "productId": 85272.0,
+        "productName": "Entei",
+        "setId": 1380.0,
+        "setCode": "SW",
+        "setName": "Secret Wonders",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "4/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88534/details",
+      "status": 200,
+      "sha256": "4ce98ba6db92673916549efe0ce51a702c3c58555217ffbbbda1d074b3407a43",
+      "requestedProductID": 88534,
+      "identity": {
+        "productId": 88534.0,
+        "productName": "Raikou",
+        "setId": 1380.0,
+        "setCode": "SW",
+        "setName": "Secret Wonders",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "16/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89604/details",
+      "status": 200,
+      "sha256": "2fcb3e8bd149eccd54700a46e942279928552d721bdb779e942e6401b0f40a9a",
+      "requestedProductID": 89604,
+      "identity": {
+        "productId": 89604.0,
+        "productName": "Suicune",
+        "setId": 1380.0,
+        "setCode": "SW",
+        "setName": "Secret Wonders",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "19/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/153235/details",
+      "status": 200,
+      "sha256": "6761c8dad8439390e2f888092bd65ccf127da2ffc01eb4856d4b9f64085d21ec",
+      "requestedProductID": 153235,
+      "identity": {
+        "productId": 153235.0,
+        "productName": "Suicune - 19/132 (Cracked Ice Holo)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "019/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/153236/details",
+      "status": 200,
+      "sha256": "f396de3f7487b294de7829091de379b2a74e9f3bec27b927278e936763d76a5a",
+      "requestedProductID": 153236,
+      "identity": {
+        "productId": 153236.0,
+        "productName": "Entei - 4/132 (Cracked Ice Holo)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "004/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/153238/details",
+      "status": 200,
+      "sha256": "8aa58dd15b9f6defeed7917cf38ba7cedec7072a47570540e1cafb0092212153",
+      "requestedProductID": 153238,
+      "identity": {
+        "productId": 153238.0,
+        "productName": "Raikou - 16/132 (Cracked Ice Holo)",
+        "setId": 2374.0,
+        "setCode": "MCAP",
+        "setName": "Miscellaneous Cards & Products",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "016/132"
+      }
+    }
+  ]
+}

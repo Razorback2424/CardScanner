@@ -1,0 +1,3540 @@
+{
+  "observedAtUTC": "2026-11-03T15:10:13.409367+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW01",
+      "status": 200,
+      "sha256": "bf256e144995e57ab698279aed13f7324795feb86fe7394105fb79603aded2dd",
+      "requestedCardID": "bwp-BW01",
+      "identity": {
+        "id": "bwp-BW01",
+        "localId": "BW01",
+        "name": "Snivy",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW02",
+      "status": 200,
+      "sha256": "0f6a59ae0812a820fa1be9fab1e1b3b2e7840b12fd54cad19c84d826e3c5aab1",
+      "requestedCardID": "bwp-BW02",
+      "identity": {
+        "id": "bwp-BW02",
+        "localId": "BW02",
+        "name": "Tepig",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW03",
+      "status": 200,
+      "sha256": "8c5fb79077a0328fef1f78abb2d9bfa2586f7e864ca0685d67b1642a72efea55",
+      "requestedCardID": "bwp-BW03",
+      "identity": {
+        "id": "bwp-BW03",
+        "localId": "BW03",
+        "name": "Oshawott",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW04",
+      "status": 200,
+      "sha256": "ae74ef24b40b3ea036a8897a2af950c12081d3322d0c6aab85fc89b9f990b2c4",
+      "requestedCardID": "bwp-BW04",
+      "identity": {
+        "id": "bwp-BW04",
+        "localId": "BW04",
+        "name": "Reshiram",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW05",
+      "status": 200,
+      "sha256": "6209e1fbdc5a2cb6b6717b3912bf871d7cdc688395d01a8512e17dd335031974",
+      "requestedCardID": "bwp-BW05",
+      "identity": {
+        "id": "bwp-BW05",
+        "localId": "BW05",
+        "name": "Zekrom",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW06",
+      "status": 200,
+      "sha256": "ef7331cc298fa8cfe62889d98ef16b82a9de26fa892c134f154585e694e73fd5",
+      "requestedCardID": "bwp-BW06",
+      "identity": {
+        "id": "bwp-BW06",
+        "localId": "BW06",
+        "name": "Snivy",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW07",
+      "status": 200,
+      "sha256": "b90bf11073b33a149dc1fff514ec86869f22c01e3c73779fe383b037f543ed6a",
+      "requestedCardID": "bwp-BW07",
+      "identity": {
+        "id": "bwp-BW07",
+        "localId": "BW07",
+        "name": "Tepig",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW08",
+      "status": 200,
+      "sha256": "f1b730883f5670607b2d236122859581d659efd08d6b4bdce342e001fdf84e96",
+      "requestedCardID": "bwp-BW08",
+      "identity": {
+        "id": "bwp-BW08",
+        "localId": "BW08",
+        "name": "Oshawott",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW09",
+      "status": 200,
+      "sha256": "3784e833ae93d2871f67c31ae3ae6b55878768d9e7e02f34d8ed6e030a15664b",
+      "requestedCardID": "bwp-BW09",
+      "identity": {
+        "id": "bwp-BW09",
+        "localId": "BW09",
+        "name": "Zoroark",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW10",
+      "status": 200,
+      "sha256": "4b6f3b45e154a68a4e721e4fd9f81b738436f118708b97ce3af3fe79b7f9614f",
+      "requestedCardID": "bwp-BW10",
+      "identity": {
+        "id": "bwp-BW10",
+        "localId": "BW10",
+        "name": "Axew",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW100",
+      "status": 200,
+      "sha256": "bef9e03affb9b7432f3c9411df0d9b2183a42372d121a9f104df0d666fc31117",
+      "requestedCardID": "bwp-BW100",
+      "identity": {
+        "id": "bwp-BW100",
+        "localId": "BW100",
+        "name": "N",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW101",
+      "status": 200,
+      "sha256": "d7a7fe7b0b504a9ffb6306c33a7a031d24a0cab8733b846ecead43dd9ce9d8f5",
+      "requestedCardID": "bwp-BW101",
+      "identity": {
+        "id": "bwp-BW101",
+        "localId": "BW101",
+        "name": "Genesect",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW11",
+      "status": 200,
+      "sha256": "374bbd5b9473f96062f27d1fed494416562db9cb54598da1952364cd38f24c64",
+      "requestedCardID": "bwp-BW11",
+      "identity": {
+        "id": "bwp-BW11",
+        "localId": "BW11",
+        "name": "Pansage",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW12",
+      "status": 200,
+      "sha256": "27de81bc2516ed57550ceea5528f543c90112ee2f3df5d1fd8dc6624f3232353",
+      "requestedCardID": "bwp-BW12",
+      "identity": {
+        "id": "bwp-BW12",
+        "localId": "BW12",
+        "name": "Zorua",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW13",
+      "status": 200,
+      "sha256": "8b255ad328a195d5e1479e517aa56b28c3333be6dfffa218f22dba7d8497fe84",
+      "requestedCardID": "bwp-BW13",
+      "identity": {
+        "id": "bwp-BW13",
+        "localId": "BW13",
+        "name": "Minccino",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW14",
+      "status": 200,
+      "sha256": "0db1289cb998b4ffa638d9d6f33552bf4d038a9fa37a3306c2356a42fdf9a16d",
+      "requestedCardID": "bwp-BW14",
+      "identity": {
+        "id": "bwp-BW14",
+        "localId": "BW14",
+        "name": "Pansage",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW15",
+      "status": 200,
+      "sha256": "04ebd453a8142fbca66a5a899dd6d490263eecaa5ef239197bcb51f28cbff708",
+      "requestedCardID": "bwp-BW15",
+      "identity": {
+        "id": "bwp-BW15",
+        "localId": "BW15",
+        "name": "Pidove",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW16",
+      "status": 200,
+      "sha256": "2c3611fd82eef50f4dec60538cc254badc8590fbb56b8c1e132cbac1033d801b",
+      "requestedCardID": "bwp-BW16",
+      "identity": {
+        "id": "bwp-BW16",
+        "localId": "BW16",
+        "name": "Axew",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW17",
+      "status": 200,
+      "sha256": "c95fd12607f9d3d4f210318dbf4b6c1234b7ff0c183e00350eb21c201d9a5802",
+      "requestedCardID": "bwp-BW17",
+      "identity": {
+        "id": "bwp-BW17",
+        "localId": "BW17",
+        "name": "Ducklett",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW18",
+      "status": 200,
+      "sha256": "cfc6568635d15b0ec8b0c4980e93f2ef4d5f1f7ae104f1c50f081274897ef75a",
+      "requestedCardID": "bwp-BW18",
+      "identity": {
+        "id": "bwp-BW18",
+        "localId": "BW18",
+        "name": "Darumaka",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW19",
+      "status": 200,
+      "sha256": "8f5277852210879e6d2b2945f96e66ef6ff9f2b1045334a4ade29e45f469c596",
+      "requestedCardID": "bwp-BW19",
+      "identity": {
+        "id": "bwp-BW19",
+        "localId": "BW19",
+        "name": "Zoroark",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW20",
+      "status": 200,
+      "sha256": "80071cc9e3fc6ff9550d49eb1fef6ab0cb0da424fbefd98f8489f5dd28deb74b",
+      "requestedCardID": "bwp-BW20",
+      "identity": {
+        "id": "bwp-BW20",
+        "localId": "BW20",
+        "name": "Serperior",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW21",
+      "status": 200,
+      "sha256": "00643684a7145ad312ed2ea4b62803f725e9c535d2abd39d990fd5fbe39fed71",
+      "requestedCardID": "bwp-BW21",
+      "identity": {
+        "id": "bwp-BW21",
+        "localId": "BW21",
+        "name": "Emboar",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW22",
+      "status": 200,
+      "sha256": "ba54d149f12231c407313fe7745104a52548bfcbf39a39f2dd82d24280e67b3f",
+      "requestedCardID": "bwp-BW22",
+      "identity": {
+        "id": "bwp-BW22",
+        "localId": "BW22",
+        "name": "Samurott",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW23",
+      "status": 200,
+      "sha256": "1e9d61e1b14d9ec7a16c85e39933c4fdb4eafb0159a0741f5ba350ecdcc4e8f1",
+      "requestedCardID": "bwp-BW23",
+      "identity": {
+        "id": "bwp-BW23",
+        "localId": "BW23",
+        "name": "Reshiram",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW24",
+      "status": 200,
+      "sha256": "5a1a28e1e5211ef5eb69b81477b5c71f5f2652c760fc018c67f4efbcc960950b",
+      "requestedCardID": "bwp-BW24",
+      "identity": {
+        "id": "bwp-BW24",
+        "localId": "BW24",
+        "name": "Zekrom",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW25",
+      "status": 200,
+      "sha256": "244d4cbc9e7cc0e4838b5159da6de36e94fb5a754cd4d3123667c570c1e66d50",
+      "requestedCardID": "bwp-BW25",
+      "identity": {
+        "id": "bwp-BW25",
+        "localId": "BW25",
+        "name": "Scraggy",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW26",
+      "status": 200,
+      "sha256": "61535c4117ca1b2e295eb9ea8ca8b2f0098c719629833021dba2a0da2f3703b7",
+      "requestedCardID": "bwp-BW26",
+      "identity": {
+        "id": "bwp-BW26",
+        "localId": "BW26",
+        "name": "Axew",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW27",
+      "status": 200,
+      "sha256": "384fb99c28a98ef386ec762f369ca009b8fac43f935f40eaae81d27f0a3bcb73",
+      "requestedCardID": "bwp-BW27",
+      "identity": {
+        "id": "bwp-BW27",
+        "localId": "BW27",
+        "name": "Litwick",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW28",
+      "status": 200,
+      "sha256": "bc7f71d1fcac5126cdf091730f02dd1a9a95a70c76d12e0c093be90bf9413850",
+      "requestedCardID": "bwp-BW28",
+      "identity": {
+        "id": "bwp-BW28",
+        "localId": "BW28",
+        "name": "Tropical Beach",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW29",
+      "status": 200,
+      "sha256": "c8487ea65fdee9ab67b481347bc4f1c4bf001aa599c5f4bbb92d7b2e26375e9e",
+      "requestedCardID": "bwp-BW29",
+      "identity": {
+        "id": "bwp-BW29",
+        "localId": "BW29",
+        "name": "Victory Cup",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW30",
+      "status": 200,
+      "sha256": "a2cb8969ce68be8b9c097b685c4d3c1e7adb9356910002c0ac5ad01e1eaa0d6c",
+      "requestedCardID": "bwp-BW30",
+      "identity": {
+        "id": "bwp-BW30",
+        "localId": "BW30",
+        "name": "Victory Cup",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW31",
+      "status": 200,
+      "sha256": "35bcf719ca994639815dc3ba8f74b66145fb5a82cd4d5d7fd7455ba45ed33eb1",
+      "requestedCardID": "bwp-BW31",
+      "identity": {
+        "id": "bwp-BW31",
+        "localId": "BW31",
+        "name": "Victory Cup",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW32",
+      "status": 200,
+      "sha256": "5a69e3faa8c0c187d204b6cd4a0689668c20f1ad92401fb67d0c134c24a71e91",
+      "requestedCardID": "bwp-BW32",
+      "identity": {
+        "id": "bwp-BW32",
+        "localId": "BW32",
+        "name": "Victini",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW33",
+      "status": 200,
+      "sha256": "29f7839e4b0dbb72c23f284761b62e2f6813bbb859a6381cbaa48225e76a2cbb",
+      "requestedCardID": "bwp-BW33",
+      "identity": {
+        "id": "bwp-BW33",
+        "localId": "BW33",
+        "name": "Riolu",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW34",
+      "status": 200,
+      "sha256": "073e1a8ef60fafd3cc71bd5bac9a661fd1cbddc862854f4016856d03a059d01f",
+      "requestedCardID": "bwp-BW34",
+      "identity": {
+        "id": "bwp-BW34",
+        "localId": "BW34",
+        "name": "Luxio",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW35",
+      "status": 200,
+      "sha256": "bf3d56f395c17e4a5d2dd21a420af3bcd52e2cb399748249bf14dbe54b054a43",
+      "requestedCardID": "bwp-BW35",
+      "identity": {
+        "id": "bwp-BW35",
+        "localId": "BW35",
+        "name": "Meowth",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW36",
+      "status": 200,
+      "sha256": "96e7fa9f8870d552b58db7a1521567031b0e4cd36ceeab6534f669ee3378b2d8",
+      "requestedCardID": "bwp-BW36",
+      "identity": {
+        "id": "bwp-BW36",
+        "localId": "BW36",
+        "name": "Reshiram-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW37",
+      "status": 200,
+      "sha256": "9ec06c5f51b9660f53955cd8e9c7fedc86e3fc3c4d5c02b89edfd2c1ba8d927d",
+      "requestedCardID": "bwp-BW37",
+      "identity": {
+        "id": "bwp-BW37",
+        "localId": "BW37",
+        "name": "Kyurem-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW38",
+      "status": 200,
+      "sha256": "6d653126fbd3c8925e7c9cf6e508e42c960986d8eeab3fc59feecc7abb8aa3d0",
+      "requestedCardID": "bwp-BW38",
+      "identity": {
+        "id": "bwp-BW38",
+        "localId": "BW38",
+        "name": "Zekrom-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW39",
+      "status": 200,
+      "sha256": "624c059bb172f038b8301b368dd9d7ea6f6f8af0b0f290cb30374a5a7523878b",
+      "requestedCardID": "bwp-BW39",
+      "identity": {
+        "id": "bwp-BW39",
+        "localId": "BW39",
+        "name": "Battle City",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW40",
+      "status": 200,
+      "sha256": "62c3ab8e4aa15904cfd17ed3343b23e130b486ccb3e23f0f3cf2c61f5de460a9",
+      "requestedCardID": "bwp-BW40",
+      "identity": {
+        "id": "bwp-BW40",
+        "localId": "BW40",
+        "name": "Volcarona",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW41",
+      "status": 200,
+      "sha256": "2df23fdf71de66426bdfcbd8562fe56303eab75102e7a01dbf70cf6502d88688",
+      "requestedCardID": "bwp-BW41",
+      "identity": {
+        "id": "bwp-BW41",
+        "localId": "BW41",
+        "name": "Thundurus",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW42",
+      "status": 200,
+      "sha256": "795600d4b47a4339973d6a31c72d8d04c7048a7253e88e8aa96ac0e1b95233a5",
+      "requestedCardID": "bwp-BW42",
+      "identity": {
+        "id": "bwp-BW42",
+        "localId": "BW42",
+        "name": "Tornadus",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW43",
+      "status": 200,
+      "sha256": "2ea3b87ee14a84e02e8cd6efc99f205edef6401e7a8394fbea06c2066ff07fb0",
+      "requestedCardID": "bwp-BW43",
+      "identity": {
+        "id": "bwp-BW43",
+        "localId": "BW43",
+        "name": "Landorus",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW44",
+      "status": 200,
+      "sha256": "29f62376c687ca536d365926e9cf6b18fa0032fe4c3a3d05065300cf7beebde1",
+      "requestedCardID": "bwp-BW44",
+      "identity": {
+        "id": "bwp-BW44",
+        "localId": "BW44",
+        "name": "Kyurem",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW45",
+      "status": 200,
+      "sha256": "dc2d142873801c99885b5859a32ae41344fa7aeb2a78addce35a45c4790d8e34",
+      "requestedCardID": "bwp-BW45",
+      "identity": {
+        "id": "bwp-BW45",
+        "localId": "BW45",
+        "name": "Mewtwo-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW46",
+      "status": 200,
+      "sha256": "fb93312c87d16dffb500742739cee87bf7492546564d55e98f7f4b1ba83d45de",
+      "requestedCardID": "bwp-BW46",
+      "identity": {
+        "id": "bwp-BW46",
+        "localId": "BW46",
+        "name": "Darkrai-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW47",
+      "status": 200,
+      "sha256": "882b449ce7b7ade3510c70bd57c9985e3e8dabc5e73a3bc7aa417fd383c0bd20",
+      "requestedCardID": "bwp-BW47",
+      "identity": {
+        "id": "bwp-BW47",
+        "localId": "BW47",
+        "name": "Rayquaza-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW48",
+      "status": 200,
+      "sha256": "cc29faa900376531928cd65fe3843bb3f064f59150f322a6d350b30499fcc1d6",
+      "requestedCardID": "bwp-BW48",
+      "identity": {
+        "id": "bwp-BW48",
+        "localId": "BW48",
+        "name": "Altaria",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW49",
+      "status": 200,
+      "sha256": "6483acd962c774b625492cf18f0fd82eb09b073b0953a2449c929d292e774989",
+      "requestedCardID": "bwp-BW49",
+      "identity": {
+        "id": "bwp-BW49",
+        "localId": "BW49",
+        "name": "Lilligant",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW50",
+      "status": 200,
+      "sha256": "47c6699fda5ed95b4b7fe0b7b55e86268214b368b478f4724f0b1cdbc53ad65e",
+      "requestedCardID": "bwp-BW50",
+      "identity": {
+        "id": "bwp-BW50",
+        "localId": "BW50",
+        "name": "Tropical Beach",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW51",
+      "status": 200,
+      "sha256": "664c720e9ffeeab7fd57be61848217561b2d6cb255c00a31f9e22bcf296dd063",
+      "requestedCardID": "bwp-BW51",
+      "identity": {
+        "id": "bwp-BW51",
+        "localId": "BW51",
+        "name": "Crobat",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW52",
+      "status": 200,
+      "sha256": "642a4a0f656c9a13ce7d654b860233ac0b89feebf7e0f8c7fcbac1889ebbbb42",
+      "requestedCardID": "bwp-BW52",
+      "identity": {
+        "id": "bwp-BW52",
+        "localId": "BW52",
+        "name": "Lillipup",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW53",
+      "status": 200,
+      "sha256": "ce164bcd2aacab4adb6254e58aaaacc7f8fbb4b1d90dd5335dc19d0c41f1dcbc",
+      "requestedCardID": "bwp-BW53",
+      "identity": {
+        "id": "bwp-BW53",
+        "localId": "BW53",
+        "name": "Flygon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW54",
+      "status": 200,
+      "sha256": "c4f79751e08fd25ddfbcca2180f53031435d083298d0680db5e624962e97b414",
+      "requestedCardID": "bwp-BW54",
+      "identity": {
+        "id": "bwp-BW54",
+        "localId": "BW54",
+        "name": "Pikachu",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW55",
+      "status": 200,
+      "sha256": "05cb20869853b9de58ab0694125d7dae7189314981941a99f2de7c2073cccc17",
+      "requestedCardID": "bwp-BW55",
+      "identity": {
+        "id": "bwp-BW55",
+        "localId": "BW55",
+        "name": "Elgyem",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW56",
+      "status": 200,
+      "sha256": "94f4fc4651ce977375f146e7480b0a7cab45185a960873b0c6a2efd4033848b0",
+      "requestedCardID": "bwp-BW56",
+      "identity": {
+        "id": "bwp-BW56",
+        "localId": "BW56",
+        "name": "Empoleon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW57",
+      "status": 200,
+      "sha256": "673767dee62ed5213902965357bc6aac8bffa7879d8af311e9f4b71dc3a07db6",
+      "requestedCardID": "bwp-BW57",
+      "identity": {
+        "id": "bwp-BW57",
+        "localId": "BW57",
+        "name": "Haxorus",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW58",
+      "status": 200,
+      "sha256": "4a04774dc7082431e4e2b15d6dbd9c01d74907e6d8a64a80e0823649343fbcdd",
+      "requestedCardID": "bwp-BW58",
+      "identity": {
+        "id": "bwp-BW58",
+        "localId": "BW58",
+        "name": "Black Kyurem",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW59",
+      "status": 200,
+      "sha256": "3a58b107acdd6c02569ee1aa0ea94aa21fd22e309e3679c1639b0148f155241e",
+      "requestedCardID": "bwp-BW59",
+      "identity": {
+        "id": "bwp-BW59",
+        "localId": "BW59",
+        "name": "White Kyurem",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW60",
+      "status": 200,
+      "sha256": "c27dac205fdce29325bf6ef023c57e9ed1872389cbacc3a2169d5e8ee4e3f1f3",
+      "requestedCardID": "bwp-BW60",
+      "identity": {
+        "id": "bwp-BW60",
+        "localId": "BW60",
+        "name": "Keldeo",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW61",
+      "status": 200,
+      "sha256": "598a59d59860dadae3dedf39fdae8d3ce27ad3360e61d27d2fa6a3c7aa61c03a",
+      "requestedCardID": "bwp-BW61",
+      "identity": {
+        "id": "bwp-BW61",
+        "localId": "BW61",
+        "name": "Keldeo-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW62",
+      "status": 200,
+      "sha256": "49dfa2efef0b9929d9a52f97d94259539f72be78585e1293f38101e3b8223423",
+      "requestedCardID": "bwp-BW62",
+      "identity": {
+        "id": "bwp-BW62",
+        "localId": "BW62",
+        "name": "Black Kyurem-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW63",
+      "status": 200,
+      "sha256": "dad4cc1b78cbae1cae43d562f80ddaf12b6baa542de18ae12e835b42ae78460e",
+      "requestedCardID": "bwp-BW63",
+      "identity": {
+        "id": "bwp-BW63",
+        "localId": "BW63",
+        "name": "White Kyurem-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW64",
+      "status": 200,
+      "sha256": "8131d1fa8b696086d56f7ddeba07e0da5a8505c310771d2b6095f772b345a533",
+      "requestedCardID": "bwp-BW64",
+      "identity": {
+        "id": "bwp-BW64",
+        "localId": "BW64",
+        "name": "Drifblim",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW65",
+      "status": 200,
+      "sha256": "535270bb1f676418f1f939762207f06e24b126b3f8353ba0fa37a6fe1e2c84e1",
+      "requestedCardID": "bwp-BW65",
+      "identity": {
+        "id": "bwp-BW65",
+        "localId": "BW65",
+        "name": "Jigglypuff",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW66",
+      "status": 200,
+      "sha256": "041b5176abb7d03ceb8c0c1ca102709c0786ba319e215d18104e5e25c626bf43",
+      "requestedCardID": "bwp-BW66",
+      "identity": {
+        "id": "bwp-BW66",
+        "localId": "BW66",
+        "name": "Ninetales",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW67",
+      "status": 200,
+      "sha256": "e8ab189684cc9e2c5df62ab9c0ca68b0d9f6dea2692417f48f23d7b1da306b67",
+      "requestedCardID": "bwp-BW67",
+      "identity": {
+        "id": "bwp-BW67",
+        "localId": "BW67",
+        "name": "Ampharos",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW68",
+      "status": 200,
+      "sha256": "5b50f568d43b40dcc9d9c53bf1552a6b65e761539b593a8e767973b1307c13f9",
+      "requestedCardID": "bwp-BW68",
+      "identity": {
+        "id": "bwp-BW68",
+        "localId": "BW68",
+        "name": "Meloetta",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW69",
+      "status": 200,
+      "sha256": "bff0a267e2b797a23f116e800153a98ad7286637c6854c123b5e1044459b6e80",
+      "requestedCardID": "bwp-BW69",
+      "identity": {
+        "id": "bwp-BW69",
+        "localId": "BW69",
+        "name": "Meloetta",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW70",
+      "status": 200,
+      "sha256": "11ed76bf6d29856ed2694b1162661479f8aff186530d667085af477e59fd5914",
+      "requestedCardID": "bwp-BW70",
+      "identity": {
+        "id": "bwp-BW70",
+        "localId": "BW70",
+        "name": "Virizion",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW71",
+      "status": 200,
+      "sha256": "c519a648de07a9a1fedc9dc5a5d35d28e5f49bdc0ad763427aec2ccdc4f1ed45",
+      "requestedCardID": "bwp-BW71",
+      "identity": {
+        "id": "bwp-BW71",
+        "localId": "BW71",
+        "name": "Terrakion",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW72",
+      "status": 200,
+      "sha256": "667bd7db8004d4b0b4ccb8a0cfd4f0291a999f7bcfc9b566831fe44bbf7266c9",
+      "requestedCardID": "bwp-BW72",
+      "identity": {
+        "id": "bwp-BW72",
+        "localId": "BW72",
+        "name": "Cobalion",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW73",
+      "status": 200,
+      "sha256": "85caac48a6e226f40176d019cc5d484e7a347e85e4a65b20825da734524828a6",
+      "requestedCardID": "bwp-BW73",
+      "identity": {
+        "id": "bwp-BW73",
+        "localId": "BW73",
+        "name": "Darkrai",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW74",
+      "status": 200,
+      "sha256": "11c6f8434419eff77b80d8595932c73be1f8996ef613197227441f1aabb5b05b",
+      "requestedCardID": "bwp-BW74",
+      "identity": {
+        "id": "bwp-BW74",
+        "localId": "BW74",
+        "name": "Giratina",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW75",
+      "status": 200,
+      "sha256": "3f9f7fda1d904ff5f2c0c48628a546ed1b6599a0a6bbcbc7ccaddea9d059c8e5",
+      "requestedCardID": "bwp-BW75",
+      "identity": {
+        "id": "bwp-BW75",
+        "localId": "BW75",
+        "name": "Metagross",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW76",
+      "status": 200,
+      "sha256": "5c5747a3dd1d062ac33d90313a73c3b0c988bf8ac2bd8442f262742fa0f3f5fc",
+      "requestedCardID": "bwp-BW76",
+      "identity": {
+        "id": "bwp-BW76",
+        "localId": "BW76",
+        "name": "Electrode",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW77",
+      "status": 200,
+      "sha256": "bd2918ee94ae293e33373c62452959b90e93bc980135a8e21bf25dfc8d72eb62",
+      "requestedCardID": "bwp-BW77",
+      "identity": {
+        "id": "bwp-BW77",
+        "localId": "BW77",
+        "name": "Pikachu",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW78",
+      "status": 200,
+      "sha256": "fee42e40ffdd85a846d6d57c294091d4a9e0e6609fae5d18793d663264535663",
+      "requestedCardID": "bwp-BW78",
+      "identity": {
+        "id": "bwp-BW78",
+        "localId": "BW78",
+        "name": "Raichu",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW79",
+      "status": 200,
+      "sha256": "b493c34e6362bcc90f3035f50e9db06255c76645dae59b3087f7137d8c320c45",
+      "requestedCardID": "bwp-BW79",
+      "identity": {
+        "id": "bwp-BW79",
+        "localId": "BW79",
+        "name": "Landorus",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW80",
+      "status": 200,
+      "sha256": "dd0626fc10333d602df48136616313f151bad633f34f2c601d11d11ce3ed576d",
+      "requestedCardID": "bwp-BW80",
+      "identity": {
+        "id": "bwp-BW80",
+        "localId": "BW80",
+        "name": "Druddigon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW81",
+      "status": 200,
+      "sha256": "93b76c450d6dc3e2b9874a9b2d9736a5e1d4aedb3a2cd76dc280a894a677e5a1",
+      "requestedCardID": "bwp-BW81",
+      "identity": {
+        "id": "bwp-BW81",
+        "localId": "BW81",
+        "name": "Thundurus-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW82",
+      "status": 200,
+      "sha256": "bc49e689c6157f6a02077b4a33cff3a74871d96a4a8b8a64f591f2cd63eae6de",
+      "requestedCardID": "bwp-BW82",
+      "identity": {
+        "id": "bwp-BW82",
+        "localId": "BW82",
+        "name": "Deoxys-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW83",
+      "status": 200,
+      "sha256": "dd44339eab982a4af1786336b6fbcb0aa0c66034ceaa64688c3db4d4e5b05951",
+      "requestedCardID": "bwp-BW83",
+      "identity": {
+        "id": "bwp-BW83",
+        "localId": "BW83",
+        "name": "Lugia-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW84",
+      "status": 200,
+      "sha256": "ada157507438b8a23981c283377c4566ceb1a435dd0bc2078af346ba01b76d8a",
+      "requestedCardID": "bwp-BW84",
+      "identity": {
+        "id": "bwp-BW84",
+        "localId": "BW84",
+        "name": "Porygon-Z",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW85",
+      "status": 200,
+      "sha256": "80bf5dc77d3dfdb992ef5cb7962930c906d15231fe10ea77465794dc0a9a927b",
+      "requestedCardID": "bwp-BW85",
+      "identity": {
+        "id": "bwp-BW85",
+        "localId": "BW85",
+        "name": "Lucario",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW86",
+      "status": 200,
+      "sha256": "d0f0f1c6cf9373b66535d3c2efde692cef06babb2f07bced81df3b85d9a9d336",
+      "requestedCardID": "bwp-BW86",
+      "identity": {
+        "id": "bwp-BW86",
+        "localId": "BW86",
+        "name": "Genesect",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW87",
+      "status": 200,
+      "sha256": "b486819024d01c3930bb906ffb9f0cedfc139211027e3007f89ef84224492aad",
+      "requestedCardID": "bwp-BW87",
+      "identity": {
+        "id": "bwp-BW87",
+        "localId": "BW87",
+        "name": "Leafeon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW88",
+      "status": 200,
+      "sha256": "a696e6cef4c9ffcaf5f5831d3c5e6e83f78ad7d1366dd1bfaa7850889cb4a520",
+      "requestedCardID": "bwp-BW88",
+      "identity": {
+        "id": "bwp-BW88",
+        "localId": "BW88",
+        "name": "Flareon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW89",
+      "status": 200,
+      "sha256": "2f14e843589d9b40f2d7cfe9b32fce68cedd3b3109eca6427e6e2155a83187e0",
+      "requestedCardID": "bwp-BW89",
+      "identity": {
+        "id": "bwp-BW89",
+        "localId": "BW89",
+        "name": "Vaporeon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW90",
+      "status": 200,
+      "sha256": "40cf48940bc700a71e0c39b9485e24c54b1fda7a65d61996569112b2562001cb",
+      "requestedCardID": "bwp-BW90",
+      "identity": {
+        "id": "bwp-BW90",
+        "localId": "BW90",
+        "name": "Glaceon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW91",
+      "status": 200,
+      "sha256": "c9cd17b867e3d4b2db8d76c0fae7fbe1585e05fcd681f9d363b6efc89028aa67",
+      "requestedCardID": "bwp-BW91",
+      "identity": {
+        "id": "bwp-BW91",
+        "localId": "BW91",
+        "name": "Jolteon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW92",
+      "status": 200,
+      "sha256": "d40c68098821e0be351238f46406a018329cb9f21c5ea9958d4fbbd2d630aeb3",
+      "requestedCardID": "bwp-BW92",
+      "identity": {
+        "id": "bwp-BW92",
+        "localId": "BW92",
+        "name": "Espeon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW93",
+      "status": 200,
+      "sha256": "748c93070db54dbb43b2c46cec8f4babb60938a67a759f013e66adc27e116fa3",
+      "requestedCardID": "bwp-BW93",
+      "identity": {
+        "id": "bwp-BW93",
+        "localId": "BW93",
+        "name": "Umbreon",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW94",
+      "status": 200,
+      "sha256": "8cbb1dff6b3f6f3e2500a4bc1b84c9f8ac7ae0f813d5364465a94482e7916ceb",
+      "requestedCardID": "bwp-BW94",
+      "identity": {
+        "id": "bwp-BW94",
+        "localId": "BW94",
+        "name": "Eevee",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW95",
+      "status": 200,
+      "sha256": "0e49ddba0368474a549eaf66a882594ab932101a99f781696e8de208d371b71c",
+      "requestedCardID": "bwp-BW95",
+      "identity": {
+        "id": "bwp-BW95",
+        "localId": "BW95",
+        "name": "Champions Festival",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW96",
+      "status": 200,
+      "sha256": "eda8206181d3934ce109b8fb8194cf3c4ad4196e97dbe84b82cc4c7455e6df69",
+      "requestedCardID": "bwp-BW96",
+      "identity": {
+        "id": "bwp-BW96",
+        "localId": "BW96",
+        "name": "Tornadus-EX",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW97",
+      "status": 200,
+      "sha256": "996d534cc303b654f68104ed802ebec52e4af2f76d3d9ce388ee77e43254a0ad",
+      "requestedCardID": "bwp-BW97",
+      "identity": {
+        "id": "bwp-BW97",
+        "localId": "BW97",
+        "name": "Eevee",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW98",
+      "status": 200,
+      "sha256": "b9a8f177f232a3e5438110749f78439eb223b3bad7e41490b38d4b4dda464c2c",
+      "requestedCardID": "bwp-BW98",
+      "identity": {
+        "id": "bwp-BW98",
+        "localId": "BW98",
+        "name": "Mew",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/bwp-BW99",
+      "status": 200,
+      "sha256": "6884f59944cf0dc23defdfb1f4ab1abe4d215656f99db3e312f98ced6d7e7efa",
+      "requestedCardID": "bwp-BW99",
+      "identity": {
+        "id": "bwp-BW99",
+        "localId": "BW99",
+        "name": "Genesect",
+        "set": {
+          "cardCount": {
+            "official": 101,
+            "total": 101
+          },
+          "id": "bwp",
+          "logo": "https://assets.tcgdex.net/en/bw/bwp/logo",
+          "name": "BW Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/bw/bwp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -8,10 +8,32 @@ seven-card / one-product proposal. Its [implementation receipt](implementation.j
 retains that 82-record milestone's hashes and tests. The subsequent
 [2017 Mythical Collections batch](../pokemon-mythical-collections-2017-2026-11-02/README.md)
 adds 13 independently corroborated ordinary Holo minimums through the approved
-mechanism. Current input has **75 descriptors and 95 protected records**:
-94 memberships (73 Jumbo, Eevee Cosmos, 20 ordinary Holo) and one exact product
-exclusion. The follow-up owns the current input hash and live validation.
+mechanism. The subsequent [2016 Red & Blue Collection batch](../pokemon-red-blue-collections-2016-2026-11-03/README.md)
+adds four more reviewed ordinary Holo records. The [XY tin-family batch](../pokemon-xy-tin-families-2026-11-03/README.md)
+adds 13 more. The [BW promo-family audit](../pokemon-bw-promo-family-2026-11-03/README.md)
+adds three Legendary EX Tin ordinary corrections plus adjacent Sylveon XY04.
+The [DP promo-family audit](../pokemon-dp-promo-family-2026-11-03/README.md)
+adds 19 exact products for existing LV.X Holo objects and three unique Jumbo
+bindings. The [POP Series 1–9 audit](../pokemon-pop-finishes-2026-11-03/README.md)
+adds two exact product exclusions after comparing all 153 cards / 226 objects.
+Current input has **75 descriptors and 140 protected records**:
+76 Jumbo authorizations, Eevee Cosmos, 41 earlier ordinary Holo minimums,
+19 existing-Holo product bindings and three exact product exclusions. These record
+counts are not new physical-printing counts. The latest batch owns the current
+input hash; earlier receipts retain their own live-validation scopes.
+The latest native candidate preserves all 95 active corrections, 75 fingerprints
+and 6,675 numbered summaries against verified production revision 20. Its
+**artwork continuity fails**: 228 of 238 active mappings remain exact, ten EX
+Trainer Kit Latias mappings are missing after a secondary HTTP 502, none changed.
+The preceding DP candidate's continuity pass remains historical for its bytes;
+publication is held for the latest candidate. URL health and
+exhaustive printing/paid-pricing acceptance remain open. No signing/publication
+was performed by this work.
 The owner explicitly requested comprehensive coverage beyond Jumbo cards.
+The owner reaffirmed **English-language physical printings only** on 2026-11-03.
+English-translated provider names do not establish an English physical release.
+Known French-only DP54/55 and canceled BW77/78 need the proposed exact-card
+exclusion support; they have not been deleted or silently described as resolved.
 
 ## Coverage dimensions
 
@@ -75,7 +97,14 @@ additive Holo membership and exact product binding. Retained Normal evidence
 needs physical/product review; no deletion or automatic holding rekey is
 proposed. At this checkpoint the other 148 primary-only missing-Holo signals
 remained unadmitted. The later 2017 product-family review corroborates 13 of
-those signals; 135 original primary-only signals remain review leads.
+those signals, and the later four-card Red & Blue review corroborates four
+more; that milestone left 131 original primary-only signals as review leads.
+The later 13-card tin-family batch admits nine more exact pairs from that
+original census and four independently corroborated identities outside its
+matching scope. **122 original primary-only signals remain**; subtracting all
+37 ordinary corrections from 155 would incorrectly report 118. The later
+Sylveon XY04 addition admits another original pair, leaving **121**; the three
+new BW corrections belong to a separate census.
 
 These IDs are outside the pre-existing overrides and eight-set minimum table.
 Before authorization, `additionalVariants` enabled only Jumbo and Holo Cosmos.
@@ -179,3 +208,80 @@ retained exactly, resolving the omission for this particular candidate. The
 earlier unavailable-source candidate above remains historical evidence; neither
 run proves global URL health or physical-camera/paid-price acceptance. The new
 candidate remains unsigned and unpublished, and comprehensive coverage is open.
+
+## Subsequent event-stamp review — 2026-11-03
+
+The [Pokéween review](../pokemon-pokeween-stamps-2026-11-03/README.md) corroborates
+the complete named 2025 Spiritomb and 2026 Zubat/Golbat/Crobat distributions.
+Four provider reads and nine primary product reads succeed; primary product
+images and independent retailers confirm the exact English identities and
+Reverse Holofoil event products. The three 2026 stamped rows are absent.
+Spiritomb's existing pumpkin-stamped row is incorrectly Normal and lacks its
+separate event product; its bundled expanded slot repeats that finish.
+
+Four corrections are prepared but uninstalled. Existing signed support cannot
+admit ordinary stamped memberships or mark the exact unsupported legacy
+Spiritomb object for physical review without a bad product handle. The concrete
+minimal support proposal preserves holdings and ordinary sibling finishes and
+requires approval under the owner's catalog-only constraint. Its preparation
+checkpoint was 75 descriptors / 95 protected records. The later authorized
+ordinary Red & Blue batch brings input to 99; the four stamped corrections
+remain uninstalled and would bring that total to 103 if approved. The earlier
+lack of compiled 2025–2026
+Trick or Trade entries is not proof of two absent annual 30-card releases.
+
+## Subsequent ordinary Red & Blue cohort — 2026-11-03
+
+The [complete four-promo review](../pokemon-red-blue-collections-2016-2026-11-03/README.md)
+adds XY121–124 through the approved ordinary minimum mechanism. All eight fresh
+provider/marketplace reads succeed, and independent official/distributor product
+descriptions identify foil promos. All earlier 95 records and other authoring
+fields are unchanged; current input has 99 records, including 24 ordinary Holo
+minimums. This does not install the pending stamp proposal or infer Jumbo entries.
+
+Full normal native live validation passes against signature-verified revision 19
+with 75 descriptors and 6,675 numbered summaries. All 99 records are carried
+exactly, all 33 earlier provider fingerprints remain equal, and all 97 prior
+card-art mappings survive exactly with the secondary source available. No
+app/Core code or mechanism tests changed in this data-only batch. Unsigned and
+unpublished; physical-camera, paid-price and exhaustive coverage remain open.
+
+## HGSS era cross-check — 2026-11-03
+
+The [full HGSS promo census and adjacent tin review](../pokemon-hgss-promo-family-2026-11-03/README.md)
+reads all 25 promo identities / 33 provider objects and all 38 discovered primary
+products. All 32 populated handles match names and numbers. The shiny beast trio
+already has correct Holo coverage and distinct products. Five non-HGSS prerelease
+entries in the marketplace group are not new HGSS identities.
+
+Five exact corrections are prepared but uninstalled: the missing Finalist handle,
+Participation's Holo finish label while retaining its correct 90052 product, and
+three distinct Secret Wonders Cracked Ice product bindings. All existing raw
+physical variants remain represented; no blanket Holo or wrong-product exclusion
+is inferred. Latias/Latios generic Holo versus named-pattern choices are separate
+semantic review leads. Current input remains 99 records. No code/build/native
+candidate is changed by this evidence-only batch; stamped/named-pattern support
+and exact application remain open.
+
+## Energy follow-up and MEE coverage reconciliation — 2026-11-03
+
+The [fresh Energy comparison](../pokemon-energy-product-followup-2026-11-03/README.md)
+checks 32 primary-provider identities / 128 objects and 112 successful primary
+product reads. All 32 ordinary Normal handles match names and numbers. The known
+SVE 002 wrong-number object remains the sole number conflict. Its correct
+positive product is now corroborated as 622936; the existing authored 651037
+exclusion is preserved, and a positive stamped-pattern replacement is uninstalled.
+
+The provider still omits MEE 009–016, but those eight cards are already covered
+by stable `tcgplayer:` identities, eight Holo slots and existing scanner/Browse/
+refresh support. Fresh primary metadata, an independent retailer and printed
+footers corroborate the existing data; four focused tests pass. The earlier
+32-card count describes the primary provider, not the app's entire reviewed
+Energy coverage. Do not duplicate these cards or mint unverified provider IDs.
+
+Eight Professor 2024 identity products are matched; six Cosmos bindings have
+consistent evidence, while Fire's pictured pattern and Lightning's Normal-only
+market printing remain held for review. Eight Tinsel and eight bare-Reverse
+objects retain their separate binding/printing questions. No blanket mapping,
+new membership or unsupported signed field is installed. Input remains 99
+records; physical-camera, paid-price and exhaustive coverage remain open.

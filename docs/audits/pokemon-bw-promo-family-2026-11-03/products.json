@@ -1,0 +1,2832 @@
+{
+  "observedAtUTC": "2026-11-03T15:11:43.699793+00:00",
+  "discovery": {
+    "url": "https://www.decktradr.com/sets/pokemon/1407-black-and-white-promos",
+    "status": 200,
+    "sha256": "e8008179f355193f84e8990f99b6d7ca258f36517cdb6290639ac01ae659e705",
+    "purpose": "Product IDs only, not physical admission proof",
+    "links": [
+      "/cards/pokemon/108421-genesect-bw101",
+      "/cards/pokemon/173095-gigalith-53-98-prerelease",
+      "/cards/pokemon/173096-gigalith-53-98-prerelease-staff",
+      "/cards/pokemon/202379-pikachu-bw54",
+      "/cards/pokemon/228483-darmanitan-25-114-prerelease",
+      "/cards/pokemon/228485-darmanitan-25-114-prerelease-staff",
+      "/cards/pokemon/228499-victini-43-101-prerelease",
+      "/cards/pokemon/228500-victini-43-101-prerelease-staff",
+      "/cards/pokemon/230421-arcanine-12-99-prerelease",
+      "/cards/pokemon/230422-arcanine-12-99-prerelease-staff",
+      "/cards/pokemon/242032-druddigon-team-plasma-bw80-cosmos-holo",
+      "/cards/pokemon/83520-altaria-bw48-prerelease",
+      "/cards/pokemon/83548-ampharos-bw67",
+      "/cards/pokemon/83666-axew-bw10",
+      "/cards/pokemon/83667-axew-bw16",
+      "/cards/pokemon/83669-axew-bw26",
+      "/cards/pokemon/83739-battle-city-bw39",
+      "/cards/pokemon/83852-black-kyurem-bw58",
+      "/cards/pokemon/83855-black-kyurem-ex-bw62",
+      "/cards/pokemon/84162-champions-festival-bw95-worlds-13",
+      "/cards/pokemon/84379-cobalion-bw72",
+      "/cards/pokemon/84492-crobat-bw51-team-plasma-prerelease",
+      "/cards/pokemon/84703-darkrai-team-plasma-bw73",
+      "/cards/pokemon/84707-darkrai-ex-bw46",
+      "/cards/pokemon/84720-darumaka-bw18",
+      "/cards/pokemon/84776-deoxys-ex-team-plasma-bw82",
+      "/cards/pokemon/84950-drifblim-bw64",
+      "/cards/pokemon/84983-druddigon-team-plasma-bw80",
+      "/cards/pokemon/84992-ducklett-bw17",
+      "/cards/pokemon/85095-eevee-bw94",
+      "/cards/pokemon/85096-eevee-bw97",
+      "/cards/pokemon/85164-electrode-team-plasma-bw76",
+      "/cards/pokemon/85178-elgyem-bw55",
+      "/cards/pokemon/85183-emboar-bw21",
+      "/cards/pokemon/85202-empoleon-bw56",
+      "/cards/pokemon/85326-espeon-bw92",
+      "/cards/pokemon/85528-flygon-bw53-prerelease",
+      "/cards/pokemon/85663-genesect-bw99",
+      "/cards/pokemon/85664-genesect-team-plasma-bw86",
+      "/cards/pokemon/85739-giratina-team-plasma-bw74",
+      "/cards/pokemon/85748-glaceon-bw90",
+      "/cards/pokemon/86035-haxorus-bw57",
+      "/cards/pokemon/86321-jigglypuff-bw65",
+      "/cards/pokemon/86348-jolteon-bw91",
+      "/cards/pokemon/86435-keldeo-bw60-tinsel-holo",
+      "/cards/pokemon/86437-keldeo-ex-bw61",
+      "/cards/pokemon/86562-kyurem-bw44",
+      "/cards/pokemon/86567-kyurem-ex-bw37",
+      "/cards/pokemon/86592-landorus-bw43",
+      "/cards/pokemon/86594-landorus-team-plasma-bw79",
+      "/cards/pokemon/86795-lilligant-bw49",
+      "/cards/pokemon/86801-lillipup-bw52",
+      "/cards/pokemon/86810-litwick-bw27",
+      "/cards/pokemon/86885-lucario-bw85",
+      "/cards/pokemon/86914-lugia-ex-team-plasma-bw83",
+      "/cards/pokemon/86945-luxio-bw34-cosmos-holo",
+      "/cards/pokemon/87300-meloetta-bw68",
+      "/cards/pokemon/87301-meloetta-bw69",
+      "/cards/pokemon/87327-meowth-bw35",
+      "/cards/pokemon/87344-metagross-bw75-team-plasma-prerelease",
+      "/cards/pokemon/87406-mew-bw98",
+      "/cards/pokemon/87430-mewtwo-ex-bw45",
+      "/cards/pokemon/87475-minccino-bw13-cosmos-holo",
+      "/cards/pokemon/87677-n-supporter-bw100",
+      "/cards/pokemon/87779-ninetales-bw66",
+      "/cards/pokemon/87892-oshawott-bw03",
+      "/cards/pokemon/87894-oshawott-bw08",
+      "/cards/pokemon/87934-pansage-bw11",
+      "/cards/pokemon/87935-pansage-bw14",
+      "/cards/pokemon/88057-pidove-bw15",
+      "/cards/pokemon/88318-porygon-z-team-plasma-bw84-prerelease",
+      "/cards/pokemon/88646-rayquaza-ex-bw47",
+      "/cards/pokemon/88705-reshiram-bw004",
+      "/cards/pokemon/88706-reshiram-bw23",
+      "/cards/pokemon/88714-reshiram-ex-bw36",
+      "/cards/pokemon/88760-riolu-bw33-cosmos-holo",
+      "/cards/pokemon/88909-samurott-bw22",
+      "/cards/pokemon/88982-scraggy-bw25-cosmos-holo",
+      "/cards/pokemon/89071-serperior-bw20",
+      "/cards/pokemon/89377-snivy-bw01",
+      "/cards/pokemon/89379-snivy-bw06",
+      "/cards/pokemon/89881-tepig-bw02",
+      "/cards/pokemon/89883-tepig-bw07",
+      "/cards/pokemon/89889-terrakion-bw71",
+      "/cards/pokemon/89904-thundurus-bw41",
+      "/cards/pokemon/89908-thundurus-ex-team-plasma-bw81",
+      "/cards/pokemon/89975-tornadus-bw42",
+      "/cards/pokemon/89979-tornadus-ex-bw96-prerelease",
+      "/cards/pokemon/90048-tropical-beach-bw28-worlds-11",
+      "/cards/pokemon/90049-tropical-beach-bw50-worlds-12",
+      "/cards/pokemon/90150-umbreon-bw93",
+      "/cards/pokemon/90289-vaporeon-bw89",
+      "/cards/pokemon/90346-victini-bw32",
+      "/cards/pokemon/90353-victory-cup-bw31-battle-road-autumn-2011-1st-place",
+      "/cards/pokemon/90354-victory-cup-bw30-battle-road-autumn-2011-2nd-place",
+      "/cards/pokemon/90355-victory-cup-bw29-battle-road-autumn-2011-3rd-place",
+      "/cards/pokemon/90389-virizion-bw70",
+      "/cards/pokemon/90403-volcarona-bw40-prerelease",
+      "/cards/pokemon/90587-white-kyurem-bw59",
+      "/cards/pokemon/90590-white-kyurem-ex-bw63",
+      "/cards/pokemon/90733-zekrom-bw005",
+      "/cards/pokemon/90734-zekrom-bw24",
+      "/cards/pokemon/90741-zekrom-ex-bw38",
+      "/cards/pokemon/90751-zoroark-bw09",
+      "/cards/pokemon/90752-zoroark-bw19",
+      "/cards/pokemon/90760-zorua-bw12",
+      "/cards/pokemon/91599-flareon-bw88",
+      "/cards/pokemon/91600-leafeon-bw87",
+      "/cards/pokemon/96566-altaria-bw48-prerelease-staff",
+      "/cards/pokemon/96567-champions-festival-bw95-worlds-13-top-thirty-two",
+      "/cards/pokemon/96568-champions-festival-bw95-worlds-13-top-16",
+      "/cards/pokemon/96569-champions-festival-bw95-worlds-13-quarter-finalist",
+      "/cards/pokemon/96570-champions-festival-bw95-worlds-13-semi-finalist",
+      "/cards/pokemon/96571-champions-festival-bw95-worlds-13-finalist",
+      "/cards/pokemon/96572-champions-festival-bw95-worlds-13-staff",
+      "/cards/pokemon/96573-crobat-bw51-team-plasma-prerelease-staff",
+      "/cards/pokemon/96574-flygon-bw53-prerelease-staff",
+      "/cards/pokemon/96860-victory-cup-bw31-battle-road-autumn-2012-1st-place",
+      "/cards/pokemon/96861-victory-cup-bw30-battle-road-autumn-2012-2nd-place",
+      "/cards/pokemon/96862-victory-cup-bw29-battle-road-autumn-2012-3rd-place",
+      "/cards/pokemon/96863-victory-cup-bw29-battle-road-spring-2012-3rd-place",
+      "/cards/pokemon/96864-victory-cup-battle-road-spring-2012-2nd-place-bw30",
+      "/cards/pokemon/96865-victory-cup-bw31-battle-road-spring-2012-1st-place",
+      "/cards/pokemon/96866-victory-cup-bw31-battle-road-spring-2013-1st-place",
+      "/cards/pokemon/96867-victory-cup-bw30-battle-road-spring-2013-2nd-place",
+      "/cards/pokemon/96868-victory-cup-bw29-battle-road-spring-2013-3rd-place",
+      "/cards/pokemon/96869-tropical-beach-bw28-worlds-11-top-32",
+      "/cards/pokemon/96870-tropical-beach-bw28-worlds-11-top-16",
+      "/cards/pokemon/96871-tropical-beach-bw28-worlds-11-quarter-finalist",
+      "/cards/pokemon/96872-tropical-beach-bw28-worlds-11-semi-finalist",
+      "/cards/pokemon/96873-tropical-beach-bw28-worlds-11-finalist",
+      "/cards/pokemon/96874-tropical-beach-bw28-worlds-11-staff",
+      "/cards/pokemon/96875-tropical-beach-bw50-worlds-12-top-32",
+      "/cards/pokemon/96876-tropical-beach-bw50-worlds-12-top-16",
+      "/cards/pokemon/96877-tropical-beach-bw50-worlds-12-quarter-finalist",
+      "/cards/pokemon/96878-tropical-beach-bw50-worlds-12-semi-finalist",
+      "/cards/pokemon/96879-tropical-beach-bw50-worlds-12-finalist",
+      "/cards/pokemon/96880-tropical-beach-bw50-worlds-12-staff",
+      "/cards/pokemon/96881-minccino-bw13-cracked-ice-holo",
+      "/cards/pokemon/96882-scraggy-bw25-cracked-ice-holo",
+      "/cards/pokemon/96883-riolu-bw33",
+      "/cards/pokemon/96884-luxio-bw34-cracked-ice-holo",
+      "/cards/pokemon/96885-keldeo-bw60",
+      "/cards/pokemon/97089-champions-festival-bw95-worlds-13-champion",
+      "/cards/pokemon/97090-metagross-bw75-team-plasma-prerelease-staff",
+      "/cards/pokemon/97091-porygon-z-team-plasma-bw84-prerelease-staff",
+      "/cards/pokemon/97092-tornadus-ex-bw96-prerelease-staff",
+      "/cards/pokemon/97093-volcarona-bw40-prerelease-staff"
+    ]
+  },
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83520/details",
+      "status": 200,
+      "sha256": "d7b4f0cb1d8db8c1147fdb9df08efe27c459736c9adb37897d0efac12a1062e7",
+      "requestedProductID": 83520,
+      "identity": {
+        "productId": 83520.0,
+        "productName": "Altaria - BW48 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW48"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83548/details",
+      "status": 200,
+      "sha256": "9b97320657d655a718c7033b8ae1e799b7803b389cc73f72aa8013bf8f0efaba",
+      "requestedProductID": 83548,
+      "identity": {
+        "productId": 83548.0,
+        "productName": "Ampharos - BW67",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW67"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83666/details",
+      "status": 200,
+      "sha256": "0bd2625dbd47d3ae2ae61c99f634960f6b143cbfd287ae094e2b6b6e487644f0",
+      "requestedProductID": 83666,
+      "identity": {
+        "productId": 83666.0,
+        "productName": "Axew - BW10",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW10"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83667/details",
+      "status": 200,
+      "sha256": "d57a4b23ac024458053dd6e5905de20a76b9edbded63ff7049fcffd03154f2c0",
+      "requestedProductID": 83667,
+      "identity": {
+        "productId": 83667.0,
+        "productName": "Axew - BW16",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW16"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83669/details",
+      "status": 200,
+      "sha256": "ad91374c6a0bdbb27e239939b2b451b86f039f09ad47a01146f2de6a810ca895",
+      "requestedProductID": 83669,
+      "identity": {
+        "productId": 83669.0,
+        "productName": "Axew - BW26",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW26"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83739/details",
+      "status": 200,
+      "sha256": "dfc1a9c2558da6a1cf1deac086259290511af3aea5c94740dd8f228ee59cc5e1",
+      "requestedProductID": 83739,
+      "identity": {
+        "productId": 83739.0,
+        "productName": "Battle City - BW39",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW39"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83852/details",
+      "status": 200,
+      "sha256": "c79d667ccca45eb0e43b791526c79cfbcd3a1635c07295594cb772edf436fd5b",
+      "requestedProductID": 83852,
+      "identity": {
+        "productId": 83852.0,
+        "productName": "Black Kyurem - BW58",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW58"
+      },
+      "priorAttempts": [
+        {
+          "url": "https://mp-search-api.tcgplayer.com/v1/product/83852/details",
+          "error": "The read operation timed out",
+          "requestedProductID": 83852
+        }
+      ]
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83855/details",
+      "status": 200,
+      "sha256": "c5e1d6ead6e0b21c93b1dbaef8404458d37a128b11c73d463c6db58dcc240d71",
+      "requestedProductID": 83855,
+      "identity": {
+        "productId": 83855.0,
+        "productName": "Black Kyurem EX - BW62",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW62"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84162/details",
+      "status": 200,
+      "sha256": "84563124533e0af60b27f0e2fd1a90c89129bfcc8f5ba5b98507220ede995c57",
+      "requestedProductID": 84162,
+      "identity": {
+        "productId": 84162.0,
+        "productName": "Champions Festival - BW95 (Worlds 13)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84379/details",
+      "status": 200,
+      "sha256": "9d3a27fc10aa212c7904874784db5aff375ee3830f080d5ebac28c7ba54d79f8",
+      "requestedProductID": 84379,
+      "identity": {
+        "productId": 84379.0,
+        "productName": "Cobalion - BW72",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW72"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84492/details",
+      "status": 200,
+      "sha256": "2e2452d0f92f3f8c3f77eadd5cf271848b3a3742d3de263da6bfa3f320a273f5",
+      "requestedProductID": 84492,
+      "identity": {
+        "productId": 84492.0,
+        "productName": "Crobat - BW51 (Team Plasma) (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW51"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84703/details",
+      "status": 200,
+      "sha256": "b87c11853f1d3fd6a95115954515588335b8a3a419247fff44c3b439b6a983c4",
+      "requestedProductID": 84703,
+      "identity": {
+        "productId": 84703.0,
+        "productName": "Darkrai (Team Plasma) - BW73",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW73"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84707/details",
+      "status": 200,
+      "sha256": "36d002000b4c1541ff6b831fcc0dd34da38a063765f51e880e93c931dc4d76d0",
+      "requestedProductID": 84707,
+      "identity": {
+        "productId": 84707.0,
+        "productName": "Darkrai EX - BW46",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW46"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84720/details",
+      "status": 200,
+      "sha256": "0261658604e612c54637d343912eb5662bad0e3abc9e16c7b9d2c4357df89215",
+      "requestedProductID": 84720,
+      "identity": {
+        "productId": 84720.0,
+        "productName": "Darumaka - BW18",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84776/details",
+      "status": 200,
+      "sha256": "1f5709d75f0110df3c2de909b2628f9a37d7ee7034bdd6280dc6918e54b7703b",
+      "requestedProductID": 84776,
+      "identity": {
+        "productId": 84776.0,
+        "productName": "Deoxys EX (Team Plasma) - BW82",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84950/details",
+      "status": 200,
+      "sha256": "caf303b20d5ff6e9db603f2f5bfd58ee8331d0cd0f7192918f96afd1a0b7b886",
+      "requestedProductID": 84950,
+      "identity": {
+        "productId": 84950.0,
+        "productName": "Drifblim - BW64",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW64"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84983/details",
+      "status": 200,
+      "sha256": "308b7ca5ff0c387b40eb13e2e6e4f0920d1f978050ce4304bc7ac56a2332f630",
+      "requestedProductID": 84983,
+      "identity": {
+        "productId": 84983.0,
+        "productName": "Druddigon (Team Plasma) - BW80",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW80"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84992/details",
+      "status": 200,
+      "sha256": "e5ae26047713061ced0df6094d7a3dea0472acf7d5cef9ecfb5e4fe2a23e7752",
+      "requestedProductID": 84992,
+      "identity": {
+        "productId": 84992.0,
+        "productName": "Ducklett - BW17",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85095/details",
+      "status": 200,
+      "sha256": "2eeb0a6923eaee420ac2a74dd973257d5ac63c998eecf506413c77b662ea30cb",
+      "requestedProductID": 85095,
+      "identity": {
+        "productId": 85095.0,
+        "productName": "Eevee - BW94",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW94"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85096/details",
+      "status": 200,
+      "sha256": "ac2cc6e92282c692c82cdc80a0d3524be373f034f2a72084fe06fe30cbebbb66",
+      "requestedProductID": 85096,
+      "identity": {
+        "productId": 85096.0,
+        "productName": "Eevee - BW97",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW97"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85164/details",
+      "status": 200,
+      "sha256": "f14a2a9b0b13bc8365b9173def0464b161125a0fa8cfc799d30b762432924906",
+      "requestedProductID": 85164,
+      "identity": {
+        "productId": 85164.0,
+        "productName": "Electrode (Team Plasma) - BW76",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW76"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85178/details",
+      "status": 200,
+      "sha256": "8b6cb6d6a8a1dbe11fe40f9fe431ca143a8c9d8beeee4aa8ebd33e3e0146df92",
+      "requestedProductID": 85178,
+      "identity": {
+        "productId": 85178.0,
+        "productName": "Elgyem - BW55",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW55"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85183/details",
+      "status": 200,
+      "sha256": "98f282b49a91a8b0fecf3aaea389a393699bed1203a226e90dc2d996e134f924",
+      "requestedProductID": 85183,
+      "identity": {
+        "productId": 85183.0,
+        "productName": "Emboar - BW21",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW21"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85202/details",
+      "status": 200,
+      "sha256": "13d30c42520fb4939c18a3728a8c5473e5dc1d707c0326f9a3e04e5572d59bb4",
+      "requestedProductID": 85202,
+      "identity": {
+        "productId": 85202.0,
+        "productName": "Empoleon - BW56",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW56"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85326/details",
+      "status": 200,
+      "sha256": "6e5c7a8fb068f1d5aa23c89e6281b0237bcd3d202a458625894ea1763fb0865c",
+      "requestedProductID": 85326,
+      "identity": {
+        "productId": 85326.0,
+        "productName": "Espeon - BW92",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW92"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85528/details",
+      "status": 200,
+      "sha256": "8ed77b83f331b470b808073683c48775636b02d1821fb2d359fe0a2bb95f2999",
+      "requestedProductID": 85528,
+      "identity": {
+        "productId": 85528.0,
+        "productName": "Flygon - BW53 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85663/details",
+      "status": 200,
+      "sha256": "06d1e8006c9aee31b50460bea51beb9a5455f7c8a30dc237061c982650924e1a",
+      "requestedProductID": 85663,
+      "identity": {
+        "productId": 85663.0,
+        "productName": "Genesect - BW99",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW99"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85664/details",
+      "status": 200,
+      "sha256": "ca60aa5e7860e5690a60dcdb60e7147f1c09d66300d226fe396080f76889ef2f",
+      "requestedProductID": 85664,
+      "identity": {
+        "productId": 85664.0,
+        "productName": "Genesect (Team Plasma) - BW86",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW86"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85739/details",
+      "status": 200,
+      "sha256": "7ff0c121f92f6e3ead96a100fc6ccc7ffcdede29af415ff82f7aeb4035d1222f",
+      "requestedProductID": 85739,
+      "identity": {
+        "productId": 85739.0,
+        "productName": "Giratina (Team Plasma)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW74"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85748/details",
+      "status": 200,
+      "sha256": "13d41901287b9c780c556fe4f0054b533c6a87568bf12e84a8940e489f5d44d2",
+      "requestedProductID": 85748,
+      "identity": {
+        "productId": 85748.0,
+        "productName": "Glaceon - BW90",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW90"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86035/details",
+      "status": 200,
+      "sha256": "ddacf2639c73510208077ac4873dd42b87753650c8a2e2e76d44fb314e0f7385",
+      "requestedProductID": 86035,
+      "identity": {
+        "productId": 86035.0,
+        "productName": "Haxorus - BW57",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW57"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86321/details",
+      "status": 200,
+      "sha256": "9a7f1bb0c05c91fa8ee18a69eda6f1aa82a32707f740e132e1fd46cf0accc4c0",
+      "requestedProductID": 86321,
+      "identity": {
+        "productId": 86321.0,
+        "productName": "Jigglypuff - BW65",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW65"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86348/details",
+      "status": 200,
+      "sha256": "1a91682806828b0da6684e265702226ab3641fda742f7689654e3a76ad81a868",
+      "requestedProductID": 86348,
+      "identity": {
+        "productId": 86348.0,
+        "productName": "Jolteon - BW91",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW91"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86435/details",
+      "status": 200,
+      "sha256": "42e7b0eedde9cf8eb183d3d7f3b1166a2faa32c8a9a64bcbd5353b39974a9bc4",
+      "requestedProductID": 86435,
+      "identity": {
+        "productId": 86435.0,
+        "productName": "Keldeo - BW60 (Tinsel Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW60"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86437/details",
+      "status": 200,
+      "sha256": "80390de362eabaa88f5a0f78f1870a47d55bd20214aad6b4afcaf4907d55a2ac",
+      "requestedProductID": 86437,
+      "identity": {
+        "productId": 86437.0,
+        "productName": "Keldeo EX - BW61",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW61"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86562/details",
+      "status": 200,
+      "sha256": "7f2be708d1a80f12c8842a184bcb208801b9c10951f9871f9283316b4c085070",
+      "requestedProductID": 86562,
+      "identity": {
+        "productId": 86562.0,
+        "productName": "Kyurem - BW44",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW44"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86567/details",
+      "status": 200,
+      "sha256": "04b5928c19cd06d1b547599d95bf765673804b2c7b2d206909b276e16c3002d2",
+      "requestedProductID": 86567,
+      "identity": {
+        "productId": 86567.0,
+        "productName": "Kyurem EX - BW37",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW37"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86592/details",
+      "status": 200,
+      "sha256": "9d8b23cb673ab97e806003fe5227441f87a770880e00d0b61c7875aed2fcb569",
+      "requestedProductID": 86592,
+      "identity": {
+        "productId": 86592.0,
+        "productName": "Landorus - BW43",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW43"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86594/details",
+      "status": 200,
+      "sha256": "bc28e79e52375c5ae02524df8884506f689fc5446757c218600187b26e961b20",
+      "requestedProductID": 86594,
+      "identity": {
+        "productId": 86594.0,
+        "productName": "Landorus (Team Plasma) - BW79",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW79"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86795/details",
+      "status": 200,
+      "sha256": "c7a9d477edb0906798984722db784faa30b1e2d494188cd38ecf218129eef28a",
+      "requestedProductID": 86795,
+      "identity": {
+        "productId": 86795.0,
+        "productName": "Lilligant - BW49",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW49"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86801/details",
+      "status": 200,
+      "sha256": "ecb24dd9471cb4a2fc5ace132cc939fce69bc24443c8d26123a079eaacebe7fc",
+      "requestedProductID": 86801,
+      "identity": {
+        "productId": 86801.0,
+        "productName": "Lillipup - BW52",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW52"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86810/details",
+      "status": 200,
+      "sha256": "d93d9e681b998753083de7fd9bd39449b5040ba3e5bcf5a03a8db191edfc2b12",
+      "requestedProductID": 86810,
+      "identity": {
+        "productId": 86810.0,
+        "productName": "Litwick - BW27",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86885/details",
+      "status": 200,
+      "sha256": "76fc1aa80ee70ef347b16c7e0f1ecf741a9f6f1aec2e85914ec4e8d030edbfa7",
+      "requestedProductID": 86885,
+      "identity": {
+        "productId": 86885.0,
+        "productName": "Lucario - BW85",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW85"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86914/details",
+      "status": 200,
+      "sha256": "69107ae40065f2af2d83c30c02cec05e784f1ef05de7130169c1f0225e5db9fa",
+      "requestedProductID": 86914,
+      "identity": {
+        "productId": 86914.0,
+        "productName": "Lugia EX (Team Plasma) - BW83",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW83"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86945/details",
+      "status": 200,
+      "sha256": "30b04b708ba9acc2eb287e6ca1b5aeb2e8fe3bc0627ae52f828e0e7f06dbe9ec",
+      "requestedProductID": 86945,
+      "identity": {
+        "productId": 86945.0,
+        "productName": "Luxio - BW34 (Cosmos Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW34"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87300/details",
+      "status": 200,
+      "sha256": "eada277cb803ed2df1893fa4722c74e0cf7d7610d890e849a273958d5266712f",
+      "requestedProductID": 87300,
+      "identity": {
+        "productId": 87300.0,
+        "productName": "Meloetta - BW68",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW68"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87301/details",
+      "status": 200,
+      "sha256": "83eda9c2c1b6f0ba3d5347846d6367957e5083ebecde28af1e9d39808d9b21bd",
+      "requestedProductID": 87301,
+      "identity": {
+        "productId": 87301.0,
+        "productName": "Meloetta - BW69",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW69"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87327/details",
+      "status": 200,
+      "sha256": "a827df9ad9a944f967735d86f610cff03de5149db2d48608072a11fc49f873ea",
+      "requestedProductID": 87327,
+      "identity": {
+        "productId": 87327.0,
+        "productName": "Meowth - BW35",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW35"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87344/details",
+      "status": 200,
+      "sha256": "a92d3a38affec49ef810a5e7bb244a900a2ce7e274f689eb82121afd1ba2373e",
+      "requestedProductID": 87344,
+      "identity": {
+        "productId": 87344.0,
+        "productName": "Metagross - BW75 (Team Plasma) (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW75"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87406/details",
+      "status": 200,
+      "sha256": "193dcd622bf0ba69c6154c32a751b813114f867ba552b3cfe573209fe7f95efe",
+      "requestedProductID": 87406,
+      "identity": {
+        "productId": 87406.0,
+        "productName": "Mew - BW98",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW98"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87430/details",
+      "status": 200,
+      "sha256": "dfb8fb3fd17696dbe60fe08ec034a46e088a5131d911446323cc680314d983f8",
+      "requestedProductID": 87430,
+      "identity": {
+        "productId": 87430.0,
+        "productName": "Mewtwo EX - BW45",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW45"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87475/details",
+      "status": 200,
+      "sha256": "3f6b9f2f3239aa881d81154c1884527c1062363f343aac8a168bd0ac45d9e4b5",
+      "requestedProductID": 87475,
+      "identity": {
+        "productId": 87475.0,
+        "productName": "Minccino - BW13 (Cosmos Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW13"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87677/details",
+      "status": 200,
+      "sha256": "73a6a746cd85f83dbeb464166227ac5058d828f943aaa5c496c16f1f5c8e647b",
+      "requestedProductID": 87677,
+      "identity": {
+        "productId": 87677.0,
+        "productName": "N (Supporter) - BW100",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW100"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87779/details",
+      "status": 200,
+      "sha256": "43ce7584ad3b7db5b88b3e4f5ec4546d5689640a808e32f028c60c55ee619429",
+      "requestedProductID": 87779,
+      "identity": {
+        "productId": 87779.0,
+        "productName": "Ninetales - BW66",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW66"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87892/details",
+      "status": 200,
+      "sha256": "b590387e1b8823c9d60d008511c7b7e5a9e8d30abaac4ab43dfe3a2eaf845c7d",
+      "requestedProductID": 87892,
+      "identity": {
+        "productId": 87892.0,
+        "productName": "Oshawott - BW03",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW03"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87894/details",
+      "status": 200,
+      "sha256": "0152b5b8675dfde9b3193cd0d40db0d333e821f21df09d173728792ce39fbfd5",
+      "requestedProductID": 87894,
+      "identity": {
+        "productId": 87894.0,
+        "productName": "Oshawott - BW08",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW08"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87934/details",
+      "status": 200,
+      "sha256": "bbacf8bf98e41742c35d56a26fa43753419ba0535e2c2b157af4763fdcd07a5a",
+      "requestedProductID": 87934,
+      "identity": {
+        "productId": 87934.0,
+        "productName": "Pansage - BW11",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW11"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87935/details",
+      "status": 200,
+      "sha256": "d764337b37a6d07b10c4c9583e4cd8ee1f84dd89db0a875979f96c3807aad2f5",
+      "requestedProductID": 87935,
+      "identity": {
+        "productId": 87935.0,
+        "productName": "Pansage - BW14",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW14"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88057/details",
+      "status": 200,
+      "sha256": "5a9f32da1d556c7ad923d63585773f6a31d4824bb32d2e1d7e080025f3bc9231",
+      "requestedProductID": 88057,
+      "identity": {
+        "productId": 88057.0,
+        "productName": "Pidove - BW15",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW15"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88318/details",
+      "status": 200,
+      "sha256": "fc9a31e10c9713c8d644951d247b6f0cde58bffbeb7303ade0dd45847e58656a",
+      "requestedProductID": 88318,
+      "identity": {
+        "productId": 88318.0,
+        "productName": "Porygon-Z (Team Plasma) - BW84 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW84"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88646/details",
+      "status": 200,
+      "sha256": "47d98ff9adcf7a9ba1dfd92cbe29f469d4fbe2c7edf42d6bb129b9631ba877a0",
+      "requestedProductID": 88646,
+      "identity": {
+        "productId": 88646.0,
+        "productName": "Rayquaza EX -BW47",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW47"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88705/details",
+      "status": 200,
+      "sha256": "2f5f757737e5158aeacde450c32c162ddac238d4e4493f4074588404675c3165",
+      "requestedProductID": 88705,
+      "identity": {
+        "productId": 88705.0,
+        "productName": "Reshiram - BW004",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW004"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88706/details",
+      "status": 200,
+      "sha256": "9b82b089a6675d269a1a2638079c44f95fa4c9f64dd1eeed0357070916c04469",
+      "requestedProductID": 88706,
+      "identity": {
+        "productId": 88706.0,
+        "productName": "Reshiram - BW23",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW23"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88714/details",
+      "status": 200,
+      "sha256": "1830a4260790da6145e4933181f9f76166cb025f7563ef4f851c5cdb3463514c",
+      "requestedProductID": 88714,
+      "identity": {
+        "productId": 88714.0,
+        "productName": "Reshiram EX - BW36",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW36"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88760/details",
+      "status": 200,
+      "sha256": "640fb90b844cd0546a524afc47db90e738070c74b0700e96e5afd4b6fba46a1a",
+      "requestedProductID": 88760,
+      "identity": {
+        "productId": 88760.0,
+        "productName": "Riolu - BW33 (Cosmos Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW33"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88909/details",
+      "status": 200,
+      "sha256": "62107caa435ec14cd533ec5e1fd2f22b15d38d6ddb41d2a9d3cf4a5e60f007fc",
+      "requestedProductID": 88909,
+      "identity": {
+        "productId": 88909.0,
+        "productName": "Samurott - BW22",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW22"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88982/details",
+      "status": 200,
+      "sha256": "f7c7cd2c44d1c67554fde5a2b8e43de81ad711266131ae999f663bacfe9df037",
+      "requestedProductID": 88982,
+      "identity": {
+        "productId": 88982.0,
+        "productName": "Scraggy - BW25 (Cosmos Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89071/details",
+      "status": 200,
+      "sha256": "9d620a424f746b9334ecaee1d11ecf029332dde0a353892e97ff034a30c9650a",
+      "requestedProductID": 89071,
+      "identity": {
+        "productId": 89071.0,
+        "productName": "Serperior - BW20",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW20"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89377/details",
+      "status": 200,
+      "sha256": "fa947964739ac0a0927409fa2e8cf6f304aab9c75f8cba1e75217f32d1d0339f",
+      "requestedProductID": 89377,
+      "identity": {
+        "productId": 89377.0,
+        "productName": "Snivy - BW01",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW01"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89379/details",
+      "status": 200,
+      "sha256": "2241292ab50fc26cbf0ead32b776290dd3ae28623d81f792f3c2a63c93361ddd",
+      "requestedProductID": 89379,
+      "identity": {
+        "productId": 89379.0,
+        "productName": "Snivy - BW06",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW06"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89881/details",
+      "status": 200,
+      "sha256": "eb986b54bc2367e6acb2a128aa7aae366627cf5447a656f260320cce11dab9be",
+      "requestedProductID": 89881,
+      "identity": {
+        "productId": 89881.0,
+        "productName": "Tepig (BW02)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW02"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89883/details",
+      "status": 200,
+      "sha256": "a1ea3baaf167284bf3535b2ebdd1e8e4e0bc2de92d19e1626e38fbca61533373",
+      "requestedProductID": 89883,
+      "identity": {
+        "productId": 89883.0,
+        "productName": "Tepig - BW07",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW07"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89889/details",
+      "status": 200,
+      "sha256": "e8ec90eb66f0ff255b59c3150c8bdffc28d40491fd85f3849a26ce83932278e9",
+      "requestedProductID": 89889,
+      "identity": {
+        "productId": 89889.0,
+        "productName": "Terrakion - BW71",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW71"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89904/details",
+      "status": 200,
+      "sha256": "34be038681e45dbe7a423c6022d4fe1ddc45a9117241c14bf47c5935cdd21d45",
+      "requestedProductID": 89904,
+      "identity": {
+        "productId": 89904.0,
+        "productName": "Thundurus - BW41",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW41"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89908/details",
+      "status": 200,
+      "sha256": "f9e8de6aefb30698c2e07b05ec336d3d11d1c4ee061b162a99ae0b9ee2479cf7",
+      "requestedProductID": 89908,
+      "identity": {
+        "productId": 89908.0,
+        "productName": "Thundurus EX (Team Plasma) - BW81",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW81"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89975/details",
+      "status": 200,
+      "sha256": "c988261a07996da1dca28c1838fc6cd04ee7b38b8c1cf17e76a210c3263f1281",
+      "requestedProductID": 89975,
+      "identity": {
+        "productId": 89975.0,
+        "productName": "Tornadus - BW42",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW42"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89979/details",
+      "status": 200,
+      "sha256": "6ee16cf5743a65629bdd9010e9b2616a8880ce02b82e318fc030ceb1ccc0d69e",
+      "requestedProductID": 89979,
+      "identity": {
+        "productId": 89979.0,
+        "productName": "Tornadus EX - BW96 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW96"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90048/details",
+      "status": 200,
+      "sha256": "6283b5efc44e8fd2ffedfecc91924bfc309e30530bcec3d0cab4e451042679c4",
+      "requestedProductID": 90048,
+      "identity": {
+        "productId": 90048.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90049/details",
+      "status": 200,
+      "sha256": "d979477152293cb3ffa5760ed30fa2039216cbe7a4eebb65b704cee2050a2753",
+      "requestedProductID": 90049,
+      "identity": {
+        "productId": 90049.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90150/details",
+      "status": 200,
+      "sha256": "a93bf5c1fed9fe662c04193fc904070192ea86275b05691bb4716dfbff6cba6a",
+      "requestedProductID": 90150,
+      "identity": {
+        "productId": 90150.0,
+        "productName": "Umbreon - BW93",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW93"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90289/details",
+      "status": 200,
+      "sha256": "1f7fe04a4b932fc20eddcccef6545d1f615db54e18e0ed87064ad71c5ec0fb2d",
+      "requestedProductID": 90289,
+      "identity": {
+        "productId": 90289.0,
+        "productName": "Vaporeon - BW89",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW89"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90346/details",
+      "status": 200,
+      "sha256": "6a488c40280664c114d25342e232746089474e38ca2be0eba922e4f577d7a4b6",
+      "requestedProductID": 90346,
+      "identity": {
+        "productId": 90346.0,
+        "productName": "Victini - BW32",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW32"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90353/details",
+      "status": 200,
+      "sha256": "575a89be6ee902b70009e28df0c681ca53c0dc95a2513a2accfaa9a9162b6df1",
+      "requestedProductID": 90353,
+      "identity": {
+        "productId": 90353.0,
+        "productName": "Victory Cup - BW31 (Battle Road Autumn 2011) [1st Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW31"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90354/details",
+      "status": 200,
+      "sha256": "7056fc112299b9fe47238596337d3e12c427969ebcccf828937a237e32fd195f",
+      "requestedProductID": 90354,
+      "identity": {
+        "productId": 90354.0,
+        "productName": "Victory Cup - BW30 (Battle Road Autumn 2011) [2nd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW30"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90355/details",
+      "status": 200,
+      "sha256": "2cbac1ad74a59cba44549297f1201c28d29237a2430ffc5353d841a15268a13b",
+      "requestedProductID": 90355,
+      "identity": {
+        "productId": 90355.0,
+        "productName": "Victory Cup - BW29 (Battle Road Autumn 2011) [3rd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW29"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90389/details",
+      "status": 200,
+      "sha256": "60e30025f2c91005f460ebf034110101f8299c93ca965d55dfcd77ca2f282760",
+      "requestedProductID": 90389,
+      "identity": {
+        "productId": 90389.0,
+        "productName": "Virizion - BW70",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW70"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90403/details",
+      "status": 200,
+      "sha256": "adc546b783d578517799fe51aa3bcfec3eefe23d13bb01d01f07556a8f5b7e09",
+      "requestedProductID": 90403,
+      "identity": {
+        "productId": 90403.0,
+        "productName": "Volcarona - BW40 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW40"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90587/details",
+      "status": 200,
+      "sha256": "a9e23883d56f44e1928bd10528a35ef0ff4eaa812fbac58f2d73ea48752f5e10",
+      "requestedProductID": 90587,
+      "identity": {
+        "productId": 90587.0,
+        "productName": "White Kyurem - BW59",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW59"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90590/details",
+      "status": 200,
+      "sha256": "e8bd3088112d97a5b5d12e992f7b806a7ee4c8a68e9b75b5470f39a73bb0b0d2",
+      "requestedProductID": 90590,
+      "identity": {
+        "productId": 90590.0,
+        "productName": "White Kyurem EX - BW63",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW63"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90733/details",
+      "status": 200,
+      "sha256": "904973d01123594f13105a428779296af67bb4b6a8ce0d150e419dba095e4cb6",
+      "requestedProductID": 90733,
+      "identity": {
+        "productId": 90733.0,
+        "productName": "Zekrom - BW005",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW005"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90734/details",
+      "status": 200,
+      "sha256": "2c4b5aa1e18833d55310ddb2aca63cfe31ff955013fe297c802e381c8fe3a39d",
+      "requestedProductID": 90734,
+      "identity": {
+        "productId": 90734.0,
+        "productName": "Zekrom - BW24",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW24"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90741/details",
+      "status": 200,
+      "sha256": "e96093d9573bd1e57bf5c43484abc78debd779b3561e229c735ffb73d98737f8",
+      "requestedProductID": 90741,
+      "identity": {
+        "productId": 90741.0,
+        "productName": "Zekrom EX - BW38",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW38"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90751/details",
+      "status": 200,
+      "sha256": "22d63c8db083b4e0af2d0c2ca00b7059fbe2f89375944a65d7e35bb4ef9b8314",
+      "requestedProductID": 90751,
+      "identity": {
+        "productId": 90751.0,
+        "productName": "Zoroark - BW09",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW09"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90752/details",
+      "status": 200,
+      "sha256": "4a7a3b0f17bd109550057f012d61252487c8f0972f666a542a04c8d97aee4382",
+      "requestedProductID": 90752,
+      "identity": {
+        "productId": 90752.0,
+        "productName": "Zoroark - BW19",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW19"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90760/details",
+      "status": 200,
+      "sha256": "322391c1f11036e9731093a2b51dcf8a0a03a50807af7574380d65fe5a680310",
+      "requestedProductID": 90760,
+      "identity": {
+        "productId": 90760.0,
+        "productName": "Zorua - BW12",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW12"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/91599/details",
+      "status": 200,
+      "sha256": "c9dbc1b20cf1731be4c1d91490c7a0684b2b3bd58bc7b74fc371f9627d81c5ff",
+      "requestedProductID": 91599,
+      "identity": {
+        "productId": 91599.0,
+        "productName": "Flareon - BW88",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW88"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/91600/details",
+      "status": 200,
+      "sha256": "d010a8d0fe9f7d3ae93fcebd79cbca869cdcbca1aa897dee65577f3cc4491481",
+      "requestedProductID": 91600,
+      "identity": {
+        "productId": 91600.0,
+        "productName": "Leafeon - BW87",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW87"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96566/details",
+      "status": 200,
+      "sha256": "0f15483a4e144ad5aeb0ad48dea1d1fe6881ce45e1008a2420c36c8837b5c490",
+      "requestedProductID": 96566,
+      "identity": {
+        "productId": 96566.0,
+        "productName": "Altaria - BW48 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW48"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96567/details",
+      "status": 200,
+      "sha256": "869e4a63237789c75c547f9958826b735acaca271dfe50e7dba005889d1ef8f4",
+      "requestedProductID": 96567,
+      "identity": {
+        "productId": 96567.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Top Thirty-Two]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96568/details",
+      "status": 200,
+      "sha256": "f97669bf64e121c6679d3cb03eaa3d9a12f4cdd8105b7b8bff7b08fde6f4e7f9",
+      "requestedProductID": 96568,
+      "identity": {
+        "productId": 96568.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Top 16]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96569/details",
+      "status": 200,
+      "sha256": "27f3080c615d8819300375e6c8033b9225788db969e7682f6c862bff813c8f25",
+      "requestedProductID": 96569,
+      "identity": {
+        "productId": 96569.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Quarter-Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96570/details",
+      "status": 200,
+      "sha256": "a480016651186b70209f757ddd3be7f9d05a14a546009fa2fe07b94df760b7bf",
+      "requestedProductID": 96570,
+      "identity": {
+        "productId": 96570.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Semi-Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96571/details",
+      "status": 200,
+      "sha256": "978bbbcb1dd3d6ee2a99344a76660d66df688abdd6ebe1b39ebb66398b5f07f8",
+      "requestedProductID": 96571,
+      "identity": {
+        "productId": 96571.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96572/details",
+      "status": 200,
+      "sha256": "ee67b0d27304f8079ab2bdecc74d1dbc7cb11847d94be8f1957bd058ae96d12b",
+      "requestedProductID": 96572,
+      "identity": {
+        "productId": 96572.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96573/details",
+      "status": 200,
+      "sha256": "f272723cc5494ee824ffc58593e75b8bd98f66b7e1fbc8505cd343c1e94f7d96",
+      "requestedProductID": 96573,
+      "identity": {
+        "productId": 96573.0,
+        "productName": "Crobat - BW51 (Team Plasma) (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW51"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96574/details",
+      "status": 200,
+      "sha256": "7c97de09fa47e21db1ccb015b8dfaf0d9aa27a4e7822b65678057ae94c4c26ee",
+      "requestedProductID": 96574,
+      "identity": {
+        "productId": 96574.0,
+        "productName": "Flygon - BW53 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96860/details",
+      "status": 200,
+      "sha256": "9f6a3c574eddbff521e7390deb1431d6f3c0b442041366f3e4f04a777a21af25",
+      "requestedProductID": 96860,
+      "identity": {
+        "productId": 96860.0,
+        "productName": "Victory Cup - BW31 (Battle Road Autumn 2012) [1st Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW31"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96861/details",
+      "status": 200,
+      "sha256": "4689f5890aad3297bfd8505fedcc39acf6fca5a5f665f83457965a433b842551",
+      "requestedProductID": 96861,
+      "identity": {
+        "productId": 96861.0,
+        "productName": "Victory Cup - BW30 (Battle Road Autumn 2012) [2nd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW30"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96862/details",
+      "status": 200,
+      "sha256": "58574b741a46c67272ee4b21ee33883ae9120d3a0df634380f52e40e08aa73cf",
+      "requestedProductID": 96862,
+      "identity": {
+        "productId": 96862.0,
+        "productName": "Victory Cup - BW29 (Battle Road Autumn 2012) [3rd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW29"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96863/details",
+      "status": 200,
+      "sha256": "bee964df17e38ef1aa03159d8e5329a53aec8d0e514ba93830d3de6a7967a7c1",
+      "requestedProductID": 96863,
+      "identity": {
+        "productId": 96863.0,
+        "productName": "Victory Cup - BW29 (Battle Road Spring 2012) [3rd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW29"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96864/details",
+      "status": 200,
+      "sha256": "6d1286e7c5486381835b5ce28fe404a28873d3a65e52144db8cb437a28441a17",
+      "requestedProductID": 96864,
+      "identity": {
+        "productId": 96864.0,
+        "productName": "Victory Cup - BW30 (Battle Road Spring 2012) [2nd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW30"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96865/details",
+      "status": 200,
+      "sha256": "cf182ca0f8d7aab2e53d6e263efbff122dc5d37d626c76948fdf21b264b558d5",
+      "requestedProductID": 96865,
+      "identity": {
+        "productId": 96865.0,
+        "productName": "Victory Cup - BW31 (Battle Road Spring 2012) [1st Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW31"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96866/details",
+      "status": 200,
+      "sha256": "83db8a655ac736c82681885668975672bea6807b7f25bd67e1b0b542a1de568d",
+      "requestedProductID": 96866,
+      "identity": {
+        "productId": 96866.0,
+        "productName": "Victory Cup - BW31 (Battle Road Spring 2013) [1st Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW31"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96867/details",
+      "status": 200,
+      "sha256": "dca3a6e12600da346868bb97f9bbc0a8b7b3a1b395b3d588c4e55b32dc13ea3f",
+      "requestedProductID": 96867,
+      "identity": {
+        "productId": 96867.0,
+        "productName": "Victory Cup - BW30 (Battle Road Spring 2013) [2nd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW30"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96868/details",
+      "status": 200,
+      "sha256": "7c4e0a7473d9bdb94b49d7477c3b4f99a31a5139a0203beb9ffc1fca469cae25",
+      "requestedProductID": 96868,
+      "identity": {
+        "productId": 96868.0,
+        "productName": "Victory Cup - BW29 (Battle Road Spring 2013) [3rd Place]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW29"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96869/details",
+      "status": 200,
+      "sha256": "b6b43a6157d45f273edf4eb584a44d73aeeebba18498fdbf602e7d0ee8960c6d",
+      "requestedProductID": 96869,
+      "identity": {
+        "productId": 96869.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11) [Top 32]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96870/details",
+      "status": 200,
+      "sha256": "08512057c38deb0199d2678a3fb4aeae1f7425b0a3eb2154dadc9b101690e4f9",
+      "requestedProductID": 96870,
+      "identity": {
+        "productId": 96870.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11) [Top 16]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96871/details",
+      "status": 200,
+      "sha256": "fd05a0a6f5febb318f15565d042d221db7c6126d77bcd51277cbf1d4deb18b31",
+      "requestedProductID": 96871,
+      "identity": {
+        "productId": 96871.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11) [Quarter-Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96872/details",
+      "status": 200,
+      "sha256": "acc0251e5c7ba1698d9b0819b14d82acf72f34b2f7d108414f69fad46dc12c8d",
+      "requestedProductID": 96872,
+      "identity": {
+        "productId": 96872.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11) [Semi Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96873/details",
+      "status": 200,
+      "sha256": "07b2de54c16701fcb22ebf2fe1e0e622d9bfb8638b321c9d90c3e35568262b8a",
+      "requestedProductID": 96873,
+      "identity": {
+        "productId": 96873.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11) [Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96874/details",
+      "status": 200,
+      "sha256": "1f910e09c888f386cbfebcb1aab603600f0be31f9b3bfc6faff4ec5e3a2c3952",
+      "requestedProductID": 96874,
+      "identity": {
+        "productId": 96874.0,
+        "productName": "Tropical Beach - BW28 (Worlds 11) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96875/details",
+      "status": 200,
+      "sha256": "30d8c468b470f8183fb0d103c233db0ed90f15d84431aa0f965694d69c252a65",
+      "requestedProductID": 96875,
+      "identity": {
+        "productId": 96875.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12) [Top 32]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96876/details",
+      "status": 200,
+      "sha256": "86eace667b25b254a5d055eca790e12bb853e0a000eae74c1105c87e9cb822fd",
+      "requestedProductID": 96876,
+      "identity": {
+        "productId": 96876.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12) [Top 16]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96877/details",
+      "status": 200,
+      "sha256": "a82cdb2338b2453d6fede49905da52e3ec7eda5fb741bf75985c677e5f622791",
+      "requestedProductID": 96877,
+      "identity": {
+        "productId": 96877.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12) [Quarter-Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96878/details",
+      "status": 200,
+      "sha256": "fb08da4818a2ecbf1d763cc2aca948640e5c70aa9bb63d07d04ec15b448e347c",
+      "requestedProductID": 96878,
+      "identity": {
+        "productId": 96878.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12) [Semi-Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96879/details",
+      "status": 200,
+      "sha256": "600187cb9d15d11a6384f80279ea94283496335789fdc1356b79dc38d8aeb244",
+      "requestedProductID": 96879,
+      "identity": {
+        "productId": 96879.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12) [Finalist]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96880/details",
+      "status": 200,
+      "sha256": "ce71be2d53241bf90f7ca53f924dcd4bc95a3c3e19270d0af641a84fea642337",
+      "requestedProductID": 96880,
+      "identity": {
+        "productId": 96880.0,
+        "productName": "Tropical Beach - BW50 (Worlds 12) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96881/details",
+      "status": 200,
+      "sha256": "d560a6f0b3ed9eb81c9510b1dac91ba171c1d5868761005d86b38fc336db8f7e",
+      "requestedProductID": 96881,
+      "identity": {
+        "productId": 96881.0,
+        "productName": "Minccino - BW13 (Cracked Ice Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW13"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96882/details",
+      "status": 200,
+      "sha256": "e9c1868b166e1d5834e242539195561058c52d436628e91dc68f1fbe399bf1bd",
+      "requestedProductID": 96882,
+      "identity": {
+        "productId": 96882.0,
+        "productName": "Scraggy - BW25 (Cracked Ice Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96883/details",
+      "status": 200,
+      "sha256": "3d568a5aecc5d125778c274a303015cecbd9e0b8cc40cf2dc14e0e46b85d588e",
+      "requestedProductID": 96883,
+      "identity": {
+        "productId": 96883.0,
+        "productName": "Riolu - BW33",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW33"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96884/details",
+      "status": 200,
+      "sha256": "be8ebd206d4c5d9aae7e0eab45b7f844aaaf6cfd43c431b0fc232db00270c643",
+      "requestedProductID": 96884,
+      "identity": {
+        "productId": 96884.0,
+        "productName": "Luxio - BW34 (Cracked Ice Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW34"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/96885/details",
+      "status": 200,
+      "sha256": "64ee1c846ec9ec0b9dd85eee87d65560b641d112f97a92438e4a0224fbe0b9f4",
+      "requestedProductID": 96885,
+      "identity": {
+        "productId": 96885.0,
+        "productName": "Keldeo - BW60",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW60"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97089/details",
+      "status": 200,
+      "sha256": "15871145f9b42ea1d263500ac986e5cc7776d52168914db0d7cfd6255b334a11",
+      "requestedProductID": 97089,
+      "identity": {
+        "productId": 97089.0,
+        "productName": "Champions Festival - BW95 (Worlds 13) [Champion]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW95"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97090/details",
+      "status": 200,
+      "sha256": "1adb15230b2e98afdec51e240f12105eda3474a7e284240f65ad7cd4421cca76",
+      "requestedProductID": 97090,
+      "identity": {
+        "productId": 97090.0,
+        "productName": "Metagross - BW75 (Team Plasma) (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW75"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97091/details",
+      "status": 200,
+      "sha256": "6c66c0e40ddcb5c3d54456af41f1fc910c2adddfa08a8696d458603b19d75492",
+      "requestedProductID": 97091,
+      "identity": {
+        "productId": 97091.0,
+        "productName": "Porygon-Z (Team Plasma) - BW84 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW84"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97092/details",
+      "status": 200,
+      "sha256": "bf07ce896108a4164e0cdc51749d7e38d59a3de6a0144d02acbf94811731cde6",
+      "requestedProductID": 97092,
+      "identity": {
+        "productId": 97092.0,
+        "productName": "Tornadus EX - BW96 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW96"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97093/details",
+      "status": 200,
+      "sha256": "35bbd98d348e7adec83c18164913dcbb17f27c4527d69d6ccb8683b127f70210",
+      "requestedProductID": 97093,
+      "identity": {
+        "productId": 97093.0,
+        "productName": "Volcarona - BW40 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW40"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/108421/details",
+      "status": 200,
+      "sha256": "9016d7e95f4811b7758b93f733b07901fab9a43924ad457d2d69eb745eb35771",
+      "requestedProductID": 108421,
+      "identity": {
+        "productId": 108421.0,
+        "productName": "Genesect - BW101",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW101"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/173095/details",
+      "status": 200,
+      "sha256": "4b639086471553736d89e2374cd3cd6be466bf12fe7aede1685d05d6aedb3f80",
+      "requestedProductID": 173095,
+      "identity": {
+        "productId": 173095.0,
+        "productName": "Gigalith - 53/98 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "53/98"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/173096/details",
+      "status": 200,
+      "sha256": "0ec08a39ffc0f97b4fffecaba7921ad40092a4912be27d63b3529bb08118dcd4",
+      "requestedProductID": 173096,
+      "identity": {
+        "productId": 173096.0,
+        "productName": "Gigalith 53/98 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "53/98"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/202379/details",
+      "status": 200,
+      "sha256": "7775ad54b936ee7418547d9b05f6d108f1867a42ce5e34f78db4dc110af624c5",
+      "requestedProductID": 202379,
+      "identity": {
+        "productId": 202379.0,
+        "productName": "Pikachu - BW54",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "BW54"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/228483/details",
+      "status": 200,
+      "sha256": "0aea3b67068794378fda4af5015bd1725ca67304d5f18ae2d1547d829256b509",
+      "requestedProductID": 228483,
+      "identity": {
+        "productId": 228483.0,
+        "productName": "Darmanitan - 25/114 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "25/114"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/228485/details",
+      "status": 200,
+      "sha256": "c918a93095c391c6efdaf0bd693e614c651e4e6e18c916a8cb132cfb25bdc8c2",
+      "requestedProductID": 228485,
+      "identity": {
+        "productId": 228485.0,
+        "productName": "Darmanitan - 25/114 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "25/114"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/228499/details",
+      "status": 200,
+      "sha256": "67115c21baf81c605530cbc7b2c4adf9ac11183d7a7b6af668458073a9772e76",
+      "requestedProductID": 228499,
+      "identity": {
+        "productId": 228499.0,
+        "productName": "Victini - 43/101 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "43/101"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/228500/details",
+      "status": 200,
+      "sha256": "1a49344892467d7f7b21e352d1673983f79f0f5445fb59c44861ad4f404f6a25",
+      "requestedProductID": 228500,
+      "identity": {
+        "productId": 228500.0,
+        "productName": "Victini - 43/101 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "43/101"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/230421/details",
+      "status": 200,
+      "sha256": "14aa85bec4b8f6b9b187e3243710155885919b9670de05f8d95eb768838b9131",
+      "requestedProductID": 230421,
+      "identity": {
+        "productId": 230421.0,
+        "productName": "Arcanine - 12/99 (Prerelease)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "12/99"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/230422/details",
+      "status": 200,
+      "sha256": "5e0ed009006785faea51abdbae9958a0b553803037247f6ef6024a165566347b",
+      "requestedProductID": 230422,
+      "identity": {
+        "productId": 230422.0,
+        "productName": "Arcanine - 12/99 (Prerelease) [Staff]",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "12/99"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/242032/details",
+      "status": 200,
+      "sha256": "0edcbe2a1b896ac379712a0fc124e3b248cbabee22cec77b48bb9bbe47a0d8c2",
+      "requestedProductID": 242032,
+      "identity": {
+        "productId": 242032.0,
+        "productName": "Druddigon (Team Plasma) - BW80 (Cosmos Holo)",
+        "setId": 1407.0,
+        "setCode": "PR",
+        "setName": "Black and White Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "BW80"
+      }
+    }
+  ]
+}

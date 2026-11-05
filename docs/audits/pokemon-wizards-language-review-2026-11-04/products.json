@@ -1,0 +1,1762 @@
+{
+  "observedAtUTC": "2026-11-03T17:10:32.198192+00:00",
+  "discovery": {
+    "url": "https://www.decktradr.com/sets/pokemon/1418-wotc-promo",
+    "status": 200,
+    "sha256": "07549b6d4b3407e315d09b023ae40d7226455bff80342e2376a779b5e1ec1754",
+    "purpose": "Product ID discovery only",
+    "links": [
+      "/cards/pokemon/118775-dark-gyarados-prerelease-08-82",
+      "/cards/pokemon/121772-pikachu-1-01-53",
+      "/cards/pokemon/123445-mistys-seadra-prerelease-009-132",
+      "/cards/pokemon/123631-kabuto-w-stamped-50-62",
+      "/cards/pokemon/123632-brocks-vulpix-w-stamped-037-132",
+      "/cards/pokemon/126208-dark-arbok-w-stamped-19-82",
+      "/cards/pokemon/126209-pikachu-w-stamped-60-64",
+      "/cards/pokemon/127206-wartortle-w-stamped-063-130",
+      "/cards/pokemon/154997-clefable-prerelease-01-64",
+      "/cards/pokemon/154998-aerodactyl-prerelease-01-62",
+      "/cards/pokemon/166296-mistys-psyduck-w-stamped-054-132",
+      "/cards/pokemon/180834-dark-charmeleon-w-stamped-32-82",
+      "/cards/pokemon/244347-rapidash-pokemon-center-ny-51-53",
+      "/cards/pokemon/244348-ho-oh-pokemon-center-ny-52-53",
+      "/cards/pokemon/477048-scan-tastic-spectacular-promo-pack-ho-oh-and-rapidash",
+      "/cards/pokemon/607818-mew-8-glossy-finish",
+      "/cards/pokemon/618732-eevee-jr-east-stamp-rally-11-53",
+      "/cards/pokemon/696103-pikachu-corocoro-grey-star",
+      "/cards/pokemon/83578-arcanine-06-53",
+      "/cards/pokemon/83647-articuno-22-22-53",
+      "/cards/pokemon/83648-articuno-48-48-53",
+      "/cards/pokemon/84143-celebi-50-53",
+      "/cards/pokemon/84363-cleffa-31-53",
+      "/cards/pokemon/84414-computer-error-rockets-secret-machine-16-53",
+      "/cards/pokemon/84422-cool-porygon-15-53",
+      "/cards/pokemon/84638-dark-persian-17-53",
+      "/cards/pokemon/84909-dragonite-movie-promo-05-53",
+      "/cards/pokemon/85074-eevee-11-53",
+      "/cards/pokemon/85107-electabuzz-movie-promo-02-53",
+      "/cards/pokemon/85111-electabuzz-46-53",
+      "/cards/pokemon/85270-entei-34-53",
+      "/cards/pokemon/85534-flying-pikachu-25-53",
+      "/cards/pokemon/86112-hitmontop-37-53",
+      "/cards/pokemon/86120-ho-oh-52-53",
+      "/cards/pokemon/86259-igglybuff-36-53",
+      "/cards/pokemon/86309-jigglypuff-07-53",
+      "/cards/pokemon/86894-lucky-stadium-41-53",
+      "/cards/pokemon/86961-machamp-43-53",
+      "/cards/pokemon/87043-magmar-44-53",
+      "/cards/pokemon/87211-marill-29-53",
+      "/cards/pokemon/87309-meowth-10-53",
+      "/cards/pokemon/87394-mew-8",
+      "/cards/pokemon/87395-mew-9-09-53",
+      "/cards/pokemon/87397-mew-47-47-53",
+      "/cards/pokemon/87414-mewtwo-movie-promo-03-53",
+      "/cards/pokemon/87416-mewtwo-12-12-53",
+      "/cards/pokemon/87417-mewtwo-14-14-53",
+      "/cards/pokemon/87503-misdreavus-39-53",
+      "/cards/pokemon/87557-moltres-21-53",
+      "/cards/pokemon/88014-pichu-35-53",
+      "/cards/pokemon/88065-pikachu-1-misprint-01-53",
+      "/cards/pokemon/88066-pikachu-movie-promo-04-53",
+      "/cards/pokemon/88068-pikachu-snap-promo-26-53",
+      "/cards/pokemon/88069-pikachu-27-27-53",
+      "/cards/pokemon/88213-pokemon-center-40-53",
+      "/cards/pokemon/88240-pokemon-tower-42-53",
+      "/cards/pokemon/88429-psyduck-20-53",
+      "/cards/pokemon/88575-rapidash-51-51-53",
+      "/cards/pokemon/88862-sabrinas-abra-19-53",
+      "/cards/pokemon/88960-scizor-33-53",
+      "/cards/pokemon/88993-scyther-45-53",
+      "/cards/pokemon/89353-smeargle-32-53",
+      "/cards/pokemon/89385-snorlax-49-53",
+      "/cards/pokemon/89601-suicune-53-53",
+      "/cards/pokemon/89643-surfing-pikachu-28-53",
+      "/cards/pokemon/89851-team-rockets-meowth-18-53",
+      "/cards/pokemon/89928-togepi-30-53",
+      "/cards/pokemon/90215-unown-j-38-53",
+      "/cards/pokemon/90311-venusaur-13-53",
+      "/cards/pokemon/90713-zapdos-23-53",
+      "/cards/pokemon/90784-s-pikachu-24-53"
+    ]
+  },
+  "linkedProductIDs": [
+    42526,
+    44452,
+    45163,
+    83578,
+    83647,
+    83648,
+    83986,
+    84143,
+    84363,
+    84414,
+    84422,
+    84564,
+    84574,
+    84638,
+    84909,
+    85074,
+    85107,
+    85111,
+    85270,
+    85534,
+    86112,
+    86120,
+    86259,
+    86309,
+    86894,
+    86961,
+    87043,
+    87211,
+    87309,
+    87394,
+    87395,
+    87397,
+    87414,
+    87416,
+    87417,
+    87503,
+    87539,
+    87557,
+    88014,
+    88065,
+    88066,
+    88068,
+    88069,
+    88213,
+    88240,
+    88429,
+    88575,
+    88862,
+    88960,
+    88993,
+    89353,
+    89385,
+    89601,
+    89643,
+    89851,
+    89928,
+    90215,
+    90311,
+    90713,
+    90784,
+    121772,
+    159115,
+    161747,
+    161749,
+    161750,
+    161752,
+    161753,
+    161754,
+    244347,
+    244348,
+    607818,
+    618732,
+    696103
+  ],
+  "discoveredProductIDs": [
+    83578,
+    83647,
+    83648,
+    84143,
+    84363,
+    84414,
+    84422,
+    84638,
+    84909,
+    85074,
+    85107,
+    85111,
+    85270,
+    85534,
+    86112,
+    86120,
+    86259,
+    86309,
+    86894,
+    86961,
+    87043,
+    87211,
+    87309,
+    87394,
+    87395,
+    87397,
+    87414,
+    87416,
+    87417,
+    87503,
+    87557,
+    88014,
+    88065,
+    88066,
+    88068,
+    88069,
+    88213,
+    88240,
+    88429,
+    88575,
+    88862,
+    88960,
+    88993,
+    89353,
+    89385,
+    89601,
+    89643,
+    89851,
+    89928,
+    90215,
+    90311,
+    90713,
+    90784,
+    118775,
+    121772,
+    123445,
+    123631,
+    123632,
+    126208,
+    126209,
+    127206,
+    154997,
+    154998,
+    166296,
+    180834,
+    244347,
+    244348,
+    477048,
+    607818,
+    618732,
+    696103
+  ],
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/42526/details",
+      "status": 200,
+      "sha256": "6b616c67fc2a585e07a8be3a3b395590ae3f6960c1d3b888823f38fb07ab8e6e",
+      "requestedProductID": 42526,
+      "identity": {
+        "productId": 42526.0,
+        "productName": "Wartortle",
+        "setId": 605.0,
+        "setCode": "BS2",
+        "setName": "Base Set 2",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "063/130"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/44452/details",
+      "status": 200,
+      "sha256": "55175f9bd178607a0ff8e322476e8081ce00ae58546f842114686a3b8134c5a9",
+      "requestedProductID": 44452,
+      "identity": {
+        "productId": 44452.0,
+        "productName": "Kabuto",
+        "setId": 630.0,
+        "setCode": "FO",
+        "setName": "Fossil",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "50/62"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/45163/details",
+      "status": 200,
+      "sha256": "0bd2939303883d377e7e66e286c9e2b4355b1b1a939385b053de340a45835a03",
+      "requestedProductID": 45163,
+      "identity": {
+        "productId": 45163.0,
+        "productName": "Pikachu",
+        "setId": 635.0,
+        "setCode": "JU",
+        "setName": "Jungle",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "60/64"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83578/details",
+      "status": 200,
+      "sha256": "df13b95175ed4100d1ef980be0a61c69efbf318ae534197acd16beb0c8f192f5",
+      "requestedProductID": 83578,
+      "identity": {
+        "productId": 83578.0,
+        "productName": "Arcanine",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "06/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83647/details",
+      "status": 200,
+      "sha256": "312f38e67d2e482f416153385101390b6b267d2718a2a4c28514ecb91368df03",
+      "requestedProductID": 83647,
+      "identity": {
+        "productId": 83647.0,
+        "productName": "Articuno (22)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "22/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83648/details",
+      "status": 200,
+      "sha256": "10da27eff67b6ab114600b57b00789f2124955b94af9d4affd9cc4cdab6986ea",
+      "requestedProductID": 83648,
+      "identity": {
+        "productId": 83648.0,
+        "productName": "Articuno (48)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "48/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83986/details",
+      "status": 200,
+      "sha256": "64789e6baedf00c559078394ca2412571d4e8caa118a5a28360401e5da9f1b6d",
+      "requestedProductID": 83986,
+      "identity": {
+        "productId": 83986.0,
+        "productName": "Brock's Vulpix",
+        "setId": 1440.0,
+        "setCode": "G2",
+        "setName": "Gym Challenge",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "037/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84143/details",
+      "status": 200,
+      "sha256": "a712cbb222c33d8db25de571eaf10cf3a58466eb9358cd347ea5fb0c8a4b2cb5",
+      "requestedProductID": 84143,
+      "identity": {
+        "productId": 84143.0,
+        "productName": "Celebi",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "50/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84363/details",
+      "status": 200,
+      "sha256": "ebfcb84763887072feea618aeb4dd4bbe0bb5c695938d5d4ec0aa7f1735a25e0",
+      "requestedProductID": 84363,
+      "identity": {
+        "productId": 84363.0,
+        "productName": "Cleffa",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "31/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84414/details",
+      "status": 200,
+      "sha256": "fc14a3c894cb673938d18befd32b619ceb7463991b35a30109ec776d87586a40",
+      "requestedProductID": 84414,
+      "identity": {
+        "productId": 84414.0,
+        "productName": "Computer Error (Rocket's Secret Machine)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "16/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84422/details",
+      "status": 200,
+      "sha256": "2cdedc2bf6b694c91248c730de26dfcb6037c1d1d05ed3c7cd7732bb327d014a",
+      "requestedProductID": 84422,
+      "identity": {
+        "productId": 84422.0,
+        "productName": "Cool Porygon",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "15/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84564/details",
+      "status": 200,
+      "sha256": "e4c0fbe9d3e51516cc99cbbe4f344403926d75dc33e6b49dc3919d8523def987",
+      "requestedProductID": 84564,
+      "identity": {
+        "productId": 84564.0,
+        "productName": "Dark Arbok (19)",
+        "setId": 1373.0,
+        "setCode": "TR",
+        "setName": "Team Rocket",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "19/82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84574/details",
+      "status": 200,
+      "sha256": "6ac5f2523220310c0df2216f5e833a2149bf4c7736ed20a292fc62e88a3e51b7",
+      "requestedProductID": 84574,
+      "identity": {
+        "productId": 84574.0,
+        "productName": "Dark Charmeleon",
+        "setId": 1373.0,
+        "setCode": "TR",
+        "setName": "Team Rocket",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "32/82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84638/details",
+      "status": 200,
+      "sha256": "e3e4af00685b5056dce83c9c0f14d8e2d789fd72b0baf7d77353e7728118f751",
+      "requestedProductID": 84638,
+      "identity": {
+        "productId": 84638.0,
+        "productName": "Dark Persian",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "17/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84909/details",
+      "status": 200,
+      "sha256": "9f0e9b68a346ccacc3d2b689c9d811c7767cbeaeda67dcebf1f33b0b19ecfdad",
+      "requestedProductID": 84909,
+      "identity": {
+        "productId": 84909.0,
+        "productName": "Dragonite (Movie Promo)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "05/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85074/details",
+      "status": 200,
+      "sha256": "ec380898e2fae68b7e38e7e3c30ea114adfb79c266c711a6556fd3d9a3a407ad",
+      "requestedProductID": 85074,
+      "identity": {
+        "productId": 85074.0,
+        "productName": "Eevee",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "11/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85107/details",
+      "status": 200,
+      "sha256": "3759b7081d104659e647269323ead60ac8ab0ce6d166bb5e8165a55cca7874ad",
+      "requestedProductID": 85107,
+      "identity": {
+        "productId": 85107.0,
+        "productName": "Electabuzz (Movie Promo)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "02/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85111/details",
+      "status": 200,
+      "sha256": "cd7e3fd45a2f0107615ca1f7cda49470bdb68df637f68af49034d74b9ca25675",
+      "requestedProductID": 85111,
+      "identity": {
+        "productId": 85111.0,
+        "productName": "Electabuzz",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "46/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85270/details",
+      "status": 200,
+      "sha256": "21bec1b0051d4c6f83b5fa27a85817c71b96dba7eee81bf5d8619ced218d6216",
+      "requestedProductID": 85270,
+      "identity": {
+        "productId": 85270.0,
+        "productName": "Entei",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "34/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85534/details",
+      "status": 200,
+      "sha256": "386168fdb4e14d5c23a3f304a9303b3500a3b50aceabbde848a0453bcf0b98c3",
+      "requestedProductID": 85534,
+      "identity": {
+        "productId": 85534.0,
+        "productName": "Flying Pikachu",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "25/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86112/details",
+      "status": 200,
+      "sha256": "7c1cd3174526e4107034e52260f1a70482e21b0301806462aa5f9e4d0ad9352d",
+      "requestedProductID": 86112,
+      "identity": {
+        "productId": 86112.0,
+        "productName": "Hitmontop",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "37/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86120/details",
+      "status": 200,
+      "sha256": "36a8138c5dcd0b2f7663ac21f9ae7336918e18ce2b87e498ce5c49092c78368f",
+      "requestedProductID": 86120,
+      "identity": {
+        "productId": 86120.0,
+        "productName": "Ho-oh",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "52/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86259/details",
+      "status": 200,
+      "sha256": "846e1656564ad847fc8219838c001b0cb78e4fd803c18e45c68f119fc9099710",
+      "requestedProductID": 86259,
+      "identity": {
+        "productId": 86259.0,
+        "productName": "Igglybuff",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "36/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86309/details",
+      "status": 200,
+      "sha256": "fcf045af2429121fede550b8266fc7c5e93ce8833df683295d7ecf5a97f8f66e",
+      "requestedProductID": 86309,
+      "identity": {
+        "productId": 86309.0,
+        "productName": "Jigglypuff",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "07/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86894/details",
+      "status": 200,
+      "sha256": "4a0f293048dfb5768eadfb100e75be74dae657dfd7ba705de0acae22d8188c1c",
+      "requestedProductID": 86894,
+      "identity": {
+        "productId": 86894.0,
+        "productName": "Lucky Stadium",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "41/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86961/details",
+      "status": 200,
+      "sha256": "f6ce0cf7609bfeb3440140485418335adc203533608019378cdd17efd4c33829",
+      "requestedProductID": 86961,
+      "identity": {
+        "productId": 86961.0,
+        "productName": "Machamp",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "43/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87043/details",
+      "status": 200,
+      "sha256": "804fe82c2ccf8a91f0556c6fabfd4f75d3f00a45481541d37f55593a51bb458d",
+      "requestedProductID": 87043,
+      "identity": {
+        "productId": 87043.0,
+        "productName": "Magmar",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "44/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87211/details",
+      "status": 200,
+      "sha256": "63bae7d0c763c03124202995d24cfd81e2abfc395419a03cd94a488f324c9e95",
+      "requestedProductID": 87211,
+      "identity": {
+        "productId": 87211.0,
+        "productName": "Marill",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "29/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87309/details",
+      "status": 200,
+      "sha256": "65c39bf55597d753da821917b14e0ffdc451a540e6ad955d81e8f5c6bfeb8eaa",
+      "requestedProductID": 87309,
+      "identity": {
+        "productId": 87309.0,
+        "productName": "Meowth",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "10/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87394/details",
+      "status": 200,
+      "sha256": "8046821d9c89659a8b0ad029a12a392b6d82c748a74eca445fd46f3a0158d23a",
+      "requestedProductID": 87394,
+      "identity": {
+        "productId": 87394.0,
+        "productName": "Mew (8)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "08/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87395/details",
+      "status": 200,
+      "sha256": "98a850ab69ea81d3d102a3f0aab8857a96e839e2d3e9e9e114ab9f7f07345f25",
+      "requestedProductID": 87395,
+      "identity": {
+        "productId": 87395.0,
+        "productName": "Mew (9)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "09/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87397/details",
+      "status": 200,
+      "sha256": "303aea7c268c2b682de1702794b21462a0fdaaa3e0d98b94eacbf6753d3c557c",
+      "requestedProductID": 87397,
+      "identity": {
+        "productId": 87397.0,
+        "productName": "Mew (47)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "47/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87414/details",
+      "status": 200,
+      "sha256": "ddb117ce5f8f80092e73db91dc7fb5b0807655582508c37b1b3699a61c1d5d30",
+      "requestedProductID": 87414,
+      "identity": {
+        "productId": 87414.0,
+        "productName": "Mewtwo (Movie Promo)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "03/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87416/details",
+      "status": 200,
+      "sha256": "23d764e48117f7b5ef63c7c9429a2aaf1d30062a0ed5005ff0576d426c02b75a",
+      "requestedProductID": 87416,
+      "identity": {
+        "productId": 87416.0,
+        "productName": "Mewtwo (12)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "12/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87417/details",
+      "status": 200,
+      "sha256": "8c0cc2cac7bbbecbd293681c7c32cee0bd721d3885d46d1e06cff5922fde605b",
+      "requestedProductID": 87417,
+      "identity": {
+        "productId": 87417.0,
+        "productName": "Mewtwo (14)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "14/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87503/details",
+      "status": 200,
+      "sha256": "5d6aa6868875c1117b04b19ff0ec098d17e1a655ca1c69a440750c9f36a320e5",
+      "requestedProductID": 87503,
+      "identity": {
+        "productId": 87503.0,
+        "productName": "Misdreavus",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "39/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87539/details",
+      "status": 200,
+      "sha256": "b5b98b7225f55c4f755461d61b655c6febd64185c35d70807a428818da8b2954",
+      "requestedProductID": 87539,
+      "identity": {
+        "productId": 87539.0,
+        "productName": "Misty's Psyduck",
+        "setId": 1441.0,
+        "setCode": "G1",
+        "setName": "Gym Heroes",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "054/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87557/details",
+      "status": 200,
+      "sha256": "109bc3085cdf711f46c0164943c191f6f1e38aff4b79f9df40069c658214270d",
+      "requestedProductID": 87557,
+      "identity": {
+        "productId": 87557.0,
+        "productName": "Moltres",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "21/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88014/details",
+      "status": 200,
+      "sha256": "586fdb4303ddd91cd821a816c980be03ced446791c93d8b5eb6bee368ef84d46",
+      "requestedProductID": 88014,
+      "identity": {
+        "productId": 88014.0,
+        "productName": "Pichu",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "35/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88065/details",
+      "status": 200,
+      "sha256": "7d17ebf45ab77fc797f33398d8190be5f3bc076df1d68b114b5d42feea85f721",
+      "requestedProductID": 88065,
+      "identity": {
+        "productId": 88065.0,
+        "productName": "Pikachu (1) (Misprint)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "01/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88066/details",
+      "status": 200,
+      "sha256": "45f3e0659e3c5df2c4eb9f467a0ac879f9ee7999fb42e6b7d0750bfe520e383f",
+      "requestedProductID": 88066,
+      "identity": {
+        "productId": 88066.0,
+        "productName": "Pikachu (Movie Promo)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "04/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88068/details",
+      "status": 200,
+      "sha256": "494da2e7263a17a397b1398b234d7997cb35e56a307296b08012112d02a92923",
+      "requestedProductID": 88068,
+      "identity": {
+        "productId": 88068.0,
+        "productName": "Pikachu (SNAP Promo)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "26/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88069/details",
+      "status": 200,
+      "sha256": "2ba2e9e0a070d5c7fd01bf372a238028b270df26e0f25e8a47569b8da6e513a3",
+      "requestedProductID": 88069,
+      "identity": {
+        "productId": 88069.0,
+        "productName": "Pikachu (27)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "27/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88213/details",
+      "status": 200,
+      "sha256": "a5701c36e15fa4d79cd6f01d61005596931056485588c8ca6e544477bb374f62",
+      "requestedProductID": 88213,
+      "identity": {
+        "productId": 88213.0,
+        "productName": "Pokemon Center",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "40/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88240/details",
+      "status": 200,
+      "sha256": "531280589a7788d7cd95ef23439f75abf50c8950c47c1809d5b5b2a6ef2e9cb4",
+      "requestedProductID": 88240,
+      "identity": {
+        "productId": 88240.0,
+        "productName": "Pokemon Tower",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "42/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88429/details",
+      "status": 200,
+      "sha256": "257ce597abbbae173e42a84e3f14b0071911f0806487f0faef1e8ea63bcdda81",
+      "requestedProductID": 88429,
+      "identity": {
+        "productId": 88429.0,
+        "productName": "Psyduck",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "20/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88575/details",
+      "status": 200,
+      "sha256": "f8b71408029582ccd04846b5a604ac6f2d0834e76c14165fbd59d7f2dbb122aa",
+      "requestedProductID": 88575,
+      "identity": {
+        "productId": 88575.0,
+        "productName": "Rapidash (51)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "51/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88862/details",
+      "status": 200,
+      "sha256": "e53df8ae4e04dda89813944e529db4cd6c1da8b3ceff144c610905d102e83c02",
+      "requestedProductID": 88862,
+      "identity": {
+        "productId": 88862.0,
+        "productName": "Sabrina's Abra",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "19/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88960/details",
+      "status": 200,
+      "sha256": "f20dfbc07812605a1e0ae05e85871b2f45404b73f0edf82789f2ddb663b60f4f",
+      "requestedProductID": 88960,
+      "identity": {
+        "productId": 88960.0,
+        "productName": "Scizor",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "33/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88993/details",
+      "status": 200,
+      "sha256": "ca35b511b01ed90d0351c3eea48e47e49927772af288e52c0e9f4282bdfbb87c",
+      "requestedProductID": 88993,
+      "identity": {
+        "productId": 88993.0,
+        "productName": "Scyther",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "45/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89353/details",
+      "status": 200,
+      "sha256": "61be7bed68672b855a9d2fd6af966daf31d791627d450a1cdedb7f2d4c45a89b",
+      "requestedProductID": 89353,
+      "identity": {
+        "productId": 89353.0,
+        "productName": "Smeargle",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "32/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89385/details",
+      "status": 200,
+      "sha256": "107dad5a0cfb3d129e46e5e67fb909c7e003e2576032bf9510bd685433a0bd02",
+      "requestedProductID": 89385,
+      "identity": {
+        "productId": 89385.0,
+        "productName": "Snorlax",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "49/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89601/details",
+      "status": 200,
+      "sha256": "db208627fbb6849fb85bab12ab6ed724fc57f0788a6c42d946b8ab2dd4a1a171",
+      "requestedProductID": 89601,
+      "identity": {
+        "productId": 89601.0,
+        "productName": "Suicune",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "53/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89643/details",
+      "status": 200,
+      "sha256": "6b6dbf2d1efab208fc305f7e18842b8e9dadbdc74ff11f6ed911a459576ee941",
+      "requestedProductID": 89643,
+      "identity": {
+        "productId": 89643.0,
+        "productName": "Surfing Pikachu",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "28/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89851/details",
+      "status": 200,
+      "sha256": "10ed788fd1b55a93ab394e57962e2c87968a8f4674ab46e5fdd86da0a945a35b",
+      "requestedProductID": 89851,
+      "identity": {
+        "productId": 89851.0,
+        "productName": "Team Rocket's Meowth",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "18/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89928/details",
+      "status": 200,
+      "sha256": "7ac27b85e15912e54de99eb280a8b3b81381023ebe053670ff192e0ab579d45b",
+      "requestedProductID": 89928,
+      "identity": {
+        "productId": 89928.0,
+        "productName": "Togepi",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "30/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90215/details",
+      "status": 200,
+      "sha256": "24e83225d3c8d49dcd42001aac1211a9a111bcb5ea2c4ccf480bb65f9bc924c5",
+      "requestedProductID": 90215,
+      "identity": {
+        "productId": 90215.0,
+        "productName": "Unown [J]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "38/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90311/details",
+      "status": 200,
+      "sha256": "9be17cc654b38d391623d47f533f0dc3be8de04a3de672043ae7cd879cee2d60",
+      "requestedProductID": 90311,
+      "identity": {
+        "productId": 90311.0,
+        "productName": "Venusaur",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "13/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90713/details",
+      "status": 200,
+      "sha256": "288da6385b16b003221e799197feb92fa2bdd47737878b0484eee96abb109e5f",
+      "requestedProductID": 90713,
+      "identity": {
+        "productId": 90713.0,
+        "productName": "Zapdos",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "23/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90784/details",
+      "status": 200,
+      "sha256": "916619195af0f9f821e01d543fcbab517c1e87c27c9052198c8f877bb5b3a43e",
+      "requestedProductID": 90784,
+      "identity": {
+        "productId": 90784.0,
+        "productName": "______'s Pikachu",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "24/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118775/details",
+      "status": 200,
+      "sha256": "cae4d9ea5a8be72bf004e4c063c73b140fa5ba0f47f762052bc664656fdd405b",
+      "requestedProductID": 118775,
+      "identity": {
+        "productId": 118775.0,
+        "productName": "Dark Gyarados (Prerelease)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "08/82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/121772/details",
+      "status": 200,
+      "sha256": "dc1cee1da775cb17003d64f7b5a6ee1d5ea61af2b83ecf47df98b31eef03aad8",
+      "requestedProductID": 121772,
+      "identity": {
+        "productId": 121772.0,
+        "productName": "Pikachu (1)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "01/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123445/details",
+      "status": 200,
+      "sha256": "11ca0d96b7a1a419f1b03ad73a99d6fdb0228f64fb284f01b4bbab39809c85f3",
+      "requestedProductID": 123445,
+      "identity": {
+        "productId": 123445.0,
+        "productName": "Misty's Seadra (Prerelease)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "009/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123631/details",
+      "status": 200,
+      "sha256": "06a36ec227ea6be4bda4beea725dc5ad8291cb2d1edf38c70166b3c6d0962d24",
+      "requestedProductID": 123631,
+      "identity": {
+        "productId": 123631.0,
+        "productName": "Kabuto [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "50/62"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123632/details",
+      "status": 200,
+      "sha256": "cf0ff5dc05c78c9efae82fd8e407efa253e42fafb6a933de4321f44853bf1016",
+      "requestedProductID": 123632,
+      "identity": {
+        "productId": 123632.0,
+        "productName": "Brock's Vulpix [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "037/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126208/details",
+      "status": 200,
+      "sha256": "8aa3bfcefaf4f82466d6a5d15f2e2d1d7f356906bda079507e8ca8bcdf95a4a8",
+      "requestedProductID": 126208,
+      "identity": {
+        "productId": 126208.0,
+        "productName": "Dark Arbok [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "19/82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/126209/details",
+      "status": 200,
+      "sha256": "2be4f179398af8d5dd25aa2be566193fdae17e6eb20ce65d14f76b4fac78053b",
+      "requestedProductID": 126209,
+      "identity": {
+        "productId": 126209.0,
+        "productName": "Pikachu [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "60/64"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/127206/details",
+      "status": 200,
+      "sha256": "3f4f00758ae9e6e715d809f8ab7c355a40b5e8dbd650210a1ebe97cae0d65023",
+      "requestedProductID": 127206,
+      "identity": {
+        "productId": 127206.0,
+        "productName": "Wartortle [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "063/130"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/154997/details",
+      "status": 200,
+      "sha256": "488bd8a6332c1be0a784f91cc8af170aaf4798b173cd845e6db2dc7398cbac56",
+      "requestedProductID": 154997,
+      "identity": {
+        "productId": 154997.0,
+        "productName": "Clefable (Prerelease)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "01/64"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/154998/details",
+      "status": 200,
+      "sha256": "5efb86a3abb4cabd9682d525e4fecb1fd0d52bd3be0d479178960c89ce12175f",
+      "requestedProductID": 154998,
+      "identity": {
+        "productId": 154998.0,
+        "productName": "Aerodactyl (Prerelease)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "01/62"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/159115/details",
+      "status": 200,
+      "sha256": "f237effaa4d67c9e88f42cd256ab7a9ac5b7fc7a09c5e4f6d10d72a7142033b0",
+      "requestedProductID": 159115,
+      "identity": {
+        "productId": 159115.0,
+        "productName": "______'s Pikachu",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "24"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161747/details",
+      "status": 200,
+      "sha256": "b94d9546fe9c9d6f9437ccfb06faaa3721daf025d2d80c30c361e0fbcb3accd0",
+      "requestedProductID": 161747,
+      "identity": {
+        "productId": 161747.0,
+        "productName": "Pikachu (Baby)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161749/details",
+      "status": 200,
+      "sha256": "4f2e483085fe2860d8b5f9199b1d985c04ff9c85efcefcb334433b2cb80bea31",
+      "requestedProductID": 161749,
+      "identity": {
+        "productId": 161749.0,
+        "productName": "Pikachu (Flying)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161750/details",
+      "status": 200,
+      "sha256": "1e05d72be3f0c3f0e204480e6270e8c55c288b67588716cd0733e448819633a6",
+      "requestedProductID": 161750,
+      "identity": {
+        "productId": 161750.0,
+        "productName": "Pikachu (Ivy)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "1"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161752/details",
+      "status": 200,
+      "sha256": "358aff9497931c42365b09de08296d85d33fe76dccf47b4118ddf9175d9f00bf",
+      "requestedProductID": 161752,
+      "identity": {
+        "productId": 161752.0,
+        "productName": "Pikachu (Movie)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "4"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161753/details",
+      "status": 200,
+      "sha256": "fe20cc4a1f1dea15f31c3e5ded36673aaa0b6c093002663ec6ced3e071075ad7",
+      "requestedProductID": 161753,
+      "identity": {
+        "productId": 161753.0,
+        "productName": "Pikachu (Snap)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "4"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/161754/details",
+      "status": 200,
+      "sha256": "f06d813d0fd6adf4fa81bcd9c02989ade1de463ca74fc60d60e4b93fcfa01cb0",
+      "requestedProductID": 161754,
+      "identity": {
+        "productId": 161754.0,
+        "productName": "Pikachu (Surfing)",
+        "setId": 2205.0,
+        "setCode": "PWCP",
+        "setName": "Pikachu World Collection Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/166296/details",
+      "status": 200,
+      "sha256": "309b8fa94312dceb08b7af75007ba5212f248f62ce0e6bdb6cb33cf3f5b7f17d",
+      "requestedProductID": 166296,
+      "identity": {
+        "productId": 166296.0,
+        "productName": "Misty's Psyduck [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "054/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/180834/details",
+      "status": 200,
+      "sha256": "1c1e26db723ac0c6139e864090761e1b49a380326da0c13b816bab9aea869328",
+      "requestedProductID": 180834,
+      "identity": {
+        "productId": 180834.0,
+        "productName": "Dark Charmeleon [W Stamped]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "32/82"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/244347/details",
+      "status": 200,
+      "sha256": "ba3cb0fb0a5e4f6d9fc23fb6a52fe260f7fdc62e16109f24ae7eb4b5572588b6",
+      "requestedProductID": 244347,
+      "identity": {
+        "productId": 244347.0,
+        "productName": "Rapidash [Pokemon Center NY]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "51/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/244348/details",
+      "status": 200,
+      "sha256": "21ab815f6932fc783f9ba6725c8a1d4ea4d096a3598777265191db9db0387109",
+      "requestedProductID": 244348,
+      "identity": {
+        "productId": 244348.0,
+        "productName": "Ho-oh [Pokemon Center NY]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "52/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/477048/details",
+      "status": 200,
+      "sha256": "1dfd7bfb5df784e17909d28725774fc4c3ee05765b14eec17fae439a6f2f7200",
+      "requestedProductID": 477048,
+      "identity": {
+        "productId": 477048.0,
+        "productName": "Scan-Tastic Spectacular Promo Pack [Ho-oh & Rapidash]",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Sealed Products",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": null
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/607818/details",
+      "status": 200,
+      "sha256": "7e4703c3b3162f8e6a94cb2365be645ca82052d1d5ee46d86632e948c425e1ed",
+      "requestedProductID": 607818,
+      "identity": {
+        "productId": 607818.0,
+        "productName": "Mew - 8 (Glossy Finish)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "8"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/618732/details",
+      "status": 200,
+      "sha256": "f702e0d084ab6adf6143a722812b893c6e165b89ac918ab9b8b7634f8ec05464",
+      "requestedProductID": 618732,
+      "identity": {
+        "productId": 618732.0,
+        "productName": "Eevee (JR East Stamp Rally)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "11/53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/696103/details",
+      "status": 200,
+      "sha256": "665abac9c9034830755deb5ecfb8e55a7c694919d3bcdbc39b9a08d4e0ca2a4f",
+      "requestedProductID": 696103,
+      "identity": {
+        "productId": 696103.0,
+        "productName": "Pikachu (Corocoro Grey Star)",
+        "setId": 1418.0,
+        "setCode": "PR",
+        "setName": "WoTC Promo",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": ""
+      }
+    }
+  ]
+}

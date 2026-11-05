@@ -1,0 +1,941 @@
+{
+  "observedAtUTC": "2026-11-03T17:09:20.565616+00:00",
+  "basePikachuObservedAtUTC": "2026-11-03T17:12:16.894098+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/base2-60",
+      "status": 200,
+      "sha256": "59d7e4daf1b1ea4c7eceddc2e3b0787b41f3aace5116f1f62e6b6264df2d0c80",
+      "requestedCardID": "base2-60",
+      "identity": {
+        "id": "base2-60",
+        "localId": "60",
+        "name": "Pikachu",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 64,
+            "total": 64
+          },
+          "id": "base2",
+          "logo": "https://assets.tcgdex.net/en/base/base2/logo",
+          "name": "Jungle",
+          "symbol": "https://assets.tcgdex.net/univ/base/base2/symbol"
+        },
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/base2/60",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "1st-edition": 45163,
+            "unlimited": 45163
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "1st-edition",
+            "unlimited"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 273857,
+              "tcgplayer": 45163
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 45163,
+                "unlimited": 45163
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "cardmarket": 273857,
+              "tcgplayer": 45163
+            },
+            "variantId": "2fnyg4g532wu2uft0spaa3eefrz",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 45163,
+                "unlimited": 45163
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "pikachu-tail"
+            ],
+            "variantId": "23hmnvtwdrr6jf51awzjk0vcmfgo",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "wotc"
+            ],
+            "variantId": "6xp3yys30vhxy35fte9p",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/base3-50",
+      "status": 200,
+      "sha256": "4460cb526cb750ce82c5556161f5ee5aaadbc6859e989bf5f012ff8844d04929",
+      "requestedCardID": "base3-50",
+      "identity": {
+        "id": "base3-50",
+        "localId": "50",
+        "name": "Kabuto",
+        "rarity": "Common",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 62,
+            "total": 62
+          },
+          "id": "base3",
+          "logo": "https://assets.tcgdex.net/en/base/base3/logo",
+          "name": "Fossil",
+          "symbol": "https://assets.tcgdex.net/univ/base/base3/symbol"
+        },
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/base3/50",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "1st-edition": 44452,
+            "unlimited": 44452
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "1st-edition",
+            "unlimited"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 273911,
+              "tcgplayer": 44452
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 44452,
+                "unlimited": 44452
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "cardmarket": 273911,
+              "tcgplayer": 44452
+            },
+            "variantId": "2fnyg4g532wu2uft0spaa3eefrz",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 44452,
+                "unlimited": 44452
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "wotc"
+            ],
+            "variantId": "6xp3yys30vhxy35fte9p",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "1999-2000-copyright",
+            "size": "standard",
+            "variantId": "qi4g3e7tzbkcyhfflvx7zmvunxwjcq3pvp",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/base4-63",
+      "status": 200,
+      "sha256": "14cef477a2eabc04f58cf4fd08f0fe52e3f4c22ffb0ccffd4ca2568ee2a6b856",
+      "requestedCardID": "base4-63",
+      "identity": {
+        "id": "base4-63",
+        "localId": "63",
+        "name": "Wartortle",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 130,
+            "total": 130
+          },
+          "id": "base4",
+          "logo": "https://assets.tcgdex.net/en/base/base4/logo",
+          "name": "Base Set 2",
+          "symbol": "https://assets.tcgdex.net/univ/base/base4/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/base4/63",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 42526
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 273986,
+              "tcgplayer": 42526
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 42526
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "normal"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "wotc"
+            ],
+            "variantId": "6xp3yys30vhxy35fte9p",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/base5-19",
+      "status": 200,
+      "sha256": "81949a9ef278176d09407dc1858417b2addb6db516481d68cb55e9a3b20fd3fe",
+      "requestedCardID": "base5-19",
+      "identity": {
+        "id": "base5-19",
+        "localId": "19",
+        "name": "Dark Arbok",
+        "rarity": "Rare",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 82,
+            "total": 83
+          },
+          "id": "base5",
+          "logo": "https://assets.tcgdex.net/en/base/base5/logo",
+          "name": "Team Rocket",
+          "symbol": "https://assets.tcgdex.net/univ/base/base5/symbol"
+        },
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/base5/19",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "1st-edition": 84564,
+            "unlimited": 84564
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "1st-edition",
+            "unlimited"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 274055,
+              "tcgplayer": 84564
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 84564,
+                "unlimited": 84564
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "cardmarket": 274055,
+              "tcgplayer": 84564
+            },
+            "variantId": "2fnyg4g532wu2uft0spaa3eefrz",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 84564,
+                "unlimited": 84564
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "wotc"
+            ],
+            "variantId": "6xp3yys30vhxy35fte9p",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/base5-32",
+      "status": 200,
+      "sha256": "49b83217014c5a9c56a9949ec9a0d81e4c73b2246376fb8f6db96afdf7f12b80",
+      "requestedCardID": "base5-32",
+      "identity": {
+        "id": "base5-32",
+        "localId": "32",
+        "name": "Dark Charmeleon",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 82,
+            "total": 83
+          },
+          "id": "base5",
+          "logo": "https://assets.tcgdex.net/en/base/base5/logo",
+          "name": "Team Rocket",
+          "symbol": "https://assets.tcgdex.net/univ/base/base5/symbol"
+        },
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/base5/32",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "1st-edition": 84574,
+            "unlimited": 84574
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "1st-edition",
+            "unlimited"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 274085,
+              "tcgplayer": 84574
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 84574,
+                "unlimited": 84574
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "cardmarket": 274085,
+              "tcgplayer": 84574
+            },
+            "variantId": "2fnyg4g532wu2uft0spaa3eefrz",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 84574,
+                "unlimited": 84574
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "w-promo"
+            ],
+            "variantId": "4ffrmhcfiae263gvm20l3jd",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/gym1-54",
+      "status": 200,
+      "sha256": "b9b972dc37b1321263c4d17771f974b81ed9af38af9e1822afac3516cae0302a",
+      "requestedCardID": "gym1-54",
+      "identity": {
+        "id": "gym1-54",
+        "localId": "54",
+        "name": "Misty's Psyduck",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 132,
+            "total": 132
+          },
+          "id": "gym1",
+          "logo": "https://assets.tcgdex.net/en/gym/gym1/logo",
+          "name": "Gym Heroes",
+          "symbol": "https://assets.tcgdex.net/univ/gym/gym1/symbol"
+        },
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/gym/gym1/54",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "1st-edition": 87539,
+            "unlimited": 87539
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "1st-edition",
+            "unlimited"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87539
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 87539,
+                "unlimited": 87539
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "tcgplayer": 87539,
+              "cardmarket": 274190
+            },
+            "variantId": "2fnyg4g532wu2uft0spaa3eefrz",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 87539,
+                "unlimited": 87539
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "wotc"
+            ],
+            "thirdParty": {
+              "tcgplayer": 87539,
+              "cardmarket": 274190
+            },
+            "variantId": "6xp3yys30vhxy35fte9p",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 87539,
+                "unlimited": 87539
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/gym2-37",
+      "status": 200,
+      "sha256": "f13f59b81617fc26fa322840b5a3d9410d9841dc926f49e93788c81cf8aa2d70",
+      "requestedCardID": "gym2-37",
+      "identity": {
+        "id": "gym2-37",
+        "localId": "37",
+        "name": "Brock's Vulpix",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 132,
+            "total": 132
+          },
+          "id": "gym2",
+          "logo": "https://assets.tcgdex.net/en/gym/gym2/logo",
+          "name": "Gym Challenge",
+          "symbol": "https://assets.tcgdex.net/univ/gym/gym2/symbol"
+        },
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/gym/gym2/37",
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "1st-edition": 83986,
+            "unlimited": 83986
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "1st-edition",
+            "unlimited"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 83986
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 83986,
+                "unlimited": 83986
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "tcgplayer": 83986,
+              "cardmarket": 274305
+            },
+            "variantId": "2fnyg4g532wu2uft0spaa3eefrz",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 83986,
+                "unlimited": 83986
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "wotc"
+            ],
+            "thirdParty": {
+              "tcgplayer": 83986,
+              "cardmarket": 274305
+            },
+            "variantId": "6xp3yys30vhxy35fte9p",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "1st-edition": 83986,
+                "unlimited": 83986
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "1st-edition",
+                "unlimited"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/base1-58",
+      "status": 200,
+      "sha256": "4517ad3c3c06b1afcf884c6fe997ace11264deaec0e31079298e1d9d217c509c",
+      "requestedCardID": "base1-58",
+      "identity": {
+        "id": "base1-58",
+        "localId": "58",
+        "name": "Pikachu",
+        "image": "https://assets.tcgdex.net/en/base/base1/58",
+        "variants": {
+          "firstEdition": true,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "set": {
+          "cardCount": {
+            "official": 102,
+            "total": 102
+          },
+          "id": "base1",
+          "logo": "https://assets.tcgdex.net/en/base/base1/logo",
+          "name": "Base Set"
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 42402
+          },
+          "listingKeys": [
+            "unit",
+            "updated",
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "subtype": "unlimited",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 273753,
+              "tcgplayer": 42402
+            },
+            "variantId": "3a83wf50tz7q114spsx7dw6v5",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 42402
+              },
+              "listingKeys": [
+                "unit",
+                "updated",
+                "normal"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "shadowless",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "tcgplayer": 107055,
+              "cardmarket": 660169
+            },
+            "variantId": "gx8bq2hefwadd3utcibq3oc56sjf4jqdz709e",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "shadowless",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 107055,
+              "cardmarket": 660169
+            },
+            "variantId": "2tszcx1bpt4e79y5us0p570b9n",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "shadowless-red-cheek",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 147229,
+              "cardmarket": 660170
+            },
+            "variantId": "mtltux8qussk4naabf2sjstrcyez6fa4nvy",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "shadowless-red-cheek",
+            "size": "standard",
+            "stamp": [
+              "1st-edition"
+            ],
+            "thirdParty": {
+              "tcgplayer": 147229,
+              "cardmarket": 660170
+            },
+            "variantId": "3skqdujv9jyo7ijcqeiufs8ut5ygkjq1y1bpa3mn9q4bbjp",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "1999-2000-copyright",
+            "size": "standard",
+            "variantId": "qi4g3e7tzbkcyhfflvx7zmvunxwjcq3pvp",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "size": "jumbo",
+            "thirdParty": {
+              "cardmarket": 362859
+            },
+            "variantId": "l7orfpmicmyc",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "subtype": "unlimited",
+            "size": "standard",
+            "stamp": [
+              "poketour-99"
+            ],
+            "thirdParty": {
+              "cardmarket": 275586
+            },
+            "variantId": "jnhspmmj4h1e7ohhxunqpao96lgmqwtl2ts1",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

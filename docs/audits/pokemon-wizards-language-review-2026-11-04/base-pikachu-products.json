@@ -1,0 +1,59 @@
+{
+  "observedAtUTC": "2026-11-04T16:14:50.161105+00:00",
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/42402/details",
+      "status": 200,
+      "sha256": "1f9db621eaf4e519ec15d93d51b14e41cb07489944770817630d9cb3f2473f3d",
+      "requestedProductID": 42402,
+      "identity": {
+        "productId": 42402.0,
+        "productName": "Pikachu",
+        "setId": 604.0,
+        "setCode": "BS",
+        "setName": "Base Set",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "058/102"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/107055/details",
+      "status": 200,
+      "sha256": "c8c949e875c6ff26b8b35bd341d0924a3c1b8929c8e250e074a50f4ffce102de",
+      "requestedProductID": 107055,
+      "identity": {
+        "productId": 107055.0,
+        "productName": "Pikachu",
+        "setId": 1663.0,
+        "setCode": "BSS",
+        "setName": "Base Set (Shadowless)",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "058/102"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/147229/details",
+      "status": 200,
+      "sha256": "b3345c3964c0accef7f3ea727fd8829580a632747883487c9fea413a25a6d792",
+      "requestedProductID": 147229,
+      "identity": {
+        "productId": 147229.0,
+        "productName": "Pikachu (Red Cheeks)",
+        "setId": 1663.0,
+        "setCode": "BSS",
+        "setName": "Base Set (Shadowless)",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "058/102"
+      }
+    }
+  ]
+}

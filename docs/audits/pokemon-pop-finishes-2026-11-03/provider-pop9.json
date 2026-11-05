@@ -1,0 +1,1159 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:20.076457+00:00",
+  "purpose": "Physical identity, variant and price-product IDs only; no numeric quotes",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-1",
+      "status": 200,
+      "sha256": "101545052b6c786e344e98ce7d0e7e207332e057e89bd861537662e989eb2897",
+      "requestedCardID": "pop9-1",
+      "identity": {
+        "id": "pop9-1",
+        "localId": "1",
+        "name": "Garchomp",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85622
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85622,
+              "cardmarket": 278552
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85622
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-2",
+      "status": 200,
+      "sha256": "cb10c5954a870571d5725bd63ce4fc14a2ce05c101bb08122dd0fe918b69445b",
+      "requestedCardID": "pop9-2",
+      "identity": {
+        "id": "pop9-2",
+        "localId": "2",
+        "name": "Manaphy",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87147,
+            "holofoil": 87147
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87147,
+              "cardmarket": 278553
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87147,
+                "holofoil": 87147
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87147,
+              "cardmarket": 278553
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87147,
+                "holofoil": 87147
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-3",
+      "status": 200,
+      "sha256": "d51467bfd4c36435e72017e1bf9250569123fb4540e369f4686eae9f5b3693a5",
+      "requestedCardID": "pop9-3",
+      "identity": {
+        "id": "pop9-3",
+        "localId": "3",
+        "name": "Raichu",
+        "rarity": "Rare",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": true,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88514,
+            "reverse-holofoil": 88514
+          },
+          "listingKeys": [
+            "normal",
+            "reverse-holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88514,
+              "cardmarket": 278554
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88514,
+                "reverse-holofoil": 88514
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          },
+          {
+            "type": "reverse",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88514,
+              "cardmarket": 278554
+            },
+            "variantId": "cm4kqul3x1bwlz1f",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88514,
+                "reverse-holofoil": 88514
+              },
+              "listingKeys": [
+                "normal",
+                "reverse-holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-4",
+      "status": 200,
+      "sha256": "48a113627ffefd144786180b16e0fb47e281c2481b26de32f4ff818ef082e2df",
+      "requestedCardID": "pop9-4",
+      "identity": {
+        "id": "pop9-4",
+        "localId": "4",
+        "name": "Regigigas",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88664,
+            "holofoil": 88664
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88664,
+              "cardmarket": 278555
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88664,
+                "holofoil": 88664
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88664,
+              "cardmarket": 278555
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88664,
+                "holofoil": 88664
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-5",
+      "status": 200,
+      "sha256": "5d8e3408f941d89eb1e9278b71a8067b9b5ab6b1bb6f06b13eb7ef03bf74e239",
+      "requestedCardID": "pop9-5",
+      "identity": {
+        "id": "pop9-5",
+        "localId": "5",
+        "name": "Rotom",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88837,
+            "holofoil": 88837
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88837,
+              "cardmarket": 278556
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88837,
+                "holofoil": 88837
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88837,
+              "cardmarket": 278556
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88837,
+                "holofoil": 88837
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-6",
+      "status": 200,
+      "sha256": "f30824ea0f6bc5cbdef1c8f3ab26eae14d40fd5bbdea5bc2f8bfe78f4211e529",
+      "requestedCardID": "pop9-6",
+      "identity": {
+        "id": "pop9-6",
+        "localId": "6",
+        "name": "Buizel",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84020
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84020,
+              "cardmarket": 278557
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84020
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-7",
+      "status": 200,
+      "sha256": "a4f6a17b66f9b670f095ae09369e151911379e3fdca8b30bb2eeb5fee113ee83",
+      "requestedCardID": "pop9-7",
+      "identity": {
+        "id": "pop9-7",
+        "localId": "7",
+        "name": "Croagunk",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84476
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84476,
+              "cardmarket": 278558
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84476
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-8",
+      "status": 200,
+      "sha256": "191d26c66315595bc897c0a57982c0b59423a7a1fc4fb9f3a62900c36debf451",
+      "requestedCardID": "pop9-8",
+      "identity": {
+        "id": "pop9-8",
+        "localId": "8",
+        "name": "Gabite",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85598
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85598,
+              "cardmarket": 278559
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85598
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-9",
+      "status": 200,
+      "sha256": "99b268e214b4ae54c156d5d8c4e8d8f4be99145cae898e81d3aec2757ad9606c",
+      "requestedCardID": "pop9-9",
+      "identity": {
+        "id": "pop9-9",
+        "localId": "9",
+        "name": "Lopunny",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86825,
+            "holofoil": 86825
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86825,
+              "cardmarket": 278560
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86825,
+                "holofoil": 86825
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86825,
+              "cardmarket": 278560
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86825,
+                "holofoil": 86825
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-10",
+      "status": 200,
+      "sha256": "da4a618d91d8cf5c978d9ed236537e60dfd483413e8df152581a8905c9783b47",
+      "requestedCardID": "pop9-10",
+      "identity": {
+        "id": "pop9-10",
+        "localId": "10",
+        "name": "Pachirisu",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87902
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87902,
+              "cardmarket": 278561
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87902
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-11",
+      "status": 200,
+      "sha256": "a3d08041de66f0f3ba5212b5ca3c00ace18047bc140bff7be49bdc1980300068",
+      "requestedCardID": "pop9-11",
+      "identity": {
+        "id": "pop9-11",
+        "localId": "11",
+        "name": "Pichu",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88020
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88020,
+              "cardmarket": 278562
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88020
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-12",
+      "status": 200,
+      "sha256": "452bea1bab892f30c2d9b48084f7796398a24505ceb996ae8ca173cd676ea6a2",
+      "requestedCardID": "pop9-12",
+      "identity": {
+        "id": "pop9-12",
+        "localId": "12",
+        "name": "Buneary",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84042
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84042,
+              "cardmarket": 278563
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84042
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-13",
+      "status": 200,
+      "sha256": "96301ace0f494c1f1269ecc8479e8265988f3651e43676d0ab87dae70286d17a",
+      "requestedCardID": "pop9-13",
+      "identity": {
+        "id": "pop9-13",
+        "localId": "13",
+        "name": "Chimchar",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84289
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84289,
+              "cardmarket": 278564
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84289
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-14",
+      "status": 200,
+      "sha256": "c850da6b54f4103c5430d2a2fc617b4ad5d9a9234240284928a27938033c403d",
+      "requestedCardID": "pop9-14",
+      "identity": {
+        "id": "pop9-14",
+        "localId": "14",
+        "name": "Gible",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85700
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85700,
+              "cardmarket": 278565
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85700
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-15",
+      "status": 200,
+      "sha256": "09aef414573e422644d44c0221942db4c480f213f9e6b15f96526b924d8bb97f",
+      "requestedCardID": "pop9-15",
+      "identity": {
+        "id": "pop9-15",
+        "localId": "15",
+        "name": "Pikachu",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88092
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88092,
+              "cardmarket": 278566
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88092
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "pokemon-day"
+            ],
+            "variantId": "2fnyg4g537uybhpg6os0j32zhnk",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-16",
+      "status": 200,
+      "sha256": "09653ceb86248c437c66b013001f83272561ba105d07b48b6859c6ed1b821989",
+      "requestedCardID": "pop9-16",
+      "identity": {
+        "id": "pop9-16",
+        "localId": "16",
+        "name": "Piplup",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88150
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88150,
+              "cardmarket": 278567
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88150
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop9-17",
+      "status": 200,
+      "sha256": "04b437d234adbe33df320d45d4074b86e7f53468a451fc355e2b6ac5fb8b2fa9",
+      "requestedCardID": "pop9-17",
+      "identity": {
+        "id": "pop9-17",
+        "localId": "17",
+        "name": "Turtwig",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop9",
+          "logo": "https://assets.tcgdex.net/en/pop/pop9/logo",
+          "name": "POP Series 9",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop9/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90078
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90078,
+              "cardmarket": 278568
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90078
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

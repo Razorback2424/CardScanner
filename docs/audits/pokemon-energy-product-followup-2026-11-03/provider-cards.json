@@ -1,0 +1,2183 @@
+{
+  "observedAtUTC": "2026-11-03T14:20:12.099364+00:00",
+  "families": {
+    "sve": {
+      "setReceipt": {
+        "url": "https://api.tcgdex.net/v2/en/sets/sve",
+        "status": 200,
+        "sha256": "abf3c98ee82265688d72da957769f757212d7194e14595f926ba09fa1de080ef"
+      },
+      "declaredCardCount": {
+        "firstEd": 0,
+        "holo": 0,
+        "normal": 40,
+        "official": 24,
+        "reverse": 72,
+        "total": 24
+      },
+      "cards": [
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-001",
+          "status": 200,
+          "sha256": "b2d5fcab877794b3c290720eebc92b1d89252846b8a98a94049fcedd69f11635",
+          "requestedCardID": "sve-001",
+          "identity": {
+            "id": "sve-001",
+            "localId": "001",
+            "name": "Grass Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689750,
+                  "tcgplayer": 475425
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515640
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735364,
+                  "tcgplayer": 517177
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622935
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780803,
+                  "tcgplayer": 562155
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599455
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-002",
+          "status": 200,
+          "sha256": "4927737b49cda11aa4a27f4a5b727a528847c1f4e48306a2ade149e0a674c4fd",
+          "requestedCardID": "sve-002",
+          "identity": {
+            "id": "sve-002",
+            "localId": "002",
+            "name": "Fire Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689751,
+                  "tcgplayer": 475426
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515639
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735366,
+                  "tcgplayer": 517178
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651037
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780804,
+                  "tcgplayer": 562160
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599454
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-003",
+          "status": 200,
+          "sha256": "9a42aca2c2b50767fcd98c6eed06cf9b2fb120305ba9f29696d1cf0240816319",
+          "requestedCardID": "sve-003",
+          "identity": {
+            "id": "sve-003",
+            "localId": "003",
+            "name": "Water Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689753,
+                  "tcgplayer": 475427
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735367,
+                  "tcgplayer": 517179
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515644
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622937
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780805,
+                  "tcgplayer": 563014
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599458
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-004",
+          "status": 200,
+          "sha256": "63ffe54d543a74e9c9fafa15a16c332ea015091b1a286065ca8eff53d97f8c8e",
+          "requestedCardID": "sve-004",
+          "identity": {
+            "id": "sve-004",
+            "localId": "004",
+            "name": "Lightning Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689755,
+                  "tcgplayer": 475428
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735368,
+                  "tcgplayer": 517180
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515641
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622938
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780808,
+                  "tcgplayer": 562152
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599456
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-005",
+          "status": 200,
+          "sha256": "9ba5594bec197481bdc55d212f696fd4a0fd188b45caa534a94a22bc99b8891a",
+          "requestedCardID": "sve-005",
+          "identity": {
+            "id": "sve-005",
+            "localId": "005",
+            "name": "Psychic Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689757,
+                  "tcgplayer": 475429
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735370,
+                  "tcgplayer": 517181
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515643
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622939
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780806,
+                  "tcgplayer": 562157
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599457
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-006",
+          "status": 200,
+          "sha256": "baa55aebb849171aad67ae9331e3462d2d87685fa5f856fc3d77fc9d6e9a9934",
+          "requestedCardID": "sve-006",
+          "identity": {
+            "id": "sve-006",
+            "localId": "006",
+            "name": "Fighting Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689758,
+                  "tcgplayer": 475430
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735371,
+                  "tcgplayer": 517182
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515638
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622940
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780807,
+                  "tcgplayer": 562158
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599453
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-007",
+          "status": 200,
+          "sha256": "8e916d524f6cefa062497e407952e8b876f0828a0572879df1dc5b550b1d9555",
+          "requestedCardID": "sve-007",
+          "identity": {
+            "id": "sve-007",
+            "localId": "007",
+            "name": "Darkness Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689760,
+                  "tcgplayer": 475431
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735372,
+                  "tcgplayer": 517183
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515635
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622941
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780809,
+                  "tcgplayer": 562154
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599460
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-008",
+          "status": 200,
+          "sha256": "1f2f69b7009d391e5dfb46ba68c57712a75aec0a0930066599da5604b01658a1",
+          "requestedCardID": "sve-008",
+          "identity": {
+            "id": "sve-008",
+            "localId": "008",
+            "name": "Metal Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 689762,
+                  "tcgplayer": 475432
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 735373,
+                  "tcgplayer": 517184
+                },
+                "variantId": "3ts5hd5swdcuwzv63t639rp"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 515642
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 622942
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "pokeball",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 780810,
+                  "tcgplayer": 562159
+                },
+                "variantId": "3739bbtj3i910y5ynn9xc6ryf"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 599459
+                },
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-009",
+          "status": 200,
+          "sha256": "7f65558762aa9ed52f06b1718229a308f2073807c1b516f91fc1eb14bf38ae7a",
+          "requestedCardID": "sve-009",
+          "identity": {
+            "id": "sve-009",
+            "localId": "009",
+            "name": "Grass Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786113,
+                  "tcgplayer": 578864
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809704,
+                  "tcgplayer": 599740
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623649
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651098
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-010",
+          "status": 200,
+          "sha256": "3b8ea8a2393617c1b6631b956c55dbbf4935269426510cd95dfbc5a7d630033a",
+          "requestedCardID": "sve-010",
+          "identity": {
+            "id": "sve-010",
+            "localId": "010",
+            "name": "Fire Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786114,
+                  "tcgplayer": 578863
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809705,
+                  "tcgplayer": 599738
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623650
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651037
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-011",
+          "status": 200,
+          "sha256": "578b25cc914bafa72bce3aca8ff7992b2e8ce6aeb8213c9061ca7053157c860d",
+          "requestedCardID": "sve-011",
+          "identity": {
+            "id": "sve-011",
+            "localId": "011",
+            "name": "Water Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786115,
+                  "tcgplayer": 578862
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809706,
+                  "tcgplayer": 599745
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623651
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651115
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-012",
+          "status": 200,
+          "sha256": "d219e2218a2a01872de0f0de7b8c1ec2063fd022d809d485800c88e8d48f13a3",
+          "requestedCardID": "sve-012",
+          "identity": {
+            "id": "sve-012",
+            "localId": "012",
+            "name": "Lightning Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786116,
+                  "tcgplayer": 578866
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809707,
+                  "tcgplayer": 599741
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623652
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651100
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-013",
+          "status": 200,
+          "sha256": "39a68f02fc6554681522e74ebbb6c11809133b2c8d46fb83e423fa6637cf9717",
+          "requestedCardID": "sve-013",
+          "identity": {
+            "id": "sve-013",
+            "localId": "013",
+            "name": "Psychic Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786117,
+                  "tcgplayer": 578865
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809708,
+                  "tcgplayer": 599743
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623653
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651109
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-014",
+          "status": 200,
+          "sha256": "80e8f2e19b699ac4fac6620686c063340d43272746255277ffb2b67dc28cecbe",
+          "requestedCardID": "sve-014",
+          "identity": {
+            "id": "sve-014",
+            "localId": "014",
+            "name": "Fighting Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786118,
+                  "tcgplayer": 578867
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809709,
+                  "tcgplayer": 599746
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623654
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651096
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-015",
+          "status": 200,
+          "sha256": "740fc2996b1ea9ddf1ec6970e1efc82fa63c8e70ef1dc872f2afd6e92b593255",
+          "requestedCardID": "sve-015",
+          "identity": {
+            "id": "sve-015",
+            "localId": "015",
+            "name": "Darkness Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786119,
+                  "tcgplayer": 578868
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809710,
+                  "tcgplayer": 599747
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 623655
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651036
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-016",
+          "status": 200,
+          "sha256": "6025e12fc617d0ca5fcd6643d38b9b470d703dd96b8e3f3a2c37143a52d6e5a0",
+          "requestedCardID": "sve-016",
+          "identity": {
+            "id": "sve-016",
+            "localId": "016",
+            "name": "Metal Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 786120,
+                  "tcgplayer": 578869
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "cracked-ice",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 809711,
+                  "tcgplayer": 599742
+                },
+                "variantId": "1taa1mtxbb835v7njr48v6y8eq20"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "variantId": "cm4kqul3x1bwlz1f"
+              },
+              {
+                "type": "normal",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 627701
+                },
+                "variantId": "gx8bq2hegum3q6irsxlvqxm955ikw9gd1h311"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "player-rewards-program"
+                ],
+                "thirdParty": {
+                  "tcgplayer": 651102
+                },
+                "variantId": "4f6221d6q70q1pd5gz5mpleqajtabtd6nalq8mg91zztu"
+              },
+              {
+                "type": "reverse",
+                "foil": "cosmos",
+                "size": "standard",
+                "stamp": [
+                  "professor-program"
+                ],
+                "variantId": "9c65uu02o61jw39cfwj25zehzm7vtmrthwuo6xen"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-017",
+          "status": 200,
+          "sha256": "5140e4dfc19f9158635539016806e049aefa12a21d283177a620e76ecd403ff7",
+          "requestedCardID": "sve-017",
+          "identity": {
+            "id": "sve-017",
+            "localId": "017",
+            "name": "Grass Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836249,
+                  "tcgplayer": 645286
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836972
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-018",
+          "status": 200,
+          "sha256": "ef533862cccc1844eff1fbc41fa21169f406517136bcad533b5cc6b496256bd0",
+          "requestedCardID": "sve-018",
+          "identity": {
+            "id": "sve-018",
+            "localId": "018",
+            "name": "Fire Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836250,
+                  "tcgplayer": 645287
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836973
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-019",
+          "status": 200,
+          "sha256": "d173952842110a08f716d5a79243aecf2c60cfdd032ffdb633206b21247ad721",
+          "requestedCardID": "sve-019",
+          "identity": {
+            "id": "sve-019",
+            "localId": "019",
+            "name": "Water Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836251,
+                  "tcgplayer": 645288
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836974
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-020",
+          "status": 200,
+          "sha256": "fc9cfd6353d0090b4cc6acc15653b65eae85f494c1c70f180ecd6f07f536b367",
+          "requestedCardID": "sve-020",
+          "identity": {
+            "id": "sve-020",
+            "localId": "020",
+            "name": "Lightning Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836252,
+                  "tcgplayer": 645289
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836975
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-021",
+          "status": 200,
+          "sha256": "1ec2c70a678426807cc5bbf3050067e52f5a211c21b57775a23e7a3877bc66fe",
+          "requestedCardID": "sve-021",
+          "identity": {
+            "id": "sve-021",
+            "localId": "021",
+            "name": "Psychic Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836253,
+                  "tcgplayer": 645301
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836976
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-022",
+          "status": 200,
+          "sha256": "c394575d9e1d7600a2b48f06d26dbd828788ee35a4a94be75b3d7751f31f3e87",
+          "requestedCardID": "sve-022",
+          "identity": {
+            "id": "sve-022",
+            "localId": "022",
+            "name": "Fighting Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836254,
+                  "tcgplayer": 645302
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836977
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-023",
+          "status": 200,
+          "sha256": "d9ba95bd6109a76dd983f95890bc7d39b36bf205d9d767d492df685b64a6a8ed",
+          "requestedCardID": "sve-023",
+          "identity": {
+            "id": "sve-023",
+            "localId": "023",
+            "name": "Darkness Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836255,
+                  "tcgplayer": 645303
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836978
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/sve-024",
+          "status": 200,
+          "sha256": "28858eb3d431502b1f8fc2c9f29a4c3972b588b6e8a44563bf339d93ad033a3b",
+          "requestedCardID": "sve-024",
+          "identity": {
+            "id": "sve-024",
+            "localId": "024",
+            "name": "Metal Energy",
+            "set": {
+              "cardCount": {
+                "official": 24,
+                "total": 24
+              },
+              "id": "sve",
+              "name": "Scarlet & Violet Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836256,
+                  "tcgplayer": 645304
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "foil": "tinsel",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 836979
+                },
+                "variantId": "4gbl53whsjw1y7o4q5scl5q"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "mee": {
+      "setReceipt": {
+        "url": "https://api.tcgdex.net/v2/en/sets/mee",
+        "status": 200,
+        "sha256": "98850632194c5972c0ee2ae79ee4400defd66c5f1c92fa41da6512e8d16e5f46"
+      },
+      "declaredCardCount": {
+        "firstEd": 0,
+        "holo": 0,
+        "normal": 8,
+        "official": 8,
+        "reverse": 8,
+        "total": 8
+      },
+      "cards": [
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-001",
+          "status": 200,
+          "sha256": "43a66bf5ef3ff011db7f4df48ca3ff55b4d2455bbde9f6ca5c8d8991c99c6792",
+          "requestedCardID": "mee-001",
+          "identity": {
+            "id": "mee-001",
+            "localId": "001",
+            "name": "Grass Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851008,
+                  "tcgplayer": 656263
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851008,
+                  "tcgplayer": 656263
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-002",
+          "status": 200,
+          "sha256": "d2fa9a582f2d9cd0639570fdff1abf6d96385e7799c56a7de2da351dec428054",
+          "requestedCardID": "mee-002",
+          "identity": {
+            "id": "mee-002",
+            "localId": "002",
+            "name": "Fire Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851009,
+                  "tcgplayer": 656264
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851009,
+                  "tcgplayer": 656264
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-003",
+          "status": 200,
+          "sha256": "c320b6c4715ee73c9bda4a58007430d1096b73cd96d188c5a788d72ca19d4d54",
+          "requestedCardID": "mee-003",
+          "identity": {
+            "id": "mee-003",
+            "localId": "003",
+            "name": "Water Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851010,
+                  "tcgplayer": 656265
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851010,
+                  "tcgplayer": 656265
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-004",
+          "status": 200,
+          "sha256": "cf43026c6c1039eca2dae06e5b8b7e7294d2625194451fb7898bcd1a6e376e2e",
+          "requestedCardID": "mee-004",
+          "identity": {
+            "id": "mee-004",
+            "localId": "004",
+            "name": "Lightning Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851011,
+                  "tcgplayer": 656266
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851011,
+                  "tcgplayer": 656266
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-005",
+          "status": 200,
+          "sha256": "7120a0013be8c5c520febe083dd6298de01f6af814497464ee1ca7123feb055f",
+          "requestedCardID": "mee-005",
+          "identity": {
+            "id": "mee-005",
+            "localId": "005",
+            "name": "Psychic Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851012,
+                  "tcgplayer": 656267
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851012,
+                  "tcgplayer": 656267
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-006",
+          "status": 200,
+          "sha256": "17eca2366c955572038d85d4f64096a3f1a2a5d26fab8a46d82ec604ee5bc18c",
+          "requestedCardID": "mee-006",
+          "identity": {
+            "id": "mee-006",
+            "localId": "006",
+            "name": "Fighting Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851013,
+                  "tcgplayer": 656268
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851013,
+                  "tcgplayer": 656268
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-007",
+          "status": 200,
+          "sha256": "1957f751baf854962d5f3dcafd1e9d9ada475a5ab6e8c6fe9588617f0c4422be",
+          "requestedCardID": "mee-007",
+          "identity": {
+            "id": "mee-007",
+            "localId": "007",
+            "name": "Darkness Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851014,
+                  "tcgplayer": 656269
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851014,
+                  "tcgplayer": 656269
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api.tcgdex.net/v2/en/cards/mee-008",
+          "status": 200,
+          "sha256": "2a89064441e2901ead8682fda37edaeaccff5f7ed73fb4f70fe6b3f98e2243d5",
+          "requestedCardID": "mee-008",
+          "identity": {
+            "id": "mee-008",
+            "localId": "008",
+            "name": "Metal Energy",
+            "set": {
+              "cardCount": {
+                "official": 8,
+                "total": 8
+              },
+              "id": "mee",
+              "name": "Mega Evolution Energy"
+            },
+            "variants": {
+              "firstEdition": false,
+              "holo": false,
+              "normal": true,
+              "reverse": true,
+              "wPromo": false
+            },
+            "variants_detailed": [
+              {
+                "type": "normal",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851015,
+                  "tcgplayer": 656270
+                },
+                "variantId": "endfynwn4n10gzq"
+              },
+              {
+                "type": "reverse",
+                "size": "standard",
+                "thirdParty": {
+                  "cardmarket": 851015,
+                  "tcgplayer": 656270
+                },
+                "variantId": "cm4kqul3x1bwlz1f"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

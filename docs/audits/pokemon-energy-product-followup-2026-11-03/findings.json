@@ -1,0 +1,1756 @@
+{
+  "status": "Energy review follow-up; authoring and code unchanged",
+  "inputSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "authoringDescriptors": 75,
+  "protectedRecords": 99,
+  "counts": {
+    "primaryProviderBaseCards": 32,
+    "providerDetailedObjects": 128,
+    "ordinaryUnstampedNormalHandlesVerified": 32,
+    "populatedRawHandles": 104,
+    "populatedHandlesNumberMatched": 103,
+    "knownWrongNumberHandleObjects": 1,
+    "distinctRawProductHandles": 95,
+    "freshPrimaryProductReads": 112,
+    "freshPrimaryProductSuccesses": 112,
+    "missingProviderHandles": 24,
+    "professor2024MissingHandles": 8,
+    "professorConsistentCosmosCandidates": 6,
+    "professorPatternOrPrintingHolds": 2,
+    "tinselMissingHandles": 8,
+    "bareReverseMissingHandles": 8,
+    "existingSyntheticMEEBaseCards": 8,
+    "populatedHandlesNameMatched": 104,
+    "ordinaryUnstampedNormalNamesVerified": 32
+  },
+  "knownFireReplacement": {
+    "cardID": "sve-002",
+    "variantID": "pokemonStamp|cosmos|player-rewards-program|",
+    "providerType": "reverse",
+    "providerFoil": "cosmos",
+    "providerStamps": [
+      "player-rewards-program"
+    ],
+    "correctProductID": 622936,
+    "reviewedBadProductID": 651037,
+    "wrongProductPrintedNumber": "010",
+    "correctProductPrintedNumber": "002",
+    "installedPositiveReplacement": false,
+    "existingNegativeExclusionStillAuthored": true,
+    "scope": "Exact product correction on an already represented physical object; preserve standard Cosmos and SVE010 sibling",
+    "sourceURLs": [
+      "https://api.tcgdex.net/v2/en/cards/sve-002",
+      "https://mp-search-api.tcgplayer.com/v1/product/622936/details",
+      "https://product-images.tcgplayer.com/622936.jpg"
+    ],
+    "supportBoundary": "A positive stamped-pattern replacement is not admitted by the current contract. Existing exclusion must remain until exact application/quote isolation is verified."
+  },
+  "professor2024Bindings": [
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604499,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "consistent Cosmos identity; support pending",
+      "installed": false,
+      "notes": "Current signed contract cannot admit a positive stamped-pattern binding",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-009",
+        "https://mp-search-api.tcgplayer.com/v1/product/604499/details",
+        "https://product-images.tcgplayer.com/604499.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604500,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "image-pattern review required",
+      "installed": false,
+      "notes": "Product image has large geometric facets; do not infer Cracked Ice or delete Cosmos from a single image",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-010",
+        "https://mp-search-api.tcgplayer.com/v1/product/604500/details",
+        "https://product-images.tcgplayer.com/604500.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604496,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "consistent Cosmos identity; support pending",
+      "installed": false,
+      "notes": "Current signed contract cannot admit a positive stamped-pattern binding",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-011",
+        "https://mp-search-api.tcgplayer.com/v1/product/604496/details",
+        "https://product-images.tcgplayer.com/604496.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604498,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": false,
+      "marketplaceNormalOnly": true,
+      "reviewStatus": "marketplace-printing review required",
+      "installed": false,
+      "notes": "Normal-only marketplace metadata conflicts with the Cosmos depiction; do not exclude this correctly identified product or request Holofoil blindly",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-012",
+        "https://mp-search-api.tcgplayer.com/v1/product/604498/details",
+        "https://product-images.tcgplayer.com/604498.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604497,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "consistent Cosmos identity; support pending",
+      "installed": false,
+      "notes": "Current signed contract cannot admit a positive stamped-pattern binding",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-013",
+        "https://mp-search-api.tcgplayer.com/v1/product/604497/details",
+        "https://product-images.tcgplayer.com/604497.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604501,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "consistent Cosmos identity; support pending",
+      "installed": false,
+      "notes": "Current signed contract cannot admit a positive stamped-pattern binding",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-014",
+        "https://mp-search-api.tcgplayer.com/v1/product/604501/details",
+        "https://product-images.tcgplayer.com/604501.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604494,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "consistent Cosmos identity; support pending",
+      "installed": false,
+      "notes": "Current signed contract cannot admit a positive stamped-pattern binding",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-015",
+        "https://mp-search-api.tcgplayer.com/v1/product/604494/details",
+        "https://product-images.tcgplayer.com/604494.jpg"
+      ]
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy (2024)",
+      "existingVariantID": "pokemonStamp|cosmos|professor-program|",
+      "productID": 604495,
+      "providerType": "reverse",
+      "providerFoil": "cosmos",
+      "providerStamps": [
+        "professor-program"
+      ],
+      "identityNumberAndStampConfirmed": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false,
+      "reviewStatus": "consistent Cosmos identity; support pending",
+      "installed": false,
+      "notes": "Current signed contract cannot admit a positive stamped-pattern binding",
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/sve-016",
+        "https://mp-search-api.tcgplayer.com/v1/product/604495/details",
+        "https://product-images.tcgplayer.com/604495.jpg"
+      ]
+    }
+  ],
+  "tinselCandidates": [
+    {
+      "cardID": "sve-017",
+      "candidateProductID": 645286,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-018",
+      "candidateProductID": 645287,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-019",
+      "candidateProductID": 645288,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-020",
+      "candidateProductID": 645289,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-021",
+      "candidateProductID": 645301,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-022",
+      "candidateProductID": 645302,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-023",
+      "candidateProductID": 645303,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    },
+    {
+      "cardID": "sve-024",
+      "candidateProductID": 645304,
+      "installed": false,
+      "scope": "Same-number product already serves Normal and has mixed printing metadata. Exact Tinsel listing/quote scoping remains unproven; do not treat this candidate as a distinct product or reuse Normal pricing."
+    }
+  ],
+  "unmatchedBareReverse": [
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    }
+  ],
+  "providerObjectComparison": [
+    {
+      "cardID": "sve-001",
+      "name": "Grass Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475425,
+      "marketplaceNumber": "001",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-001",
+      "name": "Grass Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515640,
+      "marketplaceNumber": "001",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-001",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517177,
+      "marketplaceNumber": "001",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-001",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622935,
+      "marketplaceNumber": "001",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-001",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562155,
+      "marketplaceNumber": "1",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-001",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599455,
+      "marketplaceNumber": "001",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-002",
+      "name": "Fire Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475426,
+      "marketplaceNumber": "002",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-002",
+      "name": "Fire Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515639,
+      "marketplaceNumber": "002",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-002",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517178,
+      "marketplaceNumber": "002",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-002",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651037,
+      "marketplaceNumber": "010",
+      "numberMatches": false
+    },
+    {
+      "cardID": "sve-002",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562160,
+      "marketplaceNumber": "2",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-002",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599454,
+      "marketplaceNumber": "002",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-003",
+      "name": "Water Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475427,
+      "marketplaceNumber": "003",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-003",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517179,
+      "marketplaceNumber": "003",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-003",
+      "name": "Water Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515644,
+      "marketplaceNumber": "003",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-003",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622937,
+      "marketplaceNumber": "003",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-003",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 563014,
+      "marketplaceNumber": "3",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-003",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599458,
+      "marketplaceNumber": "003",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-004",
+      "name": "Lightning Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475428,
+      "marketplaceNumber": "004",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-004",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517180,
+      "marketplaceNumber": "004",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-004",
+      "name": "Lightning Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515641,
+      "marketplaceNumber": "004",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-004",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622938,
+      "marketplaceNumber": "004",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-004",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562152,
+      "marketplaceNumber": "4",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-004",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599456,
+      "marketplaceNumber": "004",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-005",
+      "name": "Psychic Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475429,
+      "marketplaceNumber": "005",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-005",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517181,
+      "marketplaceNumber": "005",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-005",
+      "name": "Psychic Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515643,
+      "marketplaceNumber": "005",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-005",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622939,
+      "marketplaceNumber": "005",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-005",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562157,
+      "marketplaceNumber": "5",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-005",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599457,
+      "marketplaceNumber": "005",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-006",
+      "name": "Fighting Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475430,
+      "marketplaceNumber": "006",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-006",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517182,
+      "marketplaceNumber": "006",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-006",
+      "name": "Fighting Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515638,
+      "marketplaceNumber": "006",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-006",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622940,
+      "marketplaceNumber": "006",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-006",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562158,
+      "marketplaceNumber": "6",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-006",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599453,
+      "marketplaceNumber": "006",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-007",
+      "name": "Darkness Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475431,
+      "marketplaceNumber": "007",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-007",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517183,
+      "marketplaceNumber": "007",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-007",
+      "name": "Darkness Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515635,
+      "marketplaceNumber": "007",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-007",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622941,
+      "marketplaceNumber": "007",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-007",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562154,
+      "marketplaceNumber": "7",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-007",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599460,
+      "marketplaceNumber": "007",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-008",
+      "name": "Metal Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 475432,
+      "marketplaceNumber": "008",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-008",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [],
+      "productID": 517184,
+      "marketplaceNumber": "008",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-008",
+      "name": "Metal Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 515642,
+      "marketplaceNumber": "008",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-008",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 622942,
+      "marketplaceNumber": "008",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-008",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "pokeball",
+      "stamps": [],
+      "productID": 562159,
+      "marketplaceNumber": "8",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-008",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": 599459,
+      "marketplaceNumber": "008",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578864,
+      "marketplaceNumber": "009",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599740,
+      "marketplaceNumber": "009",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623649,
+      "marketplaceNumber": "009",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651098,
+      "marketplaceNumber": "009",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-009",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578863,
+      "marketplaceNumber": "010",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599738,
+      "marketplaceNumber": "010",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623650,
+      "marketplaceNumber": "010",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651037,
+      "marketplaceNumber": "010",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-010",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578862,
+      "marketplaceNumber": "011",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599745,
+      "marketplaceNumber": "011",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623651,
+      "marketplaceNumber": "011",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651115,
+      "marketplaceNumber": "011",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-011",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578866,
+      "marketplaceNumber": "012",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599741,
+      "marketplaceNumber": "012",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623652,
+      "marketplaceNumber": "012",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651100,
+      "marketplaceNumber": "012",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-012",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578865,
+      "marketplaceNumber": "013",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599743,
+      "marketplaceNumber": "013",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623653,
+      "marketplaceNumber": "013",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651109,
+      "marketplaceNumber": "013",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-013",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578867,
+      "marketplaceNumber": "014",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599746,
+      "marketplaceNumber": "014",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623654,
+      "marketplaceNumber": "014",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651096,
+      "marketplaceNumber": "014",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-014",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578868,
+      "marketplaceNumber": "015",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599747,
+      "marketplaceNumber": "015",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 623655,
+      "marketplaceNumber": "015",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651036,
+      "marketplaceNumber": "015",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-015",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 578869,
+      "marketplaceNumber": "016",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "productID": 599742,
+      "marketplaceNumber": "016",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 627701,
+      "marketplaceNumber": "016",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "player-rewards-program"
+      ],
+      "productID": 651102,
+      "marketplaceNumber": "016",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-016",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "cosmos",
+      "stamps": [
+        "professor-program"
+      ],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-017",
+      "name": "Grass Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645286,
+      "marketplaceNumber": "017",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-017",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-018",
+      "name": "Fire Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645287,
+      "marketplaceNumber": "018",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-018",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-019",
+      "name": "Water Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645288,
+      "marketplaceNumber": "019",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-019",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-020",
+      "name": "Lightning Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645289,
+      "marketplaceNumber": "020",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-020",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-021",
+      "name": "Psychic Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645301,
+      "marketplaceNumber": "021",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-021",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-022",
+      "name": "Fighting Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645302,
+      "marketplaceNumber": "022",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-022",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-023",
+      "name": "Darkness Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645303,
+      "marketplaceNumber": "023",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-023",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "sve-024",
+      "name": "Metal Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 645304,
+      "marketplaceNumber": "024",
+      "numberMatches": true
+    },
+    {
+      "cardID": "sve-024",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": "tinsel",
+      "stamps": [],
+      "productID": null,
+      "marketplaceNumber": null,
+      "numberMatches": null
+    },
+    {
+      "cardID": "mee-001",
+      "name": "Grass Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656263,
+      "marketplaceNumber": "1",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-001",
+      "name": "Grass Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656263,
+      "marketplaceNumber": "1",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-002",
+      "name": "Fire Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656264,
+      "marketplaceNumber": "2",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-002",
+      "name": "Fire Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656264,
+      "marketplaceNumber": "2",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-003",
+      "name": "Water Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656265,
+      "marketplaceNumber": "3",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-003",
+      "name": "Water Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656265,
+      "marketplaceNumber": "3",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-004",
+      "name": "Lightning Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656266,
+      "marketplaceNumber": "4",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-004",
+      "name": "Lightning Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656266,
+      "marketplaceNumber": "4",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-005",
+      "name": "Psychic Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656267,
+      "marketplaceNumber": "5",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-005",
+      "name": "Psychic Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656267,
+      "marketplaceNumber": "5",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-006",
+      "name": "Fighting Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656268,
+      "marketplaceNumber": "6",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-006",
+      "name": "Fighting Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656268,
+      "marketplaceNumber": "6",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-007",
+      "name": "Darkness Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656269,
+      "marketplaceNumber": "7",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-007",
+      "name": "Darkness Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656269,
+      "marketplaceNumber": "7",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-008",
+      "name": "Metal Energy",
+      "type": "normal",
+      "foil": null,
+      "stamps": [],
+      "productID": 656270,
+      "marketplaceNumber": "8",
+      "numberMatches": true
+    },
+    {
+      "cardID": "mee-008",
+      "name": "Metal Energy",
+      "type": "reverse",
+      "foil": null,
+      "stamps": [],
+      "productID": 656270,
+      "marketplaceNumber": "8",
+      "numberMatches": true
+    }
+  ],
+  "discoveryLimits": {
+    "SVEIndexReturnedOnlyLatestEight": "This discovery index omits known older SVE products, so it is not a complete marketplace inventory",
+    "TCGCSVReadStatuses": [
+      401,
+      401
+    ],
+    "TCGCSV401Meaning": "Access failure, not empty inventories; no retry, credential request or bypass",
+    "manufacturerOrRetailerPricesStored": false
+  },
+  "verificationBoundary": {
+    "authoringChanged": false,
+    "appOrCoreCodeChanged": false,
+    "nativePublisherRerun": false,
+    "newMEEFocusedTests": 4,
+    "physicalCameraAccepted": false,
+    "paidProviderAccepted": false,
+    "signed": false,
+    "published": false,
+    "globalCompletenessProven": false
+  }
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "providerID": "dp3-4",
+    "variant": {
+      "id": "holo",
+      "label": "Holo"
+    },
+    "expanded": false
+  },
+  {
+    "providerID": "dp3-4",
+    "variant": {
+      "id": "reverse",
+      "label": "Reverse"
+    },
+    "expanded": false
+  },
+  {
+    "providerID": "dp3-4",
+    "variant": {
+      "id": "cracked-ice",
+      "label": "Cracked-Ice"
+    },
+    "expanded": true
+  },
+  {
+    "providerID": "dp3-16",
+    "variant": {
+      "label": "Holo",
+      "id": "holo"
+    },
+    "expanded": false
+  },
+  {
+    "providerID": "dp3-16",
+    "variant": {
+      "id": "reverse",
+      "label": "Reverse"
+    },
+    "expanded": false
+  },
+  {
+    "providerID": "dp3-16",
+    "variant": {
+      "id": "cracked-ice",
+      "label": "Cracked-Ice"
+    },
+    "expanded": true
+  },
+  {
+    "providerID": "dp3-19",
+    "variant": {
+      "label": "Holo",
+      "id": "holo"
+    },
+    "expanded": false
+  },
+  {
+    "providerID": "dp3-19",
+    "variant": {
+      "label": "Reverse",
+      "id": "reverse"
+    },
+    "expanded": false
+  },
+  {
+    "providerID": "dp3-19",
+    "variant": {
+      "label": "Cracked-Ice",
+      "id": "cracked-ice"
+    },
+    "expanded": true
+  }
+]

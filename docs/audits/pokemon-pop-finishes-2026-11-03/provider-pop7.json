@@ -1,0 +1,1262 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:20.076457+00:00",
+  "purpose": "Physical identity, variant and price-product IDs only; no numeric quotes",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-1",
+      "status": 200,
+      "sha256": "882d81a65aa4d01030b9471d32bc30c6b8d20c0c4e0c658d8c4b8e021a6a6a4f",
+      "requestedCardID": "pop7-1",
+      "identity": {
+        "id": "pop7-1",
+        "localId": "1",
+        "name": "Ampharos",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 83542,
+            "holofoil": 83542
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 83542,
+              "cardmarket": 278033
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 83542,
+                "holofoil": 83542
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 83542,
+              "cardmarket": 278033
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 83542,
+                "holofoil": 83542
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-2",
+      "status": 200,
+      "sha256": "3b85c89857f5f319a8bb15b8d522ff5b1660a03c32fed8a5e5649ff4c3de4379",
+      "requestedCardID": "pop7-2",
+      "identity": {
+        "id": "pop7-2",
+        "localId": "2",
+        "name": "Gallade",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85605,
+            "holofoil": 85605
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85605,
+              "cardmarket": 278034
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85605,
+                "holofoil": 85605
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85605,
+              "cardmarket": 278034
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85605,
+                "holofoil": 85605
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "jason-klaczynski"
+            ],
+            "thirdParty": {
+              "tcgplayer": 479786,
+              "cardmarket": 869283
+            },
+            "variantId": "15i9grynjdt9xzyp8rff4yu9k4bq4tcd",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "michael-pramawat"
+            ],
+            "thirdParty": {
+              "tcgplayer": 480045,
+              "cardmarket": 868672
+            },
+            "variantId": "15i9grynjdxmh831xcgacx0nh2len9qf",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-3",
+      "status": 200,
+      "sha256": "f7ad202a0959d12712464361f9162de2a6de567cd1bbc5c69f698efca77d6e14",
+      "requestedCardID": "pop7-3",
+      "identity": {
+        "id": "pop7-3",
+        "localId": "3",
+        "name": "Latias",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86652,
+            "holofoil": 86652
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86652,
+              "cardmarket": 278035
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86652,
+                "holofoil": 86652
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86652,
+              "cardmarket": 278035
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86652,
+                "holofoil": 86652
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-4",
+      "status": 200,
+      "sha256": "b7e5fd178b580e733c9c116d296305676a27e6f55b173249cbff550e2211adf1",
+      "requestedCardID": "pop7-4",
+      "identity": {
+        "id": "pop7-4",
+        "localId": "4",
+        "name": "Latios",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86666,
+            "holofoil": 86666
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86666,
+              "cardmarket": 278036
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86666,
+                "holofoil": 86666
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86666,
+              "cardmarket": 278036
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86666,
+                "holofoil": 86666
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-5",
+      "status": 200,
+      "sha256": "ec18789c7fa57f948b07cc900d4c2367a4022fd62cc8b1c9d6c3f60864e84ebf",
+      "requestedCardID": "pop7-5",
+      "identity": {
+        "id": "pop7-5",
+        "localId": "5",
+        "name": "Mothim",
+        "rarity": "Rare",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87581,
+            "holofoil": 87581
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87581,
+              "cardmarket": 278037
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87581,
+                "holofoil": 87581
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87581,
+              "cardmarket": 278037
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87581,
+                "holofoil": 87581
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-6",
+      "status": 200,
+      "sha256": "f522c02ad43c7c68b6490ca2486e65d8eac593fb9ad500fb958f59bf2bee0952",
+      "requestedCardID": "pop7-6",
+      "identity": {
+        "id": "pop7-6",
+        "localId": "6",
+        "name": "Delibird",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84749
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84749,
+              "cardmarket": 278038
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84749
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-7",
+      "status": 200,
+      "sha256": "0c157ce838b6472b71cd5bfc777ad4f6fd43e1b1ad0d404d0bfec76ba2526950",
+      "requestedCardID": "pop7-7",
+      "identity": {
+        "id": "pop7-7",
+        "localId": "7",
+        "name": "Flaaffy",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85480
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85480,
+              "cardmarket": 278039
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85480
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-8",
+      "status": 200,
+      "sha256": "251085fc658cbf83b6ea36fac9c67eee73ad7b6968d178c3ad4c89ad7e806163",
+      "requestedCardID": "pop7-8",
+      "identity": {
+        "id": "pop7-8",
+        "localId": "8",
+        "name": "Kirlia",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86467,
+            "holofoil": 86467
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86467,
+              "cardmarket": 278040
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86467,
+                "holofoil": 86467
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86467,
+              "cardmarket": 278040
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86467,
+                "holofoil": 86467
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "jason-klaczynski"
+            ],
+            "thirdParty": {
+              "tcgplayer": 479793,
+              "cardmarket": 869280
+            },
+            "variantId": "15i9grynjdt9xzyp8rff4yu9k4bq4tcd",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-9",
+      "status": 200,
+      "sha256": "1191dea773f776606f7a5d429c564687b842ca03a61840aa6d96428a49cdc0a5",
+      "requestedCardID": "pop7-9",
+      "identity": {
+        "id": "pop7-9",
+        "localId": "9",
+        "name": "Stantler",
+        "rarity": "Uncommon",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 89505
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89505,
+              "cardmarket": 278041
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89505
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86467,
+              "cardmarket": 278041
+            },
+            "variantId": "5zs5af49g93yryvw1ftj",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86467,
+                "holofoil": 86467
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-10",
+      "status": 200,
+      "sha256": "1dca57694dc1ffdf8a3295c050b8b450d17ee2107363aa7fd57acce26be97121",
+      "requestedCardID": "pop7-10",
+      "identity": {
+        "id": "pop7-10",
+        "localId": "10",
+        "name": "Wormadam Sandy Cloak",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90643
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90643,
+              "cardmarket": 278042
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90643
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-11",
+      "status": 200,
+      "sha256": "9656ebaa813615941ad02fcbcd0b2d8a91ab22c16c11d5753ae934b7f8b163eb",
+      "requestedCardID": "pop7-11",
+      "identity": {
+        "id": "pop7-11",
+        "localId": "11",
+        "name": "Burmy Plant Cloak",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84050
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84050,
+              "cardmarket": 278043
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84050
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-12",
+      "status": 200,
+      "sha256": "5c15d78f414e443836321c318344d28606cdc2390c64d2c46c1e37136673a26c",
+      "requestedCardID": "pop7-12",
+      "identity": {
+        "id": "pop7-12",
+        "localId": "12",
+        "name": "Burmy Sandy Cloak",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84053
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84053,
+              "cardmarket": 278044
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84053
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-13",
+      "status": 200,
+      "sha256": "d53f5032ff9757fc75137509431713a99dba7c58771bb225ac61889d819f61d3",
+      "requestedCardID": "pop7-13",
+      "identity": {
+        "id": "pop7-13",
+        "localId": "13",
+        "name": "Corsola",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84442
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84442,
+              "cardmarket": 278045
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84442
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-14",
+      "status": 200,
+      "sha256": "5e17dfbe161a8a5e10720df503e63bd078ab9c807733d29eb1f39d7d6714aad2",
+      "requestedCardID": "pop7-14",
+      "identity": {
+        "id": "pop7-14",
+        "localId": "14",
+        "name": "Mareep",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87202
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87202,
+              "cardmarket": 278046
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87202
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-15",
+      "status": 200,
+      "sha256": "8c385ec71cf694e220cd13fc33016e1167db2745f5bfb5d011e246c68869a2c4",
+      "requestedCardID": "pop7-15",
+      "identity": {
+        "id": "pop7-15",
+        "localId": "15",
+        "name": "Ralts",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88562
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88562,
+              "cardmarket": 278047
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88562
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "jason-klaczynski"
+            ],
+            "thirdParty": {
+              "tcgplayer": 479810,
+              "cardmarket": 869278
+            },
+            "variantId": "15i9grynjdt9xzyp8rff4yu9k4bq4tcd",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-16",
+      "status": 200,
+      "sha256": "aca8dec26e10606a04874c099757f440fbf8070717c3b0ed07562a904c33d5ad",
+      "requestedCardID": "pop7-16",
+      "identity": {
+        "id": "pop7-16",
+        "localId": "16",
+        "name": "Sentret",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 89067
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89067,
+              "cardmarket": 278048
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89067
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop7-17",
+      "status": 200,
+      "sha256": "dd02611a2034586ca63f6f63d213e8344e4a92adf76744550cf00b1222d7239b",
+      "requestedCardID": "pop7-17",
+      "identity": {
+        "id": "pop7-17",
+        "localId": "17",
+        "name": "Spinda",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop7",
+          "logo": "https://assets.tcgdex.net/en/pop/pop7/logo",
+          "name": "POP Series 7",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop7/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 89462
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89462,
+              "cardmarket": 278049
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89462
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

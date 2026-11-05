@@ -4752,7 +4752,24 @@
             "printedDenominator": 17
           }
         ]
-      }
+      },
+      "additionalVariants": [
+        {
+          "providerCardID": "pop5-17",
+          "canonicalName": "Umbreon ★",
+          "variantID": "holo",
+          "providerType": "holo",
+          "excludedTCGplayerProductIDs": [
+            90153
+          ],
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/pop5-17",
+            "https://mp-search-api.tcgplayer.com/v1/product/90153/details",
+            "https://pokumon.com/card/umbreon-gold-star-17-17-pokemon-organized-play-events-pop-series-5/",
+            "https://www.cardtrader.com/en-US/cards/124377-umbreon-gold-star-shiny-non-holo-promo-17-17-pop-series-5"
+          ]
+        }
+      ]
     },
     {
       "providerSetID": "pop6",
@@ -4976,7 +4993,24 @@
             "printedDenominator": 17
           }
         ]
-      }
+      },
+      "additionalVariants": [
+        {
+          "providerCardID": "pop7-9",
+          "canonicalName": "Stantler",
+          "variantID": "cosmos",
+          "providerType": "holo",
+          "providerFoil": "cosmos",
+          "excludedTCGplayerProductIDs": [
+            86467
+          ],
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/pop7-9",
+            "https://mp-search-api.tcgplayer.com/v1/product/86467/details",
+            "https://www.serebii.net/card/popseries7/"
+          ]
+        }
+      ]
     },
     {
       "providerSetID": "pop8",
@@ -5315,9 +5349,346 @@
       {"providerCardID":"30th-c-029","canonicalName":"lugia","printedLocalID":"149","printedDenominator":147},
       {"providerCardID":"30th-c-030","canonicalName":"magikarp","printedLocalID":"203","printedDenominator":193}
     ]}},
-    {"providerSetID":"dpp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"DP","catalogLocalIDPrefix":"DP","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
+    {
+      "providerSetID": "dpp",
+      "recognitionKind": "promo",
+      "printedCode": null,
+      "claimedOfficialCount": null,
+      "printedPrefix": "DP",
+      "catalogLocalIDPrefix": "DP",
+      "localIDPadWidth": 2,
+      "displayName": null,
+      "releaseDate": null,
+      "releaseOrder": null,
+      "scanEnabled": true,
+      "logoURL": null,
+      "symbolURL": null,
+      "rulesVersion": 1,
+      "additionalVariants": [
+        {
+          "providerCardID": "dpp-DP53",
+          "canonicalName": "Arceus",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 83605,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/83605/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP53",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP56",
+          "canonicalName": "Arceus",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 83606,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/83606/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP56",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP45",
+          "canonicalName": "Charizard G",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 84202,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/84202/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP45",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP19",
+          "canonicalName": "Darkrai",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 84712,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/84712/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP19",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP17",
+          "canonicalName": "Dialga",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 84813,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/84813/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP17",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP37",
+          "canonicalName": "Dialga",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 84814,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/84814/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP37",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP11",
+          "canonicalName": "Empoleon",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 85207,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/85207/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP11",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP46",
+          "canonicalName": "Garchomp C",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 85630,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/85630/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP46",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP38",
+          "canonicalName": "Giratina",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 85743,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/85743/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP38",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP31",
+          "canonicalName": "Heatran",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 86055,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/86055/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP31",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP10",
+          "canonicalName": "Infernape",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 86282,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/86282/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP10",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP12",
+          "canonicalName": "Lucario",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 86890,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/86890/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP12",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP28",
+          "canonicalName": "Mewtwo",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 87434,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/87434/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP28",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP18",
+          "canonicalName": "Palkia",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 87920,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/87920/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP18",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP47",
+          "canonicalName": "Rayquaza C",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 88641,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/88641/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP47",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP30",
+          "canonicalName": "Regigigas",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 88670,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/88670/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP30",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP29",
+          "canonicalName": "Rhyperior",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 88750,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/88750/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP29",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP39",
+          "canonicalName": "Shaymin",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 89116,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/89116/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP39",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP09",
+          "canonicalName": "Torterra",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 89990,
+          "evidenceURLs": [
+            "https://mp-search-api.tcgplayer.com/v1/product/89990/details",
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP09",
+            "https://bulbapedia.bulbagarden.net/wiki/DP_Black_Star_Promos_(TCG)"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP24",
+          "canonicalName": "Darkrai",
+          "variantID": "jumbo",
+          "providerType": "holo",
+          "tcgplayerProductID": 211427,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP24",
+            "https://mp-search-api.tcgplayer.com/v1/product/211427/details",
+            "https://bulbapedia.bulbagarden.net/wiki/Giant_cards"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP40",
+          "canonicalName": "Regigigas",
+          "variantID": "jumbo",
+          "providerType": "holo",
+          "tcgplayerProductID": 211505,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP40",
+            "https://mp-search-api.tcgplayer.com/v1/product/211505/details",
+            "https://bulbapedia.bulbagarden.net/wiki/Giant_cards"
+          ]
+        },
+        {
+          "providerCardID": "dpp-DP50",
+          "canonicalName": "Arceus",
+          "variantID": "jumbo",
+          "providerType": "holo",
+          "tcgplayerProductID": 211415,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/dpp-DP50",
+            "https://mp-search-api.tcgplayer.com/v1/product/211415/details",
+            "https://bulbapedia.bulbagarden.net/wiki/Giant_cards"
+          ]
+        }
+      ]
+    },
     {"providerSetID":"hgssp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"HGSS","catalogLocalIDPrefix":"HGSS","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
-    {"providerSetID":"bwp","recognitionKind":"promo","printedCode":null,"claimedOfficialCount":null,"printedPrefix":"BW","catalogLocalIDPrefix":"BW","localIDPadWidth":2,"displayName":null,"releaseDate":null,"releaseOrder":null,"scanEnabled":true,"logoURL":null,"symbolURL":null,"rulesVersion":1},
+    {
+      "providerSetID": "bwp",
+      "recognitionKind": "promo",
+      "printedCode": null,
+      "claimedOfficialCount": null,
+      "printedPrefix": "BW",
+      "catalogLocalIDPrefix": "BW",
+      "localIDPadWidth": 2,
+      "displayName": null,
+      "releaseDate": null,
+      "releaseOrder": null,
+      "scanEnabled": true,
+      "logoURL": null,
+      "symbolURL": null,
+      "rulesVersion": 1,
+      "additionalVariants": [
+        {
+          "providerCardID": "bwp-BW45",
+          "canonicalName": "Mewtwo-EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 87430,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/bwp-BW45",
+            "https://mp-search-api.tcgplayer.com/v1/product/87430/details",
+            "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf"
+          ]
+        },
+        {
+          "providerCardID": "bwp-BW46",
+          "canonicalName": "Darkrai-EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 84707,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/bwp-BW46",
+            "https://mp-search-api.tcgplayer.com/v1/product/84707/details",
+            "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf"
+          ]
+        },
+        {
+          "providerCardID": "bwp-BW47",
+          "canonicalName": "Rayquaza-EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 88646,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/bwp-BW47",
+            "https://mp-search-api.tcgplayer.com/v1/product/88646/details",
+            "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf"
+          ]
+        }
+      ]
+    },
     {
       "providerSetID": "xyp",
       "recognitionKind": "promo",
@@ -5592,6 +5963,253 @@
             "https://api.tcgdex.net/v2/en/cards/xyp-XY197",
             "https://mp-search-api.tcgplayer.com/v1/product/127128/details",
             "https://www.pokebeach.com/2017/01/volcanion-magearna-mythical-collections-releasing-next-week-photos"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY121",
+          "canonicalName": "Charizard EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 117267,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY121",
+            "https://mp-search-api.tcgplayer.com/v1/product/117267/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/red-blue-collection-charizard-ex/"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY122",
+          "canonicalName": "Blastoise EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 118862,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY122",
+            "https://mp-search-api.tcgplayer.com/v1/product/118862/details",
+            "https://www.pokemon.com/us/pokemon-tcg/product-gallery/red-blue-collection-blastoise-ex/"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY123",
+          "canonicalName": "Venusaur EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 120701,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY123",
+            "https://mp-search-api.tcgplayer.com/v1/product/120701/details",
+            "https://gogts.net/pokemon-tcg-red-blue-collection-venusaur-ex/"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY124",
+          "canonicalName": "Pikachu EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 123436,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY124",
+            "https://mp-search-api.tcgplayer.com/v1/product/123436/details",
+            "https://www.pokemon.com/us/pokemon-tcg/product-gallery/red-and-blue-collection-pikachu-ex/"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY41",
+          "canonicalName": "Kyogre EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108591,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY41",
+            "https://mp-search-api.tcgplayer.com/v1/product/108591/details",
+            "https://gogts.net/pokemon-ccg-legends-hoenn-tins/",
+            "https://www.pokebeach.com/2015/03/legends-of-hoenn-tins-now-available"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY42",
+          "canonicalName": "Groudon EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108592,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY42",
+            "https://mp-search-api.tcgplayer.com/v1/product/108592/details",
+            "https://gogts.net/pokemon-ccg-legends-hoenn-tins/",
+            "https://www.pokebeach.com/2015/03/legends-of-hoenn-tins-now-available"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY53",
+          "canonicalName": "Sceptile EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 100509,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY53",
+            "https://mp-search-api.tcgplayer.com/v1/product/100509/details",
+            "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+            "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY54",
+          "canonicalName": "Blaziken EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 100510,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY54",
+            "https://mp-search-api.tcgplayer.com/v1/product/100510/details",
+            "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+            "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY55",
+          "canonicalName": "Swampert EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 100511,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY55",
+            "https://mp-search-api.tcgplayer.com/v1/product/100511/details",
+            "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+            "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY69",
+          "canonicalName": "Rayquaza EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108599,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY69",
+            "https://mp-search-api.tcgplayer.com/v1/product/108599/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-rayquaza-ex-box",
+            "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY70",
+          "canonicalName": "Tyrantrum EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108600,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY70",
+            "https://mp-search-api.tcgplayer.com/v1/product/108600/details",
+            "https://gogts.net/pokemon-ccg-tyrantrum-ex-box/",
+            "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY71",
+          "canonicalName": "Hoopa EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108601,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY71",
+            "https://mp-search-api.tcgplayer.com/v1/product/108601/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+            "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY72",
+          "canonicalName": "Latios EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108602,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY72",
+            "https://mp-search-api.tcgplayer.com/v1/product/108602/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+            "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY73",
+          "canonicalName": "Rayquaza EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 108603,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY73",
+            "https://mp-search-api.tcgplayer.com/v1/product/108603/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+            "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY149",
+          "canonicalName": "Xerneas EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 121952,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY149",
+            "https://mp-search-api.tcgplayer.com/v1/product/121952/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+            "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY150",
+          "canonicalName": "Yveltal EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 121953,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY150",
+            "https://mp-search-api.tcgplayer.com/v1/product/121953/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+            "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY151",
+          "canonicalName": "Zygarde EX",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 121954,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY151",
+            "https://mp-search-api.tcgplayer.com/v1/product/121954/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+            "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins"
+          ]
+        },
+        {
+          "providerCardID": "xyp-XY04",
+          "canonicalName": "Sylveon",
+          "variantID": "holo",
+          "providerType": "holo",
+          "tcgplayerProductID": 89729,
+          "normalNeedsReview": true,
+          "evidenceURLs": [
+            "https://api.tcgdex.net/v2/en/cards/xyp-XY04",
+            "https://mp-search-api.tcgplayer.com/v1/product/89729/details",
+            "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/"
           ]
         }
       ]

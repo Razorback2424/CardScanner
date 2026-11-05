@@ -1,0 +1,61 @@
+{
+  "observedAtUTC": "2026-11-03T14:26:21.190695+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-009",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-009"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-010",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-010"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-011",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-011"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-012",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-012"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-013",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-013"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-014",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-014"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-015",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-015"
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/mee-016",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "requestedCardID": "mee-016"
+    }
+  ],
+  "30thPlacementCheck": {
+    "receipt": {
+      "url": "https://api.tcgdex.net/v2/en/sets/30th",
+      "status": 200,
+      "sha256": "97174c210f6022d91bf23b7b646f227eeff3f31c6b67b43dbbd41b7f7c4c6b5a"
+    },
+    "energyNamedMembers": []
+  }
+}

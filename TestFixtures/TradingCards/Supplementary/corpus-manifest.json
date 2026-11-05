@@ -29,6 +29,24 @@
     ]
   },
   "notes": "The original ten fixtures are DEV-HISTORICAL. The interim holdout is frozen before new analyzer work, but does not satisfy the final cross-device and cross-photographer REQ-040 gate.",
+  "metadataCorrections": [
+    {
+      "date": "2026-11-05",
+      "file": "IMG_0797.HEIC",
+      "field": "game",
+      "previous": "magic",
+      "current": "pokemon",
+      "evidence": "Original image visibly depicts the Pokemon card Ferrothorn. Image bytes and corpus split are unchanged."
+    },
+    {
+      "date": "2026-11-05",
+      "file": "IMG_0803.HEIC",
+      "field": "game",
+      "previous": "pokemon",
+      "current": "magic",
+      "evidence": "Original image visibly depicts the Magic card Spinerock Tyrant. Image bytes and corpus split are unchanged."
+    }
+  ],
   "entries": [
     {
       "file": "IMG_0347.HEIC",
@@ -550,7 +568,7 @@
       "provenanceConfidence": "high",
       "device": "iPhone 15 Pro Max",
       "face": "front",
-      "game": "magic",
+      "game": "pokemon",
       "referenceClass": "art_window",
       "encasement": "unknown",
       "background": "light_neutral",
@@ -682,7 +700,7 @@
       "provenanceConfidence": "high",
       "device": "iPhone 15 Pro Max",
       "face": "front",
-      "game": "pokemon",
+      "game": "magic",
       "referenceClass": "unknown",
       "encasement": "unknown",
       "background": "light_neutral",

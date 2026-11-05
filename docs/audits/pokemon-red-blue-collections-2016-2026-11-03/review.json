@@ -1,0 +1,76 @@
+{
+  "status": "Four ordinary Holo corrections authored locally, unsigned and unpublished",
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "inputBeforeSHA256": "b72c8ca9220ead96326af9e4a1225b25f037796c17a8c3b9e9a0470f7e824baa",
+  "inputAfterSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "freshEvidenceFileSHA256": "21a82b253e46a744700b8d07469ca104f22af150e70cdd816a11e4e888483cad",
+  "descriptorCount": 75,
+  "protectedRecordsBefore": 95,
+  "protectedRecordsAfter": 99,
+  "ordinaryHoloMinimumCountAfter": 24,
+  "previousRecordsPreserved": true,
+  "onlyFourXYPAdditionalVariantsAppended": true,
+  "addedRecords": [
+    {
+      "providerCardID": "xyp-XY121",
+      "canonicalName": "Charizard EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 117267,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY121",
+        "https://mp-search-api.tcgplayer.com/v1/product/117267/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/red-blue-collection-charizard-ex/"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY122",
+      "canonicalName": "Blastoise EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 118862,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY122",
+        "https://mp-search-api.tcgplayer.com/v1/product/118862/details",
+        "https://www.pokemon.com/us/pokemon-tcg/product-gallery/red-blue-collection-blastoise-ex/"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY123",
+      "canonicalName": "Venusaur EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 120701,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY123",
+        "https://mp-search-api.tcgplayer.com/v1/product/120701/details",
+        "https://gogts.net/pokemon-tcg-red-blue-collection-venusaur-ex/"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY124",
+      "canonicalName": "Pikachu EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 123436,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY124",
+        "https://mp-search-api.tcgplayer.com/v1/product/123436/details",
+        "https://www.pokemon.com/us/pokemon-tcg/product-gallery/red-and-blue-collection-pikachu-ex/"
+      ]
+    }
+  ],
+  "sourceAccess": {
+    "manufacturerCharizardBlastoisePikachu": "Indexed official page bodies explicitly describe foil promo cards; no raw-page hash or visual package inspection claimed",
+    "venusaurDistributor": "Contemporary GTS Distribution indexed product body explicitly describes foil promo; direct web open returned HTTP 429 and was not retried",
+    "productIdentity": "Four fresh ordinary XY Promos primary marketplace details and four TCGdex identities; all HTTP 200",
+    "jumboScope": "No Jumbo entry, release date, inventory row or pattern inferred from regional package contents"
+  },
+  "pendingStampProposal": "Four Pok\u00e9ween stamped records remain uninstalled and require support approval; if later installed, protected total would be 103, not 99",
+  "appOrCoreCodeChanged": false,
+  "buildTestsRerun": false
+}

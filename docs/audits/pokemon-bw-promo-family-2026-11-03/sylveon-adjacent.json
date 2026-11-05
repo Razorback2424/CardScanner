@@ -1,0 +1,56 @@
+{
+  "observedAtUTC": "2026-11-03T15:15:06.882338+00:00",
+  "card": {
+    "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY04",
+    "status": 200,
+    "sha256": "d8308670146d0b14743d1deb42a18b459009b7821fcb417c616861688e25d963",
+    "requestedCardID": "xyp-XY04",
+    "identity": {
+      "id": "xyp-XY04",
+      "localId": "XY04",
+      "name": "Sylveon",
+      "set": {
+        "cardCount": {
+          "official": 211,
+          "total": 216
+        },
+        "id": "xyp",
+        "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+        "name": "XY Black Star Promos",
+        "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+      },
+      "variants": {
+        "firstEdition": false,
+        "holo": false,
+        "normal": true,
+        "reverse": false,
+        "wPromo": false
+      },
+      "variants_detailed": [
+        {
+          "type": "normal",
+          "size": "standard",
+          "variantId": "generated"
+        }
+      ]
+    }
+  },
+  "product": {
+    "url": "https://mp-search-api.tcgplayer.com/v1/product/89729/details",
+    "status": 200,
+    "sha256": "717863a57098bad05d4d230311bb30b9931f03e2354a6c4a411c862dcd25e059",
+    "requestedProductID": 89729,
+    "identity": {
+      "productId": 89729.0,
+      "productName": "Sylveon - XY04",
+      "setId": 1451.0,
+      "setCode": "PR",
+      "setName": "XY Promos",
+      "productLineName": "Pokemon",
+      "productTypeName": "Cards",
+      "foilOnly": true,
+      "normalOnly": false,
+      "number": "XY04"
+    }
+  }
+}

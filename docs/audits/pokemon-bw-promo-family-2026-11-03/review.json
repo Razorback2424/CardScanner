@@ -1,0 +1,125 @@
+{
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "beforeInputSHA256": "731c0cdc35f0145b7540b70db3776e047a766a006c3c9fb9dc9dc4838b56c89f",
+  "afterInputSHA256": "2010e87686f36bdc712d3a4f461945da17287818b11292b3923f05299ac4ba32",
+  "delta": "Exactly four ordinary Holo corrections; all prior 112 records and all other parsed input values unchanged",
+  "records": [
+    {
+      "providerCardID": "bwp-BW45",
+      "canonicalName": "Mewtwo-EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 87430,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/bwp-BW45",
+        "https://mp-search-api.tcgplayer.com/v1/product/87430/details",
+        "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf"
+      ]
+    },
+    {
+      "providerCardID": "bwp-BW46",
+      "canonicalName": "Darkrai-EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 84707,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/bwp-BW46",
+        "https://mp-search-api.tcgplayer.com/v1/product/84707/details",
+        "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf"
+      ]
+    },
+    {
+      "providerCardID": "bwp-BW47",
+      "canonicalName": "Rayquaza-EX",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 88646,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/bwp-BW47",
+        "https://mp-search-api.tcgplayer.com/v1/product/88646/details",
+        "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf"
+      ]
+    },
+    {
+      "providerCardID": "xyp-XY04",
+      "canonicalName": "Sylveon",
+      "variantID": "holo",
+      "providerType": "holo",
+      "tcgplayerProductID": 89729,
+      "normalNeedsReview": true,
+      "evidenceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/xyp-XY04",
+        "https://mp-search-api.tcgplayer.com/v1/product/89729/details",
+        "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/"
+      ]
+    }
+  ],
+  "counts": {
+    "providerCards": 101,
+    "generatedStandardNormalObjects": 101,
+    "populatedDetailedTCGplayerHandles": 0,
+    "marketplaceProducts": 148,
+    "successfulProductReadsAfterOneTransientRetry": 148,
+    "BWNumberedProducts": 140,
+    "distinctBWMarketplaceNumbers": 99,
+    "otherSetPrereleaseProducts": 8,
+    "conservativeExactNameNumberOrdinaryMatches": 72,
+    "foilOnlyAmongConservativeMatches": 60,
+    "normalOnlyAmongConservativeMatches": 12,
+    "newBWOrdinaryHoloRecords": 3,
+    "newAdjacentXYOrdinaryHoloRecords": 1,
+    "currentProtectedRecords": 116,
+    "currentOrdinaryHoloRecords": 41
+  },
+  "sourceObservations": {
+    "manufacturerSources": [
+      {
+        "url": "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf",
+        "observation": "Original TPCI sell sheet names Mewtwo-EX, Darkrai-EX and Rayquaza-EX as the three foil tin promos; downloaded PDF text and full rendered page inspected",
+        "receipt": {
+          "label": "legendary-ex",
+          "url": "https://cdn.pidgi.net/images/6/69/Legendary_EX_Tins_sell_sheet.pdf",
+          "status": 200,
+          "sha256": "b7330f2520d526ff37f101cb0912bc7934c54c041073963ee5f95ffe0aeb8257"
+        }
+      },
+      {
+        "url": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/bw-sylveon-collection/",
+        "observation": "Indexed official product description identifies Sylveon and Eevee/evolutions as foil cards. Direct extraction contained only an iframe; no raw-page hash or package inspection claimed"
+      },
+      {
+        "url": "https://deviramericas.com/wp-content/uploads/2013/10/Sylveon_Collection_Sell_Sheet_.pdf",
+        "observation": "Web PDF extraction confirms foil family; direct download returned HTTP 403. No local PDF or raw-body hash exists for this source"
+      }
+    ],
+    "unreleasedIdentities": {
+      "providerCardIDs": [
+        "bwp-BW77",
+        "bwp-BW78"
+      ],
+      "status": "Confirmed cancellation findings; not removed from input or payload",
+      "sources": [
+        {
+          "url": "https://www.pokebeach.com/2014/07/lost-bw77-and-bw78-promo-cards-finally-revealed",
+          "observation": "Contemporary primary reporting says planned English Pikachu/Raichu promos belonged to canceled product and were never issued"
+        },
+        {
+          "url": "https://bulbanews.bulbagarden.net/wiki/Promos_BW77,_BW78_listed_on_Pok%C3%A9mon.com",
+          "observation": "Contemporary report distinguishes temporary official digital images from physical release and records cancellation and subsequent database removal"
+        }
+      ],
+      "deliveryBoundary": "Existing membershipRecognition requires all provider cards; a 99-member filter cannot safely remove two IDs. No set-wide scan disabling or holdings deletion is proposed"
+    },
+    "patternHolds": {
+      "BW36-BW38": "2012 spring EX tins: named-pattern review, no blanket ordinary Holo addition",
+      "BW61-BW63": "EX Power tins: Pokumon exact card histories label Cosmos, not Mirror; not admitted as ordinary Holo",
+      "BW81-BW83": "Team Plasma tins: named-pattern evidence needs full independent reconciliation",
+      "BW87-BW94": "Eight independently corroborated Cosmos promos; see sylveon-cosmos-review.json",
+      "additionalRows": "Other stamps, prizes, Cracked Ice, Tinsel and pixel/smooth patterns remain separate review leads; marketplace product count is not exhaustive printing coverage"
+    }
+  },
+  "comparisonBoundary": "Conservative matching removes only terminal - BWxx. Parenthetical number/species modifiers and Team Plasma labels remain unmatched leads, not absent products. Exact ordinary products may still represent named patterns and are not blanket Holo approvals."
+}

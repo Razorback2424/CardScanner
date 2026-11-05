@@ -1,0 +1,54 @@
+{
+  "status": "Native retry passed; publication held for artwork continuity",
+  "inputSHA256": "2010e87686f36bdc712d3a4f461945da17287818b11292b3923f05299ac4ba32",
+  "attempts": [
+    {
+      "nativeExitCode": 1,
+      "terminalError": "TCGdex returned HTTP 503 for cards/sv05-141",
+      "logSHA256": "3ec219f6a41e855c6184580e2fec280768dadcef3e36807e175556246fc0fb83",
+      "candidateRoot": "/Volumes/T7/CodexBuilds/CardScannerBWPromoPublisher20261103"
+    },
+    {
+      "nativeExitCode": 0,
+      "report": "native-review.json",
+      "logSHA256": "0601c1106feb822db1f2a653159205d372a404f006c8ff62d85b4be1a6214d4f",
+      "candidateRoot": "/Volumes/T7/CodexBuilds/CardScannerBWPromoPublisherRetry20261103"
+    }
+  ],
+  "activeProductionRevision": 20,
+  "activeEnvelopeSHA256": "2f871edb9061cd2c77c9323664232be4fcffb7ef35293e2b4df64945dae3ec85",
+  "activeSignatureVerifiedByNormalNativePublisher": true,
+  "activeDescriptors": 75,
+  "activeProtectedRecords": 95,
+  "candidateRevision": 21,
+  "changeClass": "authority",
+  "descriptors": 75,
+  "numberedSummaries": 6675,
+  "protectedRecords": 116,
+  "allAuthoringCorrectionsExactlyCarried": true,
+  "allActiveCorrectionsRetained": true,
+  "previousProviderFingerprintsUnchanged": 75,
+  "secondaryProviderAvailable": true,
+  "artworkContinuityPassed": false,
+  "artifacts": {
+    "root": "/Volumes/T7/CodexBuilds/CardScannerBWPromoPublisherRetry20261103",
+    "payloadSHA256": "7571ab9bc5b98f352e9a1f149e5ea2e84a12a6aadf784fd1f3ec359b9194b59c",
+    "snapshotSHA256": "41474a2c22d0125a84235b3870a835cb3343c7c8b9127a312d45593df305ff6f",
+    "nativeReviewSHA256": "b1464d8f79f6181eb688d008bdf2b83b2a92eed477b9f75b69c3540c0c5f509e",
+    "repositoryNativeReviewSHA256": "a324984ce186745256de573e9ae3fb86d7c650b70f3e88abbf1e8d92201cc338",
+    "repositoryNativeReviewNormalization": "One final newline added; parsed JSON identical"
+  },
+  "verificationBoundary": {
+    "appOrCoreCodeChanged": false,
+    "buildTestsRerun": false,
+    "previousSharedPassed": 88,
+    "previousSharedSkipped": 1,
+    "previousIOSPassed": 80,
+    "cosmosReviewInstalled": false,
+    "excludedCardsSupportInstalled": false,
+    "physicalCameraAccepted": false,
+    "paidProviderAccepted": false,
+    "signedOrPublishedByThisTurn": false,
+    "committedByThisTurn": false
+  }
+}

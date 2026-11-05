@@ -1,0 +1,337 @@
+{
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "beforeInputSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "afterInputSHA256": "731c0cdc35f0145b7540b70db3776e047a766a006c3c9fb9dc9dc4838b56c89f",
+  "delta": "Exactly 13 ordinary Holo records appended to xyp; previous 99 records and all other fields unchanged",
+  "records": [
+    {
+      "family": "Legends of Hoenn Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY41",
+        "canonicalName": "Kyogre EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108591,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY41",
+          "https://mp-search-api.tcgplayer.com/v1/product/108591/details",
+          "https://gogts.net/pokemon-ccg-legends-hoenn-tins/",
+          "https://www.pokebeach.com/2015/03/legends-of-hoenn-tins-now-available"
+        ]
+      },
+      "independentFoilSource": "https://gogts.net/pokemon-ccg-legends-hoenn-tins/",
+      "independentIdentitySource": "https://www.pokebeach.com/2015/03/legends-of-hoenn-tins-now-available",
+      "primaryProductName": "Kyogre EX",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Legends of Hoenn Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY42",
+        "canonicalName": "Groudon EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108592,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY42",
+          "https://mp-search-api.tcgplayer.com/v1/product/108592/details",
+          "https://gogts.net/pokemon-ccg-legends-hoenn-tins/",
+          "https://www.pokebeach.com/2015/03/legends-of-hoenn-tins-now-available"
+        ]
+      },
+      "independentFoilSource": "https://gogts.net/pokemon-ccg-legends-hoenn-tins/",
+      "independentIdentitySource": "https://www.pokebeach.com/2015/03/legends-of-hoenn-tins-now-available",
+      "primaryProductName": "Groudon EX",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Hoenn Power Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY53",
+        "canonicalName": "Sceptile EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 100509,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY53",
+          "https://mp-search-api.tcgplayer.com/v1/product/100509/details",
+          "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+          "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores"
+        ]
+      },
+      "independentFoilSource": "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+      "independentIdentitySource": "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores",
+      "primaryProductName": "Sceptile EX - XY53",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Hoenn Power Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY54",
+        "canonicalName": "Blaziken EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 100510,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY54",
+          "https://mp-search-api.tcgplayer.com/v1/product/100510/details",
+          "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+          "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores"
+        ]
+      },
+      "independentFoilSource": "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+      "independentIdentitySource": "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores",
+      "primaryProductName": "Blaziken EX - XY54",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Hoenn Power Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY55",
+        "canonicalName": "Swampert EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 100511,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY55",
+          "https://mp-search-api.tcgplayer.com/v1/product/100511/details",
+          "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+          "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores"
+        ]
+      },
+      "independentFoilSource": "https://gogts.net/pokemon-ccg-2015-summer-hoenn-power-tin/",
+      "independentIdentitySource": "https://www.pokebeach.com/2015/05/hoenn-power-tins-now-in-many-stores",
+      "primaryProductName": "Swampert EX - XY55",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Shiny Rayquaza-EX Box",
+      "signedRecord": {
+        "providerCardID": "xyp-XY69",
+        "canonicalName": "Rayquaza EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108599,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY69",
+          "https://mp-search-api.tcgplayer.com/v1/product/108599/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-rayquaza-ex-box",
+          "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-rayquaza-ex-box",
+      "independentIdentitySource": "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476",
+      "primaryProductName": "Rayquaza EX (Shiny)",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Tyrantrum-EX Box",
+      "signedRecord": {
+        "providerCardID": "xyp-XY70",
+        "canonicalName": "Tyrantrum EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108600,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY70",
+          "https://mp-search-api.tcgplayer.com/v1/product/108600/details",
+          "https://gogts.net/pokemon-ccg-tyrantrum-ex-box/",
+          "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+        ]
+      },
+      "independentFoilSource": "https://gogts.net/pokemon-ccg-tyrantrum-ex-box/",
+      "independentIdentitySource": "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476",
+      "primaryProductName": "Tyrantrum EX",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Powers Beyond Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY71",
+        "canonicalName": "Hoopa EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108601,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY71",
+          "https://mp-search-api.tcgplayer.com/v1/product/108601/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+          "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+      "independentIdentitySource": "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476",
+      "primaryProductName": "Hoopa EX",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Powers Beyond Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY72",
+        "canonicalName": "Latios EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108602,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY72",
+          "https://mp-search-api.tcgplayer.com/v1/product/108602/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+          "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+      "independentIdentitySource": "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476",
+      "primaryProductName": "Latios EX",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Powers Beyond Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY73",
+        "canonicalName": "Rayquaza EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 108603,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY73",
+          "https://mp-search-api.tcgplayer.com/v1/product/108603/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+          "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/xy-powers-beyond-tin",
+      "independentIdentitySource": "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/promotional/839/black-star-promos-xy/13689/?populationID=487476",
+      "primaryProductName": "Rayquaza EX (XY73)",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Shiny Kalos Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY149",
+        "canonicalName": "Xerneas EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 121952,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY149",
+          "https://mp-search-api.tcgplayer.com/v1/product/121952/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+          "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+      "independentIdentitySource": "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins",
+      "primaryProductName": "Xerneas EX - XY149 (Shiny)",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Shiny Kalos Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY150",
+        "canonicalName": "Yveltal EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 121953,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY150",
+          "https://mp-search-api.tcgplayer.com/v1/product/121953/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+          "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+      "independentIdentitySource": "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins",
+      "primaryProductName": "Yveltal EX - XY150 (Shiny)",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    },
+    {
+      "family": "Shiny Kalos Tins",
+      "signedRecord": {
+        "providerCardID": "xyp-XY151",
+        "canonicalName": "Zygarde EX",
+        "variantID": "holo",
+        "providerType": "holo",
+        "tcgplayerProductID": 121954,
+        "normalNeedsReview": true,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/xyp-XY151",
+          "https://mp-search-api.tcgplayer.com/v1/product/121954/details",
+          "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+          "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins"
+        ]
+      },
+      "independentFoilSource": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/shiny-kalos-tin",
+      "independentIdentitySource": "https://www.pokebeach.com/2016/05/zygarde-shiny-xerneas-shiny-yveltal-distributions-and-ex-tins",
+      "primaryProductName": "Zygarde EX (Shiny)",
+      "physicalChanges": "Ordinary Holo minimum and exact product only; no art-color or Jumbo inference"
+    }
+  ],
+  "sourceObservationBoundary": {
+    "independentBodies": "Indexed or extracted publisher page text; no manufacturer raw body hash claimed",
+    "directGTSHoennPowerStatus": 429,
+    "directCGCBody": "JavaScript loading template; exact numbers and Holo identities observed in indexed text, not raw population data",
+    "imagesInspected": [
+      {
+        "productID": 108599,
+        "url": "https://product-images.tcgplayer.com/108599.jpg",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "sha256": "255df1c921d42d44f0531bb554b78d4978537e8376cedeb79b8421b140b37877",
+        "visuallyInspected": true
+      },
+      {
+        "productID": 108603,
+        "url": "https://product-images.tcgplayer.com/108603.jpg",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "sha256": "da7e2df1db439d3478d61784d8c94e61805edf2c4e39ebd56a764c482a393d89",
+        "visuallyInspected": true
+      },
+      {
+        "productID": 121954,
+        "url": "https://product-images.tcgplayer.com/121954.jpg",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "sha256": "d8de38b438343fc848f265ae8580604096e031e95f2ea3236ccfebfe9f5a38b1",
+        "visuallyInspected": true
+      }
+    ],
+    "allOtherProductImagesInspected": false
+  },
+  "censusReconciliation": {
+    "originalFoilOnlySignals": 155,
+    "admittedExactPairsFromOriginalSignals": 33,
+    "remainingOriginalSignals": 122,
+    "admittedPairsOutsideOriginalSignals": [
+      {
+        "providerCardID": "xyp-XY149",
+        "productID": 121952
+      },
+      {
+        "providerCardID": "xyp-XY150",
+        "productID": 121953
+      },
+      {
+        "providerCardID": "xyp-XY151",
+        "productID": 121954
+      },
+      {
+        "providerCardID": "xyp-XY69",
+        "productID": 108599
+      }
+    ],
+    "explanation": "Four normalized exact identities were outside the original matching census. Subtracting all 37 corrections from 155 would incorrectly yield 118."
+  }
+}

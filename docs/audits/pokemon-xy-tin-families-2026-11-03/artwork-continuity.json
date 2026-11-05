@@ -1,0 +1,927 @@
+{
+  "status": "Publication hold: candidate does not preserve all active artwork mappings",
+  "activeMappings": 238,
+  "candidateMappings": 199,
+  "exactlyRetained": 167,
+  "missingCount": 67,
+  "changedCount": 4,
+  "addedCount": 28,
+  "missing": [
+    {
+      "providerSetID": "2019sm",
+      "localID": "1",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/1_hires.png",
+        "localID": "1",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/1.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "10",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/10_hires.png",
+        "localID": "10",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/10.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "11",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/11_hires.png",
+        "localID": "11",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/11.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "12",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/12_hires.png",
+        "localID": "12",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/12.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "2",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/2_hires.png",
+        "localID": "2",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/2.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "3",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/3_hires.png",
+        "localID": "3",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/3.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "4",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/4_hires.png",
+        "localID": "4",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/4.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "5",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/5_hires.png",
+        "localID": "5",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/5.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "6",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/6_hires.png",
+        "localID": "6",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/6.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "7",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/7_hires.png",
+        "localID": "7",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/7.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "8",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/8_hires.png",
+        "localID": "8",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/8.png"
+      }
+    },
+    {
+      "providerSetID": "2019sm",
+      "localID": "9",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/mcd19/9_hires.png",
+        "localID": "9",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd19/9.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "005",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/005/high.png",
+        "localID": "005",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/005/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "006",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/006/high.png",
+        "localID": "006",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/006/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "007",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/007/high.png",
+        "localID": "007",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/007/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "008",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/008/high.png",
+        "localID": "008",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/008/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "009",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/009/high.png",
+        "localID": "009",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/009/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "010",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/010/high.png",
+        "localID": "010",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/010/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "011",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/011/high.png",
+        "localID": "011",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/011/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "012",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/012/high.png",
+        "localID": "012",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/012/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "013",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/013/high.png",
+        "localID": "013",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/013/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "014",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/014/high.png",
+        "localID": "014",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/014/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "015",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/015/high.png",
+        "localID": "015",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/015/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "016",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/016/high.png",
+        "localID": "016",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/016/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "017",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/017/high.png",
+        "localID": "017",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/017/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "018",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/018/high.png",
+        "localID": "018",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/018/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "019",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/019/high.png",
+        "localID": "019",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/019/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "020",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/020/high.png",
+        "localID": "020",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/020/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "021",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/021/high.png",
+        "localID": "021",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/021/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "022",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/022/high.png",
+        "localID": "022",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/022/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "023",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/023/high.png",
+        "localID": "023",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/023/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "024",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/024/high.png",
+        "localID": "024",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/024/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "025",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/025/high.png",
+        "localID": "025",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/025/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "026",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/026/high.png",
+        "localID": "026",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/026/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "027",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/027/high.png",
+        "localID": "027",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/027/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "028",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/028/high.png",
+        "localID": "028",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/028/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "029",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/029/high.png",
+        "localID": "029",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/029/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "030",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/030/high.png",
+        "localID": "030",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/030/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "031",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/031/high.png",
+        "localID": "031",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/031/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "037",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/037/high.png",
+        "localID": "037",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/037/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "038",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/038/high.png",
+        "localID": "038",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/038/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "039",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/039/high.png",
+        "localID": "039",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/039/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "040",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/040/high.png",
+        "localID": "040",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/040/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "041",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/041/high.png",
+        "localID": "041",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/041/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "042",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/042/high.png",
+        "localID": "042",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/042/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "043",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/043/high.png",
+        "localID": "043",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/043/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "044",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/044/high.png",
+        "localID": "044",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/044/low.png"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "045",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/045/high.png",
+        "localID": "045",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/045/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "191",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/191/high.png",
+        "localID": "191",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/191/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "192",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/192/high.png",
+        "localID": "192",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/192/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "196",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/196/high.png",
+        "localID": "196",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/196/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "199",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/199/high.png",
+        "localID": "199",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/199/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "200",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/200/high.png",
+        "localID": "200",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/200/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "201",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/201/high.png",
+        "localID": "201",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/201/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "202",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/202/high.png",
+        "localID": "202",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/202/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "203",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/203/high.png",
+        "localID": "203",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/203/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "204",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/204/high.png",
+        "localID": "204",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/204/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "205",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/205/high.png",
+        "localID": "205",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/205/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "213",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/213/high.png",
+        "localID": "213",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/213/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "214",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/214/high.png",
+        "localID": "214",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/214/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "215",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/215/high.png",
+        "localID": "215",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/215/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "216",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/216/high.png",
+        "localID": "216",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/216/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "217",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/217/high.png",
+        "localID": "217",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/217/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "218",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/218/high.png",
+        "localID": "218",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/218/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "224",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/224/high.png",
+        "localID": "224",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/224/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "225",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/225/high.png",
+        "localID": "225",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/225/low.png"
+      }
+    },
+    {
+      "providerSetID": "svp",
+      "localID": "500",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/sv/svp/500/high.png",
+        "localID": "500",
+        "thumbnailURL": "https://assets.tcgdex.net/en/sv/svp/500/low.png"
+      }
+    }
+  ],
+  "changed": [
+    {
+      "providerSetID": "mep",
+      "localID": "001",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/001/high.png",
+        "localID": "001",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/001/low.png"
+      },
+      "candidate": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/001/high.webp",
+        "localID": "001",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/001/low.webp"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "002",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/002/high.png",
+        "localID": "002",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/002/low.png"
+      },
+      "candidate": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/002/high.webp",
+        "localID": "002",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/002/low.webp"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "003",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/003/high.png",
+        "localID": "003",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/003/low.png"
+      },
+      "candidate": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/003/high.webp",
+        "localID": "003",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/003/low.webp"
+      }
+    },
+    {
+      "providerSetID": "mep",
+      "localID": "004",
+      "active": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/004/high.png",
+        "localID": "004",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/004/low.png"
+      },
+      "candidate": {
+        "imageURL": "https://assets.tcgdex.net/en/me/mep/004/high.webp",
+        "localID": "004",
+        "thumbnailURL": "https://assets.tcgdex.net/en/me/mep/004/low.webp"
+      }
+    }
+  ],
+  "added": [
+    {
+      "providerSetID": "2021swsh",
+      "localID": "1",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/1_hires.png",
+        "localID": "1",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/1.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "10",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/10_hires.png",
+        "localID": "10",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/10.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "11",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/11_hires.png",
+        "localID": "11",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/11.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "12",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/12_hires.png",
+        "localID": "12",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/12.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "13",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/13_hires.png",
+        "localID": "13",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/13.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "14",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/14_hires.png",
+        "localID": "14",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/14.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "15",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/15_hires.png",
+        "localID": "15",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/15.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "16",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/16_hires.png",
+        "localID": "16",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/16.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "17",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/17_hires.png",
+        "localID": "17",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/17.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "18",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/18_hires.png",
+        "localID": "18",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/18.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "19",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/19_hires.png",
+        "localID": "19",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/19.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "2",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/2_hires.png",
+        "localID": "2",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/2.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "20",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/20_hires.png",
+        "localID": "20",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/20.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "21",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/21_hires.png",
+        "localID": "21",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/21.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "22",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/22_hires.png",
+        "localID": "22",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/22.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "23",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/23_hires.png",
+        "localID": "23",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/23.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "24",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/24_hires.png",
+        "localID": "24",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/24.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "25",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/25_hires.png",
+        "localID": "25",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/25.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "3",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/3_hires.png",
+        "localID": "3",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/3.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "4",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/4_hires.png",
+        "localID": "4",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/4.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "5",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/5_hires.png",
+        "localID": "5",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/5.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "6",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/6_hires.png",
+        "localID": "6",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/6.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "7",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/7_hires.png",
+        "localID": "7",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/7.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "8",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/8_hires.png",
+        "localID": "8",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/8.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "9",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/9_hires.png",
+        "localID": "9",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/9.png"
+      }
+    },
+    {
+      "providerSetID": "bwp",
+      "localID": "BW04",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/bwp/BW004_hires.png",
+        "localID": "BW04",
+        "thumbnailURL": "https://images.pokemontcg.io/bwp/BW004.png"
+      }
+    },
+    {
+      "providerSetID": "bwp",
+      "localID": "BW05",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/bwp/BW005_hires.png",
+        "localID": "BW05",
+        "thumbnailURL": "https://images.pokemontcg.io/bwp/BW005.png"
+      }
+    },
+    {
+      "providerSetID": "bwp",
+      "localID": "BW96",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/bwp/BW96_hires.png",
+        "localID": "BW96",
+        "thumbnailURL": "https://images.pokemontcg.io/bwp/BW96.png"
+      }
+    }
+  ],
+  "boundary": "No URL-health determination or image substitution is inferred from this mapping comparison. No candidate payload was hand-edited; authoring has no per-card artwork field."
+}

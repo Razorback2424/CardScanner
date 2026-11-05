@@ -1,0 +1,24 @@
+{
+  "observedAtUTC": "2026-11-03T14:22:42.024414+00:00",
+  "purpose": "Secondary inventory discovery only; primary identity verification follows",
+  "groups": [
+    {
+      "groupID": 24382,
+      "receipt": {
+        "url": "https://tcgcsv.com/tcgplayer/3/24382/products",
+        "status": 401,
+        "error": "HTTP Error 401: Unauthorized"
+      },
+      "products": []
+    },
+    {
+      "groupID": 24461,
+      "receipt": {
+        "url": "https://tcgcsv.com/tcgplayer/3/24461/products",
+        "status": 401,
+        "error": "HTTP Error 401: Unauthorized"
+      },
+      "products": []
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "status": "Review proposal only; no production input or app/Core edit",
+  "observedAtUTC": "2026-11-03T13:43:37.268039+00:00",
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "inputSHA256": "b72c8ca9220ead96326af9e4a1225b25f037796c17a8c3b9e9a0470f7e824baa",
+  "currentAuthoringDescriptors": 75,
+  "currentProtectedRecords": 95,
+  "proposedAdditionalMemberships": 4,
+  "projectedProtectedRecordsIfApproved": 99,
+  "proposals": [
+    {
+      "year": 2025,
+      "installed": false,
+      "proposedSignedRecord": {
+        "providerCardID": "me01-087",
+        "canonicalName": "Spiritomb",
+        "variantID": "pokemonStamp|reverse|play-pokemon,trick-or-trade|",
+        "providerType": "reverse",
+        "providerStamps": [
+          "play-pokemon",
+          "trick-or-trade"
+        ],
+        "tcgplayerProductID": 661700,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/me01-087",
+          "https://mp-search-api.tcgplayer.com/v1/product/661700/details",
+          "https://www.cardcastergames.com/products/spiritomb-087-132-pokeween-2025-mcap-087-132",
+          "https://www.pokemon.com/fr/actualites/rendez-vous-dans-le-play-pokemon-store-pres-de-chez-vous-pour-feter-pokeween"
+        ],
+        "requiresReviewVariantIDs": [
+          "pokemonStamp|normal|trick-or-trade|"
+        ]
+      },
+      "physicalSourceChecks": {
+        "primaryMarketplaceExactIdentityAndFoil": true,
+        "independentRetailerExactNumberAndReverseHolofoil": true,
+        "manufacturerIndexedDistributionNamed": true,
+        "marketplaceEnglishFooterAndBothMarksVisuallyInspected": true
+      },
+      "currentProviderIssue": "Wrong Normal finish, incomplete mark identity and missing TCGplayer handle"
+    },
+    {
+      "year": 2026,
+      "installed": false,
+      "proposedSignedRecord": {
+        "providerCardID": "me04-049",
+        "canonicalName": "Zubat",
+        "variantID": "pokemonStamp|reverse|play-pokemon,trick-or-trade|",
+        "providerType": "reverse",
+        "providerStamps": [
+          "play-pokemon",
+          "trick-or-trade"
+        ],
+        "tcgplayerProductID": 722836,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/me04-049",
+          "https://mp-search-api.tcgplayer.com/v1/product/722836/details",
+          "https://www.ebgames.com.au/product/toys-and-collectibles/386425-pokemon-tcg-miscellaneous-cards-products-zubat-pokeween-2026-reverse-holofoil-049086-nmm",
+          "https://www.pokemon.com/uk/news/celebrate-pokeween-with-play-pokemon-events"
+        ]
+      },
+      "physicalSourceChecks": {
+        "primaryMarketplaceExactIdentityAndFoil": true,
+        "independentRetailerExactNumberAndReverseHolofoil": true,
+        "manufacturerIndexedDistributionNamed": true,
+        "marketplaceEnglishFooterAndBothMarksVisuallyInspected": true
+      },
+      "currentProviderIssue": "No stamped provider row"
+    },
+    {
+      "year": 2026,
+      "installed": false,
+      "proposedSignedRecord": {
+        "providerCardID": "me04-050",
+        "canonicalName": "Golbat",
+        "variantID": "pokemonStamp|reverse|play-pokemon,trick-or-trade|",
+        "providerType": "reverse",
+        "providerStamps": [
+          "play-pokemon",
+          "trick-or-trade"
+        ],
+        "tcgplayerProductID": 722837,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/me04-050",
+          "https://mp-search-api.tcgplayer.com/v1/product/722837/details",
+          "https://www.ebgames.com.au/product/toys-and-collectibles/386426-pokemon-tcg-miscellaneous-cards-products-golbat-pokeween-2026-reverse-holofoil-050086-nmm",
+          "https://www.pokemon.com/uk/news/celebrate-pokeween-with-play-pokemon-events"
+        ]
+      },
+      "physicalSourceChecks": {
+        "primaryMarketplaceExactIdentityAndFoil": true,
+        "independentRetailerExactNumberAndReverseHolofoil": true,
+        "manufacturerIndexedDistributionNamed": true,
+        "marketplaceEnglishFooterAndBothMarksVisuallyInspected": true
+      },
+      "currentProviderIssue": "No stamped provider row"
+    },
+    {
+      "year": 2026,
+      "installed": false,
+      "proposedSignedRecord": {
+        "providerCardID": "me04-051",
+        "canonicalName": "Crobat",
+        "variantID": "pokemonStamp|reverse|play-pokemon,trick-or-trade|",
+        "providerType": "reverse",
+        "providerStamps": [
+          "play-pokemon",
+          "trick-or-trade"
+        ],
+        "tcgplayerProductID": 722838,
+        "evidenceURLs": [
+          "https://api.tcgdex.net/v2/en/cards/me04-051",
+          "https://mp-search-api.tcgplayer.com/v1/product/722838/details",
+          "https://www.ebgames.com.au/product/toys-and-collectibles/386427-pokemon-tcg-miscellaneous-cards-products-crobat-pokeween-2026-reverse-holofoil-051086-nmm",
+          "https://www.pokemon.com/uk/news/celebrate-pokeween-with-play-pokemon-events"
+        ]
+      },
+      "physicalSourceChecks": {
+        "primaryMarketplaceExactIdentityAndFoil": true,
+        "independentRetailerExactNumberAndReverseHolofoil": true,
+        "manufacturerIndexedDistributionNamed": true,
+        "marketplaceEnglishFooterAndBothMarksVisuallyInspected": true
+      },
+      "currentProviderIssue": "No stamped provider row"
+    }
+  ],
+  "supportRequired": {
+    "ordinaryStampedMemberships": true,
+    "exactLegacyVariantPhysicalReviewHold": true,
+    "newOptionalFieldProposed": "requiresReviewVariantIDs",
+    "fieldSemantics": "For this same card only, withhold the exact listed legacy variant from scanner choices, checklist membership and prices/links until physical review; preserve stored holding keys, quantities, provenance and ledger",
+    "normalBaseHoldingMustRemainUsable": true,
+    "noAutomaticHoldingRekey": true,
+    "noChangesMadeToUnderlyingCode": true
+  },
+  "sourceAccessLimitations": {
+    "manufacturerRawGET": "HTTP 200 challenge wrapper only; no article-body hash or image observation claimed",
+    "manufacturerText": "Indexed official article bodies inspected through web search",
+    "retailerText": "Public page bodies inspected; no raw-page hash claimed",
+    "absenceOf2025Or2026BOOsterSetNotInferred": "This audit concerns named event promos only; it does not prove a universal negative about all seasonal products"
+  }
+}

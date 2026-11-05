@@ -1,0 +1,1167 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:20.076457+00:00",
+  "purpose": "Physical identity, variant and price-product IDs only; no numeric quotes",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-1",
+      "status": 200,
+      "sha256": "d1478d091a944e276d7b6a9d3b87a23f546e4b78c8813262660c00a556d6e2a8",
+      "requestedCardID": "pop5-1",
+      "identity": {
+        "id": "pop5-1",
+        "localId": "1",
+        "name": "Ho-Oh",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86123,
+            "holofoil": 86123
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86123,
+              "cardmarket": 277483
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86123,
+                "holofoil": 86123
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86123,
+              "cardmarket": 277483
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86123,
+                "holofoil": 86123
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-2",
+      "status": 200,
+      "sha256": "380b4b7df68a5df45a7dd05622ae291c7a0b11db9746f14090856e58903e4bf3",
+      "requestedCardID": "pop5-2",
+      "identity": {
+        "id": "pop5-2",
+        "localId": "2",
+        "name": "Lugia",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86907,
+            "holofoil": 86907
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86907,
+              "cardmarket": 277484
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86907,
+                "holofoil": 86907
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86907,
+              "cardmarket": 277484
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86907,
+                "holofoil": 86907
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-3",
+      "status": 200,
+      "sha256": "374783576d40fcbbd1e47e63f65b72e47046a16f57fc5a8e19d80b644ee5c04c",
+      "requestedCardID": "pop5-3",
+      "identity": {
+        "id": "pop5-3",
+        "localId": "3",
+        "name": "Mew δ",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87407,
+            "holofoil": 87407
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87407,
+              "cardmarket": 277485
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87407,
+                "holofoil": 87407
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87407,
+              "cardmarket": 277485
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87407,
+                "holofoil": 87407
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-4",
+      "status": 200,
+      "sha256": "f2ea59f5218c28592cdc5027d5f6872fc768d88f32c62f4aa4fc70397838d74b",
+      "requestedCardID": "pop5-4",
+      "identity": {
+        "id": "pop5-4",
+        "localId": "4",
+        "name": "Double Rainbow Energy",
+        "rarity": "Rare",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84894,
+            "holofoil": 84894
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84894,
+              "cardmarket": 277486
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84894,
+                "holofoil": 84894
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-5",
+      "status": 200,
+      "sha256": "cc91dd921a623ebd3d604355ff5530b1b4f31ca42d5418c6e026d9b15555fcce",
+      "requestedCardID": "pop5-5",
+      "identity": {
+        "id": "pop5-5",
+        "localId": "5",
+        "name": "Charmeleon δ",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84237
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84237,
+              "cardmarket": 277487
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84237
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-6",
+      "status": 200,
+      "sha256": "7ffc86061ddb56a85317b4347347839c5474664609c98adf9217ed6efb03cf88",
+      "requestedCardID": "pop5-6",
+      "identity": {
+        "id": "pop5-6",
+        "localId": "6",
+        "name": "Bill's Maintenance",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 83840
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 83840
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 83840
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-7",
+      "status": 200,
+      "sha256": "75ff27221c5f3e813de832d6911e09a11f633a0ea332ceac454399a9b364d263",
+      "requestedCardID": "pop5-7",
+      "identity": {
+        "id": "pop5-7",
+        "localId": "7",
+        "name": "Rare Candy",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88592
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88592,
+              "cardmarket": 277489
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88592
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-8",
+      "status": 200,
+      "sha256": "6a8b80f10c4f3f07c7ca66145f54c45bf712da3ee9b05fe9312f427e69d5857b",
+      "requestedCardID": "pop5-8",
+      "identity": {
+        "id": "pop5-8",
+        "localId": "8",
+        "name": "Boost Energy",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 83941
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 83941,
+              "cardmarket": 277490
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 83941
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-9",
+      "status": 200,
+      "sha256": "9b8d125c988b081f76b73286c28add0ffe44308f71191553f38384624373f4cc",
+      "requestedCardID": "pop5-9",
+      "identity": {
+        "id": "pop5-9",
+        "localId": "9",
+        "name": "δ Rainbow Energy",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84756
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84756
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84756
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-10",
+      "status": 200,
+      "sha256": "cf2f4598d6c95deb8bf6c8037fdc04837a425685cdbd45cf30b55c16be2809aa",
+      "requestedCardID": "pop5-10",
+      "identity": {
+        "id": "pop5-10",
+        "localId": "10",
+        "name": "Charmander δ",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84221
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84221,
+              "cardmarket": 277492
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84221
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-11",
+      "status": 200,
+      "sha256": "3bd2baab2e43521e0963287f622c54c0528d439f5a58dd368a0a9f3e831941db",
+      "requestedCardID": "pop5-11",
+      "identity": {
+        "id": "pop5-11",
+        "localId": "11",
+        "name": "Meowth δ",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87330
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87330,
+              "cardmarket": 277493
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87330
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-12",
+      "status": 200,
+      "sha256": "ac13bc3374ec30a40e15ee65f96caec9f1de2df28245abd3c5033113cfe82182",
+      "requestedCardID": "pop5-12",
+      "identity": {
+        "id": "pop5-12",
+        "localId": "12",
+        "name": "Pikachu",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88085,
+            "holofoil": 88085
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88085,
+              "cardmarket": 277494
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88085,
+                "holofoil": 88085
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88085,
+              "cardmarket": 277494
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88085,
+                "holofoil": 88085
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-13",
+      "status": 200,
+      "sha256": "b5c3f087e2b39423c5bb1e07da8ddd309fe5c0c6614ae2a71ddabbe918533373",
+      "requestedCardID": "pop5-13",
+      "identity": {
+        "id": "pop5-13",
+        "localId": "13",
+        "name": "Pikachu δ",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88110
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88110,
+              "cardmarket": 277495
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88110
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-14",
+      "status": 200,
+      "sha256": "7353ea1d34720fe10c1dac56fa7f4c330dee9cbaf944c013415977d69faa6c68",
+      "requestedCardID": "pop5-14",
+      "identity": {
+        "id": "pop5-14",
+        "localId": "14",
+        "name": "Pelipper δ",
+        "rarity": "Common",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87981,
+            "holofoil": 87981
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87981,
+              "cardmarket": 277496
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87981,
+                "holofoil": 87981
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87981,
+              "cardmarket": 277496
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87981,
+                "holofoil": 87981
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-15",
+      "status": 200,
+      "sha256": "e96109a5b15d1c707eff56cd24550a468fb2a12ad6309cb204f2b259cede911e",
+      "requestedCardID": "pop5-15",
+      "identity": {
+        "id": "pop5-15",
+        "localId": "15",
+        "name": "Zangoose δ",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90709,
+            "holofoil": 90709
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90709,
+              "cardmarket": 277497
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90709,
+                "holofoil": 90709
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90709,
+              "cardmarket": 277497
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90709,
+                "holofoil": 90709
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-16",
+      "status": 200,
+      "sha256": "87f3113ce17a1630b128282d6b9f9124d109c6e5b43f5490d3c607d5abe2093a",
+      "requestedCardID": "pop5-16",
+      "identity": {
+        "id": "pop5-16",
+        "localId": "16",
+        "name": "Espeon ★",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85329
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop5-17",
+      "status": 200,
+      "sha256": "c79e859fca7da019610325c337935efe874888d2621dec643f5082170a2243a1",
+      "requestedCardID": "pop5-17",
+      "identity": {
+        "id": "pop5-17",
+        "localId": "17",
+        "name": "Umbreon ★",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop5",
+          "logo": "https://assets.tcgdex.net/en/pop/pop5/logo",
+          "name": "POP Series 5",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop5/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90153
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90153
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

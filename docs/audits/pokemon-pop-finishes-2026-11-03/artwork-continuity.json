@@ -1,0 +1,357 @@
+{
+  "status": "Publication hold: ten active EX Trainer Kit Latias mappings absent from this candidate",
+  "activeMappings": 238,
+  "candidateMappings": 256,
+  "exactlyRetained": 228,
+  "missingCount": 10,
+  "changedCount": 0,
+  "addedCount": 28,
+  "missing": [
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "1",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/1_hires.png",
+        "localID": "1",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/1.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "10",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/10_hires.png",
+        "localID": "10",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/10.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "2",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/2_hires.png",
+        "localID": "2",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/2.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "3",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/3_hires.png",
+        "localID": "3",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/3.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "4",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/4_hires.png",
+        "localID": "4",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/4.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "5",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/5_hires.png",
+        "localID": "5",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/5.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "6",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/6_hires.png",
+        "localID": "6",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/6.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "7",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/7_hires.png",
+        "localID": "7",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/7.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "8",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/8_hires.png",
+        "localID": "8",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/8.png"
+      }
+    },
+    {
+      "providerSetID": "tk-ex-latia",
+      "localID": "9",
+      "active": {
+        "imageURL": "https://images.pokemontcg.io/tk1a/9_hires.png",
+        "localID": "9",
+        "thumbnailURL": "https://images.pokemontcg.io/tk1a/9.png"
+      }
+    }
+  ],
+  "changed": [],
+  "added": [
+    {
+      "providerSetID": "2021swsh",
+      "localID": "1",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/1_hires.png",
+        "localID": "1",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/1.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "10",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/10_hires.png",
+        "localID": "10",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/10.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "11",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/11_hires.png",
+        "localID": "11",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/11.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "12",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/12_hires.png",
+        "localID": "12",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/12.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "13",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/13_hires.png",
+        "localID": "13",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/13.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "14",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/14_hires.png",
+        "localID": "14",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/14.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "15",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/15_hires.png",
+        "localID": "15",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/15.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "16",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/16_hires.png",
+        "localID": "16",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/16.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "17",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/17_hires.png",
+        "localID": "17",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/17.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "18",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/18_hires.png",
+        "localID": "18",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/18.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "19",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/19_hires.png",
+        "localID": "19",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/19.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "2",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/2_hires.png",
+        "localID": "2",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/2.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "20",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/20_hires.png",
+        "localID": "20",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/20.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "21",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/21_hires.png",
+        "localID": "21",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/21.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "22",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/22_hires.png",
+        "localID": "22",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/22.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "23",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/23_hires.png",
+        "localID": "23",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/23.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "24",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/24_hires.png",
+        "localID": "24",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/24.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "25",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/25_hires.png",
+        "localID": "25",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/25.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "3",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/3_hires.png",
+        "localID": "3",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/3.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "4",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/4_hires.png",
+        "localID": "4",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/4.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "5",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/5_hires.png",
+        "localID": "5",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/5.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "6",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/6_hires.png",
+        "localID": "6",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/6.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "7",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/7_hires.png",
+        "localID": "7",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/7.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "8",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/8_hires.png",
+        "localID": "8",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/8.png"
+      }
+    },
+    {
+      "providerSetID": "2021swsh",
+      "localID": "9",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/mcd21/9_hires.png",
+        "localID": "9",
+        "thumbnailURL": "https://images.pokemontcg.io/mcd21/9.png"
+      }
+    },
+    {
+      "providerSetID": "bwp",
+      "localID": "BW04",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/bwp/BW004_hires.png",
+        "localID": "BW04",
+        "thumbnailURL": "https://images.pokemontcg.io/bwp/BW004.png"
+      }
+    },
+    {
+      "providerSetID": "bwp",
+      "localID": "BW05",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/bwp/BW005_hires.png",
+        "localID": "BW05",
+        "thumbnailURL": "https://images.pokemontcg.io/bwp/BW005.png"
+      }
+    },
+    {
+      "providerSetID": "bwp",
+      "localID": "BW96",
+      "candidate": {
+        "imageURL": "https://images.pokemontcg.io/bwp/BW96_hires.png",
+        "localID": "BW96",
+        "thumbnailURL": "https://images.pokemontcg.io/bwp/BW96.png"
+      }
+    }
+  ],
+  "boundary": "The prior DP candidate retained all 238 active mappings. This latest artifact does not; no history is rewritten and no URL-health or physical-card removal is inferred. Secondary /v2/cards returned HTTP 502 for this set."
+}

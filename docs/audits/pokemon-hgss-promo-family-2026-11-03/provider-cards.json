@@ -1,0 +1,1089 @@
+{
+  "observedAtUTC": "2026-11-03T14:01:30.673663+00:00",
+  "setReceipt": {
+    "url": "https://api.tcgdex.net/v2/en/sets/hgssp",
+    "status": 200,
+    "sha256": "7a4084a28d9970eb2685cb5836920f38db6bc4bc1fd737ab84b5d56ba8806bb8"
+  },
+  "setIdentity": {
+    "id": "hgssp",
+    "name": "HGSS Black Star Promos",
+    "cardCount": {
+      "firstEd": 0,
+      "holo": 26,
+      "normal": 7,
+      "official": 25,
+      "reverse": 0,
+      "total": 25
+    }
+  },
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS01",
+      "status": 200,
+      "sha256": "31ea311de768d6a2bd7eb3687aa63cecad8ffab99caeca98e7ef421b2990c580",
+      "requestedCardID": "hgssp-HGSS01",
+      "identity": {
+        "id": "hgssp-HGSS01",
+        "localId": "HGSS01",
+        "name": "Ho-Oh",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275618,
+              "tcgplayer": 86125
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS02",
+      "status": 200,
+      "sha256": "33de8b3e5f7f2b5aecac04e257b9184a027f174c366f8f37728a0f63f6fcff9c",
+      "requestedCardID": "hgssp-HGSS02",
+      "identity": {
+        "id": "hgssp-HGSS02",
+        "localId": "HGSS02",
+        "name": "Lugia",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275611,
+              "tcgplayer": 86909
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS03",
+      "status": 200,
+      "sha256": "0cdb12ec704681bcaf7efb26bea9770a32b233b23b2755e6578ce99079f40f23",
+      "requestedCardID": "hgssp-HGSS03",
+      "identity": {
+        "id": "hgssp-HGSS03",
+        "localId": "HGSS03",
+        "name": "Pikachu",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275610,
+              "tcgplayer": 88098
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS04",
+      "status": 200,
+      "sha256": "2ed53e6502339dfaea3a5aba7acdeae3f08cd06750f55bb11125bb6c44b66e7d",
+      "requestedCardID": "hgssp-HGSS04",
+      "identity": {
+        "id": "hgssp-HGSS04",
+        "localId": "HGSS04",
+        "name": "Wobbuffet",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275609,
+              "tcgplayer": 90622
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS05",
+      "status": 200,
+      "sha256": "adffcb28a0f7f5dd992d68a4465a096456a0183828a51887830f950103adfb0b",
+      "requestedCardID": "hgssp-HGSS05",
+      "identity": {
+        "id": "hgssp-HGSS05",
+        "localId": "HGSS05",
+        "name": "Hoothoot",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275607,
+              "tcgplayer": 86174
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS06",
+      "status": 200,
+      "sha256": "b87be229bf1802abb0bd36f61f04186bcb5c4a3390f95be66b81c0531a739777",
+      "requestedCardID": "hgssp-HGSS06",
+      "identity": {
+        "id": "hgssp-HGSS06",
+        "localId": "HGSS06",
+        "name": "Noctowl",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275608,
+              "tcgplayer": 87795
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS07",
+      "status": 200,
+      "sha256": "75885d7fa7368cbc10b75c0fb894701366b2e94464624e2ef4736e9472b3d061",
+      "requestedCardID": "hgssp-HGSS07",
+      "identity": {
+        "id": "hgssp-HGSS07",
+        "localId": "HGSS07",
+        "name": "Feraligatr",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275612,
+              "tcgplayer": 85421
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS08",
+      "status": 200,
+      "sha256": "fb0813387bc058f55945bd68446b5a20f6bcea8ad82e5bdbec525d6f4123e1bd",
+      "requestedCardID": "hgssp-HGSS08",
+      "identity": {
+        "id": "hgssp-HGSS08",
+        "localId": "HGSS08",
+        "name": "Meganium",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275613,
+              "tcgplayer": 87295
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS09",
+      "status": 200,
+      "sha256": "7d72f97be2739d90bebebfcb8dfae5ae717932b75f4edcb07b7c091222d4bb16",
+      "requestedCardID": "hgssp-HGSS09",
+      "identity": {
+        "id": "hgssp-HGSS09",
+        "localId": "HGSS09",
+        "name": "Typhlosion",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275617,
+              "tcgplayer": 90108
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS10",
+      "status": 200,
+      "sha256": "9f7228a1dd6e2b6766560092402be59c15d2dca1ea01e77135b40a48f57c2a62",
+      "requestedCardID": "hgssp-HGSS10",
+      "identity": {
+        "id": "hgssp-HGSS10",
+        "localId": "HGSS10",
+        "name": "Latias",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275616,
+              "tcgplayer": 97705
+            },
+            "variantId": "2u8sopmue8qbejpv32t9ow7ic"
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86653
+            },
+            "variantId": "5zs5af49g93yryvw1ftj"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS11",
+      "status": 200,
+      "sha256": "a6f8b064503d995bfe44414d89db97c3362e1b4bc06ea2c3bb4f4a484bae960d",
+      "requestedCardID": "hgssp-HGSS11",
+      "identity": {
+        "id": "hgssp-HGSS11",
+        "localId": "HGSS11",
+        "name": "Latios",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275615,
+              "tcgplayer": 97706
+            },
+            "variantId": "2u8sopmue8qbejpv32t9ow7ic"
+          },
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86667
+            },
+            "variantId": "5zs5af49g93yryvw1ftj"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS12",
+      "status": 200,
+      "sha256": "e0a2e3142daad6b4b3b11fb3f56b00aff985381e36275ca18d2a867d31216e83",
+      "requestedCardID": "hgssp-HGSS12",
+      "identity": {
+        "id": "hgssp-HGSS12",
+        "localId": "HGSS12",
+        "name": "Cleffa",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275614,
+              "tcgplayer": 84368
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS13",
+      "status": 200,
+      "sha256": "961244923be5ec0c5d61a5ea12d9677268e6751aa5c679dc4006d331c1af6e63",
+      "requestedCardID": "hgssp-HGSS13",
+      "identity": {
+        "id": "hgssp-HGSS13",
+        "localId": "HGSS13",
+        "name": "Smoochum",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275606,
+              "tcgplayer": 89364
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS14",
+      "status": 200,
+      "sha256": "973f8b953adc95af988698a5f8329d040136d52a75a0a4a690c0918a9254dc0c",
+      "requestedCardID": "hgssp-HGSS14",
+      "identity": {
+        "id": "hgssp-HGSS14",
+        "localId": "HGSS14",
+        "name": "Lapras",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275605,
+              "tcgplayer": 86621
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS15",
+      "status": 200,
+      "sha256": "b4c0eaf1441cfdf67d0d185217a9cef794ff1106a5f1c6edcb1d1a94e6bc08a7",
+      "requestedCardID": "hgssp-HGSS15",
+      "identity": {
+        "id": "hgssp-HGSS15",
+        "localId": "HGSS15",
+        "name": "Shuckle",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275598,
+              "tcgplayer": 89193
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS16",
+      "status": 200,
+      "sha256": "78365c02b6108225c749aa14da31a84a74ea016b531420c566f4351bfed10052",
+      "requestedCardID": "hgssp-HGSS16",
+      "identity": {
+        "id": "hgssp-HGSS16",
+        "localId": "HGSS16",
+        "name": "Plusle",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275597,
+              "tcgplayer": 88172
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS17",
+      "status": 200,
+      "sha256": "c1cbf19f06bdc17b9e1d6aafbb093d9b7b892fb57aa9cd7b01ea4def4e315b53",
+      "requestedCardID": "hgssp-HGSS17",
+      "identity": {
+        "id": "hgssp-HGSS17",
+        "localId": "HGSS17",
+        "name": "Minun",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275596,
+              "tcgplayer": 87492
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS18",
+      "status": 200,
+      "sha256": "a1f92fe4793540bdf9d5eecbb10c18174e778215ecc4fd01503f3b1d1cdcba1a",
+      "requestedCardID": "hgssp-HGSS18",
+      "identity": {
+        "id": "hgssp-HGSS18",
+        "localId": "HGSS18",
+        "name": "Tropical Tidal Wave",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010"
+            ],
+            "thirdParty": {
+              "cardmarket": 275594,
+              "tcgplayer": 90052
+            },
+            "variantId": "2fnyg4g538et3q356al094mt5nd"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010",
+              "staff"
+            ],
+            "thirdParty": {
+              "tcgplayer": 97703
+            },
+            "variantId": "15i9grynje65aa1e83ryxy8ize5tmacb"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010",
+              "finalist"
+            ],
+            "variantId": "qi4g3e7u0mc9fnp7kl6nachts7ttk3fk8d"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010",
+              "quarter-finalist"
+            ],
+            "thirdParty": {
+              "tcgplayer": 97701
+            },
+            "variantId": "80gdqxre91cmg2fih26kzh9dhkxgmyfbgb2vztyoz2"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010",
+              "semi-finalist"
+            ],
+            "thirdParty": {
+              "tcgplayer": 97702
+            },
+            "variantId": "cjr38ywaj8xwi0ydrwvrslxpbsutcinst1q4e8e"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010",
+              "top-sixteen"
+            ],
+            "thirdParty": {
+              "tcgplayer": 97700
+            },
+            "variantId": "gx8bq2hegwv129n5tu9ke7s7kgk9m4cwgxncv"
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "worlds-2010",
+              "top-thirty-two"
+            ],
+            "thirdParty": {
+              "tcgplayer": 97699
+            },
+            "variantId": "at0bsq1t2l5u5t9hxbggz3u52zobmg2fzn8l11v6"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS19",
+      "status": 200,
+      "sha256": "f27f6852632c781b6a03fbf36d9c23e064b271cd02d38a69493a98ac4646ac53",
+      "requestedCardID": "hgssp-HGSS19",
+      "identity": {
+        "id": "hgssp-HGSS19",
+        "localId": "HGSS19",
+        "name": "Raikou",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275595,
+              "tcgplayer": 88535
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS20",
+      "status": 200,
+      "sha256": "c83cf6d041b9db814d184b40fed2bf9b328197d10d2c179464d327907df48e31",
+      "requestedCardID": "hgssp-HGSS20",
+      "identity": {
+        "id": "hgssp-HGSS20",
+        "localId": "HGSS20",
+        "name": "Entei",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275599,
+              "tcgplayer": 85273
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS21",
+      "status": 200,
+      "sha256": "e1bb5a87961328675e74829295c03368fb922ea63861fc04f7e0c71badc7bd80",
+      "requestedCardID": "hgssp-HGSS21",
+      "identity": {
+        "id": "hgssp-HGSS21",
+        "localId": "HGSS21",
+        "name": "Suicune",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275600,
+              "tcgplayer": 89605
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS22",
+      "status": 200,
+      "sha256": "f09c1f946973a66421d2dcf5ee34c22abf021b83e5c5409eb35731f1e45e7908",
+      "requestedCardID": "hgssp-HGSS22",
+      "identity": {
+        "id": "hgssp-HGSS22",
+        "localId": "HGSS22",
+        "name": "Porygon",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275604,
+              "tcgplayer": 88313
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS23",
+      "status": 200,
+      "sha256": "f3acba740fe9672693262d144f8204dca1756fda32114eac06b017b64fcc8ea0",
+      "requestedCardID": "hgssp-HGSS23",
+      "identity": {
+        "id": "hgssp-HGSS23",
+        "localId": "HGSS23",
+        "name": "Porygon2",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275603,
+              "tcgplayer": 88328
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS24",
+      "status": 200,
+      "sha256": "d285edeb9dae1f370856b52d8f3e92fc2530e42d10796684929ed17b4c1fde2d",
+      "requestedCardID": "hgssp-HGSS24",
+      "identity": {
+        "id": "hgssp-HGSS24",
+        "localId": "HGSS24",
+        "name": "Hitmonchan",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275602,
+              "tcgplayer": 86097
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS25",
+      "status": 200,
+      "sha256": "47225771aba6ea1e3d9b24aac16dc468764de43cdc1762f019fe86870d58c0d0",
+      "requestedCardID": "hgssp-HGSS25",
+      "identity": {
+        "id": "hgssp-HGSS25",
+        "localId": "HGSS25",
+        "name": "Hitmonlee",
+        "set": {
+          "cardCount": {
+            "official": 25,
+            "total": 25
+          },
+          "id": "hgssp",
+          "logo": "https://assets.tcgdex.net/en/hgss/hgssp/logo",
+          "name": "HGSS Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/hgss/hgssp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": false,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275601,
+              "tcgplayer": 86109
+            },
+            "variantId": "jr7oetx1mqug9"
+          }
+        ]
+      }
+    }
+  ]
+}

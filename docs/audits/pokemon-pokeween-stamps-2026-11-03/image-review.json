@@ -1,0 +1,58 @@
+[
+  {
+    "productID": 661700,
+    "url": "https://product-images.tcgplayer.com/661700.jpg",
+    "status": 200,
+    "contentType": "image/jpeg",
+    "sha256": "cfac840587922f82d4c742b1af6cd207860cd4f17403e2e7f1b0ff4816476530",
+    "visuallyInspected": true,
+    "observations": [
+      "English footer and expected collector number",
+      "Pikachu pumpkin mark at lower right of artwork",
+      "Play! Pokemon logo behind rules/attack text"
+    ],
+    "limitation": "Public product render, not a physical-camera scan or independent foil test"
+  },
+  {
+    "productID": 722836,
+    "url": "https://product-images.tcgplayer.com/722836.jpg",
+    "status": 200,
+    "contentType": "image/jpeg",
+    "sha256": "c9ac0ea310d299b0ba6c3dba870c954c04fe07a84a7f713c7a2a27b9f38e5355",
+    "visuallyInspected": true,
+    "observations": [
+      "English footer and expected collector number",
+      "Pikachu pumpkin mark at lower right of artwork",
+      "Play! Pokemon logo behind rules/attack text"
+    ],
+    "limitation": "Public product render, not a physical-camera scan or independent foil test"
+  },
+  {
+    "productID": 722837,
+    "url": "https://product-images.tcgplayer.com/722837.jpg",
+    "status": 200,
+    "contentType": "image/jpeg",
+    "sha256": "ffb4b3e4b8aa83184c567d1e11dd0fa4b313530ecad517317c986c3af5f87328",
+    "visuallyInspected": true,
+    "observations": [
+      "English footer and expected collector number",
+      "Pikachu pumpkin mark at lower right of artwork",
+      "Play! Pokemon logo behind rules/attack text"
+    ],
+    "limitation": "Public product render, not a physical-camera scan or independent foil test"
+  },
+  {
+    "productID": 722838,
+    "url": "https://product-images.tcgplayer.com/722838.jpg",
+    "status": 200,
+    "contentType": "image/jpeg",
+    "sha256": "ec9821a9c970031a429b667dedecca7f148cfd69eaf4b5b9d20222c38e3c4a10",
+    "visuallyInspected": true,
+    "observations": [
+      "English footer and expected collector number",
+      "Pikachu pumpkin mark at lower right of artwork",
+      "Play! Pokemon logo behind rules/attack text"
+    ],
+    "limitation": "Public product render, not a physical-camera scan or independent foil test"
+  }
+]

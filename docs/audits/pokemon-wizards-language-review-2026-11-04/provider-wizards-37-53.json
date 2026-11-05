@@ -1,0 +1,928 @@
+{
+  "observedAtUTC": "2026-11-03T17:09:20.565616+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-37",
+      "status": 200,
+      "sha256": "a76813f65096675ba81e6a283caf3255b32e93d8e58fe6bf3379e03ea9aff365",
+      "requestedCardID": "basep-37",
+      "identity": {
+        "id": "basep-37",
+        "localId": "37",
+        "name": "Hitmontop",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/37",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86112
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-38",
+      "status": 200,
+      "sha256": "0fb67651142f957fa1f5f892b4bef8fe8c279b8385f475068916d984b7b963ca",
+      "requestedCardID": "basep-38",
+      "identity": {
+        "id": "basep-38",
+        "localId": "38",
+        "name": "Unown [J]",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/38",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90215
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-39",
+      "status": 200,
+      "sha256": "69347be47e680db7ae15458a5316a0e2d31e34b13969f56ad2290c089f0fc9c1",
+      "requestedCardID": "basep-39",
+      "identity": {
+        "id": "basep-39",
+        "localId": "39",
+        "name": "Misdreavus",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/39",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87503
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-40",
+      "status": 200,
+      "sha256": "6aa2d0f6b32fbb87a7e485fee27a2ffa18d9696acbc4bc81c331eefdfe9b4cba",
+      "requestedCardID": "basep-40",
+      "identity": {
+        "id": "basep-40",
+        "localId": "40",
+        "name": "Pokémon Center",
+        "rarity": "Common",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/40",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88213
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-41",
+      "status": 200,
+      "sha256": "57240fcd55a39533af23c7c974a52b14ff71122a5011d51c85444aa52295cdb6",
+      "requestedCardID": "basep-41",
+      "identity": {
+        "id": "basep-41",
+        "localId": "41",
+        "name": "Lucky Stadium",
+        "rarity": "Common",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/41",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86894
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-42",
+      "status": 200,
+      "sha256": "4767297404a004adc14822b4e9d826a311bbee587e50fa3c3df1e1914786ca6b",
+      "requestedCardID": "basep-42",
+      "identity": {
+        "id": "basep-42",
+        "localId": "42",
+        "name": "Pokémon Tower",
+        "rarity": "Common",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/42",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88240
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-43",
+      "status": 200,
+      "sha256": "f31f5b2bf5081c740f59d4905f3b2d8726dc3d8e7426495e1ac994df85189550",
+      "requestedCardID": "basep-43",
+      "identity": {
+        "id": "basep-43",
+        "localId": "43",
+        "name": "Machamp",
+        "rarity": "Common",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/43",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86961
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-44",
+      "status": 200,
+      "sha256": "1394178114aea6372f669f34ab481c4c11edf661e17c386b371084306e7270fe",
+      "requestedCardID": "basep-44",
+      "identity": {
+        "id": "basep-44",
+        "localId": "44",
+        "name": "Magmar",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/44",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "cardmarket": 275463,
+              "tcgplayer": 87043
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-45",
+      "status": 200,
+      "sha256": "730da5a6c7d41a57f27e3806c2f6e6a64ba89dcb29d7c0063bbac7974adb3efa",
+      "requestedCardID": "basep-45",
+      "identity": {
+        "id": "basep-45",
+        "localId": "45",
+        "name": "Scyther",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/45",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88993
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-46",
+      "status": 200,
+      "sha256": "85be702f705462baa9e1696b57c00f52306054fb9517820493140ecc600ea6db",
+      "requestedCardID": "basep-46",
+      "identity": {
+        "id": "basep-46",
+        "localId": "46",
+        "name": "Electabuzz",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/46",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85111
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-47",
+      "status": 200,
+      "sha256": "b8a37876ca480ec402def77b02ebbfb9bd00a5524ae81de09c378cf8d5774977",
+      "requestedCardID": "basep-47",
+      "identity": {
+        "id": "basep-47",
+        "localId": "47",
+        "name": "Mew",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/47",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87397
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-48",
+      "status": 200,
+      "sha256": "789133d6bb48c57c1003ca575c05218ecfe93619172d0533da67a6a207e46d87",
+      "requestedCardID": "basep-48",
+      "identity": {
+        "id": "basep-48",
+        "localId": "48",
+        "name": "Articuno",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/48",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 83648
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-49",
+      "status": 200,
+      "sha256": "719f1d1da9caebbc3e9a9553834b0f881ecc2a0f6c6a97d37797854cfed01196",
+      "requestedCardID": "basep-49",
+      "identity": {
+        "id": "basep-49",
+        "localId": "49",
+        "name": "Snorlax",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/49",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89385
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-50",
+      "status": 200,
+      "sha256": "6fcbcabcb816bbd0a28ea1061f117d73c7417fd61b1e35bbf85b161bcaddfa26",
+      "requestedCardID": "basep-50",
+      "identity": {
+        "id": "basep-50",
+        "localId": "50",
+        "name": "Celebi",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/50",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "pokemon-4-ever"
+            ],
+            "thirdParty": {
+              "tcgplayer": 84143
+            },
+            "variantId": "1jz5lzkp5fm97q3tz0xbvkydsroicz",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-51",
+      "status": 200,
+      "sha256": "798fe66c24647e41913d548816f98370cb4b8b8855ffddf64892b4eb8a913983",
+      "requestedCardID": "basep-51",
+      "identity": {
+        "id": "basep-51",
+        "localId": "51",
+        "name": "Rapidash",
+        "rarity": "Common",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/51",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88575
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "pokemon-center-ny"
+            ],
+            "thirdParty": {
+              "tcgplayer": 244347
+            },
+            "variantId": "zqq5g2u9p3nifbstpma98wv552q484wp",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-52",
+      "status": 200,
+      "sha256": "e6e89c7bd39a965698f5f23f19b152df89dfd1ac835896200075fa6a6f613c1a",
+      "requestedCardID": "basep-52",
+      "identity": {
+        "id": "basep-52",
+        "localId": "52",
+        "name": "Ho-oh",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/52",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86120
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "pokemon-center-ny"
+            ],
+            "thirdParty": {
+              "tcgplayer": 244348
+            },
+            "variantId": "zqq5g2u9p3nifbstpma98wv552q484wp",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/basep-53",
+      "status": 200,
+      "sha256": "447ba174c8d0a95dfc42b77c9035db8c5adc9047bfc310b401a71bef6b7a7ac4",
+      "requestedCardID": "basep-53",
+      "identity": {
+        "id": "basep-53",
+        "localId": "53",
+        "name": "Suicune",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 53,
+            "total": 53
+          },
+          "id": "basep",
+          "logo": "https://assets.tcgdex.net/en/base/basep/logo",
+          "name": "Wizards Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/base/basep/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "image": "https://assets.tcgdex.net/en/base/basep/53",
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "stamp": [
+              "pokemon-4-ever"
+            ],
+            "thirdParty": {
+              "tcgplayer": 89601
+            },
+            "variantId": "1jz5lzkp5fm97q3tz0xbvkydsroicz",
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

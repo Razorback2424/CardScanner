@@ -1,0 +1,40 @@
+{
+  "status": "Native validation passed; publication held for artwork continuity",
+  "inputSHA256": "731c0cdc35f0145b7540b70db3776e047a766a006c3c9fb9dc9dc4838b56c89f",
+  "nativePublisherExitCode": 0,
+  "activeProductionRevision": 20,
+  "activeEnvelopeSHA256": "2f871edb9061cd2c77c9323664232be4fcffb7ef35293e2b4df64945dae3ec85",
+  "activeSignatureVerifiedByNormalNativePublisher": true,
+  "activeDescriptors": 75,
+  "activeProtectedRecords": 95,
+  "candidateRevision": 21,
+  "changeClass": "authority",
+  "descriptors": 75,
+  "numberedSummaries": 6675,
+  "protectedRecords": 112,
+  "allAuthoringCorrectionsExactlyCarried": true,
+  "allActiveCorrectionsRetained": true,
+  "previousProviderFingerprintsUnchanged": 75,
+  "secondaryProviderAvailable": true,
+  "artworkContinuityPassed": false,
+  "artifacts": {
+    "root": "/Volumes/T7/CodexBuilds/CardScannerXYTinPublisher20261103",
+    "payloadSHA256": "3dba421378f1597e05df63b8636ce560381259888fbb2b7662cb64b42663d581",
+    "snapshotSHA256": "382242a27adabb4b609a82a3472af437171d1676977f4185218f51fefcac0444",
+    "nativeReviewSHA256": "730caeebc45af0184502847c53f32559b249b88fde01b4681a516803f65019dc",
+    "repositoryNativeReviewSHA256": "236ca4740155200ebc7e27286bf424fd1ce01b28574c30397bb04b3d364b289b",
+    "repositoryNativeReviewNormalization": "One final newline added; parsed JSON identical"
+  },
+  "verificationBoundary": {
+    "appOrCoreCodeChanged": false,
+    "buildTestsRerun": false,
+    "previousSharedPassed": 88,
+    "previousSharedSkipped": 1,
+    "previousIOSPassed": 80,
+    "pendingPokeweenProposalInstalled": false,
+    "physicalCameraAccepted": false,
+    "paidProviderAccepted": false,
+    "signedOrPublishedByThisTurn": false,
+    "committedByThisTurn": false
+  }
+}

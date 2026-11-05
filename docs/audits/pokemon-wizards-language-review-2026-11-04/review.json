@@ -1,0 +1,196 @@
+{
+  "status": "Evidence and concrete English-only exclusion proposal completed; authoring data unchanged",
+  "reviewDate": "2026-11-04",
+  "sourceObservationDate": "2026-11-03",
+  "checkout": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "inputSHA256": "4ba743210bc5c32fd3083b2ade3cb6b51615cfa6ea27e2139d81e3cbee4cc55c",
+  "counts": {
+    "wizardsBaseCards": 53,
+    "wizardsDetailedObjects": 74,
+    "wizardsNormalObjects": 63,
+    "wizardsHoloObjects": 8,
+    "wizardsReverseObjects": 3,
+    "adjacentBaseCards": 8,
+    "totalProviderCards": 61,
+    "totalDetailedObjects": 104,
+    "populatedHandles": 86,
+    "primaryProductReads": 102,
+    "primaryReadsHTTP200": 102,
+    "initialWizardsGroupDiscoveryProducts": 71,
+    "worldGroupDiscoveryProducts": 21,
+    "worldGroupCards": 19,
+    "worldGroupSealedProducts": 2,
+    "inspectedProductImages": 16,
+    "productImage404s": 1,
+    "nonEnglishPhysicalWorld2000Printings": 8,
+    "currentlyRepresentedNonEnglishTailObjects": 7,
+    "englishTailObjectRetained": 1,
+    "proposedBaseExclusions": 2,
+    "proposedObjectExclusions": 7,
+    "authoringRecords": 140
+  },
+  "languageFindings": [
+    {
+      "providerCardID": "basep-1",
+      "productID": 161750,
+      "language": "Portuguese",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "basep-4",
+      "productID": 161752,
+      "language": "Dutch",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "basep-25",
+      "productID": 161749,
+      "language": "German",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "basep-26",
+      "productID": 161753,
+      "language": "Spanish",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "basep-27",
+      "productID": 161747,
+      "language": "Italian",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "basep-28",
+      "productID": 161754,
+      "language": "French",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "base2-60",
+      "productID": 161751,
+      "language": "Chinese",
+      "tailObjectPresent": true,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "base1-58",
+      "productID": 161748,
+      "language": "Korean",
+      "tailObjectPresent": false,
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    }
+  ],
+  "englishControls": [
+    {
+      "providerCardID": "basep-24",
+      "productID": 159115,
+      "reason": "English Birthday Pikachu is the one English 2000 World tail card; image inspected. Its physical Non-Holo versus raw Holo label is a separate correction lead.",
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_World_Collection_2000",
+        "https://www.psacard.com/psasetregistry/tcg/famous-figures/pokemon-pikachu-master-set/composition/21958"
+      ]
+    },
+    {
+      "providerCardID": "basep-1",
+      "productID": 696103,
+      "reason": "Grey Star is English text on Japanese stock, despite Japanese distribution. Image inspected; physical number is absent.",
+      "evidenceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Pikachu_(CoroCoro_promo)",
+        "https://www.cardtrader.com/en/cards/363327-pikachu-corocoro-1999-glossy-n-025-gray-star-promo-corocoro-promo"
+      ]
+    },
+    {
+      "providerCardID": "basep-11",
+      "productID": 618732,
+      "reason": "JR East non-Holo Eevee is English despite Japanese distribution. Primary image request returned terminal 404, so no photo inspection claimed.",
+      "evidenceURLs": [
+        "https://pokumon.com/card/eevee-jr-pokemon-stamp-rally-2000-2000-unnumbered/",
+        "https://bulbapedia.bulbagarden.net/wiki/Eevee_(Wizards_Promo_11)"
+      ]
+    }
+  ],
+  "finishSignals": [
+    {
+      "providerCardID": "basep-13",
+      "productID": 90311,
+      "finding": "Provider Normal conflicts with primary Holo-only and visibly Holo English image. Prepare Holo minimum; do not exclude the correct product.",
+      "installed": false
+    },
+    {
+      "providerCardID": "basep-15",
+      "productID": 84422,
+      "finding": "Provider Normal conflicts with primary Holo-only and visibly Holo English image. Independent release history confirms English card 15; precise named foil representation remains separate.",
+      "installed": false
+    },
+    {
+      "providerCardID": "basep-18",
+      "productID": 89851,
+      "finding": "Raw Holo agrees with visibly Holo product image. Primary Normal-only flag is contradictory. Do not exclude this correct product or invent Non-Holo from its flag.",
+      "installed": false
+    },
+    {
+      "providerCardID": "basep-24",
+      "productID": 159115,
+      "finding": "English World Birthday product is Non-Holo per primary flags and two independent World inventories. Raw tail object is Holo. Preserve English membership and correct finish separately.",
+      "installed": false
+    },
+    {
+      "providerCardID": "basep-33",
+      "productID": 88960,
+      "finding": "Raw Reverse disagrees with primary Normal-only and independent Pokumon exact English Non-holo entry. Correct product remains attached to wrong finish; do not replace it by another card.",
+      "evidenceURLs": [
+        "https://mp-search-api.tcgplayer.com/v1/product/88960/details",
+        "https://pokumon.com/card/scizor-33-wizards-black-star-english-promo/"
+      ],
+      "installed": false
+    }
+  ],
+  "world2010Boundary": "Ten 2010 card products include nine ordinary language subjects plus an additional green Japanese design. Only the product labeled English (215153) is a direct English subject. Its market PW 1 field is not proof of a printed code, and English front/back print distinctions still require physical review. Do not admit the other languages or synthesize a provider identity.",
+  "providerLanguageBoundary": "No explicit languages arrays on any of the 104 detailed objects. The /en endpoint, English name and missing language value do not prove an English physical object.",
+  "verificationBoundary": {
+    "authoringDataChanged": false,
+    "appOrCoreCodeChangedByThisWork": false,
+    "nativeValidationRerun": false,
+    "buildOrTestsRerun": false,
+    "signed": false,
+    "published": false,
+    "physicalCameraTested": false,
+    "paidQuotesTested": false
+  },
+  "preservedUserChanges": [
+    "TradingCardScanner/Views/BrowseView.swift",
+    "TradingCardScanner/Views/SealedBrowseViews.swift",
+    "TradingCardScannerTests/BrowseFeatureTests.swift"
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "observedAtUTC": "2026-11-03T13:54:21.952908+00:00",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY121",
+      "status": 200,
+      "sha256": "ed7672dc06530a7d8825aa6bc3e2ff896ebc823d69700a6504bc31ed0c4fa120",
+      "requestedCardID": "xyp-XY121",
+      "identity": {
+        "id": "xyp-XY121",
+        "localId": "XY121",
+        "name": "Charizard EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY122",
+      "status": 200,
+      "sha256": "46a8fbe1ab978d0616546244a2137cfd5612ae3379f8fbd8941c63cdad0b6278",
+      "requestedCardID": "xyp-XY122",
+      "identity": {
+        "id": "xyp-XY122",
+        "localId": "XY122",
+        "name": "Blastoise EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY123",
+      "status": 200,
+      "sha256": "c564a2757046583062ae9dce7901251545d73368177866b9805e0eb144ee7679",
+      "requestedCardID": "xyp-XY123",
+      "identity": {
+        "id": "xyp-XY123",
+        "localId": "XY123",
+        "name": "Venusaur EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/xyp-XY124",
+      "status": 200,
+      "sha256": "f685f42124ceeb47c7570ad72e9fa2ac877031ff7161424b4d4583a0d7f23237",
+      "requestedCardID": "xyp-XY124",
+      "identity": {
+        "id": "xyp-XY124",
+        "localId": "XY124",
+        "name": "Pikachu EX",
+        "set": {
+          "cardCount": {
+            "official": 211,
+            "total": 216
+          },
+          "id": "xyp",
+          "logo": "https://assets.tcgdex.net/en/xy/xyp/logo",
+          "name": "XY Black Star Promos",
+          "symbol": "https://assets.tcgdex.net/univ/xy/xyp/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "variantId": "generated"
+          }
+        ]
+      }
+    }
+  ],
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/117267/details",
+      "status": 200,
+      "sha256": "ab1ea5cf84ae6e7cd3f9cdc14409c9cf96865a8aa003d626594acde5fec4b308",
+      "requestedProductID": 117267,
+      "identity": {
+        "productId": 117267.0,
+        "productName": "Charizard EX - XY121",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY121"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/118862/details",
+      "status": 200,
+      "sha256": "4b2fc39d15f64ce2fbd4fa0e809c9abe2ea5acd29f56de8f1d17eda1db78d8ac",
+      "requestedProductID": 118862,
+      "identity": {
+        "productId": 118862.0,
+        "productName": "Blastoise EX - XY122",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY122"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/120701/details",
+      "status": 200,
+      "sha256": "df9d962b5cc9794dd371eff5cdbef731faf13c726865d6fa5683fc8690fb05ed",
+      "requestedProductID": 120701,
+      "identity": {
+        "productId": 120701.0,
+        "productName": "Venusaur EX - XY123",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY123"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/123436/details",
+      "status": 200,
+      "sha256": "4bebef2d2cb89c589e9ec683dcc52f7327ffa80c18b06fb0ac0ec05945eb40ec",
+      "requestedProductID": 123436,
+      "identity": {
+        "productId": 123436.0,
+        "productName": "Pikachu EX - XY124",
+        "setId": 1451.0,
+        "setCode": "PR",
+        "setName": "XY Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "XY124"
+      }
+    }
+  ]
+}

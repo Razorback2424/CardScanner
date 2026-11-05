@@ -1,0 +1,201 @@
+{
+  "status": "Existing MEE app coverage corroborated; no new cards authored",
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "inputSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "meeProviderBaseCards": 8,
+  "meeProvider009to016404Count": 8,
+  "existingSyntheticBaseCards": 8,
+  "appMEEPrintedIdentities": 16,
+  "bundledMEESlots": 24,
+  "syntheticRows": [
+    {
+      "collectorNumber": "009",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713248_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "game": "pokemon",
+        "providerID": "mee"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713248",
+      "name": "Basic Grass Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713248_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "010",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713249_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "providerID": "mee",
+        "game": "pokemon"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713249",
+      "name": "Basic Fire Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713249_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "011",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713250_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "providerID": "mee",
+        "game": "pokemon"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713250",
+      "name": "Basic Water Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713250_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "012",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713251_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "game": "pokemon",
+        "providerID": "mee"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713251",
+      "name": "Basic Lightning Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713251_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "013",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713252_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "providerID": "mee",
+        "game": "pokemon"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713252",
+      "name": "Basic Psychic Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713252_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "014",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713253_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "providerID": "mee",
+        "game": "pokemon"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713253",
+      "name": "Basic Fighting Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713253_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "015",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713254_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "game": "pokemon",
+        "providerID": "mee"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713254",
+      "name": "Basic Darkness Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713254_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    },
+    {
+      "collectorNumber": "016",
+      "isSoleSlotForCard": true,
+      "thumbnailURL": "https://tcgplayer-cdn.tcgplayer.com/product/713255_200w.jpg",
+      "game": "pokemon",
+      "masterSetVariant": {
+        "label": "Holo",
+        "id": "holo"
+      },
+      "setID": {
+        "game": "pokemon",
+        "providerID": "mee"
+      },
+      "isExpandedMasterSetVariant": false,
+      "providerID": "tcgplayer:713255",
+      "name": "Basic Metal Energy",
+      "setCode": "MEE",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/713255_200w.jpg",
+      "setName": "Mega Evolution Energy"
+    }
+  ],
+  "independentRetailerIdentitiesVerified": 8,
+  "allEightPrimaryImagesPrintedFootersVisuallyVerified": true,
+  "sourceFiles": [
+    {
+      "path": "TradingCardScanner/Services/PokemonTCGCSVMapping.swift",
+      "sha256": "5a3309d7467b3d8e4f90d774942af43e6f2d8ad09ca5d5585435733bf1d564cf"
+    },
+    {
+      "path": "TradingCardScanner/Games/Pokemon/PokemonCatalogAdapter.swift",
+      "sha256": "b4694bc08e656782ee7fbceffd0a73beca8f60643acc21d5f71d0b46ccbcf0c6"
+    },
+    {
+      "path": "TradingCardScanner/Services/TCGdexService.swift",
+      "sha256": "215fd8b00f8b7f3ba9bbf4e3db92f24053c11bdce8ca77d2a4dade96f0ea25de"
+    },
+    {
+      "path": "TradingCardScanner/Services/PokemonChecklistSnapshot.swift",
+      "sha256": "f175a2df8b77cfb6bc7da87f9d8431142d18f9fcbb3401ca6a97185460f8c614"
+    },
+    {
+      "path": "TradingCardScanner/PokemonChecklistSnapshot/sets/47e60a59a078cb3.json",
+      "sha256": "4b3b87b9bc1882f40a2a1a2cda50d9d83792af05b64f608fe8bc5157141003bc"
+    },
+    {
+      "path": "publisher/fixtures/mee-reviewed-products.json",
+      "sha256": "67ce51f320bc7f26384e5a4bd5a827af02b3d7fa842e4c2184d6981a1a0abacf"
+    }
+  ],
+  "conclusion": "MEE provider absence is already bridged by tcgplayer identities; do not mint mee-009 etc or duplicate existing memberships"
+}

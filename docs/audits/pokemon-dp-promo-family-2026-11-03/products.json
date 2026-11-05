@@ -1,0 +1,1337 @@
+{
+  "observedAtUTC": "2026-11-03T15:24:25.199595+00:00",
+  "discovery": {
+    "url": "https://www.decktradr.com/sets/pokemon/1421-diamond-and-pearl-promos",
+    "status": 200,
+    "sha256": "1ea4cd9c4ca8a8bb5520aebc47d7099fd58e683eb1ebdd1d3b816c595226e871",
+    "purpose": "Discovery IDs only; not independent physical or pricing proof",
+    "links": [
+      "/cards/pokemon/164204-gabite-48-124-prerelease",
+      "/cards/pokemon/164205-gabite-48-123-prerelease-staff",
+      "/cards/pokemon/187215-lucario-53-127-prerelease",
+      "/cards/pokemon/187216-lucario-53-127-prerelease-staff",
+      "/cards/pokemon/232870-porygon2-49-106-prerelease",
+      "/cards/pokemon/232871-porygon2-49-106-prerelease-staff",
+      "/cards/pokemon/232881-mothim-42-100-prerelease",
+      "/cards/pokemon/233308-kirlia-53-132-prerelease",
+      "/cards/pokemon/492255-striking-back-mewtwo-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492257-explosive-birth-lugia-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492258-crystal-towers-entei-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492261-timeless-celebi-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492263-alto-mares-latios-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492264-alto-mares-latias-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492266-seven-nights-jirachi-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492272-tree-of-beginnings-mew-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492278-wave-guiding-hero-lucario-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/492281-prince-of-the-sea-manaphy-jp-10th-movie-commemoration-set",
+      "/cards/pokemon/532629-mothim-42-100-prerelease-staff",
+      "/cards/pokemon/83601-arceus-dp50",
+      "/cards/pokemon/83605-arceus-lvx-dp53",
+      "/cards/pokemon/83606-arceus-lvx-dp56",
+      "/cards/pokemon/84019-buizel-dp13",
+      "/cards/pokemon/84041-buneary-dp06",
+      "/cards/pokemon/84108-carnivine-g-dp42",
+      "/cards/pokemon/84202-charizard-g-lvx-dp45",
+      "/cards/pokemon/84241-chatot-dp14",
+      "/cards/pokemon/84286-chimchar-dp02",
+      "/cards/pokemon/84459-cranidos-dp07",
+      "/cards/pokemon/84469-cresselia-dp51",
+      "/cards/pokemon/84701-darkrai-dp24",
+      "/cards/pokemon/84702-darkrai-dp52",
+      "/cards/pokemon/84712-darkrai-lvx-dp19",
+      "/cards/pokemon/84801-dialga-dp26",
+      "/cards/pokemon/84805-dialga-dp49",
+      "/cards/pokemon/84813-dialga-lvx-dp17",
+      "/cards/pokemon/84814-dialga-lvx-dp37",
+      "/cards/pokemon/84946-drifblim-dp34",
+      "/cards/pokemon/85039-dusknoir-dp33",
+      "/cards/pokemon/85207-empoleon-lvx-dp11",
+      "/cards/pokemon/85630-garchomp-c-lvx-dp46",
+      "/cards/pokemon/85743-giratina-lvx-dp38",
+      "/cards/pokemon/85761-glameow-dp23",
+      "/cards/pokemon/85773-gliscor-dp36",
+      "/cards/pokemon/86055-heatran-lvx-dp31",
+      "/cards/pokemon/86282-infernape-lvx-dp10",
+      "/cards/pokemon/86890-lucario-lvx-dp12",
+      "/cards/pokemon/87057-magmortar-dp20",
+      "/cards/pokemon/87116-magnezone-dp32",
+      "/cards/pokemon/87117-magnezone-dp44",
+      "/cards/pokemon/87434-mewtwo-lvx-dp28",
+      "/cards/pokemon/87470-mime-jr-dp22",
+      "/cards/pokemon/87901-pachirisu-dp04",
+      "/cards/pokemon/87909-palkia-dp27",
+      "/cards/pokemon/87920-palkia-lvx-dp18",
+      "/cards/pokemon/88089-pikachu-dp16",
+      "/cards/pokemon/88147-piplup-dp03",
+      "/cards/pokemon/88316-porygon-z-dp35",
+      "/cards/pokemon/88380-probopass-g-dp43",
+      "/cards/pokemon/88512-raichu-dp21",
+      "/cards/pokemon/88641-rayquaza-c-lvx-dp47",
+      "/cards/pokemon/88665-regigigas-dp40",
+      "/cards/pokemon/88670-regigigas-lvx-dp30",
+      "/cards/pokemon/88750-rhyperior-lvx-dp29",
+      "/cards/pokemon/89116-shaymin-lvx-dp39",
+      "/cards/pokemon/89150-shieldon-dp08",
+      "/cards/pokemon/89175-shinx-dp15",
+      "/cards/pokemon/89990-torterra-lvx-dp09",
+      "/cards/pokemon/90013-toxicroak-g-dp41",
+      "/cards/pokemon/90054-tropical-wind-dp05-worlds-07",
+      "/cards/pokemon/90055-tropical-wind-dp25-worlds-08",
+      "/cards/pokemon/90056-tropical-wind-dp48-worlds-09",
+      "/cards/pokemon/90075-turtwig-dp01",
+      "/cards/pokemon/97810-tropical-winds-dp05-worlds-07-staff",
+      "/cards/pokemon/97811-tropical-wind-dp25-worlds-08-staff",
+      "/cards/pokemon/97812-tropical-wind-dp48-worlds-09-staff"
+    ]
+  },
+  "products": [
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83601/details",
+      "status": 200,
+      "sha256": "ed52aa880fd01edd0e6579324f2a628ab8adca419c181da13f053a8ed5f52338",
+      "requestedProductID": 83601,
+      "identity": {
+        "productId": 83601.0,
+        "productName": "Arceus - DP50",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP50"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83605/details",
+      "status": 200,
+      "sha256": "0b5b9fe9ab9688664370fd93b16632bb786b0ef5514e67198ca5b99fa6fd7b05",
+      "requestedProductID": 83605,
+      "identity": {
+        "productId": 83605.0,
+        "productName": "Arceus LV.X - DP53",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP53"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/83606/details",
+      "status": 200,
+      "sha256": "b4d5c6e0ba90114234cc6a259d9996e63b1b4d88f829d7715dae8edcbafa32a2",
+      "requestedProductID": 83606,
+      "identity": {
+        "productId": 83606.0,
+        "productName": "Arceus LV.X - DP56",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP56"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84019/details",
+      "status": 200,
+      "sha256": "0e5ef028a38d13493149baa02e2a170c10df82803732d802affb3589e91f39f5",
+      "requestedProductID": 84019,
+      "identity": {
+        "productId": 84019.0,
+        "productName": "Buizel - DP13",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP13"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84041/details",
+      "status": 200,
+      "sha256": "99d14afa777bee09bee5b4a9cff64ddae4d22a23826a95d94326f395c9b69378",
+      "requestedProductID": 84041,
+      "identity": {
+        "productId": 84041.0,
+        "productName": "Buneary - DP06",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP06"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84108/details",
+      "status": 200,
+      "sha256": "5802f114aa94bfd1b8f3cdce32a326d6f4bff053118488e85e93f5ea6089eb0f",
+      "requestedProductID": 84108,
+      "identity": {
+        "productId": 84108.0,
+        "productName": "Carnivine G - DP42",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP42"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84202/details",
+      "status": 200,
+      "sha256": "23e617dbb52f45ac4569c42db6bbef937ad74dd334779328dfcea33ab276e719",
+      "requestedProductID": 84202,
+      "identity": {
+        "productId": 84202.0,
+        "productName": "Charizard G LV.X - DP45",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP45"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84241/details",
+      "status": 200,
+      "sha256": "547f7a752a13279158c82ddd3e71b25fadaa7a317e36c541cf55cb20edbdc664",
+      "requestedProductID": 84241,
+      "identity": {
+        "productId": 84241.0,
+        "productName": "Chatot - DP14",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP14"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84286/details",
+      "status": 200,
+      "sha256": "59a0e1f362ee3af1f636c48918059ec6e4cb16bb18080aa8dcef5435cb3c84b1",
+      "requestedProductID": 84286,
+      "identity": {
+        "productId": 84286.0,
+        "productName": "Chimchar - DP02",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP02"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84459/details",
+      "status": 200,
+      "sha256": "fc5798c7e2de9fd2819f2b1657d705573ea451e983a06ad975e1d1b20cbd0e77",
+      "requestedProductID": 84459,
+      "identity": {
+        "productId": 84459.0,
+        "productName": "Cranidos - DP07",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP07"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84469/details",
+      "status": 200,
+      "sha256": "6a48abea1bc597979720a94772bd9ed198ca8ebe4c221d81c8473717f41b0122",
+      "requestedProductID": 84469,
+      "identity": {
+        "productId": 84469.0,
+        "productName": "Cresselia - DP51",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP51"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84701/details",
+      "status": 200,
+      "sha256": "b6ff0d9d0e2e1fde57cb60253a3450d7bf8996da5241c4df16b0f832d748dd6c",
+      "requestedProductID": 84701,
+      "identity": {
+        "productId": 84701.0,
+        "productName": "Darkrai - DP24",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP24"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84702/details",
+      "status": 200,
+      "sha256": "eb843f2f9a4ed86cc3f87fff20b5da677d028febe5dad34012ab55afbf537e03",
+      "requestedProductID": 84702,
+      "identity": {
+        "productId": 84702.0,
+        "productName": "Darkrai - DP52",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP52"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84712/details",
+      "status": 200,
+      "sha256": "7f4d6a3eac7e799139fb6ca7bb7784fb054387c41d6afe48260cdf7a3c1b724d",
+      "requestedProductID": 84712,
+      "identity": {
+        "productId": 84712.0,
+        "productName": "Darkrai LV.X - DP19",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP19"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84801/details",
+      "status": 200,
+      "sha256": "954229240fdaeec234c3da43187f97e7b740f08a662e55346328cc6fe1558772",
+      "requestedProductID": 84801,
+      "identity": {
+        "productId": 84801.0,
+        "productName": "Dialga - DP26",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP26"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84805/details",
+      "status": 200,
+      "sha256": "4fd212e994c2a04cc22d9b848bfc7231fc84bb2edd8bcdaf8c11e72544df9969",
+      "requestedProductID": 84805,
+      "identity": {
+        "productId": 84805.0,
+        "productName": "Dialga - DP49",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP49"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84813/details",
+      "status": 200,
+      "sha256": "88575465a2b54e63aba6374889989b7e40e5c9094d79c83c154e4dece19ca42b",
+      "requestedProductID": 84813,
+      "identity": {
+        "productId": 84813.0,
+        "productName": "Dialga LV.X - DP17",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP17"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84814/details",
+      "status": 200,
+      "sha256": "b3253bfd6aab99c457df783fd9b6c5f56158c44c862cb1595074d3aab85b3d9a",
+      "requestedProductID": 84814,
+      "identity": {
+        "productId": 84814.0,
+        "productName": "Dialga LV.X - DP37",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP37"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/84946/details",
+      "status": 200,
+      "sha256": "26c1b7ef8e12b7350e4f17d06e2f53e4b05e416200ea8a2a015f96d3562044b1",
+      "requestedProductID": 84946,
+      "identity": {
+        "productId": 84946.0,
+        "productName": "Drifblim - DP34",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP34"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85039/details",
+      "status": 200,
+      "sha256": "75fdb44858744046d6453e7a8d4540d1768bec1021f4efde2f98d6f9ba5c0737",
+      "requestedProductID": 85039,
+      "identity": {
+        "productId": 85039.0,
+        "productName": "Dusknoir - DP33",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP33"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85207/details",
+      "status": 200,
+      "sha256": "149b223fc1ed694a4ec7815dce2cef28257cd1247571edd358c90707f2908de7",
+      "requestedProductID": 85207,
+      "identity": {
+        "productId": 85207.0,
+        "productName": "Empoleon LV.X - DP11",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP11"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85630/details",
+      "status": 200,
+      "sha256": "596f85d96ef3965dc2880e3fc57e2bfedfeca3fdacf2058a2b3f2cdef54c3f05",
+      "requestedProductID": 85630,
+      "identity": {
+        "productId": 85630.0,
+        "productName": "Garchomp C LV.X - DP46",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP46"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85743/details",
+      "status": 200,
+      "sha256": "556d5c47b20da3d974e52b8fe4bfc9e1ccb73cee9b0a32d04c5eace37d1b7110",
+      "requestedProductID": 85743,
+      "identity": {
+        "productId": 85743.0,
+        "productName": "Giratina LV.X - DP38",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP38"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85761/details",
+      "status": 200,
+      "sha256": "4cef88d8462248cc7b080a730b1c0647b8f03a50af0f6e1fc5a4cfe399df746b",
+      "requestedProductID": 85761,
+      "identity": {
+        "productId": 85761.0,
+        "productName": "Glameow - DP23",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP23"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/85773/details",
+      "status": 200,
+      "sha256": "cc3f74d78bc23a3e6e06435ea3b506a123e01146d728a35bd09bd8462d315840",
+      "requestedProductID": 85773,
+      "identity": {
+        "productId": 85773.0,
+        "productName": "Gliscor - DP36",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP36"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86055/details",
+      "status": 200,
+      "sha256": "e0fd4139476e2c6d4fe79d38b738595cad2ef81a2894901d4a08d88ce2303aa0",
+      "requestedProductID": 86055,
+      "identity": {
+        "productId": 86055.0,
+        "productName": "Heatran LV.X - DP31",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP31"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86282/details",
+      "status": 200,
+      "sha256": "27d9445d12ca9de6aca10eceb79dac4ba71a44cbfe0df2e51e619e287b519ef2",
+      "requestedProductID": 86282,
+      "identity": {
+        "productId": 86282.0,
+        "productName": "Infernape LV.X - DP10",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP10"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/86890/details",
+      "status": 200,
+      "sha256": "cec89b13cc357e3ba00b29b39948bbb9218633ff3c23f3789ae931fe292b3346",
+      "requestedProductID": 86890,
+      "identity": {
+        "productId": 86890.0,
+        "productName": "Lucario LV.X - DP12",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP12"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87057/details",
+      "status": 200,
+      "sha256": "07d1cfc08277239acc9e243472cea3b61471ec7a8f8a856b5b33dde64de1e2b6",
+      "requestedProductID": 87057,
+      "identity": {
+        "productId": 87057.0,
+        "productName": "Magmortar - DP20",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP20"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87116/details",
+      "status": 200,
+      "sha256": "8e02bfb69d22617cc98717a439dae1c71dfae4ad15a8db2896613d2ec7723fef",
+      "requestedProductID": 87116,
+      "identity": {
+        "productId": 87116.0,
+        "productName": "Magnezone - DP32",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP32"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87117/details",
+      "status": 200,
+      "sha256": "5ace98af9582c5cddeb75091a20fc6a8d2fd7798530fa8c7acdce1c27cebcac8",
+      "requestedProductID": 87117,
+      "identity": {
+        "productId": 87117.0,
+        "productName": "Magnezone - DP44",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP44"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87434/details",
+      "status": 200,
+      "sha256": "bce648f42e5f579bedc461a26653f6882e63530e6f3bcedd985ce8fcfe5209c9",
+      "requestedProductID": 87434,
+      "identity": {
+        "productId": 87434.0,
+        "productName": "Mewtwo LV.X - DP28",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP28"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87470/details",
+      "status": 200,
+      "sha256": "b2021f94b8fb6102068d06b1c9ded08b22cbd508cef5d3d1ef33c4f57dcc53b2",
+      "requestedProductID": 87470,
+      "identity": {
+        "productId": 87470.0,
+        "productName": "Mime Jr. - DP22",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP22"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87901/details",
+      "status": 200,
+      "sha256": "85d2b687adb3c4264c17fefd9b675881049635236452b83a8e8091f72eda9ce4",
+      "requestedProductID": 87901,
+      "identity": {
+        "productId": 87901.0,
+        "productName": "Pachirisu - DP04",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP04"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87909/details",
+      "status": 200,
+      "sha256": "3b02c690a041dadb1cdc8da1097bd9d23dc8f2e6b3217a5a49996092d3bc1321",
+      "requestedProductID": 87909,
+      "identity": {
+        "productId": 87909.0,
+        "productName": "Palkia - DP27",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP27"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/87920/details",
+      "status": 200,
+      "sha256": "63b7d4b007d76096cd9e8e0ff576b1425d7f47b474665436e248dfdd4271d749",
+      "requestedProductID": 87920,
+      "identity": {
+        "productId": 87920.0,
+        "productName": "Palkia LV.X - DP18",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP18"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88089/details",
+      "status": 200,
+      "sha256": "765dc2f8f54622e8db173cf7f706be84d298f2c8c9bdb277b8839ec0afb6d9ad",
+      "requestedProductID": 88089,
+      "identity": {
+        "productId": 88089.0,
+        "productName": "Pikachu - DP16",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP16"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88147/details",
+      "status": 200,
+      "sha256": "eca8eb0078f0747812b5f4ee90454e143220709f87dc69d65c02c402359a4494",
+      "requestedProductID": 88147,
+      "identity": {
+        "productId": 88147.0,
+        "productName": "Piplup - DP03",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP03"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88316/details",
+      "status": 200,
+      "sha256": "baeeed1cf63f96aff4e99033038edbac545d7095ae2e93b7dc0c3b83a911a496",
+      "requestedProductID": 88316,
+      "identity": {
+        "productId": 88316.0,
+        "productName": "Porygon-Z - DP35",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP35"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88380/details",
+      "status": 200,
+      "sha256": "6c058cdf9086314db0b0b9d01349e88420fa9dc6ab8853925da4096d6beeb18b",
+      "requestedProductID": 88380,
+      "identity": {
+        "productId": 88380.0,
+        "productName": "Probopass G - DP43",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP43"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88512/details",
+      "status": 200,
+      "sha256": "bf31e3df7e7b0b94b249719a9f9f5053ded5cea997fcccc8a3b64cd9ea7f2fcc",
+      "requestedProductID": 88512,
+      "identity": {
+        "productId": 88512.0,
+        "productName": "Raichu - DP21",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP21"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88641/details",
+      "status": 200,
+      "sha256": "55797e9daa2e11b0a83f0efb0d995b0c0a7286106bb06bdbae2d95c73573723a",
+      "requestedProductID": 88641,
+      "identity": {
+        "productId": 88641.0,
+        "productName": "Rayquaza C LV.X - DP47",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP47"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88665/details",
+      "status": 200,
+      "sha256": "503f170fe69b73b9edeaaceaa0cffff547c8790df0314579dea665f8b8b9a677",
+      "requestedProductID": 88665,
+      "identity": {
+        "productId": 88665.0,
+        "productName": "Regigigas - DP40",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP40"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88670/details",
+      "status": 200,
+      "sha256": "bcad6fa1ac09bda605ae643a93300744d187cdf6fc013948855531e9c1dd2acd",
+      "requestedProductID": 88670,
+      "identity": {
+        "productId": 88670.0,
+        "productName": "Regigigas LV.X - DP30",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP30"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/88750/details",
+      "status": 200,
+      "sha256": "53cc42a9049522f197b579547852c807903f09fe4cfa1959f6bdb309c8b9ef6e",
+      "requestedProductID": 88750,
+      "identity": {
+        "productId": 88750.0,
+        "productName": "Rhyperior LV.X - DP29",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP29"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89116/details",
+      "status": 200,
+      "sha256": "2948668600a7a3de8092d2acb0973a0f0eda03760ef831be8506c641bfaf6c8d",
+      "requestedProductID": 89116,
+      "identity": {
+        "productId": 89116.0,
+        "productName": "Shaymin LV.X - DP39",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP39"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89150/details",
+      "status": 200,
+      "sha256": "603a085912d294fb9a6e48ef1ab1493fadddbf160c0cc91363811f1124627779",
+      "requestedProductID": 89150,
+      "identity": {
+        "productId": 89150.0,
+        "productName": "Shieldon - DP08",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP08"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89175/details",
+      "status": 200,
+      "sha256": "6d29b3286fb9ee9dd45274657d60d4aa18a58e133ea33750fbce331f236c4a85",
+      "requestedProductID": 89175,
+      "identity": {
+        "productId": 89175.0,
+        "productName": "Shinx - DP15",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP15"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/89990/details",
+      "status": 200,
+      "sha256": "023ad0f668f553d2894ddaa361da3a3ecb7d4780d90fd4957d0aa3d9428e5f2f",
+      "requestedProductID": 89990,
+      "identity": {
+        "productId": 89990.0,
+        "productName": "Torterra LV.X - DP09",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP09"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90013/details",
+      "status": 200,
+      "sha256": "6db656e5df591688e2bfa05a4e61266a76159169ee155ac61963b93adcf35435",
+      "requestedProductID": 90013,
+      "identity": {
+        "productId": 90013.0,
+        "productName": "Toxicroak G - DP41",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP41"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90054/details",
+      "status": 200,
+      "sha256": "addc776f8ee22c8916317d65679e66d1c933d8a60aeb75a2bdc5d508c40e44c3",
+      "requestedProductID": 90054,
+      "identity": {
+        "productId": 90054.0,
+        "productName": "Tropical Wind - DP05 (Worlds 07)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "DP05"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90055/details",
+      "status": 200,
+      "sha256": "5ec30876abc812ef5ec352c3ec799921400f247a26ab431ef5362ea9f0b2e4b7",
+      "requestedProductID": 90055,
+      "identity": {
+        "productId": 90055.0,
+        "productName": "Tropical Wind - DP25 (Worlds 08)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "DP25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90056/details",
+      "status": 200,
+      "sha256": "9475c5cf95f03698e0b9b2119ac06d30a400cfbee387949311aa72ba0e74996f",
+      "requestedProductID": 90056,
+      "identity": {
+        "productId": 90056.0,
+        "productName": "Tropical Wind - DP48 (Worlds 09)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "DP48"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/90075/details",
+      "status": 200,
+      "sha256": "7e78b670238ab031ce210f64a04a676181d98eb6fbfd6d616f07a69dc342ee76",
+      "requestedProductID": 90075,
+      "identity": {
+        "productId": 90075.0,
+        "productName": "Turtwig - DP01",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": true,
+        "normalOnly": false,
+        "number": "DP01"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97810/details",
+      "status": 200,
+      "sha256": "c1d5532268ae93ea36673d6615142d4e575ae65f65388a40fbc20f725b8a1eb3",
+      "requestedProductID": 97810,
+      "identity": {
+        "productId": 97810.0,
+        "productName": "Tropical Winds - DP05 (Worlds 07) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "DP05"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97811/details",
+      "status": 200,
+      "sha256": "2d518bd24a866cb18ac10f371fbb8c86adedebaaded91277812cf5b170d22475",
+      "requestedProductID": 97811,
+      "identity": {
+        "productId": 97811.0,
+        "productName": "Tropical Wind - DP25 (Worlds 08) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "DP25"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/97812/details",
+      "status": 200,
+      "sha256": "a1a33f41c5106fedad112c0919d5e2d1d6e0e9ca21b24f7cba3d12bf97a83545",
+      "requestedProductID": 97812,
+      "identity": {
+        "productId": 97812.0,
+        "productName": "Tropical Wind - DP48 (Worlds 09) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "DP48"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/164204/details",
+      "status": 200,
+      "sha256": "d203cf11818f160691d322c1d17ed64268b313409836c1c9ba0ab673be2080c5",
+      "requestedProductID": 164204,
+      "identity": {
+        "productId": 164204.0,
+        "productName": "Gabite - 48/124 (Prerelease)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "48/124"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/164205/details",
+      "status": 200,
+      "sha256": "b9b800872149e1c7a3c7df2e45c4c0cbd139bbfc153f53d78f2349e05582393a",
+      "requestedProductID": 164205,
+      "identity": {
+        "productId": 164205.0,
+        "productName": "Gabite - 48/123 (Prerelease) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "48/123"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/187215/details",
+      "status": 200,
+      "sha256": "83ecda1f2b14778e15a4bbdc400edb43d64feaa0c579f4d19ed5a3407ec0bbf8",
+      "requestedProductID": 187215,
+      "identity": {
+        "productId": 187215.0,
+        "productName": "Lucario - 53/127 (Prerelease)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "53/127"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/187216/details",
+      "status": 200,
+      "sha256": "0bd82ab5637adf564888f601eb1f12c7eda3407608830fc857ab2b38fafdfdb3",
+      "requestedProductID": 187216,
+      "identity": {
+        "productId": 187216.0,
+        "productName": "Lucario - 53/127 (Prerelease) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "53/127"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/232870/details",
+      "status": 200,
+      "sha256": "98e7ae5fcf8b48cd79ebed97a81528bedad8dd61d4268e4d8b2beaaf6e10e379",
+      "requestedProductID": 232870,
+      "identity": {
+        "productId": 232870.0,
+        "productName": "Porygon2 - 49/106 (Prerelease)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "49/106"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/232871/details",
+      "status": 200,
+      "sha256": "4f2df26f2a49139f5477f4d0ead714848a6d30a6be598c5851fb51c80a6b9c5b",
+      "requestedProductID": 232871,
+      "identity": {
+        "productId": 232871.0,
+        "productName": "Porygon2 - 49/106 (Prerelease) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "49/106"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/232881/details",
+      "status": 200,
+      "sha256": "74b5debc8ea2d7aeae604be9c876a01f788b427bca6ba789f133ce084132debe",
+      "requestedProductID": 232881,
+      "identity": {
+        "productId": 232881.0,
+        "productName": "Mothim - 42/100 (Prerelease)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "42/100"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/233308/details",
+      "status": 200,
+      "sha256": "b3af73b5bc760150d829a638a25b301f07d9eaf09483b1003e98569237c4d4b1",
+      "requestedProductID": 233308,
+      "identity": {
+        "productId": 233308.0,
+        "productName": "Kirlia - 53/132 (Prerelease)",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "53/132"
+      }
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492255/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492255
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492257/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492257
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492258/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492258
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492261/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492261
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492263/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492263
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492264/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492264
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492266/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492266
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492272/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492272
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492278/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492278
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/492281/details",
+      "status": 400,
+      "error": "HTTP Error 400: Bad Request",
+      "requestedProductID": 492281
+    },
+    {
+      "url": "https://mp-search-api.tcgplayer.com/v1/product/532629/details",
+      "status": 200,
+      "sha256": "8794b295309dffd610dbc324a58223e1b8327c51c98c5c0d135cdb0997a9d87e",
+      "requestedProductID": 532629,
+      "identity": {
+        "productId": 532629.0,
+        "productName": "Mothim - 42/100 (Prerelease) [Staff]",
+        "setId": 1421.0,
+        "setCode": "PR",
+        "setName": "Diamond and Pearl Promos",
+        "productLineName": "Pokemon",
+        "productTypeName": "Cards",
+        "foilOnly": false,
+        "normalOnly": true,
+        "number": "42/100"
+      }
+    }
+  ]
+}

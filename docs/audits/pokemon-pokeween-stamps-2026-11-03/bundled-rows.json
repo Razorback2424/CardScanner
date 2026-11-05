@@ -1,0 +1,92 @@
+[
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-049",
+    "variant": {
+      "label": "Normal",
+      "id": "normal"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-049",
+    "variant": {
+      "label": "Reverse",
+      "id": "reverse"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-050",
+    "variant": {
+      "label": "Normal",
+      "id": "normal"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-050",
+    "variant": {
+      "label": "Reverse",
+      "id": "reverse"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-051",
+    "variant": {
+      "label": "Normal",
+      "id": "normal"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-051",
+    "variant": {
+      "label": "Holo",
+      "id": "holo"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/6c934aea40343cc4.json",
+    "providerID": "me04-051",
+    "variant": {
+      "label": "Reverse",
+      "id": "reverse"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/60b9ed1b678c2abb.json",
+    "providerID": "me01-087",
+    "variant": {
+      "id": "reverse",
+      "label": "Reverse"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/60b9ed1b678c2abb.json",
+    "providerID": "me01-087",
+    "variant": {
+      "id": "normal",
+      "label": "Normal"
+    },
+    "expanded": false
+  },
+  {
+    "file": "TradingCardScanner/PokemonChecklistSnapshot/sets/60b9ed1b678c2abb.json",
+    "providerID": "me01-087",
+    "variant": {
+      "id": "pokemonStamp|normal|trick-or-trade|",
+      "label": "Normal \u00b7 Trick or Trade"
+    },
+    "expanded": true
+  }
+]

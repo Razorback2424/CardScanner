@@ -1,0 +1,591 @@
+{
+  "status": "Complete current HGSS provider/product census and adjacent tin review; findings uninstalled",
+  "observedAtUTC": "2026-11-03T14:01:30.673663+00:00",
+  "checkoutHEAD": "a404f67470db20352b9b8f79925e2b96fe0597a9",
+  "inputSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "authoringDescriptors": 75,
+  "protectedRecords": 99,
+  "counts": {
+    "providerBaseCards": 25,
+    "providerDetailedObjects": 33,
+    "populatedProductHandles": 32,
+    "allPopulatedHandlesCorrectNumberAndName": 32,
+    "primaryMarketplaceReads": 38,
+    "successfulPrimaryMarketplaceReads": 38,
+    "hgssNumberedMarketplaceProducts": 33,
+    "otherSetPrereleaseProductsInSameGroup": 5,
+    "missingProviderProductHandles": 1,
+    "normalTypedFoilOnlyConflicts": 1,
+    "adjacentDistinctCards": 3,
+    "adjacentSupplementaryPricingIdentityReads": 3,
+    "adjacentPrimaryMarketplaceReads": 6,
+    "adjacentMissingCrackedIceHandles": 3,
+    "codeOrCatalogChangesInThisBatch": 0
+  },
+  "shinyTrioAlreadyRepresented": [
+    {
+      "providerCardID": "hgssp-HGSS19",
+      "name": "Raikou",
+      "variant": "holo",
+      "tcgplayerProductID": 88535
+    },
+    {
+      "providerCardID": "hgssp-HGSS20",
+      "name": "Entei",
+      "variant": "holo",
+      "tcgplayerProductID": 85273
+    },
+    {
+      "providerCardID": "hgssp-HGSS21",
+      "name": "Suicune",
+      "variant": "holo",
+      "tcgplayerProductID": 89605
+    }
+  ],
+  "providerObjectComparison": [
+    {
+      "providerCardID": "hgssp-HGSS01",
+      "name": "Ho-Oh",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 86125,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS02",
+      "name": "Lugia",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 86909,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS03",
+      "name": "Pikachu",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 88098,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS04",
+      "name": "Wobbuffet",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 90622,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS05",
+      "name": "Hoothoot",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 86174,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS06",
+      "name": "Noctowl",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 87795,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS07",
+      "name": "Feraligatr",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 85421,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS08",
+      "name": "Meganium",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 87295,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS09",
+      "name": "Typhlosion",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 90108,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS10",
+      "name": "Latias",
+      "type": "holo",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "tcgplayerProductID": 97705,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS10",
+      "name": "Latias",
+      "type": "holo",
+      "foil": "cosmos",
+      "stamps": [],
+      "tcgplayerProductID": 86653,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS11",
+      "name": "Latios",
+      "type": "holo",
+      "foil": "cracked-ice",
+      "stamps": [],
+      "tcgplayerProductID": 97706,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS11",
+      "name": "Latios",
+      "type": "holo",
+      "foil": "cosmos",
+      "stamps": [],
+      "tcgplayerProductID": 86667,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS12",
+      "name": "Cleffa",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 84368,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS13",
+      "name": "Smoochum",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 89364,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS14",
+      "name": "Lapras",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 86621,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS15",
+      "name": "Shuckle",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 89193,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS16",
+      "name": "Plusle",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 88172,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS17",
+      "name": "Minun",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 87492,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010"
+      ],
+      "tcgplayerProductID": 90052,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010",
+        "staff"
+      ],
+      "tcgplayerProductID": 97703,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": false,
+      "marketplaceNormalOnly": true
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010",
+        "finalist"
+      ],
+      "tcgplayerProductID": null,
+      "marketplaceNumberMatches": false,
+      "marketplaceFoilOnly": null,
+      "marketplaceNormalOnly": null
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010",
+        "quarter-finalist"
+      ],
+      "tcgplayerProductID": 97701,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": false,
+      "marketplaceNormalOnly": true
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010",
+        "semi-finalist"
+      ],
+      "tcgplayerProductID": 97702,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": false,
+      "marketplaceNormalOnly": true
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010",
+        "top-sixteen"
+      ],
+      "tcgplayerProductID": 97700,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": false,
+      "marketplaceNormalOnly": true
+    },
+    {
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "type": "normal",
+      "foil": null,
+      "stamps": [
+        "worlds-2010",
+        "top-thirty-two"
+      ],
+      "tcgplayerProductID": 97699,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": false,
+      "marketplaceNormalOnly": true
+    },
+    {
+      "providerCardID": "hgssp-HGSS19",
+      "name": "Raikou",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 88535,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS20",
+      "name": "Entei",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 85273,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS21",
+      "name": "Suicune",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 89605,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS22",
+      "name": "Porygon",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 88313,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS23",
+      "name": "Porygon2",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 88328,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS24",
+      "name": "Hitmonchan",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 86097,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    },
+    {
+      "providerCardID": "hgssp-HGSS25",
+      "name": "Hitmonlee",
+      "type": "holo",
+      "foil": null,
+      "stamps": [],
+      "tcgplayerProductID": 86109,
+      "marketplaceNumberMatches": true,
+      "marketplaceFoilOnly": true,
+      "marketplaceNormalOnly": false
+    }
+  ],
+  "outsideHGSSNumberingMarketplaceProducts": [
+    {
+      "productID": 211517,
+      "name": "Blastoise - 13/95 (Prerelease)",
+      "number": "13/95"
+    },
+    {
+      "productID": 211518,
+      "name": "Blastoise - 13/95 (Prerelease) [Staff]",
+      "number": "13/95"
+    },
+    {
+      "productID": 221177,
+      "name": "Leafeon - 17/90 (Prerelease)",
+      "number": "17/90"
+    },
+    {
+      "productID": 224195,
+      "name": "Electivire - 20/102 (Prerelease)",
+      "number": "20/102"
+    },
+    {
+      "productID": 224196,
+      "name": "Electivire - 20/102 (Prerelease) [Staff]",
+      "number": "20/102"
+    }
+  ],
+  "reviewedCorrections": [
+    {
+      "issueID": "HGSS18-finalist-product",
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "existingVariantID": "pokemonStamp|normal|finalist,worlds-2010|",
+      "providerType": "normal",
+      "providerStamps": [
+        "finalist",
+        "worlds-2010"
+      ],
+      "tcgplayerProductID": 97704,
+      "action": "Bind the existing Finalist object to its exact Normal-only marketplace product",
+      "installed": false,
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS18",
+        "https://mp-search-api.tcgplayer.com/v1/product/97704/details",
+        "https://bulbapedia.bulbagarden.net/wiki/Tropical_Tidal_Wave_(HGSS_Promo_18)"
+      ],
+      "supportBoundary": "Ordinary stamped signed product records are not currently admitted; same category as pending stamped-support proposal"
+    },
+    {
+      "issueID": "HGSS18-participation-finish",
+      "providerCardID": "hgssp-HGSS18",
+      "name": "Tropical Tidal Wave",
+      "currentVariantID": "pokemonStamp|normal|worlds-2010|",
+      "correctedVariantID": "pokemonStamp|holo|worlds-2010|",
+      "providerType": "holo",
+      "providerStamps": [
+        "worlds-2010"
+      ],
+      "tcgplayerProductID": 90052,
+      "action": "Correct the Participation finish label while retaining its correct product; preserve other six Normal rankings/staff objects and stored holdings",
+      "installed": false,
+      "productMustNotBeExcluded": true,
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/hgssp-HGSS18",
+        "https://mp-search-api.tcgplayer.com/v1/product/90052/details",
+        "https://pokenola.com/products/tropical-tidal-wave-hgss18-worlds-10-participation-holofoil-hgss-promos-promo"
+      ],
+      "retailerObservation": "Indexed independent retailer product title explicitly identifies Participation Holofoil; direct open returned cache miss, so no raw-page hash is claimed",
+      "supportBoundary": "Requires stamped signed correction and exact legacy-variant review without automatic holding rekey"
+    },
+    {
+      "issueID": "dp3-4-cracked-ice-product",
+      "providerCardID": "dp3-4",
+      "name": "Entei",
+      "existingVariantID": "cracked-ice",
+      "providerType": "holo",
+      "providerFoil": "cracked-ice",
+      "tcgplayerProductID": 153236,
+      "ordinaryProductID": 85272,
+      "action": "Bind existing standard English Cracked Ice provider object to its distinct marketplace product; preserve ordinary Holo/Reverse product separation",
+      "installed": false,
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/dp3-4",
+        "https://mp-search-api.tcgplayer.com/v1/product/153236/details",
+        "https://bulbapedia.bulbagarden.net/wiki/Entei_(Secret_Wonders_4)"
+      ],
+      "supportBoundary": "Current signed membership whitelist admits Cosmos but not Cracked Ice; dp3 also needs an accurately reviewed signed descriptor before a correction can be delivered",
+      "scope": "Missing provider-object identity binding; physical pattern already exists upstream and in bundled checklist. No paid-quote acceptance claimed"
+    },
+    {
+      "issueID": "dp3-16-cracked-ice-product",
+      "providerCardID": "dp3-16",
+      "name": "Raikou",
+      "existingVariantID": "cracked-ice",
+      "providerType": "holo",
+      "providerFoil": "cracked-ice",
+      "tcgplayerProductID": 153238,
+      "ordinaryProductID": 88534,
+      "action": "Bind existing standard English Cracked Ice provider object to its distinct marketplace product; preserve ordinary Holo/Reverse product separation",
+      "installed": false,
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/dp3-16",
+        "https://mp-search-api.tcgplayer.com/v1/product/153238/details",
+        "https://bulbapedia.bulbagarden.net/wiki/Raikou_(Secret_Wonders_16)"
+      ],
+      "supportBoundary": "Current signed membership whitelist admits Cosmos but not Cracked Ice; dp3 also needs an accurately reviewed signed descriptor before a correction can be delivered",
+      "scope": "Missing provider-object identity binding; physical pattern already exists upstream and in bundled checklist. No paid-quote acceptance claimed"
+    },
+    {
+      "issueID": "dp3-19-cracked-ice-product",
+      "providerCardID": "dp3-19",
+      "name": "Suicune",
+      "existingVariantID": "cracked-ice",
+      "providerType": "holo",
+      "providerFoil": "cracked-ice",
+      "tcgplayerProductID": 153235,
+      "ordinaryProductID": 89604,
+      "action": "Bind existing standard English Cracked Ice provider object to its distinct marketplace product; preserve ordinary Holo/Reverse product separation",
+      "installed": false,
+      "sourceURLs": [
+        "https://api.tcgdex.net/v2/en/cards/dp3-19",
+        "https://mp-search-api.tcgplayer.com/v1/product/153235/details",
+        "https://bulbapedia.bulbagarden.net/wiki/Suicune_(Secret_Wonders_19)"
+      ],
+      "supportBoundary": "Current signed membership whitelist admits Cosmos but not Cracked Ice; dp3 also needs an accurately reviewed signed descriptor before a correction can be delivered",
+      "scope": "Missing provider-object identity binding; physical pattern already exists upstream and in bundled checklist. No paid-quote acceptance claimed"
+    }
+  ],
+  "additionalReviewLeads": [
+    {
+      "providerCardIDs": [
+        "hgssp-HGSS10",
+        "hgssp-HGSS11"
+      ],
+      "issue": "Flat Holo flags coexist with two exact named patterns. Current live catalogVariants source can expose generic Holo plus Cosmos and Cracked Ice. Review generic-slot semantics; do not infer or delete a third physical printing from this census.",
+      "knownPatternProductIDs": {
+        "LatiasCosmos": 86653,
+        "LatiasCrackedIce": 97705,
+        "LatiosCosmos": 86667,
+        "LatiosCrackedIce": 97706
+      },
+      "sourceURLs": [
+        "https://bulbapedia.bulbagarden.net/wiki/Latias_(HGSS_Promo_10)",
+        "https://bulbapedia.bulbagarden.net/wiki/Latios_(HGSS_Promo_11)"
+      ],
+      "runtimeUIInspected": false
+    }
+  ],
+  "pricingBoundary": "A sole priced listing can legitimately belong to an object whose provider type is wrong. Participation 90052 is not a wrong-number or wrong-stamp product and must not receive a product exclusion. Adjacent raw objects have no handles/quotes while flat pricing identifies ordinary products; no price values or paid requests retained.",
+  "offlineBoundary": "Current local bundled snapshot has no HGSS numbered rows; hgssp already exists in signed authoring and served revision 19. This is not a new missing set. The three adjacent Cracked Ice slots exist in the bundled dp3 checklist.",
+  "verificationBoundary": {
+    "physicalCameraAccepted": false,
+    "paidPricingAccepted": false,
+    "liveQuoteValuesStored": false,
+    "codeChanged": false,
+    "authoringChanged": false,
+    "nativeBuildOrTestRerun": false,
+    "signed": false,
+    "published": false,
+    "globalCompletenessProven": false
+  }
+}

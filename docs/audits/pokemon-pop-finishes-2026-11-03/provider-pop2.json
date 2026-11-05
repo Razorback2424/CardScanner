@@ -1,0 +1,1187 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:20.076457+00:00",
+  "purpose": "Physical identity, variant and price-product IDs only; no numeric quotes",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-1",
+      "status": 200,
+      "sha256": "aa3e4271c33d3d45e4bad6875fb29fbd3765d53b1007720850499f8614f5879f",
+      "requestedCardID": "pop2-1",
+      "identity": {
+        "id": "pop2-1",
+        "localId": "1",
+        "name": "Entei",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 85271,
+            "holofoil": 85271
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85271,
+              "cardmarket": 277432
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85271,
+                "holofoil": 85271
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 85271,
+              "cardmarket": 277432
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 85271,
+                "holofoil": 85271
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-2",
+      "status": 200,
+      "sha256": "f08c10818d63ae8f88f1c6c198597365913d2031fbe7f7f48ac250c758e53d0d",
+      "requestedCardID": "pop2-2",
+      "identity": {
+        "id": "pop2-2",
+        "localId": "2",
+        "name": "Pidgeot",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88032,
+            "holofoil": 88032
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88032,
+              "cardmarket": 277433
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88032,
+                "holofoil": 88032
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88032,
+              "cardmarket": 277433
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88032,
+                "holofoil": 88032
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-3",
+      "status": 200,
+      "sha256": "5206cd2d5ae5496a3798dd5aa9a2ced23476ee9185c1f72aea4408504ea3c113",
+      "requestedCardID": "pop2-3",
+      "identity": {
+        "id": "pop2-3",
+        "localId": "3",
+        "name": "Raikou",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88533,
+            "holofoil": 88533
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88533,
+              "cardmarket": 277434
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88533,
+                "holofoil": 88533
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88533,
+              "cardmarket": 277434
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88533,
+                "holofoil": 88533
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-4",
+      "status": 200,
+      "sha256": "b42b843853aed2cf98eadebeee88462f290bf4017ea391c40c79b3d78ee23865",
+      "requestedCardID": "pop2-4",
+      "identity": {
+        "id": "pop2-4",
+        "localId": "4",
+        "name": "Suicune",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 89602,
+            "holofoil": 89602
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89602,
+              "cardmarket": 277435
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89602,
+                "holofoil": 89602
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89602,
+              "cardmarket": 277435
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89602,
+                "holofoil": 89602
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-5",
+      "status": 200,
+      "sha256": "f78e25010b5ca3fb2b94823eaa333d8dd502a83451842a652333c2fde8d4f980",
+      "requestedCardID": "pop2-5",
+      "identity": {
+        "id": "pop2-5",
+        "localId": "5",
+        "name": "Tauros",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 89762,
+            "holofoil": 89762
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89762,
+              "cardmarket": 277436
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89762,
+                "holofoil": 89762
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 89762,
+              "cardmarket": 277436
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 89762,
+                "holofoil": 89762
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-6",
+      "status": 200,
+      "sha256": "96424ddd8b41d0d32eda4e4cd0ad4e0e05660c4b28bb936a34c43cf33686145a",
+      "requestedCardID": "pop2-6",
+      "identity": {
+        "id": "pop2-6",
+        "localId": "6",
+        "name": "Venusaur",
+        "rarity": "Rare",
+        "stage": "Stage2",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90317,
+            "holofoil": 90317
+          },
+          "listingKeys": [
+            "normal",
+            "holofoil"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90317,
+              "cardmarket": 277437
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90317,
+                "holofoil": 90317
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90317,
+              "cardmarket": 277437
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90317,
+                "holofoil": 90317
+              },
+              "listingKeys": [
+                "normal",
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-7",
+      "status": 200,
+      "sha256": "7f96d50b86b498027d30c0c712fa2f8a7de01de847bf7ac4b2d31f2bb3188bf7",
+      "requestedCardID": "pop2-7",
+      "identity": {
+        "id": "pop2-7",
+        "localId": "7",
+        "name": "Ivysaur",
+        "rarity": "Uncommon",
+        "stage": "Stage1",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86298
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86298,
+              "cardmarket": 277438
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86298
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-8",
+      "status": 200,
+      "sha256": "97a2eb961e0273f10431cc085c901b1ba2e8e9e7915bea8ed9962de33189d090",
+      "requestedCardID": "pop2-8",
+      "identity": {
+        "id": "pop2-8",
+        "localId": "8",
+        "name": "Mr. Briney's Compassion",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87586
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87586
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87586
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-9",
+      "status": 200,
+      "sha256": "7343fd250305a4fec8fe578189fe32f5b85c6bf3b350dc2790db053acde7e78e",
+      "requestedCardID": "pop2-9",
+      "identity": {
+        "id": "pop2-9",
+        "localId": "9",
+        "name": "Multi Technical Machine 01",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 87636
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 87636,
+              "cardmarket": 277440
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 87636
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-10",
+      "status": 200,
+      "sha256": "3f6e0ebb2e5972d4c9c90fb826bb81034c1d63c812a5efdf5d81cd1117f836e4",
+      "requestedCardID": "pop2-10",
+      "identity": {
+        "id": "pop2-10",
+        "localId": "10",
+        "name": "Pokémon Park",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88231
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88231,
+              "cardmarket": 277441
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88231
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-11",
+      "status": 200,
+      "sha256": "52edaf8ba43110b115b32a56d8e9fe71d3ed89a51c93a473f0e4c3b9f45a933e",
+      "requestedCardID": "pop2-11",
+      "identity": {
+        "id": "pop2-11",
+        "localId": "11",
+        "name": "TV Reporter",
+        "rarity": "Uncommon",
+        "stage": null,
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 90084
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 90084,
+              "cardmarket": 277442
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 90084
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-12",
+      "status": 200,
+      "sha256": "ff3e5962d4b269871097ebca77a14748db56b2b035c466820359382b0b8120ae",
+      "requestedCardID": "pop2-12",
+      "identity": {
+        "id": "pop2-12",
+        "localId": "12",
+        "name": "Bulbasaur",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84031
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84031,
+              "cardmarket": 277443
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84031
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-13",
+      "status": 200,
+      "sha256": "2acf56bd97f573ae86b456dc1de6f0f6a961d336d910a206b31b1e150a37ebf5",
+      "requestedCardID": "pop2-13",
+      "identity": {
+        "id": "pop2-13",
+        "localId": "13",
+        "name": "Cacnea",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84072
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84072,
+              "cardmarket": 277444
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84072
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-14",
+      "status": 200,
+      "sha256": "ca65913df540c12df1a418d1717a4d589b517ce48b97d369bd543ddaea897c6c",
+      "requestedCardID": "pop2-14",
+      "identity": {
+        "id": "pop2-14",
+        "localId": "14",
+        "name": "Luvdisc",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 86934
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 86934,
+              "cardmarket": 277445
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 86934
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-15",
+      "status": 200,
+      "sha256": "177f9658b2f382e1fec4179201980109f7c8654d07eb4e4c76883ab5a508a60e",
+      "requestedCardID": "pop2-15",
+      "identity": {
+        "id": "pop2-15",
+        "localId": "15",
+        "name": "Phanpy",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88000
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88000,
+              "cardmarket": 277446
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88000
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-16",
+      "status": 200,
+      "sha256": "f9e7c3d06ed4af4b5fc61e02a829b101fc68a2afda8485e06ee2ae7c43844e33",
+      "requestedCardID": "pop2-16",
+      "identity": {
+        "id": "pop2-16",
+        "localId": "16",
+        "name": "Pikachu",
+        "rarity": "Common",
+        "stage": "Basic",
+        "suffix": null,
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": false,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 88081
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 88081,
+              "cardmarket": 277447
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 88081
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/pop2-17",
+      "status": 200,
+      "sha256": "d418aff2d852bda3e36294113df645dd034ac0b31bec7e680b74d8c9caa1918c",
+      "requestedCardID": "pop2-17",
+      "identity": {
+        "id": "pop2-17",
+        "localId": "17",
+        "name": "Celebi ex",
+        "rarity": "Rare",
+        "stage": "Basic",
+        "suffix": "EX",
+        "set": {
+          "cardCount": {
+            "official": 17,
+            "total": 17
+          },
+          "id": "pop2",
+          "logo": "https://assets.tcgdex.net/en/pop/pop2/logo",
+          "name": "POP Series 2",
+          "symbol": "https://assets.tcgdex.net/univ/pop/pop2/symbol"
+        },
+        "variants": {
+          "firstEdition": false,
+          "holo": true,
+          "normal": true,
+          "reverse": false,
+          "wPromo": false
+        },
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "normal": 84151
+          },
+          "listingKeys": [
+            "normal"
+          ]
+        },
+        "variants_detailed": [
+          {
+            "type": "normal",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 84151,
+              "cardmarket": 277448
+            },
+            "variantId": "endfynwn4n10gzq",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "normal": 84151
+              },
+              "listingKeys": [
+                "normal"
+              ]
+            }
+          },
+          {
+            "type": "holo",
+            "size": "standard",
+            "thirdParty": {
+              "tcgplayer": 97808,
+              "cardmarket": 277448
+            },
+            "variantId": "jr7oetx1mqug9",
+            "pricingIdentity": {
+              "present": true,
+              "productIDsByListing": {
+                "holofoil": 97808
+              },
+              "listingKeys": [
+                "holofoil"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

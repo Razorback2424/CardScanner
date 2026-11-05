@@ -1,0 +1,2344 @@
+{
+  "observedAtUTC": "2026-11-03T15:25:54.752934+00:00",
+  "purpose": "Exact price-product identity and presence only, no numeric quotes retained",
+  "cards": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP01",
+      "status": 200,
+      "sha256": "6579a7c805f74c3976e78bb33eb1cde10cca3fb53c4e13b570dc186a65709be6",
+      "requestedCardID": "dpp-DP01",
+      "identity": {
+        "id": "dpp-DP01",
+        "name": "Turtwig",
+        "types": [
+          "Grass"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP02",
+      "status": 200,
+      "sha256": "4e80b65f770bc849489f3a7c473f19013123958dfe3e6910825101faad5011e7",
+      "requestedCardID": "dpp-DP02",
+      "identity": {
+        "id": "dpp-DP02",
+        "name": "Chimchar",
+        "types": [
+          "Fire"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP03",
+      "status": 200,
+      "sha256": "2e01cea65fd0277d7974def2503447c9c8aec87ebdf3de4443565c41218fbba0",
+      "requestedCardID": "dpp-DP03",
+      "identity": {
+        "id": "dpp-DP03",
+        "name": "Piplup",
+        "types": [
+          "Water"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "dylan-lefavour"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP04",
+      "status": 200,
+      "sha256": "5b4f96d165a21a68e2dc379f3c407800cfa6d7269a3c825e228ae258f2020b94",
+      "requestedCardID": "dpp-DP04",
+      "identity": {
+        "id": "dpp-DP04",
+        "name": "Pachirisu",
+        "types": [
+          "Lightning"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP05",
+      "status": 200,
+      "sha256": "5d55c4a5680186d99a57cc41ef22d68443f01b6ba8b6cbc00d65ca795a837192",
+      "requestedCardID": "dpp-DP05",
+      "identity": {
+        "id": "dpp-DP05",
+        "name": "Tropical Wind",
+        "types": null,
+        "stage": null,
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007",
+              "finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007",
+              "quarter-finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007",
+              "semi-finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007",
+              "staff"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007",
+              "top-sixteen"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2007",
+              "top-thirty-two"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP06",
+      "status": 200,
+      "sha256": "11d5004aa13e7198ff895514f7d471e07d82e5d127b887249f888cdbd04f3882",
+      "requestedCardID": "dpp-DP06",
+      "identity": {
+        "id": "dpp-DP06",
+        "name": "Buneary",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP07",
+      "status": 200,
+      "sha256": "ef0720c648aa1265df24a57923df0b3da037aac17811bb42f12c8675af73ca30",
+      "requestedCardID": "dpp-DP07",
+      "identity": {
+        "id": "dpp-DP07",
+        "name": "Cranidos",
+        "types": [
+          "Fighting"
+        ],
+        "stage": "Stage1",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP08",
+      "status": 200,
+      "sha256": "a37e839ad5d19c432cf7d96cf700833b67171780b80fd4ec3106041ade0df942",
+      "requestedCardID": "dpp-DP08",
+      "identity": {
+        "id": "dpp-DP08",
+        "name": "Shieldon",
+        "types": [
+          "Metal"
+        ],
+        "stage": "Stage1",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP09",
+      "status": 200,
+      "sha256": "f9a82aee565743b817c75fa161832a9a5b5afac8e8450df337c5e50d33a924da",
+      "requestedCardID": "dpp-DP09",
+      "identity": {
+        "id": "dpp-DP09",
+        "name": "Torterra",
+        "types": [
+          "Grass"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP10",
+      "status": 200,
+      "sha256": "a159e4491f14a814588654bdc11ef3b5e0ef31c2e6c7a5be686729a31a2a35ed",
+      "requestedCardID": "dpp-DP10",
+      "identity": {
+        "id": "dpp-DP10",
+        "name": "Infernape",
+        "types": [
+          "Fire"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP11",
+      "status": 200,
+      "sha256": "cf03cb7bb769eb2fadb89c4948413c1f4fd5f80ef65dbe359053894028867345",
+      "requestedCardID": "dpp-DP11",
+      "identity": {
+        "id": "dpp-DP11",
+        "name": "Empoleon",
+        "types": [
+          "Water"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP12",
+      "status": 200,
+      "sha256": "a021e2cb1d6652d4f7a45621d7a2704aace98cf36d4b597f125c3203d5008a32",
+      "requestedCardID": "dpp-DP12",
+      "identity": {
+        "id": "dpp-DP12",
+        "name": "Lucario",
+        "types": [
+          "Fighting"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP13",
+      "status": 200,
+      "sha256": "1ab30128008793d2ad7406b8ec269d0a2e8108226675968f8ce30e0f2ffe79e9",
+      "requestedCardID": "dpp-DP13",
+      "identity": {
+        "id": "dpp-DP13",
+        "name": "Buizel",
+        "types": [
+          "Water"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP14",
+      "status": 200,
+      "sha256": "dd25674a80603679c9ab74a69682000b52e1053c00c591dc8ef4866fcae49723",
+      "requestedCardID": "dpp-DP14",
+      "identity": {
+        "id": "dpp-DP14",
+        "name": "Chatot",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP15",
+      "status": 200,
+      "sha256": "68ffc85c6f911c1af03b41b2ba41c4764ce85732b08e4a334b21c4638dd0dcb4",
+      "requestedCardID": "dpp-DP15",
+      "identity": {
+        "id": "dpp-DP15",
+        "name": "Shinx",
+        "types": [
+          "Lightning"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP16",
+      "status": 200,
+      "sha256": "a0c2c98066cf03a93af2743aae68a2e6cf77ecdff6d2219f2dc54572dad6ac3b",
+      "requestedCardID": "dpp-DP16",
+      "identity": {
+        "id": "dpp-DP16",
+        "name": "Pikachu",
+        "types": [
+          "Lightning"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "countdown-calendar"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP17",
+      "status": 200,
+      "sha256": "6767993e3e7281ffc24a61807141773369afb50f2093f7d5278c852f20689d38",
+      "requestedCardID": "dpp-DP17",
+      "identity": {
+        "id": "dpp-DP17",
+        "name": "Dialga",
+        "types": [
+          "Metal"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP18",
+      "status": 200,
+      "sha256": "47221ade9ef9f2f7f2c7cf5165ba5f7931d98ece2b0713fea4a88561975a48c4",
+      "requestedCardID": "dpp-DP18",
+      "identity": {
+        "id": "dpp-DP18",
+        "name": "Palkia",
+        "types": [
+          "Water"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "david-cohen"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP19",
+      "status": 200,
+      "sha256": "1d2a0c77f1674fe60c3a95fef1c699bd1e008b7e1a20d7105a312fb8947b4490",
+      "requestedCardID": "dpp-DP19",
+      "identity": {
+        "id": "dpp-DP19",
+        "name": "Darkrai",
+        "types": [
+          "Darkness"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP20",
+      "status": 200,
+      "sha256": "090d8050c040e8f8122736718ed7d7899c6b126d47cc90a4176693c5cc4d78df",
+      "requestedCardID": "dpp-DP20",
+      "identity": {
+        "id": "dpp-DP20",
+        "name": "Magmortar",
+        "types": [
+          "Fire"
+        ],
+        "stage": "Stage1",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": true,
+          "productIDsByListing": {
+            "holofoil": 87057
+          },
+          "listingKeys": [
+            "holofoil"
+          ]
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP21",
+      "status": 200,
+      "sha256": "25633fae9ff9e5b15827cce33400278487655fc6d73704e6789acba97d14d7c4",
+      "requestedCardID": "dpp-DP21",
+      "identity": {
+        "id": "dpp-DP21",
+        "name": "Raichu",
+        "types": [
+          "Lightning"
+        ],
+        "stage": "Stage1",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP22",
+      "status": 200,
+      "sha256": "5436e8350327e17451816452cbf01b5f11833b2fd45cd984eedc5b7ece5b0f96",
+      "requestedCardID": "dpp-DP22",
+      "identity": {
+        "id": "dpp-DP22",
+        "name": "Mime Jr.",
+        "types": [
+          "Psychic"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP23",
+      "status": 200,
+      "sha256": "c6e6ef72a57f0ca29a24f9ed0c0f5d2bc398cf8c6f46db8a1614f6bb92bf2db4",
+      "requestedCardID": "dpp-DP23",
+      "identity": {
+        "id": "dpp-DP23",
+        "name": "Glameow",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP24",
+      "status": 200,
+      "sha256": "338af6be9522c2209e92fed73af0469862f1cb65a0066fc052be961a92135dba",
+      "requestedCardID": "dpp-DP24",
+      "identity": {
+        "id": "dpp-DP24",
+        "name": "Darkrai",
+        "types": [
+          "Darkness"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP25",
+      "status": 200,
+      "sha256": "758439a00ac230a8e180bcd77273ee7757eb5d733b5dcdf82851abb100cdb591",
+      "requestedCardID": "dpp-DP25",
+      "identity": {
+        "id": "dpp-DP25",
+        "name": "Tropical Wind",
+        "types": null,
+        "stage": null,
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008",
+              "finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008",
+              "quarter-finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008",
+              "semi-finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008",
+              "staff"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008",
+              "top-sixteen"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2008",
+              "top-thirty-two"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP26",
+      "status": 200,
+      "sha256": "292ffcb5d1a9d9b52364a2c3510535953c04ef8eeb22647dd043dc2734db74bc",
+      "requestedCardID": "dpp-DP26",
+      "identity": {
+        "id": "dpp-DP26",
+        "name": "Dialga",
+        "types": [
+          "Metal"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "mirror",
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP27",
+      "status": 200,
+      "sha256": "5e2e7de2f611efc4ee531d218c4b4a2835fdef216452941881ce36cf7c7382d5",
+      "requestedCardID": "dpp-DP27",
+      "identity": {
+        "id": "dpp-DP27",
+        "name": "Palkia",
+        "types": [
+          "Water"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "cracked-ice",
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": "mirror",
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP28",
+      "status": 200,
+      "sha256": "a6652706fa370404ffcc666b35c33c0d674aab4b7b7d60f2152b29213cbb53ec",
+      "requestedCardID": "dpp-DP28",
+      "identity": {
+        "id": "dpp-DP28",
+        "name": "Mewtwo",
+        "types": [
+          "Psychic"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP29",
+      "status": 200,
+      "sha256": "46049a54fb44c254994dbe8e369f476bd528b2bb5796d6a36fdd4313bc8be07b",
+      "requestedCardID": "dpp-DP29",
+      "identity": {
+        "id": "dpp-DP29",
+        "name": "Rhyperior",
+        "types": [
+          "Fighting"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP30",
+      "status": 200,
+      "sha256": "c4e2b3ab1981b8c58c3493b555de5671df0d29f565188ca23fa1addd976a99e9",
+      "requestedCardID": "dpp-DP30",
+      "identity": {
+        "id": "dpp-DP30",
+        "name": "Regigigas",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP31",
+      "status": 200,
+      "sha256": "3fa961afbe6a68f14a5f6a5c4234b9789f69049eaa49262dd272daff0b95c18f",
+      "requestedCardID": "dpp-DP31",
+      "identity": {
+        "id": "dpp-DP31",
+        "name": "Heatran",
+        "types": [
+          "Fire"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP32",
+      "status": 200,
+      "sha256": "c41ed28f5bb2a958159203e81eb5b476de5374f13ebf05961d78f7785e4d34c5",
+      "requestedCardID": "dpp-DP32",
+      "identity": {
+        "id": "dpp-DP32",
+        "name": "Magnezone",
+        "types": [
+          "Metal"
+        ],
+        "stage": "Stage2",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP33",
+      "status": 200,
+      "sha256": "505f8f14224d43d34ee0e172a11178b0bac3d625ee4ff6515850115d5d43d247",
+      "requestedCardID": "dpp-DP33",
+      "identity": {
+        "id": "dpp-DP33",
+        "name": "Dusknoir",
+        "types": [
+          "Psychic"
+        ],
+        "stage": "Stage2",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP34",
+      "status": 200,
+      "sha256": "4601ea105c7f1fa82d7b24b409456922937d7e0f85b4d3758c374000b2b997b0",
+      "requestedCardID": "dpp-DP34",
+      "identity": {
+        "id": "dpp-DP34",
+        "name": "Drifblim",
+        "types": [
+          "Psychic"
+        ],
+        "stage": "Stage1",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP35",
+      "status": 200,
+      "sha256": "80ceac96eb8d39d2e287626a7c351cfd4533bb94fdfd1fea54d98c6e8f4d0d9a",
+      "requestedCardID": "dpp-DP35",
+      "identity": {
+        "id": "dpp-DP35",
+        "name": "Porygon-Z",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "Stage2",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP36",
+      "status": 200,
+      "sha256": "68387e8ead740d29e4b9c93d2d42bb56a1ad7a028e72f33a368f98ad6f69c7f6",
+      "requestedCardID": "dpp-DP36",
+      "identity": {
+        "id": "dpp-DP36",
+        "name": "Gliscor",
+        "types": [
+          "Fighting"
+        ],
+        "stage": "Stage1",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP37",
+      "status": 200,
+      "sha256": "eae20aba355556a244004c7dc14bdc643c66e5a9b73d08b2d015bfb1c2d4c9d0",
+      "requestedCardID": "dpp-DP37",
+      "identity": {
+        "id": "dpp-DP37",
+        "name": "Dialga",
+        "types": [
+          "Metal"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP38",
+      "status": 200,
+      "sha256": "33ea03cf5c02d2f800c28edd52d6008d458dede52225704fe7fd78949385ed09",
+      "requestedCardID": "dpp-DP38",
+      "identity": {
+        "id": "dpp-DP38",
+        "name": "Giratina",
+        "types": [
+          "Psychic"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP39",
+      "status": 200,
+      "sha256": "94b48a0b25efdc52cfa2ddcaf3cd6f24818e28d63958aa77a5a5b2915c2aa83d",
+      "requestedCardID": "dpp-DP39",
+      "identity": {
+        "id": "dpp-DP39",
+        "name": "Shaymin",
+        "types": [
+          "Grass"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP40",
+      "status": 200,
+      "sha256": "4a5cbe51ba1acc211266fccc5911ea1dcd1bbeb5ed2d38ca5b83c63a9aadf537",
+      "requestedCardID": "dpp-DP40",
+      "identity": {
+        "id": "dpp-DP40",
+        "name": "Regigigas",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP41",
+      "status": 200,
+      "sha256": "0180eabd8816882c20590bd07123334a5569e7aa368b034b4274469ddba8acef",
+      "requestedCardID": "dpp-DP41",
+      "identity": {
+        "id": "dpp-DP41",
+        "name": "Toxicroak G",
+        "types": [
+          "Fighting"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": "cosmos",
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "tsubasa-nakamura"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP42",
+      "status": 200,
+      "sha256": "d80071f4923c76966d93e42a0fe6a1c04a59ec532a1b437c450500131fd223f4",
+      "requestedCardID": "dpp-DP42",
+      "identity": {
+        "id": "dpp-DP42",
+        "name": "Carnivine G",
+        "types": [
+          "Grass"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP43",
+      "status": 200,
+      "sha256": "87e609d85bf8aac08361beaa41b5433913d7d7a6e86f50fec67e61215e18d284",
+      "requestedCardID": "dpp-DP43",
+      "identity": {
+        "id": "dpp-DP43",
+        "name": "Probopass G",
+        "types": [
+          "Fighting"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP44",
+      "status": 200,
+      "sha256": "9c82a706876bd2fb777c353db221e7f157218254f9dc5e40f693287788a5f2dc",
+      "requestedCardID": "dpp-DP44",
+      "identity": {
+        "id": "dpp-DP44",
+        "name": "Magnezone",
+        "types": [
+          "Lightning"
+        ],
+        "stage": "Stage2",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP45",
+      "status": 200,
+      "sha256": "3b93dbe83844c2bbe80320cfe8d0fdba6acaefeed6d68383eeded664c7d56660",
+      "requestedCardID": "dpp-DP45",
+      "identity": {
+        "id": "dpp-DP45",
+        "name": "Charizard G",
+        "types": [
+          "Fire"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP46",
+      "status": 200,
+      "sha256": "e579558501465736046006a67ca62b8a22b5441d42aec06285d19fc63c706214",
+      "requestedCardID": "dpp-DP46",
+      "identity": {
+        "id": "dpp-DP46",
+        "name": "Garchomp C",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP47",
+      "status": 200,
+      "sha256": "6a6f3fe807708bc8be1c89a75673b997a75d1dc432ec9e2f5f7f5d058d3864e0",
+      "requestedCardID": "dpp-DP47",
+      "identity": {
+        "id": "dpp-DP47",
+        "name": "Rayquaza C",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP48",
+      "status": 200,
+      "sha256": "fb8c8c7f0231aa4892cd42cf0f7b2e6d578c7877b55d29a6747cde489c3dbab8",
+      "requestedCardID": "dpp-DP48",
+      "identity": {
+        "id": "dpp-DP48",
+        "name": "Tropical Wind",
+        "types": null,
+        "stage": null,
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009",
+              "finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009",
+              "quarter-finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009",
+              "semi-finalist"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009",
+              "staff"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009",
+              "top-sixteen"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "normal",
+            "foil": null,
+            "size": "standard",
+            "stamps": [
+              "worlds-2009",
+              "top-thirty-two"
+            ],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP49",
+      "status": 200,
+      "sha256": "cb96afddd65a1f29381c3a8a5e6dd2c662e0ac6ccebb65047ea4be12f44caa4c",
+      "requestedCardID": "dpp-DP49",
+      "identity": {
+        "id": "dpp-DP49",
+        "name": "Dialga",
+        "types": [
+          "Metal"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP50",
+      "status": 200,
+      "sha256": "a0ed6fc790f1b17b19db41ff542cdcd1677275d0388bae59d0cf2760c80e94d1",
+      "requestedCardID": "dpp-DP50",
+      "identity": {
+        "id": "dpp-DP50",
+        "name": "Arceus",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          },
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "jumbo",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP51",
+      "status": 200,
+      "sha256": "6acb8d268a4e2fd8c74b51b7b9a103b27d844c8d45aefb9bce12348454234cc7",
+      "requestedCardID": "dpp-DP51",
+      "identity": {
+        "id": "dpp-DP51",
+        "name": "Cresselia",
+        "types": [
+          "Psychic"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP52",
+      "status": 200,
+      "sha256": "62c244b43b8e9d6825c7a58659bb20284febc0b32f3df968910ead6c90b09910",
+      "requestedCardID": "dpp-DP52",
+      "identity": {
+        "id": "dpp-DP52",
+        "name": "Darkrai",
+        "types": [
+          "Darkness"
+        ],
+        "stage": "Basic",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP53",
+      "status": 200,
+      "sha256": "13001da4734e2a584f4bebcdee53164bec7964186808f934c95bf268bb30392f",
+      "requestedCardID": "dpp-DP53",
+      "identity": {
+        "id": "dpp-DP53",
+        "name": "Arceus",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP54",
+      "status": 200,
+      "sha256": "94a9ea1f1ff64116233936be4533f4ba1d8615d420eddeac1e2dc907def7106d",
+      "requestedCardID": "dpp-DP54",
+      "identity": {
+        "id": "dpp-DP54",
+        "name": "Beginning Door",
+        "types": null,
+        "stage": null,
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP55",
+      "status": 200,
+      "sha256": "c729f52de443baceb5ed012f7a90589794ae2e776023ff1dffcf1f23d70bd298",
+      "requestedCardID": "dpp-DP55",
+      "identity": {
+        "id": "dpp-DP55",
+        "name": "Ultimate Zone",
+        "types": null,
+        "stage": null,
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/cards/dpp-DP56",
+      "status": 200,
+      "sha256": "d70fcf44aa2c68d215dee2c532fd9ab7bc0bf803ba4a89b7127db7b8c48dd7bc",
+      "requestedCardID": "dpp-DP56",
+      "identity": {
+        "id": "dpp-DP56",
+        "name": "Arceus",
+        "types": [
+          "Colorless"
+        ],
+        "stage": "LEVEL-UP",
+        "suffix": null,
+        "pricingIdentity": {
+          "present": false,
+          "productIDsByListing": {},
+          "listingKeys": []
+        },
+        "detailedObjects": [
+          {
+            "type": "holo",
+            "foil": null,
+            "size": "standard",
+            "stamps": [],
+            "thirdParty": null,
+            "pricingIdentity": {
+              "present": false,
+              "productIDsByListing": {},
+              "listingKeys": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1101 @@
+{
+  "observedAtUTC": "2026-11-03T15:40:13.817524+00:00",
+  "sets": [
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop1",
+      "status": 200,
+      "sha256": "56c7b9b68ee3c3ba939e1e2ac8478bec7d19dde9dd434a09eb30f1687600ce9a",
+      "providerSetID": "pop1",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 7,
+          "normal": 17,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop1-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/1",
+            "localId": "1",
+            "name": "Blaziken"
+          },
+          {
+            "id": "pop1-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/2",
+            "localId": "2",
+            "name": "Metagross"
+          },
+          {
+            "id": "pop1-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/3",
+            "localId": "3",
+            "name": "Rayquaza"
+          },
+          {
+            "id": "pop1-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/4",
+            "localId": "4",
+            "name": "Sceptile"
+          },
+          {
+            "id": "pop1-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/5",
+            "localId": "5",
+            "name": "Swampert"
+          },
+          {
+            "id": "pop1-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/6",
+            "localId": "6",
+            "name": "Beautifly"
+          },
+          {
+            "id": "pop1-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/7",
+            "localId": "7",
+            "name": "Masquerain"
+          },
+          {
+            "id": "pop1-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/8",
+            "localId": "8",
+            "name": "Murkrow"
+          },
+          {
+            "id": "pop1-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/9",
+            "localId": "9",
+            "name": "Pupitar"
+          },
+          {
+            "id": "pop1-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/10",
+            "localId": "10",
+            "name": "Torkoal"
+          },
+          {
+            "id": "pop1-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/11",
+            "localId": "11",
+            "name": "Larvitar"
+          },
+          {
+            "id": "pop1-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/12",
+            "localId": "12",
+            "name": "Minun"
+          },
+          {
+            "id": "pop1-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/13",
+            "localId": "13",
+            "name": "Plusle"
+          },
+          {
+            "id": "pop1-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/14",
+            "localId": "14",
+            "name": "Surskit"
+          },
+          {
+            "id": "pop1-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/15",
+            "localId": "15",
+            "name": "Swellow"
+          },
+          {
+            "id": "pop1-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/16",
+            "localId": "16",
+            "name": "Armaldo ex"
+          },
+          {
+            "id": "pop1-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop1/17",
+            "localId": "17",
+            "name": "Tyranitar ex"
+          }
+        ],
+        "id": "pop1",
+        "name": "POP Series 1"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop2",
+      "status": 200,
+      "sha256": "315678fa85e16f9d8695a2fa42a7452bed7df6553fb638d8f9f63e4af0a62788",
+      "providerSetID": "pop2",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 7,
+          "normal": 17,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop2-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/1",
+            "localId": "1",
+            "name": "Entei"
+          },
+          {
+            "id": "pop2-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/2",
+            "localId": "2",
+            "name": "Pidgeot"
+          },
+          {
+            "id": "pop2-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/3",
+            "localId": "3",
+            "name": "Raikou"
+          },
+          {
+            "id": "pop2-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/4",
+            "localId": "4",
+            "name": "Suicune"
+          },
+          {
+            "id": "pop2-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/5",
+            "localId": "5",
+            "name": "Tauros"
+          },
+          {
+            "id": "pop2-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/6",
+            "localId": "6",
+            "name": "Venusaur"
+          },
+          {
+            "id": "pop2-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/7",
+            "localId": "7",
+            "name": "Ivysaur"
+          },
+          {
+            "id": "pop2-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/8",
+            "localId": "8",
+            "name": "Mr. Briney's Compassion"
+          },
+          {
+            "id": "pop2-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/9",
+            "localId": "9",
+            "name": "Multi Technical Machine 01"
+          },
+          {
+            "id": "pop2-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/10",
+            "localId": "10",
+            "name": "Pokémon Park"
+          },
+          {
+            "id": "pop2-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/11",
+            "localId": "11",
+            "name": "TV Reporter"
+          },
+          {
+            "id": "pop2-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/12",
+            "localId": "12",
+            "name": "Bulbasaur"
+          },
+          {
+            "id": "pop2-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/13",
+            "localId": "13",
+            "name": "Cacnea"
+          },
+          {
+            "id": "pop2-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/14",
+            "localId": "14",
+            "name": "Luvdisc"
+          },
+          {
+            "id": "pop2-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/15",
+            "localId": "15",
+            "name": "Phanpy"
+          },
+          {
+            "id": "pop2-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/16",
+            "localId": "16",
+            "name": "Pikachu"
+          },
+          {
+            "id": "pop2-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop2/17",
+            "localId": "17",
+            "name": "Celebi ex"
+          }
+        ],
+        "id": "pop2",
+        "name": "POP Series 2"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop3",
+      "status": 200,
+      "sha256": "d9966162d42cd6edb0d846fe8e52f8589a0ee1ea9810a8b43d3c5625a789dc0f",
+      "providerSetID": "pop3",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 7,
+          "normal": 17,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop3-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/1",
+            "localId": "1",
+            "name": "Blastoise"
+          },
+          {
+            "id": "pop3-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/2",
+            "localId": "2",
+            "name": "Flareon"
+          },
+          {
+            "id": "pop3-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/3",
+            "localId": "3",
+            "name": "Jolteon"
+          },
+          {
+            "id": "pop3-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/4",
+            "localId": "4",
+            "name": "Minun"
+          },
+          {
+            "id": "pop3-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/5",
+            "localId": "5",
+            "name": "Plusle"
+          },
+          {
+            "id": "pop3-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/6",
+            "localId": "6",
+            "name": "Vaporeon"
+          },
+          {
+            "id": "pop3-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/7",
+            "localId": "7",
+            "name": "Combusken"
+          },
+          {
+            "id": "pop3-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/8",
+            "localId": "8",
+            "name": "Donphan"
+          },
+          {
+            "id": "pop3-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/9",
+            "localId": "9",
+            "name": "Forretress"
+          },
+          {
+            "id": "pop3-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/10",
+            "localId": "10",
+            "name": "High Pressure System"
+          },
+          {
+            "id": "pop3-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/11",
+            "localId": "11",
+            "name": "Low Pressure System"
+          },
+          {
+            "id": "pop3-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/12",
+            "localId": "12",
+            "name": "Ditto"
+          },
+          {
+            "id": "pop3-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/13",
+            "localId": "13",
+            "name": "Eevee"
+          },
+          {
+            "id": "pop3-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/14",
+            "localId": "14",
+            "name": "Ivysaur"
+          },
+          {
+            "id": "pop3-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/15",
+            "localId": "15",
+            "name": "Marshtomp"
+          },
+          {
+            "id": "pop3-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/16",
+            "localId": "16",
+            "name": "Pichu Bros."
+          },
+          {
+            "id": "pop3-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop3/17",
+            "localId": "17",
+            "name": "Ho-Oh ex"
+          }
+        ],
+        "id": "pop3",
+        "name": "POP Series 3"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop4",
+      "status": 200,
+      "sha256": "9cef1d47e96d6aa2b42850f5bde39bb67f9b7fac41cb70110803afb7828b9c96",
+      "providerSetID": "pop4",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 7,
+          "normal": 17,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop4-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/1",
+            "localId": "1",
+            "name": "Chimecho δ"
+          },
+          {
+            "id": "pop4-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/2",
+            "localId": "2",
+            "name": "Deoxys δ"
+          },
+          {
+            "id": "pop4-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/3",
+            "localId": "3",
+            "name": "Flygon"
+          },
+          {
+            "id": "pop4-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/4",
+            "localId": "4",
+            "name": "Mew"
+          },
+          {
+            "id": "pop4-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/5",
+            "localId": "5",
+            "name": "Sceptile"
+          },
+          {
+            "id": "pop4-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/6",
+            "localId": "6",
+            "name": "Combusken"
+          },
+          {
+            "id": "pop4-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/7",
+            "localId": "7",
+            "name": "Grovyle"
+          },
+          {
+            "id": "pop4-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/8",
+            "localId": "8",
+            "name": "Heal Energy"
+          },
+          {
+            "id": "pop4-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/9",
+            "localId": "9",
+            "name": "Pokémon Fan Club"
+          },
+          {
+            "id": "pop4-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/10",
+            "localId": "10",
+            "name": "Scramble Energy"
+          },
+          {
+            "id": "pop4-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/11",
+            "localId": "11",
+            "name": "Mudkip"
+          },
+          {
+            "id": "pop4-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/12",
+            "localId": "12",
+            "name": "Pidgey"
+          },
+          {
+            "id": "pop4-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/13",
+            "localId": "13",
+            "name": "Pikachu"
+          },
+          {
+            "id": "pop4-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/14",
+            "localId": "14",
+            "name": "Squirtle"
+          },
+          {
+            "id": "pop4-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/15",
+            "localId": "15",
+            "name": "Treecko δ"
+          },
+          {
+            "id": "pop4-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/16",
+            "localId": "16",
+            "name": "Wobbuffet"
+          },
+          {
+            "id": "pop4-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop4/17",
+            "localId": "17",
+            "name": "Deoxys ex"
+          }
+        ],
+        "id": "pop4",
+        "name": "POP Series 4"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop5",
+      "status": 200,
+      "sha256": "3238e88521982d00ab5f5654bd83728fbf5343624655d4ff089bcadff18aa536",
+      "providerSetID": "pop5",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 7,
+          "normal": 17,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop5-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/1",
+            "localId": "1",
+            "name": "Ho-Oh"
+          },
+          {
+            "id": "pop5-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/2",
+            "localId": "2",
+            "name": "Lugia"
+          },
+          {
+            "id": "pop5-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/3",
+            "localId": "3",
+            "name": "Mew δ"
+          },
+          {
+            "id": "pop5-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/4",
+            "localId": "4",
+            "name": "Double Rainbow Energy"
+          },
+          {
+            "id": "pop5-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/5",
+            "localId": "5",
+            "name": "Charmeleon δ"
+          },
+          {
+            "id": "pop5-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/6",
+            "localId": "6",
+            "name": "Bill's Maintenance"
+          },
+          {
+            "id": "pop5-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/7",
+            "localId": "7",
+            "name": "Rare Candy"
+          },
+          {
+            "id": "pop5-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/8",
+            "localId": "8",
+            "name": "Boost Energy"
+          },
+          {
+            "id": "pop5-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/9",
+            "localId": "9",
+            "name": "δ Rainbow Energy"
+          },
+          {
+            "id": "pop5-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/10",
+            "localId": "10",
+            "name": "Charmander δ"
+          },
+          {
+            "id": "pop5-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/11",
+            "localId": "11",
+            "name": "Meowth δ"
+          },
+          {
+            "id": "pop5-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/12",
+            "localId": "12",
+            "name": "Pikachu"
+          },
+          {
+            "id": "pop5-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/13",
+            "localId": "13",
+            "name": "Pikachu δ"
+          },
+          {
+            "id": "pop5-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/14",
+            "localId": "14",
+            "name": "Pelipper δ"
+          },
+          {
+            "id": "pop5-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/15",
+            "localId": "15",
+            "name": "Zangoose δ"
+          },
+          {
+            "id": "pop5-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/16",
+            "localId": "16",
+            "name": "Espeon ★"
+          },
+          {
+            "id": "pop5-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop5/17",
+            "localId": "17",
+            "name": "Umbreon ★"
+          }
+        ],
+        "id": "pop5",
+        "name": "POP Series 5"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop6",
+      "status": 200,
+      "sha256": "fedb2b427515a709d2e6763cdfd5a53611087c9d3545952c155af2d83e076ee1",
+      "providerSetID": "pop6",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 8,
+          "normal": 18,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop6-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/1",
+            "localId": "1",
+            "name": "Bastiodon"
+          },
+          {
+            "id": "pop6-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/2",
+            "localId": "2",
+            "name": "Lucario"
+          },
+          {
+            "id": "pop6-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/3",
+            "localId": "3",
+            "name": "Manaphy"
+          },
+          {
+            "id": "pop6-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/4",
+            "localId": "4",
+            "name": "Pachirisu"
+          },
+          {
+            "id": "pop6-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/5",
+            "localId": "5",
+            "name": "Rampardos"
+          },
+          {
+            "id": "pop6-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/6",
+            "localId": "6",
+            "name": "Drifloon"
+          },
+          {
+            "id": "pop6-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/7",
+            "localId": "7",
+            "name": "Gible"
+          },
+          {
+            "id": "pop6-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/8",
+            "localId": "8",
+            "name": "Riolu"
+          },
+          {
+            "id": "pop6-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/9",
+            "localId": "9",
+            "name": "Pikachu"
+          },
+          {
+            "id": "pop6-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/10",
+            "localId": "10",
+            "name": "Staravia"
+          },
+          {
+            "id": "pop6-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/11",
+            "localId": "11",
+            "name": "Bidoof"
+          },
+          {
+            "id": "pop6-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/12",
+            "localId": "12",
+            "name": "Buneary"
+          },
+          {
+            "id": "pop6-13",
+            "localId": "13",
+            "name": "Cherubi"
+          },
+          {
+            "id": "pop6-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/14",
+            "localId": "14",
+            "name": "Chimchar"
+          },
+          {
+            "id": "pop6-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/15",
+            "localId": "15",
+            "name": "Piplup"
+          },
+          {
+            "id": "pop6-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop6/16",
+            "localId": "16",
+            "name": "Starly"
+          },
+          {
+            "id": "pop6-17",
+            "localId": "17",
+            "name": "Turtwig"
+          }
+        ],
+        "id": "pop6",
+        "name": "POP Series 6"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop7",
+      "status": 200,
+      "sha256": "3fe6d63fcdb4249e63de28ef0513ee0f2f4c85908991622999ec5570b797873d",
+      "providerSetID": "pop7",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 7,
+          "normal": 21,
+          "official": 17,
+          "reverse": 0,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop7-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/1",
+            "localId": "1",
+            "name": "Ampharos"
+          },
+          {
+            "id": "pop7-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/2",
+            "localId": "2",
+            "name": "Gallade"
+          },
+          {
+            "id": "pop7-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/3",
+            "localId": "3",
+            "name": "Latias"
+          },
+          {
+            "id": "pop7-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/4",
+            "localId": "4",
+            "name": "Latios"
+          },
+          {
+            "id": "pop7-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/5",
+            "localId": "5",
+            "name": "Mothim"
+          },
+          {
+            "id": "pop7-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/6",
+            "localId": "6",
+            "name": "Delibird"
+          },
+          {
+            "id": "pop7-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/7",
+            "localId": "7",
+            "name": "Flaaffy"
+          },
+          {
+            "id": "pop7-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/8",
+            "localId": "8",
+            "name": "Kirlia"
+          },
+          {
+            "id": "pop7-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/9",
+            "localId": "9",
+            "name": "Stantler"
+          },
+          {
+            "id": "pop7-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/10",
+            "localId": "10",
+            "name": "Wormadam Sandy Cloak"
+          },
+          {
+            "id": "pop7-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/11",
+            "localId": "11",
+            "name": "Burmy Plant Cloak"
+          },
+          {
+            "id": "pop7-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/12",
+            "localId": "12",
+            "name": "Burmy Sandy Cloak"
+          },
+          {
+            "id": "pop7-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/13",
+            "localId": "13",
+            "name": "Corsola"
+          },
+          {
+            "id": "pop7-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/14",
+            "localId": "14",
+            "name": "Mareep"
+          },
+          {
+            "id": "pop7-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/15",
+            "localId": "15",
+            "name": "Ralts"
+          },
+          {
+            "id": "pop7-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/16",
+            "localId": "16",
+            "name": "Sentret"
+          },
+          {
+            "id": "pop7-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop7/17",
+            "localId": "17",
+            "name": "Spinda"
+          }
+        ],
+        "id": "pop7",
+        "name": "POP Series 7"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop8",
+      "status": 200,
+      "sha256": "2cc913296d99478b5c17da5eb9bfd0c457cead31238e053e40a21f71f15145fe",
+      "providerSetID": "pop8",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 9,
+          "normal": 17,
+          "official": 17,
+          "reverse": 3,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop8-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/1",
+            "localId": "1",
+            "name": "Heatran"
+          },
+          {
+            "id": "pop8-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/2",
+            "localId": "2",
+            "name": "Lucario"
+          },
+          {
+            "id": "pop8-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/3",
+            "localId": "3",
+            "name": "Luxray"
+          },
+          {
+            "id": "pop8-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/4",
+            "localId": "4",
+            "name": "Probopass"
+          },
+          {
+            "id": "pop8-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/5",
+            "localId": "5",
+            "name": "Yanmega"
+          },
+          {
+            "id": "pop8-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/6",
+            "localId": "6",
+            "name": "Cherrim"
+          },
+          {
+            "id": "pop8-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/7",
+            "localId": "7",
+            "name": "Carnivine"
+          },
+          {
+            "id": "pop8-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/8",
+            "localId": "8",
+            "name": "Luxio"
+          },
+          {
+            "id": "pop8-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/9",
+            "localId": "9",
+            "name": "Night Maintenance"
+          },
+          {
+            "id": "pop8-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/10",
+            "localId": "10",
+            "name": "Rare Candy"
+          },
+          {
+            "id": "pop8-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/11",
+            "localId": "11",
+            "name": "Roseanne’s Research"
+          },
+          {
+            "id": "pop8-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/12",
+            "localId": "12",
+            "name": "Chimchar"
+          },
+          {
+            "id": "pop8-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/13",
+            "localId": "13",
+            "name": "Croagunk"
+          },
+          {
+            "id": "pop8-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/14",
+            "localId": "14",
+            "name": "Happiny"
+          },
+          {
+            "id": "pop8-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/15",
+            "localId": "15",
+            "name": "Piplup"
+          },
+          {
+            "id": "pop8-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/16",
+            "localId": "16",
+            "name": "Riolu"
+          },
+          {
+            "id": "pop8-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop8/17",
+            "localId": "17",
+            "name": "Turtwig"
+          }
+        ],
+        "id": "pop8",
+        "name": "POP Series 8"
+      }
+    },
+    {
+      "url": "https://api.tcgdex.net/v2/en/sets/pop9",
+      "status": 200,
+      "sha256": "2933d038737aff5fcbfba035cc7a1f31f6934a52773a880a3a0cb60ae694cc4b",
+      "providerSetID": "pop9",
+      "identity": {
+        "cardCount": {
+          "firstEd": 0,
+          "holo": 4,
+          "normal": 18,
+          "official": 17,
+          "reverse": 1,
+          "total": 17
+        },
+        "cards": [
+          {
+            "id": "pop9-1",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/1",
+            "localId": "1",
+            "name": "Garchomp"
+          },
+          {
+            "id": "pop9-2",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/2",
+            "localId": "2",
+            "name": "Manaphy"
+          },
+          {
+            "id": "pop9-3",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/3",
+            "localId": "3",
+            "name": "Raichu"
+          },
+          {
+            "id": "pop9-4",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/4",
+            "localId": "4",
+            "name": "Regigigas"
+          },
+          {
+            "id": "pop9-5",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/5",
+            "localId": "5",
+            "name": "Rotom"
+          },
+          {
+            "id": "pop9-6",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/6",
+            "localId": "6",
+            "name": "Buizel"
+          },
+          {
+            "id": "pop9-7",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/7",
+            "localId": "7",
+            "name": "Croagunk"
+          },
+          {
+            "id": "pop9-8",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/8",
+            "localId": "8",
+            "name": "Gabite"
+          },
+          {
+            "id": "pop9-9",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/9",
+            "localId": "9",
+            "name": "Lopunny"
+          },
+          {
+            "id": "pop9-10",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/10",
+            "localId": "10",
+            "name": "Pachirisu"
+          },
+          {
+            "id": "pop9-11",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/11",
+            "localId": "11",
+            "name": "Pichu"
+          },
+          {
+            "id": "pop9-12",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/12",
+            "localId": "12",
+            "name": "Buneary"
+          },
+          {
+            "id": "pop9-13",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/13",
+            "localId": "13",
+            "name": "Chimchar"
+          },
+          {
+            "id": "pop9-14",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/14",
+            "localId": "14",
+            "name": "Gible"
+          },
+          {
+            "id": "pop9-15",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/15",
+            "localId": "15",
+            "name": "Pikachu"
+          },
+          {
+            "id": "pop9-16",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/16",
+            "localId": "16",
+            "name": "Piplup"
+          },
+          {
+            "id": "pop9-17",
+            "image": "https://assets.tcgdex.net/en/pop/pop9/17",
+            "localId": "17",
+            "name": "Turtwig"
+          }
+        ],
+        "id": "pop9",
+        "name": "POP Series 9"
+      }
+    }
+  ]
+}

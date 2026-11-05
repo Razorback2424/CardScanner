@@ -1,0 +1,29 @@
+{
+  "status": "Four existing focused simulator tests passed",
+  "resultBundle": "/Volumes/T7/CodexBuilds/CardScannerEnergyMEE20261103.xcresult",
+  "derivedData": "/Volumes/T7/CodexBuilds/CardScannerRetail20261102",
+  "inputSHA256": "9f02256a44cd007c06601b9bfcc196aad8c840ef5faf921de7f5dfdfe6ba631d",
+  "testsPassed": 4,
+  "testsFailed": 0,
+  "testsSkipped": 0,
+  "buildErrors": 0,
+  "buildWarnings": 41,
+  "testMethods": [
+    "PokemonTCGCSVPriceTests.testReviewedEnergyProductsAndChecklistRegenerationPreserveOldRows",
+    "PokemonTCGCSVPriceTests.testEnergyResolutionAndCollectionExportKeepExactPhysicalIdentity",
+    "ScanParserTests.testRegisteredEnergyFootersAndSafeNegativeEvidence",
+    "ScanParserTests.testEnergySplitObservationsRequireNearbyGeometry"
+  ],
+  "coverage": "Checklist regeneration preserves primary rows and reviewed eight MEE supplements; representative 013/015 resolution, refresh and CSV holding roundtrip; valid/invalid/split footer cases. Fixtures contain no paid numeric quotes.",
+  "runtimeEndToEndNumbers": [
+    "013",
+    "015"
+  ],
+  "allEightRuntimeEndToEndClaimed": false,
+  "sourceAndBundleComparisonVerifiedAllEight": true,
+  "initialSimulatorInventory": "Default sandbox could not access CoreSimulator; normal escalated test run succeeded",
+  "appOrCoreCodeChanged": false,
+  "nativePublisherRerun": false,
+  "physicalCameraAccepted": false,
+  "paidProviderAccepted": false
+}

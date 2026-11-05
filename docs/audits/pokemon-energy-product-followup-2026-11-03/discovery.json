@@ -1,0 +1,72 @@
+[
+  {
+    "url": "https://www.decktradr.com/sets/pokemon/24382-sve-scarlet-and-violet-energies",
+    "status": 200,
+    "sha256": "3d7a9f4a643f4968615a9b46aa6cceb3d669d6b2f769bdf99fbb4aa3f6328f30",
+    "groupID": 24382,
+    "cardLinks": [
+      "/cards/pokemon/645286-basic-grass-energy-017",
+      "/cards/pokemon/645287-basic-fire-energy-018",
+      "/cards/pokemon/645288-basic-water-energy-019",
+      "/cards/pokemon/645289-basic-lightning-energy-020",
+      "/cards/pokemon/645301-basic-psychic-energy-021",
+      "/cards/pokemon/645302-basic-fighting-energy-022",
+      "/cards/pokemon/645303-basic-darkness-energy-023",
+      "/cards/pokemon/645304-basic-metal-energy-024"
+    ]
+  },
+  {
+    "url": "https://www.decktradr.com/sets/pokemon/24461-mee-mega-evolution-energies",
+    "status": 200,
+    "sha256": "f427e0ea2260677a895afa1ecb20e88e711f45f08a108ba87e5da76277768c9c",
+    "groupID": 24461,
+    "cardLinks": [
+      "/cards/pokemon/656263-basic-grass-energy-001-1",
+      "/cards/pokemon/656264-basic-fire-energy-002-2",
+      "/cards/pokemon/656265-basic-water-energy-003-3",
+      "/cards/pokemon/656266-basic-lightning-energy-004-4",
+      "/cards/pokemon/656267-basic-psychic-energy-005-5",
+      "/cards/pokemon/656268-basic-fighting-energy-006-6",
+      "/cards/pokemon/656269-basic-darkness-energy-007-7",
+      "/cards/pokemon/656270-basic-metal-energy-008-8",
+      "/cards/pokemon/713248-basic-grass-energy-009-30th-celebration",
+      "/cards/pokemon/713249-basic-fire-energy-010-30th-celebration",
+      "/cards/pokemon/713250-basic-water-energy-011-30th-celebration",
+      "/cards/pokemon/713251-basic-lightning-energy-012-30th-celebration",
+      "/cards/pokemon/713252-basic-psychic-energy-013-30th-celebration",
+      "/cards/pokemon/713253-basic-fighting-energy-014-30th-celebration",
+      "/cards/pokemon/713254-basic-darkness-energy-015-30th-celebration",
+      "/cards/pokemon/713255-basic-metal-energy-016-30th-celebration"
+    ]
+  },
+  {
+    "url": "https://www.decktradr.com/sets/pokemon/2332-professor-program-promos",
+    "status": 200,
+    "sha256": "9bf716e0cf2a75ac568dcf1de54767ff399d1c9ff4a72e8ea59fbca037b80889",
+    "groupID": 2332,
+    "cardLinks": [
+      "/cards/pokemon/176625-fighting-energy-2004-2005-105-109",
+      "/cards/pokemon/176626-fire-energy-2004-2005-108-109",
+      "/cards/pokemon/176627-grass-energy-2004-2005-104-109",
+      "/cards/pokemon/176628-lightning-energy-2004-2005-109-109",
+      "/cards/pokemon/176636-water-energy-2004-2005-106-109",
+      "/cards/pokemon/176637-psychic-energy-2004-2005-107-109",
+      "/cards/pokemon/599453-fighting-energy-2023-006",
+      "/cards/pokemon/599454-fire-energy-2023-002",
+      "/cards/pokemon/599455-grass-energy-2023-001",
+      "/cards/pokemon/599456-lightning-energy-2023-004",
+      "/cards/pokemon/599457-psychic-energy-2023-005",
+      "/cards/pokemon/599458-water-energy-2023-003",
+      "/cards/pokemon/599459-metal-energy-2023-008",
+      "/cards/pokemon/599460-darkness-energy-2023-007",
+      "/cards/pokemon/604494-darkness-energy-2024-015",
+      "/cards/pokemon/604495-metal-energy-2024-016",
+      "/cards/pokemon/604496-water-energy-2024-011",
+      "/cards/pokemon/604497-psychic-energy-2024-013",
+      "/cards/pokemon/604498-lightning-energy-2024-012",
+      "/cards/pokemon/604499-grass-energy-2024-009",
+      "/cards/pokemon/604500-fire-energy-2024-010",
+      "/cards/pokemon/604501-fighting-energy-2024-014"
+    ]
+  }
+]
