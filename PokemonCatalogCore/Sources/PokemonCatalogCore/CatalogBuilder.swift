@@ -33,6 +33,7 @@ public struct PokemonCatalogBuildRequest: Sendable {
     public let fixture: PokemonCatalogProviderFixture
     public let activeRelease: PokemonCatalogRelease?
     public let humanInputs: [PokemonCatalogHumanInput]
+    public let englishExclusions: PokemonCatalogEnglishExclusions?
     public let revision: Int
     public let generatedAt: Date
 
@@ -41,13 +42,15 @@ public struct PokemonCatalogBuildRequest: Sendable {
         activeRelease: PokemonCatalogRelease? = nil,
         humanInputs: [PokemonCatalogHumanInput],
         revision: Int,
-        generatedAt: Date
+        generatedAt: Date,
+        englishExclusions: PokemonCatalogEnglishExclusions? = nil
     ) {
         self.fixture = fixture
         self.activeRelease = activeRelease
         self.humanInputs = humanInputs
         self.revision = revision
         self.generatedAt = generatedAt
+        self.englishExclusions = englishExclusions
     }
 }
 
@@ -443,11 +446,41 @@ public struct PokemonCatalogBuilder: Sendable {
             throw PokemonCatalogBuildError.humanInputForMissingSet(input.providerSetID)
         }
 
+        let englishExclusions = request.englishExclusions ?? request.activeRelease?.englishExclusions
+        if let englishExclusions {
+            try englishExclusions.validate()
+            for (id, name) in englishExclusions.cards.map({ ($0.providerCardID, $0.canonicalName) })
+                + englishExclusions.variants.map({ ($0.providerCardID, $0.canonicalName) }) {
+                guard let card = providerCards[id.lowercased()], card.id == id,
+                      id == (card.setID ?? id.split(separator: "-", maxSplits: 1).first.map(String.init) ?? "") + "-" + card.localID,
+                      PokemonCatalogTextNormalization.canonicalMembershipName(card.name)
+                        == PokemonCatalogTextNormalization.canonicalMembershipName(name) else {
+                    throw PokemonCatalogBuildError.invalidDescriptor("English exclusion has no matching source card: \(id)")
+                }
+            }
+            for exclusion in englishExclusions.variants {
+                guard let card = providerCards[exclusion.providerCardID.lowercased()],
+                      (card.variantsDetailed ?? []).filter({
+                          exclusion.matches(type: $0.type, size: $0.size, foil: $0.foil,
+                                            stamps: $0.stamp, subtype: $0.subtype)
+                      }).count == 1 else {
+                    throw PokemonCatalogBuildError.invalidDescriptor("English exclusion is absent or ambiguous: \(exclusion.providerCardID)")
+                }
+            }
+            for descriptor in descriptors {
+                guard !(descriptor.additionalVariants ?? []).contains(where: {
+                    englishExclusions.excludes(cardID: $0.providerCardID, variantID: $0.variantID)
+                }) else {
+                    throw PokemonCatalogBuildError.invalidDescriptor("English exclusion contradicts an additional variant")
+                }
+            }
+        }
         let release = PokemonCatalogRelease(
             catalogKind: PokemonCatalogRelease.currentCatalogKind,
             revision: request.revision,
             generatedAt: request.generatedAt,
-            sets: descriptors.sorted(by: descriptorSort)
+            sets: descriptors.sorted(by: descriptorSort),
+            englishExclusions: englishExclusions
         )
         try PokemonCatalogReleaseValidator.validate(
             release,

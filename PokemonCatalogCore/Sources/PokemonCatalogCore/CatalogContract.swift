@@ -39,19 +39,22 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
     public let revision: Int
     public let generatedAt: Date
     public let sets: [PokemonCatalogSetDescriptor]
+    public let englishExclusions: PokemonCatalogEnglishExclusions?
 
     public init(
         schemaVersion: Int = PokemonCatalogRelease.currentSchemaVersion,
         catalogKind: String? = nil,
         revision: Int,
         generatedAt: Date,
-        sets: [PokemonCatalogSetDescriptor]
+        sets: [PokemonCatalogSetDescriptor],
+        englishExclusions: PokemonCatalogEnglishExclusions? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.catalogKind = catalogKind
         self.revision = revision
         self.generatedAt = generatedAt
         self.sets = sets
+        self.englishExclusions = englishExclusions
     }
 }
 

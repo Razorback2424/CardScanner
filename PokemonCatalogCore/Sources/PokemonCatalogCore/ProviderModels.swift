@@ -490,8 +490,10 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
 
 public struct PokemonCatalogHumanInputFile: Codable, Equatable, Sendable {
     public let sets: [PokemonCatalogHumanInput]
+    public let englishExclusions: PokemonCatalogEnglishExclusions?
 
-    public init(sets: [PokemonCatalogHumanInput]) {
+    public init(sets: [PokemonCatalogHumanInput], englishExclusions: PokemonCatalogEnglishExclusions? = nil) {
         self.sets = sets
+        self.englishExclusions = englishExclusions
     }
 }
