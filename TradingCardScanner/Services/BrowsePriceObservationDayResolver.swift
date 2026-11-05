@@ -1,35 +1,12 @@
 import Foundation
 
-struct ResolvedBrowsePriceDay: Equatable, Sendable {
-    let day: BrowsePriceDay
-    let providerUpdatedAt: Date
-}
-/// Converts provider freshness metadata into the date-only UTC identity used by
-/// Browse history. A nil result is intentional: callers must skip history rather
-/// than substitute the ordinary HTTP fetch time.
+/// Parses the provider's original freshness timestamp; invalid dates remain
+/// unknown rather than being replaced with the HTTP retrieval time.
 enum BrowsePriceObservationDayResolver {
-    static func pokemonTCGIO(updatedAt: String?) -> ResolvedBrowsePriceDay? {
+    static func pokemonTCGIO(updatedAt: String?) -> Date? {
         guard let updatedAt,
               let date = parsePokemonDate(updatedAt) else { return nil }
-        return resolved(date)
-    }
-
-    static func tcgdex(updatedAt: Date?) -> ResolvedBrowsePriceDay? {
-        updatedAt.map(resolved)
-    }
-
-    /// Scryfall's bulk-data stamp is an approximate dataset day, not exact
-    /// per-card price provenance. The distinction is kept in the transport and
-    /// UI copy rather than pretending this is a card-level timestamp.
-    static func scryfallDataset(updatedAt: Date?) -> ResolvedBrowsePriceDay? {
-        updatedAt.map(resolved)
-    }
-
-    private static func resolved(_ date: Date) -> ResolvedBrowsePriceDay {
-        ResolvedBrowsePriceDay(
-            day: BrowsePriceDay(date: date),
-            providerUpdatedAt: date
-        )
+        return date
     }
 
     private static func parsePokemonDate(_ raw: String) -> Date? {

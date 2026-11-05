@@ -37,7 +37,6 @@ private struct SettingsContentView: View {
     @State private var priceRecordCount = 0
     @State private var missingArtworkCount = 0
     @State private var priceCoverageGaps: [PriceCoverageGapLog.Gap] = []
-    @State private var browseHistoryDiagnostics = BrowsePriceHistoryDiagnostics.empty
     @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
     @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
 
@@ -113,7 +112,6 @@ private struct SettingsContentView: View {
             .task {
                 loadCounts()
                 refreshPriceCoverageGaps()
-                await refreshBrowseHistoryDiagnostics()
             }
         }
             // Present from the persistent navigation container. The root Form
@@ -402,50 +400,6 @@ private struct SettingsContentView: View {
                     )
                 }
 
-                DisclosureGroup {
-                    LabeledContent(
-                        "Sets with history",
-                        value: browseHistoryDiagnostics.setCount.formatted()
-                    )
-                    LabeledContent(
-                        "Stored locally",
-                        value: ByteCountFormatter.string(
-                            fromByteCount: Int64(browseHistoryDiagnostics.totalBytes),
-                            countStyle: .file
-                        )
-                    )
-                    if let oldest = browseHistoryDiagnostics.oldestProviderDay {
-                        LabeledContent("Oldest provider day", value: oldest.rawValue)
-                    }
-                    if let newest = browseHistoryDiagnostics.newestProviderDay {
-                        LabeledContent("Newest provider day", value: newest.rawValue)
-                    }
-                    LabeledContent(
-                        "Corrupt files recovered",
-                        value: browseHistoryDiagnostics.corruptFileRecoveryCount.formatted()
-                    )
-                    LabeledContent(
-                        "Skipped timestamps",
-                        value: browseHistoryDiagnostics.skippedTimestampWrites.formatted()
-                    )
-                    LabeledContent(
-                        "Deduplicated observations",
-                        value: browseHistoryDiagnostics.deduplicatedObservationCount.formatted()
-                    )
-                    LabeledContent(
-                        "Unmapped variants",
-                        value: browseHistoryDiagnostics.unmappedVariantCount.formatted()
-                    )
-                    Text(browseHistoryDiagnostics.pokemonShadowCoverageSummary)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Button("Refresh history diagnostics", systemImage: "arrow.clockwise") {
-                        Task { await refreshBrowseHistoryDiagnostics() }
-                    }
-                } label: {
-                    Label("Browse history diagnostics", systemImage: "chart.xyaxis.line")
-                }
             }
         }
     }
@@ -463,10 +417,6 @@ private struct SettingsContentView: View {
                 in: container, retryFailedSealed: true, shouldContinue: shouldContinue
             )
         }
-    }
-
-    private func refreshBrowseHistoryDiagnostics() async {
-        browseHistoryDiagnostics = await BrowsePriceHistoryStore.shared.diagnostics()
     }
 
     private func prepareCSVExport(_ kind: CollectionCSV.ExportKind, filename: String) {

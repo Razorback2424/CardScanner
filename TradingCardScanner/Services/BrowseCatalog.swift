@@ -167,8 +167,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let now: @Sendable () -> Date
     private let magicSession: URLSession
     private let cache: CatalogCacheStore
-    private let browsePriceHistoryStore: BrowsePriceHistoryStore
-    private let scryfallDatasetStamp: any ScryfallDatasetStampProviding
     private let pokemonTransport: any PokemonBrowseTransport
     private let pokemonPriceSource: (any PokemonBulkPriceSource)?
     private let tcgCSVSource: (any PokemonTCGCSVPriceSource)?
@@ -180,10 +178,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var detailTasks: [String: DetailTaskState] = [:]
     private var magicPageRefreshTasks: [String: Task<Void, Never>] = [:]
-    private var pendingBrowseHistory: [(
-        price: NormalizedPrice, printingID: String, setID: String, variant: PhysicalVariant
-    )] = []
-    private var browseHistoryTask: Task<Void, Never>?
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
     private var pokemonSetTasks: [String: Task<TCGdexSetCatalog, Error>] = [:]
     private struct PokemonPayloadTaskState {
@@ -245,8 +239,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
         gameBrowseAdapters: GameBrowseAdapterRegistry = try! .init(adapters: []),
         priceQuoteService: PriceQuoteService = PriceQuoteService(),
         gameActivationSources: [any GameCatalogActivationSource] = [],
-        browsePriceHistoryStore: BrowsePriceHistoryStore = .shared,
-        scryfallDatasetStamp: any ScryfallDatasetStampProviding = ScryfallDatasetStampCache.shared,
         magicSession: URLSession = .shared,
         now: @escaping @Sendable () -> Date = { .now }
     ) {
@@ -274,8 +266,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.checklistStore = checklistStore
         self.catalogCoordinator = catalogCoordinator
         self.magicCatalogCoordinator = magicCatalogCoordinator
-        self.browsePriceHistoryStore = browsePriceHistoryStore
-        self.scryfallDatasetStamp = scryfallDatasetStamp
         self.magicSession = magicSession
         self.scryfall = ScryfallService(session: magicSession)
         self.now = now
@@ -283,7 +273,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     deinit {
         for task in gameBrowseTasks.values { task.cancel() }
-        browseHistoryTask?.cancel()
         for task in magicPageRefreshTasks.values { task.cancel() }
         catalogEventTask?.cancel()
         catalogAuthorityRefreshTask?.cancel()
@@ -943,8 +932,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             let loaded = try await magicCards(
                 query: "e:\(set.providerID) lang:en game:paper",
-                cursor: cursor,
-                collectHistory: true
+                cursor: cursor
             )
             page = loaded.page
             await cache.storeCardPage(loaded.page, for: cacheKey)
@@ -969,8 +957,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         defer { magicPageRefreshTasks[cacheKey] = nil }
         do {
             let refreshed = try await magicCards(
-                query: "e:\(set.providerID) lang:en game:paper", cursor: cursor,
-                collectHistory: true
+                query: "e:\(set.providerID) lang:en game:paper", cursor: cursor
             )
             guard !Task.isCancelled else { return }
             await cache.storeCardPage(refreshed.page, for: cacheKey)
@@ -1024,8 +1011,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 : " (\(selected.map { "e:\($0)" }.joined(separator: " or ")))"
             return try await magicCards(
                 query: "name:\"\(escapedScryfall(query))\" lang:en game:paper\(setClause)",
-                cursor: cursor,
-                collectHistory: false
+                cursor: cursor
             ).page
         default: throw CardGameSupportError.unsupportedGame(game)
         }
@@ -1358,23 +1344,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
             unresolvedSortPrices = unresolvedSortPrices.filter { !$0.hasPrefix(game.rawValue + ":") }
         }
         yieldUpdate(game: game, revision: snapshot.revision, providerSetID: nil)
-    }
-
-    /// History is an observational side effect of successful Browse pricing,
-    /// never a prerequisite for the current-price result. A storage failure is
-    /// therefore logged as a skipped history write while the caller keeps the
-    /// already-normalized current price.
-    private func recordBrowseHistory(
-        _ quotes: [BrowsePriceQuote],
-        game: CardGame
-    ) async {
-        guard !quotes.isEmpty else { return }
-        do {
-            try await browsePriceHistoryStore.record(quotes, game: game)
-        } catch {
-            // Device-local history is best effort. The existing Browse price
-            // path remains authoritative when this write cannot complete.
-        }
     }
 
     private func installMagicPrices(
@@ -1823,12 +1792,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 guard let secondarySetID = try await resolvedPokemonSecondarySetID(
                     for: summary
                 ) else { continue }
-                let bulk = try await pokemonBulkPrices(
+                _ = try await pokemonBulkPrices(
                     for: summary.setID.providerID,
                     secondarySetID: secondarySetID,
                     source: source
                 )
-                await recordPokemonBulkHistory(summaries: summaries, map: bulk)
             } catch is CancellationError {
                 return
             } catch {
@@ -1849,58 +1817,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
             slots.append(await sortPrice(for: summary))
         }
         return SortPriceGroupResult(slots: slots)
-    }
-
-    private func recordPokemonBulkHistory(
-        summaries: [CatalogCardSummary],
-        map: PokemonBulkPriceMap
-    ) async {
-        var quotes: [BrowsePriceQuote] = []
-        for summary in summaries where summary.game == .pokemon {
-            guard summary.pokemonPrintRun == nil else { continue }
-            let knownBulkListings: Set<String> = [
-                "normal", "holofoil", "reverseholofoil", "1steditionholofoil"
-            ]
-            if let providerKeys = map.values(for: summary.providerID)?.keys {
-                for providerKey in providerKeys
-                    where !knownBulkListings.contains(providerKey.lowercased()) {
-                    await browsePriceHistoryStore.recordUnmappedVariant()
-                }
-            }
-            let variants = summary.masterSetVariant.map { [$0] } ?? [.normal]
-            for variant in variants {
-                guard let listing = PokemonBulkPriceMap.listingKey(for: variant) else {
-                    await browsePriceHistoryStore.recordUnmappedVariant()
-                    continue
-                }
-                guard let amount = map.price(
-                    for: summary.providerID,
-                    variant: variant
-                ) else { continue }
-                guard let providerUpdatedAt = map.providerUpdatedAt(for: summary.providerID) else {
-                    await browsePriceHistoryStore.recordSkippedTimestamp()
-                    continue
-                }
-                guard let quote = BrowsePriceQuote(
-                    printingID: summary.id,
-                    setID: summary.setID.id,
-                    variant: variant,
-                    amountUSD: amount,
-                    marketSource: .tcgplayer,
-                    transportProvider: .pokemonTCGIO,
-                    providerUpdatedAt: providerUpdatedAt
-                ) else {
-                    await browsePriceHistoryStore.recordUnmappedVariant()
-                    continue
-                }
-                // Keep the explicit listing lookup above as a guardrail: it
-                // prevents a future bulk-key addition from silently becoming a
-                // normal/holo/reverse history series without a deliberate map.
-                _ = listing
-                quotes.append(quote)
-            }
-        }
-        await recordBrowseHistory(quotes, game: .pokemon)
     }
 
     private func pokemonBulkPrices(
@@ -2107,12 +2023,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
             )
             if case let .price(price) = lookup,
                price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
-                recordNormalizedBrowsePrice(
-                    price,
-                    printingID: summary.id,
-                    setID: summary.setID.id,
-                    variant: variant
-                )
                 return SortPriceSlot(
                     id: summary.id,
                     resolution: .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt)
@@ -2124,9 +2034,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
             )
         }
 
-        // An unqualified printing may expose several exact finishes. Record
-        // each normalized USD observation separately; the sort key still uses
-        // the highest current finish as before.
+        // An unqualified printing may expose several exact finishes. Sort by
+        // the highest current USD quote without changing their identities.
         var lookups: [PriceLookup] = []
         for variant in details.card.variantEvidence.catalogVariants {
             let lookup = CardPricing.price(
@@ -2137,80 +2046,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 at: details.retrievedAt
             )
             lookups.append(lookup)
-            if case let .price(price) = lookup,
-               price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
-                recordNormalizedBrowsePrice(
-                    price,
-                    printingID: summary.id,
-                    setID: summary.setID.id,
-                    variant: variant
-                )
-            }
         }
         return SortPriceSlot(
             id: summary.id,
             resolution: CatalogSortPriceResolution.aggregate(lookups)
         )
-    }
-
-    private func recordNormalizedBrowsePrice(
-        _ price: NormalizedPrice,
-        printingID: String,
-        setID: String,
-        variant: PhysicalVariant
-    ) {
-        pendingBrowseHistory.append((price, printingID, setID, variant))
-        guard browseHistoryTask == nil else { return }
-        browseHistoryTask = Task { [weak self] in await self?.drainBrowseHistory() }
-    }
-
-    /// One worker batches optional history writes; current results never wait
-    /// for its dataset request or disk work.
-    private func drainBrowseHistory() async {
-        defer { browseHistoryTask = nil }
-        while !pendingBrowseHistory.isEmpty, !Task.isCancelled {
-            let batch = pendingBrowseHistory
-            pendingBrowseHistory.removeAll(keepingCapacity: true)
-            let datasetStamp = batch.contains { $0.price.source == .scryfall }
-                ? await scryfallDatasetStamp.datasetUpdatedAt() : nil
-            var pokemonQuotes: [BrowsePriceQuote] = []
-            var magicQuotes: [BrowsePriceQuote] = []
-            for entry in batch {
-                let transport: BrowsePriceTransport
-                let providerUpdatedAt: Date?
-                switch entry.price.source {
-                case .tcgplayer:
-                    transport = .tcgdex
-                    providerUpdatedAt = entry.price.sourceUpdatedAt
-                case .tcgCSV:
-                    transport = .tcgCSV
-                    providerUpdatedAt = nil
-                case .scryfall:
-                    transport = .scryfall
-                    providerUpdatedAt = datasetStamp
-                case .cardmarket, .justTCG, .importedCSV:
-                    continue
-                }
-                // A later bulk release cannot date an older cached payload.
-                guard let providerUpdatedAt,
-                      entry.price.source != .scryfall || providerUpdatedAt <= entry.price.fetchedAt else {
-                    await browsePriceHistoryStore.recordSkippedTimestamp()
-                    continue
-                }
-                guard let quote = BrowsePriceQuote.from(
-                    normalizedPrice: entry.price, printingID: entry.printingID,
-                    setID: entry.setID, variant: entry.variant,
-                    transportProvider: transport, providerUpdatedAt: providerUpdatedAt
-                ) else {
-                    await browsePriceHistoryStore.recordUnmappedVariant()
-                    continue
-                }
-                if entry.price.source == .scryfall { magicQuotes.append(quote) }
-                else { pokemonQuotes.append(quote) }
-            }
-            await recordBrowseHistory(pokemonQuotes, game: .pokemon)
-            await recordBrowseHistory(magicQuotes, game: .magic)
-        }
     }
 
     private func pokemonSets() async throws -> [CatalogSet] {
@@ -2338,8 +2178,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func magicCards(
         query: String,
-        cursor: String?,
-        collectHistory: Bool
+        cursor: String?
     ) async throws -> MagicCardsPageResult {
         let url: URL
         if let cursor {
@@ -2391,19 +2230,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 value: CardPricing.highestPublishedUSDPrice(for: .magic(card)),
                 providerUpdatedAt: nil
             )
-            if collectHistory {
-                for variant in card.catalogVariants {
-                    guard let listing = CardPricing.scryfallListing(for: variant),
-                          let amount = card.prices?.value(forKey: listing) else { continue }
-                    recordNormalizedBrowsePrice(
-                        NormalizedPrice(
-                            unitMarketPriceUSD: amount, currencyCode: "USD", source: .scryfall,
-                            sourceVariantID: listing, sourceUpdatedAt: nil, fetchedAt: retrievedAt
-                        ),
-                        printingID: summary.id, setID: summary.setID.id, variant: variant
-                    )
-                }
-            }
             return summary
         }
         return MagicCardsPageResult(
@@ -2824,6 +2650,7 @@ actor CatalogCacheStore {
     static let setDirectoryMaxAge: TimeInterval = 24 * 60 * 60
     private static let sealedSetDirectoryMaxAge: TimeInterval = 7 * 24 * 60 * 60
     private static let sealedProductMaxAge: TimeInterval = 6 * 60 * 60
+    private static let sealedPagePrefix = "sealed-v2|"
     private static let magicCardPageMaxAge: TimeInterval = 24 * 60 * 60
     private static let sortPriceMaxAge: TimeInterval = 24 * 60 * 60
     private static let bulkPriceMaxAge: TimeInterval = 24 * 60 * 60

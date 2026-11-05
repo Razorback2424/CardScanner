@@ -3355,7 +3355,6 @@ final class PriceHistoryChartModelTests: XCTestCase {
         XCTAssertEqual(week.samples.map(\.amount), [Money(rounding: 15)!])
     }
 
-    private let instrumentKey = "pokemon:test-set-001:normal"
     private let timeZone = TimeZone(secondsFromGMT: 0)!
 
     private var calendar: Calendar {
@@ -3369,127 +3368,33 @@ final class PriceHistoryChartModelTests: XCTestCase {
         return base.addingTimeInterval(offset)
     }
 
-    private func observation(
-        day: Int,
-        amount: Double,
-        kind: PriceObservationKind = .marketUpdate
-    ) throws -> PriceObservation {
-        PriceObservation(
-            instrumentKey: instrumentKey,
-            kind: kind,
-            amount: try XCTUnwrap(Money(rounding: amount)),
-            source: .tcgplayer,
-            sourceVariantID: "normal",
-            marketVariantID: "normal",
-            effectiveAt: date(day: day),
-            receivedAt: date(day: day),
-            isSourceStamped: true
-        )
-    }
-
-    private func checkDay(day: Int) -> PriceCheckDay {
-        PriceCheckDay(
-            instrumentKey: instrumentKey,
-            portfolioDay: calendar.startOfDay(for: date(day: day)),
-            lastSuccessfulCheckAt: date(day: day, hour: 2),
-            source: .tcgplayer
-        )
-    }
-
     private func makeModel(
-        observations: [PriceObservation],
-        checks: [PriceCheckDay],
-        nowDay: Int = 5,
-        range: PortfolioHistoryRange = .all
+        amounts: [Double], startingDay: Int = 0,
+        nowDay: Int = 5, range: PortfolioHistoryRange = .all
     ) -> PriceHistoryChartModel {
-        PriceHistoryChartModel.make(
-            observations: observations,
-            checkDays: checks,
-            currencyCode: "USD",
-            range: range,
-            now: date(day: nowDay, hour: 12),
-            timeZone: timeZone
-        )
+        let points = amounts.enumerated().map { index, amount in
+            JustTCGHistoryPoint(p: amount, t: date(day: startingDay + index).timeIntervalSince1970)
+        }
+        return .market(points: points, range: range, now: date(day: nowDay, hour: 12))
     }
 
-    func testNoObservationShowsRecordingState() {
-        let model = makeModel(observations: [], checks: [])
+    func testEmptyProviderHistoryHasNoSamplesOrSegments() {
+        let model = makeModel(amounts: [])
 
         XCTAssertTrue(model.samples.isEmpty)
         XCTAssertEqual(model.segments.count, 0)
     }
 
-    func testScrubbingUncheckedDayDoesNotBorrowNearestPrice() throws {
-        let model = makeModel(
-            observations: [try observation(day: 0, amount: 10), try observation(day: 3, amount: 12)],
-            checks: [checkDay(day: 0), checkDay(day: 3)]
-        )
-        XCTAssertNil(model.sample(at: date(day: 1, hour: 12)))
-        XCTAssertNil(model.sample(at: date(day: 2, hour: 12)))
-        XCTAssertEqual(model.sample(at: date(day: 3, hour: 1))?.amount, Money(rounding: 12))
-        XCTAssertNil(model.sample(at: model.plotRangeStart.addingTimeInterval(-1)))
-    }
-
-    func testScrubbingCheckedSpanUsesRecordedStepRatherThanFuturePrice() throws {
-        let model = makeModel(
-            observations: [try observation(day: 0, amount: 10), try observation(day: 2, amount: 12)],
-            checks: [checkDay(day: 0), checkDay(day: 1), checkDay(day: 2)]
-        )
-        XCTAssertEqual(model.sample(at: date(day: 1, hour: 12))?.amount, Money(rounding: 10))
-        XCTAssertEqual(model.sample(at: date(day: 2, hour: 1))?.amount, Money(rounding: 12))
-    }
-
-    func testOneObservationRemainsAPointWithoutALine() throws {
-        let model = makeModel(
-            observations: [try observation(day: 0, amount: 10)],
-            checks: [checkDay(day: 0), checkDay(day: 1)]
-        )
+    func testOneProviderPriceRemainsAPointWithoutALine() throws {
+        let model = makeModel(amounts: [10])
 
         XCTAssertEqual(model.observationCount, 1)
         XCTAssertFalse(model.segments.contains { $0.samples.count > 1 })
         XCTAssertEqual(model.segments.count, 1)
     }
 
-    func testCheckedDaysConnectChangedPricesWithAFlatStep() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 10),
-                try observation(day: 2, amount: 12)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 1), checkDay(day: 2)]
-        )
-
-        XCTAssertEqual(model.observationCount, 2)
-        XCTAssertEqual(model.segments.count, 1)
-        XCTAssertGreaterThanOrEqual(model.segments[0].samples.count, 3)
-        XCTAssertFalse(model.hasGaps)
-    }
-
-    func testUncheckedDaysCreateAVisibleGap() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 10),
-                try observation(day: 3, amount: 12)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 3)]
-        )
-
-        XCTAssertEqual(model.observationCount, 2)
-        XCTAssertEqual(model.segments.count, 2)
-        XCTAssertTrue(model.hasGaps)
-        XCTAssertTrue(model.segments.allSatisfy { $0.samples.count == 1 })
-    }
-
     func testClusteredObservationsUseTheirSpanForThePlotDomain() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 28, amount: 10),
-                try observation(day: 29, amount: 12)
-            ],
-            checks: [checkDay(day: 28), checkDay(day: 29)],
-            nowDay: 30,
-            range: .oneMonth
-        )
+        let model = makeModel(amounts: [10, 12], startingDay: 28, nowDay: 30, range: .oneMonth)
 
         let requestedSpan = model.rangeEnd.timeIntervalSince(model.rangeStart)
         let plotSpan = model.plotRangeEnd.timeIntervalSince(model.plotRangeStart)
@@ -3515,26 +3420,8 @@ final class PriceHistoryChartModelTests: XCTestCase {
         XCTAssertFalse(PriceHistoryChartModel.usesShortXAxisLabels(for: 2 * 24 * 60 * 60))
     }
 
-    func testSourceRestatementIsAnnotatedAsNonMarket() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 10),
-                try observation(day: 1, amount: 9, kind: .sourceRestatement)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 1)]
-        )
-
-        XCTAssertEqual(model.samples.last?.annotationLabel, "Source restatement")
-    }
-
     func testNearFlatExpensiveHistoryUsesMinimumVisualEnvelope() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 603.51),
-                try observation(day: 1, amount: 603.00)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 1)]
-        )
+        let model = makeModel(amounts: [603.51, 603.00])
 
         let domain = model.yDomain
         XCTAssertGreaterThanOrEqual(domain.upperBound - domain.lowerBound, 603.00 * 0.02)
@@ -3543,13 +3430,7 @@ final class PriceHistoryChartModelTests: XCTestCase {
     }
 
     func testMeaningfulDeclineStillDeterminesTheChartScale() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 100),
-                try observation(day: 1, amount: 20)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 1)]
-        )
+        let model = makeModel(amounts: [100, 20])
 
         let domain = model.yDomain
         XCTAssertGreaterThan(domain.upperBound - domain.lowerBound, 80)
@@ -3558,13 +3439,7 @@ final class PriceHistoryChartModelTests: XCTestCase {
     }
 
     func testFlatHistoryHasASensibleNonzeroDomain() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 42),
-                try observation(day: 1, amount: 42)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 1)]
-        )
+        let model = makeModel(amounts: [42, 42])
 
         let domain = model.yDomain
         XCTAssertGreaterThan(domain.upperBound, domain.lowerBound)
@@ -3573,13 +3448,7 @@ final class PriceHistoryChartModelTests: XCTestCase {
     }
 
     func testLowPricesNeverProduceANegativeDomain() throws {
-        let model = makeModel(
-            observations: [
-                try observation(day: 0, amount: 0.01),
-                try observation(day: 1, amount: 0.02)
-            ],
-            checks: [checkDay(day: 0), checkDay(day: 1)]
-        )
+        let model = makeModel(amounts: [0.01, 0.02])
 
         let domain = model.yDomain
         XCTAssertGreaterThanOrEqual(domain.lowerBound, 0)

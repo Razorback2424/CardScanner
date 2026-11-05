@@ -197,60 +197,34 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         """#.utf8)
     }
 
-    func testMagicCardsAndSortDoNotWaitForHistoryMetadata() async throws {
+    func testMagicCardsAndSortUseOnlyCardResponses() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let session = session()
         defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
         let response = pageJSON
-        BrowseRefinementURLProtocol.setHandler { $0.respond(response) }
+        let requests = BrowseRefinementRequestCount()
+        BrowseRefinementURLProtocol.setHandler { loader in
+            requests.increment()
+            XCTAssertEqual(loader.request.url?.path, "/cards/search")
+            loader.respond(response)
+        }
         let cache = CatalogCacheStore(root: root.appendingPathComponent("cache"))
-        let history = BrowsePriceHistoryStore(root: root.appendingPathComponent("history"))
         let set = set()
         await cache.storeSets([set], for: .magic)
-        let metadataStarted = expectation(description: "Metadata starts")
-        let stamp = BlockingBrowseDatasetStamp(started: metadataStarted)
-        defer { Task { await stamp.release() } }
-        let catalog = BrowseCatalog(
-            cache: cache, browsePriceHistoryStore: history,
-            scryfallDatasetStamp: stamp, magicSession: session
-        )
-        let historySaved = expectation(
-            forNotification: BrowsePriceHistoryStore.didChange, object: history
-        )
-        let cardsFinished = expectation(description: "Cards delivered while metadata waits")
-        let deliveryCount = BrowseRefinementRequestCount()
-        let pageTask = Task {
-            let page = try await catalog.cards(in: set, cursor: nil)
-            deliveryCount.increment()
-            cardsFinished.fulfill()
-            return page
-        }
-        await fulfillment(of: [cardsFinished, metadataStarted], timeout: 2)
-        // If delivery regresses, release the gate before awaiting the task so
-        // this test reports a timeout rather than leaving a hung test process.
-        if deliveryCount.value == 0 { await stamp.release() }
-        let page = try await pageTask.value
-        XCTAssertEqual(page.items.count, 1)
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
+        let page = try await catalog.cards(in: set, cursor: nil)
         let summary = try XCTUnwrap(page.items.first)
         let firstDetails = try await catalog.details(for: summary)
         await catalog.resetPriceResolution(for: [summary.id])
-        let sortFinished = expectation(description: "Sort delivered while metadata waits")
-        let sortTask = Task {
-            var prices: [String: Double] = [:]
-            for await update in catalog.sortPriceUpdates(for: page.items) { prices.merge(update.prices) { _, new in new } }
-            sortFinished.fulfill()
-            return prices
+        var prices: [String: Double] = [:]
+        for await update in catalog.sortPriceUpdates(for: page.items) {
+            prices.merge(update.prices) { _, new in new }
         }
-        await fulfillment(of: [sortFinished], timeout: 2)
-        await stamp.release()
-        let sortedPrices = await sortTask.value
-        XCTAssertEqual(sortedPrices[summary.id], 6.40)
-        await fulfillment(of: [historySaved], timeout: 2)
+        XCTAssertEqual(prices[summary.id], 6.40)
         let secondDetails = try await catalog.details(for: summary)
         XCTAssertEqual(firstDetails.retrievedAt, secondDetails.retrievedAt)
-        let series = await history.series(game: .magic, setID: set.id, printingID: summary.id)
-        XCTAssertFalse(series.isEmpty)
+        XCTAssertEqual(requests.value, 1)
     }
 
     func testExpiredMagicPageReturnsImmediatelyAndCoalescesRevalidation() async throws {
@@ -287,11 +261,7 @@ final class BrowseLoadingRefinementTests: XCTestCase {
                 loader.respond(response)
             }
         }
-        let catalog = BrowseCatalog(
-            cache: cache,
-            browsePriceHistoryStore: BrowsePriceHistoryStore(root: root.appendingPathComponent("history")),
-            scryfallDatasetStamp: FixedBrowseDatasetStamp(), magicSession: session
-        )
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
         let updates = await catalog.catalogUpdates()
         let refreshed = expectation(description: "Refreshed page published")
         let updateTask = Task {
@@ -323,87 +293,6 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         XCTAssertEqual(count.value, 1)
     }
 
-    func testDatasetStampCoalescesConcurrentRequests() async throws {
-        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: root) }
-        let session = session()
-        let gate = DispatchSemaphore(value: 0)
-        defer { gate.signal(); session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
-        let requested = expectation(description: "One stamp request starts")
-        let count = BrowseRefinementRequestCount()
-        BrowseRefinementURLProtocol.setHandler { loader in
-            count.increment()
-            requested.fulfill()
-            DispatchQueue.global().async {
-                gate.wait()
-                loader.respond(Data(#"{"data":[{"type":"default_cards","updated_at":"2026-09-01T00:00:00Z"}]}"#.utf8))
-            }
-        }
-        let cache = ScryfallDatasetStampCache(root: root, session: session)
-        let first = Task { await cache.datasetUpdatedAt() }
-        let second = Task { await cache.datasetUpdatedAt() }
-        await fulfillment(of: [requested], timeout: 2)
-        gate.signal()
-        let firstDate = await first.value
-        let secondDate = await second.value
-        XCTAssertNotNil(firstDate)
-        XCTAssertEqual(firstDate, secondDate)
-        XCTAssertEqual(count.value, 1)
-    }
-
-    func testNewerDatasetMetadataCannotDateAnOlderPricePayload() async throws {
-        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: root) }
-        let session = session()
-        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
-        let response = pageJSON
-        BrowseRefinementURLProtocol.setHandler { $0.respond(response) }
-        let cache = CatalogCacheStore(root: root.appendingPathComponent("cache"))
-        let history = BrowsePriceHistoryStore(root: root.appendingPathComponent("history"))
-        let set = set()
-        await cache.storeSets([set], for: .magic)
-        let catalog = BrowseCatalog(
-            cache: cache, browsePriceHistoryStore: history,
-            scryfallDatasetStamp: FixedBrowseDatasetStamp(date: .now.addingTimeInterval(60)),
-            magicSession: session
-        )
-        let page = try await catalog.cards(in: set, cursor: nil)
-        XCTAssertEqual(page.items.count, 1)
-        var skippedWrites = 0
-        for _ in 0..<200 {
-            skippedWrites = await history.diagnostics().skippedTimestampWrites
-            if skippedWrites == 2 { break }
-            try await Task.sleep(for: .milliseconds(10))
-        }
-        XCTAssertEqual(skippedWrites, 2)
-        let series = await history.series(game: .magic, setID: set.id)
-        XCTAssertTrue(series.isEmpty)
-    }
-}
-
-private actor BlockingBrowseDatasetStamp: ScryfallDatasetStampProviding {
-    private let started: XCTestExpectation
-    private var continuation: CheckedContinuation<Date?, Never>?
-    private var released = false
-
-    init(started: XCTestExpectation) { self.started = started }
-
-    func datasetUpdatedAt() async -> Date? {
-        if released { return Date(timeIntervalSince1970: 1_780_000_000) }
-        started.fulfill()
-        return await withCheckedContinuation { continuation = $0 }
-    }
-
-    func release() {
-        released = true
-        continuation?.resume(returning: Date(timeIntervalSince1970: 1_780_000_000))
-        continuation = nil
-    }
-}
-
-private struct FixedBrowseDatasetStamp: ScryfallDatasetStampProviding {
-    var date = Date(timeIntervalSince1970: 1_780_000_000)
-    func datasetUpdatedAt() async -> Date? { date }
 }
 
 private actor BrowseDirectoryResponseGate {

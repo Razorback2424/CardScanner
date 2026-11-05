@@ -1366,7 +1366,7 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         )
     }
 
-    func testTodayFixtureKeepsHistoryCountAlignedWithRenderedPoints() throws {
+    func testTodayFixtureKeepsLocalHistorySeparateFromTheProviderChart() throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
             for: Schema([
                 CollectedCard.self,
@@ -1409,17 +1409,10 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertEqual(observations.count, 2)
         XCTAssertEqual(checkDays.count, 1)
 
-        let model = PriceHistoryChartModel.make(
-            observations: observations,
-            checkDays: checkDays,
-            currencyCode: "USD",
-            range: .oneMonth,
-            now: .now,
-            timeZone: PortfolioCalendar.pinnedTimeZone() ?? .current
-        )
-        XCTAssertEqual(model.observationCount, 2)
-        XCTAssertEqual(model.samples.filter(\.isObservation).count, 2)
-        XCTAssertEqual(model.summary, "2 changed prices across 1 checked day.")
+        let model = PriceHistoryChartModel.market(points: [], range: .oneMonth)
+        XCTAssertTrue(model.samples.isEmpty)
+        XCTAssertEqual(model.observationCount, 0)
+        XCTAssertEqual(model.checkedDayCount, 0)
     }
 
     func testArtworkAccentExtractorReturnsTheSampledArtworkColor() throws {

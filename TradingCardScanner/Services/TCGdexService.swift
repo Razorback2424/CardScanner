@@ -350,7 +350,7 @@ struct PokemonTCGAPIService: PokemonBulkPriceSource, PokemonSecondarySetSource, 
                 if let updatedAt = card.tcgplayer?.updatedAt,
                    let resolved = BrowsePriceObservationDayResolver
                     .pokemonTCGIO(updatedAt: updatedAt) {
-                    providerUpdatedAtByCanonicalKey[key] = resolved.providerUpdatedAt
+                    providerUpdatedAtByCanonicalKey[key] = resolved
                 }
             }
 
