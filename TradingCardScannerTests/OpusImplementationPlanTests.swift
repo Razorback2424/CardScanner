@@ -1900,6 +1900,169 @@ final class OpusImplementationPlanTests: XCTestCase {
 }
 
 final class CardCenteringGroundTruthTests: XCTestCase {
+    /// Accuracy of the untouched initial proposal, separate from guided-edit
+    /// safety. Never substitute the annotated quads into the measured result.
+    func testInitialGuidesMatchExistingDevelopmentAnnotations() throws {
+        struct Result: Codable {
+            let fixture: String
+            let actualOuter: CardCenteringQuad
+            let actualInner: CardCenteringQuad?
+            let candidates: [CardCenteringBoundaryCandidate]
+            let expectedOuter: CardCenteringQuad
+            let expectedInner: CardCenteringQuad?
+            let leftErrorPP: Double?
+            let topErrorPP: Double?
+        }
+        var records: [Result] = []
+        let bundle = Bundle(for: Self.self)
+        for name in fixtureNames {
+            try autoreleasepool {
+                let recordURL = try XCTUnwrap(bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth"))
+                let imageURL = try XCTUnwrap(bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC"))
+                let record = try JSONDecoder().decode(GroundTruthRecord.self, from: Data(contentsOf: recordURL))
+                try requireVerifiedGroundTruth(record, name)
+                let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
+                let measurement = analysis.measurement
+                let mapping = try XCTUnwrap(analysis.coordinateMapping, name)
+                let expectedOuter = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad), name)
+                let expectedInner = record.innerQuad.flatMap(CardCenteringQuad.init)
+                let actualOuter = mapping.nativeQuad(fromWorking: measurement.geometryOuterQuad)
+                let actualInner = measurement.geometryInnerQuad.map(mapping.nativeQuad(fromWorking:))
+                var leftError: Double?, topError: Double?
+                if let expectedInner {
+                    if let actualInner {
+                        let size = mapping.orientedSourceSize
+                        let expected = CardCenteringMeasurement(imageWidth: Int(size.width), imageHeight: Int(size.height),
+                            outerQuad: expectedOuter, innerQuad: expectedInner, warnings: [])
+                        let actual = CardCenteringMeasurement(imageWidth: Int(size.width), imageHeight: Int(size.height),
+                            outerQuad: actualOuter, innerQuad: actualInner, warnings: [])
+                        leftError = abs(100 * actual.leftBorderDistance / (actual.leftBorderDistance + actual.rightBorderDistance)
+                            - 100 * expected.leftBorderDistance / (expected.leftBorderDistance + expected.rightBorderDistance))
+                        topError = abs(100 * actual.topBorderDistance / (actual.topBorderDistance + actual.bottomBorderDistance)
+                            - 100 * expected.topBorderDistance / (expected.topBorderDistance + expected.bottomBorderDistance))
+                        XCTAssertLessThanOrEqual(leftError!, 2, "\(name) initial left/right error (pp)")
+                        XCTAssertLessThanOrEqual(topError!, 2, "\(name) initial top/bottom error (pp)")
+                    } else { XCTFail("\(name) must propose its annotated inner reference") }
+                } else { XCTAssertNil(actualInner, "\(name) must remain without an invented reference") }
+                XCTAssertFalse(measurement.canReportRatios, "Improving proposals must not bypass human review")
+                let format = UIGraphicsImageRendererFormat(); format.scale = 1
+                let overlay = UIGraphicsImageRenderer(size: analysis.image.size, format: format).image { context in
+                    analysis.image.draw(at: .zero)
+                    func draw(_ quad: CardCenteringQuad, color: UIColor, dashed: Bool) {
+                        let cg = context.cgContext
+                        cg.setStrokeColor(color.cgColor); cg.setLineWidth(2)
+                        cg.setLineDash(phase: 0, lengths: dashed ? [6, 4] : [])
+                        cg.beginPath(); cg.move(to: CGPoint(x: quad.points[0].x, y: quad.points[0].y))
+                        for p in quad.points.dropFirst() { cg.addLine(to: CGPoint(x: p.x, y: p.y)) }
+                        cg.closePath(); cg.strokePath()
+                    }
+                    draw(measurement.geometryOuterQuad, color: .red, dashed: false)
+                    if let inner = measurement.geometryInnerQuad { draw(inner, color: .cyan, dashed: false) }
+                    draw(mapping.workingQuad(fromNative: expectedOuter), color: .yellow, dashed: true)
+                    if let expectedInner { draw(mapping.workingQuad(fromNative: expectedInner), color: .green, dashed: true) }
+                }
+                let picture = XCTAttachment(image: overlay)
+                picture.name = "\(name)-initial-guides-solid-annotation-dashed"; picture.lifetime = .keepAlways; add(picture)
+                records.append(.init(fixture: name, actualOuter: actualOuter, actualInner: actualInner,
+                    candidates: measurement.boundaryCandidates,
+                    expectedOuter: expectedOuter, expectedInner: expectedInner,
+                    leftErrorPP: leftError, topErrorPP: topError))
+                print("CENTERING_INITIAL_ACCURACY fixture=\(name) leftErrorPP=\(leftError ?? -1) topErrorPP=\(topError ?? -1)")
+            }
+        }
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(records), uniformTypeIdentifier: "public.json")
+        attachment.name = "initial-guide-accuracy"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testBowedPrintedBorderDoesNotFallBackToInternalText() throws {
+        let bundle = Bundle(for: Self.self)
+        let url = try XCTUnwrap(bundle.url(forResource: "IMG_0351", withExtension: "HEIC", subdirectory: "TradingCards/HEIC"))
+        let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: url))
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        var measurement = analysis.measurement
+        let inner = mapping.nativeQuad(fromWorking: try XCTUnwrap(measurement.geometryInnerQuad))
+        // Original-pixel review places the bowed print/border transition in
+        // this broad native band. This catches the previous text-bar fallback
+        // near y=3555; it is not a replacement subpixel accuracy annotation.
+        for point in [inner.bottomLeft, inner.bottomRight] {
+            XCTAssertTrue((3680...3750).contains(point.y))
+        }
+        let bottomEvidence = try XCTUnwrap(measurement.boundaryCandidates.first {
+            $0.source == "profile.normalized_gradient" && $0.side == .bottom && $0.observedPoints != nil
+        })
+        XCTAssertGreaterThanOrEqual(bottomEvidence.observedPoints?.count ?? 0, 25)
+        XCTAssertGreaterThan(try XCTUnwrap(bottomEvidence.fitResidualNativePixels), 3,
+                             "Preserve the observed bow rather than projecting the evidence onto the guide")
+        XCTAssertTrue(measurement.warnings.contains { $0.contains("border curves") })
+        XCTAssertEqual(measurement.confidence.state, .declined)
+        XCTAssertFalse(measurement.canReportRatios)
+        let confidence = measurement.confidence
+        XCTAssertTrue(measurement.confirmFrames(reference: .userPrintedBorder))
+        XCTAssertEqual(measurement.confidence, confidence, "Confirmation does not erase the curved-border uncertainty")
+    }
+
+    func testProductionAnalysisPreservesIndependentProposalGeometryAndVariation() throws {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        var varyingFrames = 0
+        var observedNativeFits = 0
+        for name in fixtureNames {
+            let url = try XCTUnwrap(bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC"))
+            var diagnostics = CardCenteringAnalyzer.Diagnostics()
+            diagnostics.frontBottomCandidateGenerationEnabled = false
+            var captured: CardCenteringAnalysisDiagnostic?
+            diagnostics.analysisDiagnosticSink = { captured = $0 }
+            let bytes = try Data(contentsOf: url)
+            var measurement = try diagnostics.analyze(bytes).measurement
+            let input = try XCTUnwrap(measurement.inputRecord)
+            XCTAssertEqual(input.sha256, SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), name)
+            XCTAssertEqual(input.byteCount, bytes.count, name)
+            XCTAssertEqual(input.priorProcessingHistory, "unknown", name)
+            XCTAssertEqual(input.presentationMapping, measurement.coordinateMapping, name)
+            XCTAssertEqual(input.detectorMapping.rawRasterSize, input.rawRasterSize, name)
+            XCTAssertEqual(input.detectorMapping.rawEXIFOrientation, input.exifOrientation, name)
+            XCTAssertEqual(try JSONDecoder().decode(CardCenteringInputRecord.self, from: JSONEncoder().encode(input)), input, name)
+            XCTAssertEqual(Set(measurement.boundaryCandidates.map(\.id)).count, measurement.boundaryCandidates.count, name)
+            XCTAssertGreaterThan(measurement.boundaryCandidates.count, 8, "Retain alternatives, not just final frames: \(name)")
+            for candidate in measurement.boundaryCandidates {
+                XCTAssertTrue(candidate.nativeLine.isValid, name)
+                XCTAssertFalse(candidate.reason.isEmpty, name)
+                XCTAssertFalse(candidate.source.hasPrefix("front.art_window.bottom_generator"), name)
+                if let residual = candidate.fitResidualNativePixels {
+                    observedNativeFits += 1
+                    XCTAssertGreaterThanOrEqual(residual, 0, name)
+                    XCTAssertGreaterThan(candidate.observedPoints?.count ?? 0, 1, name)
+                    if candidate.source == "outer_refinement.normal_profile" {
+                        XCTAssertNotNil(candidate.polarity, name)
+                    } else if candidate.source == "profile.normalized_gradient" {
+                        XCTAssertNil(candidate.polarity, "Unsigned Lab contrast does not establish polarity: \(name)")
+                    }
+                }
+                let roundTrip = input.detectorMapping.nativePoint(fromWorking: input.detectorMapping.workingPoint(fromNative: candidate.nativeLine.start))
+                XCTAssertEqual(roundTrip.x, candidate.nativeLine.start.x, accuracy: 1e-7, name)
+                XCTAssertEqual(roundTrip.y, candidate.nativeLine.start.y, accuracy: 1e-7, name)
+            }
+            if captured?.innerSource == .registeredBackTemplate {
+                XCTAssertTrue([.pokemonClassicBack, .magicClassicBack].contains(measurement.referenceDefinition), name)
+            } else {
+                XCTAssertFalse(measurement.referenceDefinition.isAvailable, "Unregistered designs need deliberate selection: \(name)")
+            }
+            let original = measurement.geometryInnerQuad
+            XCTAssertEqual(measurement.proposedInnerQuad, original, name)
+            XCTAssertEqual(measurement.positionalConsistency, try XCTUnwrap(captured).positionalConsistency, name)
+            XCTAssertEqual(measurement.reviewState, .pending, name)
+            XCTAssertFalse(measurement.canReportRatios, name)
+            if measurement.innerFrameHasIndependentSlopes { varyingFrames += 1 }
+            if measurement.hasValidFrameGeometry {
+                let confidence = measurement.confidence
+                XCTAssertTrue(measurement.confirmFrames(reference: .userPrintedBorder), name)
+                XCTAssertEqual(measurement.confidence, confidence, name)
+                XCTAssertEqual(measurement.geometryInnerQuad, original, name)
+            }
+        }
+        XCTAssertGreaterThan(varyingFrames, 0, "The real corpus must exercise independent detector slopes")
+        XCTAssertGreaterThan(observedNativeFits, 0, "Retain observed native fit evidence where the existing detector supplies it")
+    }
+
     private let fixtureNames = [
         "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
         "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
@@ -2517,7 +2680,7 @@ final class CardCenteringInvariantTests: XCTestCase {
     private func confidentRatios(_ data: Data) throws -> (lr: Double, tb: Double) {
         var measurement = try CardCenteringAnalyzer.analyze(data).measurement
         if measurement.requiresManualFrameConfirmation {
-            XCTAssertTrue(measurement.confirmFrames(), "detected candidate must have valid nested geometry")
+            XCTAssertTrue(measurement.confirmFrames(reference: .userPrintedBorder), "detected candidate must have valid nested geometry")
         }
         return try ratios(measurement)
     }
@@ -2587,7 +2750,7 @@ final class CardCenteringInvariantTests: XCTestCase {
                 reason: "Review frames")
         )
         XCTAssertFalse(measurement.canReportRatios)
-        XCTAssertTrue(measurement.confirmFrames(), "annotated reviewed geometry must be valid")
+        XCTAssertTrue(measurement.confirmFrames(reference: .userPrintedBorder), "annotated reviewed geometry must be valid")
         return try ratios(measurement)
     }
 
@@ -2717,26 +2880,26 @@ final class CardCenteringInvariantTests: XCTestCase {
 
     func testINV1RepeatedProductionAnalysisIsByteStable() throws {
         let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
-        let imageURL = try XCTUnwrap(
-            bundle.url(forResource: developmentFixture, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
-        )
-        let data = try Data(contentsOf: imageURL)
-        let first = try CardCenteringAnalyzer.analyze(data).measurement
-
-        for _ in 0..<4 {
-            XCTAssertEqual(
-                try CardCenteringAnalyzer.analyze(data).measurement,
-                first,
-                "repeated production analyses must return identical geometry and confidence"
-            )
+        for name in fixtureNames {
+            try autoreleasepool {
+                let imageURL = try XCTUnwrap(
+                    bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+                )
+                let data = try Data(contentsOf: imageURL)
+                let first = try CardCenteringAnalyzer.analyze(data).measurement
+                for _ in 0..<4 {
+                    let repeated = try CardCenteringAnalyzer.analyze(data).measurement
+                    XCTAssertEqual(repeated, first,
+                        "\(name): repeated analysis must retain identical geometry, confidence and ordered native evidence")
+                }
+            }
         }
     }
 
-    /// Rotation turns the photo beneath both guides and the steppers only
-    /// translate an edge, so neither can change the angle between the red and
-    /// cyan frames. The detector must therefore hand over an inner frame that
-    /// runs parallel to the card edge on every side once perspective is removed.
-    func testDetectedInnerFrameRunsParallelToTheCardEdge() throws {
+    /// Parallel inner edges are an explicit editing choice. Detection retains
+    /// its own slopes; Square changes the editable frame without overwriting
+    /// the original proposal or approving the result.
+    func testExplicitSquareMakesDetectedInnerFrameParallelToTheCardEdge() throws {
         func direction(_ start: CardCenteringPoint, _ end: CardCenteringPoint) -> Double {
             atan2(end.y - start.y, end.x - start.x)
         }
@@ -2757,8 +2920,15 @@ final class CardCenteringInvariantTests: XCTestCase {
 
         var checked = 0
         for name in fixtureNames {
-            let measurement = try CardCenteringAnalyzer.analyze(try fixtureData(name)).measurement
-            guard let inner = measurement.geometryInnerQuad else { continue }
+            var measurement = try CardCenteringAnalyzer.analyze(try fixtureData(name)).measurement
+            guard let proposal = measurement.geometryInnerQuad else { continue }
+            XCTAssertTrue(measurement.hasValidFrameGeometry, name)
+            measurement.squareInnerFrameToCardEdge()
+            XCTAssertEqual(measurement.proposedInnerQuad, proposal, name)
+            XCTAssertTrue(measurement.hasManualGuideEdits, name)
+            XCTAssertEqual(measurement.reviewState, .pending, name)
+            XCTAssertFalse(measurement.canReportRatios, name)
+            let inner = try XCTUnwrap(measurement.geometryInnerQuad, name)
             let rectification = try XCTUnwrap(measurement.rectification, name)
             let mismatch = sideMismatch(
                 rectification.rectifiedQuad(from: measurement.geometryOuterQuad),
@@ -2820,7 +2990,7 @@ final class CardCenteringInvariantTests: XCTestCase {
 
         XCTAssertTrue(measurement.requiresManualFrameConfirmation)
         XCTAssertTrue(measurement.isDeclined)
-        XCTAssertTrue(measurement.confirmFrames())
+        XCTAssertTrue(measurement.confirmFrames(reference: .userPrintedBorder))
 
         XCTAssertFalse(measurement.requiresManualInnerConfirmation)
         XCTAssertFalse(measurement.requiresManualOuterConfirmation)
@@ -4212,7 +4382,7 @@ final class CardCenteringInvariantTests: XCTestCase {
         model.updateInner(\.bottom, to: 882, within: yRange)
 
         XCTAssertTrue(model.measurement?.isDeclined ?? false)
-        model.confirmFrames()
+        model.confirmFrames(reference: .userPrintedBorder)
         let recovered = model.measurement
         XCTAssertNotNil(recovered)
         XCTAssertFalse(recovered?.isDeclined ?? true)

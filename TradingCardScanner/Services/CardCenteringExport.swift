@@ -11,6 +11,35 @@ import UIKit
 /// Everything is sized from the canvas width so a 600px phone photo and a
 /// 1200px scan produce the same proportions rather than the same point sizes.
 enum CardCenteringExport {
+    /// Shared, testable report copy: review describes the person's action,
+    /// while positional ranges describe variation rather than accuracy bounds.
+    static func reportNotes(for measurement: CardCenteringMeasurement,
+                            sensitivity: CardCenteringBoundarySensitivity? = nil,
+                            rotationDegrees: Double = 0) -> [String] {
+        var notes = ["Guided estimate only. Not professional grading or a predicted grade."]
+        if measurement.canReportRatios {
+            notes = ["Frames reviewed by you.", measurement.referenceDefinition.reportNote]
+            if let detail = measurement.spatialRatioDetail(horizontal: true) {
+                notes.append("Left / Right: \(detail).")
+            }
+            if let detail = measurement.spatialRatioDetail(horizontal: false) {
+                notes.append("Top / Bottom: \(detail).")
+            }
+            let expected = measurement.includingPhotoRotation(rotationDegrees).geometryRevision
+            let matches = sensitivity?.revision == expected
+                || (rotationDegrees == 0 && sensitivity?.revision == measurement.geometryRevision)
+            if let range = sensitivity?.boundaryChoices, matches {
+                notes.append(String(format: "Compared boundary choices: left %.1f–%.1f%%; top %.1f–%.1f%%. Other guides held fixed.",
+                    range.leftRight.firstMinimum, range.leftRight.firstMaximum,
+                    range.topBottom.firstMinimum, range.topBottom.firstMaximum))
+                notes.append("This comparison is not an accuracy interval. Other uncertainty is unknown.")
+            } else {
+                notes.append("Boundary uncertainty is unknown. Spatial variation is not an accuracy interval.")
+            }
+        }
+        return notes + measurement.warnings
+    }
+
     /// Guide colours, matched to what the on-screen overlay draws so the export
     /// is recognisably the same picture the user was just looking at.
     private enum Palette {
@@ -51,7 +80,8 @@ enum CardCenteringExport {
     static func render(
         image: UIImage,
         measurement: CardCenteringMeasurement,
-        rotationDegrees: Double
+        rotationDegrees: Double,
+        sensitivity: CardCenteringBoundarySensitivity? = nil
     ) -> UIImage {
         let baseCanvasWidth = max(CGFloat(measurement.imageWidth), minimumCanvasWidth)
         let imageAspect = CGFloat(measurement.imageHeight) / CGFloat(max(measurement.imageWidth, 1))
@@ -78,7 +108,8 @@ enum CardCenteringExport {
         let unit = canvasWidth / 1000
         let padding = canvasWidth * 0.045
 
-        let layout = PanelLayout(canvasWidth: canvasWidth, unit: unit, padding: padding, measurement: measurement)
+        let layout = PanelLayout(canvasWidth: canvasWidth, unit: unit, padding: padding, measurement: measurement,
+            sensitivity: sensitivity, rotationDegrees: rotationDegrees)
         let totalHeight = photoRect.height + layout.height
 
         let format = UIGraphicsImageRendererFormat()
@@ -189,12 +220,13 @@ enum CardCenteringExport {
         private var legendHeight: CGFloat { unit * 34 }
         private var gap: CGFloat { unit * 26 }
 
-        init(canvasWidth: CGFloat, unit: CGFloat, padding: CGFloat, measurement: CardCenteringMeasurement) {
+        init(canvasWidth: CGFloat, unit: CGFloat, padding: CGFloat, measurement: CardCenteringMeasurement,
+             sensitivity: CardCenteringBoundarySensitivity?, rotationDegrees: Double) {
             self.canvasWidth = canvasWidth
             self.unit = unit
             self.padding = padding
-            let text: String? = (["Guided estimate only. Not professional grading or a predicted grade."]
-                + measurement.warnings).joined(separator: " ")
+            let text: String? = CardCenteringExport.reportNotes(for: measurement, sensitivity: sensitivity,
+                rotationDegrees: rotationDegrees).joined(separator: " ")
             warningText = text
             if let text {
                 let width = canvasWidth - padding * 2 - unit * 46

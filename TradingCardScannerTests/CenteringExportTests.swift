@@ -3,6 +3,132 @@ import SwiftUI
 import UIKit
 @testable import TradingCardScanner
 
+final class CenteringBoundaryEvidenceTests: XCTestCase {
+    private func candidate(_ id: String, frame: CardCenteringPrecisionFrame, side: CardCenteringPrecisionSide,
+                           role: CardCenteringBoundaryRole, a: CardCenteringPoint, b: CardCenteringPoint) -> CardCenteringBoundaryCandidate {
+        .init(id: id, frame: frame, side: side, nativeLine: .init(start: a, end: b), source: "analytic_fixture",
+            proposedRole: role, competingRoles: frame == .outer ? [.physicalCut, .shadow] : [.printedBorder, .artwork],
+            signal: "known_fixture_transition", strength: 20, polarity: -1, coverage: 0.7, fitResidualNativePixels: 0,
+            sampleBands: [.init(start: a, end: b, sampleCount: 20)], exclusions: [],
+            selectionReason: .competingCandidate, reason: "Two visible transitions; identity needs review.")
+    }
+
+    private func fixture() -> CardCenteringMeasurement {
+        let mapping = CardCenteringCoordinateMapping(orientedSourceSize: .init(width: 800, height: 1120),
+            workingSize: .init(width: 400, height: 560))
+        return CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: .axisAligned(.init(left: 20, top: 20, right: 380, bottom: 540)),
+            innerQuad: .axisAligned(.init(left: 50, top: 50, right: 350, bottom: 510)), warnings: [],
+            coordinateMapping: mapping, confidence: .declined(reason: "Ambiguous boundary identity"),
+            boundaryCandidates: [
+                candidate("cut", frame: .outer, side: .bottom, role: .physicalCut, a: .init(x: 100, y: 1072), b: .init(x: 700, y: 1076)),
+                candidate("shadow", frame: .outer, side: .bottom, role: .shadow, a: .init(x: 100, y: 1082), b: .init(x: 700, y: 1086)),
+                candidate("border", frame: .inner, side: .left, role: .printedBorder, a: .init(x: 106, y: 200), b: .init(x: 110, y: 900)),
+                candidate("art", frame: .inner, side: .left, role: .artwork, a: .init(x: 146, y: 200), b: .init(x: 150, y: 900)),
+                candidate("crossing", frame: .outer, side: .bottom, role: .unknown, a: .init(x: 100, y: 900), b: .init(x: 700, y: 900))
+            ])
+    }
+
+    func testUnverifiedAndAbsentReferencesNeverReportWithoutDeliberateChoice() {
+        var value = fixture()
+        XCTAssertFalse(value.confirmFrames())
+        XCTAssertFalse(value.canReportRatios)
+        XCTAssertFalse(value.confirmFrames(reference: .pokemonClassicBack), "Review cannot manufacture a registered identity")
+        let confidence = value.confidence
+        XCTAssertTrue(value.confirmFrames(reference: .userArtwork))
+        XCTAssertTrue(value.canReportRatios)
+        XCTAssertEqual(value.confidence, confidence)
+        XCTAssertTrue(CardCenteringExport.reportNotes(for: value).joined().contains("Design asymmetry may be intentional"))
+        value.clearReference()
+        XCTAssertFalse(value.canReportRatios)
+        XCTAssertFalse(value.confirmFrames())
+        var missing = CardCenteringMeasurement(imageWidth: 400, imageHeight: 560,
+            outerQuad: value.outerQuad, innerQuad: nil, warnings: [], innerReference: .none)
+        XCTAssertFalse(missing.confirmFrames(reference: .userPrintedBorder))
+        missing.placeDefaultInnerFrame()
+        XCTAssertEqual(missing.referenceDefinition, .unverified)
+        XCTAssertFalse(missing.confirmFrames(), "A default inset is a placement aid, not evidence")
+        XCTAssertTrue(missing.confirmFrames(reference: .userPrintedBorder))
+    }
+
+    func testCutShadowAndBorderArtworkAlternativesRemainDistinctAfterChoice() throws {
+        for id in ["cut", "shadow", "border", "art"] {
+            var value = fixture()
+            let before = value.selectedLines
+            let evidence = value.boundaryCandidates
+            let chosen = try XCTUnwrap(evidence.first { $0.id == id })
+            XCTAssertTrue(value.selectBoundaryCandidate(id: id, as: chosen.frame == .outer ? .physicalCut : .printedBorder))
+            let after = value.selectedLines
+            XCTAssertEqual(after.count, 8)
+            for old in before {
+                let line = try XCTUnwrap(after.first { $0.frame == old.frame && $0.side == old.side })
+                if old.frame == chosen.frame && old.side == chosen.side {
+                    XCTAssertTrue(line.nativeLine.coincides(with: chosen.nativeLine))
+                    XCTAssertEqual(line.candidateID, id)
+                    XCTAssertEqual(line.reason, .userSelected)
+                } else {
+                    XCTAssertTrue(line.nativeLine.coincides(with: old.nativeLine), "Other seven supporting lines stay fixed")
+                    XCTAssertEqual(line.reason, old.reason)
+                }
+            }
+            XCTAssertEqual(value.boundaryCandidates, evidence)
+            XCTAssertFalse(value.canReportRatios, "One side choice cannot approve the other seven")
+            XCTAssertEqual(value.confidence, fixture().confidence)
+            let data = try JSONEncoder().encode(evidence)
+            XCTAssertEqual(try JSONDecoder().decode([CardCenteringBoundaryCandidate].self, from: data), evidence)
+        }
+    }
+
+    @MainActor func testSideChoiceUndoAndManualAdjustmentKeepHonestProvenance() throws {
+        let model = CardCenteringViewModel()
+        model.measurement = fixture()
+        model.confirmFrames(reference: .userPrintedBorder)
+        let before = try XCTUnwrap(model.measurement)
+        model.selectBoundaryCandidate("border")
+        XCTAssertEqual(model.measurement?.selectedLines.first { $0.candidateID == "border" }?.reason, .userSelected)
+        model.updatePrecisionSide(.left, frame: .inner, position: 130)
+        XCTAssertNil(model.measurement?.selectedLines.first { $0.candidateID == "border" }, "Moved lines cannot retain stale candidate attribution")
+        model.undoPrecisionEdit()
+        XCTAssertNotNil(model.measurement?.selectedLines.first { $0.candidateID == "border" })
+        model.resetPrecisionEdits()
+        XCTAssertEqual(model.measurement, before)
+        XCTAssertEqual(model.measurement?.outer, model.measurement?.outerQuad.projectedEdges)
+        XCTAssertEqual(model.measurement?.inner, model.measurement?.innerQuad?.projectedEdges)
+    }
+
+    func testInvalidOrNonphysicalOuterChoiceIsAtomic() {
+        var value = fixture()
+        let before = value
+        XCTAssertFalse(value.selectBoundaryCandidate(id: "missing", as: .physicalCut))
+        XCTAssertFalse(value.selectBoundaryCandidate(id: "shadow", as: .shadow))
+        XCTAssertFalse(value.selectBoundaryCandidate(id: "crossing", as: .physicalCut))
+        XCTAssertEqual(value, before)
+    }
+
+    @MainActor func testCandidateSelectionUsesEffectivePhotoRotationAndPreservesSevenLines() throws {
+        let model = CardCenteringViewModel()
+        model.measurement = fixture()
+        model.adjustRotation(by: 3)
+        let before = try XCTUnwrap(model.precisionMeasurement)
+        model.selectBoundaryCandidate("border")
+        let after = try XCTUnwrap(model.precisionMeasurement)
+        let candidate = try XCTUnwrap(before.boundaryCandidates.first { $0.id == "border" })
+        for old in before.selectedLines {
+            let current = try XCTUnwrap(after.selectedLines.first { $0.frame == old.frame && $0.side == old.side })
+            if old.frame == .inner && old.side == .left {
+                XCTAssertTrue(current.nativeLine.coincides(with: candidate.nativeLine))
+                XCTAssertEqual(current.candidateID, "border")
+            } else {
+                XCTAssertTrue(current.nativeLine.coincides(with: old.nativeLine))
+            }
+        }
+        XCTAssertFalse(after.canReportRatios)
+        XCTAssertEqual(after.boundaryCandidates, before.boundaryCandidates)
+        model.undoPrecisionEdit()
+        XCTAssertEqual(model.precisionMeasurement, before)
+    }
+}
+
 final class CenteringNativePrecisionTests: XCTestCase {
     func testPinchHandoffUsesClampedBaselineAndRetainsTranslationAtEveryBoundary() {
         for overshoot in [CGSize(width: -500, height: 0), CGSize(width: 500, height: 0),
@@ -53,7 +179,7 @@ final class CenteringNativePrecisionTests: XCTestCase {
             XCTAssertFalse(model.canResetGuides, "The loaded guides must match the detector snapshot")
             XCTAssertFalse(model.canUndo)
 
-            model.confirmFrames()
+            model.confirmFrames(reference: .userPrintedBorder)
             let approved = try XCTUnwrap(model.measurement)
             XCTAssertNotNil(model.exportSnapshot())
             if exactValues {
@@ -107,7 +233,7 @@ final class CenteringNativePrecisionTests: XCTestCase {
             XCTAssertFalse(model.canUndo)
             XCTAssertFalse(try XCTUnwrap(model.measurement).canReportRatios)
             XCTAssertNil(model.exportSnapshot())
-            model.confirmFrames()
+            model.confirmFrames(reference: .userPrintedBorder)
             XCTAssertNotNil(model.exportSnapshot())
         }
     }
@@ -1485,7 +1611,7 @@ final class CenteringNativePrecisionTests: XCTestCase {
     }
 
     func testSubpixelEditSurvivesUnchangedIntegerProjectionAndKeepsConfirmation() throws {
-        var value = fixture(); XCTAssertTrue(value.confirmFrames())
+        var value = fixture(); XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         let old = value.inner
         XCTAssertTrue(value.setPrecisionInnerSide(.left, positionNativePixels: 50.1))
         XCTAssertEqual(value.inner, old)
@@ -1517,7 +1643,7 @@ final class CenteringNativePrecisionTests: XCTestCase {
     }
 
     func testOuterPrecisionSideRepairsSlopeWithoutMovingInnerOrOppositeLine() throws {
-        var value = fixture(); value.confirmFrames()
+        var value = fixture(); value.confirmFrames(reference: .userPrintedBorder)
         let inner = value.innerQuad, oldTop = value.outerQuad.topLeft
         let previousRectification = value.rectification
         XCTAssertTrue(value.setPrecisionSide(.bottom, frame: .outer, angleDegrees: 0.5))
@@ -1799,14 +1925,14 @@ final class CenteringNativePrecisionTests: XCTestCase {
 
     @MainActor func testPhotoRotationAndResetInvalidateApprovalAndStaleExport() throws {
         let model = CardCenteringViewModel(); model.image = synthetic(); model.measurement = fixture()
-        model.confirmFrames(); let old = try XCTUnwrap(model.exportSnapshot())
+        model.confirmFrames(reference: .userPrintedBorder); let old = try XCTUnwrap(model.exportSnapshot())
         let inner = model.measurement?.innerQuad, outer = model.measurement?.outerQuad
         model.adjustRotation(by: 0.1)
         XCTAssertFalse(model.measurement!.canReportRatios)
         XCTAssertNil(model.exportSnapshot()); XCTAssertFalse(model.matches(old))
         XCTAssertEqual(model.measurement?.innerQuad, inner); XCTAssertEqual(model.measurement?.outerQuad, outer)
         XCTAssertTrue(model.measurement!.warnings.contains { $0.contains("photo moved") })
-        model.confirmFrames(); let rotated = try XCTUnwrap(model.exportSnapshot())
+        model.confirmFrames(reference: .userPrintedBorder); let rotated = try XCTUnwrap(model.exportSnapshot())
         model.resetRotation()
         XCTAssertFalse(model.matches(rotated)); XCTAssertNil(model.exportSnapshot())
         XCTAssertFalse(model.measurement!.canReportRatios)
@@ -1843,6 +1969,81 @@ final class CenteringNativePrecisionTests: XCTestCase {
 }
 
 final class CenteringExportTests: XCTestCase {
+
+    func testConfirmationPreservesDetectorEvidenceAndIndependentGeometry() throws {
+        let outer = CardCenteringQuad.axisAligned(.init(left: 50, top: 50, right: 750, bottom: 1030))
+        let inner = CardCenteringQuad.axisAligned(.init(left: 85, top: 85, right: 715, bottom: 995))
+            .rotated(by: .pi / 180, about: .init(x: 400, y: 540))
+        let detector = CardCenteringConfidence.declined(reason: "Competing printed references")
+        var value = CardCenteringMeasurement(imageWidth: 800, imageHeight: 1080,
+            outerQuad: outer, innerQuad: inner, warnings: [], confidence: detector)
+        let variation = try XCTUnwrap(value.positionalConsistency)
+        XCTAssertGreaterThan(variation.leftRight.firstSpread, 20)
+        XCTAssertEqual(value.reviewState, .pending)
+        XCTAssertFalse(value.canReportRatios)
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
+        XCTAssertEqual(value.reviewState, .userConfirmed)
+        XCTAssertEqual(value.confidence, detector, "Human review must never upgrade detector evidence")
+        XCTAssertEqual(value.geometryInnerQuad, inner)
+        XCTAssertEqual(value.positionalConsistency, variation)
+        XCTAssertFalse(value.hasManualGuideEdits)
+        XCTAssertTrue(value.canReportRatios, "A person can recover a geometrically valid declined proposal")
+        XCTAssertEqual(value.leftRightCentering, "50.0 / 50.0")
+        XCTAssertTrue(CardCenteringExport.reportNotes(for: value).contains("Frames reviewed by you."))
+        XCTAssertTrue(CardCenteringExport.reportNotes(for: value).contains { $0.hasPrefix("Left / Right:") })
+        value.nudgeGuide(.init(frame: .inner, side: .left), by: 0.1)
+        XCTAssertTrue(value.hasManualGuideEdits)
+        XCTAssertEqual(value.proposedInnerQuad, inner)
+        XCTAssertEqual(value.proposedOuterQuad, outer)
+        XCTAssertEqual(value.confidence, detector)
+        XCTAssertTrue(value.canReportRatios)
+        value.invalidateFrameConfirmationForPhotoRotation()
+        XCTAssertEqual(value.reviewState, .pending)
+        XCTAssertFalse(value.canReportRatios)
+        XCTAssertEqual(value.confidence, detector)
+        XCTAssertNil(value.positionalRatioDetail(horizontal: true))
+    }
+
+    func testDetectorConfidenceAloneNeverAuthorizesRatios() {
+        let value = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
+            outerQuad: .axisAligned(.init(left: 20, top: 20, right: 220, bottom: 316)),
+            innerQuad: .axisAligned(.init(left: 30, top: 30, right: 210, bottom: 306)),
+            warnings: [], confidence: .legacyConfident)
+        XCTAssertTrue(value.hasValidFrameGeometry)
+        XCTAssertEqual(value.confidence.state, .confident)
+        XCTAssertEqual(value.reviewState, .pending)
+        XCTAssertEqual(value.leftRightCentering, "—")
+        XCTAssertEqual(value.topBottomCentering, "—")
+        XCTAssertFalse(CardCenteringExport.reportNotes(for: value).contains("Frames reviewed by you."))
+    }
+
+    @MainActor
+    func testOpposingSlopesRetainVariationThroughNudgeSquareAndUndo() throws {
+        let outer = CardCenteringQuad.axisAligned(.init(left: 50, top: 50, right: 750, bottom: 1030))
+        let inner = CardCenteringQuad(topLeft: .init(x: 100, y: 110), topRight: .init(x: 700, y: 100),
+            bottomRight: .init(x: 686, y: 940), bottomLeft: .init(x: 86, y: 950))
+        var value = CardCenteringMeasurement(imageWidth: 800, imageHeight: 1080,
+            outerQuad: outer, innerQuad: inner, warnings: [])
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
+        XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), 0, accuracy: 1e-9)
+        XCTAssertTrue(value.innerFrameHasIndependentSlopes)
+        XCTAssertTrue(value.hasReportableInnerTilt)
+        XCTAssertNotNil(value.positionalRatioDetail(horizontal: true))
+        let model = CardCenteringViewModel()
+        model.measurement = value
+        let end = CardCenteringGuideSelection(guide: .init(frame: .inner, side: .right), end: .end)
+        model.nudge(end, by: 0.1) // 0.005° is inside the ordinary square detent.
+        let edited = try XCTUnwrap(model.measurement)
+        XCTAssertTrue(edited.innerFrameHasIndependentSlopes)
+        XCTAssertNotNil(edited.positionalRatioDetail(horizontal: true))
+        model.squareInnerFrame()
+        XCTAssertFalse(try XCTUnwrap(model.measurement).innerFrameHasIndependentSlopes)
+        XCTAssertNil(model.measurement?.positionalRatioDetail(horizontal: true))
+        model.undo()
+        XCTAssertEqual(model.measurement, edited, "Explicit Square must preserve exact undo evidence")
+        model.undo()
+        XCTAssertEqual(model.measurement, value)
+    }
     @MainActor
     func testRepeatedSuccessfulExportsRetireSupersededArtifacts() throws {
         let model = CardCenteringViewModel()
@@ -1859,32 +2060,30 @@ final class CenteringExportTests: XCTestCase {
     }
 
     func testFrameApprovalRequiresExplicitActionAndValidNestedGeometry() {
-        var value = measurement()
-        value.confidence = .manualConfirmationRequired(preserving: value.confidence, reason: "Review both frames")
+        var value = measurement(confirmed: false)
         value.setManualOuterEdge(\.left, to: value.outer.left)
         value.refreshWarnings()
         XCTAssertTrue(value.isDeclined)
         value.setManualInnerEdge(\.left, to: value.inner.left)
         value.refreshWarnings()
         XCTAssertTrue(value.isDeclined)
-        XCTAssertTrue(value.confirmFrames())
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         XCTAssertFalse(value.isDeclined)
         value.setManualInnerEdge(\.left, to: value.inner.left + 1)
         XCTAssertFalse(value.isDeclined, "valid edits remain live after approval")
         value.setManualInnerEdge(\.left, to: value.outer.left - 1)
         XCTAssertTrue(value.isDeclined)
         XCTAssertEqual(value.leftRightCentering, "—")
-        XCTAssertFalse(value.confirmFrames())
+        XCTAssertFalse(value.confirmFrames(reference: .userPrintedBorder))
     }
 
     func testFrameApprovalRejectsCrossedQuadAndRecoversMissingInnerReference() {
-        var value = measurement()
+        var value = measurement(confirmed: false)
         value.innerReference = .none
-        value.confidence = .declined(reason: "No inner reference")
-        XCTAssertFalse(value.confirmFrames())
+        XCTAssertFalse(value.confirmFrames(reference: .userPrintedBorder))
         value.setManualInnerEdge(\.left, to: value.inner.left)
         XCTAssertTrue(value.isDeclined)
-        XCTAssertTrue(value.confirmFrames())
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         let inner = value.innerQuad!
         value.innerQuad = CardCenteringQuad(topLeft: inner.topLeft, topRight: inner.bottomRight,
                                           bottomRight: inner.topRight, bottomLeft: inner.bottomLeft)
@@ -1892,7 +2091,7 @@ final class CenteringExportTests: XCTestCase {
         value = CardCenteringMeasurement(imageWidth: value.imageWidth, imageHeight: value.imageHeight,
                                         outerQuad: value.outerQuad, innerQuad: value.innerQuad, warnings: [])
         XCTAssertFalse(value.hasValidFrameGeometry)
-        XCTAssertFalse(value.confirmFrames())
+        XCTAssertFalse(value.confirmFrames(reference: .userPrintedBorder))
     }
 
     func testPerspectiveEditsPreserveUneditedLinesAndTheReferenceRole() throws {
@@ -1914,7 +2113,7 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertTrue(value.usesQuadGeometry)
         XCTAssertTrue(try XCTUnwrap(value.rectification).isNumericallyValid)
         XCTAssertFalse(value.canReportRatios)
-        XCTAssertTrue(value.confirmFrames())
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         value.setManualInnerEdge(\.top, to: value.inner.top + 5)
         XCTAssertEqual(value.innerReference, .printedBorder)
         XCTAssertEqual(value.innerQuad?.bottomLeft, inner.bottomLeft)
@@ -1941,6 +2140,7 @@ final class CenteringExportTests: XCTestCase {
             outerQuad: outer, innerQuad: inner, warnings: [], innerReference: .printedBorder,
             confidence: .legacyConfident)
         XCTAssertTrue(value.hasValidFrameGeometry)
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         let borders = [value.leftBorderDistance, value.rightBorderDistance,
                        value.topBorderDistance, value.bottomBorderDistance]
         let ratios = [value.leftRightCentering, value.topBottomCentering]
@@ -2000,6 +2200,7 @@ final class CenteringExportTests: XCTestCase {
             outerQuad: outer, innerQuad: inner, warnings: [], innerReference: .printedBorder,
             confidence: .legacyConfident)
         value.squareInnerFrameToCardEdge()
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         return value
     }
 
@@ -2125,9 +2326,9 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertTrue(value.hasValidFrameGeometry)
         XCTAssertEqual(try XCTUnwrap(value.innerTiltDegrees), 0, accuracy: 1e-6)
         XCTAssertEqual(value.leftBorderDistance, value.rightBorderDistance, accuracy: 1e-6)
-        XCTAssertEqual(value.confidence.state, .manualConfirmationRequired)
+        XCTAssertEqual(value.reviewState, .pending)
         XCTAssertFalse(value.canReportRatios, "a placed frame is not a reading until confirmed")
-        XCTAssertTrue(value.confirmFrames())
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         XCTAssertTrue(value.canReportRatios)
     }
 
@@ -2343,7 +2544,7 @@ final class CenteringExportTests: XCTestCase {
             var value = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
                 outerQuad: outer, innerQuad: goodInner, warnings: [], confidence: .legacyConfident)
             XCTAssertFalse(value.hasValidFrameGeometry)
-            XCTAssertFalse(value.confirmFrames())
+            XCTAssertFalse(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertFalse(value.canReportRatios)
             XCTAssertEqual(value.leftRightCentering, "—")
         }
@@ -2351,15 +2552,17 @@ final class CenteringExportTests: XCTestCase {
             coefficients: [1, 0, 0, 0, 1, 0, -1.0 / 20, 0], residualDegrees: 0)
         var value = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
             outerQuad: goodOuter, innerQuad: goodInner, warnings: [], confidence: .legacyConfident, rectification: singular)
-        XCTAssertFalse(value.confirmFrames())
+        XCTAssertFalse(value.confirmFrames(reference: .userPrintedBorder))
         XCTAssertFalse(value.canReportRatios)
         let internalPole = CardCenteringRectification(targetSize: .init(width: 200, height: 296),
             coefficients: [1, 0, 0, 0, 1, 0, -1.0 / 100, 0], residualDegrees: 0)
         value.rectification = internalPole
+        XCTAssertFalse(value.hasValidFrameGeometry)
         XCTAssertFalse(value.canReportRatios, "a projective pole inside the card must be rejected")
         let collapsed = CardCenteringRectification(targetSize: .init(width: 200, height: 296),
             coefficients: [1, 1, 0, 1, 1, 0, 0, 0], residualDegrees: 0)
         value.rectification = collapsed
+        XCTAssertFalse(value.hasValidFrameGeometry)
         XCTAssertFalse(value.canReportRatios, "a singular matrix must be rejected even with finite mapped corners")
         XCTAssertNil(CardCenteringRatioPair(firstDistance: -1, secondDistance: 2))
         XCTAssertNil(CardCenteringRatioPair(firstDistance: 0, secondDistance: 2))
@@ -2373,12 +2576,15 @@ final class CenteringExportTests: XCTestCase {
                 ? CardCenteringMeasurement(imageWidth: 240, imageHeight: 336, outerQuad: .axisAligned(outer),
                     innerQuad: .axisAligned(inner), warnings: [], confidence: .legacyConfident)
                 : CardCenteringMeasurement(imageWidth: 240, imageHeight: 336, outer: outer, inner: inner, warnings: [])
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertTrue(value.canReportRatios)
             value.setManualInnerEdge(\.left, to: 211)
             XCTAssertFalse(value.canReportRatios)
             XCTAssertEqual(value.inner.left, 211, "the control must keep the edited side's position")
             XCTAssertEqual(value.inner.right, 210, "crossing a guide must not relabel the opposite side")
             value.setManualInnerEdge(\.left, to: 30)
+            XCTAssertFalse(value.canReportRatios, "Invalid placement revokes review")
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertTrue(value.canReportRatios)
             XCTAssertEqual(value.geometryInnerQuad?.topRight.x, 210)
             value.setManualOuterEdge(\.top, to: 317)
@@ -2386,6 +2592,7 @@ final class CenteringExportTests: XCTestCase {
             XCTAssertEqual(value.outer.top, 317)
             XCTAssertEqual(value.outer.bottom, 316)
             value.setManualOuterEdge(\.top, to: 20)
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertTrue(value.canReportRatios)
             XCTAssertEqual(value.geometryOuterQuad.bottomRight.y, 316)
         }
@@ -2402,10 +2609,11 @@ final class CenteringExportTests: XCTestCase {
             value.setManualInnerEdge(\.left, to: 211)
             value.setManualInnerEdge(\.top, to: 307)
             XCTAssertFalse(value.canReportRatios)
-            XCTAssertFalse(value.confirmFrames())
+            XCTAssertFalse(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertEqual(value.leftRightCentering, "—")
             value.setManualInnerEdge(\.left, to: 30)
             value.setManualInnerEdge(\.top, to: 30)
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertTrue(value.canReportRatios)
         }
     }
@@ -2422,10 +2630,12 @@ final class CenteringExportTests: XCTestCase {
             value.setManualOuterEdge(side, to: outer[keyPath: opposite])
             value.setManualOuterEdge(side, to: outer[keyPath: side])
             XCTAssertEqual(value.outerQuad, .axisAligned(outer))
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertTrue(value.canReportRatios)
             value.setManualInnerEdge(side, to: inner[keyPath: opposite])
             value.setManualInnerEdge(side, to: inner[keyPath: side])
             XCTAssertEqual(value.innerQuad, .axisAligned(inner))
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             XCTAssertTrue(value.canReportRatios)
         }
     }
@@ -2433,7 +2643,8 @@ final class CenteringExportTests: XCTestCase {
         width: Int = 672,
         height: Int = 936,
         outer: CardCenteringEdges = CardCenteringEdges(left: 20, top: 24, right: 652, bottom: 912),
-        inner: CardCenteringEdges = CardCenteringEdges(left: 60, top: 64, right: 612, bottom: 872)
+        inner: CardCenteringEdges = CardCenteringEdges(left: 60, top: 64, right: 612, bottom: 872),
+        confirmed: Bool = true
     ) -> CardCenteringMeasurement {
         var value = CardCenteringMeasurement(
             imageWidth: width,
@@ -2443,6 +2654,7 @@ final class CenteringExportTests: XCTestCase {
             warnings: []
         )
         value.refreshWarnings()
+        if confirmed { XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder)) }
         return value
     }
 
@@ -2485,7 +2697,9 @@ final class CenteringExportTests: XCTestCase {
     /// A small photo is widened rather than rendered with labels too small to
     /// read. The export is meant to be looked at, not just stored.
     func testSmallImageIsWidenedSoLabelsStayLegible() {
-        let value = measurement(width: 320, height: 446)
+        let value = measurement(width: 320, height: 446,
+            outer: .init(left: 10, top: 10, right: 310, bottom: 436),
+            inner: .init(left: 25, top: 25, right: 295, bottom: 421))
         let rendered = CardCenteringExport.render(
             image: photo(width: 320, height: 446),
             measurement: value,
@@ -2500,7 +2714,10 @@ final class CenteringExportTests: XCTestCase {
     func testWarningBandMakesRoomForItself() {
         let clean = measurement()
         var warned = measurement()
-        warned.inner.left = warned.outer.left - 5
+        warned.detectionNotes = [
+            "The inner reference could not be distinguished from the surrounding artwork. Check the selected printed reference before using this estimate.",
+            "A sleeve or holder may overlap the physical edge. Check each red guide against the card itself."
+        ]
         warned.refreshWarnings()
         XCTAssertFalse(warned.warnings.isEmpty)
 
@@ -2541,7 +2758,8 @@ final class CenteringExportTests: XCTestCase {
         // Zero-width borders produce "—" for both ratios, which names nothing.
         let flat = measurement(
             outer: CardCenteringEdges(left: 10, top: 10, right: 100, bottom: 100),
-            inner: CardCenteringEdges(left: 10, top: 10, right: 100, bottom: 100)
+            inner: CardCenteringEdges(left: 10, top: 10, right: 100, bottom: 100),
+            confirmed: false
         )
 
         XCTAssertEqual(CardCenteringExport.filename(for: flat), "Card Centering.png")
@@ -2623,13 +2841,14 @@ final class CenteringExportTests: XCTestCase {
             bottomRight: CardCenteringPoint(x: 700, y: 1080),
             bottomLeft: CardCenteringPoint(x: 300, y: 930)
         )
-        let value = CardCenteringMeasurement(
+        var value = CardCenteringMeasurement(
             imageWidth: 1_000,
             imageHeight: 1_400,
             outerQuad: outer,
             innerQuad: inner,
             warnings: []
         )
+        XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
         let rendered = CardCenteringExport.render(
             image: photo(width: value.imageWidth, height: value.imageHeight),
             measurement: value,
@@ -2655,6 +2874,13 @@ final class CenteringExportTests: XCTestCase {
 
         XCTAssertTrue(isRed(x: 500, y: 300), "the sloped top edge should cross the center")
         XCTAssertFalse(isRed(x: 800, y: 300), "a projected right edge would be wrong here")
+        func isCyan(x: Int, y: Int) -> Bool {
+            let offset = (y * cgImage.width + x) * 4
+            return bytes[offset] < 150 && bytes[offset + 1] > 150 && bytes[offset + 2] > 150
+        }
+        XCTAssertTrue(isCyan(x: 500, y: 385), "the independent inner top edge must retain its own slope")
+        XCTAssertTrue(isCyan(x: 500, y: 1005), "the independent inner bottom edge must retain its own slope")
+        XCTAssertFalse(isCyan(x: 650, y: 385), "the export must not silently flatten the inner top edge")
     }
 
     func testQuadBordersUsePerpendicularDistancesAcrossSkew() {
@@ -2673,13 +2899,14 @@ final class CenteringExportTests: XCTestCase {
         let ratios = [0.0, 0.10, 0.25].map { shear in
             let outer = transformedQuad(shear: shear, inset: (0, 0, 0, 0))
             let inner = transformedQuad(shear: shear, inset: (20, 30, 40, 50))
-            let value = CardCenteringMeasurement(
-                imageWidth: 500,
+            var value = CardCenteringMeasurement(
+                imageWidth: 600,
                 imageHeight: 700,
                 outerQuad: outer,
                 innerQuad: inner,
                 warnings: []
             )
+            XCTAssertTrue(value.confirmFrames(reference: .userPrintedBorder))
             return (value.leftRightCentering, value.topBottomCentering)
         }
 
@@ -3483,7 +3710,7 @@ final class CardCenteringAnalyzerTests: XCTestCase {
         XCTAssertTrue(m.requiresManualFrameConfirmation)
         XCTAssertTrue(m.isDeclined)
         XCTAssertTrue(
-            m.warnings.contains { $0.contains("Confirm or adjust both") },
+            m.warnings.contains { $0.contains("choose the printed reference") },
             "expected the pending-frame warning: \(m.warnings)"
         )
 
@@ -3492,7 +3719,7 @@ final class CardCenteringAnalyzerTests: XCTestCase {
         m.refreshWarnings()
 
         XCTAssertTrue(m.isDeclined)
-        XCTAssertTrue(m.confirmFrames())
+        XCTAssertTrue(m.confirmFrames(reference: .userPrintedBorder))
         XCTAssertFalse(m.isDeclined)
         XCTAssertTrue(m.warnings.isEmpty, "unexpected warnings after confirmation: \(m.warnings)")
     }
@@ -3560,6 +3787,7 @@ final class CardCenteringAnalyzerTests: XCTestCase {
             detectionNotes: ["Outline note."]
         )
         m.refreshWarnings()
+        XCTAssertTrue(m.confirmFrames(reference: .userPrintedBorder))
         XCTAssertEqual(m.warnings, ["Outline note."])
     }
 

@@ -799,11 +799,9 @@ extension CardCenteringMeasurement {
         let edited = coordinateMapping?.workingQuad(fromNative: editedNative) ?? editedNative
         if frame == .outer {
             candidate.outerQuad = edited
-            candidate.outer = edited.projectedEdges
             candidate.rectification = CardCenteringRectification(outerQuad: edited)
         } else {
             candidate.innerQuad = edited
-            candidate.inner = edited.projectedEdges
         }
         candidate.usesQuadGeometry = true
         guard candidate.hasValidFrameGeometry else { return false }
@@ -834,6 +832,8 @@ enum CardCenteringGuideGeometry {
     }
 }
 
+/// Legacy detector shape tag used by historical diagnostics. It does not
+/// establish reference identity; reporting uses `referenceDefinition`.
 enum CardCenteringInnerReference: String, Codable, Equatable {
     case artWindow = "art_window"
     case printedBorder = "printed_border"
@@ -842,11 +842,17 @@ enum CardCenteringInnerReference: String, Codable, Equatable {
 
 enum CardCenteringConfidenceState: String, Codable, Equatable {
     case confident
-    /// The detector found usable starting frames, but the product contract
-    /// requires the person to confirm or adjust the outer card and inner frame
-    /// before any ratio is treated as a reading.
+    /// Retained for historical diagnostic payloads. Current human approval is
+    /// represented by CardCenteringReviewState, never by changing this evidence.
     case manualConfirmationRequired
     case declined
+}
+
+/// Human review is independent of the detector's evidence. Confirming guides
+/// authorizes a guided estimate; it does not improve the detector's certainty.
+enum CardCenteringReviewState: String, Codable, Equatable {
+    case pending
+    case userConfirmed = "user_confirmed"
 }
 
 /// Numeric confidence is deliberately decomposed into the evidence that made
@@ -901,8 +907,8 @@ struct CardCenteringConfidence: Codable, Equatable {
 struct CardCenteringMeasurement: Equatable {
     var imageWidth: Int
     var imageHeight: Int
-    var outer: CardCenteringEdges
-    var inner: CardCenteringEdges
+    var outer: CardCenteringEdges { outerQuad.projectedEdges }
+    var inner: CardCenteringEdges { innerQuad?.projectedEdges ?? outerQuad.projectedEdges }
     var warnings: [String]
     /// What the detector could not establish for itself, set once when the
     /// measurement is made.
@@ -917,6 +923,10 @@ struct CardCenteringMeasurement: Equatable {
     /// Immutable evidence for the automatic proposal, not the person's later
     /// edited geometry and not a calibrated physical accuracy interval.
     var nativeRefinementEvidence: [CardCenteringNativeSideEvidence]? = nil
+    let inputRecord: CardCenteringInputRecord?
+    let boundaryCandidates: [CardCenteringBoundaryCandidate]
+    private(set) var referenceDefinition: CardCenteringReferenceDefinition
+    var boundaryChoices: [CardCenteringSelectedLine] = []
 
     /// Geometry is kept alongside the legacy scalar projection so callers that
     /// already bind to the four guide steppers remain source compatible.
@@ -924,7 +934,13 @@ struct CardCenteringMeasurement: Equatable {
     var innerQuad: CardCenteringQuad?
     var coordinateMapping: CardCenteringCoordinateMapping?
     var innerReference: CardCenteringInnerReference
-    var confidence: CardCenteringConfidence
+    /// Immutable evidence for the original proposal, including any decline.
+    let confidence: CardCenteringConfidence
+    let proposedOuterQuad: CardCenteringQuad
+    let proposedInnerQuad: CardCenteringQuad?
+    private(set) var reviewState: CardCenteringReviewState = .pending
+    private(set) var hasManualGuideEdits = false
+    private var reviewReason: String?
     /// Measurement-space homography. The displayed image and guide geometry
     /// stay in the photographed coordinates; ratios use this rectified space.
     var rectification: CardCenteringRectification?
@@ -940,13 +956,16 @@ struct CardCenteringMeasurement: Equatable {
     ) {
         self.imageWidth = imageWidth
         self.imageHeight = imageHeight
-        self.outer = outer
-        self.inner = inner
         self.warnings = warnings
         self.detectionNotes = detectionNotes
         self.outerQuad = .axisAligned(outer)
         self.innerQuad = .axisAligned(inner)
+        self.proposedOuterQuad = .axisAligned(outer)
+        self.proposedInnerQuad = .axisAligned(inner)
         self.coordinateMapping = nil
+        self.inputRecord = nil
+        self.boundaryCandidates = []
+        self.referenceDefinition = .unverified
         self.innerReference = .artWindow
         self.confidence = .legacyConfident
         self.rectification = nil
@@ -963,17 +982,23 @@ struct CardCenteringMeasurement: Equatable {
         coordinateMapping: CardCenteringCoordinateMapping? = nil,
         innerReference: CardCenteringInnerReference = .artWindow,
         confidence: CardCenteringConfidence? = nil,
-        rectification: CardCenteringRectification? = nil
+        rectification: CardCenteringRectification? = nil,
+        inputRecord: CardCenteringInputRecord? = nil,
+        boundaryCandidates: [CardCenteringBoundaryCandidate] = [],
+        referenceDefinition: CardCenteringReferenceDefinition = .unverified
     ) {
         self.imageWidth = imageWidth
         self.imageHeight = imageHeight
         self.outerQuad = outerQuad
         self.innerQuad = innerQuad
-        self.outer = outerQuad.projectedEdges
-        self.inner = innerQuad?.projectedEdges ?? outerQuad.projectedEdges
+        self.proposedOuterQuad = outerQuad
+        self.proposedInnerQuad = innerQuad
         self.warnings = warnings
         self.detectionNotes = detectionNotes
         self.coordinateMapping = coordinateMapping
+        self.inputRecord = inputRecord
+        self.boundaryCandidates = boundaryCandidates
+        self.referenceDefinition = innerQuad == nil ? .unavailable : referenceDefinition
         self.innerReference = innerReference
         let resolvedRectification = rectification ?? CardCenteringRectification(outerQuad: outerQuad)
         if let confidence {
@@ -993,24 +1018,30 @@ struct CardCenteringMeasurement: Equatable {
         self.usesQuadGeometry = true
     }
 
-    /// Ratios are reportable only after the product has a confident or
-    /// manually-confirmed card frame. A detector candidate is intentionally not
-    /// enough: the hybrid release path must never present unconfirmed automatic
-    /// outer or inner geometry as fact.
-    var canReportRatios: Bool { confidence.state == .confident && hasValidFrameGeometry }
+    /// Automatic reporting remains disabled, regardless of detector certainty.
+    /// Valid edits stay live after review; invalid geometry never reports.
+    var canReportRatios: Bool { reviewState == .userConfirmed && referenceDefinition.isAvailable && hasValidFrameGeometry }
     var isDeclined: Bool { !canReportRatios }
     var requiresManualOuterConfirmation: Bool {
-        confidence.state == .manualConfirmationRequired
+        reviewState == .pending
     }
     var requiresManualInnerConfirmation: Bool {
-        confidence.state == .manualConfirmationRequired && geometryInnerQuad != nil
+        reviewState == .pending && geometryInnerQuad != nil
     }
     var requiresManualFrameConfirmation: Bool {
         requiresManualOuterConfirmation && requiresManualInnerConfirmation
     }
     var confidenceScore: Double { confidence.score }
     var declineReason: String? {
-        hasValidFrameGeometry ? confidence.reason : "Place valid inner guides inside the card edges before confirming both frames."
+        guard hasValidFrameGeometry else {
+            return "Place valid inner guides inside the card edges before confirming both frames."
+        }
+        guard reviewState == .pending else { return nil }
+        guard referenceDefinition.isAvailable else {
+            return "Check both frames, then choose the printed reference the cyan guides follow."
+        }
+        return reviewReason ?? confidence.reason
+            ?? "The detector placed starting outer and inner frames. Confirm or adjust both before reading centering."
     }
 
     var hasValidFrameGeometry: Bool {
@@ -1057,24 +1088,34 @@ struct CardCenteringMeasurement: Equatable {
     }
 
     @discardableResult
-    mutating func confirmFrames() -> Bool {
+    mutating func confirmFrames(reference: CardCenteringReferenceDefinition? = nil) -> Bool {
         guard hasValidFrameGeometry else { return false }
-        confidence.state = .confident
-        confidence.innerReferencePresent = true
-        confidence.reason = nil
+        if let reference {
+            // Registered identities are supplied only by the analyzer. Human
+            // review cannot promote an arbitrary design into a known template.
+            guard reference.isUserSelected else { return false }
+            referenceDefinition = reference
+        }
+        guard referenceDefinition.isAvailable else { return false }
+        reviewState = .userConfirmed
+        reviewReason = nil
         refreshWarnings()
         return true
+    }
+
+    mutating func clearReference() {
+        referenceDefinition = .unavailable
+        reviewState = .pending
+        reviewReason = "Choose a visible printed reference before measuring."
+        refreshWarnings()
     }
 
     /// Redraws the inner frame with each edge parallel to its card edge in the
     /// rectified card, at that side's measured border distance.
     ///
-    /// Detector inner sources fit each edge's slope independently of the card
-    /// edge, and a back-template fit can disagree with it by a couple of
-    /// degrees. No guide control can change a slope — the steppers translate
-    /// an edge and rotation turns the photo beneath both frames — so that
-    /// disagreement could never be aligned away. Each border is the distance at
-    /// the inner edge's midpoint either way, so the ratios are unchanged.
+    /// This is an explicit, undoable editing action. Detection and ordinary
+    /// guide adjustments must retain independent slopes and border variation.
+    /// Each border's midpoint distance, and thus the headline ratio, is retained.
     mutating func squareInnerFrameToCardEdge() {
         guard usesQuadGeometry, hasValidFrameGeometry,
               let rectification, let current = geometryInnerQuad else { return }
@@ -1091,12 +1132,12 @@ struct CardCenteringMeasurement: Equatable {
         )
         guard squared.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
         innerQuad = squared
-        inner = squared.projectedEdges
+        requireConfirmationAfterManualEditIfNeeded()
     }
 
     mutating func invalidateFrameConfirmationForPhotoRotation() {
-        confidence = .manualConfirmationRequired(preserving: confidence,
-            reason: "The photo moved beneath the guides. Realign and confirm both frames before reading centering.")
+        reviewState = .pending
+        reviewReason = "The photo moved beneath the guides. Realign and confirm both frames before reading centering."
         refreshWarnings()
     }
 
@@ -1169,7 +1210,8 @@ struct CardCenteringMeasurement: Equatable {
 
     mutating func refreshWarnings() {
         var updated: [String] = detectionNotes
-        if let reason = confidence.reason, !updated.contains(reason) {
+        if reviewState == .pending, let reason = reviewReason ?? confidence.reason ?? declineReason,
+           !updated.contains(reason) {
             updated.append(reason)
         }
         guard geometryInnerQuad != nil else {
@@ -1206,15 +1248,15 @@ struct CardCenteringMeasurement: Equatable {
         to value: Int
     ) {
         if !usesQuadGeometry {
-            outer[keyPath: keyPath] = value
-            outerQuad = .axisAligned(outer)
+            var edges = outer
+            edges[keyPath: keyPath] = value
+            outerQuad = .axisAligned(edges)
             requireConfirmationAfterManualEditIfNeeded()
             return
         }
         guard let edited = geometryOuterQuad.movingEdge(keyPath, to: value) else { return }
         // Quad measurements retain both frames and their perspective correction.
         outerQuad = edited
-        outer = edited.projectedEdges
         rectification = CardCenteringRectification(outerQuad: edited)
         requireConfirmationAfterManualEditIfNeeded()
     }
@@ -1224,8 +1266,9 @@ struct CardCenteringMeasurement: Equatable {
         to value: Int
     ) {
         if !usesQuadGeometry {
-            inner[keyPath: keyPath] = value
-            innerQuad = .axisAligned(inner)
+            var edges = inner
+            edges[keyPath: keyPath] = value
+            innerQuad = .axisAligned(edges)
             if innerReference == .none { innerReference = .artWindow }
             requireConfirmationAfterManualEditIfNeeded()
             return
@@ -1237,17 +1280,16 @@ struct CardCenteringMeasurement: Equatable {
             .reduce(geometryOuterQuad) { quad, side in quad.movingEdge(side, to: inner[keyPath: side]) ?? quad }
         guard let edited = startingQuad.movingEdge(keyPath, to: value) else { return }
         innerQuad = edited
-        inner = edited.projectedEdges
         if innerReference == .none { innerReference = .artWindow }
         requireConfirmationAfterManualEditIfNeeded()
     }
 
     private mutating func requireConfirmationAfterManualEditIfNeeded() {
-        guard confidence.state != .confident else { return }
-        confidence = .manualConfirmationRequired(
-            preserving: confidence,
-            reason: "Confirm both outer and inner frames before reading centering."
-        )
+        hasManualGuideEdits = true
+        if !hasValidFrameGeometry { reviewState = .pending }
+        if reviewState == .pending {
+            reviewReason = "Confirm both outer and inner frames before reading centering."
+        }
     }
 
     private static func centeringString(_ first: Double, _ second: Double) -> String {
@@ -1396,25 +1438,49 @@ extension CardCenteringMeasurement {
         }
     }
 
-    /// The inner frame's tilt against the card edge in the rectified card,
-    /// averaged over its four sides; clockwise positive. Zero once the frame
-    /// is squared to the card edge.
-    var innerTiltDegrees: Double? {
+    /// Each inner side's tilt against its card edge in rectified space;
+    /// clockwise positive. Keep all four so opposing slopes cannot cancel.
+    var innerEdgeTiltDegrees: [Double]? {
         guard let inner = geometryInnerQuad else { return nil }
         let space = innerEditSpace
         let outer = space?.rectifiedQuad(from: geometryOuterQuad) ?? geometryOuterQuad
         let measured = space?.rectifiedQuad(from: inner) ?? inner
-        var total = 0.0
-        for side in CardCenteringSide.allCases {
+        let degrees = CardCenteringSide.allCases.map { side in
             let card = outer.segment(side), print = measured.segment(side)
             var difference = atan2(print.end.y - print.start.y, print.end.x - print.start.x)
                 - atan2(card.end.y - card.start.y, card.end.x - card.start.x)
             while difference > .pi / 2 { difference -= .pi }
             while difference <= -.pi / 2 { difference += .pi }
-            total += difference
+            return difference * 180 / .pi
         }
-        let degrees = total / 4 * 180 / .pi
-        return degrees.isFinite ? degrees : nil
+        return degrees.allSatisfy(\.isFinite) ? degrees : nil
+    }
+
+    /// Mean frame tilt is useful for a rigid rotation, not a test of squareness.
+    var innerTiltDegrees: Double? {
+        innerEdgeTiltDegrees.map { $0.reduce(0, +) / Double($0.count) }
+    }
+
+    /// A rigidly tilted rectangle can use the familiar square detent. A frame
+    /// with independently fitted/edited slopes must never be flattened by it.
+    var innerFrameHasIndependentSlopes: Bool {
+        guard let angles = innerEdgeTiltDegrees, let minimum = angles.min(), let maximum = angles.max() else { return false }
+        return maximum - minimum > 1e-7
+    }
+
+    /// Presentation of the existing five positional samples. This is border
+    /// variation, not measurement uncertainty or a new headline ratio method.
+    func positionalRatioDetail(horizontal: Bool) -> String? {
+        guard canReportRatios, let consistency = positionalConsistency,
+              let first = consistency.samples.first, let last = consistency.samples.last else { return nil }
+        let range = horizontal ? consistency.leftRight : consistency.topBottom
+        guard range.firstSpread >= 0.1 else { return nil }
+        func ratio(_ pair: CardCenteringRatioPair) -> String {
+            String(format: "%.1f/%.1f", pair.firstPercentage, pair.secondPercentage)
+        }
+        return horizontal
+            ? "\(ratio(first.leftRight)) top → \(ratio(last.leftRight)) bottom"
+            : "\(ratio(first.topBottom)) left → \(ratio(last.topBottom)) right"
     }
 
     /// Slides one guide, keeping its angle, so its line passes through
@@ -1534,16 +1600,16 @@ extension CardCenteringMeasurement {
             ))
             guard placed.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
             innerQuad = placed
-            inner = placed.projectedEdges
         } else {
             let inset = Int((Double(min(outer.right - outer.left, outer.bottom - outer.top)) * insetFraction).rounded())
-            inner = CardCenteringEdges(
+            let edges = CardCenteringEdges(
                 left: outer.left + inset, top: outer.top + inset,
                 right: outer.right - inset, bottom: outer.bottom - inset
             )
-            innerQuad = .axisAligned(inner)
+            innerQuad = .axisAligned(edges)
         }
         innerReference = .artWindow
+        referenceDefinition = .unverified
         requireConfirmationAfterManualEditIfNeeded()
     }
 
@@ -1558,11 +1624,9 @@ extension CardCenteringMeasurement {
         guard edited.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
         if usesQuadGeometry {
             outerQuad = edited
-            outer = edited.projectedEdges
             rectification = CardCenteringRectification(outerQuad: edited)
         } else {
-            outer = edited.projectedEdges
-            outerQuad = .axisAligned(outer)
+            outerQuad = .axisAligned(edited.projectedEdges)
         }
         requireConfirmationAfterManualEditIfNeeded()
     }
@@ -1571,10 +1635,8 @@ extension CardCenteringMeasurement {
         guard edited.points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return }
         if usesQuadGeometry {
             innerQuad = edited
-            inner = edited.projectedEdges
         } else {
-            inner = edited.projectedEdges
-            innerQuad = .axisAligned(inner)
+            innerQuad = .axisAligned(edited.projectedEdges)
         }
         requireConfirmationAfterManualEditIfNeeded()
     }
