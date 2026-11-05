@@ -1,5 +1,745 @@
 # Guided centering repair
 
+## Bowed printed borders — 2026-11-05
+
+**Status: incomplete; 5/9 historical references pass both unchanged 2 pp ratio
+limits, with one correct no-reference result.** All 44 existing files remain in
+scope; 34 remain unannotated/unscored. Automatic reporting remains disabled.
+
+Original-pixel inspection identifies a concrete reason for Clefairy's incorrect
+bottom guide: the visible printed boundary bows across the photo. The straight
+consensus rejected this coherent boundary and fell back to an internal text bar.
+The retained change checks a bounded quadratic only after straight fitting fails.
+It requires at least 25/31 observed positions across all five spatial bins, stays
+inside the existing local search window, and must explain the observations
+substantially better than a straight line. No filename, reference coordinate or
+desired centering ratio participates in detection.
+
+The displayed guide remains a straight approximation fitted to the actual points.
+Clefairy's bottom corners now lie at native y=3724.78/3708.50, instead of about
+3555/3554 through text. Its 27 observed points retain a 6.00 native-pixel straight
+fit residual. A warning explains the curvature, and detector confidence declines
+the automatic reading. User confirmation does not erase that uncertainty.
+This is better boundary selection, not an exact curved-boundary measurement.
+
+| Changed fixture | Previous LR / TB error (pp) | Current LR / TB error (pp) |
+| --- | --- | --- |
+| IMG_0349 | 0.27 / 0.94 | 0.26 / 1.62 |
+| IMG_0351 | 2.36 / 9.53 | 2.30 / 8.61 |
+
+The other eight outputs are unchanged. Both final foil-card overlays were
+inspected. The historical Clefairy bottom reference also sits above the visible
+boundary; no annotation or tolerance was moved to follow the detector.
+
+`Front-curvature-regression-v2.xcresult` on T7 contains **147 methods: 145 passed,
+one expected opt-in skip, one failed accuracy method with six axis assertions**.
+Exact inventory reconciliation has no missing, unexpected or duplicate methods.
+The new bowed-border regression, analyzer, provenance, native interaction,
+export, all-ten-image five-run determinism, optimized/reference equivalence,
+no-fixture-identity branch check and corpus integrity pass. Production latency
+upper median is **0.557495 s**, maximum **0.608998 s**, within unchanged limits.
+The preceding regression-v1 attempt failed to compile due to an optional-chaining
+typo in the new test; v2 corrects it. No new full metamorphic, Release, UI-rendering
+or physical-device acceptance is claimed.
+
+The unsuccessful `Front-strip-v1` and `Front-strip-v2` experiments are absent from
+the retained source. Their exact prepared pixels helped expose curvature instead
+of texture as the cause. Their artifacts, the first `Front-curvature-v1` result,
+and the final source/evidence snapshot remain on T7.
+
+Original-image review also corrected two manifest game labels: IMG_0797 is
+Pokémon/Ferrothorn and IMG_0803 is Magic/Spinerock Tyrant. The manifest records
+those corrections; all 44 image hashes and the sealed holdout split are unchanged.
+
+## Front border coherence — 2026-11-05
+
+**Historical checkpoint: incomplete; 5/9 historical references pass both unchanged 2 pp ratio
+limits.** The no-reference card still abstains. The full scope remains all 44
+available images; 34 are not yet annotated/scored. Automatic reporting is disabled.
+
+The front profile now checks earlier peaks for spatially supported straight
+edges before allowing a stronger internal banner to win. It fits observed local
+positions using a deterministic consensus followed by least squares, retains
+independent edge angles and records the supporting points. Unsigned Lab contrast
+keeps unknown polarity instead of inventing a signed signal. The existing
+amplitude fallback remains when no earlier candidate has sufficient support.
+
+| Front fixture | Before LR / TB error (pp) | Current LR / TB error (pp) | Both axes ≤ 2 pp |
+| --- | --- | --- | --- |
+| IMG_0348 | 1.16 / 7.71 | 0.16 / 6.50 | Fail |
+| IMG_0349 | 0.71 / 26.39 | 0.27 / 0.94 | Pass |
+| IMG_0351 | 2.15 / 9.71 | 2.36 / 9.53 | Fail |
+| IMG_0780 | 5.49 / 21.83 | 4.15 / 10.97 | Fail |
+
+Back results are unchanged from the Magic checkpoint below. Inspected final
+Zapdos and Clefairy overlays confirm that Zapdos now follows its thin outer
+print boundary; Clefairy's bottom still follows an internal text feature.
+Starting Town's proposed full frame still disagrees with the historical artwork
+reference. No reference was changed to follow a detector output.
+
+`Front-final-regression-v1.xcresult` on T7 has **144 methods: 142 passed, one
+expected opt-in skip, one failed accuracy method (six axis assertions)**. It
+covers analyzer, provenance, native interaction, export, latency, determinism
+and the no-fixture-identity-branch source check. Method inventory reconciles
+exactly. Production latency upper median is **0.522911 s**, maximum **0.599924 s**.
+The subsequent `Front-determinism-reference-v1.xcresult` has **2/2 passes**:
+the expanded determinism test now checks all ten images five times each, and
+optimized/reference calculations match geometry and profile evidence exactly.
+That follow-up changes only test scope, not production code. Full detector
+metamorphic, Release and physical-device acceptance remain unclaimed.
+
+`Front-coherence-v1`, `Front-regression-v1`, `Front-coherence-diagnostic` and
+`Front-consensus-v1` retain intermediate results. The rejected
+`Front-joint-line-v1` broader search regressed Zapdos/Clefairy LR and invented a
+reference on IMG_0782. Its source and failed receipt remain separate; that
+experiment is absent from the retained implementation.
+
+Original-image review sheets now cover the 24 additional development files.
+Independent native reference proposals exist for IMG_0798 and IMG_0800 (four
+outer and four inner line candidates each), plus IMG_0810 (outer complete;
+inner left unsupported). They use generic pixel-derived search windows and no
+app output. They remain unscored review candidates. The review also identifies
+two historical manifest category errors: IMG_0797 is Pokémon/Ferrothorn and
+IMG_0803 is Magic/Spinerock Tyrant; those labels require reconciliation before
+subgroup evaluation. The holdout remains sealed.
+
+The original-pixel Charmander audit confirms the old bottom reference crosses
+text. A separate provisional window yields a visible print/silver transition,
+but widening the outer search also selects an interior print edge. These results
+are retained under `front-reference-reconciliation`, not adopted as ground
+truth. They reinforce that a supported straight line does not decide boundary
+identity. Reference adjudication remains necessary alongside detector repairs.
+
+## Magic borders and reference audit — 2026-11-05
+
+**Status: incomplete.** The current goal covers all 44 files in the existing
+manifest. All 44 file hashes were checked. The
+[per-image inventory](../../review/centering-evidence/existing-corpus-status-2026-11-05.json)
+records four historical ratio passes, five failures, one correct no-reference
+result, and 34 unannotated/unscored images. The 24 additional development images
+and ten sealed interim holdout images are not counted as passes. No new captures
+are required for this work; automatic reporting remains disabled.
+
+Classic Magic backs now select the first supported dark-to-light entrance into
+the printed field. Opposite-direction cut transitions are excluded; the free
+fit that mixed separate rules is omitted for this family. Candidates within the
+sampling width of the first fitted boundary compete on existing evidence score.
+This distinguishes a blurred entrance from stronger decorative rules farther
+inside the artwork without preferring any centering ratio.
+
+| Fixture | Previous LR / TB error (pp) | Current LR / TB error (pp) | Both axes ≤ 2 pp |
+| --- | --- | --- | --- |
+| IMG_0781 | 8.19 / 3.68 | 0.84 / 0.88 | Pass |
+| IMG_0783 | 14.00 / 3.37 | 0.40 / 1.61 | Pass |
+
+The other eight results are unchanged from the preceding table below. The
+first Magic iteration passed IMG_0781 but left IMG_0783 TB at 3.14 pp; comparing
+nearby fits of the same transition corrected that remaining choice. Both final
+overlays were retained. **4/9 annotated references now pass both ratio limits**;
+this is not full geometry acceptance or proof that the references are correct.
+
+T7 `CodexBuilds/CardScanner-ExistingCards-20261105/Magic-regression-v1.xcresult`
+contains **142 methods: 140 passed, one expected opt-in skip, one failed accuracy
+method (seven axis assertions)**. Inventory reconciliation has no missing,
+unexpected or duplicate methods. Analyzer, provenance, native interaction,
+export and production latency checks pass. Latency upper median is **0.544637 s**,
+maximum **0.621313 s**, within unchanged 0.8/1.5 s limits. No new Release,
+physical-device or full invariant acceptance is claimed.
+
+### Reference limitation exposed by the overlays
+
+The historical `gt_tool.py` rederivation averages profiles along an entire
+seed edge, selects one offset, then calls `shifted_edge_points`. Its fitted
+points are generated from the translated seed, not individually observed edge
+locations. Consequently it preserves the seed angle. Its two parameter passes
+do not establish independently observed angles or independent human annotations.
+The older REQ-027 completion record remains historical; it cannot certify these
+angles. Visual review also finds suspect front reference identity: IMG_0348's
+bottom line crosses printed text, and IMG_0780's top line crosses the title area.
+These must be adjudicated before tuning the detector to reproduce them.
+
+The separate [native annotation audit](../../review/centering-harness/edge_annotation_audit.py)
+samples local strips, retains actual transition points and rejected observations,
+and fits their independent line. It never imports the app, reads detector
+outputs, overwrites annotations or promotes candidates to ground truth. Four
+known-pixel tests pass: recovery of a sloped edge from a vertical seed,
+interrupted support, polarity reversal, and rejection of flat/wrong-polarity
+signals. Native source and annotation hashes accompany each retained audit.
+
+`annotation-angle-audit-v1` contains ten outer audits: nine have four supported
+line candidates; IMG_0348 bottom lacks sufficient straight-edge coverage.
+`annotation-inner-audit-v1` retains nine reference audits including explicit
+unsupported sides. The inspected IMG_0783 outer and IMG_0347 inner overlays
+confirm visible angle disagreements with the historical seeds. These are
+review candidates, not substitute accuracy evidence; a low fit residual does
+not establish boundary identity. **All checked-in annotations and tolerances
+remain unchanged.** The next work is reference adjudication alongside remaining
+front boundary selection, followed by annotation/scoring of every available file.
+
+## Existing-card accuracy first — 2026-11-05
+
+**Status: incomplete.** The owner explicitly prioritized getting the existing
+test cards right over expanding the corpus. REQ-040 remains a generalization
+gate, but no longer blocks this authorized development work. The earlier
+guided/UI passes establish editing and reporting behavior, not accurate initial
+guides. Automatic reporting remains disabled and annotations are unchanged.
+
+Added `testInitialGuidesMatchExistingDevelopmentAnnotations`: it calls the normal
+production entry point, compares untouched proposals with the existing annotated
+quads using the current rectified headline convention, requires both axes within
+the unchanged 2 pp limit, and verifies that the no-reference fixture remains
+without an inner frame. It never inserts annotated geometry into the result.
+Per-card native coordinates, candidates and actual overlays are retained.
+
+The first correction is confined to identified classic Pokémon backs. Signed
+dark-to-light brightness evidence rejects the opposite artwork transition that
+the unsigned RGB distance rewarded. Candidate scoring also accounts for the
+actual straight-line fit residual, reducing mixed-transition fits. Both changes
+use image evidence rather than filenames, hashes, annotated coordinates or
+preferred ratios. Magic registration keeps its original scoring: applying the
+same residual weighting there regressed a fixture and was rejected.
+
+| Existing fixture | Previous LR / TB error (pp) | Current LR / TB error (pp) | Current 2 pp ratio gate |
+| --- | --- | --- | --- |
+| IMG_0347 | 10.72 / 0.10 | 3.20 / 1.00 | Fail |
+| IMG_0348 | 1.16 / 7.71 | 1.16 / 7.71 | Fail |
+| IMG_0349 | 0.71 / 26.39 | 0.71 / 26.39 | Fail |
+| IMG_0350 | 24.90 / 4.61 | 0.89 / 0.45 | Pass |
+| IMG_0351 | 2.15 / 9.71 | 2.15 / 9.71 | Fail |
+| IMG_0352 | 14.12 / 2.16 | 0.94 / 1.51 | Pass |
+| IMG_0780 | 5.49 / 21.83 | 5.49 / 21.83 | Fail |
+| IMG_0781 | 8.19 / 3.68 | 8.19 / 3.68 | Fail |
+| IMG_0782 | No reference | No reference | Correct abstention |
+| IMG_0783 | 14.00 / 3.37 | 14.00 / 3.37 | Fail |
+
+At this first checkpoint, **2/9 annotated references** met both ratio limits; previously
+none did. This is improvement, not perfection or full acceptance. The remaining
+work includes the third Pokémon back, both Magic backs, front boundary identity
+and physical-outline placement. Starting Town's existing annotation uses an
+artwork window, so the requested default reference (full printed frame versus
+artwork window) is being clarified before changing that contract. No annotation
+was moved to follow a detector result.
+
+T7 `CodexBuilds/CardScanner-ExistingCards-20261105/Focused-regression-v1.xcresult`
+contains **141 selected methods: 139 passed, one expected opt-in native V2b
+benchmark skip, one failed accuracy method (11 failing axis assertions)**.
+Inventory reconciliation has no missing, unexpected or duplicate methods.
+The analyzer, native interaction, boundary provenance and export regressions
+pass. The three final Pokémon overlays were inspected; the persistent right
+edge disagreement on IMG_0347 remains visible. This run does not include a new
+Release build, full invariant suite or physical-device acceptance.
+
+The separate production latency selector passes in `Production-latency.xcresult`:
+upper median **0.553710 s**, maximum **1.019690 s**, within the unchanged
+0.8/1.5 s limits. The maximum is the first fixture in that fresh test process.
+
+`Baseline.xcresult` retains the initial harness compile failure, corrected before
+`Baseline-v2.xcresult`. That diagnostic first used unrectified normal distances;
+the retained final test uses the app's rectified headline convention. The
+previous column above comes from the unchanged November 4 production-path
+research receipt, which uses that same convention. `Signed-back-v1.xcresult`
+and `Coherent-back-v1.xcresult` retain intermediate outcomes, including the
+rejected Magic regression. The final source snapshot and evidence manifest
+distinguish this change from the earlier guided implementation.
+
+## Optional review and qualified reports — 2026-11-04
+
+**Status:** slice 5 implemented and simulator-tested; the final ten-suite selection
+has 208 passes, one expected skip and zero failures. This is guided
+implementation evidence, not automatic detection or physical accuracy acceptance.
+
+The optional **Compare Perspective…** action preserves the original overlay
+and presents a display-only, outer-derived perspective view. Independent inner
+lines use the same point transform. The bounded renderer works from the existing
+presentation image, caps each output at 1,200 pixels per dimension, renders off
+the main actor and rejects cancelled/stale jobs. No corrected raster is saved
+or used to measure ratios. The default PNG remains the original-photo result.
+
+Each retained alternative also offers **Compare this edge** beside the existing
+direct choice. Its sheet labels solid/current and dashed/alternative lines,
+shows an enlarged native crop and both-axis scenario results after valid review,
+and provides one undoable **Use This Edge** action. Pending review permits
+inspection and selection but hides all ratios. Recorded sample/exclusion bands
+appear only for that alternative; an excluded interpretation without a recorded
+spatial band is never invented as an image mask. Synthetic UI bands are explicitly
+labeled fixtures and do not establish detector image support.
+
+Common-axis variation replaces the older endpoint-interpolated *detail*, while
+the headline method remains unchanged. Optional variation stays in a disclosure.
+Reports distinguish the selected reference, human review, spatial variation and
+an explicitly inspected boundary-choice range. Other uncertainty stays unknown;
+the range is explicitly not an accuracy interval. Input, geometry, mapping,
+reference, review state and photo rotation bind comparisons and snapshots.
+Editing, Undo/reset, rotation or replacement input retires the comparison and
+old report. No new confirmation, entitlement, scanner, persistence or grade flow
+is introduced; the prior §14 amendment is the scope authority.
+
+### Rendered and interaction evidence
+
+T7 `CodexBuilds/CardScanner-CenteringSlice5-20261104/final-v5-*` retains actual
+screenshots, matched PNGs and geometry receipts. Inspected iPhone 17 Pro and iPad
+Air 11-inch (M4), iOS 27.0, at normal and maximum accessibility text sizes:
+pending, invalid, no-reference and ambiguous states; independent-line perspective
+comparison; and actual corrected/confirmed states. The final iPad uses side-by-side
+panels when they fit; maximum text and narrow screens stack them. No horizontal
+scrolling or clipped action labels was observed. Content can extend vertically
+and uses native scrolling. Native Done, reference menus and single-side selection
+remain available. Initial screenshots exposed overly dominant introductory copy
+and an intrinsic-width fallback that stacked the iPad panels; the final captures
+follow the layout and copy corrections.
+
+Actual maximum-text **Use This Edge** changes LR from 50.0/50.0 to 53.6/46.4,
+with TB unchanged. More → Undo restores 50.0/50.0. That choice is one tap after
+inspection; the recorded tool call took 4.166 s including automation and snapshot
+settling, **not** human correction time or measured app latency. A separate pending
+choice on each device keeps ratios hidden, then the existing reference menu's
+Printed border action confirms them without an added prompt. The matched iPad
+receipt shows the corrected geometry, user-confirmed state and cleared comparison.
+The PNG comparison receipt states its 50.0–53.6% left-share assumption and unknown
+accuracy. These are synthetic UI checks, not calibrated card measurements.
+
+The [slice 5 checklist](../../references/centering_boundary_slice5_checklist.md)
+records the design gate. Simulator layout/interaction checks pass; physical
+VoiceOver, device performance and capture-diverse accuracy remain open. Loading
+and unavailable views have explicit source paths; cancellation, invalid rendering
+and stale publication are covered by native tests, not forced screenshot states.
+
+### Verification and retained limits
+
+`Review-v1.xcresult` retains a test-fixture initializer-label build failure;
+the corrected `Review-v2.xcresult` has **9 passed, zero failed**, with no missing,
+unexpected or duplicate methods. Tests exercise actual raster landmarks against
+the outer point transform at 0°, −7° and 12° photo rotation (1.5 output-pixel
+centroid tolerance), bounded raster dimensions, cancellation, invalid geometry,
+selected-side-only support/exclusion rendering, legacy exclusion decoding,
+pending selection/Undo and rejection of stale comparison/report provenance.
+
+The finalized `Final-centering.xcresult` executes **209 methods: 208 passed,
+one expected opt-in V2b performance skip, zero failed**. The ten suites cover
+boundary evidence, native precision/input interaction, exports, analyzer,
+ground-truth guided safety, invariants, view surfaces, spatial measurement,
+review and native research. Inventory reconciliation finds no missing,
+unexpected or duplicate methods. Production REQ-022 upper median is **0.502201 s**,
+maximum **0.555615 s**, within the unchanged 0.8/1.5 s limits.
+
+The final optimized **arm64 Release simulator build passes** with Xcode 27.1
+(27A9275), standard Release conditions and signing disabled for simulator build
+verification. Debug UI captures use the local-only signing/Collector Tools harness.
+Source snapshots, Debug/test/Release binary hashes, input/capture hashes, method
+receipts and logs are retained in `source-and-evidence-manifest.json` on T7.
+This is not an archive, physical-device, CloudKit or release-readiness claim.
+
+The final 36-configuration research accuracy summaries exactly match slice 3;
+its failed accuracy exit is unchanged. Research upper-median time is 15.623557 s,
+maximum 16.294320 s per development image. This combined test-host process's
+lifetime peak is 2,364,850,176 bytes after the earlier invariant tests; it is
+neither an isolated decoder peak nor a production memory guarantee. Raw
+attachments and summaries remain on the external SSD.
+
+Production refinement and automatic reporting remain disabled. Slice 3's
+identity/accuracy exit still failed; no new diverse capture set is available,
+as confirmed by the user. REQ-040, independent annotations, calibrated physical
+measurements, device checks and the broader acceptance contract remain open.
+
+### Supplemental display and ordinary-entry verification
+
+The follow-up changes only the review test, strengthening its existing landmark
+check at the actual SwiftUI display surface. Four landmarks across 0°, −7° and
+12° rotation, 240/362-point panel widths and 2×/3× display scale give 48 checks.
+Worst Euclidean disagreement is **0.857242 device pixels**; worst point error is
+**0.290788 points**. Both unchanged limits (one device pixel and half a point)
+pass. This validates synthetic display alignment, not physical edge identity.
+
+`Display-alignment-v1.xcresult` has **23 passed, zero skipped/failed**, covering
+all nine review tests, all thirteen spatial tests and the non-square native
+detail alignment regression. The finalized receipt has no missing, unexpected
+or duplicate methods. The earlier 209-method receipt and Release build remain
+separate evidence for the unchanged production source; they were not rerun for
+this test-only addition. `supplemental-verification-manifest.json` retains the
+new test snapshot, hashes, receipt and UI evidence without replacing the prior
+source manifest.
+
+The ordinary phone flow also passes with the direct DEBUG review route disabled:
+More → Compare Perspective → Done; More → Exact Values → Precision adjustments
+→ Other detected edges → Compare this edge. **Use This Edge** dismisses the nested
+review back to Exact Values and changes LR from 50.0/50.0 to 53.6/46.4, with TB
+unchanged. **Undo adjustment** restores 50.0/50.0, and Done returns to the card.
+`entry-path-audit` retains inspected screenshots and action snapshots. The input
+is the synthetic comparison fixture, so this checks navigation and interaction
+rather than capture accuracy. No production code or automatic gate changed.
+
+## Spatial measurement and explicit sensitivity — 2026-11-04
+
+**Status:** slice 4 model implemented and simulator-tested; slice 5 presentation
+is recorded above. The prespecified `common_axis_samples_v1` contract is recorded in the
+[authoritative plan](../../review/opus-card-centering-implementation-plan.md).
+The headline remains `rectified_endpoint_average_v1`; no detector, confidence,
+validity tolerance or automatic-reporting gate changes.
+
+The new spatial model derives one homography from the current selected cut and
+applies it to the independent inner lines. LR pairs intersect the same row, TB
+pairs the same column, at 10/30/50/70/90% of the rectified card span. Samples
+outside either selected inner segment or with nonpositive/nonfinite margins are
+unavailable. The model retains positional ratios, margin ranges, midpoint,
+median, side tilt and geometric sample coverage. Image-observation coverage and
+native fit residual remain separate and unknown unless evidence still matches
+the current line. It never normalizes the inner reference independently or
+forces standard aspect to repair an estimate.
+
+Actual forward/inverse compositions are checked at 25 interior positions in
+both directions. They establish numerical consistency only. Explicit candidate
+comparisons replace one supporting line per scenario, rebuild the cut transform
+where needed, and recompute both axes. Invalid/missing alternatives retain their
+rejection; no Cartesian product silently combines incompatible edges. Optional
+caller-specified native-normal perturbations have a separate range. Neither
+range is a confidence interval, and uncertainty outside the stated alternatives
+stays unknown. All derived values are computed from current input identity,
+quads, mapping, reference and review state; manual edits retire unmatched
+observation provenance while immutable proposal evidence remains intact.
+
+Thirteen new analytical tests cover centered/translated and unequal-slope
+geometry, thin subpixel borders, absent/crossed/nonpositive margins, missing
+sample positions, unequal scale, perspective, rotation, EXIF 1–8/mirrors,
+interior round trips, cut/shadow alternatives 4–5 native pixels apart,
+independent perturbations, stale evidence, Undo, photo rotation and input
+replacement. The angled shadow scenario changes the full homography and both
+ratios while preserving the other seven supporting lines.
+
+`Final-centering.xcresult` on T7 at `CodexBuilds/CardScanner-CenteringSlice4-20261104`
+reports **192 passed, one expected opt-in V2b performance skip, zero failed**
+across 193 methods in eight selected suites. The finalized inventory has no
+missing, unexpected or duplicate methods. REQ-022 upper median is **0.498864 s**,
+maximum **0.544352 s**. Source snapshots and source/binary/inventory hashes are
+retained before slice 5 edits. No new UI or physical-device acceptance is claimed.
+
+Two initial builds exceeded Swift's expression type-checking limit; the
+arithmetic was split without changing values. The first runtime run had 11
+passes and one failed assertion comparing an immutable proposal to a subsequent
+floating-point line intersection. The assertion now checks the original
+proposal itself; no numeric tolerance was widened. Only that completed run's
+optional `simctl diagnose` collector was stopped to finalize its failed receipt.
+
+## Bounded native research evaluation — 2026-11-04
+
+**Status:** slice 3 evaluator implemented and tested; accuracy exit **not met**.
+No refinement setting is promoted. Working tree remains based on `main@a404f67`.
+The user confirmed that no additional capture-diverse set is currently available;
+REQ-040 and independent physical calibration remain open. The sealed interim
+holdout was not read. Independent guided measurement work in slices 4–5 can
+continue without changing production perception or weakening this gate.
+
+`CenteringNativeResearchTests` contains the evaluator and revision-keyed,
+cancellable single-request cache in the test target only. Production retains
+the 1200-pixel proposal path and disabled native-refinement defaults. The shared
+crop helper accepts an explicit color space for research; ordinary callers keep
+their existing DeviceRGB default. Research uses encoded sRGB values, explicitly
+distinguishing weighted brightness, arithmetic mean, chroma, red-minus-green and
+blue-minus-green from linear-light luminance. The 36 recorded configurations
+cover signed gradients at Gaussian sigma 0.6/1/1.5/2/3, the attachment's six
+RGB-mean crossings, and five sigma-1 chroma crossings. These are correlated
+experiments, not independent votes or calibrated production thresholds.
+
+Work is capped at seven existing seeds per side, 56 total, with bounded crops,
+25 positions in the middle 12–88% of each seed, retained competing tracks,
+residual rejection, spatial coverage, omitted-band variation and held-out-band
+residuals. Invalid seeds, missing samples, unsupported fits and invalid joint
+intersections remain explicit abstentions. Research never replaces outer cuts
+using gradient strength. Each input attachment retains its byte hash, settings,
+native hypotheses and per-stage process-memory observations. One current key
+includes original bytes, input/geometry revisions, seed geometry and settings;
+replacement cancels stale work and completed requests are reused.
+
+### Outcome and decision
+
+The full experiment ran on all ten exposed development images: nine with
+annotated inner references (36 sides) and one unavailable reference. Across
+configurations, coarse candidate agreement was 2/36 sides within two native
+pixels; refined candidate agreement ranged from 0/36 to 8/36. Of 141 experimental
+unique-line selections across the correlated configurations, 139 exceeded that
+two-pixel line-agreement diagnostic; the largest discrepancy was 1,191.12 native
+pixels. These counts are not independent trials, and the diagnostic is neither
+the two-percentage-point ratio gate nor independently calibrated physical truth.
+Existing annotation ambiguity and bands remain in the records.
+
+Raw proposal LR error had upper median 8.1897 pp and worst/p95 24.9040 pp; TB had
+upper median 4.6061 pp and worst/p95 26.3889 pp, over the nine measurable images.
+Some settings improved aggregate ratios while selecting the wrong boundary;
+others worsened them. Therefore no setting satisfies the identity/accuracy exit.
+The next perception investigation must address role-correct candidate generation
+and annotation quality, rather than relax local-fit gates or select a favorable
+ratio. These raw-proposal errors are not errors in user-corrected measurements;
+all production proposals still require deliberate review.
+
+The complete 36-setting research pass took upper median **15.985 s**, maximum
+**17.054 s** per input. It is an offline ablation and is not added to interaction
+work. Process-lifetime resident peaks during that pass ranged from 678.9 to
+721.7 MB; they include the test host and earlier allocations. The separate
+real-flow native-detail check took 5.245 ms cold and 0.0069 ms cached on one
+simulator fixture. Neither that observation nor the two-million-pixel crop cap
+establishes a bounded decoder peak or physical-device interaction acceptance.
+
+### Verification
+
+Evidence is retained on T7 at `CodexBuilds/CardScanner-CenteringSlice3-20261104`.
+`Final-research-and-regression.xcresult` reports **92 passed, one expected opt-in
+V2b performance skip, zero failed**, across 93 selected methods. The seven new
+research methods, 48 native-precision methods, 24 analyzer methods, 13
+ground-truth methods and production latency method have no missing, unexpected
+or duplicate inventory entries. REQ-022 upper median is **0.532916 s**, maximum
+**0.585268 s**, within unchanged 0.8/1.5 s limits.
+
+The initial research run retains three passes and two failed methods: a partial
+coverage fixture could not generate the assumed hypothesis, and competing edges
+produced more than two line hypotheses. The corrected fixtures assert sufficient
+coverage and preservation of both real transitions/ambiguity without an arbitrary
+hypothesis count. The next six-method run passed. A final seventh regression
+verifies supersession and explicit invalid-seed abstention. No acceptance
+threshold was relaxed to obtain a pass. The
+[harness instructions](../../review/centering-harness/README.md#bounded-native-research-evaluator)
+and summary script make the experiment repeatable; full per-input, per-side and
+per-configuration records are retained, including face/encasement subgroups.
+
+## Reference identity and competing boundaries — 2026-11-04
+
+**Status:** second slice implemented and verified locally.
+Working tree remains based on `main@a404f67`, with unrelated user changes retained.
+This implements slice 2 of the [boundary evidence plan](../plans/centering-boundary-evidence-plan.md).
+Automatic ratios and sharing still require valid geometry and human review.
+
+The analyzer retains candidates from its existing scalar, Vision, profile,
+outer-refinement and registered-back stages before final frame assembly. Each
+candidate has an original-oriented-native line, proposing source, possible
+roles and a selection/rejection reason. Existing observed outer-fit samples,
+coverage, signed inside/outside luminance polarity and native fit residuals are
+retained where available; unsupported fields stay nil. A rejected stage proposal
+is not proof of physical identity. No new detector, threshold, native-refinement
+default or favorable-ratio selector was introduced. Candidate IDs are stable
+within a repeated analysis; scalar border-walk records now use explicit side order.
+
+The input record binds exact received bytes by SHA-256 and byte count, with raw
+raster dimensions, EXIF orientation, available source color-space name, and named
+detector/presentation mappings. Prior processing history stays unknown. Candidate
+geometry remains in original-oriented-native coordinates; current working guide
+quads are canonical and legacy scalar fields are derived projections. Only the
+outer quad supplies perspective correction. No inner-reference normalization is
+introduced.
+
+Reference definitions distinguish the existing versioned Pokémon/Magic classic
+back paths from unverified designs. The historical `artWindow` detector tag is
+retained for diagnostic compatibility; it cannot authorize measurement. For an
+unverified design, **Choose Reference** identifies a printed border, artwork
+frame or other reference and confirms the reviewed guides in the same action.
+There is no separate confirmation dialog. **No usable reference** keeps ratios
+and sharing unavailable. An added default inset remains an unverified placement
+aid. User-selected results and PNGs identify a geometric estimate; artwork
+asymmetry may be intentional and the choice does not establish grading equivalence.
+
+Exact Values includes alternative edges beside native detail. It shows six
+nearest distinct supporting lines first, with all retained alternatives available.
+Ordering uses distance from the current guide, never proximity to 50/50. A choice
+changes one supporting line and its intersections, preserving the other seven
+supporting lines. Undo/reset restore geometry and provenance together; subsequent
+manual changes cannot retain a stale candidate attribution. Reviewing one side
+does not approve the remaining frames or change detector certainty.
+
+Evidence is retained on T7 at `CodexBuilds/CardScanner-CenteringSlice2-20261104`.
+The [slice checklist](../../references/centering_boundary_slice2_checklist.md)
+tracks rendered normal/maximum-text review and native verification. Analytic
+cut/shadow and printed-border/artwork line fixtures test evidence retention and
+side replacement; they do not establish detector recall on the missing historical
+Gengar/Mew images. Ten existing development photographs exercise real candidate
+retention, input provenance and unchanged geometry. The sealed holdout is untouched.
+
+Initial boundary tests passed 4/4. The first broad run retained its original
+receipt: 175 passed, three failed methods, one expected opt-in skip (179 total).
+One failure expected obsolete confirmation copy; two exposed nondeterministic
+dictionary ordering in the newly retained candidate records. The ordering is
+fixed, and test expectations now require explicit reference choice. A fifth
+boundary test for photo-rotation mapping was added after that run. All test
+processes finished; only optional `simctl diagnose` collection was terminated
+when it delayed finalizing the original failed bundle.
+
+### Final verification
+
+Xcode 27.1, dedicated iPhone 17 Pro / iOS 27.0 Simulator. Finalized xcresult
+inventories, source/binary hashes, development-input hashes and captures are
+retained in `source-and-evidence-manifest.json` on T7.
+
+| Run | Passed | Failed methods | Skipped |
+| --- | ---: | ---: | ---: |
+| Boundary model, `Boundary-v1` | 4 | 0 | 0 |
+| Initial broad selection, `Centering-v2` | 175 | 3 | 1 |
+| Seven suites after evidence fixes, `Centering-v3` | 179 | 0 | 1 |
+| Six core suites + Square + latency after UI repair, `Final-focused` | 147 | 0 | 1 |
+| Boundary + export after DEBUG receipt correction, `Final-receipt` | 55 | 0 | 0 |
+
+The three final passing inventories have no missing, duplicate or unexpected
+methods. Their combined latest-method coverage is 179 passed / one expected
+opt-in native-V2b performance skip across 180 methods; this is combined evidence,
+not one full-final-binary run. Only the view changed after the broad pass:
+presentation repair first, then a DEBUG-only receipt correction. The final
+REQ-022 upper median is **0.506341 s**, maximum **0.557617 s**, within unchanged
+0.8/1.5 s limits. Optimized non-DEBUG Release builds passed for the production
+changes, including the final layout. The subsequent receipt correction is
+excluded from Release. No physical-device or release-readiness claim follows.
+
+Normal and maximum-text reference choice, no-reference abstention, native-detail
+alternatives, actual side choice and Undo, independent geometry, and PNG labels
+pass visual inspection. The first capture exposed a truncated primary action;
+the final layout gives it a separate row and wraps the estimate caveat. An actual
+choice moved the inner-left line and changed the synthetic ratio from 50.0/50.0
+to 49.4/50.6; the matched export receipt proves the other seven supporting lines,
+all candidates and detector confidence stayed fixed. Actual Undo restored all
+eight lines, reference and review state exactly. A stale DEBUG analysis marker
+found during this check is preserved as such; export receipts now refresh from
+the matched snapshot and identify synthetic/user-adjusted geometry. These are
+analysis/export snapshots, not a continuous gesture log.
+
+### Design gate
+
+Reviewed against Apple's [menu guidance](https://developer.apple.com/design/human-interface-guidelines/menus)
+and [accessibility guidance](https://developer.apple.com/design/human-interface-guidelines/accessibility).
+
+| Category | Status | Evidence / minimal remaining check |
+| --- | --- | --- |
+| Platform patterns | PASS | Native menus, disclosure groups and undo; top-level navigation unchanged. |
+| Clarity | PASS | Explicit reference action, geometric-estimate label, and no-reference path. |
+| Typography | PASS | Final standard and maximum-text captures wrap without truncating the primary action. |
+| Accessibility | RISK | Largest text and semantic controls inspected; physical VoiceOver traversal remains unverified. |
+| Interaction cost | PASS | An unsupported reference adds the necessary menu choice in place of Confirm, with no second confirmation dialog; alternatives remain optional. |
+| Design claims | PASS | Review does not upgrade certainty or imply a grade; original image and independent guides remain visible. |
+
+**Verdict: RISK** solely for the remaining physical-device/VoiceOver check.
+The minimal remaining check is real-device traversal of reference selection,
+alternative choice and Undo. No additional production UI change is identified
+by this simulator receipt. Accuracy calibration, held-out perception, common-row
+ratio sampling and native-refinement promotion remain later work.
+
+## Independent inner geometry and human review — 2026-11-04
+
+**Status:** implemented locally on `main`, base `a404f67470db20352b9b8f79925e2b96fe0597a9`;
+uncommitted and preserving unrelated working-tree changes. This is the authorized
+first slice of the [boundary evidence plan](../plans/centering-boundary-evidence-plan.md).
+Simulator evidence is scoped below; no release acceptance or new automatic
+boundary-accuracy claim follows from this change.
+
+The analyzer now returns its independent inner lines without squaring them.
+Original proposal quads and detector confidence are immutable within a
+measurement; `reviewState` separately records pending or user-confirmed review.
+Every new measurement starts pending, so even high detector confidence cannot
+expose ratios or enable sharing. Confirming valid frames leaves the detector's
+scores, decline reason and original geometry unchanged. Historical diagnostic
+confidence states remain decodable; there is no persisted-measurement migration.
+
+The existing one-action confirmation remains. Valid edits stay live; invalid
+geometry, replacement input and photo-only rotation revoke approval. Explicit
+Square and Undo retain exact snapshots, while a small-angle detent cannot flatten
+independently sloped edges. The screen and PNG describe human review and show
+endpoint-based positional variation even when opposing slopes cancel the mean
+tilt. The headline ratio method is unchanged; DEBUG receipts label it
+`rectified_endpoint_average_v1`. Variation is not an accuracy interval.
+
+Detector thresholds, native refinement defaults, geometry validity rules and
+the 0.8 s upper-median / 1.5 s maximum latency limits are unchanged. Native
+refinement remains DEBUG opt-in. Boundary-identity types, competing-candidate
+review, a full native input-provenance record and common-row/column diagnostics
+remain later slices.
+
+Evidence is retained on T7 at `CodexBuilds/CardScanner-CenteringSlice1-20261104`.
+The [visual/behavior checklist](../../references/centering_boundary_slice1_checklist.md)
+records the screenshot loop and its accessibility limitations. No private images
+or raw logs are added to the repository.
+
+### Native test receipt
+
+Xcode 27.1, dedicated iPhone 17 Pro / iOS 27.0 Simulator, standard Debug with
+automatic reporting disabled. Finalized `.xcresult` method inventories were
+extracted with `xcresulttool get object --legacy`; stdout alone was not used
+as acceptance evidence.
+
+| Run | Passed | Failed methods | Skipped |
+| --- | ---: | ---: | ---: |
+| Unchanged centering baseline, three suites | 118 | 0 | 1 |
+| First implementation selection, `Focused-v1` | 136 | 4 | 1 |
+| Broad six-suite selection, `Final-centering` | 173 | 1 | 1 |
+| Core five suites plus explicit Square and latency, `Final-focused` | 142 | 0 | 1 |
+| Same selection after final accessibility repair, `Final-verified` | 142 | 0 | 1 |
+
+The first four failures were test-fixture assumptions: an out-of-image small
+frame, a sheared quad outside its canvas, confirmation of zero-width borders,
+and the previous export-note height. Fixtures now supply valid bounds or
+explicitly stay unconfirmed, and the note-height test checks wrapping of long
+warnings. Geometry validity rules were not relaxed. The broad failure was one
+obsolete automatic-parallelization test with nine assertions; it now explicitly
+invokes Square and verifies pending review plus retained original geometry.
+Its amended version passes in both final focused runs. All 143 final selected methods
+are present exactly once, with no missing/unexpected methods. The sole skip is
+the existing opt-in native V2b development-performance benchmark.
+
+The broad run's optional `simctl diagnose` collection lingered after test
+execution. Only that collection process was terminated; Xcode finalized the
+bundle with its original one-method failure intact. No test process was stopped
+or rerun to conceal a crash. Both final passing runs exited normally. The combined
+latest-result inventory covers all 175 current methods in the six relevant
+suites: 174 passed and the one expected skip, with no missing methods. This
+combines the broad unchanged geometry checks with the final focused run; it
+is not one all-suite run of the final binary.
+
+Coverage includes the ten-development-photo geometry replay, opposing slopes,
+unaltered detector evidence, independent cyan export pixels, explicit review,
+live valid editing, invalid/rotation/new-input revocation, exact undo/reset,
+stale exports, coordinate/render invariants and native Done/removal/localized
+editing. The final REQ-022 run has upper median **0.519570 s**, maximum
+**0.570662 s** under the unchanged 0.8/1.5 s limits. These are simulator timings.
+No sealed holdout was evaluated and no physical measurement accuracy is claimed.
+
+### Visual and interaction receipt
+
+The screenshot build uses the same centering source with the existing
+`DEBUG LOCAL_ONLY_SIGNING LOCAL_COLLECTOR_TOOLS` flags, in separate
+`UIDerivedData`. The ordinary unowned build correctly stopped at the purchase
+gate. An initial local capture build omitted `LOCAL_ONLY_SIGNING` and trapped in
+CloudKit account initialization; the corrected local configuration launched
+without a production-code change. This is not StoreKit or CloudKit acceptance.
+
+The final normal-size view and PNG retain the independent cyan lines, show
+40.4/59.6 LR and 54.0/46.0 TB for the synthetic opposing-slope case, and expose
+top-to-bottom/left-to-right variation. The raw detector state remains `declined`
+in both pending and user-confirmed markers. The final PNG is byte-identical to
+the visually inspected export. Source hashes, binary hashes, ten development
+input hashes and method reconciliation are retained in
+`source-and-evidence-manifest.json` beside the result bundles.
+
+Maximum Dynamic Type initially clipped readings and allowed an oversized overlay
+to hide the image. A first scroll-container attempt revealed a real gesture
+collision: a swipe beginning on the image moved a guide. The final accessibility
+layout keeps the editable image visible in a separate pane and scrolls the
+readings and controls. Actual Simulator swipes preserve ratios; Square removes
+variation without changing the headline ratios, and Undo restores it. Confirm
+was tapped successfully at ordinary and maximum text sizes; sharing becomes
+available only after that action. The native toolbar remains reachable.
+
+Final inspected captures are `ui-final-normal`, `ui-final-ax-pane` (including
+`scrolled-controls.png`) and `ui-final-pending-ax` (including
+`confirm-controls.png`). Earlier failed captures remain retained. No extra
+confirmation prompt was added; the normal-size direct-editing layout remains.
+
+**HIG gate verdict: RISK — manual accessibility acceptance remains open.**
+
+| Category | Status | Evidence / smallest remaining action |
+| --- | --- | --- |
+| Platform patterns | PASS | Existing navigation, native menus, buttons and sharing retained. |
+| Clarity | PASS | One Confirm action, explicit human-review copy and directional variation labels. |
+| Typography | PASS | Normal and maximum text inspected; long text wraps and controls scroll. |
+| Accessibility baseline | RISK | Semantic labels and Simulator gestures inspected; run actual VoiceOver focus traversal and physical-device touch/pinch before closing this gate. |
+| Interaction cost | PASS | No new prompt; one confirmation and live valid edits retained. |
+| Design claims | PASS | Guided-estimate wording retained; review does not assert detector accuracy. |
+
+Top remaining issue: VoiceOver/device interaction is unverified. Minimal follow-up
+is a traversal and touch/pinch check of this final centering screen; no additional
+prompt or navigation redesign is required. The full target, provider, physical
+capture, held-out accuracy and release gates remain outside this receipt.
+
 ## Consolidated Done and removal repair — 2026-11-02
 
 **Current status:** repaired and squash-merged in PR #19. The exact final

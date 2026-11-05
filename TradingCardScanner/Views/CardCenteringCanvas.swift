@@ -620,7 +620,7 @@ struct CardCenteringCanvas: View {
             edited.pivotGuide(guide, movingEnd: end, toward: swung)
             if guide.frame == .inner {
                 let isSquare = abs(edited.innerTiltDegrees ?? 0) < CardCenteringMeasurement.innerTiltDetentDegrees
-                if isSquare {
+                if isSquare && !edited.innerFrameHasIndependentSlopes {
                     edited.squareInnerFrameToCardEdge()
                     if !drag.isSquare { squareFeedback &+= 1 }
                 }
@@ -758,12 +758,12 @@ struct CardCenteringCanvas: View {
 }
 
 extension CardCenteringMeasurement {
-    /// Within this tilt the inner frame snaps square to the card edge, and no
-    /// tilt is reported.
+    /// A rigidly tilted rectangle snaps square within this angle. Independent
+    /// edge slopes are preserved even when their average is inside the detent.
     static let innerTiltDetentDegrees = 0.04
 
     var hasReportableInnerTilt: Bool {
-        abs(innerTiltDegrees ?? 0) >= Self.innerTiltDetentDegrees
+        innerEdgeTiltDegrees?.contains { abs($0) >= Self.innerTiltDetentDegrees } == true
     }
 }
 

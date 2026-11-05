@@ -63,7 +63,29 @@ final class CardCenteringViewModel: ObservableObject {
         }
     }
     @Published private(set) var imageRevision = 0
-    @Published var measurement: CardCenteringMeasurement?
+    @Published var measurement: CardCenteringMeasurement? {
+        didSet {
+            if measurement != oldValue { clearBoundaryComparison() }
+        }
+    }
+    @Published private(set) var comparedCandidateIDs: [String] = []
+
+    func compareBoundary(_ id: String) {
+        guard let value = precisionMeasurement,
+              value.boundaryCandidates.contains(where: { $0.id == id }) else { return }
+        comparedCandidateIDs = [id]
+        retireExportFile()
+    }
+
+    func clearBoundaryComparison() {
+        if !comparedCandidateIDs.isEmpty { comparedCandidateIDs = [] }
+        retireExportFile()
+    }
+
+    var boundaryComparison: CardCenteringBoundarySensitivity? {
+        guard !comparedCandidateIDs.isEmpty, let value = precisionMeasurement, value.canReportRatios else { return nil }
+        return value.boundarySensitivity(comparing: comparedCandidateIDs)
+    }
     @Published var rotationDegrees = 0.0 {
         didSet {
             if rotationDegrees != oldValue { invalidateAfterPhotoRotation() }
@@ -104,16 +126,35 @@ final class CardCenteringViewModel: ObservableObject {
 
     private func applySyntheticDebugState() {
         guard isSyntheticDebugFixture, let state = debugState, let analysis = measurement else { return }
+        let inner = state == "independent"
+            ? CardCenteringQuad(topLeft: .init(x: 64, y: 64), topRight: .init(x: 296, y: 58),
+                                bottomRight: .init(x: 286, y: 444), bottomLeft: .init(x: 54, y: 450))
+            : .axisAligned(.init(left: 64, top: 60, right: 296, bottom: 444))
+        var candidates = analysis.boundaryCandidates
+        if ["comparison", "ambiguous"].contains(state) {
+            candidates.append(.init(id: "ui-inner-alternative", frame: .inner, side: .left,
+                nativeLine: .init(start: .init(x: 68, y: 444), end: .init(x: 68, y: 60)),
+                source: "synthetic_ui_fixture", proposedRole: .printedBorder, competingRoles: [.artwork],
+                signal: "known fixture stripe", strength: nil, polarity: nil, coverage: nil, fitResidualNativePixels: nil,
+                sampleBands: [.init(start: .init(x: 68, y: 100), end: .init(x: 68, y: 200), sampleCount: nil),
+                              .init(start: .init(x: 68, y: 300), end: .init(x: 68, y: 410), sampleCount: nil)],
+                exclusions: [.init(role: .artwork, reason: "Known occluded region in synthetic UI fixture",
+                    nativeBand: .init(start: .init(x: 68, y: 210), end: .init(x: 68, y: 270), sampleCount: nil))],
+                selectionReason: .competingCandidate, reason: "Known alternative in synthetic UI fixture"))
+        }
         var fixture = CardCenteringMeasurement(imageWidth: 360, imageHeight: 504,
             outerQuad: .axisAligned(.init(left: 38, top: 34, right: 322, bottom: 470)),
-            innerQuad: state == "missing" ? nil : .axisAligned(.init(left: 64, top: 60, right: 296, bottom: 444)),
-            warnings: [], innerReference: state == "missing" ? .none : .printedBorder,
-            confidence: .manualConfirmationRequired(preserving: analysis.confidence, reason: "Review frames"))
-        if state == "confirmed" || state == "rotated" || state == "zoom" || state == "tilted" { fixture.confirmFrames() }
+            innerQuad: state == "missing" ? nil : inner,
+            warnings: [], coordinateMapping: analysis.coordinateMapping,
+            innerReference: state == "missing" ? .none : .printedBorder,
+            confidence: analysis.confidence, inputRecord: analysis.inputRecord,
+            boundaryCandidates: candidates)
+        if ["confirmed", "rotated", "zoom", "tilted", "independent", "comparison"].contains(state) { fixture.confirmFrames(reference: .userPrintedBorder) }
         if state == "tilted" {
             fixture.turnGuide(.init(frame: .inner, side: .right), about: .start, byDegrees: 0.25)
         }
         if state == "invalid" { fixture.setManualInnerEdge(\.left, to: 20) }
+        if state == "no-reference" { fixture.clearReference() }
         if state == "rotated" || state == "zoom" { rotationDegrees = 7 }
         measurement = fixture
     }
@@ -134,7 +175,7 @@ final class CardCenteringViewModel: ObservableObject {
            let actions = try? JSONDecoder().decode([Action].self, from: data) {
             for action in actions { updatePrecisionSide(action.side, frame: action.frame, position: action.position, angle: action.angle) }
         }
-        if arguments.contains("-ui_debug_confirm_frames") { confirmFrames() }
+        if arguments.contains("-ui_debug_confirm_frames") { confirmFrames(reference: .userPrintedBorder) }
         if let index = arguments.firstIndex(of: "-ui_debug_photo_rotation"), arguments.indices.contains(index + 1),
            let degrees = Double(arguments[index + 1]) { adjustRotation(by: degrees) }
         if arguments.contains("-ui_debug_reset_photo_rotation") { resetRotation() }
@@ -148,6 +189,11 @@ final class CardCenteringViewModel: ObservableObject {
         let innerQuad: CardCenteringQuad?
         let innerReference: CardCenteringInnerReference?
         let confidence: CardCenteringConfidence?
+        let reviewState: CardCenteringReviewState?
+        let hasManualGuideEdits: Bool?
+        let proposedOuterQuad: CardCenteringQuad?
+        let proposedInnerQuad: CardCenteringQuad?
+        let ratioMethod: String
         let appliedRotationDegrees: Double?
         let detectedSkewDegrees: Double?
         let reason: String?
@@ -156,6 +202,13 @@ final class CardCenteringViewModel: ObservableObject {
         let leftRightCentering: String?
         let topBottomCentering: String?
         let inputSHA256: String?
+        let referenceDefinition: CardCenteringReferenceDefinition?
+        let inputRecord: CardCenteringInputRecord?
+        let boundaryCandidates: [CardCenteringBoundaryCandidate]?
+        let selectedLines: [CardCenteringSelectedLine]?
+        let spatialMeasurement: CardCenteringSpatialMeasurement?
+        let comparedCandidateIDs: [String]
+        let boundaryComparison: CardCenteringBoundarySensitivity?
     }
 
     private var debugSettledMarkerURL: URL? {
@@ -184,6 +237,11 @@ final class CardCenteringViewModel: ObservableObject {
             innerQuad: measurement?.geometryInnerQuad,
             innerReference: measurement?.innerReference,
             confidence: measurement?.confidence,
+            reviewState: measurement?.reviewState,
+            hasManualGuideEdits: measurement?.hasManualGuideEdits,
+            proposedOuterQuad: measurement?.proposedOuterQuad,
+            proposedInnerQuad: measurement?.proposedInnerQuad,
+            ratioMethod: "rectified_endpoint_average_v1",
             appliedRotationDegrees: measurement == nil ? nil : (appliedRotationDegrees ?? rotationDegrees),
             detectedSkewDegrees: measurement == nil ? nil : detectedSkewDegrees,
             reason: measurement?.declineReason,
@@ -191,7 +249,14 @@ final class CardCenteringViewModel: ObservableObject {
             coordinateMapping: measurement?.coordinateMapping,
             leftRightCentering: measurement?.leftRightCentering,
             topBottomCentering: measurement?.topBottomCentering,
-            inputSHA256: debugInputSHA256
+            inputSHA256: debugInputSHA256,
+            referenceDefinition: measurement?.referenceDefinition,
+            inputRecord: measurement?.inputRecord,
+            boundaryCandidates: measurement?.boundaryCandidates,
+            selectedLines: measurement == nil ? nil : precisionMeasurement?.selectedLines,
+            spatialMeasurement: measurement == nil ? nil : precisionMeasurement?.spatialMeasurement,
+            comparedCandidateIDs: comparedCandidateIDs,
+            boundaryComparison: boundaryComparison
         )
         guard let data = try? JSONEncoder().encode(marker) else { return }
         try? data.write(to: url, options: .atomic)
@@ -214,11 +279,19 @@ final class CardCenteringViewModel: ObservableObject {
     func recordDebugExport(_ file: URL, snapshot: ExportSnapshot) {
         guard matches(snapshot), let url = debugSettledMarkerURL,
               let data = try? Data(contentsOf: url),
-              var object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+              let previous = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+        // A receipt must describe the exported revision, including human
+        // choices, rather than retain the original analysis geometry.
+        markDebugAnalysisSettled(snapshot.measurement,
+            detectedSkewDegrees: previous["detectedSkewDegrees"] as? Double)
+        guard let refreshed = try? Data(contentsOf: url),
+              var object = try? JSONSerialization.jsonObject(with: refreshed) as? [String: Any] else { return }
+        object["presentedImageFrame"] = previous["presentedImageFrame"]
         object["exportFilePath"] = file.path
         object["exportPhotoRotationDegrees"] = snapshot.rotationDegrees
-        object["geometryRole"] = ProcessInfo.processInfo.arguments.contains("-ui_debug_precision_actions_path")
-            ? "development_manual_guide_actions" : "unchanged_automatic_proposal_confirmed_for_comparison"
+        object["geometryRole"] = isSyntheticDebugFixture ? "synthetic_geometry_fixture"
+            : snapshot.measurement.hasManualGuideEdits ? "user_adjusted_guides"
+            : "unchanged_automatic_proposal_confirmed_for_comparison"
         guard let updated = try? JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]) else { return }
         try? updated.write(to: url, options: .atomic)
     }
@@ -325,6 +398,7 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     private func invalidateAfterPhotoRotation() {
+        clearBoundaryComparison()
         measurement?.invalidateFrameConfirmationForPhotoRotation()
         // Guides remain undoable, but approval belongs to the exact photo
         // coordinate system. Even rotating back requires fresh confirmation.
@@ -339,12 +413,7 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     var precisionMeasurement: CardCenteringMeasurement? {
-        guard var value = measurement else { return nil }
-        let size = CardCenteringSize(width: Double(value.imageWidth), height: Double(value.imageHeight))
-        var mapping = value.coordinateMapping ?? CardCenteringCoordinateMapping(orientedSourceSize: size, workingSize: size)
-        mapping.appliedRotationDegrees += rotationDegrees
-        value.coordinateMapping = mapping
-        return value
+        measurement?.includingPhotoRotation(rotationDegrees)
     }
 
     var canUndoPrecisionEdit: Bool { precisionUndo != nil }
@@ -424,9 +493,35 @@ final class CardCenteringViewModel: ObservableObject {
         self.measurement = measurement
     }
 
-    func confirmFrames() {
-        guard var measurement, measurement.confirmFrames() else { return }
+    func confirmFrames(reference: CardCenteringReferenceDefinition? = nil) {
+        guard var measurement, measurement.confirmFrames(reference: reference) else { return }
+        if self.measurement?.canReportRatios == true, let reference, self.measurement?.referenceDefinition != reference {
+            recordUndoPoint()
+        }
         self.measurement = measurement
+    }
+
+    func clearReference() {
+        guard var measurement else { return }
+        recordUndoPoint()
+        measurement.clearReference()
+        self.measurement = measurement
+    }
+
+    func selectBoundaryCandidate(_ id: String) {
+        guard let before = measurement, var candidate = precisionMeasurement,
+              let evidence = candidate.boundaryCandidates.first(where: { $0.id == id }) else { return }
+        let role: CardCenteringBoundaryRole = evidence.frame == .outer ? .physicalCut : candidate.referenceDefinition.role
+        guard candidate.selectBoundaryCandidate(id: id, as: role) else {
+            precisionEditReason = "That edge would cross or collapse a frame. Your guides are unchanged."
+            return
+        }
+        candidate.coordinateMapping = before.coordinateMapping
+        recordUndoPoint(keepsPrecisionSession: true)
+        if precisionStart == nil { precisionStart = before }
+        precisionUndo = before
+        measurement = candidate
+        precisionEditReason = nil
     }
 
     var canResetGuides: Bool {
@@ -487,6 +582,7 @@ final class CardCenteringViewModel: ObservableObject {
             measurement.turnGuide(selection.guide, about: end.opposite, byDegrees: steps * 0.05)
             // Stepping back through zero lands exactly square.
             if selection.guide.frame == .inner,
+               !measurement.innerFrameHasIndependentSlopes,
                abs(measurement.innerTiltDegrees ?? 0) < CardCenteringMeasurement.innerTiltDetentDegrees / 2 {
                 measurement.squareInnerFrameToCardEdge()
             }
@@ -560,6 +656,13 @@ final class CardCenteringViewModel: ObservableObject {
             UIColor(red: 0.95, green: 0.76, blue: 0.22, alpha: 1).setFill()
             context.fill(CGRect(x: 64, y: 60, width: 232, height: 384))
 
+            if ["comparison", "ambiguous"].contains(debugState ?? "") {
+                UIColor(red: 0.64, green: 0.42, blue: 0.08, alpha: 1).setFill()
+                context.fill(CGRect(x: 64, y: 60, width: 4, height: 384))
+                UIColor(white: 0.6, alpha: 1).setFill()
+                context.fill(CGRect(x: 62, y: 210, width: 10, height: 60))
+            }
+
             UIColor(red: 0.16, green: 0.40, blue: 0.58, alpha: 1).setFill()
             context.fill(CGRect(x: 92, y: 126, width: 176, height: 118))
             UIColor.white.withAlphaComponent(0.9).setFill()
@@ -578,13 +681,15 @@ final class CardCenteringViewModel: ObservableObject {
         let measurement: CardCenteringMeasurement
         let imageRevision: Int
         let rotationDegrees: Double
+        var comparedCandidateIDs: [String] = []
+        var sensitivity: CardCenteringBoundarySensitivity? = nil
 
         func write() throws -> URL {
             guard measurement.canReportRatios, rotationDegrees.isFinite else {
                 throw CardCenteringAnalyzerError.renderFailed
             }
             let rendered = CardCenteringExport.render(
-                image: image, measurement: measurement, rotationDegrees: rotationDegrees
+                image: image, measurement: measurement, rotationDegrees: rotationDegrees, sensitivity: sensitivity
             )
             guard let data = rendered.pngData() else {
                 throw CardCenteringAnalyzerError.renderFailed
@@ -607,15 +712,42 @@ final class CardCenteringViewModel: ObservableObject {
         }
     }
 
+    struct ReviewSnapshot: @unchecked Sendable {
+        struct Key: Equatable {
+            let imageIdentity: ObjectIdentifier
+            let imageRevision: Int
+            let geometry: CardCenteringGeometryRevision
+            let rotationDegrees: Double
+        }
+        let image: UIImage
+        let measurement: CardCenteringMeasurement
+        let imageRevision: Int
+        let rotationDegrees: Double
+        var key: Key { .init(imageIdentity: ObjectIdentifier(image), imageRevision: imageRevision,
+            geometry: measurement.geometryRevision, rotationDegrees: rotationDegrees) }
+        func render() throws -> CardCenteringReviewRenderer.Output {
+            try CardCenteringReviewRenderer.render(image: image, measurement: measurement, rotationDegrees: rotationDegrees)
+        }
+    }
+
+    func reviewSnapshot() -> ReviewSnapshot? {
+        guard !isAnalyzing, let image, let value = precisionMeasurement, value.hasValidFrameGeometry else { return nil }
+        return .init(image: image, measurement: value, imageRevision: imageRevision, rotationDegrees: rotationDegrees)
+    }
+
+    func matchesReview(_ snapshot: ReviewSnapshot) -> Bool { reviewSnapshot()?.key == snapshot.key }
+
     func exportSnapshot() -> ExportSnapshot? {
         guard !isAnalyzing, let image, let measurement, measurement.canReportRatios else { return nil }
         return ExportSnapshot(image: image, measurement: measurement,
-                              imageRevision: imageRevision, rotationDegrees: rotationDegrees)
+                              imageRevision: imageRevision, rotationDegrees: rotationDegrees,
+                              comparedCandidateIDs: comparedCandidateIDs, sensitivity: boundaryComparison)
     }
 
     func matches(_ snapshot: ExportSnapshot) -> Bool {
-        !isAnalyzing && imageRevision == snapshot.imageRevision
+        !isAnalyzing && image === snapshot.image && imageRevision == snapshot.imageRevision
             && measurement == snapshot.measurement && rotationDegrees == snapshot.rotationDegrees
+            && comparedCandidateIDs == snapshot.comparedCandidateIDs
     }
 
     func makeExportFile() -> URL? {
@@ -835,7 +967,7 @@ private struct CenteringGuideSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     step("viewfinder", "Shoot straight on", "Flat and evenly lit, with the whole card in frame.")
-                    step("square.dashed", "Confirm both frames", "Drag any guide that's off the outer edge or the inner border.")
+                    step("square.dashed", "Review the reference", "Align red guides with the card edges and cyan guides with a visible printed reference. Choose what the cyan guides follow to confirm both frames.")
                     step("square.and.arrow.up", "Share the result", "Export an annotated image with both ratios.")
                     Divider()
                     Label("Guided estimate only. Not professional grading or a predicted grade.", systemImage: "info.circle")
@@ -876,6 +1008,9 @@ private struct GuidedCardCenteringView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @FocusState private var focusedEdgeField: EdgeField?
     @State private var selection: CardCenteringGuideSelection?
+    @State private var showsAllBoundaryCandidates = false
+    @State private var reviewRequest: CardCenteringReviewRequest?
+    @State private var edgeReviewRequest: CardCenteringReviewRequest?
     @State private var isStraightening = false
     @State private var isShowingExactValues = false
     @State private var bottomPanelHeight: CGFloat = 0
@@ -890,6 +1025,7 @@ private struct GuidedCardCenteringView: View {
         || ProcessInfo.processInfo.arguments.contains("CenteringInnerControls")
 #if DEBUG
     @State private var debugPanelRoute: String?
+    @State private var debugReviewPresented = false
 #endif
     /// The rendered export, prepared ahead of the tap so `ShareLink` can own the
     /// presentation. `ShareLink` anchors itself correctly as a popover in wide
@@ -911,6 +1047,7 @@ private struct GuidedCardCenteringView: View {
         let imageRevision: Int
         let measurement: CardCenteringMeasurement?
         let rotationDegrees: Double
+        let comparedCandidateIDs: [String]
     }
 
     private enum EdgeField: Hashable {
@@ -927,32 +1064,33 @@ private struct GuidedCardCenteringView: View {
     var body: some View {
         Group {
             if let image = model.image, let measurement = model.measurement {
-                VStack(spacing: 0) {
-                    ratioStrip(measurement)
-                    Divider()
-                    ZStack(alignment: .bottom) {
-                        CardCenteringCanvas(
-                            image: image,
-                            measurement: measurement,
-                            rotationDegrees: model.rotationDegrees,
-                            imageRevision: model.imageRevision,
-                            lumaField: model.lumaField,
-                            selection: $selection,
-                            onBeginEdit: { model.recordUndoPoint() },
-                            onEdit: { model.applyGuideEdit($0) },
-                            onAccessibilityNudge: { amount in
-                                if let selection { model.nudge(selection, by: amount) }
-                            },
-                            initialZoomMultiplier: initialZoomMultiplier,
-                            bottomInset: bottomPanelHeight,
-                            onFrameChange: { frame in
-#if DEBUG
-                                model.recordDebugImageFrame(frame)
-#endif
+                if dynamicTypeSize.isAccessibilitySize {
+                    GeometryReader { proxy in
+                        VStack(spacing: 0) {
+                            // Keep guide drags outside the scrolling controls so
+                            // reading long text cannot accidentally move an edge.
+                            guideCanvas(image, measurement: measurement, bottomInset: 0)
+                                .frame(height: max(160, min(360, proxy.size.height * 0.4)))
+                            Divider()
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    ratioStrip(measurement)
+                                    Divider()
+                                    bottomPanel(measurement)
+                                }
                             }
-                        )
-                        bottomPanel(measurement)
-                            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomPanelHeight = $0 }
+                            .scrollBounceBehavior(.basedOnSize)
+                        }
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        ratioStrip(measurement)
+                        Divider()
+                        ZStack(alignment: .bottom) {
+                            guideCanvas(image, measurement: measurement, bottomInset: bottomPanelHeight)
+                            bottomPanel(measurement)
+                                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomPanelHeight = $0 }
+                        }
                     }
                 }
             } else {
@@ -1025,6 +1163,8 @@ private struct GuidedCardCenteringView: View {
         .onChange(of: model.imageRevision) {
             selection = nil
             isStraightening = false
+            reviewRequest = nil
+            edgeReviewRequest = nil
 #if DEBUG
             applyDebugPanelRoute()
 #endif
@@ -1067,7 +1207,8 @@ private struct GuidedCardCenteringView: View {
             id: ExportInput(
                 imageRevision: model.imageRevision,
                 measurement: model.measurement,
-                rotationDegrees: model.rotationDegrees
+                rotationDegrees: model.rotationDegrees,
+                comparedCandidateIDs: model.comparedCandidateIDs
             )
         ) {
             // A guide drag emits a burst of values. Coalesce that burst, and
@@ -1109,6 +1250,9 @@ private struct GuidedCardCenteringView: View {
         }
         .sheet(isPresented: $isShowingExactValues) {
             exactValuesSheet
+        }
+        .sheet(item: $reviewRequest) { request in
+            CardCenteringReviewSheet(model: model, request: request)
         }
         .fullScreenCover(isPresented: $isShowingCamera) {
             CenteringCameraView { data in
@@ -1158,6 +1302,25 @@ private struct GuidedCardCenteringView: View {
         // `-ui_debug_selection inner.right.end` picks up a guide, by an end
         // when one is named, so the selected controls can be captured.
         let arguments = ProcessInfo.processInfo.arguments
+        if !debugReviewPresented, model.reviewSnapshot() != nil,
+           let index = arguments.firstIndex(of: "-ui_debug_review"), arguments.indices.contains(index + 1) {
+            let mode = arguments[index + 1]
+            isShowingExactValues = false
+            if mode == "perspective" {
+                reviewRequest = .init()
+                debugReviewPresented = true
+            } else if mode == "edge", let value = model.precisionMeasurement {
+                let candidate = value.boundaryCandidates.first { $0.id == "ui-inner-alternative" }
+                    ?? value.reviewCandidates(frame: .inner, side: .left).first { candidate in
+                        !value.selectedLines.contains { $0.frame == .inner && $0.side == .left && $0.nativeLine.coincides(with: candidate.nativeLine) }
+                    }
+                if let candidate {
+                    model.compareBoundary(candidate.id)
+                    reviewRequest = .init(candidateID: candidate.id, frame: candidate.frame, side: candidate.side)
+                    debugReviewPresented = true
+                }
+            }
+        }
         if let index = arguments.firstIndex(of: "-ui_debug_selection"), arguments.indices.contains(index + 1) {
             let parts = arguments[index + 1].split(separator: ".").map(String.init)
             if parts.count >= 2, let side = CardCenteringSide(rawValue: parts[1]) {
@@ -1177,6 +1340,23 @@ private struct GuidedCardCenteringView: View {
     }
 
     // MARK: Reading
+
+    private func guideCanvas(_ image: UIImage, measurement: CardCenteringMeasurement, bottomInset: CGFloat) -> some View {
+        CardCenteringCanvas(
+            image: image, measurement: measurement, rotationDegrees: model.rotationDegrees,
+            imageRevision: model.imageRevision, lumaField: model.lumaField, selection: $selection,
+            onBeginEdit: { model.recordUndoPoint() }, onEdit: { model.applyGuideEdit($0) },
+            onAccessibilityNudge: { amount in
+                if let selection { model.nudge(selection, by: amount) }
+            },
+            initialZoomMultiplier: initialZoomMultiplier, bottomInset: bottomInset,
+            onFrameChange: { frame in
+#if DEBUG
+                model.recordDebugImageFrame(frame)
+#endif
+            }
+        )
+    }
 
     private func ratioStrip(_ measurement: CardCenteringMeasurement) -> some View {
         let layout = dynamicTypeSize.isAccessibilitySize
@@ -1201,20 +1381,12 @@ private struct GuidedCardCenteringView: View {
         .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.topBottomCentering)
     }
 
-    /// Border widths, or how the ratio changes along the card when the print
-    /// is tilted.
+    /// Border widths, or positional variation along independently placed edges.
     private func ratioDetail(_ measurement: CardCenteringMeasurement, horizontal: Bool) -> String {
-        guard measurement.canReportRatios else { return "Confirm frames to read" }
-        if measurement.hasReportableInnerTilt,
-           let samples = measurement.positionalConsistency?.samples,
-           let first = samples.first, let last = samples.last {
-            func ratio(_ pair: CardCenteringRatioPair) -> String {
-                String(format: "%.0f/%.0f", pair.firstPercentage, pair.secondPercentage)
-            }
-            return horizontal
-                ? "\(ratio(first.leftRight)) top → \(ratio(last.leftRight)) bottom"
-                : "\(ratio(first.topBottom)) left → \(ratio(last.topBottom)) right"
+        guard measurement.canReportRatios else {
+            return measurement.referenceDefinition.isAvailable ? "Confirm frames to read" : "Choose a reference to read"
         }
+        if let detail = measurement.spatialRatioDetail(horizontal: horizontal) { return detail }
         return horizontal
             ? "\(measurement.leftBorder) · \(measurement.rightBorder) px"
             : "\(measurement.topBorder) · \(measurement.bottomBorder) px"
@@ -1235,6 +1407,7 @@ private struct GuidedCardCenteringView: View {
             Text("Guided estimate only. Not professional grading or a predicted grade.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if let errorMessage = model.errorMessage {
@@ -1255,57 +1428,105 @@ private struct GuidedCardCenteringView: View {
     }
 
     private func standardControls(_ measurement: CardCenteringMeasurement) -> some View {
-        VStack(spacing: 8) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout(spacing: 12))
+        return VStack(spacing: 8) {
             if measurement.hasReportableInnerTilt, let tilt = measurement.innerTiltDegrees {
-                tiltRow(tilt)
+                tiltRow(tilt, independentSlopes: measurement.innerFrameHasIndependentSlopes)
             }
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(guidance(for: measurement))
-                        .font(.subheadline)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if !measurement.warnings.isEmpty && measurement.canReportRatios {
-                        Label(measurement.warnings.joined(separator: " "), systemImage: "exclamationmark.triangle.fill")
-                            .font(.caption)
-                            .foregroundStyle(.orange)
-                    }
+            if !dynamicTypeSize.isAccessibilitySize, !measurement.referenceDefinition.isAvailable,
+               measurement.geometryInnerQuad != nil {
+                Text(guidance(for: measurement))
+                    .font(.subheadline)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    confirmationControl(measurement)
+                        .fixedSize(horizontal: true, vertical: false)
+                    Spacer()
+                    moreMenu(measurement)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                layout {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(guidance(for: measurement))
+                            .font(.subheadline)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if !measurement.warnings.isEmpty && measurement.canReportRatios {
+                            Label(measurement.warnings.joined(separator: " "), systemImage: "exclamationmark.triangle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                if measurement.geometryInnerQuad == nil {
-                    Button("Add Frame", systemImage: "plus") {
-                        model.addInnerFrame()
+                    if measurement.geometryInnerQuad == nil {
+                        Button("Add Frame", systemImage: "plus") {
+                            model.addInnerFrame()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .buttonBorderShape(.capsule)
+                        .accessibilityLabel("Add an inner frame")
+                    } else if !measurement.canReportRatios {
+                        confirmationControl(measurement)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .buttonBorderShape(.capsule)
-                    .accessibilityLabel("Add an inner frame")
-                } else if !measurement.canReportRatios {
-                    Button("Confirm", systemImage: "checkmark") {
-                        model.confirmFrames()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .buttonBorderShape(.capsule)
-                    .disabled(!measurement.hasValidFrameGeometry)
-                    .accessibilityLabel("Confirm frames")
-                    .accessibilityHint("Accepts the reviewed outer card edges and inner reference together.")
+
+                    moreMenu(measurement)
                 }
-
-                moreMenu(measurement)
             }
         }
     }
 
+    @ViewBuilder private func confirmationControl(_ measurement: CardCenteringMeasurement) -> some View {
+        if measurement.referenceDefinition.isAvailable {
+            Button("Confirm", systemImage: "checkmark") { model.confirmFrames() }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .disabled(!measurement.hasValidFrameGeometry)
+                .accessibilityLabel("Confirm frames")
+                .accessibilityHint("Accepts the reviewed card edges and selected reference.")
+        } else {
+            referenceMenu(measurement, title: "Choose Reference")
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .disabled(!measurement.hasValidFrameGeometry)
+        }
+    }
+
+    private func referenceMenu(_ measurement: CardCenteringMeasurement, title: String) -> some View {
+        Menu {
+            Section("Cyan guides follow…") {
+                ForEach(CardCenteringReferenceDefinition.userChoices, id: \.self) { reference in
+                    Button(reference.label) { model.confirmFrames(reference: reference) }
+                }
+            }
+            Button("No usable reference") { model.clearReference() }
+        } label: {
+            Label(title, systemImage: "viewfinder")
+        }
+        .accessibilityHint("Choose what the cyan guides follow to confirm both reviewed frames and show a geometric estimate.")
+    }
+
     /// The print's tilt against the card edge, kept clear of the photo so it
     /// never covers an edge being lined up.
-    private func tiltRow(_ tilt: Double) -> some View {
-        HStack(spacing: 10) {
+    private func tiltRow(_ tilt: Double, independentSlopes: Bool) -> some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+            : AnyLayout(HStackLayout(spacing: 10))
+        return layout {
             Label {
-                Text("Print tilted \(abs(tilt), specifier: "%.2f")° \(tilt > 0 ? "clockwise" : "counterclockwise")")
-                    .monospacedDigit()
+                if independentSlopes {
+                    Text("Inner edge angles vary")
+                } else {
+                    Text("Inner frame tilted \(abs(tilt), specifier: "%.2f")° \(tilt > 0 ? "clockwise" : "counterclockwise")")
+                        .monospacedDigit()
+                }
             } icon: {
                 Image(systemName: tilt > 0 ? "rotate.right" : "rotate.left")
             }
             .font(.subheadline.weight(.semibold))
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
             Button("Square", systemImage: "square.dashed") {
                 model.squareInnerFrame()
@@ -1324,15 +1545,19 @@ private struct GuidedCardCenteringView: View {
             return "Keep each cyan line inside the red edge."
         }
         if !measurement.canReportRatios {
+            if !measurement.referenceDefinition.isAvailable {
+                return "Check both frames, then choose what the cyan guides follow."
+            }
             return "Check both frames, then confirm."
         }
-        return model.lumaField == nil
-            ? "Drag any line to adjust it."
-            : "Drag any line. It snaps to edges."
+        return measurement.referenceDefinition.isUserSelected
+            ? "Geometric estimate · \(measurement.referenceDefinition.label.lowercased()) chosen by you."
+            : "\(measurement.referenceDefinition.label). Frames reviewed by you."
     }
 
     private func moreMenu(_ measurement: CardCenteringMeasurement) -> some View {
         Menu {
+            referenceMenu(measurement, title: "Change Reference")
             Button("Undo", systemImage: "arrow.uturn.backward") {
                 model.undo()
             }
@@ -1349,6 +1574,10 @@ private struct GuidedCardCenteringView: View {
             Button("Exact Values…", systemImage: "slider.horizontal.3") {
                 isShowingExactValues = true
             }
+            Button("Compare Perspective…", systemImage: "rectangle.on.rectangle") {
+                reviewRequest = .init()
+            }
+            .disabled(!measurement.hasValidFrameGeometry)
             Divider()
             Button("Reset Guides", systemImage: "arrow.counterclockwise", role: .destructive) {
                 selection = nil
@@ -1357,7 +1586,7 @@ private struct GuidedCardCenteringView: View {
             .disabled(!model.canResetGuides)
         } label: {
             Image(systemName: "ellipsis")
-                .font(.body.weight(.semibold))
+                .font(.system(size: 17, weight: .semibold))
                 .frame(width: 44, height: 44)
                 .background(Color(.tertiarySystemFill), in: Circle())
         }
@@ -1384,10 +1613,12 @@ private struct GuidedCardCenteringView: View {
             if guide.frame == .inner {
                 caption = "Inner frame · print tilt"
                 let tilt = measurement.innerTiltDegrees ?? 0
-                value = measurement.hasReportableInnerTilt
+                value = measurement.innerFrameHasIndependentSlopes ? "Angles vary" : measurement.hasReportableInnerTilt
                     ? String(format: "%.2f° %@", abs(tilt), tilt > 0 ? "clockwise" : "counterclockwise")
                     : "Square"
-                hint = "The arrows tilt 0.05°. Ease back toward square and it snaps."
+                hint = measurement.innerFrameHasIndependentSlopes
+                    ? "The arrows turn all four edges together by 0.05°."
+                    : "The arrows tilt 0.05°. Ease back toward square and it snaps."
             } else {
                 caption = "Card edge · \(side) side angle"
                 value = borderValue(guide.side, measurement)
@@ -1524,6 +1755,9 @@ private struct GuidedCardCenteringView: View {
         }
         .presentationDetents([.medium, .large])
         .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+        .sheet(item: $edgeReviewRequest) { request in
+            CardCenteringReviewSheet(model: model, request: request)
+        }
     }
     private func guideControls(_ measurement: CardCenteringMeasurement) -> some View {
         VStack(spacing: 14) {
@@ -1537,12 +1771,7 @@ private struct GuidedCardCenteringView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if !measurement.canReportRatios {
-                Button("Confirm frames", systemImage: "checkmark.rectangle") {
-                    model.confirmFrames()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(!measurement.hasValidFrameGeometry)
-                .accessibilityHint("Accepts the reviewed outer card edges and inner reference together.")
+                confirmationControl(measurement)
             }
 
             DisclosureGroup("Outer card edge", isExpanded: $isOuterExpanded) {
@@ -1612,6 +1841,7 @@ private struct GuidedCardCenteringView: View {
                 }
                 .accessibilityValue("\(Int(nativeDetailProgress * 100)) percent along side")
                 nativeDetail.id("native-detail")
+                boundaryAlternatives
             }
             HStack {
                 Button("Undo adjustment") { model.undoPrecisionEdit() }
@@ -1627,6 +1857,51 @@ private struct GuidedCardCenteringView: View {
             }
         }
         .padding(.top, 10)
+    }
+
+    @ViewBuilder private var boundaryAlternatives: some View {
+        if let measurement = model.precisionMeasurement {
+            let candidates = measurement.reviewCandidates(frame: precisionFrame, side: precisionSide)
+            if !candidates.isEmpty {
+                DisclosureGroup("Other detected edges (\(candidates.count))") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Compare each edge with the photo. Using one moves only this guide; you can undo the choice.")
+                            .font(.footnote).foregroundStyle(.secondary)
+                        ForEach(Array(candidates.prefix(showsAllBoundaryCandidates ? candidates.count : 6))) { candidate in
+                            let line = candidate.nativeLine
+                            let position = precisionSide.isVertical ? (line.start.x + line.end.x) / 2 : (line.start.y + line.end.y) / 2
+                            Button {
+                                precisionCommitAction.commitActiveAndDismiss()
+                                model.selectBoundaryCandidate(candidate.id)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text("Use edge at \(position, specifier: "%.1f") px")
+                                    Text(candidate.proposedRole.label).font(.subheadline)
+                                    Text(candidate.selectionReason == .detectorProposal ? "Starting proposal" : "Alternative · identity needs review")
+                                        .font(.caption).foregroundStyle(.secondary)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 4)
+                            }
+                            .buttonStyle(.bordered)
+                            .accessibilityHint(precisionFrame == .outer ? "Use as the physical card edge. Other guides stay fixed." : "Use as the selected inner reference. Other guides stay fixed.")
+                            Button("Compare this edge", systemImage: "rectangle.on.rectangle") {
+                                precisionCommitAction.commitActiveAndDismiss()
+                                model.compareBoundary(candidate.id)
+                                edgeReviewRequest = .init(candidateID: candidate.id, frame: candidate.frame, side: candidate.side)
+                            }
+                            .frame(minHeight: 44)
+                            .accessibilityLabel("Compare \(precisionSide.label.lowercased()) edge at \(position.formatted(.number.precision(.fractionLength(1)))) native pixels")
+                        }
+                        if candidates.count > 6 {
+                            Button(showsAllBoundaryCandidates ? "Show nearest edges" : "Show all \(candidates.count) edges") {
+                                showsAllBoundaryCandidates.toggle()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private func precisionNumber(_ label: String, value: Double, step: Double,
@@ -2276,11 +2551,30 @@ struct CardCenteringNativeDetailImage: View {
     let guideStart: CardCenteringPoint
     let guideEnd: CardCenteringPoint
     let guideColor: Color
+    var alternative: CardCenteringNativeLine? = nil
+    var supportBands: [CardCenteringSampleBand] = []
+    var excludedBands: [CardCenteringSampleBand] = []
 
     var body: some View {
         ZStack {
             Image(uiImage: image).resizable().interpolation(.none)
             GeometryReader { proxy in
+                if let alternative {
+                    Canvas { context, size in
+                        func point(_ p: CardCenteringPoint) -> CGPoint {
+                            .init(x: (p.x - origin.x) * size.width / Double(pixelWidth),
+                                y: (p.y - origin.y) * size.height / Double(pixelHeight))
+                        }
+                        func line(_ a: CardCenteringPoint, _ b: CardCenteringPoint, color: Color, width: Double, dash: [CGFloat] = []) {
+                            var path = Path(); path.move(to: point(a)); path.addLine(to: point(b))
+                            context.stroke(path, with: .color(.black.opacity(0.75)), style: .init(lineWidth: width + 1, dash: dash))
+                            context.stroke(path, with: .color(color), style: .init(lineWidth: width, dash: dash))
+                        }
+                        for band in supportBands { line(band.start, band.end, color: .green.opacity(0.7), width: 5) }
+                        for band in excludedBands { line(band.start, band.end, color: .orange, width: 5, dash: [5,4]) }
+                        line(alternative.start, alternative.end, color: .yellow, width: 2, dash: [6,4])
+                    }
+                }
                 Path { path in
                     path.move(to: CGPoint(x: (guideStart.x - origin.x) * proxy.size.width / Double(pixelWidth),
                         y: (guideStart.y - origin.y) * proxy.size.height / Double(pixelHeight)))
@@ -2297,6 +2591,7 @@ struct CardCenteringNativeDetailImage: View {
 }
 
 private struct CenteringMetric: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let title: String
     let value: String
     var detail: String?
@@ -2311,8 +2606,9 @@ private struct CenteringMetric: View {
                 Text(detail)
                     .font(.caption2.monospacedDigit())
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity)

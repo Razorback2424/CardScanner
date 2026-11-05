@@ -198,6 +198,12 @@
 		A0020043 /* PortfolioHistoryEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020043 /* PortfolioHistoryEngineTests.swift */; };
 		A0020021 /* PricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020021 /* PricingTests.swift */; };
 		A0020022 /* CenteringExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020022 /* CenteringExportTests.swift */; };
+		CCB30001 /* CenteringNativeResearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB30002 /* CenteringNativeResearchTests.swift */; };
+		CCB40001 /* CardCenteringSpatialMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB40002 /* CardCenteringSpatialMeasurement.swift */; };
+		CCB40003 /* CenteringSpatialMeasurementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB40004 /* CenteringSpatialMeasurementTests.swift */; };
+		CCB50001 /* CardCenteringReviewRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB50002 /* CardCenteringReviewRenderer.swift */; };
+		CCB50003 /* CardCenteringReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB50004 /* CardCenteringReviewSheet.swift */; };
+		CCB50005 /* CenteringReviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB50006 /* CenteringReviewTests.swift */; };
 		A0020023 /* CatalogNormalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020023 /* CatalogNormalizationTests.swift */; };
 		A0020024 /* BrowseFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020024 /* BrowseFeatureTests.swift */; };
 		C2A55E9A34B6491AA7E72301 /* PokemonClassicCollectionArtworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A55E9A34B6491AA7E72302 /* PokemonClassicCollectionArtworkTests.swift */; };
@@ -214,6 +220,7 @@
 		A00200C0 /* CollectionActivityHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200C0 /* CollectionActivityHistoryTests.swift */; };
 		A0010040 /* MagicSetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010040 /* MagicSetSnapshot.swift */; };
 		A0010041 /* CardCenteringMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010041 /* CardCenteringMeasurement.swift */; };
+		CCB20001 /* CardCenteringBoundaryEvidence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB20002 /* CardCenteringBoundaryEvidence.swift */; };
 		A0010042 /* CardCenteringAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010042 /* CardCenteringAnalyzer.swift */; };
 		A0010043 /* CardCenteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010043 /* CardCenteringView.swift */; };
 		A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E01 /* CardCenteringEdgeSnapper.swift */; };
@@ -572,6 +579,12 @@
 		B0020043 /* PortfolioHistoryEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryEngineTests.swift; sourceTree = "<group>"; };
 		B0020021 /* PricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingTests.swift; sourceTree = "<group>"; };
 		B0020022 /* CenteringExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringExportTests.swift; sourceTree = "<group>"; };
+		CCB30002 /* CenteringNativeResearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringNativeResearchTests.swift; sourceTree = "<group>"; };
+		CCB40002 /* CardCenteringSpatialMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringSpatialMeasurement.swift; sourceTree = "<group>"; };
+		CCB40004 /* CenteringSpatialMeasurementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringSpatialMeasurementTests.swift; sourceTree = "<group>"; };
+		CCB50002 /* CardCenteringReviewRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringReviewRenderer.swift; sourceTree = "<group>"; };
+		CCB50004 /* CardCenteringReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringReviewSheet.swift; sourceTree = "<group>"; };
+		CCB50006 /* CenteringReviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringReviewTests.swift; sourceTree = "<group>"; };
 		B0020023 /* CatalogNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogNormalizationTests.swift; sourceTree = "<group>"; };
 		B0020024 /* BrowseFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFeatureTests.swift; sourceTree = "<group>"; };
 		C2A55E9A34B6491AA7E72302 /* PokemonClassicCollectionArtworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonClassicCollectionArtworkTests.swift; sourceTree = "<group>"; };
@@ -588,6 +601,7 @@
 		B00200C0 /* CollectionActivityHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityHistoryTests.swift; sourceTree = "<group>"; };
 		B0010040 /* MagicSetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicSetSnapshot.swift; sourceTree = "<group>"; };
 		B0010041 /* CardCenteringMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringMeasurement.swift; sourceTree = "<group>"; };
+		CCB20002 /* CardCenteringBoundaryEvidence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringBoundaryEvidence.swift; sourceTree = "<group>"; };
 		B0010042 /* CardCenteringAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringAnalyzer.swift; sourceTree = "<group>"; };
 		B0010043 /* CardCenteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringView.swift; sourceTree = "<group>"; };
 		B00C0E01 /* CardCenteringEdgeSnapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringEdgeSnapper.swift; sourceTree = "<group>"; };
@@ -888,6 +902,8 @@
 				B0010030 /* PriceRecord.swift */,
 				B00100B0 /* ReferenceQuote.swift */,
 				B0010041 /* CardCenteringMeasurement.swift */,
+				CCB20002 /* CardCenteringBoundaryEvidence.swift */,
+				CCB40002 /* CardCenteringSpatialMeasurement.swift */,
 							B0010055 /* ProductIdentity.swift */,
 							B0010059 /* CollectionItemKind.swift */,
 							B0010060 /* JustTCGMarketModels.swift */,
@@ -988,6 +1004,7 @@
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
 				B0010042 /* CardCenteringAnalyzer.swift */,
+				CCB50002 /* CardCenteringReviewRenderer.swift */,
 				B00C0E01 /* CardCenteringEdgeSnapper.swift */,
 				E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */,
 				86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */,
@@ -1062,6 +1079,7 @@
 				B00100B3 /* PriceCheckResultView.swift */,
 				B0010035 /* CollectionFilters.swift */,
 				B0010043 /* CardCenteringView.swift */,
+				CCB50004 /* CardCenteringReviewSheet.swift */,
 				B00C0E02 /* CardCenteringCanvas.swift */,
 				B0010044 /* CenteringCameraView.swift */,
 				B0010115 /* ProView.swift */,
@@ -1148,6 +1166,9 @@
 				B0020026 /* ProductCatalogIdentityTests.swift */,
 				B0020025 /* ProductIdentityTests.swift */,
 				B0020022 /* CenteringExportTests.swift */,
+				CCB30002 /* CenteringNativeResearchTests.swift */,
+				CCB40004 /* CenteringSpatialMeasurementTests.swift */,
+				CCB50006 /* CenteringReviewTests.swift */,
 				C011EC700000000000000013 /* CollectorToolsTests.swift */,
 				C011EC700000000000000014 /* CollectorTools.storekit */,
 				B0020113 /* EbayQuadrantCropperTests.swift */,
@@ -1564,6 +1585,10 @@
 				A0010040 /* MagicSetSnapshot.swift in Sources */,
 				A0010035 /* CollectionFilters.swift in Sources */,
 				A0010041 /* CardCenteringMeasurement.swift in Sources */,
+				CCB20001 /* CardCenteringBoundaryEvidence.swift in Sources */,
+				CCB40001 /* CardCenteringSpatialMeasurement.swift in Sources */,
+				CCB50001 /* CardCenteringReviewRenderer.swift in Sources */,
+				CCB50003 /* CardCenteringReviewSheet.swift in Sources */,
 				A0010042 /* CardCenteringAnalyzer.swift in Sources */,
 				C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */,
 				A0010043 /* CardCenteringView.swift in Sources */,
@@ -1664,6 +1689,9 @@
 				A0020026 /* ProductCatalogIdentityTests.swift in Sources */,
 				A0020025 /* ProductIdentityTests.swift in Sources */,
 				A0020022 /* CenteringExportTests.swift in Sources */,
+				CCB30001 /* CenteringNativeResearchTests.swift in Sources */,
+				CCB40003 /* CenteringSpatialMeasurementTests.swift in Sources */,
+				CCB50005 /* CenteringReviewTests.swift in Sources */,
 				A0020113 /* EbayQuadrantCropperTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
@@ -1795,8 +1823,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CARD_SCANNER_PRIVACY_URL = "";
-				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = D4X943SP8Z;
@@ -1827,8 +1853,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TradingCardScanner/TradingCardScanner.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CARD_SCANNER_PRIVACY_URL = "";
-				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				EXCLUDED_SOURCE_FILE_NAMES = OnePieceOwnerCatalog;
@@ -1860,8 +1884,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CARD_SCANNER_PRIVACY_URL = "";
-				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = D4X943SP8Z;
@@ -1892,8 +1914,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TradingCardScanner/TradingCardScanner.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CARD_SCANNER_PRIVACY_URL = "";
-				CARD_SCANNER_SUPPORT_URL = "";
 			CURRENT_PROJECT_VERSION = 1;
 			DEVELOPMENT_TEAM = D4X943SP8Z;
 			EXCLUDED_SOURCE_FILE_NAMES = OnePieceOwnerCatalog;
@@ -1922,8 +1942,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CARD_SCANNER_PRIVACY_URL = "";
-				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D4X943SP8Z;
 				GENERATE_INFOPLIST_FILE = NO;

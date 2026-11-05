@@ -1,5 +1,64 @@
 # Centering harnesses
 
+## Native annotation angle audit
+
+The historical `gt_tool.py rederive` procedure selects an edge-wide profile
+offset and translates the seed line. It does not independently measure that
+line's angle. Its schema validation and repeated profile agreement therefore
+cannot establish physical boundary identity or angle accuracy.
+
+`edge_annotation_audit.py` instead fits individually observed native transition
+points, retaining rejected samples, source hashes and an original-image overlay.
+It uses no detector output and produces **review candidates only**, never new
+ground truth. Yellow is the seed, cyan the fitted line, green retained points,
+and red rejected points. Unsupported edges remain explicit failures. Boundary
+identity must be adjudicated before adopting a candidate; a narrow residual
+does not prove that it follows the right transition.
+
+```sh
+python3 -B review/centering-harness/edge_annotation_audit.py \
+  TestFixtures/TradingCards/HEIC/IMG_0783.HEIC \
+  TestFixtures/TradingCards/GroundTruth/IMG_0783.gt.json \
+  /Volumes/T7/CodexBuilds/centering-annotation-review/new-unique-run
+python3 -B -m unittest discover -s review/centering-harness \
+  -p test_edge_annotation_audit.py -v
+```
+
+Requires Pillow, numpy, scipy, OpenCV and pillow-heif for HEIC. Use
+`--geometry innerQuad --polarity either` to inspect an existing inner reference;
+the default falling transition audits dark card cuts on light backgrounds.
+These are explicit review assumptions, not universal detector defaults. The
+output directory must be new so prior evidence cannot be overwritten.
+
+## Bounded native research evaluator
+
+`CenteringNativeResearchTests` is linked only into the test target. Select that
+suite with `xcodebuild test -only-testing:TradingCardScannerTests/CenteringNativeResearchTests`
+using the repository's usual scheme, simulator and external-SSD build paths.
+Its development ablation uses only the ten already-exposed historical fixtures;
+it never reads the sealed supplementary holdout. The full 36-setting experiment
+is intentionally slower than production and must not be used as a production
+latency result.
+
+The xcresult contains one JSON attachment per input and `development-metrics-v1`.
+Export the attachments with `xcrun xcresulttool export attachments --path <result>
+--output-path <external-artifact-directory>`, then run:
+
+```sh
+python3 review/centering-harness/native_research_report.py <external-artifact-directory>
+```
+
+The summary preserves every configuration, unavailable ratios, abstentions,
+per-axis median/p95/worst errors, and face/encasement subgroups. Two-native-pixel
+line agreement is an evaluator diagnostic against the existing annotations; it
+is neither the two-percentage-point ratio gate nor proof of physical identity.
+The JSON retains annotation bands and ambiguity, input hashes, signed encoded
+sRGB signal definitions, Gaussian scales, source line hypotheses, rejected fits,
+supported positions and leave-one-band-out diagnostics. Process resident memory
+and its lifetime peak are explicitly labeled; a bounded crop does not establish
+a bounded decoder peak. See the
+[current implementation/evidence ledger](../../docs/audits/centering-guided-repair.md).
+
 `gt_tool.py` is the independent ground-truth tool. It contains no import of
 the Swift analyzer and can validate the checked-in geometry or draw review
 overlays from PNG/JPEG exports of the HEIC fixtures:

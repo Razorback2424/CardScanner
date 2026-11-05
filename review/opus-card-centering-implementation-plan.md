@@ -1,5 +1,53 @@
 # Card Centering — Authoritative Implementation & Validation Plan
 
+**Owner-directed priority — 2026-11-05:** the owner wants the existing test cards
+to be accurate and explicitly does not require corpus expansion first. This
+supersedes REQ-040's prerequisite for further development changes on those
+already-exposed images. REQ-040's generalization claim remains unfulfilled;
+automatic reporting remains disabled. The
+[current accuracy receipt](../docs/audits/centering-guided-repair.md#bowed-printed-borders--2026-11-05)
+records scoped back/front corrections, 5/9 historical ratio passes and the
+still-failing accuracy gate. All 44 available files are in scope; 34 remain
+unannotated/unscored. The historical REQ-027 tool preserves seed angles instead
+of fitting observed edge positions; reference angles and suspect front boundary
+identity require adjudication. Its old completion label is not current evidence
+of physical accuracy. Review-only native audits preserve all original references.
+No threshold or annotation is loosened to claim completion.
+
+**Boundary-evidence slice — 2026-11-04:** the
+[implementation sequence](../docs/plans/centering-boundary-evidence-plan.md)
+maps the historical Gengar/Mew/Mewtwo brief against the current guided module.
+The authorized first slice removes automatic inner-frame squaring and separates
+user review from detector certainty. This supersedes the old parallel-by-default
+editing assumption: Square is now an explicit, undoable choice. Headline ratios,
+acceptance tolerances and the closed automatic-reporting gate are unchanged.
+The [guided repair ledger](../docs/audits/centering-guided-repair.md#independent-inner-geometry-and-human-review--2026-11-04)
+remains the implementation evidence authority. The authorized second slice now
+retains native candidate/input provenance, distinguishes explicit reference
+definitions from detector tags, and supports undoable single-side alternatives.
+Its newer receipt supersedes the earlier boundary-identity deferral. Slice 3's
+test-target native evaluator has now been exercised, but its accuracy exit failed;
+no research setting is promoted and REQ-040 remains open. Automatic reporting
+remains disabled. Independent guided slices 4–5 are implemented; their scoped
+model/review evidence is in the ledger and does not close physical or accuracy gates.
+
+**Spatial diagnostic contract — fixed before slice 4 implementation, 2026-11-04:**
+`common_axis_samples_v1` evaluates the selected inner lines at 10%, 30%, 50%, 70%
+and 90% of the outer-rectified card's height (LR) or width (TB). Each pair uses
+the same row/column. A sample is unavailable unless both intersections lie on
+their selected inner side segments and both margins are finite and positive.
+Coverage means available geometric samples / five; observed image support is
+reported separately and stays unknown when absent. Midpoint and the median of
+available per-position percentages are diagnostics. The production headline
+remains `rectified_endpoint_average_v1`; no existing ratio tolerance changes.
+Numerical validation adds actual forward/inverse interior-grid checks, which
+cannot certify physical boundary identity. Explicit boundary comparisons replace
+one side per scenario, rebuild the outer homography when needed and recompute
+both axes. They do not combine all candidate sides, infer localization bounds,
+or claim a confidence interval. Uncertainty remains unknown outside the stated
+alternatives. Derived diagnostics are computed from the current geometry, never
+cached as evidence for later manual edits.
+
 **Latest simulator latency follow-up — 2026-10-14:** the
 [Lorcana production checkpoint](../docs/release/lorcana-production-acceptance.md)
 records the current `feat/lorcana-implementation` working tree at base `8613a1d`.
@@ -2587,6 +2635,18 @@ classifying them (§5.2.3).
 ---
 
 ## 14. Non-goals
+
+**Narrow presentation amendment — recorded before slice 5 implementation,
+2026-11-04:** the authorized boundary-evidence plan adds an optional read-only
+original/perspective comparison and focused alternative-line inspection. It may
+show recorded support/exclusion bands on the relevant side and extend report
+copy with the selected reference, common-axis spatial variation, explicit
+boundary-choice sensitivity, and unknown uncertainty. Original-photo annotated
+output remains the default share. Existing panel structure, palette and filename
+format are retained; corrected-image export, grading scores, scanner changes,
+persistence, entitlement changes and extra confirmation in the normal flow remain
+out of scope. This amends only the presentation restriction below, not any
+accuracy, latency, holdout or user-review requirement.
 
 - No user-facing crop, auto-straighten-and-save, or "corrected image" export.
 - No change to the scanner feature (`CardScanner`, `CardLatch`, `ScannerViewModel`). It has its
