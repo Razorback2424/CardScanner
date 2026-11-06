@@ -23,6 +23,9 @@ final class BrowseViewModel: ObservableObject {
         var cursor: String?
         var isLoading = false
         var error: String?
+        var paginationRevision: UInt = 0
+
+        var paginationKey: String { "\(paginationRevision)|\(cursor ?? "")" }
     }
 
     @Published var searchText = "" { didSet { scheduleSearch() } }
@@ -33,8 +36,6 @@ final class BrowseViewModel: ObservableObject {
     @Published private(set) var setErrors: [CardGame: String] = [:]
     @Published private(set) var lanes: [CardGame: Lane] = [:]
     @Published private(set) var searchResults: [CatalogSearchResult] = []
-    @Published private var activeSearchPaginationKey: String?
-    @Published private var searchPaginationRevision: UInt = 0
 
     let catalog: any BrowseCatalogProviding
     var gameRegistry: CardGameRegistry { catalog.gameRegistry }
@@ -45,7 +46,6 @@ final class BrowseViewModel: ObservableObject {
     private var searchIsSuspended = false
     private var needsSearchOnResume = false
     private var cardGamesToResume: [CardGame]?
-    private var paginationRequestID: UUID?
     private var generation = UUID()
     private var setLoadIDs: [CardGame: UUID] = [:]
     private var sealedModelCancellable: AnyCancellable? = nil
@@ -165,16 +165,6 @@ final class BrowseViewModel: ObservableObject {
         }
     }
 
-    var searchPaginationKey: String {
-        if let activeSearchPaginationKey { return activeSearchPaginationKey }
-        let cursors = searchGames.map { game in
-            let card = cardSearchGames.contains(game) ? lanes[game]?.cursor ?? "-" : "-"
-            let sealed = sealedModel.searchLanes[game]?.nextOffset.map(String.init) ?? "-"
-            return [game.rawValue, card, sealed].joined(separator: ":")
-        }.joined(separator: "|")
-        return "\(generation)-\(searchPaginationRevision)-\(cursors)"
-    }
-
     /// Preserve completed results across a detail push or tab change, while
     /// preventing hidden searches from retaining the screen and spending quota.
     func suspendSearch() {
@@ -188,8 +178,6 @@ final class BrowseViewModel: ObservableObject {
         searchTask = nil
         searchResultsRefreshTask?.cancel()
         generation = UUID()
-        paginationRequestID = nil
-        activeSearchPaginationKey = nil
         for (game, var lane) in lanes where lane.isLoading {
             lane.isLoading = false
             lanes[game] = lane
@@ -285,13 +273,16 @@ final class BrowseViewModel: ObservableObject {
               cardSearchGames.contains(game),
               var lane = lanes[game],
               let cursor = lane.cursor,
-              !lane.isLoading else { return }
+              !lane.isLoading, lane.error == nil else { return }
         lane.isLoading = true
         lanes[game] = lane
         defer {
             if generation == requestedGeneration,
                var currentLane = lanes[game] {
                 currentLane.isLoading = false
+                // Wake a replacement footer that appeared while cancellation
+                // was still settling; the cancelled page keeps its cursor.
+                if Task.isCancelled { currentLane.paginationRevision &+= 1 }
                 lanes[game] = currentLane
             }
         }
@@ -325,59 +316,11 @@ final class BrowseViewModel: ObservableObject {
         }
     }
 
-    /// Loads the next page for every eligible card and sealed lane. Each lane
-    /// remains independent, so a card and sealed page for the same game can be
-    /// in flight together.
-    func loadMoreSearchResults() async {
-        let query = normalizedQuery
-        guard query.count >= 2, !searchIsSuspended, activeSearchPaginationKey == nil else { return }
-        let games = searchGames
-        let token = generation
-
-        var tasks: [Task<Void, Never>] = []
-        for game in games {
-            if cardSearchGames.contains(game), let lane = lanes[game],
-               lane.cursor != nil,
-               !lane.isLoading,
-               lane.error == nil {
-                tasks.append(Task { @MainActor [weak self] in
-                    guard !Task.isCancelled, let self, self.generation == token else { return }
-                    await self.loadMore(game)
-                })
-            }
-
-            if sealedLaneIsRequested(for: game),
-               let lane = sealedModel.searchLanes[game],
-               lane.nextOffset != nil,
-               !lane.isLoading,
-               lane.error == nil {
-                tasks.append(Task { @MainActor [weak self] in
-                    guard !Task.isCancelled, let self, self.generation == token else { return }
-                    await self.sealedModel.loadMoreSearch(game: game, query: query)
-                })
-            }
-        }
-        let workers = tasks
-        guard !workers.isEmpty else { return }
-        let requestID = UUID()
-        paginationRequestID = requestID
-        // A partial page publishes its cursor immediately. Keep the footer's
-        // task identity stable until the whole batch finishes so that publishing
-        // a fast lane does not cancel the other providers' unfinished pages.
-        activeSearchPaginationKey = searchPaginationKey
-        defer {
-            if paginationRequestID == requestID {
-                paginationRequestID = nil
-                searchPaginationRevision &+= 1
-                activeSearchPaginationKey = nil
-            }
-        }
-        await withTaskCancellationHandler {
-            for worker in workers { await worker.value }
-        } onCancel: {
-            for worker in workers { worker.cancel() }
-        }
-        recomputeSearchResults()
+    func loadMoreSealed(_ game: CardGame) async {
+        guard !Task.isCancelled, !searchIsSuspended,
+              searchGames.contains(game), sealedLaneIsRequested(for: game),
+              sealedModel.searchLanes[game]?.error == nil else { return }
+        await sealedModel.loadMoreSearch(game: game, query: normalizedQuery)
     }
 
     func retrySearch() {
@@ -390,8 +333,6 @@ final class BrowseViewModel: ObservableObject {
         cardGamesToResume = nil
         needsSearchOnResume = false
         generation = UUID()
-        paginationRequestID = nil
-        activeSearchPaginationKey = nil
         let token = generation
         let query = normalizedQuery
         guard !query.isEmpty else {
@@ -953,8 +894,21 @@ struct BrowseView: View {
                         ProgressView()
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
-                            .task(id: model.searchPaginationKey) {
-                                await model.loadMoreSearchResults()
+                            .background {
+                                // One visible footer, with independent task identities:
+                                // a newly ready lane can start without cancelling peers.
+                                ForEach(model.cardSearchGames, id: \.self) { game in
+                                    Color.clear.frame(width: 0, height: 0)
+                                        .task(id: model.lanes[game]?.paginationKey) {
+                                            await model.loadMore(game)
+                                        }
+                                }
+                                ForEach(model.searchGames, id: \.self) { game in
+                                    Color.clear.frame(width: 0, height: 0)
+                                        .task(id: model.sealedModel.searchLanes[game]?.paginationKey) {
+                                            await model.loadMoreSealed(game)
+                                        }
+                                }
                             }
                     }
                 }

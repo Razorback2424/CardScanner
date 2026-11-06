@@ -3,6 +3,11 @@
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task; this is not a substitute for an independent reviewer report.
 
+**Browse pagination follow-up (2026-11-05):** the intermittent render failure
+is a reproduced app concurrency bug. The committed fix starts newly ready
+lanes independently; the [follow-up record](app_review_fix_plan.md#browse-pagination-render-investigation--2026-11-05)
+owns the unchanged original test, controlled regressions and isolated verification.
+
 **Current refinement (2026-11-05):** committed implementation on `main`, based
 on clean `40403c1`. The [fix plan](app_review_fix_plan.md#high-confidence-refinement-fixes--2026-11-05)
 owns the current expiry, sealed browsing, quota and unused-history changes and

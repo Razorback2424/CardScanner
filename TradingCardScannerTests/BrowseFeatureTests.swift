@@ -3000,15 +3000,18 @@ final class BrowseFeatureTests: XCTestCase {
         let loaded = await waitUntil { model.searchResults.count == laneCount }
         XCTAssertTrue(loaded)
 
-        let pagination = Task { await model.loadMoreSearchResults() }
+        let pagination = model.searchGames.flatMap { game in
+            [Task { await model.loadMore(game) },
+             Task { await model.loadMoreSealed(game) }]
+        }
         let pagesStarted = await waitUntil { await provider.requestCount == laneCount * 2 }
         XCTAssertTrue(pagesStarted)
-        pagination.cancel()
+        for task in pagination { task.cancel() }
         let cancelled = await waitUntil { await provider.cancellationCount == laneCount }
         XCTAssertTrue(cancelled)
         await provider.finish(query: "pi", cursor: "next")
         await provider.finish(query: "pi", cursor: "1")
-        await pagination.value
+        for task in pagination { await task.value }
 
         XCTAssertEqual(model.searchResults.count, laneCount, "Cancelled pages must not change the visible results")
         XCTAssertTrue(model.lanes.values.allSatisfy { $0.cards.count == 1 && $0.cursor == "next" && !$0.isLoading })
@@ -3246,7 +3249,7 @@ final class BrowseFeatureTests: XCTestCase {
         }
         XCTAssertTrue(firstPageLoaded)
 
-        await model.loadMoreSearchResults()
+        await model.loadMore(.pokemon)
 
         XCTAssertEqual(model.lanes[.pokemon]?.cards.map(\.id), [first.id, second.id])
         XCTAssertNil(model.lanes[.pokemon]?.cursor)
@@ -3286,12 +3289,17 @@ final class BrowseFeatureTests: XCTestCase {
             XCTAssertEqual(model.searchState, .results(hasFailures: false))
             XCTAssertEqual(Set(model.sealedModel.searchLanes.keys), Set(model.searchGames))
 
-            let pagination = Task { await model.loadMoreSearchResults() }
+            let pagination = model.searchGames.flatMap { game in
+                [Task { await model.loadMore(game) },
+                 Task { await model.loadMoreSealed(game) }]
+            }
             let nextStarted = await waitUntil { await provider.requestCount == requestCount * 2 }
             XCTAssertTrue(nextStarted)
             await provider.finish(query: "fixture", cursor: "next")
             await provider.finish(query: "fixture", cursor: "1")
-            await pagination.value
+            for task in pagination { await task.value }
+            let appended = await waitUntil { model.searchResults.count == requestCount * 2 }
+            XCTAssertTrue(appended)
             XCTAssertEqual(model.searchResults.count, requestCount * 2)
             XCTAssertFalse(model.hasSearchPagination)
             let cardFilters = await provider.requestedCardSetIDs
@@ -8199,6 +8207,7 @@ private actor HeldBrowseSearchProvider: BrowseCatalogProviding, SealedBrowseProv
     nonisolated let gameRegistry: CardGameRegistry
     private let hasNextPage: Bool
     private let returnsEmptyResults: Bool
+    private let cardsPerPage: Int
     private struct Request {
         let query: String
         let game: CardGame
@@ -8213,8 +8222,14 @@ private actor HeldBrowseSearchProvider: BrowseCatalogProviding, SealedBrowseProv
     private(set) var requestedQueries: Set<String> = []
     private(set) var requestedCardSetIDs: [Set<CatalogSetID>] = []
     var cancellationCount: Int { cancellations.count }
+    var pendingRequestDescriptions: [String] {
+        pending.values.map { request, _ in
+            "\(request.game.rawValue):\(request.sealed ? "sealed" : "card"):\(request.cursor ?? "first")"
+        }.sorted()
+    }
 
-    init(gameRegistry: CardGameRegistry? = nil, hasNextPage: Bool = false, returnsEmptyResults: Bool = false) {
+    init(gameRegistry: CardGameRegistry? = nil, hasNextPage: Bool = false,
+         returnsEmptyResults: Bool = false, cardsPerPage: Int = 1) {
         self.gameRegistry = gameRegistry ?? CardGameRegistry(descriptors:
             ([.pokemon, .magic, .onePiece, .lorcana, .yuGiOh] as [CardGame]).enumerated().map {
                 .init(game: $0.element, displayName: $0.element.label, sortOrder: $0.offset,
@@ -8222,6 +8237,7 @@ private actor HeldBrowseSearchProvider: BrowseCatalogProviding, SealedBrowseProv
             })
         self.hasNextPage = hasNextPage
         self.returnsEmptyResults = returnsEmptyResults
+        self.cardsPerPage = cardsPerPage
     }
 
     private func hold(query: String, game: CardGame, sealed: Bool, cursor: String?,
@@ -8258,9 +8274,13 @@ private actor HeldBrowseSearchProvider: BrowseCatalogProviding, SealedBrowseProv
         if failedGames.contains(game) { throw TestError.failed }
         if returnsEmptyResults { return .init(items: [], nextCursor: nil) }
         let setID = setIDs.sorted { $0.id < $1.id }.first ?? .init(game: game, providerID: "search-regression")
-        return .init(items: [.init(game: game, providerID: "\(query)-\(cursor ?? "first")-\(setID.id)",
-            setID: setID, setName: "Search Fixture",
-            setCode: "TST", name: query, collectorNumber: "1", thumbnailURL: nil, imageURL: nil)],
+        let items = (0..<cardsPerPage).map { index in
+            CatalogCardSummary(game: game,
+                providerID: "\(query)-\(cursor ?? "first")-\(setID.id)" + (cardsPerPage == 1 ? "" : "-\(index)"),
+                setID: setID, setName: "Search Fixture", setCode: "TST", name: query,
+                collectorNumber: String(index + 1), thumbnailURL: nil, imageURL: nil)
+        }
+        return .init(items: items,
             nextCursor: hasNextPage && cursor == nil ? "next" : nil)
     }
 
@@ -8436,6 +8456,166 @@ final class BrowsePaginationRenderTests: XCTestCase {
         let cancellations = await provider.cancellationCount
         await provider.finish(query: "pi", game: .pokemon, cursor: "next")
         XCTAssertEqual(cancellations, 0, "Publishing one page must not cancel another game's unfinished page")
+    }
+
+    func testTopLevelBrowsePaginationStartsLateLaneWhileAnotherPageIsHeld() async throws {
+        for firstGame in [CardGame.magic, .pokemon] {
+            let lateGame: CardGame = firstGame == .magic ? .pokemon : .magic
+            let registry = CardGameRegistry(descriptors: [
+                .init(game: .magic, displayName: "Magic", sortOrder: 0, capabilities: [.browse]),
+                .init(game: .pokemon, displayName: "Pokémon", sortOrder: 1, capabilities: [.browse])
+            ])
+            let provider = HeldBrowseSearchProvider(gameRegistry: registry, hasNextPage: true)
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let window = try host(BrowseView(catalog: provider).modelContainer(container), height: 2400)
+            defer { window.isHidden = true; window.rootViewController = nil }
+            try await Task.sleep(for: .milliseconds(100))
+            let field = try XCTUnwrap(findTextField(in: window))
+            field.text = "pi"
+            field.sendActions(for: .editingChanged)
+            for _ in 0..<100 {
+                if await provider.requestCount == 2 { break }
+                try await Task.sleep(for: .milliseconds(20))
+            }
+            let initialRequests = await provider.requestCount
+            XCTAssertEqual(initialRequests, 2)
+
+            // Start pagination before the other initial response is released.
+            // The held next page must not block the newly ready lane.
+            await provider.finish(query: "pi", game: firstGame)
+            for _ in 0..<100 {
+                if await provider.requestCount == 3 { break }
+                try await Task.sleep(for: .milliseconds(20))
+            }
+            let firstPageRequests = await provider.requestCount
+            XCTAssertEqual(firstPageRequests, 3)
+            await provider.finish(query: "pi", game: lateGame)
+            for _ in 0..<100 {
+                if await provider.requestCount == 4 { break }
+                try await Task.sleep(for: .milliseconds(20))
+            }
+            let requests = await provider.requestCount
+            let pending = await provider.pendingRequestDescriptions
+            XCTAssertEqual(requests, 4, "A late initial response must start its next page independently")
+            XCTAssertEqual(pending, ["magic:card:next", "pokemon:card:next"])
+
+            await provider.finish(query: "pi", game: firstGame, cursor: "next")
+            try await Task.sleep(for: .milliseconds(250))
+            let cancellations = await provider.cancellationCount
+            let remaining = await provider.pendingRequestDescriptions
+            await provider.finish(query: "pi", game: lateGame, cursor: "next")
+            XCTAssertEqual(cancellations, 0, "Publishing the fast page must preserve the late lane's task")
+            XCTAssertEqual(remaining, ["\(lateGame.rawValue):card:next"])
+        }
+    }
+
+    func testTopLevelBrowsePaginationCancelsOnDepartureAndIgnoresLatePages() async throws {
+        let registry = CardGameRegistry(descriptors: [
+            .init(game: .magic, displayName: "Magic", sortOrder: 0, capabilities: [.browse]),
+            .init(game: .pokemon, displayName: "Pokémon", sortOrder: 1, capabilities: [.browse])
+        ])
+        let provider = HeldBrowseSearchProvider(gameRegistry: registry, hasNextPage: true)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let window = try host(BrowseView(catalog: provider).modelContainer(container), height: 2400)
+        let controller = try XCTUnwrap(window.rootViewController)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(100))
+        let field = try XCTUnwrap(findTextField(in: window))
+        field.text = "pi"
+        field.sendActions(for: .editingChanged)
+        for _ in 0..<100 {
+            if await provider.requestCount == 2 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        await provider.finish(query: "pi")
+        for _ in 0..<100 {
+            if await provider.requestCount == 4 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let started = await provider.requestCount
+        XCTAssertEqual(started, 4)
+
+        window.isHidden = true
+        window.rootViewController = nil
+        for _ in 0..<100 {
+            if await provider.cancellationCount == 2 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let cancelled = await provider.cancellationCount
+        XCTAssertEqual(cancelled, 2, "Leaving Browse must cancel every unfinished page")
+        await provider.finish(query: "pi", cursor: "next")
+        try await Task.sleep(for: .milliseconds(100))
+
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.layoutIfNeeded()
+        for _ in 0..<100 {
+            if await provider.requestCount == 6 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let resumed = await provider.requestCount
+        let pending = await provider.pendingRequestDescriptions
+        await provider.finish(query: "pi", cursor: "next")
+        XCTAssertEqual(resumed, 6, "Cancelled late pages must not consume the retained cursors")
+        XCTAssertEqual(pending, ["magic:card:next", "pokemon:card:next"])
+    }
+
+    func testTopLevelBrowsePaginationResumesAfterFooterReappears() async throws {
+        let registry = CardGameRegistry(descriptors: [
+            .init(game: .magic, displayName: "Magic", sortOrder: 0, capabilities: [.browse])
+        ])
+        let provider = HeldBrowseSearchProvider(gameRegistry: registry, hasNextPage: true, cardsPerPage: 40)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let window = try host(BrowseView(catalog: provider).modelContainer(container), height: 800)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(100))
+        let field = try XCTUnwrap(findTextField(in: window))
+        field.text = "pi"
+        field.sendActions(for: .editingChanged)
+        for _ in 0..<100 {
+            if await provider.requestCount == 1 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        await provider.finish(query: "pi")
+        let scroll = try XCTUnwrap(findScrollView(in: window))
+        for _ in 0..<100 {
+            if scroll.contentSize.height > scroll.bounds.height * 2 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        XCTAssertGreaterThan(scroll.contentSize.height, scroll.bounds.height * 2)
+        for _ in 0..<100 {
+            scroll.setContentOffset(CGPoint(x: 0, y: scroll.contentSize.height - scroll.bounds.height), animated: false)
+            if await provider.requestCount == 2 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let started = await provider.requestCount
+        XCTAssertEqual(started, 2)
+
+        scroll.setContentOffset(CGPoint(x: 0, y: -scroll.adjustedContentInset.top), animated: false)
+        for _ in 0..<100 {
+            if await provider.cancellationCount == 1 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let cancelled = await provider.cancellationCount
+        XCTAssertEqual(cancelled, 1)
+        // Recreate the visible footer while its cancelled provider is still held.
+        for _ in 0..<10 {
+            scroll.setContentOffset(CGPoint(x: 0, y: scroll.contentSize.height - scroll.bounds.height), animated: false)
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        await provider.finish(query: "pi", cursor: "next")
+        for _ in 0..<100 {
+            if await provider.requestCount == 3 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let resumed = await provider.requestCount
+        let pending = await provider.pendingRequestDescriptions
+        await provider.finish(query: "pi", cursor: "next")
+        XCTAssertEqual(resumed, 3, "A visible footer must resume after the cancelled request settles")
+        XCTAssertEqual(pending, ["magic:card:next"])
     }
 
     func testTopLevelBrowseTypingAndClosingCancelsSearch() async throws {

@@ -1,7 +1,7 @@
 # Catalog / Browse — implementation plan
 
 Status: current Browse contract, with the implementation landed in the working
-tree — reconciled 2026-09-16. This document replaces the earlier artboard-led
+tree — pagination ownership reconciled 2026-11-05. This document replaces the earlier artboard-led
 plan. The requirements below remain the acceptance contract; the current
 implementation/evidence state is recorded first so the older imperative wording
 cannot be mistaken for an unfinished task list.
@@ -13,6 +13,10 @@ follow-ups own remaining manual, provider, and device work.
 
 Current implementation state:
 
+- Unified-search pagination uses independent card/sealed tasks in one footer.
+  The [pagination follow-up](../../app_review_fix_plan.md#browse-pagination-render-investigation--2026-11-05)
+  owns the fix and its verification; older Browse counts below are
+  historical evidence, not a verification of this change.
 - `CollectionView.Destination.browse` pushes Catalog from the Collection tab;
   Browse is not a fifth native tab.
 - Unified card/sealed search, game-level Cards/Sealed navigation, cached sealed
@@ -273,17 +277,20 @@ candidate name with `CardNameSearch.normalize`, then sort by:
 Do not boost a kind or game. Recompute the merged sorted array when any lane changes. Keep the
 provider calls parallel and the existing 400 ms debounce/generation cancellation behavior.
 
-Pagination remains per underlying lane. Add `BrowseViewModel.loadMoreSearchResults()` that starts
-one next-page request for every requested non-loading lane that still has a cursor/offset, using a
-task group over the existing `loadMore(_ game:)` and `sealedModel.loadMoreSearch(game:query:)`
-entry points, then rebuild the merged list. Specifics that are easy to get wrong:
+Pagination remains per underlying lane. The single progress footer owns separate tasks for card
+and sealed lanes, through `BrowseViewModel.loadMore(_:)` and `loadMoreSealed(_:)`. The latter
+retains the parent search gates before calling `sealedModel.loadMoreSearch(game:query:)`.
+Each task identity uses its own cursor/offset
+and cancellation revision. A newly ready lane starts independently; another lane's publication
+does not cancel it. Settled cancellation advances only that lane's revision so a footer that
+reappeared during cancellation can resume its retained cursor. Specifics that are easy to get wrong:
 
 - Pass the current `normalizedQuery` to `loadMoreSearch`; it re-normalizes and compares against its
   own `searchQuery`, so a raw `searchText` or a stale query silently no-ops.
-- Honour the same `query.count >= 2` guard the debounce uses, and capture `generation` before the
-  task group so a query change mid-page discards the result.
-- The two lane families key on disjoint state, so the task group is safe, but each game's card lane
-  and sealed lane must remain separate tasks — do not serialize them.
+- Preserve the entry points' `query.count >= 2`, generation and cancellation checks so a query
+  change mid-page discards the result.
+- Each game's card lane and sealed lane must remain separate tasks. Do not serialize them behind
+  a shared batch or freeze all lane identities until the slowest request finishes.
 - `SealedBrowseModel.loadMoreSearch` appends with `+=` and does not deduplicate. Deduplicate sealed
   pages on `(id, variantID)`, not `id` alone: `SealedProductSummary.id` is the product id and two
   variants of one product share it. Card lanes keep the existing `deduplicated(_:)` on

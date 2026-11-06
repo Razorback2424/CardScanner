@@ -1,5 +1,71 @@
 # CardScanner App Review Fix Plan
 
+## Browse pagination render investigation — 2026-11-05
+
+Owner-authorized follow-up from clean `0a11fc7`. Tracing the held-provider fixture,
+`BrowseViewModel` pagination and the actual `BrowseView` footer establishes an app
+concurrency bug: a shared page batch blocks a newly ready lane. The original
+four-request and zero-cancellation assertions and their deadlines are unchanged;
+no retry-to-green or test skip. Baseline: the unchanged render
+test fails 8/10 repetitions with three requests instead of four
+(`BrowseRender-20261105/Baseline.xcresult` on the external T7 SSD).
+
+- [x] Reproduce the unchanged failure.
+- [x] Establish whether the missing request is fixture synchronization or app
+  pagination; add a controlled interleaving regression.
+- [x] Apply the smallest verified fix, rerun the original render test repeatedly
+  and verify related search/cancellation behavior.
+
+The five diagnostic repetitions all fail with both first responses finished,
+one next page held and zero cancellations. The controlled real-view regression
+then fails in both game orders (four assertions): an early page batch pins the
+single footer, so a late initial response cannot start its next page. This is an
+app concurrency bug; increasing the wait cannot release the held batch.
+
+The implementation gives each card/sealed lane its own task in the same footer
+and removes the shared key/revision/coordinator. The original render
+test is byte-for-byte unchanged. Its first post-fix run and both new native
+interleaving/departure tests pass. One adapted model test initially observed the
+existing coalesced sealed-results update before delivery; it now awaits that
+same result count within its existing readiness helper, retaining its assertions.
+The native scroll-out/re-entry check caught a gap in the first fix: a replacement
+footer could return while the cancelled request still marked its lane busy, then
+never restart after that request settled (two failed assertions). Each lane now
+advances its own pagination revision on settled cancellation, waking only its
+replacement task without consuming the retained cursor. Existing query, error,
+filter and hidden-screen gates remain in the view-model entry points.
+
+The isolated Debug build passed, but `VerifiedFix.xcresult` records an early
+test-host exit before any methods ran (zero tests, one infrastructure error).
+The same built binary passed all 18 focused checks on a dedicated simulator
+(`DedicatedFix.xcresult`), including the re-entry regression and all sealed
+surface tests. The exact final source then passes **80 repeated render
+executions: 20/20 for each of four methods**, including the unchanged original.
+The controlled method exercises both game orders on every run. The stored
+`RepeatedFinal.xcresult` metrics report four distinct methods with zero
+failures/skips; console records retain all 80 executions. The exact final broader
+selection passes **254 distinct methods, zero failures/skips**, covering Browse
+search/loading/filtering, collection/checklist integration, presentation, rendered
+pagination, sealed surfaces and view construction. `BroaderFinal.xcresult`
+metrics agree with all 254 individual console records. The exact final **arm64
+Release simulator build passed** (`release-final.log`, exit 0), with the tested
+source unchanged. Its slower cold compile is not a controlled timing comparison
+with the earlier warm build; a brief sample confirmed active LLVM optimization.
+No optimization settings were changed. Whitespace, project-file syntax and added
+local documentation-link checks pass.
+
+Concurrent card-detail/pricing edits are preserved. Final verification uses an
+external snapshot of `0a11fc7` plus only `BrowseView.swift`,
+`SealedBrowseViews.swift` and `BrowseFeatureTests.swift` from this fix; its source
+hashes are retained beside the results. Other in-progress changes are not
+included or certified by that evidence.
+Artifacts are retained under `/Volumes/T7/CodexBuild/BrowseRender-20261105`.
+The two production files have 41 fewer net lines; no persistence schema changes.
+
+Rollback is limited to this investigation's source/test/documentation diff.
+The fix is committed and pushed on `main`; no physical-device or release
+acceptance is claimed.
+
 ## High-confidence refinement fixes — 2026-11-05
 
 User-authorized implementation following the repository-wide source review at

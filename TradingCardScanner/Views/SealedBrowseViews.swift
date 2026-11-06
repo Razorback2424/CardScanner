@@ -61,6 +61,9 @@ final class SealedBrowseModel: ObservableObject {
         var nextOffset: Int?
         var isLoading = false
         var error: String?
+        var paginationRevision: UInt = 0
+
+        var paginationKey: String { "\(paginationRevision)|\(nextOffset.map(String.init) ?? "")" }
     }
 
     @Published private(set) var sets: [SealedSetSummary] = []
@@ -262,6 +265,8 @@ final class SealedBrowseModel: ObservableObject {
             if token == searchGeneration,
                var currentLane = searchLanes[game] {
                 currentLane.isLoading = false
+                // A cancelled page must wake an already-visible replacement footer.
+                if Task.isCancelled { currentLane.paginationRevision &+= 1 }
                 searchLanes[game] = currentLane
             }
         }
