@@ -1,5 +1,16 @@
 # Centering harnesses
 
+## Preparing a debug print reference
+
+`build_print_reference.py` takes a full publisher image, its reviewed
+`reference-only.json` specification, and a new output path. It verifies the
+publisher image hash and stores the artwork rectangle, small contrast patches
+and design identity. The output can be passed to the debug Centering screen
+by its caller, or to the screenshot script via
+`UI_CENTERING_PRINT_REFERENCE_SOURCE`. The FIN 289 test reference is in
+[`PrintReferences`](../../TestFixtures/TradingCards/PrintReferences/fin-289.json).
+Use `CenteringPrintPilotTests` for the source-photo accuracy and fallback checks.
+
 ## Native annotation angle audit
 
 The historical `gt_tool.py rederive` procedure selects an edge-wide profile

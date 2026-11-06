@@ -1,5 +1,136 @@
 # Guided centering repair
 
+## Exact printing and artwork placement — 2026-11-05
+
+**The offline Starting Town control recovered all four artwork edges.** With the
+normal detector's physical-cut proposal, the horizontal and vertical shares of
+the visible margins differed from the photo review by 0.755 and 0.320 percentage
+points. The largest distance from a measured line to any of 16 independently
+marked native photo points was 1.08 pixels. The limits were four native pixels
+at each point and two percentage points on each axis. These results apply to one
+known English FIN 289 printing on an exposed development photo.
+[Machine-readable receipt](../../review/centering-evidence/exact-print-control-2026-11-05.json)
+
+The review began with the four unmarked, oriented HEIC originals. Visual traces
+identified the physical cut and the printed feature. The existing native edge
+audit sampled 61 positions per side in a fixed 16-pixel window around each
+trace. Missing support ends the full numerical reading for that card in this pass.
+
+| Photo | Supported cut / print sides | Measurement decision |
+| --- | --- | --- |
+| Pokémon back, IMG_0347 | 4 / 3 | The dark blue perimeter is visible. Its inner bottom lacks support for a single straight guide. |
+| Charmander, IMG_0348 | 3 / 4 | All print-to-silver lines are supported. The silver physical bottom near the sleeve lacks straight-edge coverage. |
+| Clefairy, IMG_0351 | 3 / 3 | The cut bottom and print top failed the fixed audit. The bowed printed perimeter requires an approximation. |
+| Starting Town, IMG_0780 | 4 / 4 | The black footer merges with the cut. The gold-to-black rule around the illustration gives four corresponding boundaries in the photo and the publisher's image. |
+
+For Starting Town, four additional cross sections per side identified the
+illustration's **outer black rule against the surrounding gold strip**. The
+results of scoring those manually read points and the sampled lines agreed
+within 0.14 pp on each axis. The initial quarter-size visual trace agreed with
+the native point review within 0.97 pp. One reviewer used multiple methods
+on the same photo. These are provisional guides for a local experiment.
+
+The reviewed top share was 19.84%, compared with 20.03% in the publisher's
+displayed design. The illustration sits high on both. The useful measurement is
+its placement relative to this design. Manufacturing trim and professional grade
+require separate evidence. The reference was the publisher's exact card image,
+whose name, collector number, language and illustration matched the capture.
+[Publisher release notes](https://magic.wizards.com/en/news/feature/final-fantasy-release-notes)
+and [FIN 289 image](https://media.wizards.com/2025/fin/d7HaGQos5Ezg/en_4388e7eeb0.webp).
+
+Recognition used only features inside the publisher's illustration to locate
+it in the photo. It then selected among the prior Swift probe's 34 real edge
+candidates and measured the selected transitions in the native capture using
+the existing research fitter. The prediction was saved before scoring against
+the photo guides. There were 312 inlier matches across four quadrants. Known
+translation and perspective controls had maximum corner errors of 0.01 and
+0.12 working pixels, and the unrelated Pokémon back correctly abstained.
+
+| Margin share | Independently reviewed | Selected using normal cut | Absolute error |
+| --- | ---: | ---: | ---: |
+| Left | 49.92% | 49.16% | 0.755 pp |
+| Top | 19.84% | 20.16% | 0.320 pp |
+
+Substituting only the reviewed cut reduced the errors to 0.127 and 0.030 pp.
+The remaining discrepancy in this example comes mainly from physical-cut
+placement. The experiment supplied the printing and a generic artwork-window
+candidate pool. It establishes an offline selection result. Normal detector
+accuracy has its separate historical receipt of 5/9 plus one correct abstention.
+Reporting requires human confirmation. The four native audit tests passed and
+all ten historical annotations validated. This pass changed research evidence
+and documentation only.
+
+The input images, cross sections, overlays, frozen inputs and prediction,
+scripts, dependency versions and full score are on T7 under
+`CodexBuilds/CardScanner-ReferenceReview-20261105/`. The receipt records their
+hashes. The colored result overlay is `starting-town-recognized.png`.
+
+## Controlled layout experiment — 2026-11-05
+
+**Status: stopped at the first accuracy gate; no automatic routing promoted.**
+The owner requested a bounded implementation of the proposed methodology and
+an explicit stop when the expected improvement failed. A DEBUG-only probe now
+supplies broad layout regions to the existing pixel fitter, separately from
+normal analysis. It preserves the baseline physical-cut proposal, verifies the
+capture hash, samples the original detector raster before presentation rotation,
+and retains native candidates, profile curves, failures and comparison overlays.
+It cannot replace the user's frames or enable reporting.
+
+The two fixed plans are a perimeter printed frame (2–9% inward on each side)
+and a landscape artwork window (left/right 4–12%, top 8–18%, bottom 36–50%).
+Artwork side sampling covers the shared upper span, 20–48% down the card,
+excluding the title and type banners. These are supplied design knowledge,
+not automatic recognition, exact corners or ratio targets. The fitter's
+thresholds, coherence rules and selection policy are unchanged.
+
+Before the run, original-image review fixed broad native midpoint bands for
+each intended side. These assess identity, not subpixel accuracy. They neither
+replace the historical annotations nor certify centering ratios.
+
+| Existing front | Baseline matching sides | Controlled matching sides | Outcome |
+| --- | --- | --- | --- |
+| IMG_0348 / Charmander | 4/4 | 4/4 | Already matched these coarse regions; maximum corner movement 0.30 native pixels. |
+| IMG_0351 / Clefairy | 4/4 | 4/4 | Already matched; curvature remains, with up to 10.17 native pixels of corner movement. No precision improvement established. |
+| IMG_0780 / Starting Town | 0/4 | 1/4 | Top reaches the reviewed region; sides still follow the surrounding frame and bottom includes the type banner. |
+
+Starting Town's controlled side midpoints are x=257.30/2711.24 and bottom
+y=2455.79, outside the predefined artwork bands x=335–375/2600–2670 and
+y=2190–2250. Its candidate list **does contain transitions in all intended
+regions**. For example, the bottom candidate at y=2219.92 is rejected as
+`later_than_supported_frame_transition`. Broad layout windows fix search
+reachability but do not fix selection between adjacent design elements. No
+bands were narrowed after observing results, and no thresholds were swept.
+All three comparison overlays were inspected.
+
+`Layout-control-v1.xcresult` contains four methods: two pass (known artwork
+windows at two positions and rejection of another capture's geometry), and two
+fail (the new three-front acceptance gate and the existing historical accuracy
+method). The synthetic windows are recovered within two pixels. Baseline
+measurements before and after the probe are equal on all three fronts. All ten
+normal-analysis records, including candidate evidence, exactly equal the saved
+`front-curvature-final-attachments/initial-guide-accuracy.json`. The historical
+accuracy result remains **5/9 passing both 2 pp limits, four failing, one correct
+no-reference result**; the new control does not change that claim.
+
+`Preservation-regression-v1.xcresult` passes **35/35 methods**, with no skips,
+missing selections or duplicate methods. It covers the analyzer, independent
+geometry/provenance, curved-border uncertainty after confirmation, candidate
+evidence, five-repeat determinism on all ten images, optimized/reference
+equivalence, no fixture-identity branches and latency. The timing upper median
+is **0.627064 s**, maximum **0.801566 s**, within the unchanged 0.8/1.5 s limits.
+The arm64 Release simulator build passes in `Release-build-v2.xcresult`,
+verifying the non-DEBUG compilation path. Its first command failed before
+compilation because of an unsupported command-line option; that log is retained
+separately. Neither simulator verification nor coarse identity checks establish
+physical-device or calibrated measurement acceptance.
+Evidence is retained under `/Volumes/T7/CodexBuilds/CardScanner-BoundaryResolver-20261105/`;
+the tested working tree is based on `0a11fc7`, with unrelated concurrent app
+changes preserved. The experiment remains an explicit failing research gate,
+not a new user-facing correction step. Automatic reporting stays disabled.
+`layout-control-decision.json` records the fixed bands, baseline/probe checks,
+candidate presence, exact baseline equality and source/annotation/artifact
+hashes; the associated five-file source snapshot is retained alongside it.
+
 ## Bowed printed borders — 2026-11-05
 
 **Status: incomplete; 5/9 historical references pass both unchanged 2 pp ratio

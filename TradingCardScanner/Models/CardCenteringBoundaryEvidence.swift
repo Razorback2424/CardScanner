@@ -33,6 +33,9 @@ enum CardCenteringBoundaryRole: String, Codable, CaseIterable {
 enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
     case unavailable, unverified
     case pokemonClassicBack, magicClassicBack
+#if DEBUG
+    case matchedArtwork
+#endif
     case userPrintedBorder, userArtwork, userOther
 
     static let userChoices: [Self] = [.userPrintedBorder, .userArtwork, .userOther]
@@ -44,6 +47,9 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
         case .unverified: "Choose reference"
         case .pokemonClassicBack: "Pokémon classic back border"
         case .magicClassicBack: "Magic classic back border"
+#if DEBUG
+        case .matchedArtwork: "Published artwork frame"
+#endif
         case .userPrintedBorder: "Printed border"
         case .userArtwork: "Artwork frame"
         case .userOther: "Other reference"
@@ -54,6 +60,9 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
         case .pokemonClassicBack, .magicClassicBack: .designReference
         case .userPrintedBorder: .printedBorder
         case .userArtwork: .artwork
+#if DEBUG
+        case .matchedArtwork: .artwork
+#endif
         default: .unknown
         }
     }

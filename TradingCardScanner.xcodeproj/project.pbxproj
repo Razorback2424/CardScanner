@@ -222,6 +222,7 @@
 		A0010041 /* CardCenteringMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010041 /* CardCenteringMeasurement.swift */; };
 		CCB20001 /* CardCenteringBoundaryEvidence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB20002 /* CardCenteringBoundaryEvidence.swift */; };
 		A0010042 /* CardCenteringAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010042 /* CardCenteringAnalyzer.swift */; };
+		A3CE00F1 /* CardCenteringPrintReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CE00F1 /* CardCenteringPrintReference.swift */; };
 		A0010043 /* CardCenteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010043 /* CardCenteringView.swift */; };
 		A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E01 /* CardCenteringEdgeSnapper.swift */; };
 		A00C0E02 /* CardCenteringCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E02 /* CardCenteringCanvas.swift */; };
@@ -599,6 +600,7 @@
 		B0010041 /* CardCenteringMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringMeasurement.swift; sourceTree = "<group>"; };
 		CCB20002 /* CardCenteringBoundaryEvidence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringBoundaryEvidence.swift; sourceTree = "<group>"; };
 		B0010042 /* CardCenteringAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringAnalyzer.swift; sourceTree = "<group>"; };
+		B3CE00F1 /* CardCenteringPrintReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringPrintReference.swift; sourceTree = "<group>"; };
 		B0010043 /* CardCenteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringView.swift; sourceTree = "<group>"; };
 		B00C0E01 /* CardCenteringEdgeSnapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringEdgeSnapper.swift; sourceTree = "<group>"; };
 		B00C0E02 /* CardCenteringCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringCanvas.swift; sourceTree = "<group>"; };
@@ -993,6 +995,7 @@
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
 				B0010042 /* CardCenteringAnalyzer.swift */,
+				B3CE00F1 /* CardCenteringPrintReference.swift */,
 				CCB50002 /* CardCenteringReviewRenderer.swift */,
 				B00C0E01 /* CardCenteringEdgeSnapper.swift */,
 				E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */,
@@ -1578,6 +1581,7 @@
 				CCB50001 /* CardCenteringReviewRenderer.swift in Sources */,
 				CCB50003 /* CardCenteringReviewSheet.swift in Sources */,
 				A0010042 /* CardCenteringAnalyzer.swift in Sources */,
+				A3CE00F1 /* CardCenteringPrintReference.swift in Sources */,
 				C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */,
 				A0010043 /* CardCenteringView.swift in Sources */,
 				A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */,

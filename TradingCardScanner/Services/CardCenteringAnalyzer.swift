@@ -868,6 +868,41 @@ enum CardCenteringAnalyzer {
     }
 
 #if DEBUG
+    /// Controlled interpretation experiment. These broad layout regions are
+    /// supplied knowledge, not automatically recognized identity or ground truth.
+    /// No production entry point enables this probe or changes its proposal.
+    enum ReferenceWindowPlan: String, Codable {
+        case perimeterPrintedFrame, landscapeArtworkWindow
+
+        fileprivate var bands: [ClosedRange<Double>] {
+            switch self {
+            case .perimeterPrintedFrame:
+                return Array(repeating: 0.02...0.09, count: 4)
+            case .landscapeArtworkWindow:
+                // left, top, right, bottom; fractions inward from physical cut.
+                return [0.04...0.12, 0.08...0.18, 0.04...0.12, 0.36...0.50]
+            }
+        }
+
+        fileprivate func alongEdgeBand(side: Int) -> ClosedRange<Double>? {
+            // The artwork occupies only the upper part of the card. Sample
+            // inside its broad shared span, excluding title and type banners.
+            self == .landscapeArtworkWindow && (side == 0 || side == 2) ? 0.20...0.48 : nil
+        }
+    }
+
+    struct ReferenceWindowProbe: Codable {
+        let plan: ReferenceWindowPlan
+        let inputSHA256: String
+        let outerNative: CardCenteringQuad
+        let innerNative: CardCenteringQuad?
+        let hasCurvedEdge: Bool
+        let candidates: [CardCenteringBoundaryCandidate]
+        let profiles: [CardCenteringProfileDiagnostic]
+        let failures: [CardCenteringProfileFailureDiagnostic]
+        private(set) var policy = "supplied_layout_control_only; not_automatic_identity; no_reporting"
+    }
+
     /// A value snapshot of one diagnostic request. Callbacks run synchronously
     /// on the caller's executor; each invocation owns a separate ledger.
     struct Diagnostics: @unchecked Sendable {
@@ -881,6 +916,7 @@ enum CardCenteringAnalyzer {
         var frontBottomCandidateGenerationEnabled = true
         var jointSelectionEnabled = false
         var useReferenceCalculations = false
+        fileprivate var referenceWindowPlan: ReferenceWindowPlan?
         /// Development-only until corpus, timing, native registration and
         /// independent visual gates pass. Never enables automatic reporting.
         var nativeLocalRefinementEnabled = false
@@ -905,6 +941,7 @@ enum CardCenteringAnalyzer {
     }
 
     @TaskLocal private static var activeDiagnostics: DiagnosticContext?
+    @TaskLocal static var activePrintReference: CardCenteringPrintReference?
     private static var profileDiagnosticSink: ((CardCenteringProfileDiagnostic) -> Void)? { activeDiagnostics?.options.profileDiagnosticSink }
     private static var analysisDiagnosticSink: ((CardCenteringAnalysisDiagnostic) -> Void)? { activeDiagnostics?.options.analysisDiagnosticSink }
     private static var profileFailureDiagnosticSink: ((CardCenteringProfileFailureDiagnostic) -> Void)? { activeDiagnostics?.options.profileFailureDiagnosticSink }
@@ -1196,6 +1233,55 @@ enum CardCenteringAnalyzer {
             workingMaxDimension: workingMaxDimension,
             detectionMaxDimension: detectionMaxDimension
         )
+    }
+
+    /// Reuses the actual profile fitter and the baseline physical-cut proposal.
+    /// Decode before presentation rotation so the probe samples the same raster
+    /// as production. The result is separate and cannot mutate reviewed frames.
+    static func probeReferenceWindow(_ data: Data, baseline: CardCenteringAnalysis,
+                                     plan: ReferenceWindowPlan) throws -> ReferenceWindowProbe {
+        let sha = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+        guard baseline.measurement.inputRecord?.sha256 == sha,
+              let source = UIImage(data: data),
+              let prepared = prepare(source, rotationDegrees: 0, padding: .black, maxDimension: 1_200),
+              let cg = prepared.cgImage,
+              let baselineMapping = baseline.coordinateMapping else {
+            throw CardCenteringAnalyzerError.renderFailed
+        }
+        let mapping = CardCenteringCoordinateMapping(
+            orientedSourceSize: source.centeringRasterOrientation.orientedSize,
+            workingSize: .init(width: Double(cg.width), height: Double(cg.height)))
+        let outerNative = baselineMapping.nativeQuad(fromWorking: baseline.measurement.geometryOuterQuad)
+        let lab = labPixels(from: try pixels(from: prepared))
+        return scanReferenceWindow(plan: plan, sha: sha, outerNative: outerNative, mapping: mapping,
+                                   lab: lab, width: cg.width, height: cg.height, recordProfiles: true)
+    }
+
+    private static func scanReferenceWindow(plan: ReferenceWindowPlan, sha: String, outerNative: CardCenteringQuad,
+                                            mapping: CardCenteringCoordinateMapping, lab: [Pixel],
+                                            width: Int, height: Int, recordProfiles: Bool) -> ReferenceWindowProbe {
+        let outer = mapping.workingQuad(fromNative: outerNative)
+        let ledger = CandidateLedger(workingWidth: width, workingHeight: height)
+        var profiles: [CardCenteringProfileDiagnostic] = []
+        var failures: [CardCenteringProfileFailureDiagnostic] = []
+        var options = Diagnostics()
+        options.referenceWindowPlan = plan
+        if recordProfiles {
+            options.profileDiagnosticSink = { profiles.append($0) }
+            options.profileFailureDiagnosticSink = { failures.append($0) }
+        }
+        let evidence = EvidenceContext()
+        evidence.ledger = ledger
+        let result = Self.$activeDiagnostics.withValue(DiagnosticContext(options: options)) {
+            Self.$activeEvidence.withValue(evidence) {
+                innerQuadFromProfiles(pixels: lab, width: width, height: height,
+                                      outer: outer, distanceScale: 1)
+            }
+        }
+        return ReferenceWindowProbe(plan: plan, inputSHA256: sha, outerNative: outerNative,
+            innerNative: result.map { mapping.nativeQuad(fromWorking: $0.quad) },
+            hasCurvedEdge: result?.hasCurvedEdge ?? false, candidates: ledger.evidence(nativeMapping: mapping),
+            profiles: profiles, failures: failures)
     }
 
     /// Exposes the actual production raster renderer for independent landmark
@@ -1884,7 +1970,7 @@ enum CardCenteringAnalyzer {
             selectedInnerSource: innerSource
         ))
 #endif
-        return CardCenteringAnalysis(
+        let analysis = CardCenteringAnalysis(
             image: presentationImage,
             measurement: measurement,
             coordinateMapping: coordinateMapping,
@@ -1892,6 +1978,24 @@ enum CardCenteringAnalyzer {
             detectedSkewDegrees: outline?.skewDegrees,
             nativeSourceData: data
         )
+#if DEBUG
+        // A registered back has its own verified reference. For a possible
+        // front, defer the extra profile scan until the publisher content matches.
+        if registeredBackTemplateResult == nil, let reference = activePrintReference,
+           let sha = measurement.inputRecord?.sha256 {
+            return CardCenteringPrintMatcher.apply(reference, baseline: analysis, source: source) {
+                let lab: [Pixel]
+                if let profilePixels { lab = profilePixels }
+                else if let scalar, scalar.evidenceWidth == width, scalar.evidenceHeight == height { lab = scalar.lab }
+                else if let rgb = workingRGBPixels { lab = labPixels(from: rgb) }
+                else { lab = labPixels(from: try pixels(from: prepared)) }
+                return scanReferenceWindow(plan: .landscapeArtworkWindow, sha: sha,
+                    outerNative: coordinateMapping.nativeQuad(fromWorking: measurement.geometryOuterQuad),
+                    mapping: detectorMapping, lab: lab, width: width, height: height, recordProfiles: false).candidates
+            }
+        }
+#endif
+        return analysis
     }
 
     private static func confidence(
@@ -4816,14 +4920,6 @@ enum CardCenteringAnalyzer {
         // All four sides use the same card-normalized grid. This removes the
         // width-vs-height sampling pitch change that a quarter-turn used to
         // introduce, while keeping the original image pixels untouched.
-        let normalizedDepthStart = 0.004
-        let normalizedDepthEnd = 0.20
-        let depthSampleCount = 320
-        let normalizedDepths = (0..<depthSampleCount).map { index in
-            normalizedDepthStart
-                + (normalizedDepthEnd - normalizedDepthStart)
-                * Double(index) / Double(max(depthSampleCount - 1, 1))
-        }
         let radiusNormalized = numericalParameters.profileRadiusNormalized
 
         func edgeEndpoints(_ side: ProfileSide) -> (CardCenteringPoint, CardCenteringPoint) {
@@ -4874,10 +4970,32 @@ enum CardCenteringAnalyzer {
         }
 
         func profile(for side: ProfileSide) -> (depth: Double, score: Double, support: Double, line: GeometryLine?, isCurved: Bool)? {
+            let requestedBand: ClosedRange<Double>?
+            let requestedAlongBand: ClosedRange<Double>?
+#if DEBUG
+            requestedBand = activeDiagnostics?.options.referenceWindowPlan?.bands[side.rawValue]
+            requestedAlongBand = activeDiagnostics?.options.referenceWindowPlan?.alongEdgeBand(side: side.rawValue)
+#else
+            requestedBand = nil
+            requestedAlongBand = nil
+#endif
+            // Default arithmetic and grid are unchanged. A supplied layout
+            // widens/moves only this side's search, retaining the sampling pitch
+            // and room for the existing local fit around each admitted peak.
+            let normalizedDepthStart = requestedBand.map { max(0.004, $0.lowerBound - 4 * radiusNormalized) } ?? 0.004
+            let normalizedDepthEnd = requestedBand.map { $0.upperBound + 4 * radiusNormalized } ?? 0.20
+            let depthSampleCount = requestedBand == nil ? 320
+                : Int(ceil((normalizedDepthEnd - normalizedDepthStart) / ((0.20 - 0.004) / 319))) + 1
+            let normalizedDepths = (0..<depthSampleCount).map { index in
+                normalizedDepthStart + (normalizedDepthEnd - normalizedDepthStart)
+                    * Double(index) / Double(max(depthSampleCount - 1, 1))
+            }
             let samples = 240
             let maxIndex = depthSampleCount - 1
+            let progressStart = requestedAlongBand?.lowerBound ?? 0.12
+            let progressSpan = requestedAlongBand.map { $0.upperBound - $0.lowerBound } ?? 0.76
             let progressValues = (0..<samples).map {
-                0.12 + 0.76 * Double($0) / Double(max(samples - 1, 1))
+                progressStart + progressSpan * Double($0) / Double(max(samples - 1, 1))
             }
 
             // The derivative width is expressed in card-normalized units, so
@@ -4926,7 +5044,9 @@ enum CardCenteringAnalyzer {
                 supports[index] = Double(values.filter { $0 >= supportThreshold }.count) / Double(samples)
             }
 
-            let valid = scores.indices.filter { normalizedDepths[$0] >= 0.02 }
+            let valid = scores.indices.filter {
+                requestedBand?.contains(normalizedDepths[$0]) ?? (normalizedDepths[$0] >= 0.02)
+            }
             guard !valid.isEmpty else {
                 recordFailure(side, "no_valid_depths")
                 return nil
@@ -4947,7 +5067,8 @@ enum CardCenteringAnalyzer {
                     && supports[index] >= 0.24
             }
             let shallow = candidates.filter {
-                normalizedDepths[$0] >= 0.02 && normalizedDepths[$0] <= 0.12
+                requestedBand?.contains(normalizedDepths[$0])
+                    ?? (normalizedDepths[$0] >= 0.02 && normalizedDepths[$0] <= 0.12)
             }
             guard let maximumScore = shallow.map({ scores[$0] }).max(), maximumScore > 0 else {
                 recordFailure(side, "no_shallow_candidate")
@@ -4968,7 +5089,7 @@ enum CardCenteringAnalyzer {
             func coherentFit(at index: Int) -> ProfileEdgeFit? {
                 let anchor = normalizedDepths[index]
                 let localRadius = 4 * radiusNormalized
-                let progress = (0..<31).map { 0.12 + 0.76 * Double($0) / 30 }
+                let progress = (0..<31).map { progressStart + progressSpan * Double($0) / 30 }
                 typealias Observation = (point: CardCenteringPoint, strength: Double, bin: Int, progress: Double, depth: Double)
                 var observations: [Observation] = []
                 for (sampleIndex, along) in progress.enumerated() {
@@ -5056,7 +5177,7 @@ enum CardCenteringAnalyzer {
                             let a = a1 + a2 + a3
                             let b = -a1 * (x2 + x3) - a2 * (x1 + x3) - a3 * (x1 + x2)
                             let c = a1 * x2 * x3 + a2 * x1 * x3 + a3 * x1 * x2
-                            guard abs(a) * 0.76 * 0.76 / 4 <= localRadius else { continue }
+                            guard abs(a) * progressSpan * progressSpan / 4 <= localRadius else { continue }
                             func predicted(_ x: Double) -> Double { (a * x + b) * x + c }
                             guard progress.allSatisfy({ abs(predicted($0) - anchor) <= localRadius }) else { continue }
                             let consensus = observations.filter { abs(predicted($0.progress) - $0.depth) <= radiusNormalized }
@@ -5168,8 +5289,8 @@ enum CardCenteringAnalyzer {
                     rejectionReason = "not_selected_by_current_profile_selector"
                 }
                 var geometry = [
-                    point(side: side, progress: 0.15, normalizedDepth: normalizedDepths[index]),
-                    point(side: side, progress: 0.85, normalizedDepth: normalizedDepths[index])
+                    point(side: side, progress: requestedAlongBand?.lowerBound ?? 0.15, normalizedDepth: normalizedDepths[index]),
+                    point(side: side, progress: requestedAlongBand?.upperBound ?? 0.85, normalizedDepth: normalizedDepths[index])
                 ]
                 if selectedCandidate, let fit = observedFit {
                     let norm = max(fit.line.a * fit.line.a + fit.line.b * fit.line.b, .ulpOfOne)

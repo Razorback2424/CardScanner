@@ -24,6 +24,13 @@ void TCSCenteringSilhouetteRow(const TCSCenteringPixel *row, int width,
                               long *columnCounts);
 // Finite image-derived samples; sorts the caller's scratch copy in place.
 float TCSCenteringMedianFloat(float *samples, size_t count);
+// Bounded, normalized correlation for a 17 x 17 print-reference patch.
+#ifdef DEBUG
+void TCSCenteringSamplePrintGrid(const uint8_t *gray, int width, int height,
+                                const double *corners, uint8_t *grid);
+double TCSCenteringMatchPatch(const uint8_t *gray, int width, int height,
+                             const uint8_t *patch, int x, int y, double *dx, double *dy);
+#endif
 double TCSCenteringMedianDouble(double *samples, size_t count);
 void TCSCenteringGradients(const TCSCenteringPixel *lab, int width, int height,
                           float *gx, float *gy);

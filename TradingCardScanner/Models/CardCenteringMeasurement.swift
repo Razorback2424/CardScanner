@@ -905,6 +905,12 @@ struct CardCenteringConfidence: Codable, Equatable {
 }
 
 struct CardCenteringMeasurement: Equatable {
+#if DEBUG
+    var printPlacement: CardCenteringPrintPlacement?
+    var reviewedDesign: CardCenteringPrintPlacement? {
+        referenceDefinition == .matchedArtwork ? printPlacement : nil
+    }
+#endif
     var imageWidth: Int
     var imageHeight: Int
     var outer: CardCenteringEdges { outerQuad.projectedEdges }

@@ -19,6 +19,11 @@ enum CardCenteringExport {
         var notes = ["Guided estimate only. Not professional grading or a predicted grade."]
         if measurement.canReportRatios {
             notes = ["Frames reviewed by you.", measurement.referenceDefinition.reportNote]
+#if DEBUG
+            if let design = measurement.reviewedDesign {
+                notes.append(String(format: "Artwork placement for %@. Published design: %.1f%% of horizontal margin on the left, %.1f%% of vertical margin above.", design.label, design.designLeft, design.designTop))
+            }
+#endif
             if let detail = measurement.spatialRatioDetail(horizontal: true) {
                 notes.append("Left / Right: \(detail).")
             }
@@ -258,13 +263,17 @@ enum CardCenteringExport {
 
             let tileGap = unit * 18
             let metricWidth = (contentWidth - tileGap) / 2
+            var titles = ("LEFT / RIGHT", "TOP / BOTTOM")
+#if DEBUG
+            if measurement.reviewedDesign != nil { titles = ("ARTWORK LEFT / RIGHT", "ARTWORK TOP / BOTTOM") }
+#endif
             drawMetricTile(
-                title: "LEFT / RIGHT",
+                title: titles.0,
                 value: measurement.leftRightCentering,
                 rect: CGRect(x: padding, y: y, width: metricWidth, height: metricTileHeight)
             )
             drawMetricTile(
-                title: "TOP / BOTTOM",
+                title: titles.1,
                 value: measurement.topBottomCentering,
                 rect: CGRect(x: padding + metricWidth + tileGap, y: y, width: metricWidth, height: metricTileHeight)
             )

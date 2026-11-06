@@ -56,6 +56,10 @@ if [[ "$ROUTE" == Centering* ]]; then
     UI_CENTERING_FIXTURE_PATH="$CONTAINER_PATH/Documents/centering-ui-input.${UI_CENTERING_FIXTURE_SOURCE##*.}"
     cp "$UI_CENTERING_FIXTURE_SOURCE" "$UI_CENTERING_FIXTURE_PATH"
   fi
+  if [[ -n "${UI_CENTERING_PRINT_REFERENCE_SOURCE:-}" ]]; then
+    cp "$UI_CENTERING_PRINT_REFERENCE_SOURCE" "$CONTAINER_PATH/Documents/centering-print-reference.json"
+    LAUNCH_ARGS+=("-ui_debug_print_reference" "$CONTAINER_PATH/Documents/centering-print-reference.json")
+  fi
   if [[ -n "${UI_CENTERING_PRECISION_ACTIONS_SOURCE:-}" ]]; then
     UI_CENTERING_PRECISION_ACTIONS_PATH="$CONTAINER_PATH/Documents/centering-ui-actions.json"
     cp "$UI_CENTERING_PRECISION_ACTIONS_SOURCE" "$UI_CENTERING_PRECISION_ACTIONS_PATH"

@@ -1,5 +1,21 @@
 # Centering boundary evidence and implementation plan
 
+**Known-printing checkpoint — 2026-11-05.** The offline FIN 289 experiment
+recovered all four artwork edges on Starting Town. With the normal cut proposal,
+the two margin shares were within 0.755 and 0.320 pp of the source-photo review.
+The other three disputed photos supplied partial guide evidence. This pass
+supports evaluating known-printing assistance separately from automatic identity
+and reporting. [Review and scored controls](../audits/centering-guided-repair.md#exact-printing-and-artwork-placement--2026-11-05)
+
+**Bounded methodology checkpoint — 2026-11-05:** the
+[controlled layout experiment](../audits/centering-guided-repair.md#controlled-layout-experiment--2026-11-05)
+is implemented as a separate DEBUG probe and stopped at its first accuracy gate.
+The two foil fronts already matched the broad reviewed boundary regions;
+Starting Town improves only from 0/4 to 1/4 matching sides. Intended-region
+candidates are present but the existing selector chooses adjacent structures.
+No automatic layout routing or parameter sweep follows this failed gate.
+All ten saved normal-analysis records remain exactly unchanged.
+
 **Owner priority — 2026-11-05:** improve initial detection on the existing test
 images; expanding the corpus is not a prerequisite for this work. The
 [current accuracy receipt](../audits/centering-guided-repair.md#bowed-printed-borders--2026-11-05)

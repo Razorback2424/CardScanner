@@ -4,6 +4,233 @@ import UIKit
 import XCTest
 @testable import TradingCardScanner
 
+/// The same view model that publishes guides to the Centering screen loads
+/// the original camera bytes. Photo review points enter only after analysis.
+@MainActor final class CenteringPrintPilotTests: XCTestCase {
+    private func resource(_ name: String, type: String, folder: String) throws -> Data {
+        try Data(
+            contentsOf: XCTUnwrap(
+                Bundle(for: Self.self).url(
+                    forResource: name, withExtension: type,
+                    subdirectory: "TradingCards/" + folder)))
+    }
+
+    private func reference() throws -> CardCenteringPrintReference {
+        try JSONDecoder().decode(
+            CardCenteringPrintReference.self, from: resource("fin-289", type: "json", folder: "PrintReferences"))
+    }
+
+    private func settle(_ model: CardCenteringViewModel) async throws -> CardCenteringMeasurement {
+        let deadline = Date().addingTimeInterval(20)
+        while model.isAnalyzing && Date() < deadline { try await Task.sleep(for: .milliseconds(10)) }
+        XCTAssertFalse(model.isAnalyzing)
+        return try XCTUnwrap(model.measurement)
+    }
+
+    func testKnownPrintUsesMeasuredArtworkAndRequiresReview() async throws {
+        let model = CardCenteringViewModel(printReference: try reference())
+        let bytes = try resource("IMG_0780", type: "HEIC", folder: "HEIC")
+        let start = CFAbsoluteTimeGetCurrent()
+        model.loadCapturedPhoto(bytes)
+        let m = try await settle(model)
+        let seconds = CFAbsoluteTimeGetCurrent() - start
+        print("CENTERING_PRINT seconds=\(seconds) reference=\(m.referenceDefinition)")
+        XCTAssertEqual(m.referenceDefinition, .matchedArtwork)
+        XCTAssertFalse(m.canReportRatios)
+        let mapping = try XCTUnwrap(m.coordinateMapping)
+        let q = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        let strips: [(CardCenteringSide, [(Double, Double)])] = [
+            (.left, [(347, 800), (348.5, 1200), (350.1, 1600), (351.4, 2000)]),
+            (.right, [(2612.4, 800), (2617.4, 1200), (2622.6, 1600), (2626.9, 2000)]),
+            (.top, [(700, 558.4), (1200, 556.3), (1650, 553.8), (2250, 551.9)]),
+            (.bottom, [(700, 2226), (1200, 2222.5), (1650, 2219.3), (2250, 2215.3)]),
+        ]
+        for (side, pts) in strips {
+            let (a, b) = q.segment(side)
+            let dx = b.x - a.x
+            let dy = b.y - a.y
+            let worst = pts.map { abs(dx * ($0.1 - a.y) - dy * ($0.0 - a.x)) / hypot(dx, dy) }.max()!
+            print("PRINT_EDGE \(side) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side.rawValue)
+        }
+        let left = 100 * m.leftBorderDistance / (m.leftBorderDistance + m.rightBorderDistance)
+        let top = 100 * m.topBorderDistance / (m.topBorderDistance + m.bottomBorderDistance)
+        print("PRINT_MARGIN left=\(left) top=\(top)")
+        XCTAssertEqual(left, 49.91953, accuracy: 2)
+        XCTAssertEqual(top, 19.83572, accuracy: 2)
+        XCTAssertEqual(m.selectedLines.filter { $0.frame == .inner && $0.reason == .detectorProposal }.count, 4)
+        model.confirmFrames()
+        let confirmed = try XCTUnwrap(model.measurement)
+        XCTAssertTrue(confirmed.canReportRatios)
+        XCTAssertEqual(confirmed.confidence, m.confidence)
+        XCTAssertTrue(
+            CardCenteringExport.reportNotes(for: confirmed).contains {
+                $0.contains("20.0%") && $0.contains("Published design")
+            })
+    }
+
+    func testUnrelatedPhotosFallBackAndLatencyStaysWithinBudget() async throws {
+        let model = CardCenteringViewModel(printReference: try reference())
+        var durations: [Double] = []
+        for tag in ["0347", "0348", "0349", "0350", "0351", "0352", "0780", "0781", "0782", "0783"] {
+            let bytes = try resource("IMG_" + tag, type: "HEIC", folder: "HEIC")
+            let start = CFAbsoluteTimeGetCurrent()
+            model.loadCapturedPhoto(bytes)
+            let measured = try await settle(model)
+            let elapsed = CFAbsoluteTimeGetCurrent() - start
+            print("PRINT_TIMING \(tag) seconds=\(elapsed)")
+            durations.append(elapsed)
+            if tag == "0780" {
+                XCTAssertEqual(measured.referenceDefinition, .matchedArtwork)
+                continue
+            }
+            XCTAssertEqual(measured, try CardCenteringAnalyzer.analyze(bytes).measurement, tag)
+            XCTAssertFalse(measured.canReportRatios)
+            XCTAssertNil(measured.reviewedDesign)
+        }
+        XCTAssertLessThanOrEqual(durations.sorted()[5], 0.8)
+        XCTAssertLessThanOrEqual(durations.max()!, 1.5)
+    }
+
+    func testMissingReferenceAndSupersededCaptureUseOrdinaryReview() async throws {
+        let town = try resource("IMG_0780", type: "HEIC", folder: "HEIC")
+        let back = try resource("IMG_0347", type: "HEIC", folder: "HEIC")
+        let standalone = CardCenteringViewModel()
+        standalone.loadCapturedPhoto(town)
+        let ordinary = try await settle(standalone)
+        XCTAssertEqual(ordinary, try CardCenteringAnalyzer.analyze(town).measurement)
+        let assisted = CardCenteringViewModel(printReference: try reference())
+        assisted.loadCapturedPhoto(town)
+        assisted.loadCapturedPhoto(back)
+        let latest = try await settle(assisted)
+        XCTAssertEqual(latest, try CardCenteringAnalyzer.analyze(back).measurement)
+    }
+}
+
+/// Bounded experiment: supplied layout regions, unchanged pixel fitter. Review
+/// bands below check boundary identity only; they are not precision annotations.
+final class CenteringBoundaryResolverExperimentTests: XCTestCase {
+    private struct Case {
+        let name: String
+        let plan: CardCenteringAnalyzer.ReferenceWindowPlan
+        let midpointBands: [ClosedRange<Double>] // left x, top y, right x, bottom y
+    }
+    private struct Result: Encodable {
+        let fixture: String
+        let probe: CardCenteringAnalyzer.ReferenceWindowProbe
+        let baselineInner: CardCenteringQuad?
+        let midpointBands: [[Double]]
+        let measuredMidpoints: [Double]?
+        let identityChecks: [Bool]
+    }
+    private func data(_ name: String) throws -> Data {
+        try Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: name,
+            withExtension: "HEIC", subdirectory: "TradingCards/HEIC")))
+    }
+    private func midpoints(_ q: CardCenteringQuad) -> [Double] {
+        [(q.topLeft.x + q.bottomLeft.x) / 2, (q.topLeft.y + q.topRight.y) / 2,
+         (q.topRight.x + q.bottomRight.x) / 2, (q.bottomLeft.y + q.bottomRight.y) / 2]
+    }
+    private func attach<T: Encodable>(_ value: T, name: String) throws {
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let item = XCTAttachment(data: try encoder.encode(value), uniformTypeIdentifier: "public.json")
+        item.name = name; item.lifetime = .keepAlways; add(item)
+    }
+    private func overlay(_ analysis: CardCenteringAnalysis,
+                         probe: CardCenteringAnalyzer.ReferenceWindowProbe, name: String) throws {
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1
+        let image = UIGraphicsImageRenderer(size: analysis.image.size, format: format).image { context in
+            analysis.image.draw(at: .zero)
+            func draw(_ q: CardCenteringQuad, color: UIColor, dashed: Bool) {
+                let cg = context.cgContext
+                cg.setStrokeColor(color.cgColor); cg.setLineWidth(2)
+                cg.setLineDash(phase: 0, lengths: dashed ? [6, 4] : [])
+                cg.beginPath(); cg.move(to: CGPoint(x: q.points[0].x, y: q.points[0].y))
+                for p in q.points.dropFirst() { cg.addLine(to: CGPoint(x: p.x, y: p.y)) }
+                cg.closePath(); cg.strokePath()
+            }
+            if let q = analysis.measurement.geometryInnerQuad { draw(q, color: .yellow, dashed: true) }
+            if let q = probe.innerNative { draw(mapping.workingQuad(fromNative: q), color: .cyan, dashed: false) }
+        }
+        let item = XCTAttachment(image: image)
+        item.name = "\(name)-layout-cyan-baseline-yellow"; item.lifetime = .keepAlways; add(item)
+    }
+
+    func testSuppliedLayoutRecoversReviewedBoundaryRegions() throws {
+        // Fixed before running this experiment, from original-image review.
+        // The artwork target is the image rectangle, excluding both gold
+        // banners. No historical ratio or exact corner is supplied to the probe.
+        let cases: [Case] = [
+            .init(name: "IMG_0348", plan: .perimeterPrintedFrame,
+                  midpointBands: [320...350, 200...240, 2745...2775, 3690...3730]),
+            .init(name: "IMG_0351", plan: .perimeterPrintedFrame,
+                  midpointBands: [290...330, 245...295, 2655...2720, 3680...3750]),
+            .init(name: "IMG_0780", plan: .landscapeArtworkWindow,
+                  midpointBands: [335...375, 535...575, 2600...2670, 2190...2250])
+        ]
+        var results: [Result] = []
+        for test in cases {
+            try autoreleasepool {
+                let bytes = try data(test.name)
+                let baseline = try CardCenteringAnalyzer.analyze(bytes)
+                let mapping = try XCTUnwrap(baseline.coordinateMapping)
+                let probe = try CardCenteringAnalyzer.probeReferenceWindow(bytes, baseline: baseline, plan: test.plan)
+                let measured = probe.innerNative.map(midpoints)
+                let checks = test.midpointBands.enumerated().map { index, band in
+                    measured.map { band.contains($0[index]) } ?? false
+                }
+                results.append(.init(fixture: test.name, probe: probe,
+                    baselineInner: baseline.measurement.geometryInnerQuad.map(mapping.nativeQuad(fromWorking:)),
+                    midpointBands: test.midpointBands.map { [$0.lowerBound, $0.upperBound] },
+                    measuredMidpoints: measured, identityChecks: checks))
+                try overlay(baseline, probe: probe, name: test.name)
+                XCTAssertFalse(baseline.measurement.canReportRatios)
+                let after = try CardCenteringAnalyzer.analyze(bytes)
+                XCTAssertEqual(after.measurement, baseline.measurement, "Probe must not leak layout options")
+                print("CENTERING_LAYOUT fixture=\(test.name) midpoints=\(String(describing: measured)) identityChecks=\(checks) failures=\(probe.failures)")
+            }
+        }
+        try attach(results, name: "supplied-layout-control")
+        // Deliberately remains an accuracy gate. A failure stops promotion; it
+        // must not be converted into an assertion that merely expects a result.
+        for result in results {
+            XCTAssertTrue(result.identityChecks.allSatisfy { $0 },
+                          "\(result.fixture): supplied layout did not recover all reviewed boundaries; stop before automatic routing")
+        }
+    }
+
+    func testKnownArtworkWindowsAreMeasuredFromPixelsAcrossPositions() throws {
+        // Two different positions inside the same broad plan prevent a canned
+        // plan rectangle from satisfying this control.
+        for rect in [CGRect(x: 78, y: 120, width: 448, height: 330),
+                     CGRect(x: 84, y: 140, width: 430, height: 320)] {
+            let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+            let image = UIGraphicsImageRenderer(size: CGSize(width: 600, height: 840), format: format).image { c in
+                UIColor.white.setFill(); c.fill(CGRect(x: 0, y: 0, width: 600, height: 840))
+                UIColor.black.setFill(); c.fill(CGRect(x: 20, y: 20, width: 560, height: 800))
+                UIColor.cyan.setFill(); c.fill(rect)
+            }
+            let bytes = try XCTUnwrap(image.pngData())
+            let baseline = try CardCenteringAnalyzer.analyze(bytes)
+            let probe = try CardCenteringAnalyzer.probeReferenceWindow(bytes, baseline: baseline, plan: .landscapeArtworkWindow)
+            let q = try XCTUnwrap(probe.innerNative, "\(probe.failures)")
+            for (actual, expected) in zip(midpoints(q), [rect.minX, rect.minY, rect.maxX, rect.maxY]) {
+                XCTAssertEqual(actual, Double(expected), accuracy: 2)
+            }
+            XCTAssertFalse(baseline.measurement.canReportRatios)
+            XCTAssertEqual(probe.profiles.count, 4)
+            XCTAssertEqual(probe.profiles.first { $0.side == "bottom" }?.normalizedDepthEnd, 0.506)
+        }
+    }
+
+    func testProbeRejectsGeometryFromAnotherCapture() throws {
+        let baseline = try CardCenteringAnalyzer.analyze(data("IMG_0348"))
+        XCTAssertThrowsError(try CardCenteringAnalyzer.probeReferenceWindow(data("IMG_0780"),
+            baseline: baseline, plan: .landscapeArtworkWindow))
+    }
+}
+
 /// Development evaluator only. Nothing in this file is linked into the app.
 /// Fits describe transitions, not physical identity or calibrated uncertainty.
 private enum NativeResearch {

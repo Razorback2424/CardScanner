@@ -45,6 +45,10 @@ private struct CenteringShareArtifact: Transferable {
 
 @MainActor
 final class CardCenteringViewModel: ObservableObject {
+#if DEBUG
+    private let printReference: CardCenteringPrintReference?
+    init(printReference: CardCenteringPrintReference? = nil) { self.printReference = printReference }
+#endif
     private var currentExportFile: URL?
 
     func retireExportFile() {
@@ -175,7 +179,9 @@ final class CardCenteringViewModel: ObservableObject {
            let actions = try? JSONDecoder().decode([Action].self, from: data) {
             for action in actions { updatePrecisionSide(action.side, frame: action.frame, position: action.position, angle: action.angle) }
         }
-        if arguments.contains("-ui_debug_confirm_frames") { confirmFrames(reference: .userPrintedBorder) }
+        if arguments.contains("-ui_debug_confirm_frames") {
+            confirmFrames(reference: measurement?.reviewedDesign == nil ? .userPrintedBorder : nil)
+        }
         if let index = arguments.firstIndex(of: "-ui_debug_photo_rotation"), arguments.indices.contains(index + 1),
            let degrees = Double(arguments[index + 1]) { adjustRotation(by: degrees) }
         if arguments.contains("-ui_debug_reset_photo_rotation") { resetRotation() }
@@ -772,9 +778,19 @@ final class CardCenteringViewModel: ObservableObject {
         errorMessage = nil
 #if DEBUG
         clearDebugSettledMarker()
+        let reference = printReference
 #endif
         analysisTask = Task.detached(priority: .userInitiated) { [weak self] in
-            let result = Result { try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees) }
+            let result = Result {
+#if DEBUG
+                if let reference {
+                    return try CardCenteringAnalyzer.$activePrintReference.withValue(reference) {
+                        try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees)
+                    }
+                }
+#endif
+                return try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees)
+            }
             guard let self, !Task.isCancelled else { return }
             await MainActor.run {
                 guard self.analysisGeneration == requestID else { return }
@@ -816,13 +832,21 @@ final class CardCenteringViewModel: ObservableObject {
 }
 
 struct CardCenteringView: View {
+#if DEBUG
+    private let printReference: CardCenteringPrintReference?
+    init(printReference: CardCenteringPrintReference? = .launchReference) { self.printReference = printReference }
+#endif
     @ObservedObject private var collectorTools = CollectorToolsStore.shared
     @State private var isShowingOffer = false
 
     var body: some View {
         Group {
             if collectorTools.canUseCentering {
+#if DEBUG
+                GuidedCardCenteringView(printReference: printReference).id(printReference)
+#else
                 GuidedCardCenteringView()
+#endif
             } else if collectorTools.ownership == .loading {
                 ProgressView("Checking purchases…")
             } else {
@@ -1004,6 +1028,11 @@ private struct CenteringGuideSheet: View {
 
 private struct GuidedCardCenteringView: View {
     @StateObject private var model = CardCenteringViewModel()
+#if DEBUG
+    init(printReference: CardCenteringPrintReference? = nil) {
+        _model = StateObject(wrappedValue: CardCenteringViewModel(printReference: printReference))
+    }
+#endif
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @FocusState private var focusedEdgeField: EdgeField?
@@ -1363,6 +1392,35 @@ private struct GuidedCardCenteringView: View {
             ? AnyLayout(VStackLayout(spacing: 8))
             : AnyLayout(HStackLayout(spacing: 12))
         return layout {
+#if DEBUG
+            if let design = measurement.reviewedDesign {
+                artworkMetric(measurement, title: "Left margin share", design: design.designLeft, horizontal: true)
+                artworkMetric(measurement, title: "Top margin share", design: design.designTop, horizontal: false)
+            } else {
+                ordinaryMetrics(measurement)
+            }
+#else
+            ordinaryMetrics(measurement)
+#endif
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.leftRightCentering)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.topBottomCentering)
+    }
+
+#if DEBUG
+    private func artworkMetric(_ measurement: CardCenteringMeasurement, title: String, design: Double, horizontal: Bool) -> some View {
+        let first = horizontal ? measurement.leftBorderDistance : measurement.topBorderDistance
+        let other = horizontal ? measurement.rightBorderDistance : measurement.bottomBorderDistance
+        return CenteringMetric(title: title,
+            value: measurement.canReportRatios ? String(format: "%.1f%%", 100 * first / max(1e-9, first + other)) : "—",
+            detail: measurement.canReportRatios ? String(format: "Design %.1f%%", design) : "Confirm frames to read")
+    }
+#endif
+
+    @ViewBuilder private func ordinaryMetrics(_ measurement: CardCenteringMeasurement) -> some View {
             CenteringMetric(
                 title: "Left / Right",
                 value: measurement.leftRightCentering,
@@ -1373,12 +1431,6 @@ private struct GuidedCardCenteringView: View {
                 value: measurement.topBottomCentering,
                 detail: ratioDetail(measurement, horizontal: false)
             )
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .frame(maxWidth: .infinity)
-        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.leftRightCentering)
-        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: measurement.topBottomCentering)
     }
 
     /// Border widths, or positional variation along independently placed edges.
@@ -1538,6 +1590,13 @@ private struct GuidedCardCenteringView: View {
     }
 
     private func guidance(for measurement: CardCenteringMeasurement) -> String {
+#if DEBUG
+        if let design = measurement.reviewedDesign, measurement.hasValidFrameGeometry {
+            return measurement.canReportRatios
+                ? "Artwork placement compared with \(design.label)."
+                : "Check the card edges and the artwork frame for \(design.label), then confirm."
+        }
+#endif
         if measurement.geometryInnerQuad == nil {
             return "No inner frame found. Add one to begin."
         }
