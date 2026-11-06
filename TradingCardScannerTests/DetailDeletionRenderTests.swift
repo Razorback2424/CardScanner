@@ -122,6 +122,33 @@ final class DetailDeletionRenderTests: XCTestCase {
         }
     }
 
+    func testSharedCurrentChartPriceRenders65185WithItsOwnSourceAtAccessibleSizes() throws {
+        let now = Date.now
+        let price = PriceDisplay(amount: 651.85, source: .tcgplayer, sourceUpdatedAt: now, fetchedAt: now)
+        let history = [JustTCGHistoryPoint(p: 635, t: now.timeIntervalSince1970)]
+        let model = PriceHistoryChartModel.market(points: history, range: .oneWeek, currentPrice: price, now: now)
+        for size in [DynamicTypeSize.large, .accessibility3] {
+            let content = PriceHistoryChartView(model: model, currencyCode: "USD", direction: .flat,
+                selectedDate: .constant(now))
+                .padding(16).frame(width: 350).background(Color.black)
+                .environment(\.colorScheme, .dark).environment(\.dynamicTypeSize, size)
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = 2
+            let image = try XCTUnwrap(renderer.uiImage)
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+            XCTAssertTrue(text.contains("651.85"), text)
+            XCTAssertTrue(text.localizedCaseInsensitiveContains("TCGplayer"), text)
+            XCTAssertFalse(text.contains("635"), text)
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "shared-current-chart-price-\(size)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
     func testHostedDenseChartLayoutAndSnapshot() throws {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         let points = (0..<1000).map { index in

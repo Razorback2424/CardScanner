@@ -3323,6 +3323,139 @@ final class PricingTests: XCTestCase {
 }
 
 final class PriceHistoryChartModelTests: XCTestCase {
+    func testTodayUses65185SharedQuoteInsteadOf635HistoryAndPreservesEarlierPrices() throws {
+        let now = date(day: 5, hour: 18)
+        let quote = PriceDisplay(amount: 651.85, source: .tcgplayer,
+            sourceUpdatedAt: date(day: 5, hour: 12), fetchedAt: now, lastCheckedAt: now)
+        let points = [
+            JustTCGHistoryPoint(p: 610, t: date(day: 3).timeIntervalSince1970),
+            JustTCGHistoryPoint(p: 635, t: date(day: 4, hour: 23).timeIntervalSince1970),
+            JustTCGHistoryPoint(p: 635, t: date(day: 5, hour: 1).timeIntervalSince1970),
+            JustTCGHistoryPoint(p: 640, t: date(day: 5, hour: 17).timeIntervalSince1970)
+        ]
+
+        for range in PortfolioHistoryRange.allCases {
+            let model = PriceHistoryChartModel.market(points: points, range: range,
+                currentPrice: quote, now: now, timeZone: timeZone)
+            let earlier = PriceHistoryChartModel.market(points: Array(points.prefix(2)), range: range,
+                now: now, timeZone: timeZone)
+            XCTAssertEqual(Array(model.samples.dropLast()), earlier.samples)
+            let current = try XCTUnwrap(model.samples.last)
+            XCTAssertEqual(current.amount, Money(rounding: 651.85))
+            XCTAssertEqual(current.currentPrice, quote)
+            XCTAssertFalse(current.isObservation, "Today's valuation must not invent a new provider observation")
+            XCTAssertEqual(model.sample(at: now), current)
+            XCTAssertEqual(model.sample(at: date(day: 5, hour: 1)), current, "All of today's scrubbing uses the shared price")
+            XCTAssertEqual(model.sample(at: date(day: 4, hour: 23))?.amount, Money(rounding: 635))
+        }
+        XCTAssertEqual(points.map(\.p), [610, 635, 635, 640], "Provider history is never mutated")
+    }
+
+    func testSharedQuoteRefreshUpdatesTodayWithoutRefetchingHistory() throws {
+        let now = date(day: 5, hour: 18)
+        let points = [JustTCGHistoryPoint(p: 635, t: date(day: 4).timeIntervalSince1970)]
+        var quote = PriceDisplay(amount: 651.85, source: .tcgplayer, sourceUpdatedAt: now, fetchedAt: now)
+        let initial = PriceHistoryChartModel.market(points: points, range: .all,
+            currentPrice: quote, now: now, timeZone: timeZone)
+        quote.amount = 660.25
+        let refreshed = PriceHistoryChartModel.market(points: points, range: .all,
+            currentPrice: quote, now: now, timeZone: timeZone)
+        XCTAssertEqual(initial.sample(at: now)?.amount, Money(rounding: 651.85))
+        XCTAssertEqual(refreshed.sample(at: now)?.amount, Money(rounding: 660.25))
+        XCTAssertEqual(initial.samples.dropLast(), refreshed.samples.dropLast())
+        let reevaluated = PriceHistoryChartModel.market(points: points, range: .all,
+            currentPrice: quote, now: now.addingTimeInterval(1), timeZone: timeZone)
+        XCTAssertEqual(refreshed.samples, reevaluated.samples, "Reevaluating the view while scrubbing must not clear selection")
+    }
+
+    func testTodayUsesLocalDateBoundaryAndRetainsSavedQuoteAge() throws {
+        let zone = try XCTUnwrap(TimeZone(identifier: "America/Denver"))
+        let now = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-11-06T00:30:00Z"))
+        let start = PortfolioCalendar.day(containing: now, in: zone)
+        let previousDay = start.addingTimeInterval(-60)
+        let asOf = now.addingTimeInterval(-2 * 86_400)
+        let quote = PriceDisplay(amount: 651.85, source: .tcgplayer,
+            sourceUpdatedAt: asOf, fetchedAt: now, lastCheckedAt: now, refreshFailed: true)
+        let points = [JustTCGHistoryPoint(p: 625, t: previousDay.timeIntervalSince1970),
+                      JustTCGHistoryPoint(p: 635, t: start.timeIntervalSince1970)]
+        let model = PriceHistoryChartModel.market(points: points, range: .all,
+            currentPrice: quote, now: now, timeZone: zone)
+        XCTAssertEqual(model.samples.map(\.amount), [Money(rounding: 625)!, Money(rounding: 651.85)!])
+        XCTAssertEqual(model.sample(at: previousDay)?.date, previousDay)
+        XCTAssertEqual(model.sample(at: start)?.amount, Money(rounding: 651.85))
+        XCTAssertEqual(model.currentPrice?.effectiveAsOf, asOf)
+        XCTAssertEqual(model.currentPrice?.state(now: now), .stale)
+        XCTAssertEqual(model.currentPrice?.refreshFailed, true)
+        XCTAssertTrue(try XCTUnwrap(model.currentPrice).priceCaption.hasSuffix(
+            asOf.formatted(date: .abbreviated, time: .omitted)))
+    }
+
+    func testUnavailableOrIneligibleSharedQuoteDoesNotBorrowTodaysProviderPrice() {
+        let now = date(day: 5, hour: 18)
+        let points = [JustTCGHistoryPoint(p: 620, t: date(day: 4).timeIntervalSince1970),
+                      JustTCGHistoryPoint(p: 635, t: date(day: 5).timeIntervalSince1970)]
+        let quotes: [PriceDisplay] = [.unknown, .init(amount: 651.85, currencyCode: "EUR"),
+            .init(amount: .nan), .init(amount: .infinity), .init(amount: -1)]
+        for quote in quotes {
+            let model = PriceHistoryChartModel.market(points: points, range: .all,
+                currentPrice: quote, now: now, timeZone: timeZone)
+            XCTAssertEqual(model.samples.map(\.amount), [Money(rounding: 620)!])
+            XCTAssertNil(model.currentPrice)
+            XCTAssertNil(model.sample(at: now))
+        }
+        let providerOnly = PriceHistoryChartModel.market(points: points, range: .all, now: now, timeZone: timeZone)
+        XCTAssertEqual(providerOnly.samples.map(\.amount), [Money(rounding: 620)!, Money(rounding: 635)!])
+    }
+
+    func testCurrentQuoteCanDisplayWithoutHistoryAndZeroIsAValidValue() throws {
+        for amount in [651.85, 0] {
+            let now = date(day: 5, hour: 18)
+            let quote = PriceDisplay(amount: amount, source: .tcgplayer, fetchedAt: now)
+            let model = PriceHistoryChartModel.market(points: [], range: .oneWeek,
+                currentPrice: quote, now: now, timeZone: timeZone)
+            XCTAssertEqual(model.samples.count, 1)
+            XCTAssertEqual(model.sample(at: now)?.amount, Money(rounding: amount))
+            XCTAssertEqual(model.observationCount, 0)
+            XCTAssertEqual(MarketHistoryPresentation(model: model, hasHistory: false, isLoading: false, error: "offline"), .chart)
+        }
+    }
+
+    @MainActor
+    func testMegaGengarSharedSavedPriceReachesCollectionPortfolioDetailAndChart() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let card = CollectedCard(collectionKey: "mega-gengar-sir-regression", game: .pokemon,
+            providerID: "mega-gengar-sir-fixture", name: "Mega Gengar ex", setName: "Ascended Heroes",
+            setCode: "ASC", cardNumber: "fixture-SIR", rarity: "SIR", imageURL: nil,
+            thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+        context.insert(card)
+        let now = Date.now
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 651.85, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "holofoil", sourceUpdatedAt: now, fetchedAt: now)), game: .pokemon,
+            printingID: card.priceStorageID, variantID: card.variantID, at: now))
+        XCTAssertTrue(prices.save())
+        let projection = await CollectionProjectionActor.makeBackground(modelContainer: container).snapshot()
+        let snapshot = PriceSnapshotStore()
+        await snapshot.rebuild(container: container)
+        let collection = snapshot.applying(to: try XCTUnwrap(projection.rows.first))
+        let portfolio = try XCTUnwrap(snapshot.display(for: collection.priceStorageKey))
+        let summary = CatalogCardSummary(game: .pokemon, providerID: card.providerID,
+            setID: .init(game: .pokemon, providerID: "fixture"), setName: card.setName, setCode: card.setCode,
+            name: card.name, collectorNumber: card.cardNumber, thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        let catalog = OwnedCatalogPrice(rows: projection.ownership.matchingRows(for: summary))
+        XCTAssertEqual(collection.price.amount, 651.85)
+        XCTAssertEqual(portfolio, collection.price)
+        XCTAssertEqual(catalog.display, collection.price)
+        let history = [JustTCGHistoryPoint(p: 635, t: now.addingTimeInterval(-60).timeIntervalSince1970)]
+        for detailPrice in [collection.price, portfolio, catalog.display] {
+            let model = PriceHistoryChartModel.market(points: history, range: .oneWeek, currentPrice: detailPrice, now: now)
+            XCTAssertEqual(model.sample(at: now)?.amount, Money(rounding: 651.85))
+            XCTAssertEqual(model.currentPrice, detailPrice)
+        }
+    }
+
     func testDenseProviderHistoryKeepsEveryExactSampleAndDomain() throws {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         let points = (0..<5000).map { index in

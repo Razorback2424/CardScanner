@@ -458,6 +458,12 @@ struct CatalogCardDetailView: View {
             let variants = details.card.variantEvidence.catalogVariants
             let variant = summary.masterSetVariant
                 ?? variants.first(where: { $0.id == historyVariantID }) ?? variants.first
+            let currentPrice = variant.map { variant in
+                let owned = ownedPrice(for: variant)
+                if !owned.entries.isEmpty { return owned.display }
+                if case let .price(quote) = mappedPrices[variant.id] { return PriceDisplay(quote) }
+                return PriceDisplay.unknown
+            } ?? .unknown
             if summary.masterSetVariant == nil, variants.count > 1 {
                 Picker(summary.game == .yuGiOh ? "History edition" : "History finish", selection: Binding(
                     get: { variant?.id ?? "" }, set: { historyVariantID = $0 }
@@ -469,7 +475,7 @@ struct CatalogCardDetailView: View {
             }
             CardMarketHistoryPanel(request: .init(card: details.card,
                 variant: variant,
-                printRun: summary.pokemonPrintRun))
+                printRun: summary.pokemonPrintRun), currentPrice: currentPrice)
                 .id(variant?.id ?? "unknown")
         }
     }

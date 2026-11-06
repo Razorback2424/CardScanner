@@ -1106,14 +1106,13 @@ private struct CollectionCardDetailContent: View {
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
-                Text(sample.map { "JustTCG · \($0.date.formatted(date: .abbreviated, time: .omitted))" }
+                Text(sample?.priceCaption
                      ?? "No market history for this date")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.top, 10)
             } else {
-                // History is a separate provider series, not the quote used by
-                // collection/portfolio valuation. Never let it replace that quote.
+                // The headline and today's chart endpoint share this quote.
                 CardDetailHeroPrice(price: price)
                 if let source = price.source {
                     Text(price.state() == .stale ? "\(source.label) · Saved price" : source.label)
@@ -1131,7 +1130,7 @@ private struct CollectionCardDetailContent: View {
     private func makePriceHistoryModel() -> PriceHistoryChartModel {
         let signpost = PerformanceSignpost.beginInterval("CardDetail.chartModel", id: PerformanceSignpost.makeID(),
                                                          "points=\(marketHistory.count)")
-        let model = PriceHistoryChartModel.market(points: marketHistory, range: history.range)
+        let model = PriceHistoryChartModel.market(points: marketHistory, range: history.range, currentPrice: price)
         PerformanceSignpost.endInterval("CardDetail.chartModel", signpost, "samples=\(model.samples.count)")
         return model
     }
@@ -1231,7 +1230,7 @@ private struct CollectionCardDetailContent: View {
             DisclosureGroup {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(price.detailAttribution, id: \.self) { Text($0) }
-                    MarketHistoryExplanation(points: marketHistory)
+                    MarketHistoryExplanation(points: marketHistory, currentPrice: model.currentPrice)
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -2439,6 +2438,19 @@ struct PriceHistorySample: Identifiable, Equatable {
     let amount: Money
     let kind: PriceObservationKind?
     let isObservation: Bool
+    /// Today's valuation snapshot, not a new provider observation. Retains the
+    /// saved quote's actual source date and freshness, even when it is stale.
+    var currentPrice: PriceDisplay? = nil
+
+    var priceCaption: String {
+        if let currentPrice {
+            let source = currentPrice.source?.label ?? "Saved quote"
+            let status = currentPrice.state() == .current ? "Current price" : "Saved price"
+            let asOf = currentPrice.effectiveAsOf ?? date
+            return "\(source) · \(status) · \(asOf.formatted(date: .abbreviated, time: .omitted))"
+        }
+        return "JustTCG · \(date.formatted(date: .abbreviated, time: .shortened))"
+    }
 
     var annotationLabel: String? {
         kind?.chartLabel
@@ -2450,8 +2462,9 @@ struct PriceHistorySegment: Identifiable, Equatable {
     let samples: [PriceHistorySample]
 }
 
-/// Provider market history stays independent of collection ownership and local
-/// price checks. Its exact samples are retained for display and scrubbing.
+/// Earlier provider history keeps its exact samples. When a current quote is
+/// supplied, today's presentation uses that shared valuation; the provider
+/// cache and portfolio accounting are never rewritten.
 struct PriceHistoryChartModel: Equatable {
     let currencyCode: String
     let timeZone: TimeZone
@@ -2465,24 +2478,42 @@ struct PriceHistoryChartModel: Equatable {
     let checkedDayCount: Int
     var isProviderHistory = false
 
-    static func market(points: [JustTCGHistoryPoint], range: PortfolioHistoryRange, now: Date = .now) -> Self {
-        let timeZone = TimeZone(secondsFromGMT: 0)!
+    var currentPrice: PriceDisplay? { samples.last?.currentPrice }
+
+    static func market(points: [JustTCGHistoryPoint], range: PortfolioHistoryRange,
+                       currentPrice: PriceDisplay? = nil, now: Date = .now,
+                       timeZone: TimeZone = .current) -> Self {
         let calendar = PortfolioCalendar.calendar(in: timeZone)
+        let today = calendar.startOfDay(for: now)
         let valid = points.filter { $0.p.isFinite && $0.p >= 0 && $0.t.isFinite && $0.t > 0 && $0.t <= now.timeIntervalSince1970 }
             .sorted { $0.t < $1.t }
         let start = range.requestedStart(now: now, calendar: calendar, earliest: valid.first.map { Date(timeIntervalSince1970: $0.t) })
-        let samples = valid.compactMap { point -> PriceHistorySample? in
+        var samples = valid.compactMap { point -> PriceHistorySample? in
             let date = Date(timeIntervalSince1970: point.t)
-            guard date >= start, let amount = Money(rounding: point.p) else { return nil }
+            // Today's provider prices may be cached or from another source.
+            // Keep them in storage, but never present them as today's valuation,
+            // including when the shared quote is unavailable or withdrawn.
+            guard date >= start, currentPrice == nil || date < today,
+                  let amount = Money(rounding: point.p) else { return nil }
             return PriceHistorySample(id: "market-\(point.t)", date: date, day: calendar.startOfDay(for: date),
                                       amount: amount, kind: nil, isObservation: true)
+        }
+        if let currentPrice,
+           let amount = PortfolioPriceEligibility.eligibleUnitPrice(
+               amount: currentPrice.amount, currencyCode: currentPrice.currencyCode) {
+            // A stable date keeps body reevaluation during a drag from changing
+            // `samples` and immediately clearing the chart's selection.
+            let receivedAt = currentPrice.fetchedAt ?? currentPrice.sourceUpdatedAt
+            let date = receivedAt.flatMap { $0 >= today && $0 <= now ? $0 : nil } ?? today
+            samples.append(PriceHistorySample(id: "current-price", date: date, day: today,
+                amount: amount, kind: nil, isObservation: false, currentPrice: currentPrice))
         }
         let lower = samples.first?.date ?? start
         let upper = max(samples.last?.date ?? now, lower.addingTimeInterval(60))
         return Self(currencyCode: "USD", timeZone: timeZone, rangeStart: start, rangeEnd: now,
                     plotRangeStart: lower, plotRangeEnd: upper, samples: samples,
                     segments: samples.isEmpty ? [] : [.init(id: "market", samples: samples)],
-                    observationCount: samples.count, checkedDayCount: 0, isProviderHistory: true)
+                    observationCount: samples.filter(\.isObservation).count, checkedDayCount: 0, isProviderHistory: true)
     }
 
     var hasGaps: Bool {
@@ -2540,6 +2571,9 @@ struct PriceHistoryChartModel: Equatable {
     }
 
     var summary: String {
+        if currentPrice != nil {
+            return "\(observationCount) historical market prices from JustTCG. Today's value uses the current saved quote."
+        }
         if isProviderHistory { return "\(samples.count) historical market prices from JustTCG." }
         let observationLabel = observationCount == 1 ? "1 changed price" : "\(observationCount) changed prices"
         let checkLabel = checkedDayCount == 1 ? "1 checked day" : "\(checkedDayCount) checked days"
@@ -2549,9 +2583,15 @@ struct PriceHistoryChartModel: Equatable {
     /// Scrubbing follows the known step within a checked span. A gap never
     /// borrows a distant price, even when that observation is the nearest one.
     func sample(at date: Date) -> PriceHistorySample? {
+        if let current = samples.last, current.currentPrice != nil,
+           date >= current.day, date <= rangeEnd {
+            return current
+        }
         guard plotRange.contains(date) else { return nil }
         if isProviderHistory {
-            return samples.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }
+            return samples.lazy.filter { $0.currentPrice == nil }.min {
+                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+            }
         }
         for segment in segments {
             guard let first = segment.samples.first, let last = segment.samples.last else { continue }
@@ -2607,6 +2647,7 @@ struct YuGiOhPricingNotice: View {
 struct CardMarketHistoryPanel: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     let request: CardMarketHistoryRequest
+    var currentPrice: PriceDisplay? = nil
     @State private var points: [JustTCGHistoryPoint] = []
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection: Date?
@@ -2616,25 +2657,29 @@ struct CardMarketHistoryPanel: View {
     @State private var retryID = 0
 
     var body: some View {
-        let model = PriceHistoryChartModel.market(points: points, range: range)
+        let model = PriceHistoryChartModel.market(points: points, range: range, currentPrice: currentPrice)
         let direction: CardDetailMovementDisplay.Direction = model.samples.first.flatMap { first in
             model.samples.last.map { $0.amount < first.amount ? .negative : ($0.amount > first.amount ? .positive : .flat) }
         } ?? .flat
         VStack(alignment: .leading, spacing: 12) {
             Text("Market price history").font(.headline).padding(.horizontal, 16)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("JustTCG historical prices · Collection value uses the saved quote")
+            Text("JustTCG historical prices · Today uses the current quote")
                 .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
                 .fixedSize(horizontal: false, vertical: true)
             if let selection, let sample = model.sample(at: selection) {
-                Text("\(sample.amount.formatted(currencyCode: "USD")) · \(sample.date.formatted(date: .abbreviated, time: .omitted))")
+                Text("\(sample.amount.formatted(currencyCode: "USD")) · \(sample.priceCaption)")
                     .font(.subheadline.monospacedDigit()).padding(.horizontal, 16)
             }
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,
                                       selection: $selection, retry: { retryID += 1 })
             DisclosureGroup {
-                MarketHistoryExplanation(points: points).font(.caption).foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(model.currentPrice?.detailAttribution ?? [], id: \.self) { Text($0) }
+                    MarketHistoryExplanation(points: points, currentPrice: model.currentPrice)
+                }
+                .font(.caption).foregroundStyle(.secondary)
             } label: {
                 Text("Price details").frame(minHeight: 44)
             }
@@ -2804,10 +2849,12 @@ struct MarketHistoryChartContent: View {
                 .frame(maxWidth: .infinity)
             }
 
-            if hasHistory {
+            if hasHistory || !model.samples.isEmpty {
                 CardDetailRangeSelector(selection: range, direction: direction) { range = $0; selection = nil }
                 HStack(spacing: 8) {
-                    Text(model.samples.count > 1 ? "JustTCG · Drag to explore" : "JustTCG price history")
+                    Text(model.currentPrice != nil
+                         ? (model.samples.count > 1 ? "History + current price · Drag to explore" : "Current price")
+                         : (model.samples.count > 1 ? "JustTCG · Drag to explore" : "JustTCG price history"))
                     Spacer(minLength: 0)
                     if isLoading {
                         ProgressView().controlSize(.mini).accessibilityLabel("Updating price history")
@@ -2816,7 +2863,7 @@ struct MarketHistoryChartContent: View {
                 .font(.caption).padding(.horizontal, 16)
                 if !isLoading, error != nil {
                     HStack {
-                        Text("Showing saved history. Couldn’t update.").font(.caption)
+                        Text("Showing saved prices. Couldn’t update history.").font(.caption)
                         Button("Retry", action: retry).font(.subheadline).foregroundStyle(.tint).frame(minHeight: 44)
                     }
                     .padding(.horizontal, 16)
@@ -2864,10 +2911,13 @@ private struct UnpricedReasonWhyButton: View {
 
 private struct MarketHistoryExplanation: View {
     let points: [JustTCGHistoryPoint]
+    var currentPrice: PriceDisplay? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("History is provided by JustTCG for this printing and may differ from the current quote. It includes prices from before you added the card.")
+            Text(currentPrice != nil
+                 ? "Today uses the current quote shown above. Earlier history comes from JustTCG for this printing, including before you added the card."
+                 : "History is provided by JustTCG for this printing. It includes prices from before you added the card.")
             if let latest = points.last {
                 Text("Latest history point · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
             }
@@ -2929,8 +2979,7 @@ struct PriceHistoryChartView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 32)
-            } else if model.observationCount == 1,
-                      let sample = model.samples.first(where: { $0.isObservation }) {
+            } else if model.samples.count == 1, let sample = model.samples.first {
                 CardDetailSinglePricePoint(
                     sample: sample,
                     currencyCode: currencyCode
@@ -3043,7 +3092,7 @@ struct PriceHistoryChartView: View {
                 .accessibilityLabel("Unit price history")
                 .accessibilityValue(selectedDate.map { date in
                     model.sample(at: date).map {
-                        "\($0.amount.formatted(currencyCode: currencyCode)), \($0.date.formatted(date: .abbreviated, time: .shortened))"
+                        "\($0.amount.formatted(currencyCode: currencyCode)), \($0.priceCaption)"
                     } ?? "Not checked, \(date.formatted(date: .abbreviated, time: .omitted))"
                 } ?? model.summary)
                 .accessibilityHint("Drag horizontally to explore historical market prices. Lines connect provider observations.")
@@ -3118,13 +3167,17 @@ private struct CardDetailSinglePricePoint: View {
                     .font(.title2.weight(.semibold).monospacedDigit())
             }
             .frame(maxWidth: .infinity)
-            Text("Market price · \(sample.date.formatted(date: .abbreviated, time: .omitted))")
+            Text(sample.priceCaption)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             if let annotationLabel = sample.annotationLabel {
                 Text(annotationLabel)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.orange)
+            } else if sample.currentPrice != nil {
+                Text("Earlier price history isn’t available for this period.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             } else {
                 Text("JustTCG has one price available for this period.")
                     .font(.caption)
@@ -3135,7 +3188,7 @@ private struct CardDetailSinglePricePoint: View {
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("One recorded unit price")
-        .accessibilityValue("\(sample.amount.formatted(currencyCode: currencyCode)), \(sample.date.formatted(date: .abbreviated, time: .shortened))")
+        .accessibilityValue("\(sample.amount.formatted(currencyCode: currencyCode)), \(sample.priceCaption)")
     }
 }
 
