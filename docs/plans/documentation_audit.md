@@ -1,12 +1,53 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-05
+**Audit date:** 2026-10-02; review evidence updated 2026-11-06
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-05
+## Current authority boundary — updated 2026-11-06
+
+**Known-printing centering control — 2026-11-05.** The exact FIN 289 design
+resolved all four Starting Town artwork sides offline. The default detector,
+earlier broad-layout control and new exact-print control have separate accuracy
+receipts. The three other disputed photos retain partial guide evidence.
+[Exact-print measurement record](../audits/centering-guided-repair.md#exact-printing-and-artwork-placement--2026-11-05)
+The debug-only exact-print reference control and its offline evidence are on
+`main` in `f8c05c6`; production routing remains disabled.
+
+**Centering controlled layout stop — 2026-11-05:** the
+[bounded experiment](../audits/centering-guided-repair.md#controlled-layout-experiment--2026-11-05)
+separates supplied design regions from pixel fitting. It stops before automatic
+routing: Starting Town still selects adjacent frame/banner structures on three
+sides even though intended-region candidates are present. The two foil fronts
+already passed these coarse identity checks before the probe; their control
+passes are not new precision or historical-ratio passes. All ten normal-analysis
+records exactly match the prior baseline. Automatic reporting remains disabled.
+
+**Today's chart quote consistency — 2026-11-05:** the owner superseded the
+individual-card chart's earlier allowance for today's JustTCG price to differ
+from the saved current quote. The [chart authority](price_history_chart_plan.md)
+now requires the shared selected quote for today's endpoint and scrubbing in
+Collection and catalog details. Earlier provider history and its stored cache
+remain intact; portfolio replay and persistence schemas are unchanged.
+The exact $651.85 current / $635 history regression passes. The final related
+simulator selection passes 275/275 methods, including history contracts,
+portfolio trust and accessible chart rendering; the initial zero-test host
+bootstrap failure is retained separately. The chart authority records the
+external-SSD artifacts. This does not establish live-provider or device acceptance.
+The implementation and regression coverage are on `main` in `3527a29`.
+
+**Browse pagination concurrency — 2026-11-05:** the
+[follow-up investigation](../../app_review_fix_plan.md#browse-pagination-render-investigation--2026-11-05)
+reproduces the earlier intermittent failure with controlled response ordering.
+It is an app bug: the shared page batch blocks a newly ready lane, rather than
+a request lost by the fixture or an insufficient wait. The
+[Browse contract](browse_screen_spec.md) now specifies independent lane tasks
+within the same footer. Final isolated verification passes 80 repeated native
+executions and 254 broader tests; the arm64 Release simulator build passes.
+The fix record owns the isolated-source scope; earlier failing bundles remain
+retained and are not recast as passing. The source is on `main` in `9b5984f`.
 
 **Browse history retirement — 2026-11-05:** the unconsumed Stage 4A recorder,
 renderer, dataset-stamp request and diagnostics were removed in the 2026-11-05

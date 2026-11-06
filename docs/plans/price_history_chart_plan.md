@@ -1,7 +1,7 @@
 # Individual-card market price history
 
-**Status:** implemented locally — 2026-10-18. Focused simulator verification
-is recorded in the root [progress log](../../progress.md); live-provider,
+**Status:** implemented on `main` in `3527a29` — 2026-11-06. Focused simulator
+verification is recorded in the root [progress log](../../progress.md); live-provider,
 physical-device and release acceptance are separate checks.
 
 **Current-quote correction — 2026-11-05:** the owner requires Portfolio,
@@ -10,8 +10,8 @@ The shared endpoint and regression coverage are implemented and verified by
 275 related simulator tests (all passed, zero skipped). This supersedes the
 earlier contract allowing today's JustTCG point to disagree with the current quote.
 
-Verification used the correction applied above `0a11fc7`: 16 focused checks
-passed, followed by 275 pricing, chart, history-contract, portfolio-trust and
+Verification used the source committed as `3527a29`, based on `0a11fc7`: 16
+focused checks passed, followed by 275 pricing, chart, history-contract, portfolio-trust and
 detail-render checks. The exact $651.85 saved quote / $635 provider-history
 regression passes across ranges; earlier dates, quote refresh, local midnight,
 stale/unavailable quotes and standard/accessibility rendering are covered.

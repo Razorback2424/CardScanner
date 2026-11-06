@@ -1,3 +1,104 @@
+# 2026-11-05 — Debug Centering screen print pilot
+
+Target: the actual Centering screen on the dedicated iPhone 17 Pro simulator,
+with original Starting Town bytes and a caller-supplied print reference.
+Acceptance requires the frozen four native-pixel and two-percentage-point
+limits, all nine other photos falling back to their ordinary measurements,
+the existing 0.8 s median / 1.5 s maximum budget, and human confirmation.
+Inspect pending and confirmed review for placement labels, design comparison,
+visible guides and unclipped controls. The first translation-only build fell
+back on Starting Town and exceeded the median timing budget; the later
+controlled-layout findings are recorded below. Results are on T7 under
+`CodexBuilds/CardScanner-PrintPilot-20261105/`.
+
+# 2026-11-05 — Exact-print Starting Town control
+
+Reviewed the four disputed originals independently of detector overlays.
+Starting Town supported a full artwork-placement measurement against the
+publisher's exact FIN 289 image. The offline recognizer selected all four
+artwork edges from 34 saved detector candidates. The worst checked line error
+was 1.08 native pixels. Errors with the normal cut were 0.755 pp horizontally
+and 0.320 pp vertically. Both transformation controls passed and an unrelated
+card abstained. The other three photos supplied partial straight-guide evidence.
+Four native audit tests passed and all ten historical annotations validated.
+The app continues to require confirmation. The experiment is packaged as
+research evidence and committed on `main` in `f8c05c6`.
+[Measurement record](docs/audits/centering-guided-repair.md#exact-printing-and-artwork-placement--2026-11-05)
+
+# 2026-11-05 — Stopped controlled centering layout experiment
+
+Implemented the proposed first control above `0a11fc7`: a separate DEBUG probe
+supplies broad design regions to the existing pixel fitter and preserves native
+candidate evidence. Two shifted synthetic artwork windows pass, as does rejection
+of geometry from another capture. The three-front accuracy gate fails: the two
+foil fronts already pass the coarse identity regions, while Starting Town moves
+from 0/4 to only 1/4 matching sides. Intended-region candidates exist, but the
+selector prefers adjacent frame/banner structures. Per the owner's stop rule,
+no automatic routing, threshold sweep or production promotion follows.
+
+All ten normal-analysis records exactly match the saved baseline. Historical
+accuracy remains 5/9 within both 2 pp limits, four failures and one correct
+no-reference result. The unchanged historical accuracy method still fails;
+35/35 separate preservation regressions pass, including determinism, provenance,
+confirmation uncertainty and timing (upper median 0.627 s, max 0.802 s). The arm64
+Release simulator build passes. The [centering ledger](docs/audits/centering-guided-repair.md#controlled-layout-experiment--2026-11-05)
+records the fixed criteria, inspected overlays, exact receipts and external-SSD
+source/evidence snapshot. No annotations or user-facing flow changed; automatic
+reporting remains disabled. The debug-only probe and evidence are committed on
+`main` in `f8c05c6`; no production routing was promoted.
+
+# 2026-11-05 — Independent Browse pagination
+
+Traced the intermittent render failure to an app concurrency bug: a shared
+pagination batch blocked a lane whose initial response arrived later. The
+single footer now owns independent card/sealed tasks, retaining query, error,
+filter and hidden-screen gates. Each lane's cancellation revision also resumes
+a footer that returned before its cancelled request settled. The two production
+files have 41 fewer net lines; no persistence schema changed.
+
+The original render test body, assertions and deadlines are unchanged. Its
+unmodified baseline failed 8/10 repetitions; the final source passes **80 repeated
+executions across four native cases (20/20 each)** and **254 distinct broader
+Browse tests**, zero failures/skips. Controlled rendering covers both initial
+response orders, departure/return and footer scroll-out/re-entry. Stored counts
+and console records reconcile, including four distinct methods in the repeated
+bundle and 80 executions in its console log.
+
+Verification uses an isolated `0a11fc7` plus this Browse patch; concurrent
+chart/detail changes are preserved and excluded from that evidence. The exact
+final **arm64 Release simulator build passed**; whitespace, project-file syntax
+and added local documentation links pass. The source is committed on `main` in
+`9b5984f`. See the
+[fix record](app_review_fix_plan.md#browse-pagination-render-investigation--2026-11-05)
+for retained reproductions, the separate zero-test host-launch failure, final
+source hashes and external-SSD artifacts. Physical-device and release gates
+remain separate.
+
+# 2026-11-05 — Shared current quote for today's card chart
+
+Corrected the card chart above `0a11fc7` so today's plotted and scrubbed price
+uses the same selected `PriceDisplay` as Collection, Portfolio and card detail.
+Catalog detail also passes its displayed owned or catalog quote for the selected
+finish. Earlier provider dates and all stored history remain intact; today's
+provider samples are replaced only in presentation. Quote refreshes update the
+endpoint independently of the six-hour history cache. Source dates, stale-price
+labels and unavailable/withdrawn-price behavior remain truthful. No persistence
+schema or portfolio-accounting changes were made.
+
+Added six model/integration regressions and one rendered regression, including
+the exact $651.85 current / $635 history case, earlier-price preservation,
+refreshes, local midnight, quote age, unavailable prices and accessible rendering.
+The focused selection passes 16/16; the final related pricing, chart, history,
+portfolio-trust and detail-render selection passes **275/275**, zero skipped.
+Both synthetic render attachments were visually inspected. The initial test
+host terminated before connecting (zero tests); its result is retained beside
+the passing bundles on the external T7 SSD in
+`CardScannerPriceConsistency-20261105/`. The chart source and regressions are
+committed on `main` in `3527a29`; the Browse fix is committed in `9b5984f`.
+See the
+[chart authority](docs/plans/price_history_chart_plan.md).
+Physical-device, live-provider and release acceptance remain separate.
+
 # 2026-11-05 — High-confidence refinement fixes
 
 Implemented the source-proven review fixes from clean `40403c1`: enforce graded
