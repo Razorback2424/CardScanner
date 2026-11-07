@@ -2460,13 +2460,13 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         // Use an ordinary provider change, not a reviewed immediate-repair ID.
-        let card = celebrationCard(variant: .normal, id: "finish-confirmation-001")
+        let card = celebrationCard(variant: .reverse, id: "finish-confirmation-001")
         _ = try store.add(
             card,
-            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            resolved: ResolvedVariant(variant: .reverse, resolution: .uniqueInCatalog),
             source: .scan
         )
-        let row = try XCTUnwrap(store.card(forKey: card.collectionKey(variant: .normal)))
+        let row = try XCTUnwrap(store.card(forKey: card.collectionKey(variant: .reverse)))
         let targets = try PriceRefreshTargets.make(
             context: context,
             usesPriceFallback: false,
@@ -2510,6 +2510,44 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(confirmed.repairs.count, 1)
         XCTAssertEqual(confirmed.repairs.first?.kind, .catalogCorrection)
         XCTAssertTrue(confirmed.repairs.first?.requiresConfirmation == true)
+    }
+
+    func testSoleSupportedScanFinishDoesNotAuthorizeBackgroundFinishChanges() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let stored = celebrationCard(variant: .normal, id: "incomplete-coverage-001")
+        for resolved in [ResolvedVariant(variant: nil, resolution: .catalogSilent),
+                         ResolvedVariant(variant: .reverse, resolution: .uniqueInCatalog)] {
+            _ = try store.add(stored, resolved: resolved, source: .scan)
+        }
+        guard case let .pokemon(raw, code) = celebrationCard(variant: .holo, id: stored.providerID).legacyIdentity else {
+            return XCTFail("Expected Pokémon evidence")
+        }
+        var incomplete = raw
+        incomplete.finishCoverageVerified = false
+        let freshCard = IdentifiedCard.pokemon(incomplete, setCode: code)
+        XCTAssertEqual(VariantResolver.resolveAcquisition(freshCard.variantEvidence, printedEdition: .absent),
+            .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
+
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        for row in rows {
+            XCTAssertNil(PokemonFinishReconciliation.repair(
+                storedVariantID: row.variantID, storedResolution: row.variantResolution,
+                itemKind: row.itemKind, printRun: row.pokemonPrintRun, card: freshCard
+            ), "A scan's sole supported option cannot backfill or rekey an existing holding")
+        }
+        let targets = try PriceRefreshTargets.make(context: context, usesPriceFallback: false, includeImported: true)
+        XCTAssertEqual(targets.count, 2)
+        let firstSeenAt = Date(timeIntervalSince1970: 1_700_000_000)
+        for offset in [0, 25 * 60 * 60] as [TimeInterval] {
+            let assessment = PokemonFinishReconciliation.assess(
+                targets: targets, card: freshCard, rows: rows,
+                refreshID: UUID(), at: firstSeenAt.addingTimeInterval(offset)
+            )
+            XCTAssertTrue(assessment.repairs.isEmpty)
+            XCTAssertTrue(assessment.pendingPatches.isEmpty, "Incomplete coverage cannot stage an automatic correction")
+        }
     }
 
     func testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview() async throws {
@@ -2582,19 +2620,19 @@ final class CollectionActivityHistoryTests: XCTestCase {
     func testPriceRefreshActorPricesUnderTheConfirmedCatalogFinishKey() async throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
-        let staleCard = celebrationCard(variant: .normal)
+        let staleCard = celebrationCard(variant: .reverse)
         let freshCard = celebrationCard(variant: .holo, withPrice: true)
         _ = try store.add(
             staleCard,
-            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            resolved: ResolvedVariant(variant: .reverse, resolution: .uniqueInCatalog),
             source: .scan
         )
-        let row = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .normal)))
+        let row = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .reverse)))
         let priorRefreshID = UUID()
         row.pendingCatalogFinishID = PhysicalVariant.holo.id
         row.pendingCatalogFinishFirstSeenAt = Date.now.addingTimeInterval(-25 * 60 * 60)
         row.pendingCatalogFinishRefreshID = priorRefreshID
-        row.justTCGVariantID = "normal-finish-market-id"
+        row.justTCGVariantID = "reverse-finish-market-id"
         try context.save()
 
         let modelContainer = try XCTUnwrap(container)
@@ -2634,7 +2672,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertNil(priceStore.record(forKey: PriceRecord.key(
             game: .pokemon,
             printingID: staleCard.providerID,
-            variantID: PhysicalVariant.normal.id
+            variantID: PhysicalVariant.reverse.id
         )))
         let repaired = try XCTUnwrap(
             try verificationContext.fetch(FetchDescriptor<CollectedCard>())

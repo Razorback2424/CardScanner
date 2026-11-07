@@ -722,7 +722,8 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         }
     }
 
-    func add(_ candidate: CollectionCommitCandidate) throws -> CollectionMutation {
+    func add(_ candidate: CollectionCommitCandidate,
+             shouldContinue: @escaping StorageGenerationContinuation = { true }) throws -> CollectionMutation {
         let persistenceID = PerformanceSignpost.makeID()
         let signpostState = PerformanceSignpost.beginInterval(
             "scannerPersistence",
@@ -735,6 +736,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
 
         return try performOwnershipWrite { context in
           do {
+            guard shouldContinue() else { throw CancellationError() }
             try validateScanAcquisition(candidate, in: context)
             let store = CollectionStore(context: context)
 
@@ -748,7 +750,8 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                         setReleaseOrder: candidate.card.setReleaseOrder,
                         pokemonPrintRun: candidate.pokemonPrintRun,
                         identityResolution: candidate.identityResolution,
-                        resolved: candidate.resolved
+                        resolved: candidate.resolved,
+                        shouldContinue: shouldContinue
                     )
                 case .cardNotTracked, .noGradedListings, .gradeNotTracked,
                      .unavailable, .none:
@@ -763,7 +766,8 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                         resolved: candidate.resolved,
                         savesChanges: false
                     )
-                    try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
+                    try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier,
+                        shouldContinue: shouldContinue)
                     store.invalidateIdentityAliasCache()
                     return mutation
                 }
@@ -790,7 +794,8 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             // no provider observation must leave the price ledger untouched.
             stagePrice(candidate.price, for: stored, in: context)
             try validateScanAcquisition(candidate, in: context)
-            try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
+            try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier,
+                shouldContinue: shouldContinue)
             return mutation
           } catch {
             // The staged add, ledger event, activity and price write are one
@@ -1035,9 +1040,11 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         }
     }
 
-    private func saveModelContext(_ context: ModelContext, acquisitionIdentifier: ScanIdentifier? = nil) throws {
+    private func saveModelContext(_ context: ModelContext, acquisitionIdentifier: ScanIdentifier? = nil,
+                                  shouldContinue: StorageGenerationContinuation? = nil) throws {
         try CollectionStore(context: context).validatePendingGameWrites()
         try validateAcquisitionContext(acquisitionIdentifier, in: context)
+        guard shouldContinue?() ?? true else { throw CancellationError() }
         #if DEBUG
         if let saveOverrideForTesting {
             self.saveOverrideForTesting = nil
@@ -3630,7 +3637,8 @@ struct CollectionStore {
         resolved: ResolvedVariant = ResolvedVariant(
             variant: nil,
             resolution: .userConfirmed
-        )
+        ),
+        shouldContinue: StorageGenerationContinuation? = nil
     ) throws -> CollectionMutation {
         do {
             try requireWritableGame(card.game)
@@ -3692,7 +3700,7 @@ struct CollectionStore {
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: owner)
                 storeGradedQuote(variant, for: owner)
-                try commit()
+                try commit(shouldContinue: shouldContinue)
                 return CollectionMutation(
                     collectionKey: owner.collectionKey,
                     activityID: nil,
@@ -3747,7 +3755,7 @@ struct CollectionStore {
                 deltaQuantity: 1,
                 ledgerOperationIDs: [operationID]
             )
-            try commit()
+            try commit(shouldContinue: shouldContinue)
             return CollectionMutation(
                 collectionKey: existing.collectionKey,
                 activityID: activity.id,
@@ -3811,7 +3819,7 @@ struct CollectionStore {
             deltaQuantity: 1,
             ledgerOperationIDs: [operationID]
         )
-        try commit()
+        try commit(shouldContinue: shouldContinue)
             return CollectionMutation(
                 collectionKey: key,
                 activityID: activity.id,
@@ -4696,6 +4704,53 @@ struct CollectionStore {
         return rows.first
     }
 
+    /// An import may use a grader/grade key before a market variant is known.
+    /// The certificate still names one physical owner; a conflicting import
+    /// must remain a failed row rather than create a second acquisition.
+    func certifiedGradedCard(for entry: CollectionCSVEntry) throws -> CollectedCard? {
+        guard entry.itemKind == .gradedCard,
+              let certificate = entry.certificationNumber, !certificate.isEmpty else { return nil }
+        let rows = try gradedCards(certificationNumber: certificate).filter {
+            entry.gradingCompany == nil || $0.gradingCompany == nil
+                || $0.gradingCompany == entry.gradingCompany
+        }
+        guard rows.count <= 1 else {
+            throw CollectionStoreError.ledgerConflict("certificate \(certificate) matches multiple graded rows")
+        }
+        guard let row = rows.first else { return nil }
+        guard row.cardGame == entry.game,
+              (row.catalogProviderID ?? row.providerID) == (entry.catalogProviderID ?? entry.providerID),
+              row.gradingCompany == entry.gradingCompany,
+              entry.gradingCompany != nil || row.collectionKey == entry.collectionKey,
+              row.gradeRaw == entry.grade?.value,
+              row.gradeLabel == entry.grade?.label,
+              row.gradingQualifier == entry.grade?.qualifier,
+              Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw))
+                == Set(MagicTreatmentKeyCodec.canonicalIDs(from: entry.magicTreatmentIDsRaw)),
+              row.magicTreatmentQualifiers.isEmpty || entry.magicTreatmentQualifiers.isEmpty
+                || row.magicTreatmentQualifiers == entry.magicTreatmentQualifiers else {
+            throw CollectionStoreError.ledgerConflict("certificate \(certificate) has conflicting physical identity")
+        }
+        for (stored, imported) in [
+            (row.variantID, entry.variant?.id),
+            (row.pokemonPrintRunRaw, entry.pokemonPrintRun?.rawValue),
+            (row.justTCGCardID, entry.justTCGCardID),
+            (row.justTCGVariantID, entry.justTCGVariantID),
+            (row.justTCGAPIVersion, entry.justTCGAPIVersion),
+            (row.marketRegionRaw, entry.marketRegionRaw)
+        ] where stored != nil && imported != nil && stored != imported {
+            throw CollectionStoreError.ledgerConflict("certificate \(certificate) has conflicting market or finish identity")
+        }
+        return row
+    }
+
+    private func gradedCards(certificationNumber: String) throws -> [CollectedCard] {
+        let gradedRaw = CollectionItemKind.gradedCard.rawValue
+        return try context.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate {
+            $0.itemKindRaw == gradedRaw && $0.certificationNumber == certificationNumber
+        }))
+    }
+
     private func certifiedGradedCard(
         underlyingProviderID: String,
         company: GradingCompany,
@@ -4703,15 +4758,7 @@ struct CollectionStore {
         certificationNumber: String,
         treatmentIDs: [String]
     ) throws -> CollectedCard? {
-        let gradedRaw = CollectionItemKind.gradedCard.rawValue
-        let rows = try context.fetch(
-            FetchDescriptor<CollectedCard>(
-                predicate: #Predicate {
-                    $0.itemKindRaw == gradedRaw
-                        && $0.certificationNumber == certificationNumber
-                }
-            )
-        ).filter { row in
+        let rows = try gradedCards(certificationNumber: certificationNumber).filter { row in
             let sharesUnderlyingID = row.catalogProviderID == underlyingProviderID
                 || row.providerID == underlyingProviderID
             guard sharesUnderlyingID,
@@ -5296,8 +5343,10 @@ struct CollectionStore {
     /// price metadata in one store transaction. On any persistence failure the
     /// in-memory context is rolled back before the error reaches the caller, so
     /// a later unrelated save cannot accidentally commit a half-failed action.
-    private func commit(savesChanges: Bool = true) throws {
+    private func commit(savesChanges: Bool = true,
+                        shouldContinue: StorageGenerationContinuation? = nil) throws {
         try validatePendingGameWrites()
+        guard shouldContinue?() ?? true else { throw CancellationError() }
         guard savesChanges else { return }
         if CollectionWriteSerializer.enforcesOwnershipRule {
             assert(

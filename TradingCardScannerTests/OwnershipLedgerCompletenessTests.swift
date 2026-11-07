@@ -7,6 +7,47 @@ import XCTest
 final class OwnershipLedgerCompletenessTests: XCTestCase {
     private let collectionKey = "pokemon:test:001:normal"
 
+    func testScannerStorageFenceRejectsBeforeMutationAndRollsBackBeforeSave() async throws {
+        for kind in ["raw", "unbound", "bound"] {
+            for allowedChecks in [0, 1] {
+                let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+                let grade = CardGrade(value: "10")
+                let slab: GradedSlabEvidence? = kind == "raw" ? nil : .init(company: .psa,
+                    grade: grade, certificationNumber: "FENCE123", labelCardText: [])
+                let subject = ScanSubject(identifier: .pokemon(setCode: "PRE", cardNumber: "074",
+                    printedTotal: 131, setDefinition: .init(printedCode: "PRE", tcgdexSetID: "sv08.5",
+                        officialCount: 131, releaseIndex: 0)), slab: slab)
+                let variant = GradedVariant(id: "fenced-graded", cardID: "fenced-card", company: .psa,
+                    grade: grade, printing: "Normal", marketPriceUSD: 100, updatedAt: nil)
+                let candidate = CollectionCommitCandidate(resolvedScan: .init(
+                    request: .init(subject: subject, purpose: .collection, generation: 1),
+                    card: try ProductionRowFixtures.pokemonCard(),
+                    resolved: .init(variant: .normal, resolution: .uniqueInCatalog),
+                    pokemonPrintRun: nil, options: [.normal],
+                    gradedOutcome: kind == "bound" ? .bound(variant) : nil))
+                let probe = ScannerStorageFenceProbe(allowedChecks: allowedChecks)
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                do {
+                    _ = try await writer.add(candidate, shouldContinue: { probe.shouldContinue() })
+                    XCTFail("\(kind) must reject stale storage at check \(allowedChecks)")
+                } catch is CancellationError {}
+                let context = ModelContext(container)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectionActivity>()), 0)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceRecord>()), 0)
+                XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), 0)
+
+                _ = try await writer.add(candidate, shouldContinue: { true })
+                let saved = ModelContext(container)
+                XCTAssertEqual(try saved.fetchCount(FetchDescriptor<CollectedCard>()), 1)
+                XCTAssertEqual(try saved.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+                XCTAssertEqual(try saved.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+            }
+        }
+    }
+
     private func makeContainer() throws -> ModelContainer {
         try ModelContainer(
             for: Schema([
@@ -373,6 +414,21 @@ final class OwnershipLedgerCompletenessTests: XCTestCase {
             file: file,
             line: line
         )
+    }
+}
+
+private final class ScannerStorageFenceProbe: @unchecked Sendable {
+    private let lock = NSLock()
+    private var allowedChecks: Int
+
+    init(allowedChecks: Int) { self.allowedChecks = allowedChecks }
+
+    func shouldContinue() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard allowedChecks > 0 else { return false }
+        allowedChecks -= 1
+        return true
     }
 }
 

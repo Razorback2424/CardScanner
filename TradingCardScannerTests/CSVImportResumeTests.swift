@@ -4,6 +4,109 @@ import XCTest
 
 @MainActor
 final class CSVImportResumeTests: XCTestCase {
+    func testCertifiedImportsShareOneOwnerAcrossBoundAndUnboundKeys() throws {
+        for boundFirst in [true, false] {
+            let container = try makeContainer()
+            let bound = try certifiedEntry(marketVariant: "market-slab")
+            let unbound = try certifiedEntry()
+            let entries = boundFirst ? [bound, unbound] : [unbound, bound]
+            for entry in entries {
+                let result = try CollectionCSV.apply(.init(entries: [entry], skippedRows: 0,
+                    skippedCSVText: nil), to: ModelContext(container))
+                XCTAssertTrue(result.failedRows.isEmpty)
+            }
+            let context = ModelContext(container)
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            let owner = try XCTUnwrap(rows.first)
+            XCTAssertEqual(owner.quantity, 1)
+            XCTAssertEqual(owner.collectionKey, entries[0].collectionKey)
+            XCTAssertEqual(owner.justTCGVariantID, "market-slab")
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+
+            let repeated = try CollectionCSV.apply(.init(entries: entries, skippedRows: 0,
+                skippedCSVText: nil), to: ModelContext(container))
+            XCTAssertTrue(repeated.failedRows.isEmpty)
+            XCTAssertEqual(try storedQuantities(in: container), [owner.collectionKey: 1])
+            XCTAssertEqual(try ModelContext(container).fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        }
+    }
+
+    func testConflictingCertifiedImportsDoNotChangeOwnerOrHistory() throws {
+        for conflict in ["printing", "grade", "variant", "finish", "run", "occupied-key"] {
+            let container = try makeContainer()
+            let original = try certifiedEntry(marketVariant: "market-slab")
+            _ = try CollectionCSV.apply(.init(entries: [original], skippedRows: 0,
+                skippedCSVText: nil), to: ModelContext(container))
+            var incoming = try certifiedEntry()
+            switch conflict {
+            case "printing": incoming.catalogProviderID = "base1-2"
+            case "grade": incoming.grade = CardGrade(value: "9")
+            case "variant": incoming.justTCGVariantID = "different-market-slab"
+            case "finish": incoming = try certifiedEntry(finish: .reverse)
+            case "run": incoming.pokemonPrintRun = .firstEdition
+            default:
+                incoming = try certifiedEntry(certificate: "OTHER", key: original.collectionKey)
+            }
+            let result = try CollectionCSV.apply(.init(entries: [incoming], skippedRows: 0,
+                skippedCSVText: nil), to: ModelContext(container))
+            XCTAssertEqual(result.failedRows.count, 1, conflict)
+            XCTAssertEqual(try storedQuantities(in: container), [original.collectionKey: 1], conflict)
+            let context = ModelContext(container)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), 1, conflict)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectionActivity>()), 1, conflict)
+            XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).first?.justTCGVariantID,
+                "market-slab", conflict)
+        }
+    }
+
+    func testDifferentCertificatesAndGradersRemainSeparatePhysicalOwners() throws {
+        let container = try makeContainer()
+        let entries = try [certifiedEntry(), certifiedEntry(certificate: "OTHER"),
+            certifiedEntry(company: .cgc)]
+        let result = try CollectionCSV.apply(.init(entries: entries, skippedRows: 0,
+            skippedCSVText: nil), to: ModelContext(container))
+        XCTAssertTrue(result.failedRows.isEmpty)
+        XCTAssertEqual(result.insertedEntries, 3)
+        XCTAssertEqual(try storedQuantities(in: container).count, 3)
+        XCTAssertEqual(try ModelContext(container).fetchCount(FetchDescriptor<InventoryEvent>()), 3)
+    }
+
+    func testCommittedTreatmentAliasSurvivesAFailedRowAndResume() throws {
+        let container = try makeContainer()
+        let canonical = CollectedCard(collectionKey: "magic:printing#foil#treatment=neonink", game: .magic,
+            providerID: "printing", name: "Fixture", setName: "Fixture Set", setCode: "FIX", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .foil, variantResolution: .userConfirmed,
+            quantity: 2, magicTreatments: [.neonInk])
+        let legacy = CollectedCard(collectionKey: "magic:printing#foil", game: .magic,
+            providerID: "printing", name: "Fixture", setName: "Fixture Set", setCode: "FIX", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .foil, variantResolution: .userConfirmed,
+            quantity: 3)
+        let entries = try CollectionCSV.parse(Data(CollectionCSV.export([canonical, legacy]).text.utf8)).entries
+        let canonicalEntry = try XCTUnwrap(entries.first { !$0.magicTreatmentIDsRaw.isEmpty })
+        let legacyEntry = try XCTUnwrap(entries.first { $0.magicTreatmentIDsRaw.isEmpty })
+        var invalid = try XCTUnwrap(parsedPlan(rows: ["bad,Invalid,Set,SET,2,1"]).entries.first)
+        invalid.quantity = 0
+        let plan = CollectionCSVImportPlan(entries: [canonicalEntry, invalid, legacyEntry],
+            skippedRows: 0, skippedCSVText: nil)
+
+        let result = try CollectionCSV.apply(plan, to: ModelContext(container))
+        XCTAssertEqual(result.insertedEntries, 1)
+        XCTAssertEqual(result.mergedEntries, 1)
+        XCTAssertEqual(result.failedRows.map(\.collectionKey), [invalid.collectionKey])
+        XCTAssertEqual(result.importedQuantity, 5)
+        XCTAssertEqual(try storedQuantities(in: container), [canonicalEntry.collectionKey: 5])
+
+        let resumed = try CollectionCSV.apply(plan, to: ModelContext(container))
+        XCTAssertEqual(resumed.alreadyImportedEntries, 2)
+        XCTAssertEqual(resumed.failedRows.count, 1)
+        XCTAssertEqual(try storedQuantities(in: container), [canonicalEntry.collectionKey: 5])
+        let events = try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events.reduce(0) { $0 + $1.deltaQuantity }, 5)
+    }
+
     func testNativeImportAllowsAnExtraCategoryColumn() throws {
         let csv = "provider_id,card_name,quantity,category\nbase1-4,Charizard,2,Pokemon\n"
         let plan = try CollectionCSV.parse(Data(csv.utf8))
@@ -204,6 +307,27 @@ final class CSVImportResumeTests: XCTestCase {
         XCTAssertEqual(resumed.alreadyImportedEntries, 1)
         XCTAssertEqual(resumed.importedQuantity, 1)
         XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+    }
+
+    private func certifiedEntry(marketVariant: String? = nil, certificate: String = "CERT123",
+                                company: GradingCompany = .psa, finish: PhysicalVariant = .holo,
+                                key: String? = nil) throws -> CollectionCSVEntry {
+        let identity = key ?? "graded:base1-4#\(marketVariant ?? company.rawValue + "|10"):\(certificate)"
+        let card = CollectedCard(collectionKey: identity, game: .pokemon, providerID: "base1-4",
+            name: "Charizard", setName: "Base Set", setCode: "BS", cardNumber: "4", rarity: nil,
+            imageURL: nil, thumbnailURL: nil, variant: finish, variantResolution: .imported,
+            quantity: 1, dateAdded: Date(timeIntervalSince1970: 1_700_000_000))
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.catalogProviderID = "base1-4"
+        card.gradingCompanyRaw = company.rawValue
+        card.gradeRaw = "10"
+        card.certificationNumber = certificate
+        card.justTCGVariantID = marketVariant
+        if marketVariant != nil {
+            card.justTCGCardID = "market-card"
+            card.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+        }
+        return try XCTUnwrap(CollectionCSV.parse(Data(CollectionCSV.export([card]).text.utf8)).entries.first)
     }
 
     private func parsedPlan(rows: [String]) throws -> CollectionCSVImportPlan {

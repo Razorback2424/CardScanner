@@ -900,13 +900,6 @@ enum CollectionCSV {
                 }
                 let batchEnd = min(batchStart + safeBatchSize, plan.entries.count)
                 for index in batchStart..<batchEnd {
-                    // A row failure must not replay or re-project the already
-                    // committed prefix of this progress batch. These value
-                    // snapshots restore the in-memory accelerator after the
-                    // context rolls back the failed row.
-                    let cardsBeforeRow = cardsByKey
-                    let claimedKeysBeforeRow = claimedKeys
-                    let canonicalKeysBeforeRow = canonicalKeysByLegacy
                     var rowInserted = 0
                     var rowMerged = 0
                     var rowImportedQuantity = 0
@@ -983,7 +976,7 @@ enum CollectionCSV {
                                     }
                                     return cardsByKey[key]?.collectionKey
                                 }.first ?? entry.collectionKey
-                            let existing = claimsThisEntry
+                            var existing = claimsThisEntry
                                 ? try collectionStore.card(
                                     forAnyKey: lookupKey,
                                     magicTreatmentIDsRaw: entry.magicTreatmentIDsRaw,
@@ -998,6 +991,15 @@ enum CollectionCSV {
                                 throw CollectionStoreError.ledgerConflict(
                                     "CSV entry matches an ambiguous collection identity"
                                 )
+                            }
+                            if isCertified(entry) {
+                                let owner = try collectionStore.certifiedGradedCard(for: entry)
+                                guard existing == nil || existing === owner else {
+                                    throw CollectionStoreError.ledgerConflict(
+                                        "CSV collection key belongs to a different certified object"
+                                    )
+                                }
+                                existing = owner
                             }
                             if let existing {
                                 if !existing.allowsQuantityAggregation || isCertified(entry) {
@@ -1047,9 +1049,6 @@ enum CollectionCSV {
                                     existing.magicContentKindRaw = entry.magicContentKindRaw
                                 }
                                 storedCard = existing
-                                cardsByKey[entry.collectionKey] = existing
-                                claimedKeys.insert(entry.collectionKey)
-                                indexCard(existing)
                                 rowMerged += 1
                             } else {
                                 let card = CollectedCard(
@@ -1091,7 +1090,6 @@ enum CollectionCSV {
                                 // though the current computed enum projects it to regular.
                                 card.magicContentKindRaw = entry.magicContentKindRaw
                                 context.insert(card)
-                                indexCard(card)
                                 storedCard = card
                                 deltaQuantity = entry.quantity
                                 rowInserted += 1
@@ -1166,6 +1164,12 @@ enum CollectionCSV {
                         try collectionStore.validatePendingGameWrites()
                         try context.save()
                         collectionStore.invalidateIdentityAliasCache()
+                        // Publish only durable row/alias changes. Keeping the
+                        // indexes untouched until save avoids full-container
+                        // copy-on-write snapshots and rollback restoration per row.
+                        cardsByKey[entry.collectionKey] = storedCard
+                        claimedKeys.insert(entry.collectionKey)
+                        indexCard(storedCard)
                         inserted += rowInserted
                         merged += rowMerged
                         importedQuantity += rowImportedQuantity
@@ -1183,9 +1187,6 @@ enum CollectionCSV {
                             )
                         )
                         context.rollback()
-                        cardsByKey = cardsBeforeRow
-                        claimedKeys = claimedKeysBeforeRow
-                        canonicalKeysByLegacy = canonicalKeysBeforeRow
                     }
                 }
                 progress?(batchEnd, plan.entries.count)
