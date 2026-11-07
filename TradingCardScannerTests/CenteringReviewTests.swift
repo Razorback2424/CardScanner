@@ -42,6 +42,35 @@ final class CenteringReviewTests: XCTestCase {
         return (bytes, cg.width, cg.height)
     }
 
+    @MainActor func testProductionCanvasDrawsOuterAndInnerGuidesOnPhotoCoordinates() throws {
+        let outer = CardCenteringQuad.axisAligned(.init(left: 35, top: 40, right: 565, bottom: 800))
+        let inner = CardCenteringQuad.axisAligned(.init(left: 60, top: 80, right: 540, bottom: 760))
+        let value = CardCenteringMeasurement(imageWidth: 600, imageHeight: 840,
+            outerQuad: outer, innerQuad: inner, warnings: [])
+        let canvas = CardCenteringCanvas(image: photo(), measurement: value,
+            rotationDegrees: 0, imageRevision: 0, lumaField: nil,
+            selection: .constant(nil), onBeginEdit: {}, onEdit: { _ in },
+            onAccessibilityNudge: { _ in })
+            .frame(width: 300, height: 420)
+        let renderer = ImageRenderer(content: canvas)
+        renderer.scale = 2
+        let raster = try pixels(XCTUnwrap(renderer.uiImage))
+        XCTAssertEqual(raster.width, 600)
+        XCTAssertEqual(raster.height, 840)
+        func pixel(_ x: Int, _ y: Int) -> (Int, Int, Int) {
+            let offset = (y * raster.width + x) * 4
+            return (Int(raster.bytes[offset]), Int(raster.bytes[offset + 1]), Int(raster.bytes[offset + 2]))
+        }
+        let red = pixel(300, 40), cyan = pixel(300, 80), photoPixel = pixel(300, 60)
+        XCTAssertGreaterThan(red.0, red.1 + 50)
+        XCTAssertGreaterThan(red.0, red.2 + 50)
+        XCTAssertGreaterThan(cyan.1, cyan.0 + 30)
+        XCTAssertGreaterThan(cyan.2, cyan.0 + 30)
+        XCTAssertGreaterThan(photoPixel.0, 220)
+        XCTAssertGreaterThan(photoPixel.1, 220)
+        XCTAssertGreaterThan(photoPixel.2, 220)
+    }
+
     @MainActor func testPerspectiveRasterLandmarksMatchOuterPointTransformWithPhotoRotation() throws {
         let value = fixture(), spatial = try XCTUnwrap(value.spatialMeasurement)
         let target = spatial.rectification.targetSize

@@ -1534,7 +1534,8 @@ private struct GuidedCardCenteringView: View {
                         Text(guidance(for: measurement))
                             .font(.subheadline)
                             .fixedSize(horizontal: false, vertical: true)
-                        if !measurement.warnings.isEmpty && measurement.canReportRatios {
+                        if !measurement.warnings.isEmpty &&
+                            (measurement.canReportRatios || measurement.outerAspectResidual > 0.04) {
                             Label(measurement.warnings.joined(separator: " "), systemImage: "exclamationmark.triangle.fill")
                                 .font(.caption)
                                 .foregroundStyle(.orange)
@@ -1548,7 +1549,11 @@ private struct GuidedCardCenteringView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.capsule)
+                        .disabled(measurement.outerAspectResidual > 0.04)
                         .accessibilityLabel("Add an inner frame")
+                        .accessibilityHint(measurement.outerAspectResidual > 0.04
+                            ? "Move the red guides onto the card first."
+                            : "Adds editable cyan guides inside the card.")
                     } else if !measurement.canReportRatios {
                         confirmationControl(measurement)
                     }
@@ -1628,6 +1633,9 @@ private struct GuidedCardCenteringView: View {
                 : "Check the card edges and the \(region) for \(design.label), then confirm."
         }
 #endif
+        if measurement.outerAspectResidual > 0.04 {
+            return "The card edge wasn't identified reliably. Move the red guides onto the card first."
+        }
         if measurement.geometryInnerQuad == nil {
             return "No inner frame found. Add one to begin."
         }

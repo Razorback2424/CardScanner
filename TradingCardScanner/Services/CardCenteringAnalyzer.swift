@@ -680,6 +680,7 @@ struct CardCenteringAnalysisDiagnostic: Codable, Equatable {
     let outerRefinementAccepted: Bool
     /// Also included in jointSelection wall time; do not add twice to total.
     var nativeLocalRefinementSeconds: Double? = nil
+    var visionRequestFailure: String? = nil
 }
 
 struct CardCenteringProfileFailureDiagnostic: Codable, Equatable {
@@ -975,6 +976,7 @@ enum CardCenteringAnalyzer {
 
     private final class EvidenceContext: @unchecked Sendable {
         var ledger: CandidateLedger?
+        var visionFailure: String?
     }
     @TaskLocal private static var activeEvidence: EvidenceContext?
     private static var activeCandidateLedger: CandidateLedger? { activeEvidence?.ledger }
@@ -1497,6 +1499,9 @@ enum CardCenteringAnalyzer {
             selectedOuterSource = "frame_fallback"
         }
         var notes: [String] = []
+        if Self.activeEvidence?.visionFailure != nil {
+            notes.append("Automatic rectangle detection failed. Check the outer guides before reading the result.")
+        }
         if outline == nil {
             // The gradient scan below is a guess in exactly the conditions that
             // defeat the outline: a card that does not stand out from what it is
@@ -1966,7 +1971,8 @@ enum CardCenteringAnalyzer {
             proposedOuterQuad: proposedOuterQuad,
             refinedOuterQuad: refinedOuterQuad,
             outerRefinementAccepted: outerRefinementAccepted,
-            nativeLocalRefinementSeconds: nativeLocalRefinementSeconds
+            nativeLocalRefinementSeconds: nativeLocalRefinementSeconds,
+            visionRequestFailure: Self.activeEvidence?.visionFailure
         ))
         candidateLedgerDiagnosticSink?(candidateLedger.diagnostic(
             nativeMapping: detectorMapping,
@@ -2067,16 +2073,16 @@ enum CardCenteringAnalyzer {
         var reason: String?
         if !hasOuterEvidence {
             reason = "The card outline could not be established reliably. Adjust the outer guides manually before reading centering."
+        } else if !aspectPasses {
+            reason = "The detected object has card geometry outside the safe aspect tolerance. Adjust the outer guides onto the card first."
+        } else if !parallelismPasses {
+            reason = "The detected outer edges cannot be rectified reliably. Adjust the outer guides first."
         } else if !hasInner {
             reason = "The image does not contain a stable gradeable inner reference. Adjust the inner guides manually before reading centering."
         } else if innerIsApproximation {
             reason = "The printed border curves in this photo, so straight guides provide an approximation."
         } else if !innerSupportPasses {
             reason = "The inner reference is not supported consistently around the card. Adjust the inner guides manually before reading centering."
-        } else if !aspectPasses {
-            reason = "The detected object has card geometry outside the safe aspect tolerance."
-        } else if !parallelismPasses {
-            reason = "The detected edges cannot be rectified reliably."
         } else if !sleeveAmbiguityPasses {
             reason = "More than one nested card boundary was found. Adjust the outer guides manually before reading centering."
         } else if notes.contains(where: { $0.contains("strongly rotated") }) {
@@ -2128,15 +2134,6 @@ enum CardCenteringAnalyzer {
         // unrelated coordinate systems and make a good inner reference look
         // wrong. Scalar validation may still arbitrate an incomplete Vision
         // proposal below.
-        // Once Vision has supplied both the physical and gradeable inner quad,
-        // keep that complete hypothesis intact. The scalar silhouette is
-        // intentionally axis-aligned and cannot carry a fitted rotation or
-        // perspective through the presentation transform; it may arbitrate
-        // only when Vision is incomplete or geometrically malformed.
-        if vision.innerQuad != nil {
-            return vision
-        }
-
         let nominalAspect = 5.0 / 7.0
         func aspectResidual(_ quad: CardCenteringQuad) -> Double {
             let measured = quad.rectifiedAspectRatio
@@ -2148,6 +2145,11 @@ enum CardCenteringAnalyzer {
         let scalarResidual = aspectResidual(scalarOutline.quad)
         let scalarHasCardShape = scalarResidual <= 0.04
         let scalarRepairsShape = scalarHasCardShape && scalarResidual + 0.02 < visionResidual
+        // A found inner rectangle cannot certify a malformed outer. Compare
+        // whole hypotheses before preserving Vision's pair.
+        if vision.innerQuad != nil && !scalarRepairsShape {
+            return vision
+        }
         if visionResidual <= 0.04 {
             // A complete-aspect Vision outer remains the best coordinate frame
             // even when its inner-reference search needs scalar evidence. The
@@ -3593,10 +3595,9 @@ enum CardCenteringAnalyzer {
         guard let cgImage = image.cgImage else { return nil }
         let request = VNDetectRectanglesRequest()
         request.minimumAspectRatio = 0.45
-        // Admit both portrait and landscape cards. The post-filter below keeps
-        // the product's 0.45...2.0 policy, but it cannot recover an observation
-        // that this request rejected before Vision emitted it.
-        request.maximumAspectRatio = 2.0
+        // Vision measures the shorter side over the longer side, even for a
+        // landscape rectangle. Its supported maximum is 1.0.
+        request.maximumAspectRatio = 1.0
         // This is a quality floor, not a framing assumption. The same image
         // may arrive cropped or with a card farther from the camera, so the
         // detector must not require a fixed fraction of the source canvas.
@@ -3612,7 +3613,7 @@ enum CardCenteringAnalyzer {
         // to replace the outer card quad.
         let broadRequest = VNDetectRectanglesRequest()
         broadRequest.minimumAspectRatio = 0.12
-        broadRequest.maximumAspectRatio = 1.50
+        broadRequest.maximumAspectRatio = 1.0
         broadRequest.minimumSize = 0.01
         broadRequest.quadratureTolerance = 30
         broadRequest.maximumObservations = 20
@@ -3621,6 +3622,9 @@ enum CardCenteringAnalyzer {
         do {
             try VNImageRequestHandler(cgImage: cgImage, orientation: .up, options: [:]).perform([request, broadRequest])
         } catch {
+            // Retain the request failure with the analysis evidence so a
+            // scalar fallback does not look like a successful Vision pass.
+            Self.activeEvidence?.visionFailure = String(describing: error)
             return nil
         }
 
@@ -3672,6 +3676,12 @@ enum CardCenteringAnalyzer {
         let quads = makeQuads(from: request.results, minimumConfidence: 0.20)
 
         guard !quads.isEmpty else { return nil }
+        let nominalAspect = 5.0 / 7.0
+        func aspectResidual(_ quad: CardCenteringQuad) -> Double {
+            let measured = quad.rectifiedAspectRatio
+            let shortToLong = measured > 1 ? 1 / measured : measured
+            return abs(shortToLong - nominalAspect) / nominalAspect
+        }
         let nestedPairs: [(outerIndex: Int, innerIndex: Int)] = quads.indices.flatMap { outerIndex in
             quads.indices.compactMap { innerIndex in
                 guard outerIndex != innerIndex else { return nil }
@@ -3680,6 +3690,7 @@ enum CardCenteringAnalyzer {
                 let enclosingArea = abs(polygonArea(enclosing.points))
                 let candidateArea = abs(polygonArea(candidate.points))
                 guard enclosingArea > candidateArea,
+                      isVisionCardShaped(candidate),
                       candidateArea / max(enclosingArea, .ulpOfOne) >= 0.90,
                       candidateArea / max(enclosingArea, .ulpOfOne) <= 0.985,
                       candidate.rectifiedAspectRatio / max(enclosing.rectifiedAspectRatio, .ulpOfOne) >= 0.96,
@@ -3703,19 +3714,7 @@ enum CardCenteringAnalyzer {
             let rhsArea = abs(polygonArea(quads[rhs.innerIndex].points))
             return lhsArea < rhsArea
         }
-        let nominalAspect = 5.0 / 7.0
-        func aspectResidual(_ quad: CardCenteringQuad) -> Double {
-            let measured = quad.rectifiedAspectRatio
-            let shortToLong = measured > 1 ? 1 / measured : measured
-            return abs(shortToLong - nominalAspect) / nominalAspect
-        }
         let largestArea = abs(polygonArea(quads[0].points))
-        let largestIsCardShaped = aspectResidual(quads[0]) <= 0.04
-        let cardShapedFallback = quads.indices.first { index in
-            index != 0
-                && abs(polygonArea(quads[index].points)) >= largestArea * 0.55
-                && aspectResidual(quads[index]) <= 0.04
-        }
         // A crop can leave the crop boundary as the largest card-shaped
         // rectangle. If that boundary encloses a second, similarly shaped
         // proposal with a substantial (but not sleeve-sized) inset, use the
@@ -3759,15 +3758,13 @@ enum CardCenteringAnalyzer {
         }.max { lhs, rhs in
             abs(polygonArea(quads[lhs].points)) < abs(polygonArea(quads[rhs].points))
         }
-        // A sleeve or glare boundary can be the largest rectangle without
-        // satisfying the card's own aspect guard. In that case, prefer the
-        // largest nearby card-shaped proposal instead of treating the sleeve
-        // as the physical card. The stricter nested-pair path remains the
-        // primary sleeve/card disambiguation when it has enough evidence.
-        let outerIndex = selectedPair?.innerIndex
-            ?? frameEnclosedCard
-            ?? (!largestIsCardShaped ? cardShapedFallback : nil)
-            ?? 0
+        // A sleeve or slab can be the largest rectangle without satisfying
+        // the card's aspect guard. Give a substantial card-shaped candidate
+        // priority over a plastic-rim pair; keep the pair for tight sleeves.
+        let outerIndex = preferredVisionOuterIndex(
+            quads, selectedPairInnerIndex: selectedPair?.innerIndex,
+            frameEnclosedCard: frameEnclosedCard
+        )
         let outer = quads[outerIndex]
         let outerArea = abs(polygonArea(outer.points))
         let outerWidth = (outer.topLength + outer.bottomLength) / 2
@@ -3968,6 +3965,36 @@ enum CardCenteringAnalyzer {
             sleeveAmbiguity: sleeveAmbiguity,
             usesVision: true
         )
+    }
+
+    /// Keep the holder fallback separate so slab and ordinary sleeve cases
+    /// can be checked with deterministic candidate rectangles.
+    static func isVisionCardShaped(_ quad: CardCenteringQuad) -> Bool {
+        let measured = quad.rectifiedAspectRatio
+        let shortToLong = measured > 1 ? 1 / measured : measured
+        return abs(shortToLong - 5.0 / 7.0) / (5.0 / 7.0) <= 0.04
+    }
+
+    static func preferredVisionOuterIndex(
+        _ quads: [CardCenteringQuad],
+        selectedPairInnerIndex: Int?,
+        frameEnclosedCard: Int?
+    ) -> Int {
+        guard let largest = quads.first else { return 0 }
+        let largestArea = abs(polygonArea(largest.points))
+        let cardShapedFallback = quads.indices.dropFirst().first { index in
+            let candidate = quads[index]
+            let areaShare = abs(polygonArea(candidate.points)) / max(largestArea, .ulpOfOne)
+            // A grading label reduces the card's share of its holder. Keep a
+            // substantial contained card eligible, but reject small boxes.
+            return (0.40...0.90).contains(areaShare)
+                && isVisionCardShaped(candidate)
+                && contains(largest, candidate.points)
+        }
+        return frameEnclosedCard
+            ?? (!isVisionCardShaped(largest) ? cardShapedFallback : nil)
+            ?? selectedPairInnerIndex
+            ?? 0
     }
 
     private static func midpoint(_ points: [CardCenteringPoint]) -> CardCenteringPoint {

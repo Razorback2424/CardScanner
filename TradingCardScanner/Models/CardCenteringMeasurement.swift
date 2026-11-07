@@ -1091,7 +1091,15 @@ struct CardCenteringMeasurement: Equatable {
         requiresManualOuterConfirmation && requiresManualInnerConfirmation
     }
     var confidenceScore: Double { confidence.score }
+    var outerAspectResidual: Double {
+        let aspect = geometryOuterQuad.rectifiedAspectRatio
+        let shortToLong = aspect > 1 ? 1 / aspect : aspect
+        return abs(shortToLong - 5.0 / 7.0) / (5.0 / 7.0)
+    }
     var declineReason: String? {
+        if outerAspectResidual > 0.04 {
+            return "The outer guides do not follow card proportions. Move the red guides onto the card first."
+        }
         guard hasValidFrameGeometry else {
             return "Place valid inner guides inside the card edges before confirming both frames."
         }

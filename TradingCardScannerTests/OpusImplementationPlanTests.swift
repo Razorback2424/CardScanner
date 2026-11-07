@@ -21,6 +21,39 @@ private func centeringDiagnosticDirectory(_ name: String) throws -> URL {
 
 @MainActor
 final class OpusImplementationPlanTests: XCTestCase {
+    func testLabeledSlabRimsCannotOverrideContainedCard() {
+        func rectangle(_ left: Int, _ top: Int, _ right: Int, _ bottom: Int) -> CardCenteringQuad {
+            .axisAligned(.init(left: left, top: top, right: right, bottom: bottom))
+        }
+        let slab = rectangle(0, 0, 600, 1000)
+        let rim = rectangle(15, 20, 585, 980)
+        let card = rectangle(62, 286, 537, 953) // 52.8% of slab area
+        let largerCard = rectangle(57, 270, 543, 960) // 55.9% of slab area
+        XCTAssertFalse(CardCenteringAnalyzer.isVisionCardShaped(rim))
+        XCTAssertTrue(CardCenteringAnalyzer.isVisionCardShaped(card))
+        XCTAssertEqual(CardCenteringAnalyzer.preferredVisionOuterIndex(
+            [slab, rim, card], selectedPairInnerIndex: 1, frameEnclosedCard: nil), 2)
+        XCTAssertEqual(CardCenteringAnalyzer.preferredVisionOuterIndex(
+            [slab, rim, largerCard], selectedPairInnerIndex: 1, frameEnclosedCard: nil), 2)
+        XCTAssertEqual(CardCenteringAnalyzer.preferredVisionOuterIndex(
+            [slab, card], selectedPairInnerIndex: nil, frameEnclosedCard: nil), 1)
+
+        let ordinaryCard = rectangle(50, 50, 550, 750)
+        XCTAssertEqual(CardCenteringAnalyzer.preferredVisionOuterIndex(
+            [ordinaryCard], selectedPairInnerIndex: nil, frameEnclosedCard: nil), 0)
+        let tightSleeve = rectangle(40, 40, 560, 760)
+        XCTAssertEqual(CardCenteringAnalyzer.preferredVisionOuterIndex(
+            [tightSleeve, ordinaryCard], selectedPairInnerIndex: 1, frameEnclosedCard: nil), 1)
+    }
+
+    func testMalformedOuterIsExplainedBeforeMissingInner() {
+        let value = CardCenteringMeasurement(imageWidth: 600, imageHeight: 1000,
+            outerQuad: .axisAligned(.init(left: 100, top: 100, right: 400, bottom: 900)),
+            innerQuad: nil, warnings: [])
+        XCTAssertGreaterThan(value.outerAspectResidual, 0.04)
+        XCTAssertTrue(value.declineReason?.contains("red guides") == true)
+    }
+
     func testSavedSlabRecoversOnlyItsExactCatalogFinishChoices() throws {
         let payload = """
         {"id":"sv03-001","localId":"001","name":"Fixture",
