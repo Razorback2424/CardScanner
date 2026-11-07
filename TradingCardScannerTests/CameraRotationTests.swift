@@ -1,3 +1,4 @@
+import Combine
 import ImageIO
 import UIKit
 import XCTest
@@ -13,6 +14,29 @@ final class CameraRotationTests: XCTestCase {
     /// A deliberately asymmetric rect, so a transform that swaps or mirrors an axis
     /// cannot accidentally produce the right answer.
     private let visionRect = CGRect(x: 0.1, y: 0.2, width: 0.3, height: 0.4)
+
+    func testRejectedCaptureClearsPendingStateAndAllowsRetry() async {
+        let camera = CenteringCameraController()
+        for _ in 0..<2 {
+            let cleared = expectation(description: "Stopped session rejects the capture")
+            let observation = camera.$isCapturing.dropFirst().filter { !$0 }.sink { _ in cleared.fulfill() }
+            camera.capture()
+            XCTAssertTrue(camera.isCapturing)
+            camera.capture()
+            await fulfillment(of: [cleared], timeout: 2)
+            XCTAssertFalse(camera.isCapturing)
+            XCTAssertNil(camera.capturedData)
+            observation.cancel()
+        }
+    }
+
+    func testStoppingCaptureClearsPendingStateImmediately() {
+        let camera = CenteringCameraController()
+        camera.capture()
+        XCTAssertTrue(camera.isCapturing)
+        camera.stop()
+        XCTAssertFalse(camera.isCapturing)
+    }
 
     func testUprightSensorOnlyFlipsTheVerticalAxis() {
         let rect = CardFramingRegion.metadataRect(fromVisionRect: visionRect, rotationAngle: 0)

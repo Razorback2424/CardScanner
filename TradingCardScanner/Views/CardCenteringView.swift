@@ -47,7 +47,11 @@ private struct CenteringShareArtifact: Transferable {
 final class CardCenteringViewModel: ObservableObject {
 #if DEBUG
     private let printReference: CardCenteringPrintReference?
-    init(printReference: CardCenteringPrintReference? = nil) { self.printReference = printReference }
+    private let printReferences: [CardCenteringPrintReference]
+    init(printReference: CardCenteringPrintReference? = nil, printReferences: [CardCenteringPrintReference] = []) {
+        self.printReference = printReference
+        self.printReferences = printReferences
+    }
 #endif
     private var currentExportFile: URL?
 
@@ -212,6 +216,7 @@ final class CardCenteringViewModel: ObservableObject {
         let inputRecord: CardCenteringInputRecord?
         let boundaryCandidates: [CardCenteringBoundaryCandidate]?
         let selectedLines: [CardCenteringSelectedLine]?
+        let observedPaths: CardCenteringPrintMatcher.ObservedMeasurement?
         let spatialMeasurement: CardCenteringSpatialMeasurement?
         let comparedCandidateIDs: [String]
         let boundaryComparison: CardCenteringBoundarySensitivity?
@@ -247,7 +252,7 @@ final class CardCenteringViewModel: ObservableObject {
             hasManualGuideEdits: measurement?.hasManualGuideEdits,
             proposedOuterQuad: measurement?.proposedOuterQuad,
             proposedInnerQuad: measurement?.proposedInnerQuad,
-            ratioMethod: "rectified_endpoint_average_v1",
+            ratioMethod: measurement?.hasObservedPaths == true ? "paired_observed_paths_local_mean_v1" : "rectified_endpoint_average_v1",
             appliedRotationDegrees: measurement == nil ? nil : (appliedRotationDegrees ?? rotationDegrees),
             detectedSkewDegrees: measurement == nil ? nil : detectedSkewDegrees,
             reason: measurement?.declineReason,
@@ -260,6 +265,7 @@ final class CardCenteringViewModel: ObservableObject {
             inputRecord: measurement?.inputRecord,
             boundaryCandidates: measurement?.boundaryCandidates,
             selectedLines: measurement == nil ? nil : precisionMeasurement?.selectedLines,
+            observedPaths: measurement?.observedPrintMeasurement,
             spatialMeasurement: measurement == nil ? nil : precisionMeasurement?.spatialMeasurement,
             comparedCandidateIDs: comparedCandidateIDs,
             boundaryComparison: boundaryComparison
@@ -391,7 +397,7 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     func adjustRotation(by amount: Double) {
-        guard amount.isFinite else { return }
+        guard amount.isFinite, measurement?.hasObservedPaths != true else { return }
         let adjusted = ((rotationDegrees + amount) * 100).rounded() / 100
         let next = min(45, max(-45, adjusted))
         guard next != rotationDegrees else { return }
@@ -565,6 +571,13 @@ final class CardCenteringViewModel: ObservableObject {
         precisionStart = nil
         lastUndoKey = nil
         canUndo = !undoStack.isEmpty
+    }
+
+    func beginManualGuides() {
+        guard measurement?.hasObservedPaths == true else { return }
+        recordUndoPoint()
+        measurement?.beginManualGuides()
+        clearBoundaryComparison()
     }
 
     private func clearUndo() {
@@ -779,12 +792,13 @@ final class CardCenteringViewModel: ObservableObject {
 #if DEBUG
         clearDebugSettledMarker()
         let reference = printReference
+        let references = printReferences
 #endif
         analysisTask = Task.detached(priority: .userInitiated) { [weak self] in
             let result = Result {
 #if DEBUG
-                if let reference {
-                    return try CardCenteringAnalyzer.$activePrintReference.withValue(reference) {
+                if reference != nil || !references.isEmpty {
+                    return try CardCenteringAnalyzer.$activePrintReferences.withValue(reference.map { [$0] } ?? references) {
                         try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees)
                     }
                 }
@@ -834,7 +848,12 @@ final class CardCenteringViewModel: ObservableObject {
 struct CardCenteringView: View {
 #if DEBUG
     private let printReference: CardCenteringPrintReference?
-    init(printReference: CardCenteringPrintReference? = .launchReference) { self.printReference = printReference }
+    private let printReferences: [CardCenteringPrintReference]
+    init(printReference: CardCenteringPrintReference? = .launchReference,
+         printReferences: [CardCenteringPrintReference] = CardCenteringPrintReference.launchLibrary) {
+        self.printReference = printReference
+        self.printReferences = printReferences
+    }
 #endif
     @ObservedObject private var collectorTools = CollectorToolsStore.shared
     @State private var isShowingOffer = false
@@ -843,7 +862,8 @@ struct CardCenteringView: View {
         Group {
             if collectorTools.canUseCentering {
 #if DEBUG
-                GuidedCardCenteringView(printReference: printReference).id(printReference)
+                GuidedCardCenteringView(printReference: printReference, printReferences: printReferences)
+                    .id(printReference.map { [$0] } ?? printReferences)
 #else
                 GuidedCardCenteringView()
 #endif
@@ -1029,8 +1049,8 @@ private struct CenteringGuideSheet: View {
 private struct GuidedCardCenteringView: View {
     @StateObject private var model = CardCenteringViewModel()
 #if DEBUG
-    init(printReference: CardCenteringPrintReference? = nil) {
-        _model = StateObject(wrappedValue: CardCenteringViewModel(printReference: printReference))
+    init(printReference: CardCenteringPrintReference? = nil, printReferences: [CardCenteringPrintReference] = []) {
+        _model = StateObject(wrappedValue: CardCenteringViewModel(printReference: printReference, printReferences: printReferences))
     }
 #endif
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -1412,10 +1432,9 @@ private struct GuidedCardCenteringView: View {
 
 #if DEBUG
     private func artworkMetric(_ measurement: CardCenteringMeasurement, title: String, design: Double, horizontal: Bool) -> some View {
-        let first = horizontal ? measurement.leftBorderDistance : measurement.topBorderDistance
-        let other = horizontal ? measurement.rightBorderDistance : measurement.bottomBorderDistance
+        let share = measurement.centeringPair(horizontal: horizontal)?.firstPercentage ?? 0
         return CenteringMetric(title: title,
-            value: measurement.canReportRatios ? String(format: "%.1f%%", 100 * first / max(1e-9, first + other)) : "—",
+            value: measurement.canReportRatios ? String(format: "%.1f%%",share) : "—",
             detail: measurement.canReportRatios ? String(format: "Design %.1f%%", design) : "Confirm frames to read")
     }
 #endif
@@ -1448,7 +1467,9 @@ private struct GuidedCardCenteringView: View {
 
     private func bottomPanel(_ measurement: CardCenteringMeasurement) -> some View {
         VStack(spacing: 8) {
-            if isStraightening {
+            if measurement.hasObservedPaths {
+                standardControls(measurement)
+            } else if isStraightening {
                 straightenControls
             } else if let selection, measurement.segment(for: selection.guide) != nil {
                 selectedGuideControls(selection, measurement: measurement)
@@ -1484,6 +1505,14 @@ private struct GuidedCardCenteringView: View {
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
             : AnyLayout(HStackLayout(spacing: 12))
         return VStack(spacing: 8) {
+            if measurement.hasObservedPaths {
+                Button("Adjust with straight guides",systemImage: "slider.horizontal.3") {
+                    selection = nil
+                    model.beginManualGuides()
+                }
+                .buttonStyle(.bordered)
+                .accessibilityHint("Switches to editable straight guides. Undo restores the detected curves.")
+            }
             if measurement.hasReportableInnerTilt, let tilt = measurement.innerTiltDegrees {
                 tiltRow(tilt, independentSlopes: measurement.innerFrameHasIndependentSlopes)
             }
@@ -1592,9 +1621,11 @@ private struct GuidedCardCenteringView: View {
     private func guidance(for measurement: CardCenteringMeasurement) -> String {
 #if DEBUG
         if let design = measurement.reviewedDesign, measurement.hasValidFrameGeometry {
+            let region = measurement.referenceDefinition == .matchedPrintedBorder ? "printed frame" : "artwork frame"
+            let placement = measurement.referenceDefinition == .matchedPrintedBorder ? "Printed frame" : "Artwork"
             return measurement.canReportRatios
-                ? "Artwork placement compared with \(design.label)."
-                : "Check the card edges and the artwork frame for \(design.label), then confirm."
+                ? "\(placement) placement compared with \(design.label)."
+                : "Check the card edges and the \(region) for \(design.label), then confirm."
         }
 #endif
         if measurement.geometryInnerQuad == nil {
@@ -1630,13 +1661,15 @@ private struct GuidedCardCenteringView: View {
                 selection = nil
                 isStraightening = true
             }
+            .disabled(measurement.hasObservedPaths)
             Button("Exact Values…", systemImage: "slider.horizontal.3") {
                 isShowingExactValues = true
             }
+            .disabled(measurement.hasObservedPaths)
             Button("Compare Perspective…", systemImage: "rectangle.on.rectangle") {
                 reviewRequest = .init()
             }
-            .disabled(!measurement.hasValidFrameGeometry)
+            .disabled(!measurement.hasValidFrameGeometry || measurement.hasObservedPaths)
             Divider()
             Button("Reset Guides", systemImage: "arrow.counterclockwise", role: .destructive) {
                 selection = nil
@@ -1938,6 +1971,10 @@ private struct GuidedCardCenteringView: View {
                                     Text(candidate.proposedRole.label).font(.subheadline)
                                     Text(candidate.selectionReason == .detectorProposal ? "Starting proposal" : "Alternative · identity needs review")
                                         .font(.caption).foregroundStyle(.secondary)
+                                    if let stations = candidate.observedPointStations {
+                                        Text("Straight guide approximates \(stations.count) of 61 observed positions; inspect the gaps.")
+                                            .font(.caption).foregroundStyle(.secondary)
+                                    }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 4)

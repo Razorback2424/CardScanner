@@ -1,0 +1,7 @@
+[
+  {"name": "BASIC lettering", "rect": [22, 29, 92, 43]},
+  {"name": "Lillies lettering", "rect": [115, 43, 173, 64]},
+  {"name": "Clefairy lettering", "rect": [178, 35, 307, 64]},
+  {"name": "HP number", "rect": [456, 31, 521, 61]},
+  {"name": "Psychic symbol", "rect": [533, 30, 565, 64]}
+]

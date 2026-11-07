@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-07",
+  "file": "Document_2026-06-06_175439.png",
+  "inputSHA256": "f2f6554fedf8be94abdcb617f0d91c0a9bc682d70a59231a0f30a6d2ce31f817",
+  "status": "Selective offline research measurement has complete support; native transfer and automatic integration pending",
+  "diagnosis": "A narrow dark rim and foil texture produce competing bright transitions. Selecting the strongest RGB gradient changes boundary identity across scales, while a single smooth region cannot fit the texture.",
+  "method": "Keep every previously supported right-side point. For a missing point, require one outward-brightening transition agreed by six width/scale trials, a nearby exterior chroma consistent with a strip anchored to the observed physical cut, and no separately supported competing transition. Keep the existing supported left, top, bottom and physical paths.",
+  "newRightIndices": [13, 18, 19, 23, 24, 25, 26, 38],
+  "printedSupport": {"left": 61, "top": 60, "right": 51, "bottom": 37},
+  "physicalSupport": {"left": 56, "top": 60, "right": 54, "bottom": 51},
+  "maximumRightGapWithinMeasurement": 3,
+  "frozenComparisonsForNativeTransfer": 334,
+  "pairedAccepted": true,
+  "shares": {"leftShare": 50.85551627238208, "topShare": 50.619826449782884},
+  "rightReferenceSeedPerturbations": {
+    "-8": {"commonSupportedPoints": 48, "largestPointMovementPixels": 0.007013637173757767, "leftShareChangePP": -0.000007364966454},
+    "+8": {"commonSupportedPoints": 51, "largestPointMovementPixels": 0.007144414252039644, "leftShareChangePP": -0.00000041131551}
+  },
+  "localSearchCenterPerturbations": "At -4, -2, +2 and +4 pixels, all shared recovered points were identical; one point dropped at -4. These checks do not perturb the full pipeline.",
+  "controls": "A known single transition is recovered. Flat, reversed-polarity, two equally plausible gray steps, mismatched exterior color and a strong neighboring feature are rejected.",
+  "stopped": {"cutAnchoredUniformBorder": "5/61 right-side positions", "wideRGBRegion": "9/61 right-side positions"},
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-Squirtle-20261107/",
+  "pairedReceipt": "paired-selective-chroma-v2.json",
+  "sourceSnapshot": "chroma-selective-v2-source/",
+  "limitations": [
+    "The photo observations, wider strips and six trials are correlated and do not establish calibrated physical accuracy.",
+    "The new method is a restricted brightening-rim hypothesis, not a general foil solution.",
+    "Seed perturbations exercise the right-side tracker while other boundaries are held fixed, not the entire detector.",
+    "No automatic or native pass is claimed; all 44 acceptance and default provisioning remain open.",
+    "Automatic reporting still requires user confirmation."
+  ]
+}

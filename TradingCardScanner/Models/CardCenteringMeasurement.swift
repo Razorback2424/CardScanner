@@ -907,10 +907,52 @@ struct CardCenteringConfidence: Codable, Equatable {
 struct CardCenteringMeasurement: Equatable {
 #if DEBUG
     var printPlacement: CardCenteringPrintPlacement?
+    var observedPrintMeasurement: CardCenteringPrintMatcher.ObservedMeasurement?
     var reviewedDesign: CardCenteringPrintPlacement? {
-        referenceDefinition == .matchedArtwork ? printPlacement : nil
+        referenceDefinition == .matchedArtwork || referenceDefinition == .matchedPrintedBorder ? printPlacement : nil
     }
 #endif
+    var hasObservedPaths: Bool {
+#if DEBUG
+        observedPrintMeasurement != nil
+#else
+        false
+#endif
+    }
+
+    /// Missing observations remain separate segments on screen and in exports.
+    func observedGuidePaths(outer: Bool) -> [[CardCenteringPoint?]] {
+#if DEBUG
+        guard let observedPrintMeasurement, let coordinateMapping else { return [] }
+        return (outer ? observedPrintMeasurement.outerPaths : observedPrintMeasurement.innerPaths).map { path in
+            path.observations.map { $0.map(coordinateMapping.workingPoint(fromNative:)) }
+        }
+#else
+        return []
+#endif
+    }
+
+    mutating func beginManualGuides() {
+#if DEBUG
+        guard observedPrintMeasurement != nil else { return }
+        observedPrintMeasurement = nil
+        reviewState = .pending
+        hasManualGuideEdits = true
+        reviewReason = "Adjust the straight guides, then confirm both frames. Undo restores the detected curves."
+        refreshWarnings()
+#endif
+    }
+
+    func centeringPair(horizontal: Bool) -> CardCenteringRatioPair? {
+#if DEBUG
+        if let observedPrintMeasurement {
+            let first = horizontal ? observedPrintMeasurement.leftShare : observedPrintMeasurement.topShare
+            return .init(firstDistance: first,secondDistance: 100-first)
+        }
+#endif
+        return .init(firstDistance: horizontal ? leftBorderDistance : topBorderDistance,
+                     secondDistance: horizontal ? rightBorderDistance : bottomBorderDistance)
+    }
     var imageWidth: Int
     var imageHeight: Int
     var outer: CardCenteringEdges { outerQuad.projectedEdges }
@@ -930,7 +972,7 @@ struct CardCenteringMeasurement: Equatable {
     /// edited geometry and not a calibrated physical accuracy interval.
     var nativeRefinementEvidence: [CardCenteringNativeSideEvidence]? = nil
     let inputRecord: CardCenteringInputRecord?
-    let boundaryCandidates: [CardCenteringBoundaryCandidate]
+    private(set) var boundaryCandidates: [CardCenteringBoundaryCandidate]
     private(set) var referenceDefinition: CardCenteringReferenceDefinition
     var boundaryChoices: [CardCenteringSelectedLine] = []
 
@@ -1023,6 +1065,17 @@ struct CardCenteringMeasurement: Equatable {
         self.rectification = resolvedRectification
         self.usesQuadGeometry = true
     }
+
+#if DEBUG
+    /// Research candidates are kept for explicit comparison only. They never
+    /// change the selected geometry, detector certainty, or confirmation state.
+    mutating func retainUnverifiedBoundaryCandidate(_ candidate: CardCenteringBoundaryCandidate) {
+        guard candidate.frame == .outer, candidate.proposedRole == .unknown,
+              candidate.selectionReason == .competingCandidate,
+              !boundaryCandidates.contains(where: { $0.id == candidate.id }) else { return }
+        boundaryCandidates.append(candidate)
+    }
+#endif
 
     /// Automatic reporting remains disabled, regardless of detector certainty.
     /// Valid edits stay live after review; invalid geometry never reports.
@@ -1161,6 +1214,7 @@ struct CardCenteringMeasurement: Equatable {
     /// deliberately not folded into confidence or selection because a sleeve
     /// can produce a stable, low-spread pair of parallel edges too.
     var positionalConsistency: CardCenteringPositionalConsistency? {
+        guard !hasObservedPaths else { return nil }
         guard let inner = geometryInnerQuad else { return nil }
         let measuredOuter = rectification?.rectifiedQuad(from: geometryOuterQuad) ?? geometryOuterQuad
         let measuredInner = rectification?.rectifiedQuad(from: inner) ?? inner
@@ -1191,6 +1245,15 @@ struct CardCenteringMeasurement: Equatable {
     }
 
     private func measurementBorderDistances(to inner: CardCenteringQuad) -> (left: Double, top: Double, right: Double, bottom: Double) {
+#if DEBUG
+        if let observedPrintMeasurement, let coordinateMapping {
+            let m = observedPrintMeasurement.meanMargins
+            let size = CardCenteringRectification(outerQuad:
+                coordinateMapping.workingQuad(fromNative: observedPrintMeasurement.measurementOuterQuad)).targetSize
+            return ((m["left"] ?? 0)*size.width,(m["top"] ?? 0)*size.height,
+                    (m["right"] ?? 0)*size.width,(m["bottom"] ?? 0)*size.height)
+        }
+#endif
         guard let rectification else {
             return geometryOuterQuad.borderDistances(to: inner)
         }
@@ -1206,12 +1269,14 @@ struct CardCenteringMeasurement: Equatable {
 
     var leftRightCentering: String {
         guard !isDeclined else { return "—" }
-        return Self.centeringString(leftBorderDistance, rightBorderDistance)
+        guard let pair = centeringPair(horizontal: true) else { return "—" }
+        return Self.centeringString(pair.firstPercentage,pair.secondPercentage)
     }
 
     var topBottomCentering: String {
         guard !isDeclined else { return "—" }
-        return Self.centeringString(topBorderDistance, bottomBorderDistance)
+        guard let pair = centeringPair(horizontal: false) else { return "—" }
+        return Self.centeringString(pair.firstPercentage,pair.secondPercentage)
     }
 
     mutating func refreshWarnings() {
@@ -1291,6 +1356,7 @@ struct CardCenteringMeasurement: Equatable {
     }
 
     private mutating func requireConfirmationAfterManualEditIfNeeded() {
+        beginManualGuides()
         hasManualGuideEdits = true
         if !hasValidFrameGeometry { reviewState = .pending }
         if reviewState == .pending {
@@ -1447,6 +1513,7 @@ extension CardCenteringMeasurement {
     /// Each inner side's tilt against its card edge in rectified space;
     /// clockwise positive. Keep all four so opposing slopes cannot cancel.
     var innerEdgeTiltDegrees: [Double]? {
+        guard !hasObservedPaths else { return nil }
         guard let inner = geometryInnerQuad else { return nil }
         let space = innerEditSpace
         let outer = space?.rectifiedQuad(from: geometryOuterQuad) ?? geometryOuterQuad

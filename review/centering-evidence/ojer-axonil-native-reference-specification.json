@@ -1,0 +1,11 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "LCI EN 0158 Ojer Axonil, Deepest Might",
+  "url": "https://cards.scryfall.io/png/front/5/0/50f8e2b6-98c7-4f28-bb39-e1fbe841f1ee.png?1783913761",
+  "sha256": "76d7dae4422ce5ab97563e0df1ee161cf4aa91ea508e0ac354f1911e26bdbd0a",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[55.5,115.0],[688.5,115.0],[688.5,579.5],[55.5,579.5]],
+  "boundaryProfileSides": ["left", "top", "right", "bottom"],
+  "boundaryReview": "Inspected provider cross sections locate the black artwork rule against orange at 55/56, 688/689 and 579/580. Top pixel 115 blends the stripe and black rule, between stripe at 114 and rule at 116. This printing's one-pixel horizontal shift is retained rather than copying another card's frame coordinates.",
+  "limitation": "The front face supplies artwork identity only. Provider geometry is a search hypothesis, never photographed edge truth or calibrated physical grading. Decorative title and lower text borders are not the artwork boundary."
+}

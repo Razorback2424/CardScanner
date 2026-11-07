@@ -1,0 +1,11 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "ECL EN 0159 Spinerock Tyrant",
+  "url": "https://cards.scryfall.io/png/front/4/7/478bbb7a-4b96-4e04-921e-bdf23185de25.png?1783904437",
+  "sha256": "b98f9980a8511ac72e1ebbb454b9ae3c2d1cd7f5f44933b1807bc0edf3acdd98",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[54.5,114.5],[687.5,114.5],[687.5,579.5],[54.5,579.5]],
+  "boundaryProfileSides": ["left", "top", "right", "bottom"],
+  "boundaryReview": "Native provider cross sections locate the black-rule/red-stripe transitions between pixels 54/55, 114/115, 687/688 and 579/580. The stripe is outside the artwork rule. This is the corresponding feature to locate in the foil photograph; provider brightness is not assumed to survive foil reflections.",
+  "limitation": "Measures intentional artwork placement against the separately observed physical cut. Reference projection supplies identity and a search location, not final photo geometry or a professional grade."
+}

@@ -9,6 +9,7 @@ struct CardCenteringGeometryRevision: Codable, Equatable {
     let mapping: CardCenteringCoordinateMapping?
     let reference: CardCenteringReferenceDefinition
     let reviewState: CardCenteringReviewState
+    var observedPoints: [[CardCenteringPoint?]]? = nil
 }
 
 struct CardCenteringSpatialSample: Codable, Equatable {
@@ -195,9 +196,10 @@ struct CardCenteringBoundarySensitivity: Codable, Equatable {
 extension CardCenteringMeasurement {
     var geometryRevision: CardCenteringGeometryRevision {
         .init(inputSHA256: inputRecord?.sha256, outer: geometryOuterQuad, inner: geometryInnerQuad,
-            mapping: coordinateMapping, reference: referenceDefinition, reviewState: reviewState)
+            mapping: coordinateMapping, reference: referenceDefinition, reviewState: reviewState,
+            observedPoints: hasObservedPaths ? observedGuidePaths(outer:true)+observedGuidePaths(outer:false) : nil)
     }
-    var spatialMeasurement: CardCenteringSpatialMeasurement? { .init(self) }
+    var spatialMeasurement: CardCenteringSpatialMeasurement? { hasObservedPaths ? nil : .init(self) }
 
     func includingPhotoRotation(_ degrees: Double) -> Self {
         var value = self
@@ -209,6 +211,13 @@ extension CardCenteringMeasurement {
     }
 
     func spatialRatioDetail(horizontal: Bool) -> String? {
+#if DEBUG
+        if let observedPrintMeasurement, canReportRatios {
+            let values = horizontal ? observedPrintMeasurement.localLeftShares : observedPrintMeasurement.localTopShares
+            guard let lo = values.min(), let hi = values.max(), hi-lo >= 0.1 else { return nil }
+            return String(format: "Across measured span: %.1f–%.1f%% %@",lo,hi,horizontal ? "left" : "top")
+        }
+#endif
         guard canReportRatios, let spatial = spatialMeasurement else { return nil }
         let axis = horizontal ? spatial.leftRight : spatial.topBottom
         guard let range = axis.ratioRange, range.firstSpread >= 0.1 else { return nil }

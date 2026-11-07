@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-07",
+  "candidate": "main at 11ff208 plus uncommitted changes; exact research source hashes retained on external SSD",
+  "status": "Offline prototype tested; competing-boundary identity is unresolved and no app integration is promoted",
+  "approach": "Retain multiple local transitions, fit distinct side hypotheses, preserve existing observations, and label interpolated and extrapolated proposal points separately. Supported prior curves are retained as curve proposals. Every proposal requires review.",
+  "knownGeometryControls": {
+    "count": 6,
+    "passed": 6,
+    "cases": ["single visible cut", "flat image", "stronger interior rule", "outward shadow", "hidden physical cut", "curved cut with nine missing stations"],
+    "curvedGapMaximumErrorPixels": 0.24888888888888516,
+    "interiorRule": "True cut and two interior-rule edges remain separate; two mixed-track proposals are flagged.",
+    "hiddenCut": "The misleading visible line remains identity-unverified; no physical cut is certified.",
+    "iteration": "An initial curve control failed because a nearby straight fit suppressed a different supported shape. The final version retains it as a shape alternative."
+  },
+  "photoCases": {
+    "squirtlePrintedRight": {"hypotheses": 4, "matchingFrozenPoints": 40, "frozenPoints": 40, "worstPixels": 3.3334890053565687, "gapRecoveredPoints": 6, "gapWorstPixels": 0.8802930117190044, "identitySelected": false},
+    "dewottPrintedBottom": {"hypotheses": 2, "pointsMatchingPreviouslyReviewedLine": 42, "reviewedLineWorstPixels": 0.7662807104015883, "cardNumberPositionsCompared": 5, "cardNumberWorstPixels": 0.4690260563966149, "identitySelected": false},
+    "squirtlePhysicalBottom": {"hypotheses": 2, "matchingFrozenPoints": 41, "frozenPoints": 41, "matchingWorstPixels": 0.0, "competingTrackWorstPixels": 9.293728476758588, "conditionalTopShareDifferenceFromReferencePP": 1.623730753968161, "identitySelected": false},
+    "previouslyWorkingMagicAndPokemonSides": {"sides": 3, "frozenPointsCompared": 131, "pointsWithinFourPixels": 131, "worstPixels": 0.7578789808817419, "existingObservationsPreserved": true}
+  },
+  "iterationTimingSeconds": {"squirtleRight": 1.87, "dewottBottom": 1.30, "squirtleBottomCut": 1.52, "magicBottom": 1.41, "pokemon0798Right": 1.22, "pokemon0800Bottom": 1.18, "scope": "Single-side offline Python process including image loading; not app or device latency"},
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-MultiHypothesis-20261107/",
+  "artifacts": ["controls-v6.log", "controls-v7/summary.json", "validation-v7.json", "validation-v7-manifest.json", "source-v7-hashes.json"],
+  "limitations": [
+    "All outputs require review and are detached from app geometry and ratio reporting.",
+    "Some competing proposals are false or combine features; the prototype cannot reliably choose the correct one yet.",
+    "The wider ratio differences hold the other boundaries and perspective mapping fixed and are not calibrated uncertainty intervals.",
+    "Frozen photo observations come from the same images and are not independently calibrated physical measurements.",
+    "Only three previously working sides were compared; this is not a full corpus regression or production-readiness claim."
+  ]
+}

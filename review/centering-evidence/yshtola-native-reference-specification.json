@@ -1,0 +1,11 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "FIN EN 0086 Y'shtola Rhul",
+  "url": "https://cards.scryfall.io/png/front/a/e/aef218fa-13a4-4653-95d6-6b3ef1b33a92.png?1783906625",
+  "sha256": "f2d951e609d0eaf77cf9e2da79cd813d6673a32c8783142a1f8d15e748416bf0",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[54.5,114.5],[687.5,114.5],[687.5,579.5],[54.5,579.5]],
+  "boundaryProfileSides": ["left", "top", "right", "bottom"],
+  "boundaryReview": "Inspected provider cross sections locate the outer black artwork rule against the blue stripe at 54/55, 114/115, 687/688 and 579/580. The legendary crown and lower text frame are separate design elements.",
+  "limitation": "Provider geometry supplies identity and search location, never photographed edge truth. Intentionally asymmetric artwork placement is retained; this is not calibrated physical grading."
+}

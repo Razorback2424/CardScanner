@@ -541,7 +541,7 @@ struct PriceCheckResult: Identifiable {
 
     var successfulQuoteState: PriceCheckQuoteState {
         guard hasUsableAmount else { return .checking }
-        if card.game == .pokemon, resolvedScan.request.subject.slab == nil,
+        if resolvedScan.request.subject.slab == nil,
            display.state() == .stale { return .stale }
         return .current
     }
@@ -5585,7 +5585,7 @@ final class ScannerViewModel: ObservableObject {
                 }
                 if let writer {
                     guard writeStorageIsCurrent() else { throw CollectionStoreError.collectionBusy }
-                    return try await writer.add(candidate)
+                    return try await writer.add(candidate, shouldContinue: writeStorageIsCurrent)
                 }
                 throw CollectionStoreError.collectionBusy
             }
@@ -6046,11 +6046,10 @@ final class ScannerViewModel: ObservableObject {
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
-                // Raw Pokémon checks retain attempts separately from successful checks.
+                // Raw checks retain attempts separately from successful checks.
                 // This timestamp is not evidence of price absence.
                 var attemptedAt = Date.now
-                if (latest.card.game == .pokemon && latest.resolvedScan.request.subject.slab == nil)
-                    || issue == .noExactPrice {
+                if latest.resolvedScan.request.subject.slab == nil || issue == .noExactPrice {
                     attemptedAt = priceCheckCoordinator.recordRefreshFailure(
                         for: latest,
                         shouldContinue: shouldContinue

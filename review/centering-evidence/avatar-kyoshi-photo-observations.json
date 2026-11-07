@@ -1,0 +1,14 @@
+{
+  "status": "Single-reader photo comparison, not calibrated ground truth",
+  "file": "IMG_0802.HEIC",
+  "inputSHA256": "3caea8bf423ceb6c04817937cef46f26297be203f26cdc4ce4e6c8a94ae008f7",
+  "referenceFeature": "Outer black rule around the artwork, against the surrounding white/silver stripe",
+  "method": "Left/top/right are frozen supported photo-path observations checked against unmarked native crops. Bottom observations use original-pixel cross sections at three fixed stations: the first black-to-white transition below the art. The initial unrestricted tracker selected the opposite white-to-title transition, about 16 px below the intended boundary. Frozen before the native seed-consensus change.",
+  "points": {
+    "left": [[400.77,1100.25],[401.58,1420.31],[402.14,1740.37]],
+    "top": [[1047.25,621.70],[1479.41,623.54],[1911.58,625.33]],
+    "right": [[2555.00,1100.50],[2555.90,1418.70],[2556.25,1736.90]],
+    "bottom": [[1051,2209.5],[1483,2208.5],[1915,2206.8]]
+  },
+  "limitation": "Comparison points and shared-image fits are not independent physical calibration. Deliberate artwork placement must be evaluated against the matching design; margin shares are not a grading score."
+}

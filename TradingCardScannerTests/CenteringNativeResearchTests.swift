@@ -1,6 +1,7 @@
 import CryptoKit
 import Darwin
 import UIKit
+import SwiftUI
 import XCTest
 @testable import TradingCardScanner
 
@@ -15,9 +16,9 @@ import XCTest
                     subdirectory: "TradingCards/" + folder)))
     }
 
-    private func reference() throws -> CardCenteringPrintReference {
+    private func reference(_ name: String = "fin-289") throws -> CardCenteringPrintReference {
         try JSONDecoder().decode(
-            CardCenteringPrintReference.self, from: resource("fin-289", type: "json", folder: "PrintReferences"))
+            CardCenteringPrintReference.self, from: resource(name, type: "json", folder: "PrintReferences"))
     }
 
     private func settle(_ model: CardCenteringViewModel) async throws -> CardCenteringMeasurement {
@@ -67,6 +68,1306 @@ import XCTest
             CardCenteringExport.reportNotes(for: confirmed).contains {
                 $0.contains("20.0%") && $0.contains("Published design")
             })
+    }
+
+    func testKnownPrintedFrameUsesPhotoEdgesAndRequiresReview() async throws {
+        let design = try reference("gengar-151-094")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("Document_2026-06-06_150759", type: "png", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let analysis = try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }
+        }
+        let m = analysis.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+        XCTAssertFalse(m.canReportRatios)
+        XCTAssertEqual(m.selectedLines.filter { $0.frame == .inner && $0.role == .printedBorder }.count, 4)
+        let left = 100 * m.leftBorderDistance / (m.leftBorderDistance + m.rightBorderDistance)
+        let top = 100 * m.topBorderDistance / (m.topBorderDistance + m.bottomBorderDistance)
+        print("PRINTED_FRAME left=\(left) top=\(top)")
+        // Cross-implementation agreement with the frozen supported native paths,
+        // not independent physical truth or a new historical accuracy pass.
+        XCTAssertEqual(left, 49.16557, accuracy: 2)
+        XCTAssertEqual(top, 45.23626, accuracy: 2)
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        let native = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        // Frozen, directly supported Python photo observations; compare each side
+        // so opposing edge errors cannot cancel in the two aggregate ratios.
+        let observations: [(CardCenteringSide, [(Double, Double)])] = [
+            (.left, [(102.731,468.079),(99.878,718.331),(97.837,968.591),(96.634,1135.433)]),
+            (.top, [(306.552,179.438),(478.396,181.350),(650.249,182.397),(764.812,183.615)]),
+            (.right, [(966.361,476.512),(965.052,726.597),(962.465,976.676),(960.683,1143.394)]),
+            (.bottom, [(294.671,1428.357),(640.868,1431.683),(756.270,1432.471)]),
+        ]
+        for (side, points) in observations {
+            let (a,b) = native.segment(side)
+            let dx = b.x-a.x, dy = b.y-a.y
+            let worst = points.map { abs(dx*($0.1-a.y)-dy*($0.0-a.x))/hypot(dx,dy) }.max()!
+            print("PRINTED_EDGE \(side) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side.rawValue)
+        }
+        let model = CardCenteringViewModel(printReference: design)
+        model.loadCapturedPhoto(bytes)
+        let published = try await settle(model)
+        XCTAssertEqual(published, m)
+        model.confirmFrames()
+        let confirmed = try XCTUnwrap(model.measurement)
+        XCTAssertTrue(confirmed.canReportRatios)
+        XCTAssertEqual(confirmed.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertEqual(confirmed.confidence, m.confidence)
+        XCTAssertTrue(CardCenteringExport.reportNotes(for: confirmed).contains { $0.contains("Printed frame placement") })
+    }
+
+    func testPrintedFrameRejectsSharedLayoutAndWrongDesign() throws {
+        let design = try reference("gengar-151-094")
+        for name in ["IMG_0797", "IMG_1038", "IMG_0347", "IMG_0780"] {
+            let bytes = try resource(name, type: "HEIC", folder: "HEIC")
+            let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+            let assisted = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes).measurement
+            }
+            XCTAssertEqual(assisted, ordinary, name)
+            XCTAssertFalse(assisted.canReportRatios)
+        }
+    }
+
+    func testGoldPikachuPrintedFrameResearchTransfer() throws {
+        let design = try reference("pikachu-ssp-247")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("Document_2026-06-06_152530", type: "png", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let analysis = try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }
+        }
+        let m = analysis.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+        XCTAssertFalse(m.canReportRatios)
+        let left = 100 * m.leftBorderDistance / (m.leftBorderDistance + m.rightBorderDistance)
+        let top = 100 * m.topBorderDistance / (m.topBorderDistance + m.bottomBorderDistance)
+        print("GOLD_PIKACHU left=\(left) top=\(top)")
+        XCTAssertEqual(left, 50.78649, accuracy: 2)
+        XCTAssertEqual(top, 52.25576, accuracy: 2)
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        let q = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        // Photo observations nearest four preselected sampling positions. Native
+        // crop review corrected two foil-texture matches (top second, bottom third).
+        // This remains a transfer diagnostic, not independent physical calibration.
+        let observations: [(CardCenteringSide, [(Double, Double)])] = [
+            (.left, [(462.809,1660.029),(479.196,2310.985),(492.233,2961.998),(503.257,3558.777)]),
+            (.top, [(1191.402,584.704),(1611.388,578.5),(2108.155,566.104),(2566.516,556.012)]),
+            (.right, [(3337.106,1602.668),(3352.804,2254.734),(3366.273,2906.848),(3379.264,3558.972)]),
+            (.bottom, [(1266.525,4652.439),(1727.870,4643.287),(2150.927,4634.0),(2650.553,4624.701)]),
+        ]
+        for (side, points) in observations {
+            let (a,b) = q.segment(side)
+            let dx = b.x-a.x, dy = b.y-a.y
+            let worst = points.map { abs(dx*($0.1-a.y)-dy*($0.0-a.x))/hypot(dx,dy) }.max()!
+            print("GOLD_PIKACHU_EDGE \(side) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side.rawValue)
+        }
+        let other = try resource("Document_2026-06-06_151610", type: "png", folder: "HEIC")
+        let otherOrdinary = try CardCenteringAnalyzer.analyze(other).measurement
+        let otherAssisted = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(other).measurement
+        }
+        XCTAssertEqual(otherAssisted, otherOrdinary)
+    }
+
+    func testPrintedMeasurementSpanUsesBoundedBracketingObservations() {
+        let samples = (0..<61).map { 0.15 + 0.70 * Double($0) / 60 }
+        // Remove the samples immediately adjacent to an endpoint: the surviving
+        // observations still bracket it with fewer than six missing samples.
+        let bracketed = samples.filter { !($0 > 0.18 && $0 < 0.21) }
+        XCTAssertTrue(CardCenteringPrintMatcher.hasSupportedMeasurementSpan(bracketed))
+        XCTAssertFalse(CardCenteringPrintMatcher.hasSupportedMeasurementSpan(samples.filter { $0 > 0.20 }))
+        XCTAssertFalse(CardCenteringPrintMatcher.hasSupportedMeasurementSpan(samples.filter { $0 < 0.80 }))
+        XCTAssertFalse(CardCenteringPrintMatcher.hasSupportedMeasurementSpan(samples.filter { !($0 > 0.40 && $0 < 0.51) }))
+        XCTAssertFalse(CardCenteringPrintMatcher.hasSupportedMeasurementSpan(Array(samples.prefix(29))))
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsGoldPikachu() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference(), pikachu = try reference("pikachu-ssp-247")
+        try verifyDevelopmentLibrary([gengar, town, pikachu], expected: [
+            "Document_2026-06-06_150759.png": gengar, "IMG_0780.HEIC": town,
+            "Document_2026-06-06_152530.png": pikachu,
+        ])
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsPrismaticPikachu() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        try verifyDevelopmentLibrary([gengar, town, ssp, pre], expected: [
+            "Document_2026-06-06_150759.png": gengar, "IMG_0780.HEIC": town,
+            "Document_2026-06-06_152530.png": ssp, "Document_2026-06-06_151610.png": pre,
+        ])
+    }
+
+    func testPhysicalCutRejectsCompetingTransitionsAndInconsistentBackground() throws {
+        func image(_ mode: Int) -> UIImage {
+            let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true
+            return UIGraphicsImageRenderer(size: CGSize(width: 700, height: 900), format: format).image { context in
+                UIColor.white.setFill(); context.fill(CGRect(x: 0, y: 0, width: 700, height: 900))
+                if mode == 1 {
+                    UIColor(white: 0.5, alpha: 1).setFill()
+                    context.fill(CGRect(x: 105, y: 100, width: 475, height: 700))
+                }
+                UIColor.black.setFill(); context.fill(CGRect(x: 120, y: 100, width: 460, height: 700))
+                if mode == 2 {
+                    UIColor.black.setFill(); context.fill(CGRect(x: 0, y: 450, width: 700, height: 450))
+                    UIColor.white.setFill(); context.fill(CGRect(x: 120, y: 450, width: 460, height: 350))
+                }
+            }
+        }
+        let seed = CardCenteringQuad(topLeft: .init(x: 130, y: 100), topRight: .init(x: 580, y: 100),
+            bottomRight: .init(x: 580, y: 800), bottomLeft: .init(x: 130, y: 800))
+        let accepted = try XCTUnwrap(CardCenteringPrintMatcher.physicalSide(.left, seed: seed, source: image(0)))
+        XCTAssertEqual(accepted.nativeLine.start.x, 120, accuracy: 1)
+        XCTAssertEqual(accepted.nativeLine.end.x, 120, accuracy: 1)
+        XCTAssertNil(CardCenteringPrintMatcher.physicalSide(.left, seed: seed, source: image(1)))
+        XCTAssertNil(CardCenteringPrintMatcher.physicalSide(.left, seed: seed, source: image(2)))
+        let clipped = CardCenteringQuad(topLeft: .init(x: 20, y: 100), topRight: seed.topRight,
+            bottomRight: seed.bottomRight, bottomLeft: .init(x: 20, y: 800))
+        XCTAssertNil(CardCenteringPrintMatcher.physicalSide(.left, seed: clipped, source: image(0)))
+    }
+
+    func testNativePhysicalCutPreservesArtworkOnKyoshiAndTheOoze() throws {
+        let cases: [(String, String, Double, Double, [(CardCenteringSide, [(Double, Double)])])] = [
+            ("IMG_0802", "avatar-kyoshi-tla-186", 51.62639, 20.09219, [
+                (.left, [(210.370,1285.117),(211.615,1995.327),(216.968,2705.509)]),
+                (.top, [(954.248,229.726),(1462.163,231.931),(1970.081,233.865)]),
+                (.right, [(2734.410,1292.093),(2736.918,1997.475),(2738.935,2702.859)]),
+                (.bottom, [(974.751,3764.485),(1480.917,3763.274),(1987.083,3761.923)]),
+            ]),
+            ("IMG_0809", "the-ooze-tmt-177", 51.10941, 19.16061, [
+                (.left, [(207.743,1252.910),(213.090,1967.348),(219.275,2681.784)]),
+                (.top, [(957.416,197.967),(1461.678,198.062),(1965.923,202.924)]),
+                (.right, [(2737.292,1253.642),(2738.030,1963.178),(2745.534,2672.625)]),
+                (.bottom, [(976.877,3743.646),(1488.991,3741.331),(2001.098,3738.080)]),
+            ]),
+        ]
+        for (file, name, expectedLeft, expectedTop, observations) in cases {
+            let design = try reference(name)
+            let bytes = try resource(file, type: "HEIC", folder: "HEIC")
+            let baseline = try CardCenteringPrintMatcher.$physicalRefinementEnabled.withValue(false) {
+                try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                    try CardCenteringAnalyzer.analyze(bytes)
+                }
+            }
+            let result = try CardCenteringPrintMatcher.$physicalRefinementEnabled.withValue(true) {
+                try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+                    try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                        try CardCenteringAnalyzer.analyze(bytes)
+                    }
+                }
+            }
+            let m = result.measurement
+            XCTAssertEqual(m.geometryInnerQuad, baseline.measurement.geometryInnerQuad, file)
+            XCTAssertEqual(m.confidence, baseline.measurement.confidence)
+            XCTAssertFalse(m.canReportRatios)
+            XCTAssertNotEqual(m.geometryOuterQuad, baseline.measurement.geometryOuterQuad)
+            XCTAssertEqual(m.boundaryCandidates.filter { $0.source == "selected.physical_background" }.count, 4)
+            let mapping = try XCTUnwrap(result.coordinateMapping)
+            let native = mapping.nativeQuad(fromWorking: m.geometryOuterQuad)
+            for (side, points) in observations {
+                let (a,b) = native.segment(side)
+                let dx = b.x-a.x, dy = b.y-a.y
+                let worst = points.map { abs(dx*($0.1-a.y)-dy*($0.0-a.x))/hypot(dx,dy) }.max()!
+                print("PHYSICAL_EDGE \(file) \(side) worst=\(worst)")
+                XCTAssertLessThanOrEqual(worst, 4, file+" "+side.rawValue)
+            }
+            let left = 100*m.leftBorderDistance/(m.leftBorderDistance+m.rightBorderDistance)
+            let top = 100*m.topBorderDistance/(m.topBorderDistance+m.bottomBorderDistance)
+            print("PHYSICAL_SHARES \(file) left=\(left) top=\(top)")
+            XCTAssertEqual(left, expectedLeft, accuracy: 2)
+            XCTAssertEqual(top, expectedTop, accuracy: 2)
+            let attachment = XCTAttachment(data: try JSONEncoder().encode(native), uniformTypeIdentifier: "public.json")
+            attachment.name = "native-physical-"+file; attachment.lifetime = .keepAlways; add(attachment)
+        }
+    }
+
+    func testSpinerockAutomaticCurvedReviewConfirmationAndUndo() async throws {
+        let model = CardCenteringViewModel(printReferences: [try reference(),try reference("spinerock-ecl-159")])
+        model.loadCapturedPhoto(try resource("IMG_0803",type:"HEIC",folder:"HEIC"))
+        let detected = try await settle(model)
+        XCTAssertTrue(detected.hasObservedPaths)
+        XCTAssertEqual(detected.referenceDefinition,.matchedArtwork)
+        XCTAssertFalse(detected.canReportRatios)
+        XCTAssertEqual(detected.leftRightCentering,"—")
+        XCTAssertTrue(detected.selectedLines.isEmpty)
+        XCTAssertNil(detected.spatialMeasurement)
+        let paths = try XCTUnwrap(detected.observedPrintMeasurement)
+        XCTAssertEqual(paths.leftShare,49.7806246074,accuracy:0.00001)
+        XCTAssertEqual(paths.topShare,19.7570216846,accuracy:0.00001)
+        XCTAssertEqual(detected.observedGuidePaths(outer:true).count,4)
+        XCTAssertEqual(detected.observedGuidePaths(outer:false).count,4)
+        model.adjustRotation(by:1)
+        XCTAssertEqual(model.rotationDegrees,0)
+        model.confirmFrames()
+        let reviewed = try XCTUnwrap(model.measurement)
+        XCTAssertTrue(reviewed.canReportRatios)
+        XCTAssertEqual(reviewed.confidence,detected.confidence)
+        XCTAssertEqual(reviewed.leftRightCentering,"49.8 / 50.2")
+        XCTAssertEqual(reviewed.topBottomCentering,"19.8 / 80.2")
+        XCTAssertNotNil(reviewed.spatialRatioDetail(horizontal:true))
+        let picture = try XCTUnwrap(model.image)
+        let export = CardCenteringExport.render(image:picture,measurement:reviewed,rotationDegrees:0)
+        let rendered = XCTAttachment(image:export); rendered.name = "spinerock-curved-export"; rendered.lifetime = .keepAlways; add(rendered)
+        let canvas = CardCenteringCanvas(image:picture,measurement:reviewed,rotationDegrees:0,imageRevision:1,
+            lumaField:nil,selection:.constant(nil),onBeginEdit:{},onEdit:{_ in},onAccessibilityNudge:{_ in})
+            .frame(width:390,height:720)
+        let renderer = ImageRenderer(content:canvas)
+        renderer.scale = 2
+        let preview = XCTAttachment(image:try XCTUnwrap(renderer.uiImage))
+        preview.name = "spinerock-curved-canvas"; preview.lifetime = .keepAlways; add(preview)
+        let metadata = XCTAttachment(data:try JSONEncoder().encode(paths),uniformTypeIdentifier:"public.json")
+        metadata.name = "spinerock-integrated-paths"; metadata.lifetime = .keepAlways; add(metadata)
+        model.beginManualGuides()
+        let manual = try XCTUnwrap(model.measurement)
+        XCTAssertFalse(manual.hasObservedPaths)
+        XCTAssertFalse(manual.canReportRatios)
+        XCTAssertNotEqual(manual.geometryRevision,reviewed.geometryRevision)
+        model.undo()
+        XCTAssertEqual(model.measurement,reviewed)
+        model.resetGuides()
+        XCTAssertEqual(model.measurement,detected)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsSpinerock() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177"), spinerock = try reference("spinerock-ecl-159")
+        try verifyDevelopmentLibrary([gengar,town,ssp,pre,foil,kyoshi,ooze,spinerock],expected:[
+            "Document_2026-06-06_150759.png":gengar,"IMG_0780.HEIC":town,
+            "Document_2026-06-06_152530.png":ssp,"Document_2026-06-06_151610.png":pre,
+            "IMG_0802.HEIC":kyoshi,"IMG_0809.HEIC":ooze,"IMG_0803.HEIC":spinerock,
+        ])
+    }
+
+    func testMichelangeloObservedArtworkAndPhysicalTransfer() throws {
+        let design = try reference("michelangelo-tmt-121")
+        let bytes = try resource("IMG_0811", type: "HEIC", folder: "HEIC")
+        XCTAssertEqual(SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(),
+            "8e2adabc21e6572a3af4084efa923d2500fc314c6e35567054d3a39d50358ad2")
+        let result = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(bytes)
+        }
+        let m = result.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedArtwork)
+        XCTAssertFalse(m.canReportRatios)
+        let observed = try XCTUnwrap(m.observedPrintMeasurement)
+        // Frozen photo observations precede native execution. Neither recognition
+        // nor expected ratios supply the detector with these coordinates.
+        let inner: [(String, [(Double, Double)])] = [
+            ("left", [(426.057,1103.546),(425.616,1421.950),(425.170,1740.253)]),
+            ("top", [(1074.357,629.637),(1506.210,631.893),(1937.057,634.229)]),
+            ("right", [(2581.140,1113.310),(2581.218,1429.867),(2580.365,1746.322)]),
+            ("bottom", [(1072.396,2218.148),(1503.912,2218.231),(1934.424,2218.334)]),
+        ]
+        let outer: [(String, [(Double, Double)])] = [
+            ("left", [(228.130,1274.470),(230.106,1986.794),(233.221,2699.119)]),
+            ("top", [(984.237,219.797),(1492.274,223.095),(2000.285,229.264)]),
+            ("right", [(2763.174,1288.443),(2764.407,1994.905),(2766.644,2701.366)]),
+            ("bottom", [(984.841,3759.374),(1495.191,3758.399),(2005.545,3758.716)]),
+        ]
+        for (paths, expected) in [(observed.innerPaths, inner), (observed.outerPaths, outer)] {
+            for (side, points) in expected {
+                let path = try XCTUnwrap(paths.first { $0.side == side })
+                let horizontal = side == "top" || side == "bottom"
+                let sorted = path.observations.compactMap { $0 }.sorted {
+                    horizontal ? $0.x < $1.x : $0.y < $1.y
+                }
+                for (x,y) in points {
+                    let along = horizontal ? x : y
+                    let index = try XCTUnwrap(sorted.indices.dropLast().first {
+                        (horizontal ? sorted[$0].x : sorted[$0].y) <= along &&
+                        (horizontal ? sorted[$0+1].x : sorted[$0+1].y) >= along
+                    }, side)
+                    let a = sorted[index], b = sorted[index+1]
+                    let t = (along-(horizontal ? a.x : a.y))/(horizontal ? b.x-a.x : b.y-a.y)
+                    let value = horizontal ? a.y+t*(b.y-a.y) : a.x+t*(b.x-a.x)
+                    XCTAssertEqual(value, horizontal ? y : x, accuracy: 4, side)
+                }
+            }
+        }
+        XCTAssertEqual(observed.leftShare, 51.571911, accuracy: 0.5)
+        XCTAssertEqual(observed.topShare, 21.050789, accuracy: 0.5)
+        print("MICHELANGELO_PAIRED left=\(observed.leftShare) top=\(observed.topShare)")
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(observed), uniformTypeIdentifier: "public.json")
+        attachment.name = "michelangelo-native-paired-paths"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsMichelangelo() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177"), spinerock = try reference("spinerock-ecl-159")
+        let michelangelo = try reference("michelangelo-tmt-121")
+        try verifyDevelopmentLibrary([gengar,town,ssp,pre,foil,kyoshi,ooze,spinerock,michelangelo],expected:[
+            "Document_2026-06-06_150759.png":gengar,"IMG_0780.HEIC":town,
+            "Document_2026-06-06_152530.png":ssp,"Document_2026-06-06_151610.png":pre,
+            "IMG_0802.HEIC":kyoshi,"IMG_0809.HEIC":ooze,"IMG_0803.HEIC":spinerock,
+            "IMG_0811.HEIC":michelangelo,
+        ])
+    }
+
+    private struct FrozenPhotoPaths: Decodable {
+        let file, reference, inputSHA256: String
+        let inner: [String: [[Double]]]
+        let outer: [String: [[Double]]]?
+        let leftShare, topShare: Double?
+        let innerSeed, outerSeed: CardCenteringQuad?
+    }
+
+    private func verifyPhotoPaths(_ paths: [CardCenteringPrintMatcher.ObservedPath],
+                                  against expected: [String: [[Double]]]) throws {
+        XCTAssertEqual(Set(paths.map(\.side)), Set(expected.keys))
+        for (side, points) in expected {
+            let path = try XCTUnwrap(paths.first { $0.side == side })
+            let horizontal = side == "top" || side == "bottom"
+            let samples = path.observations.enumerated().compactMap { index, point in
+                point.map { (index, $0) }
+            }.sorted { horizontal ? $0.1.x < $1.1.x : $0.1.y < $1.1.y }
+            var worst = 0.0
+            for point in points {
+                XCTAssertEqual(point.count, 2)
+                let along = point[horizontal ? 0 : 1]
+                let index = try XCTUnwrap(samples.indices.dropLast().first {
+                    (horizontal ? samples[$0].1.x : samples[$0].1.y) <= along &&
+                    (horizontal ? samples[$0+1].1.x : samples[$0+1].1.y) >= along
+                }, "Unsupported frozen observation on \(side)")
+                let a = samples[index], b = samples[index+1]
+                XCTAssertLessThanOrEqual(abs(b.0-a.0)-1, 6, "Unsupported gap on \(side)")
+                let t = (along-(horizontal ? a.1.x : a.1.y))/(horizontal ? b.1.x-a.1.x : b.1.y-a.1.y)
+                let value = horizontal ? a.1.y+t*(b.1.y-a.1.y) : a.1.x+t*(b.1.x-a.1.x)
+                worst = max(worst, abs(value-point[horizontal ? 1 : 0]))
+            }
+            print("FROZEN_PATH \(side) count=\(points.count) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side)
+        }
+    }
+
+    func testYshtolaObservedArtworkAndPhysicalTransfer() throws {
+        let frozen = try JSONDecoder().decode(FrozenPhotoPaths.self,
+            from: resource("yshtola-photo-paths", type: "json", folder: "Supplementary"))
+        let design = try reference(frozen.reference)
+        let bytes = try resource("IMG_0813", type: "HEIC", folder: "HEIC")
+        XCTAssertEqual(SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), frozen.inputSHA256)
+        let result = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(bytes)
+        }
+        XCTAssertEqual(result.measurement.referenceDefinition, .matchedArtwork)
+        XCTAssertFalse(result.measurement.canReportRatios)
+        let observed = try XCTUnwrap(result.measurement.observedPrintMeasurement)
+        try verifyPhotoPaths(observed.innerPaths, against: frozen.inner)
+        try verifyPhotoPaths(observed.outerPaths, against: XCTUnwrap(frozen.outer))
+        XCTAssertEqual(observed.leftShare, try XCTUnwrap(frozen.leftShare), accuracy: 0.5)
+        XCTAssertEqual(observed.topShare, try XCTUnwrap(frozen.topShare), accuracy: 0.5)
+        print("YSHTOLA_PAIRED left=\(observed.leftShare) top=\(observed.topShare)")
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(observed), uniformTypeIdentifier: "public.json")
+        attachment.name = "yshtola-native-paired-paths"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testOjerAxonilArtworkPathsResearch() throws {
+        let frozen = try JSONDecoder().decode(FrozenPhotoPaths.self,
+            from: resource("ojer-axonil-artwork-photo-paths", type: "json", folder: "Supplementary"))
+        let design = try reference(frozen.reference)
+        let bytes = try resource("IMG_1477-2", type: "HEIC", folder: "HEIC")
+        XCTAssertEqual(SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), frozen.inputSHA256)
+        let baseline = try CardCenteringAnalyzer.analyze(bytes)
+        let source = try XCTUnwrap(UIImage(data: bytes))
+        let paths = try CardCenteringPrecisionSide.allCases.map { side in
+            try XCTUnwrap(CardCenteringPrintMatcher.observedArtworkPath(side,
+                reference: design, analysis: baseline, source: source))
+        }
+        try verifyPhotoPaths(paths, against: frozen.inner)
+        XCTAssertFalse(baseline.measurement.canReportRatios)
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(paths), uniformTypeIdentifier: "public.json")
+        attachment.name = "ojer-axonil-native-artwork-paths"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsYshtola() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177"), spinerock = try reference("spinerock-ecl-159")
+        let michelangelo = try reference("michelangelo-tmt-121"), yshtola = try reference("yshtola-fin-086")
+        try verifyDevelopmentLibrary([gengar,town,ssp,pre,foil,kyoshi,ooze,spinerock,michelangelo,yshtola],expected:[
+            "Document_2026-06-06_150759.png":gengar,"IMG_0780.HEIC":town,
+            "Document_2026-06-06_152530.png":ssp,"Document_2026-06-06_151610.png":pre,
+            "IMG_0802.HEIC":kyoshi,"IMG_0809.HEIC":ooze,"IMG_0803.HEIC":spinerock,
+            "IMG_0811.HEIC":michelangelo,"IMG_0813.HEIC":yshtola,
+        ])
+    }
+
+    func testKyoshiSagaObservedArtworkAndPhysicalTransfer() throws {
+        let frozen = try JSONDecoder().decode(FrozenPhotoPaths.self,
+            from: resource("kyoshi-saga-photo-paths", type: "json", folder: "Supplementary"))
+        let design = try reference(frozen.reference)
+        let bytes = try resource("IMG_0801", type: "HEIC", folder: "HEIC")
+        XCTAssertEqual(SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), frozen.inputSHA256)
+        let result = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(bytes)
+        }
+        XCTAssertEqual(result.measurement.referenceDefinition, .matchedArtwork)
+        XCTAssertFalse(result.measurement.canReportRatios)
+        let placement = try XCTUnwrap(result.measurement.reviewedDesign)
+        // This is deliberately asymmetric artwork, not a symmetric border grade.
+        XCTAssertEqual(placement.designLeft, 100*370.0/426.0, accuracy: 0.000001)
+        XCTAssertEqual(placement.designTop, 100*115.0/282.0, accuracy: 0.000001)
+        let observed = try XCTUnwrap(result.measurement.observedPrintMeasurement)
+        try verifyPhotoPaths(observed.innerPaths, against: frozen.inner)
+        try verifyPhotoPaths(observed.outerPaths, against: XCTUnwrap(frozen.outer))
+        XCTAssertEqual(observed.leftShare, try XCTUnwrap(frozen.leftShare), accuracy: 0.5)
+        XCTAssertEqual(observed.topShare, try XCTUnwrap(frozen.topShare), accuracy: 0.5)
+        print("KYOSHI_SAGA_PAIRED left=\(observed.leftShare) top=\(observed.topShare)")
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(observed), uniformTypeIdentifier: "public.json")
+        attachment.name = "kyoshi-saga-native-paired-paths"; attachment.lifetime = .keepAlways; add(attachment)
+        let reverseBytes = try resource("IMG_0802", type: "HEIC", folder: "HEIC")
+        let ordinaryReverse = try CardCenteringAnalyzer.analyze(reverseBytes).measurement
+        let wrongFace = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(reverseBytes).measurement
+        }
+        XCTAssertEqual(wrongFace, ordinaryReverse)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsKyoshiSaga() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177"), spinerock = try reference("spinerock-ecl-159")
+        let michelangelo = try reference("michelangelo-tmt-121"), yshtola = try reference("yshtola-fin-086")
+        let saga = try reference("kyoshi-saga-tla-186")
+        try verifyDevelopmentLibrary([gengar,town,ssp,pre,foil,kyoshi,ooze,spinerock,michelangelo,yshtola,saga],expected:[
+            "Document_2026-06-06_150759.png":gengar,"IMG_0780.HEIC":town,
+            "Document_2026-06-06_152530.png":ssp,"Document_2026-06-06_151610.png":pre,
+            "IMG_0802.HEIC":kyoshi,"IMG_0809.HEIC":ooze,"IMG_0803.HEIC":spinerock,
+            "IMG_0811.HEIC":michelangelo,"IMG_0813.HEIC":yshtola,"IMG_0801.HEIC":saga,
+        ])
+    }
+
+    func testUniformBorderModelsRecoverKnownTransitionAndRejectFlat() throws {
+        for logistic in [false,true] {
+            let raw = (-28...28).map { x -> SIMD3<Double> in
+                let z = (Double(x)-2.35)/2.4
+                let step = logistic ? 1/(1+exp(-1.7*z)) : 0.5*(1+erf(z/sqrt(2)))
+                return SIMD3<Double>(30,40,25)+SIMD3<Double>(0.1,-0.1,0.05)*Double(x)+SIMD3<Double>(20,-15,8)*step
+            }
+            let fit = try XCTUnwrap(CardCenteringPrintMatcher.fitBorderRegion(raw,logistic:logistic))
+            XCTAssertTrue(fit.accepted)
+            XCTAssertEqual(fit.center,2.35,accuracy:0.05)
+            XCTAssertEqual(fit.width,2.4,accuracy:0.05)
+        }
+        let flat = [SIMD3<Double>](repeating:SIMD3(repeating:5),count:57)
+        XCTAssertFalse(try XCTUnwrap(CardCenteringPrintMatcher.fitBorderRegion(flat,logistic:false)).accepted)
+        let weakOuter = (-80...80).map { x -> SIMD3<Double> in
+            let interior = 0.5*(1+erf((Double(x)+20)/(2*sqrt(2))))
+            let border = 0.5*(1+erf((Double(x)-20)/(2*sqrt(2))))
+            return SIMD3(repeating:5+30*(1-interior)+10*(1-border))
+        }
+        let exterior = [SIMD3<Double>](repeating:SIMD3(repeating:5),count:25)
+        XCTAssertEqual(try XCTUnwrap(CardCenteringPrintMatcher.uniformBorderProposal(weakOuter,exterior:exterior)),20,accuracy:1)
+        XCTAssertNil(CardCenteringPrintMatcher.uniformBorderProposal(
+            [SIMD3<Double>](repeating:SIMD3(repeating:5),count:161),exterior:exterior))
+    }
+
+    func testMagicBackSelectivePhotoTransfer() throws {
+        let frozen = try JSONDecoder().decode(FrozenPhotoPaths.self,
+            from:resource("magic-back-selective-photo-paths",type:"json",folder:"Supplementary"))
+        let bytes = try resource("IMG_0810",type:"HEIC",folder:"HEIC")
+        XCTAssertEqual(SHA256.hash(data:bytes).map { String(format:"%02x",$0) }.joined(),frozen.inputSHA256)
+        let baseline = try CardCenteringAnalyzer.analyze(bytes)
+        print("MAGIC_REFERENCE \(baseline.measurement.referenceDefinition)")
+        let mapping = try XCTUnwrap(baseline.coordinateMapping)
+        let outerSeed = mapping.nativeQuad(fromWorking:baseline.measurement.geometryOuterQuad)
+        let innerSeed = mapping.nativeQuad(fromWorking:try XCTUnwrap(baseline.measurement.geometryInnerQuad))
+        let source = try XCTUnwrap(UIImage(data:bytes))
+        let outer = try CardCenteringPrecisionSide.allCases.map {
+            try XCTUnwrap(CardCenteringPrintMatcher.observedPhysicalPath($0,seed:outerSeed,source:source))
+        }
+        let bottom = try XCTUnwrap(outer.first { $0.side == "bottom" })
+        let inner = try CardCenteringPrecisionSide.allCases.map { side in
+            try XCTUnwrap(side == .bottom
+                ? CardCenteringPrintMatcher.observedUniformBorderPath(side,seed:innerSeed,physical:bottom,source:source)
+                : CardCenteringPrintMatcher.observedPrintedSeedPath(side,seed:innerSeed,source:source))
+        }
+        let raw = XCTAttachment(data:try JSONEncoder().encode(["innerPaths":inner,"outerPaths":outer]),uniformTypeIdentifier:"public.json")
+        raw.name = "magic-back-native-boundary-paths";raw.lifetime = .keepAlways;add(raw)
+        try verifyPhotoPaths(inner,against:frozen.inner)
+        try verifyPhotoPaths(outer,against:try XCTUnwrap(frozen.outer))
+        let observed = try XCTUnwrap(CardCenteringPrintMatcher.measureObservedPaths(
+            outer:outer,inner:inner,outerSeed:outerSeed,innerSeed:innerSeed))
+        XCTAssertEqual(observed.leftShare,try XCTUnwrap(frozen.leftShare),accuracy:0.5)
+        XCTAssertEqual(observed.topShare,try XCTUnwrap(frozen.topShare),accuracy:0.5)
+        XCTAssertFalse(baseline.measurement.canReportRatios)
+        print("MAGIC_SELECTIVE left=\(observed.leftShare) top=\(observed.topShare)")
+        let automatic = try CardCenteringAnalyzer.$activeSelectiveBorderRepair.withValue(true) {
+            try CardCenteringAnalyzer.analyze(bytes)
+        }.measurement
+        XCTAssertEqual(automatic.referenceDefinition,.magicClassicBack)
+        XCTAssertNil(automatic.reviewedDesign)
+        XCTAssertEqual(automatic.observedPrintMeasurement,observed)
+        XCTAssertFalse(automatic.canReportRatios)
+        let attachment = XCTAttachment(data:try JSONEncoder().encode(observed),uniformTypeIdentifier:"public.json")
+        attachment.name = "magic-back-native-paired-paths";attachment.lifetime = .keepAlways;add(attachment)
+    }
+
+    func testSquirtleExistingNativePathDiagnostic() throws {
+        let frozen = try JSONDecoder().decode(FrozenPhotoPaths.self,
+            from: resource("squirtle-foil-photo-paths", type: "json", folder: "Supplementary"))
+        let bytes = try resource("Document_2026-06-06_175439", type: "png", folder: "HEIC")
+        XCTAssertEqual(SHA256.hash(data:bytes).map { String(format:"%02x",$0) }.joined(),frozen.inputSHA256)
+        let source = try XCTUnwrap(UIImage(data:bytes))
+        let innerSeed = try XCTUnwrap(frozen.innerSeed), outerSeed = try XCTUnwrap(frozen.outerSeed)
+        let inner = CardCenteringPrecisionSide.allCases.compactMap { side in
+            let path = CardCenteringPrintMatcher.observedPrintedContinuityPath(side,seed:innerSeed,source:source)
+            if path == nil { print("SQUIRTLE_BASELINE inner \(side.rawValue) unavailable") }
+            return path
+        }
+        let outer = CardCenteringPrecisionSide.allCases.compactMap { side in
+            let path = CardCenteringPrintMatcher.observedPhysicalPath(side,seed:outerSeed,source:source)
+            if path == nil { print("SQUIRTLE_BASELINE outer \(side.rawValue) unavailable") }
+            return path
+        }
+        for (frame, paths) in [("inner",inner),("outer",outer)] {
+            for path in paths {
+                print("SQUIRTLE_BASELINE \(frame) \(path.side) supported=\(path.observations.compactMap { $0 }.count)")
+            }
+        }
+        let attachment = XCTAttachment(data:try JSONEncoder().encode(["innerPaths":inner,"outerPaths":outer]),
+                                       uniformTypeIdentifier:"public.json")
+        attachment.name = "squirtle-native-baseline-paths";attachment.lifetime = .keepAlways;add(attachment)
+        XCTAssertEqual(inner.count,4,"All printed sides must be present for comparison")
+        XCTAssertGreaterThanOrEqual(outer.count,1,"Keep diagnostics for the available physical sides")
+        XCTAssertFalse(try CardCenteringAnalyzer.analyze(bytes).measurement.canReportRatios)
+    }
+
+    func testSquirtleClippedShadowContactIsOnlyAnUnidentifiedAlternative() throws {
+        let bytes = try resource("Document_2026-06-06_175439",type:"png",folder:"HEIC")
+        let baseline = try CardCenteringAnalyzer.analyze(bytes)
+        let investigated = try CardCenteringAnalyzer.$activeShadowContactSides.withValue([.bottom]) {
+            try CardCenteringAnalyzer.analyze(bytes)
+        }
+        let before = baseline.measurement, after = investigated.measurement
+        XCTAssertEqual(after.geometryOuterQuad,before.geometryOuterQuad)
+        XCTAssertEqual(after.geometryInnerQuad,before.geometryInnerQuad)
+        XCTAssertEqual(after.confidence,before.confidence)
+        XCTAssertEqual(after.boundaryCandidates.dropLast(),before.boundaryCandidates[...])
+        XCTAssertFalse(after.canReportRatios)
+        let candidate = try XCTUnwrap(after.boundaryCandidates.last)
+        XCTAssertEqual(candidate.id,"research-shadow-contact-bottom")
+        XCTAssertEqual(candidate.proposedRole,.unknown)
+        XCTAssertEqual(candidate.selectionReason,.competingCandidate)
+        let points = try XCTUnwrap(candidate.observedPoints)
+        let stations = try XCTUnwrap(candidate.observedPointStations)
+        XCTAssertEqual(points.count,stations.count)
+        XCTAssertGreaterThanOrEqual(points.count,30)
+        XCTAssertLessThan(points.count,61,"Unavailable or ambiguous stations must remain absent")
+        XCTAssertEqual(stations,stations.sorted())
+        let alternatives = after.reviewCandidates(frame:.outer,side:.bottom)
+        XCTAssertTrue(alternatives.contains { $0.id == candidate.id })
+        print("SQUIRTLE_SHADOW_CANDIDATE supported=\(points.count) residual=\(candidate.fitResidualNativePixels ?? -1) reviewIndex=\(alternatives.firstIndex { $0.id == candidate.id } ?? -1)")
+        var expected = before
+        expected.retainUnverifiedBoundaryCandidate(candidate)
+        XCTAssertEqual(after,expected,"All existing measurement state and evidence must remain intact")
+        // Broad source-photo review intervals identify the end of visible foil,
+        // not a calibrated physical cut or the earlier shadow-following path.
+        let intervals: [(Double,ClosedRange<Double>)] = [
+            (500,4454...4461),(1000,4457...4464),(1500,4457...4464),
+            (2000,4460...4467),(2500,4462...4469),
+        ]
+        let a = candidate.nativeLine.start,b = candidate.nativeLine.end
+        for (x,band) in intervals {
+            let y = a.y+(x-a.x)*(b.y-a.y)/(b.x-a.x)
+            XCTAssertTrue(band.contains(y),"The candidate missed the reviewed source band at x=\(x): \(y)")
+        }
+        var selected = after
+        XCTAssertTrue(selected.selectBoundaryCandidate(id:candidate.id,as:.physicalCut))
+        XCTAssertFalse(selected.canReportRatios,"An explicit edge choice must not grant frame confirmation")
+        XCTAssertEqual(selected.confidence,before.confidence)
+        for old in after.selectedLines where !(old.frame == .outer && old.side == .bottom) {
+            let current = try XCTUnwrap(selected.selectedLines.first { $0.frame == old.frame && $0.side == old.side })
+            XCTAssertTrue(current.nativeLine.coincides(with:old.nativeLine),"Other supporting lines must stay fixed")
+        }
+        let attachment = XCTAttachment(data:try JSONEncoder().encode(candidate),uniformTypeIdentifier:"public.json")
+        attachment.name = "squirtle-unidentified-shadow-contact";attachment.lifetime = .keepAlways;add(attachment)
+    }
+
+    func testShadowContactCandidateKeepsSpoofAndClippingUncertain() throws {
+        func image(_ mode: String) throws -> UIImage {
+            let width = 600,height = 400,cut = mode == "clipped" ? 392 : 350,rule = 320
+            var rgba = [UInt8](repeating:255,count:width*height*4)
+            for y in 0..<height {
+                for x in 0..<width {
+                    var value = 255
+                    if x >= 50 && x < 550 && y >= 50 && y < (mode == "spoof" ? height : cut) {
+                        value = 135+((x*37+y*17+x*y*13)%81)
+                    }
+                    if x >= 50 && x < 550 {
+                        if mode == "clipped",y >= cut { value = 50 }
+                        if mode == "rule",y >= cut,y < cut+7 { value = 50 }
+                        if mode == "rule",y >= cut+7,y < cut+17 { value = 50+(y-cut-6)*20 }
+                        if y >= rule,y < rule+7 { value = 50 }
+                        if mode == "spoof",y >= rule+7,y < rule+17 { value = 50+(y-rule-6)*20 }
+                        if mode == "spoof",y >= rule+17 { value = 250 }
+                    }
+                    let index = (y*width+x)*4
+                    rgba[index] = UInt8(value);rgba[index+1] = UInt8(value);rgba[index+2] = UInt8(value)
+                }
+            }
+            let data = Data(rgba) as CFData
+            let provider = try XCTUnwrap(CGDataProvider(data:data))
+            let cg = try XCTUnwrap(CGImage(width:width,height:height,bitsPerComponent:8,bitsPerPixel:32,
+                bytesPerRow:width*4,space:CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue),
+                provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent))
+            return UIImage(cgImage:cg)
+        }
+        func seed(_ bottom: Int) -> CardCenteringQuad {
+            .axisAligned(.init(left:50,top:50,right:550,bottom:bottom))
+        }
+        let real = try XCTUnwrap(CardCenteringPrintMatcher.unverifiedShadowContactCandidate(
+            .bottom,seed:seed(350),source:image("rule")))
+        XCTAssertEqual(real.nativeLine.start.y,350,accuracy:2)
+        XCTAssertEqual(real.proposedRole,.unknown)
+        // This fake printed stripe is intentionally indistinguishable to the
+        // local visual cue; it must stay an option, never a certified cut.
+        let spoof = try XCTUnwrap(CardCenteringPrintMatcher.unverifiedShadowContactCandidate(
+            .bottom,seed:seed(350),source:image("spoof")))
+        XCTAssertEqual(spoof.nativeLine.start.y,320,accuracy:2)
+        XCTAssertEqual(spoof.proposedRole,.unknown)
+        XCTAssertEqual(spoof.selectionReason,.competingCandidate)
+        XCTAssertNil(CardCenteringPrintMatcher.unverifiedShadowContactCandidate(
+            .bottom,seed:seed(392),source:try image("clipped")))
+    }
+
+    func testPokemonBackPrintedContinuityAndPairedTransfer() throws {
+        let design = try reference("pokemon-classic-back")
+        let cases = try JSONDecoder().decode([FrozenPhotoPaths].self,
+            from: resource("pokemon-back-paired-photo-paths", type: "json", folder: "Supplementary"))
+        XCTAssertEqual(cases.count,2)
+        var records: [String: CardCenteringPrintMatcher.ObservedMeasurement] = [:]
+        for frozen in cases {
+            let file = URL(fileURLWithPath:frozen.file)
+            let bytes = try resource(file.deletingPathExtension().lastPathComponent,
+                type:file.pathExtension,folder:"HEIC")
+            XCTAssertEqual(SHA256.hash(data:bytes).map { String(format:"%02x",$0) }.joined(),frozen.inputSHA256)
+            let baseline = try CardCenteringAnalyzer.analyze(bytes)
+            let mapping = try XCTUnwrap(baseline.coordinateMapping)
+            let outerSeed = mapping.nativeQuad(fromWorking:baseline.measurement.geometryOuterQuad)
+            let innerSeed = mapping.nativeQuad(fromWorking:try XCTUnwrap(baseline.measurement.geometryInnerQuad))
+            let source = try XCTUnwrap(UIImage(data:bytes))
+            let inner = try CardCenteringPrecisionSide.allCases.map {
+                try XCTUnwrap(CardCenteringPrintMatcher.observedPrintedContinuityPath($0,seed:innerSeed,source:source))
+            }
+            let outer = try CardCenteringPrecisionSide.allCases.map {
+                try XCTUnwrap(CardCenteringPrintMatcher.observedPhysicalPath($0,seed:outerSeed,source:source))
+            }
+            print("BACK_PAIRED \(frozen.file)")
+            try verifyPhotoPaths(inner,against:frozen.inner)
+            try verifyPhotoPaths(outer,against:try XCTUnwrap(frozen.outer))
+            let observed = try XCTUnwrap(CardCenteringPrintMatcher.measureObservedPaths(
+                outer:outer,inner:inner,outerSeed:outerSeed,innerSeed:innerSeed))
+            XCTAssertEqual(observed.leftShare,try XCTUnwrap(frozen.leftShare),accuracy:0.5)
+            XCTAssertEqual(observed.topShare,try XCTUnwrap(frozen.topShare),accuracy:0.5)
+            XCTAssertFalse(baseline.measurement.canReportRatios)
+            print("BACK_SHARES \(frozen.file) left=\(observed.leftShare) top=\(observed.topShare)")
+            let automatic = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }.measurement
+            XCTAssertEqual(automatic.referenceDefinition,.matchedPrintedBorder)
+            XCTAssertEqual(automatic.innerReference,.printedBorder)
+            XCTAssertTrue(automatic.hasObservedPaths)
+            XCTAssertEqual(automatic.observedPrintMeasurement,observed)
+            XCTAssertFalse(automatic.canReportRatios)
+            records[frozen.file] = observed
+        }
+        let attachment = XCTAttachment(data:try JSONEncoder().encode(records),uniformTypeIdentifier:"public.json")
+        attachment.name = "pokemon-back-native-paired-paths"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsPokemonBacks() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177"), spinerock = try reference("spinerock-ecl-159")
+        let michelangelo = try reference("michelangelo-tmt-121"), yshtola = try reference("yshtola-fin-086")
+        let saga = try reference("kyoshi-saga-tla-186"), back = try reference("pokemon-classic-back")
+        try verifyDevelopmentLibrary([gengar,town,ssp,pre,foil,kyoshi,ooze,spinerock,michelangelo,yshtola,saga,back],expected:[
+            "Document_2026-06-06_150759.png":gengar,"IMG_0780.HEIC":town,
+            "Document_2026-06-06_152530.png":ssp,"Document_2026-06-06_151610.png":pre,
+            "IMG_0802.HEIC":kyoshi,"IMG_0809.HEIC":ooze,"IMG_0803.HEIC":spinerock,
+            "IMG_0811.HEIC":michelangelo,"IMG_0813.HEIC":yshtola,"IMG_0801.HEIC":saga,
+            "IMG_0798.HEIC":back,"IMG_0800.HEIC":back,
+        ])
+    }
+
+    func testDevelopmentCorpusSelectivelyRepairsMagicBack() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177"), spinerock = try reference("spinerock-ecl-159")
+        let michelangelo = try reference("michelangelo-tmt-121"), yshtola = try reference("yshtola-fin-086")
+        let saga = try reference("kyoshi-saga-tla-186"), back = try reference("pokemon-classic-back")
+        try verifyDevelopmentLibrary([gengar,town,ssp,pre,foil,kyoshi,ooze,spinerock,michelangelo,yshtola,saga,back],expected:[
+            "Document_2026-06-06_150759.png":gengar,"IMG_0780.HEIC":town,
+            "Document_2026-06-06_152530.png":ssp,"Document_2026-06-06_151610.png":pre,
+            "IMG_0802.HEIC":kyoshi,"IMG_0809.HEIC":ooze,"IMG_0803.HEIC":spinerock,
+            "IMG_0811.HEIC":michelangelo,"IMG_0813.HEIC":yshtola,"IMG_0801.HEIC":saga,
+            "IMG_0798.HEIC":back,"IMG_0800.HEIC":back,
+        ],selectiveRepairs:["IMG_0810.HEIC"])
+    }
+
+    func testPokemonBackPhysicalPathTransfer() throws {
+        struct FrozenCut: Decodable {
+            let file, inputSHA256: String
+            let outer: [String: [[Double]]]
+        }
+        let cases = try JSONDecoder().decode([FrozenCut].self,
+            from: resource("pokemon-back-physical-photo-paths", type: "json", folder: "Supplementary"))
+        XCTAssertEqual(cases.count, 2)
+        var records: [String: [CardCenteringPrintMatcher.ObservedPath]] = [:]
+        for frozen in cases {
+            let file = URL(fileURLWithPath: frozen.file)
+            let bytes = try resource(file.deletingPathExtension().lastPathComponent,
+                type: file.pathExtension, folder: "HEIC")
+            XCTAssertEqual(SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), frozen.inputSHA256)
+            let baseline = try CardCenteringAnalyzer.analyze(bytes)
+            let mapping = try XCTUnwrap(baseline.coordinateMapping)
+            let seed = mapping.nativeQuad(fromWorking: baseline.measurement.geometryOuterQuad)
+            let source = try XCTUnwrap(UIImage(data: bytes))
+            let paths = try CardCenteringPrecisionSide.allCases.map {
+                try XCTUnwrap(CardCenteringPrintMatcher.observedPhysicalPath($0, seed: seed, source: source))
+            }
+            print("BACK_PHYSICAL \(frozen.file)")
+            try verifyPhotoPaths(paths, against: frozen.outer)
+            XCTAssertFalse(baseline.measurement.canReportRatios)
+            records[frozen.file] = paths
+        }
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(records), uniformTypeIdentifier: "public.json")
+        attachment.name = "pokemon-back-native-physical-paths"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testSpinerockPairedCurvedMeasurementResearch() throws {
+        let design = try reference("spinerock-ecl-159")
+        let bytes = try resource("IMG_0803", type: "HEIC", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes)
+        let result = try XCTUnwrap(CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            CardCenteringPrintMatcher.observedMeasurement(reference: design,analysis: ordinary,
+                source: try XCTUnwrap(UIImage(data: bytes)))
+        })
+        XCTAssertEqual(result.outerPaths.count,4)
+        XCTAssertEqual(result.innerPaths.count,4)
+        XCTAssertEqual(result.localLeftShares.count,31)
+        XCTAssertEqual(result.localTopShares.count,31)
+        XCTAssertEqual(result.leftShare,49.79899,accuracy: 0.5)
+        XCTAssertEqual(result.topShare,19.75491,accuracy: 0.5)
+        XCTAssertFalse(ordinary.measurement.canReportRatios)
+        print("SPINEROCK_PAIRED left=\(result.leftShare) top=\(result.topShare)")
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(result), uniformTypeIdentifier: "public.json")
+        attachment.name = "spinerock-native-paired-paths"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testPairedCurvedPathsRecoverKnownGeometryAndRejectMissingSupport() throws {
+        typealias P = CardCenteringPoint
+        typealias Q = CardCenteringQuad
+        typealias Path = CardCenteringPrintMatcher.ObservedPath
+        let outer = Q(topLeft: P(x:0,y:0),topRight: P(x:1,y:0),bottomRight: P(x:1,y:1),bottomLeft: P(x:0,y:1))
+        let inner = Q(topLeft: P(x:0.04,y:0.12),topRight: P(x:0.94,y:0.12),bottomRight: P(x:0.94,y:0.52),bottomLeft: P(x:0.04,y:0.52))
+        func project(_ p: P) -> P {
+            let d = 0.08*p.x+0.15*p.y+1
+            return P(x:(1800*p.x+150*p.y+250)/d,y:(50*p.x+2800*p.y+100)/d)
+        }
+        func projected(_ q: Q) -> Q {
+            Q(topLeft:project(q.topLeft),topRight:project(q.topRight),bottomRight:project(q.bottomRight),bottomLeft:project(q.bottomLeft))
+        }
+        func paths(_ q: Q, _ mode: Int) -> [Path] {
+            CardCenteringPrecisionSide.allCases.map { side in
+                let a = q.points[side.index], b = q.points[(side.index+1)%4]
+                let points: [P?] = (0..<61).map { i in
+                    let t = 0.1+0.8*Double(i)/60
+                    var p = P(x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y))
+                    if mode == 2 { p.y = p.y*(0.9+0.2*p.x)+0.02*pow(2*p.x-1,2) }
+                    if mode == 3 { p.x = p.x*(0.9+0.2*p.y)+0.02*pow(2*p.y-1,2) }
+                    return mode == 0 ? p : project(p)
+                }
+                return Path(side:side.rawValue,observations:points)
+            }
+        }
+        for mode in 0...3 {
+            let result = try XCTUnwrap(CardCenteringPrintMatcher.measureObservedPaths(
+                outer:paths(outer,mode),inner:paths(inner,mode),
+                outerSeed:mode == 0 ? outer : projected(outer),innerSeed:mode == 0 ? inner : projected(inner)))
+            XCTAssertEqual(result.leftShare,40,accuracy:0.005)
+            XCTAssertEqual(result.topShare,20,accuracy:0.005)
+        }
+        for kind in 0...2 {
+            var broken = paths(inner,0)
+            let index = try XCTUnwrap(broken.firstIndex { $0.side == (kind == 1 ? "top" : "left") })
+            var points = broken[index].observations
+            if kind == 0 { for i in 0..<25 { points[i] = nil } }
+            if kind == 1 { for i in 25..<33 { points[i] = nil } }
+            if kind == 2 { points = points.map { $0.map { P(x:-0.01,y:$0.y) } } }
+            broken[index] = Path(side:broken[index].side,observations:points)
+            XCTAssertNil(CardCenteringPrintMatcher.measureObservedPaths(outer:paths(outer,0),inner:broken,
+                outerSeed:outer,innerSeed:inner))
+        }
+    }
+
+    func testSpinerockCurvedArtworkPathResearch() throws {
+        let design = try reference("spinerock-ecl-159")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("IMG_0803", type: "HEIC", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes)
+        let source = try XCTUnwrap(UIImage(data: bytes))
+        let path = try XCTUnwrap(CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            CardCenteringPrintMatcher.observedArtworkPath(.top, reference: design, analysis: ordinary, source: source)
+        })
+        XCTAssertEqual(path.observations.count, 61)
+        let positions = path.observations.enumerated().compactMap { index, point in
+            point == nil ? nil : 0.1+0.8*Double(index)/60
+        }
+        XCTAssertTrue(CardCenteringPrintMatcher.hasSupportedMeasurementSpan(positions))
+        let observed = path.observations.compactMap { $0 }.sorted { $0.x < $1.x }
+        // Frozen offline photo-gradient locations, before native implementation.
+        // This checks transfer on the same capture, not physical calibration.
+        let comparison: [(Double, Double)] = [
+            (799.361795, 632.637167),
+            (828.266044, 632.425683),
+            (857.184213, 631.976639),
+            (886.119832, 631.590198),
+            (915.075802, 631.512764),
+            (944.042169, 630.893160),
+            (973.025185, 630.264029),
+            (1002.026481, 629.763376),
+            (1031.045520, 629.344123),
+            (1060.084807, 629.218950),
+            (1089.138853, 628.917829),
+            (1118.212311, 628.836933),
+            (1147.301873, 628.692488),
+            (1176.407880, 628.512252),
+            (1205.533912, 628.600865),
+            (1234.674832, 628.518388),
+            (1263.831804, 628.362789),
+            (1293.008642, 628.458627),
+            (1322.203331, 628.632595),
+            (1351.410605, 628.433725),
+            (1380.637242, 628.439593),
+            (1409.882388, 628.575893),
+            (1439.142586, 628.546276),
+            (1468.423165, 628.804498),
+            (1497.720914, 629.074983),
+            (1527.036352, 629.401009),
+            (1556.374306, 630.193307),
+            (1585.721524, 630.319041),
+            (1615.089947, 630.796695),
+            (1644.474623, 631.202003),
+            (1673.877978, 631.740821),
+            (1703.295505, 632.027187),
+            (1732.729314, 632.239863),
+            (1762.179274, 632.366481),
+            (1791.650091, 632.807483),
+            (1821.137157, 633.168231),
+            (1850.645866, 633.907942),
+            (1880.174513, 634.879821),
+            (1909.717562, 635.609730),
+            (1939.274231, 636.029759),
+            (1968.849147, 636.533577),
+            (1998.447217, 637.539060),
+            (2028.064488, 638.707250),
+            (2057.692599, 639.322868),
+            (2087.339167, 640.035196),
+            (2116.999582, 640.449097),
+            (2146.690279, 641.966832)
+        ]
+        var worst = 0.0
+        for (x,y) in comparison {
+            let i = try XCTUnwrap(observed.indices.dropFirst().first { observed[$0].x >= x })
+            let a = observed[i-1], b = observed[i]
+            XCTAssertGreaterThanOrEqual(x, a.x)
+            let measured = a.y+(b.y-a.y)*(x-a.x)/(b.x-a.x)
+            worst = max(worst,abs(y-measured))
+        }
+        print("SPINEROCK_PATH supported=\(observed.count) worst=\(worst)")
+        XCTAssertLessThanOrEqual(worst, 4)
+        XCTAssertFalse(ordinary.measurement.canReportRatios)
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(path), uniformTypeIdentifier: "public.json")
+        attachment.name = "spinerock-native-top-path"; attachment.lifetime = .keepAlways; add(attachment)
+        let otherBytes = try resource("IMG_0809", type: "HEIC", folder: "HEIC")
+        let other = try CardCenteringAnalyzer.analyze(otherBytes)
+        XCTAssertNil(CardCenteringPrintMatcher.observedArtworkPath(.top, reference: design,
+            analysis: other, source: try XCTUnwrap(UIImage(data: otherBytes))))
+        var duplicated = design
+        duplicated.boundaryProfiles = (design.boundaryProfiles ?? [])+(design.boundaryProfiles ?? [])
+        XCTAssertFalse(duplicated.isValid)
+    }
+
+    func testTheOozeArtworkTransferResearch() throws {
+        let design = try reference("the-ooze-tmt-177")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("IMG_0809", type: "HEIC", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let result = try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }
+        }
+        let m = result.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedArtwork)
+        XCTAssertNotEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+        XCTAssertFalse(m.canReportRatios)
+        let mapping = try XCTUnwrap(result.coordinateMapping)
+        let native = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        let observations: [(CardCenteringSide, [(Double, Double)])] = [
+            (.left, [(397.377,1054.681),(398.588,1374.044),(399.759,1693.407)]),
+            (.top, [(1043.043,573.065),(1475.889,572.826),(1908.739,575.144)]),
+            (.right, [(2555.701,1049.492),(2557.627,1368.081),(2559.106,1686.670)]),
+            (.bottom, [(1048.742,2168.566),(1480.880,2166.863),(1913.018,2165.276)]),
+        ]
+        for (side, points) in observations {
+            let (a,b) = native.segment(side)
+            let dx = b.x-a.x, dy = b.y-a.y
+            let worst = points.map { abs(dx*($0.1-a.y)-dy*($0.0-a.x))/hypot(dx,dy) }.max()!
+            print("THE_OOZE_EDGE \(side) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side.rawValue)
+        }
+        let left = 100*m.leftBorderDistance/(m.leftBorderDistance+m.rightBorderDistance)
+        let top = 100*m.topBorderDistance/(m.topBorderDistance+m.bottomBorderDistance)
+        print("THE_OOZE left=\(left) top=\(top)")
+        XCTAssertEqual(left, 51.60175, accuracy: 2)
+        XCTAssertEqual(top, 20.10379, accuracy: 2)
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(native), uniformTypeIdentifier: "public.json")
+        attachment.name = "the-ooze-native-inner"; attachment.lifetime = .keepAlways; add(attachment)
+        let other = try resource("IMG_0802", type: "HEIC", folder: "HEIC")
+        let otherOrdinary = try CardCenteringAnalyzer.analyze(other).measurement
+        let assisted = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(other).measurement
+        }
+        XCTAssertEqual(assisted, otherOrdinary)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsTheOoze() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        let ooze = try reference("the-ooze-tmt-177")
+        try verifyDevelopmentLibrary([gengar, town, ssp, pre, foil, kyoshi, ooze], expected: [
+            "Document_2026-06-06_150759.png": gengar, "IMG_0780.HEIC": town,
+            "Document_2026-06-06_152530.png": ssp, "Document_2026-06-06_151610.png": pre,
+            "IMG_0802.HEIC": kyoshi, "IMG_0809.HEIC": ooze,
+        ])
+    }
+
+    func testAvatarKyoshiArtworkTransferResearch() throws {
+        let design = try reference("avatar-kyoshi-tla-186")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("IMG_0802", type: "HEIC", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let result = try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }
+        }
+        let m = result.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedArtwork)
+        XCTAssertNotEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+        XCTAssertFalse(m.canReportRatios)
+        let mapping = try XCTUnwrap(result.coordinateMapping)
+        let native = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        // Frozen native-photo observations of the artwork's outer black rule.
+        // The title-side edge below the white stripe is a different boundary.
+        let observations: [(CardCenteringSide, [(Double, Double)])] = [
+            (.left, [(400.77,1100.25),(401.58,1420.31),(402.14,1740.37)]),
+            (.top, [(1047.25,621.70),(1479.41,623.54),(1911.58,625.33)]),
+            (.right, [(2555.00,1100.50),(2555.90,1418.70),(2556.25,1736.90)]),
+            (.bottom, [(1051,2209.5),(1483,2208.5),(1915,2206.8)]),
+        ]
+        for (side, points) in observations {
+            let (a,b) = native.segment(side)
+            let dx = b.x-a.x, dy = b.y-a.y
+            let worst = points.map { abs(dx*($0.1-a.y)-dy*($0.0-a.x))/hypot(dx,dy) }.max()!
+            print("AVATAR_KYOSHI_EDGE \(side) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side.rawValue)
+        }
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(native), uniformTypeIdentifier: "public.json")
+        attachment.name = "avatar-kyoshi-native-inner"; attachment.lifetime = .keepAlways; add(attachment)
+        print("AVATAR_KYOSHI left=\(100*m.leftBorderDistance/(m.leftBorderDistance+m.rightBorderDistance)) top=\(100*m.topBorderDistance/(m.topBorderDistance+m.bottomBorderDistance))")
+        XCTAssertEqual(100*m.leftBorderDistance/(m.leftBorderDistance+m.rightBorderDistance), 52.33061, accuracy: 2)
+        XCTAssertEqual(100*m.topBorderDistance/(m.topBorderDistance+m.bottomBorderDistance), 20.21077, accuracy: 2)
+        // Same Magic family is insufficient: the existing artwork control stays ordinary.
+        let other = try resource("IMG_0780", type: "HEIC", folder: "HEIC")
+        let otherOrdinary = try CardCenteringAnalyzer.analyze(other).measurement
+        let assisted = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(other).measurement
+        }
+        XCTAssertEqual(assisted, otherOrdinary)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsAvatarKyoshi() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057"), kyoshi = try reference("avatar-kyoshi-tla-186")
+        try verifyDevelopmentLibrary([gengar, town, ssp, pre, foil, kyoshi], expected: [
+            "Document_2026-06-06_150759.png": gengar, "IMG_0780.HEIC": town,
+            "Document_2026-06-06_152530.png": ssp, "Document_2026-06-06_151610.png": pre,
+            "IMG_0802.HEIC": kyoshi,
+        ])
+    }
+
+    func testFoilGengarNativeFrameTransferResearch() throws {
+        let design = try reference("gengar-paf-057")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("IMG_1038", type: "HEIC", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let result = try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }
+        }
+        let m = result.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+        XCTAssertFalse(m.canReportRatios)
+        // This first transfer check records the proposed frame for source-photo
+        // review; producing a quad alone is not an accuracy acceptance.
+        let mapping = try XCTUnwrap(result.coordinateMapping)
+        let q = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(q), uniformTypeIdentifier: "public.json")
+        attachment.name = "foil-gengar-native-inner"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        print("FOIL_GENGAR left=\(100*m.leftBorderDistance/(m.leftBorderDistance+m.rightBorderDistance)) top=\(100*m.topBorderDistance/(m.topBorderDistance+m.bottomBorderDistance))")
+        let other = try resource("Document_2026-06-06_150759", type: "png", folder: "HEIC")
+        let otherOrdinary = try CardCenteringAnalyzer.analyze(other).measurement
+        let assisted = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(other).measurement
+        }
+        XCTAssertEqual(assisted, otherOrdinary)
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsFoilGengar() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let ssp = try reference("pikachu-ssp-247"), pre = try reference("pikachu-pre-179")
+        let foil = try reference("gengar-paf-057")
+        try verifyDevelopmentLibrary([gengar, town, ssp, pre, foil], expected: [
+            "Document_2026-06-06_150759.png": gengar, "IMG_0780.HEIC": town,
+            "Document_2026-06-06_152530.png": ssp, "Document_2026-06-06_151610.png": pre,
+            "IMG_1038.HEIC": foil,
+        ])
+    }
+
+    func testColorReferenceRejectsRepeatedSignals() throws {
+        let bytes = try resource("pikachu-pre-179", type: "json", folder: "PrintReferences")
+        let valid = try JSONDecoder().decode(CardCenteringPrintReference.self, from: bytes)
+        XCTAssertTrue(valid.isValid)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: bytes) as? [String: Any])
+        var patches = try XCTUnwrap(object["patches"] as? [[String: Any]])
+        let index = try XCTUnwrap(patches.firstIndex { $0["colorAlternatives"] != nil })
+        let alternatives = try XCTUnwrap(patches[index]["colorAlternatives"] as? [[String: Any]])
+        patches[index]["colorAlternatives"] = [alternatives[0], alternatives[0]]
+        object["patches"] = patches
+        let invalid = try JSONDecoder().decode(CardCenteringPrintReference.self,
+            from: JSONSerialization.data(withJSONObject: object))
+        XCTAssertFalse(invalid.isValid)
+    }
+
+    func testPrintedSeedConsensusRejectsDistinctSupportedEdges() {
+        typealias Line = CardCenteringNativeLine
+        let a = Line(start: .init(x: 0, y: 0), end: .init(x: 1000, y: 0))
+        let near = Line(start: .init(x: 0, y: 3), end: .init(x: 1000, y: 3))
+        let far = Line(start: .init(x: 0, y: 5), end: .init(x: 1000, y: 5))
+        let crossing = Line(start: .init(x: 0, y: -10), end: .init(x: 1000, y: 10))
+        XCTAssertTrue(CardCenteringPrintMatcher.supportedLinesAgree([a,near]))
+        XCTAssertFalse(CardCenteringPrintMatcher.supportedLinesAgree([a,far]))
+        XCTAssertFalse(CardCenteringPrintMatcher.supportedLinesAgree([a,crossing]))
+        XCTAssertFalse(CardCenteringPrintMatcher.supportedLinesAgree([]))
+    }
+
+    func testPrismaticPrintUsesColorIdentityAndNativePhotoEdges() throws {
+        let design = try reference("pikachu-pre-179")
+        XCTAssertTrue(design.isValid)
+        let bytes = try resource("Document_2026-06-06_151610", type: "png", folder: "HEIC")
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let result = try CardCenteringPrintMatcher.$diagnosticSink.withValue({ print($0) }) {
+            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                try CardCenteringAnalyzer.analyze(bytes)
+            }
+        }
+        let m = result.measurement
+        XCTAssertEqual(m.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+        XCTAssertFalse(m.canReportRatios)
+        let left = 100 * m.leftBorderDistance / (m.leftBorderDistance + m.rightBorderDistance)
+        let top = 100 * m.topBorderDistance / (m.topBorderDistance + m.bottomBorderDistance)
+        print("PRISMATIC_PIKACHU left=\(left) top=\(top)")
+        XCTAssertEqual(left, 44.16108, accuracy: 2)
+        XCTAssertEqual(top, 49.00374, accuracy: 2)
+        let mapping = try XCTUnwrap(result.coordinateMapping)
+        let q = mapping.nativeQuad(fromWorking: try XCTUnwrap(m.geometryInnerQuad))
+        // Source-crop observations frozen before the native hybrid experiment;
+        // decorative overlaps are recorded separately, not treated as panel edges.
+        let observations: [(CardCenteringSide, [(Double, Double)])] = [
+            (.left, [(437.165,2196.419),(433.934,2793.766),(431.140,3499.728)]),
+            (.right, [(3323.886,1884.223),(3324.648,2753.984),(3319.008,3406.286)]),
+            (.top, [(1195.748,489.783),(1654.784,492.281),(2113.814,495.822),(2572.861,495.673)]),
+            (.bottom, [(1173.845,4557.384),(1634.941,4560.403),(2057.610,4563.546),(2557.138,4565.549)]),
+        ]
+        for (side, points) in observations {
+            let (a,b) = q.segment(side)
+            let dx = b.x-a.x, dy = b.y-a.y
+            let worst = points.map { abs(dx*($0.1-a.y)-dy*($0.0-a.x))/hypot(dx,dy) }.max()!
+            print("PRISMATIC_EDGE \(side) worst=\(worst)")
+            XCTAssertLessThanOrEqual(worst, 4, side.rawValue)
+        }
+        let other = try resource("Document_2026-06-06_152530", type: "png", folder: "HEIC")
+        let otherOrdinary = try CardCenteringAnalyzer.analyze(other).measurement
+        let otherAssisted = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+            try CardCenteringAnalyzer.analyze(other).measurement
+        }
+        XCTAssertEqual(otherAssisted, otherOrdinary)
+    }
+
+    func testPrintedFrameDevelopmentCorpusPreservesUnrelatedProposals() throws {
+        let design = try reference("gengar-151-094")
+        try verifyDevelopmentLibrary([design], expected: ["Document_2026-06-06_150759.png": design])
+    }
+
+    func testReferenceLibraryDevelopmentCorpusSelectsBothDesigns() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        try verifyDevelopmentLibrary([gengar, town], expected: [
+            "Document_2026-06-06_150759.png": gengar, "IMG_0780.HEIC": town,
+        ])
+    }
+
+    private func verifyDevelopmentLibrary(_ designs: [CardCenteringPrintReference],
+                                          expected: [String: CardCenteringPrintReference],
+                                          selectiveRepairs: Set<String> = []) throws {
+        struct Manifest: Decodable {
+            struct Entry: Decodable { let file, split, sha256: String }
+            let entries: [Entry]
+        }
+        struct Record: Encodable {
+            let file: String
+            let matched: Bool
+            let outer: CardCenteringQuad
+            let inner: CardCenteringQuad?
+            let elapsedSeconds: Double
+            var observed: CardCenteringPrintMatcher.ObservedMeasurement? = nil
+            var selectiveRepair: Bool? = nil
+        }
+        let manifest = try JSONDecoder().decode(Manifest.self,
+            from: resource("corpus-manifest", type: "json", folder: "Supplementary"))
+        let entries = manifest.entries.filter { $0.split.hasPrefix("DEV") }
+        XCTAssertEqual(entries.count, 34)
+        var records: [Record] = []
+        for entry in entries {
+            try autoreleasepool {
+                let url = URL(fileURLWithPath: entry.file)
+                let bytes = try resource(url.deletingPathExtension().lastPathComponent, type: url.pathExtension, folder: "HEIC")
+                XCTAssertEqual(SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(), entry.sha256)
+                let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+                let started = CFAbsoluteTimeGetCurrent()
+                let result = try CardCenteringAnalyzer.$activePrintReferences.withValue(designs) {
+                    try CardCenteringAnalyzer.$activeSelectiveBorderRepair.withValue(!selectiveRepairs.isEmpty) {
+                        try CardCenteringAnalyzer.analyze(bytes)
+                    }
+                }
+                let seconds = CFAbsoluteTimeGetCurrent() - started
+                let m = result.measurement
+                let matched = m.reviewedDesign != nil
+                if let design = expected[entry.file] {
+                    XCTAssertTrue(matched)
+                    if design.isPrintedBorder && !m.hasObservedPaths {
+                        XCTAssertEqual(m.geometryOuterQuad, ordinary.geometryOuterQuad)
+                    } else if !m.hasObservedPaths {
+                        let unrefined = try CardCenteringPrintMatcher.$physicalRefinementEnabled.withValue(false) {
+                            try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                                try CardCenteringAnalyzer.analyze(bytes).measurement
+                            }
+                        }
+                        XCTAssertEqual(m.geometryInnerQuad, unrefined.geometryInnerQuad, entry.file)
+                    }
+                    let single = try CardCenteringAnalyzer.$activePrintReference.withValue(design) {
+                        try CardCenteringAnalyzer.analyze(bytes).measurement
+                    }
+                    XCTAssertEqual(m, single, entry.file)
+                } else if selectiveRepairs.contains(entry.file) {
+                    XCTAssertTrue(m.hasObservedPaths,entry.file)
+                    XCTAssertEqual(m.referenceDefinition,.magicClassicBack)
+                    XCTAssertFalse(matched)
+                    let single = try CardCenteringAnalyzer.$activeSelectiveBorderRepair.withValue(true) {
+                        try CardCenteringAnalyzer.analyze(bytes).measurement
+                    }
+                    XCTAssertEqual(m,single,entry.file)
+                } else {
+                    XCTAssertEqual(m, ordinary, entry.file)
+                    XCTAssertFalse(matched, entry.file)
+                }
+                XCTAssertFalse(m.canReportRatios, entry.file)
+                let mapping = try XCTUnwrap(result.coordinateMapping)
+                records.append(.init(file: entry.file, matched: matched,
+                    outer: mapping.nativeQuad(fromWorking: m.geometryOuterQuad),
+                    inner: m.geometryInnerQuad.map(mapping.nativeQuad(fromWorking:)), elapsedSeconds: seconds,
+                    observed:m.observedPrintMeasurement,
+                    selectiveRepair:m.hasObservedPaths && m.referenceDefinition == .magicClassicBack ? true : nil))
+                print("PRINTED_CORPUS file=\(entry.file) matched=\(matched) seconds=\(seconds)")
+            }
+        }
+        XCTAssertEqual(records.count, entries.count)
+        XCTAssertEqual(records.filter(\.matched).count, expected.count)
+        XCTAssertEqual(records.filter { $0.selectiveRepair == true }.count,selectiveRepairs.count)
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(records), uniformTypeIdentifier: "public.json")
+        attachment.name = "printed-frame-development-corpus"; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    func testReferenceLibraryOrderDuplicatesAndAmbiguity() throws {
+        let gengar = try reference("gengar-151-094"), town = try reference()
+        let bytes = try resource("Document_2026-06-06_150759", type: "png", folder: "HEIC")
+        func analyze(_ designs: [CardCenteringPrintReference]) throws -> CardCenteringMeasurement {
+            try CardCenteringAnalyzer.$activePrintReferences.withValue(designs) {
+                try CardCenteringAnalyzer.analyze(bytes).measurement
+            }
+        }
+        let ordinary = try CardCenteringAnalyzer.analyze(bytes).measurement
+        let selected = try analyze([gengar])
+        XCTAssertEqual(selected.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertEqual(try analyze([town,gengar]), selected)
+        XCTAssertEqual(try analyze([gengar,town]), selected)
+        XCTAssertEqual(try analyze([gengar,gengar]), selected)
+        var conflicting = try XCTUnwrap(JSONSerialization.jsonObject(with:
+            resource("gengar-151-094", type: "json", folder: "PrintReferences")) as? [String: Any])
+        conflicting["label"] = "Conflicting printed-frame interpretation"
+        conflicting["left"] = gengar.left + 0.005
+        let alternate = try JSONDecoder().decode(CardCenteringPrintReference.self,
+            from: JSONSerialization.data(withJSONObject: conflicting))
+        XCTAssertTrue(alternate.isValid)
+        XCTAssertEqual(try analyze([gengar,alternate]), ordinary)
+        XCTAssertEqual(try analyze([alternate,gengar]), ordinary)
+        XCTAssertEqual(try analyze([]), ordinary)
+    }
+
+    func testReferenceLibraryViewModelSwitchesDesignsAndHandlesSupersededCapture() async throws {
+        let designs = try [reference("gengar-151-094"), reference()]
+        let model = CardCenteringViewModel(printReferences: designs)
+        model.loadCapturedPhoto(try resource("IMG_0780", type: "HEIC", folder: "HEIC"))
+        let town = try await settle(model)
+        XCTAssertEqual(town.referenceDefinition, .matchedArtwork)
+        model.loadCapturedPhoto(try resource("Document_2026-06-06_150759", type: "png", folder: "HEIC"))
+        let gengar = try await settle(model)
+        XCTAssertEqual(gengar.referenceDefinition, .matchedPrintedBorder)
+        XCTAssertFalse(gengar.canReportRatios)
+        let unrelated = try resource("IMG_0797", type: "HEIC", folder: "HEIC")
+        model.loadCapturedPhoto(try resource("IMG_0780", type: "HEIC", folder: "HEIC"))
+        model.loadCapturedPhoto(unrelated)
+        let latest = try await settle(model)
+        XCTAssertEqual(latest, try CardCenteringAnalyzer.analyze(unrelated).measurement)
+        XCTAssertFalse(latest.canReportRatios)
     }
 
     func testUnrelatedPhotosFallBackAndLatencyStaysWithinBudget() async throws {

@@ -50,7 +50,7 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
         XCTAssertFalse(source.contains("removes its local card records and history"))
     }
 
-    func testPrivacyManifestCarriesBothRequiredReasonCategories() throws {
+    func testPrivacyManifestCarriesRequiredReasonCategories() throws {
         let source = try String(
             contentsOf: sourceURL(
                 "TradingCardScanner/PrivacyInfo.xcprivacy",
@@ -62,6 +62,8 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
         XCTAssertTrue(source.contains("CA92.1"))
         XCTAssertTrue(source.contains("NSPrivacyAccessedAPICategoryFileTimestamp"))
         XCTAssertTrue(source.contains("C617.1"))
+        XCTAssertTrue(source.contains("NSPrivacyAccessedAPICategorySystemBootTime"))
+        XCTAssertTrue(source.contains("35F9.1"))
     }
 
     func testSettingsDoesNotContainLegacyAccountProxyCopy() throws {

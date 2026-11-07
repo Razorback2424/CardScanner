@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-07",
+  "candidate": "main at 11ff208 plus uncommitted changes; exact tested sources are on the external SSD",
+  "file": "Document_2026-06-06_175439.png",
+  "inputSHA256": "f2f6554fedf8be94abdcb617f0d91c0a9bc682d70a59231a0f30a6d2ce31f817",
+  "sourceReview": {
+    "method": "One-reader review of enlarged unmarked native-photo crops at five bottom-edge positions, followed by candidate overlay. Candidate coordinates were already available; review is not blind or calibrated.",
+    "observation": "The previous frozen path follows the lower fading dark band; the competing path follows the end of the textured visible surface. The physical interpretation of the dark band is not independently established.",
+    "reviewBands": [[500, 4454, 4461], [1000, 4457, 4464], [1500, 4457, 4464], [2000, 4460, 4467], [2500, 4462, 4469]],
+    "meaning": "Each row is x, low y, high y in oriented native pixels. These broad visual intervals are not physical ground truth."
+  },
+  "nativeCandidate": {
+    "route": "Explicit DEBUG -ui_debug_shadow_contact_candidates or task-local opt-in; existing production/default routing unchanged",
+    "supportedStations": 44,
+    "totalStations": 61,
+    "fittedLineRMSNativePixels": 0.5749003875784517,
+    "comparisonIndexZeroBased": 2,
+    "proposedRole": "unknown",
+    "selectionReason": "competingCandidate",
+    "originalGeometryAndEvidencePreserved": true,
+    "userChoiceChangesOnlySelectedSupportingLine": true,
+    "userChoiceConfirmsFrames": false,
+    "detectorConfidenceChanged": false,
+    "automaticReportingChanged": false
+  },
+  "counterexamples": {
+    "strongerInteriorStripe": "The synthetic scene supplies a true textured card boundary and a stronger interior rule; the proposed line falls on the outer boundary.",
+    "deceptiveInteriorStripe": "A synthetic interior stripe followed by a smooth field yields an apparently valid proposal at the wrong line. It remains unidentified and cannot automatically select a physical cut.",
+    "clippedExterior": "When the needed exterior pixels do not exist, the method returns no candidate rather than padding or clamping."
+  },
+  "verification": {
+    "nativeV2": "2 focused tests passed: source review and explicit-choice preservation; stronger-rule, deceptive-stripe and clipped-exterior controls",
+    "magicPreservationV1": "1 existing selective Magic-back transfer test passed; saved left/top shares 45.04496703916355 / 51.75993850630803",
+    "scope": "No complete Squirtle measurement, automatic accuracy pass, calibrated accuracy result, full-corpus run, or release-readiness claim."
+  },
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-Squirtle-Bottom-20261107/",
+  "artifacts": ["unmarked-v1/packet.json", "unmarked-v1/outer-windows.png", "unmarked-v1/corners.png", "unmarked-v1/candidates.png", "Native-v2.xcresult", "Native-v2.log", "Native-magic-preservation-v1.xcresult", "native-v2-source-hashes.json"],
+  "limitations": [
+    "A visible textured-surface transition need not be the physical card cut; the spoof control demonstrates the ambiguity.",
+    "The fitted line is a review approximation; 17 stations were not retained as direct observations.",
+    "Existing same-photo frozen bottom points are not independent physical truth and should not select this candidate.",
+    "The other Squirtle physical and printed side gaps remain unresolved."
+  ]
+}

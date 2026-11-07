@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-07",
+  "status": "Research proposals only; direct observations and inferred line points remain distinct",
+  "squirtleRight": {
+    "file": "Document_2026-06-06_175439.png",
+    "directPointsBeforeRepair": 43,
+    "stations": 61,
+    "missingRun": [18, 26],
+    "recoveredPointsCompared": 6,
+    "maximumBridgeDiscrepancyPixels": 0.8802942513443668,
+    "overlappingNineStationWithheldWindowsWithinMeasuredSpan": 13,
+    "withheldMedianWorstPixels": 0.7745976019041336,
+    "withheldMaximumWorstPixels": 3.2958166722041824
+  },
+  "dewottPrintedBottom": {
+    "file": "IMG_0795.HEIC",
+    "directCandidates": 56,
+    "robustLineInliersWithinFourPixels": 49,
+    "excludedCandidates": 7,
+    "sourceReview": "Several excluded points track the printed card number; the proposed line follows the adjacent blue-to-silver boundary in the reviewed crop.",
+    "limitation": "The inliers begin at station 12, so the line extension toward the measurement-span start is inferred, not directly observed."
+  },
+  "wrongEdgeControl": {
+    "directCandidates": 61,
+    "lineInliers": 61,
+    "withheldMaximumErrorPixels": 0.0,
+    "distanceFromKnownPhysicalCutPixels": 24.964311942458153,
+    "interpretation": "Smoothness, support and gap prediction can all be excellent on the wrong feature."
+  },
+  "decision": "Develop selective line/curve proposals from supported segments with explicit inferred portions and separate boundary-identity evidence; do not replace accepted paths or promote these proposals to automatic measurements yet.",
+  "artifacts": {
+    "squirtle": "/Volumes/T7/CodexBuilds/CardScanner-Squirtle-20261107/line-and-gap-probe-v1.json",
+    "dewott": "/Volumes/T7/CodexBuilds/CardScanner-Dewott-20261107/bottom-line-probe-v1.json",
+    "dewottSourceReview": "/Volumes/T7/CodexBuilds/CardScanner-Dewott-20261107/bottom-line-source-review-v1.png",
+    "wrongEdge": "/Volumes/T7/CodexBuilds/CardScanner-Dewott-20261107/wrong-line-probe-v1.json"
+  },
+  "limitations": [
+    "The source-photo observations and overlapping withheld windows are correlated; they are not independent physical calibration or an error guarantee.",
+    "A straight line can be inappropriate for a bowed card or curved printed frame; retain real observed paths when supported.",
+    "No additional native or automatic accuracy pass is claimed. Reporting requires user confirmation."
+  ]
+}

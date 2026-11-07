@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-07",
+  "candidate": "main at 11ff208 plus uncommitted changes; exact tested source hashes retained on external SSD",
+  "file": "IMG_0810.HEIC",
+  "inputSHA256": "a30d9909b9dd0797261bd0bbf0fd2e714b59587a68683b7c67873710a6c114de",
+  "status": "Selective repair accepted in opt-in DEBUG automatic routing; production default unchanged",
+  "nativeMethods": 2,
+  "failed": 0,
+  "skipped": 0,
+  "frozenComparisons": 344,
+  "worstDiscrepancyPixels": 2.507389503643253,
+  "printedSupport": {"left": 40, "top": 60, "right": 60, "bottom": 48},
+  "physicalSupport": {"left": 61, "top": 61, "right": 61, "bottom": 61},
+  "shares": {"leftShare": 45.04496703916355, "topShare": 51.75993850630803},
+  "unchangedOtherDevelopmentCaptures": 33,
+  "unchangedFields": ["matched", "outer", "inner", "observed"],
+  "publisherReferenceSelections": 12,
+  "additionalNativeFamilyRepairs": 1,
+  "validatedTransfersIncludingFamilyRepair": 12,
+  "partialSelectedCaptures": ["Document_2026-06-06_151610.png"],
+  "timing": {
+    "warmUpperMedianSeconds": 0.994359016418457,
+    "warmMaxSeconds": 7.4308589696884155,
+    "magicRepairSeconds": 7.4308589696884155,
+    "otherMagicBackSeconds": {"IMG_0781.HEIC": 3.9702080488204956, "IMG_0783.HEIC": 5.852895021438599},
+    "optimization": "deferred",
+    "scope": "Development-library run; includes recognition and routing, not isolated per-stage profiling"
+  },
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-MagicBack-20261107/",
+  "resultBundle": "Native-integrated-v2.xcresult",
+  "limitations": [
+    "Same-capture frozen observations are not independently calibrated physical accuracy.",
+    "Magic back classification is not a publisher-matched print reference.",
+    "Existing ordinary results on other Magic backs are preserved, not newly accepted for full-geometry accuracy.",
+    "All 44 acceptance and production provisioning remain open.",
+    "Automatic reporting remains disabled until user confirmation."
+  ]
+}

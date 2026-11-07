@@ -1,0 +1,20 @@
+{
+  "status": "Frozen native-photo observations before native hybrid matching; single-reader review, not calibrated physical truth",
+  "fixture": "Document_2026-06-06_151610",
+  "inputSHA256": "0bad4576e4d40cfd57f3bc0e4d1df3cac5d45004b1cdd5613f21a11d8eaeff34",
+  "coordinates": "Oriented native pixel centers",
+  "observations": {
+    "left": [[437.165,2196.419],[433.934,2793.766],[431.140,3499.728]],
+    "right": [[3323.886,1884.223],[3324.648,2753.984],[3319.008,3406.286]],
+    "top": [[1195.748,489.783],[1654.784,492.281],[2113.814,495.822],[2572.861,495.673]],
+    "bottom": [[1173.845,4557.384],[1634.941,4560.403],[2057.610,4563.546],[2557.138,4565.549]]
+  },
+  "excludedDecorativeOverlaps": {
+    "left": [432.147,1599.020],
+    "right": [3314.231,1394.955]
+  },
+  "reason": "Grayscale paths at the two excluded positions follow overlapping black ornament, not the panel boundary. Their raw observations remain archived. Other samples were checked on original-photo crops before native results.",
+  "conditionalStraightLineShares": {"left":44.16108267390553,"top":49.003738206555106},
+  "measurementMethod": "Least-squares straight side lines through these observed points, intersected into a frame; unchanged production physical quad; central 20-80 percent paired-span evaluator.",
+  "limitation": "Physical quad uncalibrated; weak foil borders and extrapolation beyond reviewed positions remain uncertain. This is transfer evidence, not a new historical ground truth."
+}

@@ -1,0 +1,10 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "TLA EN 0186 Avatar Kyoshi (transformed face)",
+  "url": "https://cards.scryfall.io/png/back/4/8/4887ce64-7c98-4bd7-95db-0c43ab71cc6e.png?1783904946",
+  "sha256": "481ef801f54edc27172c4f3a3b76fe463a9cf37e27d65703ac6ac059aca19807",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[54.5,114.5],[687.5,114.5],[687.5,579.5],[54.5,579.5]],
+  "boundaryReview": "Provider native-pixel cross sections locate the outer black rule at 54/55, 114/115, 687/688 and 579/580 pixel transitions. The initial [54,114,689,582] rectangle placed right/bottom inside the adjacent white stripe; the original remains in the v1 evidence. Corrected from provider pixels, not from native detector output.",
+  "limitation": "The outer black rule around the illustration is the reference feature. Its deliberately high placement is compared with the published design; it is not a symmetric printed-border measurement. Face identity must distinguish the reverse from the Saga face."
+}

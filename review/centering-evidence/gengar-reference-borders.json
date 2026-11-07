@@ -1,0 +1,23 @@
+{
+  "status": "Reference-only visual specification; provider renderings, not calibrated physical truth",
+  "coordinateConvention": "Pixel-center coordinates in the 600 by 825 provider raster. Straight printed-frame sides extend across decorative overlaps and rounded corners.",
+  "references": [
+    {
+      "id": "sv03.5-094",
+      "label": "Gengar 151 094/165",
+      "url": "https://assets.tcgdex.net/en/sv/sv03.5/094/high.png",
+      "sha256": "0c4a64b4bdb9d7002cce903dd3cbf86ea9313c1cace1a6634ce58f5a461d10f6",
+      "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+      "artworkInterior": [70,160,530,380]
+    },
+    {
+      "id": "sv04.5-057",
+      "label": "Gengar Paldean Fates 057/091 design",
+      "url": "https://assets.tcgdex.net/en/sv/sv04.5/057/high.png",
+      "sha256": "715e7c9c72a60eb936f0293dce5c09ac6b21adbb624729f1fa4354f919667493",
+      "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+      "artworkInterior": [70,160,530,380],
+      "limitation": "The photographed Halloween variant adds a stamp and different foil/border treatment; matching the underlying design does not prove an exact finish or printing."
+    }
+  ]
+}

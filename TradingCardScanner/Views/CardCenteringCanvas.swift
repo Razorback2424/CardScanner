@@ -167,18 +167,15 @@ struct CardCenteringCanvas: View {
         .sensoryFeedback(.impact(weight: .light), trigger: squareFeedback)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityValue(selection.map { Self.name(of: $0.guide) } ?? "")
-        .accessibilityHint("Drag a line to move it. Pinch to zoom. More options has Exact Values for typed positions.")
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: onAccessibilityNudge(1)
-            case .decrement: onAccessibilityNudge(-1)
-            @unknown default: break
-            }
-        }
+        .accessibilityValue(measurement.hasObservedPaths ? "Detected curved edges" : selection.map { Self.name(of: $0.guide) } ?? "")
+        .accessibilityHint(measurement.hasObservedPaths
+            ? "Pinch to inspect the curved guides. Confirm after review, or choose Adjust with straight guides to edit."
+            : "Drag a line to move it. Pinch to zoom. More options has Exact Values for typed positions.")
+        .modifier(CardCenteringAdjustmentAccessibility(enabled: !measurement.hasObservedPaths,
+                                                       nudge: onAccessibilityNudge))
         .accessibilityActions {
             ForEach(CardCenteringGuide.all, id: \.self) { guide in
-                if measurement.segment(for: guide) != nil {
+                if !measurement.hasObservedPaths, measurement.segment(for: guide) != nil {
                     Button("Select \(Self.name(of: guide))") {
                         selection = CardCenteringGuideSelection(guide: guide)
                     }
@@ -721,6 +718,7 @@ struct CardCenteringCanvas: View {
         projection: CardCenteringProjection,
         size: CGSize
     ) -> CardCenteringGuideSelection? {
+        guard !measurement.hasObservedPaths else { return nil }
         let visible = CGRect(origin: .zero, size: size)
         if let selection,
            let handles = CardCenteringGuideHandles(
@@ -763,7 +761,7 @@ extension CardCenteringMeasurement {
     static let innerTiltDetentDegrees = 0.04
 
     var hasReportableInnerTilt: Bool {
-        innerEdgeTiltDegrees?.contains { abs($0) >= Self.innerTiltDetentDegrees } == true
+        !hasObservedPaths && innerEdgeTiltDegrees?.contains { abs($0) >= Self.innerTiltDetentDegrees } == true
     }
 }
 
@@ -842,6 +840,24 @@ struct CardCenteringGuideHandles {
 
 /// Draws both frames, the selected line and its grips in screen space, so the
 /// lines stay hairline-thin at any zoom.
+private struct CardCenteringAdjustmentAccessibility: ViewModifier {
+    let enabled: Bool
+    let nudge: (Double) -> Void
+    @ViewBuilder func body(content: Content) -> some View {
+        if enabled {
+            content.accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment: nudge(1)
+                case .decrement: nudge(-1)
+                @unknown default: break
+                }
+            }
+        } else {
+            content
+        }
+    }
+}
+
 enum CardCenteringGuideRenderer {
     static func draw(
         in context: inout GraphicsContext,
@@ -851,6 +867,20 @@ enum CardCenteringGuideRenderer {
         visible: CGRect,
         showsHandles: Bool
     ) {
+        if measurement.hasObservedPaths {
+            for (outer,color) in [(true,Color.red),(false,Color.cyan)] {
+                for points in measurement.observedGuidePaths(outer: outer) {
+                    var path = Path(), connected = false
+                    for point in points {
+                        guard let point else { connected = false; continue }
+                        if connected { path.addLine(to: projection.screen(point)) }
+                        else { path.move(to: projection.screen(point)); connected = true }
+                    }
+                    context.stroke(path,with: .color(color),lineWidth: 1)
+                }
+            }
+            return
+        }
         let frames: [(CardCenteringGuide.Frame, CardCenteringQuad?, Color)] = [
             (.outer, measurement.geometryOuterQuad, .red),
             (.inner, measurement.geometryInnerQuad, .cyan)

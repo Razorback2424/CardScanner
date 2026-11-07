@@ -1,0 +1,67 @@
+{
+  "file": "IMG_0810.HEIC",
+  "inputSHA256": "a30d9909b9dd0797261bd0bbf0fd2e714b59587a68683b7c67873710a6c114de",
+  "status": "Partial offline research; no native or automatic pass",
+  "physical": {
+    "left": {
+      "directCount": 61,
+      "worstBaselineDiscrepancyPixels": 4.074700139462948
+    },
+    "top": {
+      "directCount": 61,
+      "worstBaselineDiscrepancyPixels": 4.983595823403448
+    },
+    "right": {
+      "directCount": 61,
+      "worstBaselineDiscrepancyPixels": 3.2441451102495193
+    },
+    "bottom": {
+      "directCount": 61,
+      "worstBaselineDiscrepancyPixels": 4.0644707549363375
+    }
+  },
+  "printedColorSupport": {
+    "left": 34,
+    "top": 61,
+    "right": 61,
+    "bottom": 19
+  },
+  "printedScalarSupport": {
+    "left": 41,
+    "top": 60,
+    "right": 61,
+    "bottom": 21
+  },
+  "printedRegionBottom": {
+    "directCount": 40,
+    "pairedAccepted": false,
+    "reason": "unsupported gap exceeds six samples within measured span",
+    "missingIndices": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      19,
+      20,
+      24,
+      25,
+      26,
+      29,
+      35,
+      36,
+      42,
+      47
+    ]
+  },
+  "review": "Whole photo, baseline overlay and unmarked printed crops inspected. Dark bottom seam has weak luminance/color contrast; region fitting improves support but leaves an excessive gap near the left. Printed left still needs separate identity review because candidate displacement reaches about 30 pixels.",
+  "decision": "Stop direct gradient and current region-model transfer without relaxing strength, model fit, or gap criteria. Retain physical paths and supported printed observations.",
+  "next": "Resolve the weak bottom seam through wider spatial texture/border evidence with fixed perturbation checks; verify boundary identity before native transfer.",
+  "limitation": "Existing 44-card development corpus; offline support is not calibrated accuracy or full-card acceptance."
+}

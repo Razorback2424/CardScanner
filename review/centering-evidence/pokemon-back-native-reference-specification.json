@@ -1,0 +1,70 @@
+{
+  "status": "Publisher back design; printed seam coordinates are search hypotheses, not physical truth",
+  "printing": "Pokemon classic back",
+  "url": "https://tcg.pokemon.com/assets/img/global/tcg-card-back-2x.jpg",
+  "sha256": "37a4df719ed9134a4652c639fea545f549c6cce40647ad5d82909be02a6afeb3",
+  "displayedCut": [
+    [
+      -0.5,
+      -0.5
+    ],
+    [
+      659.5,
+      -0.5
+    ],
+    [
+      659.5,
+      920.5
+    ],
+    [
+      -0.5,
+      920.5
+    ]
+  ],
+  "kind": "printedBorder",
+  "printedBorder": [
+    [
+      32.5,
+      37
+    ],
+    [
+      626.5,
+      37
+    ],
+    [
+      626.5,
+      883
+    ],
+    [
+      32.5,
+      883
+    ]
+  ],
+  "art": [
+    [
+      32.5,
+      37
+    ],
+    [
+      626.5,
+      37
+    ],
+    [
+      626.5,
+      883
+    ],
+    [
+      32.5,
+      883
+    ]
+  ],
+  "artworkInterior": [
+    60,
+    100,
+    600,
+    820
+  ],
+  "boundaryReview": "Inspected all four native JPEG seams. Top and bottom blend at rows 37 and 883. Blue border luminance differs from photographed printing; profile polarity is not assumed stable.",
+  "boundaryMethod": "printedContinuity",
+  "limitation": "Publisher supplies shared-design identity and frame search region only. Actual physical and printed paths are measured in the photograph; gaps remain unsupported. No photo coordinates or expected ratios are inputs."
+}

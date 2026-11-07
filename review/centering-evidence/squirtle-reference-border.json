@@ -1,0 +1,15 @@
+{
+  "status": "Provider-only search specification; not physical capture truth",
+  "coordinateConvention": "Pixel centers in the 600 by 825 provider raster; straight frame sides exclude rounded corners and decorative overlap.",
+  "references": [
+    {
+      "id": "sv03.5-170",
+      "label": "Squirtle 151 170/165",
+      "url": "https://assets.tcgdex.net/en/sv/sv03.5/170/high.png",
+      "sha256": "490e4348cc26874ed70a344cd262854a552901052fe175c2c806db2e0cc7647f",
+      "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+      "artworkInterior": [60,110,540,470],
+      "limitation": "The full illustrated field includes the collector/footer strip. Provider foil appearance differs from the photograph; projected coordinates are search seeds only. Physical cut must be measured independently."
+    }
+  ]
+}

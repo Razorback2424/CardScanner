@@ -19,9 +19,11 @@ enum CardCenteringExport {
         var notes = ["Guided estimate only. Not professional grading or a predicted grade."]
         if measurement.canReportRatios {
             notes = ["Frames reviewed by you.", measurement.referenceDefinition.reportNote]
+            if measurement.hasObservedPaths { notes.append("Ratios use supported spans of the detected curves.") }
 #if DEBUG
             if let design = measurement.reviewedDesign {
-                notes.append(String(format: "Artwork placement for %@. Published design: %.1f%% of horizontal margin on the left, %.1f%% of vertical margin above.", design.label, design.designLeft, design.designTop))
+                let region = measurement.referenceDefinition == .matchedPrintedBorder ? "Printed frame" : "Artwork"
+                notes.append(String(format: "%@ placement for %@. Published design: %.1f%% of horizontal margin on the left, %.1f%% of vertical margin above.", region, design.label, design.designLeft, design.designTop))
             }
 #endif
             if let detail = measurement.spatialRatioDetail(horizontal: true) {
@@ -182,6 +184,27 @@ enum CardCenteringExport {
         // close together on a badly cut card — which is exactly the case the
         // user is most likely to be exporting.
         context.saveGState()
+        if measurement.hasObservedPaths {
+            func trace(_ observations: [CardCenteringPoint?]) {
+                var connected = false
+                for point in observations {
+                    guard let point else { connected = false; continue }
+                    let p = CGPoint(x: rect.minX+CGFloat(point.x)/CGFloat(measurement.imageWidth)*rect.width,
+                                    y: rect.minY+CGFloat(point.y)/CGFloat(measurement.imageHeight)*rect.height)
+                    if connected { context.addLine(to:p) } else { context.move(to:p); connected = true }
+                }
+            }
+            for (outer,color) in [(true,Palette.outer),(false,Palette.inner)] {
+                for path in measurement.observedGuidePaths(outer:outer) {
+                    context.setStrokeColor(UIColor.black.withAlphaComponent(0.45).cgColor)
+                    context.setLineWidth(lineWidth*2.4); trace(path); context.strokePath()
+                    context.setStrokeColor(color.cgColor)
+                    context.setLineWidth(lineWidth); trace(path); context.strokePath()
+                }
+            }
+            context.restoreGState()
+            return
+        }
         // Match the review screen: only the photo rotates beneath the guides.
         var guides: [(CardCenteringQuad, UIColor)] = [
             (measurement.geometryOuterQuad, Palette.outer)
@@ -265,7 +288,11 @@ enum CardCenteringExport {
             let metricWidth = (contentWidth - tileGap) / 2
             var titles = ("LEFT / RIGHT", "TOP / BOTTOM")
 #if DEBUG
-            if measurement.reviewedDesign != nil { titles = ("ARTWORK LEFT / RIGHT", "ARTWORK TOP / BOTTOM") }
+            if measurement.reviewedDesign != nil {
+                titles = measurement.referenceDefinition == .matchedPrintedBorder
+                    ? ("PRINTED FRAME LEFT / RIGHT", "PRINTED FRAME TOP / BOTTOM")
+                    : ("ARTWORK LEFT / RIGHT", "ARTWORK TOP / BOTTOM")
+            }
 #endif
             drawMetricTile(
                 title: titles.0,

@@ -1,0 +1,11 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "TMT EN 0121 Michelangelo, Weirdness to 11",
+  "url": "https://cards.scryfall.io/png/front/1/8/18477047-218d-4b2a-a086-37431b6a3025.png?1783904086",
+  "sha256": "58a9f8fe8dd18c45ade987c2ac1bdab48096ca3f40bde39454f68dc37484702d",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[54.5,114.5],[687.5,114.5],[687.5,579.5],[54.5,579.5]],
+  "boundaryProfileSides": ["left", "top", "right", "bottom"],
+  "boundaryReview": "Inspected provider cross sections place the outer black-rule/green-stripe transitions between pixels 54/55, 114/115, 687/688 and 579/580. The stripe is brighter than the black rule on all four sides. The irregular legendary crown and lower text box are not the artwork boundary.",
+  "limitation": "Measures the artwork rule against the physical cut, retaining intentional asymmetric placement. Provider geometry supplies identity and search location, never photographed edge truth or a professional grade."
+}

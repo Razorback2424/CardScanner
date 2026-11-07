@@ -1,0 +1,11 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "TLA EN 0186 The Legend of Kyoshi (Saga front)",
+  "url": "https://cards.scryfall.io/png/front/4/8/4887ce64-7c98-4bd7-95db-0c43ab71cc6e.png?1783904946",
+  "sha256": "ce1d227879f4bf871a43d0944f4f96768bf0fcaef66257abebadf3574c1291e8",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[369.5,114.5],[687.5,114.5],[687.5,872.5],[369.5,872.5]],
+  "boundaryProfileSides": ["left", "top", "right", "bottom"],
+  "boundaryReview": "The right-hand illustration has a complete rectangular black rule. Provider cross sections place its outer transitions at 369/370 against the text-column trim, 114/115 below the title, 687/688 against green and 872/873 above the type bar. The left text/chapter field is not one rectangular artwork boundary and is excluded.",
+  "limitation": "Measures placement of the deliberately right-hand artwork against its matching published design. Its large left margin is intentional, not evidence of a miscut or a symmetric-border grade. Face-specific artwork identity must distinguish the Saga from the transformed Avatar Kyoshi face. Provider coordinates are search hypotheses, not measured photo edges."
+}

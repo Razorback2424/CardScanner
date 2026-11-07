@@ -1,0 +1,13 @@
+{
+  "status": "Provider-only native reference preparation; not physical capture truth",
+  "printing": "Gengar Paldean Fates 057/091 design",
+  "url": "https://assets.tcgdex.net/en/sv/sv04.5/057/high.png",
+  "sha256": "715e7c9c72a60eb936f0293dce5c09ac6b21adbb624729f1fa4354f919667493",
+  "displayedCut": [[-0.5,-0.5],[599.5,-0.5],[599.5,824.5],[-0.5,824.5]],
+  "kind": "printedBorder",
+  "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+  "artworkInterior": [70,160,530,380],
+  "includeChromaticity": true,
+  "includeFrameLandmarks": true,
+  "limitation": "The photographed Halloween variant has a stamp and different foil treatment. This reference identifies the underlying design, not exact finish or printing. Added landmarks come only from the provider raster."
+}

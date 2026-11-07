@@ -1,0 +1,12 @@
+{
+  "status": "Single-reader native source observations, not calibrated ground truth",
+  "file": "Document_2026-06-06_175439.png",
+  "inputSHA256": "f2f6554fedf8be94abdcb617f0d91c0a9bc682d70a59231a0f30a6d2ce31f817",
+  "method": "Unmarked 160 by 140 source-pixel crops centered at three fixed projected right-side stations, inspected before evaluating the RGB path result. Intervals include the noisy foil-to-silver transition.",
+  "rightSide": [
+    {"y": 1217, "xInterval": [3044,3049]},
+    {"y": 2308, "xInterval": [3041,3047]},
+    {"y": 3399, "xInterval": [3039,3045]}
+  ],
+  "limitation": "Three stations cannot certify the entire side. The ordinary physical frame is inset on several sides; changing the printed frame alone cannot establish full-card accuracy. Historical annotations are unchanged."
+}

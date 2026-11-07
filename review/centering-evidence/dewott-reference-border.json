@@ -1,0 +1,16 @@
+{
+  "status": "Provider-only search specification; not physical capture truth",
+  "coordinateConvention": "Pixel centers in the 600 by 825 provider raster; the straight printed field excludes rounded corners and overlapping decoration.",
+  "references": [
+    {
+      "id": "sv10.5w-022",
+      "label": "Dewott White Flare 022/086",
+      "url": "https://assets.tcgdex.net/en/sv/sv10.5w/022/high.png",
+      "sha256": "76557810316ce5985e2cd2d6629696e19cc93e096bdba2f84a73b474113768fd",
+      "printedBorder": [[23,23],[576,23],[576,802],[23,802]],
+      "artworkInterior": [120,120,540,385],
+      "boundaryReview": "Provider native cross sections show the blue field transition near columns 23 and 576, and rows 23 and 802. The upper-left evolution ornament overlaps the field; matching and measured photo paths must not treat it as the rectangular edge.",
+      "limitation": "The provider image supplies identity and search proposals only. Actual photo borders and physical cuts must be separately observed; the reverse-foil appearance differs from the reference."
+    }
+  ]
+}

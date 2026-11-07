@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-07",
+  "file": "Document_2026-06-06_175439.png",
+  "inputSHA256": "f2f6554fedf8be94abdcb617f0d91c0a9bc682d70a59231a0f30a6d2ce31f817",
+  "status": "Offline support retained as provisional; native transfer and automatic selection stopped",
+  "nativeDiagnostic": {
+    "firstRun": "Native-baseline-v1.xcresult failed one diagnostic assertion because the bottom physical side was unavailable",
+    "followup": "Native-baseline-v2.xcresult passed one diagnostic method that records available sides; it is not an accuracy acceptance test",
+    "printedSupport": {"left": 42, "top": 36, "right": 37, "bottom": 35},
+    "printedUnbracketedFrozenPoints": {"left": 0, "top": 11, "right": 7, "bottom": 0},
+    "printedWorstBracketedPixels": {"left": 0.8554205688739955, "top": 4.463654526189174, "right": 2.7693983093258794, "bottom": 0.7124903571921095},
+    "physicalSupport": {"left": 0, "top": 7, "right": 15, "bottom": null},
+    "physicalRightWorstBracketedPixels": 125.17537931450715,
+    "scope": "Explicit fixed search seeds from the offline reference proposal, not native design recognition or complete app analysis"
+  },
+  "physicalCounterexample": {
+    "directCountPerSide": 61,
+    "errorPixelsPerSide": 24.964311942458153,
+    "cause": "The unguarded background tracker follows a stronger interior rule rather than the known synthetic card cut.",
+    "decision": "Do not transfer this tracker as an automatic physical-cut method."
+  },
+  "borderIdentityGate": {
+    "directCount": {"left": 51, "top": 53, "right": 45, "bottom": 29},
+    "knownWrongEdgeControl": "A stronger interior rule receives 42 supported points and passes this gate despite being 24.964 px from the known cut.",
+    "decision": "Unsafe as a standalone identity gate. Reject the full measurement and keep the paths as provisional research."
+  },
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-Squirtle-20261107/",
+  "artifacts": ["Native-baseline-v1.xcresult", "Native-baseline-v2.xcresult", "native-baseline-v2-comparison.json", "physical-background-counterexample-v1.json", "physical-border-identity-v1.json"],
+  "limitations": [
+    "Same-photo frozen paths are not independently calibrated physical measurements.",
+    "No new automatic or native accuracy pass; production provisioning and all 44 acceptance remain open.",
+    "Reporting continues to require user confirmation."
+  ]
+}

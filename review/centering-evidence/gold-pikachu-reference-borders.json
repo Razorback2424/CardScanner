@@ -1,0 +1,24 @@
+{
+  "status": "Reference-only provider specification; not calibrated physical truth",
+  "coordinateConvention": "Pixel-center coordinates in each 600 by 825 provider raster",
+  "references": [
+    {
+      "id": "sv08.5-179",
+      "label": "Pikachu ex Prismatic Evolutions 179/131",
+      "url": "https://assets.tcgdex.net/en/sv/sv08.5/179/high.png",
+      "sha256": "c87ba845b32eedd8711d6454f972e2cd38f7544b03c94ead268af7c98fc814cb",
+      "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+      "artworkInterior": [80,150,520,440],
+      "limitation": "Artwork intentionally overlaps the panel, especially at the left. Panel lines must not be confused with the outermost decorative ink. Provider foil appearance differs from the capture."
+    },
+    {
+      "id": "sv08-247",
+      "label": "Pikachu ex Surging Sparks 247/191",
+      "url": "https://assets.tcgdex.net/en/sv/sv08/247/high.png",
+      "sha256": "782386e137432edb3d6fce74845d7688f1d47aa27eb79275769fa52d472b7ad9",
+      "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+      "artworkInterior": [80,150,520,440],
+      "limitation": "Artwork intentionally overlaps the panel, especially at the left. This design shares layout/artwork with PRE 179; identity ambiguity must be retained."
+    }
+  ]
+}

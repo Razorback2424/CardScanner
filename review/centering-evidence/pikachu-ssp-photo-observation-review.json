@@ -1,0 +1,27 @@
+{
+  "status": "Single-reader native-crop review; not calibrated physical ground truth",
+  "fixture": "Document_2026-06-06_152530",
+  "inputSHA256": "870db92d7d32b4fb139e457d6be91332b07b9a32b1d57e76dd2f32d71a9b2bae",
+  "reason": "Two formerly stable grayscale observations follow foil texture rather than the printed-panel transition. Corrected from source-photo crops before running the strip-consensus native candidate. Original Python observations and failed native runs remain archived.",
+  "coordinates": "Oriented native pixel centers",
+  "corrections": [
+    {
+      "side": "top",
+      "x": 1611.388,
+      "formerY": 566.805,
+      "reviewedYInterval": [577,580],
+      "reviewedMidpointY": 578.5,
+      "finding": "Former point lies in textured gold above the purple/blue panel boundary."
+    },
+    {
+      "side": "bottom",
+      "x": 2150.927,
+      "formerY": 4643.603,
+      "reviewedYInterval": [4632,4636],
+      "reviewedMidpointY": 4634.0,
+      "finding": "Former point lies in foil texture below the panel's lower transition."
+    }
+  ],
+  "scope": "The other fourteen frozen comparison points and the original two-percentage-point aggregate transfer limits are unchanged. This does not replace historical ground-truth files.",
+  "evidence": "T7 CodexBuilds/CardScanner-GoldPikachu-20261107/photo-observation-review; Native-diagnostic-v3 contains the unrevised comparison and exact rejected native samples."
+}

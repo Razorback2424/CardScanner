@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-07",
+  "candidate": "main at 11ff208 plus uncommitted changes; exact source hashes retained",
+  "status": "Both Pokemon backs accepted by DEBUG supplied-reference automatic selection; production default unchanged",
+  "nativeMethods": 2,
+  "failed": 0,
+  "skipped": 0,
+  "frozenComparisons": 742,
+  "worstDiscrepancyPixels": 0.7859451386020737,
+  "unchangedOtherDevelopmentCaptures": 32,
+  "unchangedFields": [
+    "outer",
+    "inner",
+    "observed",
+    "matched"
+  ],
+  "libraryReferences": 12,
+  "selectedCaptures": 12,
+  "validatedTransfers": 11,
+  "partialSelectedCaptures": [
+    "Document_2026-06-06_151610.png"
+  ],
+  "timing": {
+    "warmUpperMedianSeconds": 0.9232190847396851,
+    "warmMaxSeconds": 4.858752965927124,
+    "optimization": "deferred",
+    "scope": "Development-library run; not isolated per-stage profiling"
+  },
+  "entries": [
+    {
+      "file": "IMG_0798.HEIC",
+      "inputSHA256": "22d284246e63c2bc289db81af6ceef7c68192dd2cc14170c8c713c3190f713a9",
+      "leftShare": 50.002801204142024,
+      "topShare": 52.380141600475035,
+      "offlineDeltaPP": {
+        "left": 0.010299186890534884,
+        "top": -0.0051692619588052935
+      },
+      "directCounts": {
+        "outerPaths": {
+          "left": 61,
+          "top": 61,
+          "right": 61,
+          "bottom": 61
+        },
+        "innerPaths": {
+          "left": 48,
+          "top": 60,
+          "right": 61,
+          "bottom": 59
+        }
+      },
+      "assistedSeconds": 2.6493550539016724
+    },
+    {
+      "file": "IMG_0800.HEIC",
+      "inputSHA256": "6472bbf0bc028d9180aaa8ed757da5bf43379b1a77a33142d4a0309781aa2ca2",
+      "leftShare": 48.084441581447614,
+      "topShare": 47.91361545727571,
+      "offlineDeltaPP": {
+        "left": 0.004037860894868572,
+        "top": -0.012225912274260509
+      },
+      "directCounts": {
+        "outerPaths": {
+          "left": 61,
+          "top": 61,
+          "right": 61,
+          "bottom": 61
+        },
+        "innerPaths": {
+          "left": 60,
+          "top": 61,
+          "right": 61,
+          "bottom": 61
+        }
+      },
+      "assistedSeconds": 2.5027679204940796
+    }
+  ],
+  "next": "Evaluate continuity and independent cut paths on IMG_0810 Magic back, then shared-design identification if geometry is supported.",
+  "limitations": [
+    "Same-capture frozen observations, not independent calibrated accuracy.",
+    "All 44 acceptance and production reference provisioning remain open.",
+    "Automatic reporting remains disabled until user confirmation."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-07",
+  "branch": "main",
+  "head": "11ff208",
+  "status": "Research-only; candidate identity and physical cut remain unverified",
+  "codeSHA256": {
+    "reference_fragment_corroboration.py": "e6afc457c15058f009f485a6d6269bf656e8582f016d19e26c0846a3ca9a7621",
+    "reference_fragment_controls.py": "1e65cf75c4d9f7527d634dd78ff46a3f3653cda7eabd0743b5a0a84da6215fc1",
+    "perimeter_identity_research.py": "275f944f147a6ce859f736431aec026e46fbcc41b4fc9cf6be9b254137b90ba5"
+  },
+  "controls": {
+    "referenceFragmentCounterexamples": "5 passed: competing wrong rule, partial common evidence, inferred/extrapolated provenance, unselected single track and invalid provenance",
+    "sourceMismatchAndOutputPreservation": "passed",
+    "referenceTranslationStability": "±8 native-pixel shifts on Squirtle x and Dewott y preserve all 15 and 35 supported stations and all candidate comparison counts; worst shared-point movement 0.0163 px",
+    "simplePerimeterInteriorAndShadow": "cut located across three seed shifts",
+    "hiddenPerimeterCut": "no cut visible; nearest candidate changed with seed shift, so silhouette method rejected",
+    "squirtlePerimeter": "candidate-to-contour distance changed by 21.3 native pixels across seed shifts at 640-pixel working size; rejected"
+  },
+  "dewottPrintedBottom": {
+    "stableReferenceStations": 35,
+    "stableRegionCounts": [1, 7, 12, 8, 7],
+    "candidate0": {"agreement": 34, "disagreement": 0, "unsupported": 1, "worstDifferenceNativePixels": 0.160923108240695},
+    "candidate1": {"agreement": 27, "disagreement": 5, "unsupported": 3, "worstDifferenceNativePixels": 19.003211285627458},
+    "originalObservationsPreserved": true
+  },
+  "squirtlePrintedRight": {
+    "stableReferenceStations": 15,
+    "stableRegionCounts": [0, 4, 9, 2, 0],
+    "candidate1": {"agreement": 15, "disagreement": 0, "unsupported": 0},
+    "candidate3": {"agreement": 15, "disagreement": 0, "unsupported": 0},
+    "candidate1Versus3": {"nonExtrapolatedStations": 60, "overFourPixels": 21, "worstDifferenceNativePixels": 10.499613264438267, "includesInferredPositions": true},
+    "originalObservationsPreserved": true
+  },
+  "decision": {"selectedCandidate": null, "reviewRequired": true, "appGeometryChanged": false, "automaticReportingChanged": false},
+  "artifacts": {
+    "root": "/Volumes/T7/CodexBuilds/CardScanner-PerimeterIdentity-20261107/",
+    "dewott-reference-fragment-v4.json": "ec918bd87e9f62bdb6c5d1aeca40b21e1f00960bcdc64fb3922c70e54cfb375a",
+    "squirtle-reference-fragment-v4.json": "438fdb7a7294ede3b658036b237abe44f55042c84d31bc3b4b9ba97a31e984fa",
+    "seed-stability-v3.json": "96b48ac47bc2576595a5574afc69c2e8fc5cf74152361cffbec989fb02dd4fed",
+    "reference-shift-v1/stability-summary-v1.json": "7924a0a58daa7620d52276ec0d02cabfa70eb0f950547afb343424ce465d96fc"
+  },
+  "limitations": [
+    "Reference-profile and candidate-localization evidence share source-photo pixels and are correlated.",
+    "Agreement covers only identified stations and does not certify a whole curve, other boundaries, or physical accuracy.",
+    "This is not a new native transfer, automatic pass, independently calibrated measurement, or validation of the full corpus."
+  ]
+}

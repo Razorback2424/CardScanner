@@ -1,0 +1,15 @@
+{
+  "status": "Reference-only visual specification; provider rendering is not calibrated physical truth",
+  "coordinateConvention": "Pixel-center coordinates in the 600 by 825 provider raster. Straight frame sides extend across rounded corners and decorative overlaps.",
+  "references": [
+    {
+      "id": "sv10.5b-132",
+      "label": "Venipede Black Bolt 132/086",
+      "url": "https://assets.tcgdex.net/en/sv/sv10.5b/132/high.png",
+      "sha256": "50d4f9b52ca3bd871b16137d30f7146d147ba0c123537dfc0773994d9bd9e8a7",
+      "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+      "artworkInterior": [80,150,520,480],
+      "limitation": "Capture glare and local deformation can invalidate projected boundary geometry even when the design is recognized."
+    }
+  ]
+}

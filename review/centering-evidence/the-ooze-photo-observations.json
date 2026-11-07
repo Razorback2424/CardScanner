@@ -1,0 +1,14 @@
+{
+  "status": "Frozen photo-path comparison, not calibrated ground truth",
+  "file": "IMG_0809.HEIC",
+  "inputSHA256": "7d3795627e458a42a1e193539b30be2dea19b6314263666c1356ee0dc88146ca",
+  "method": "Reference-defined outward brightening selects the outer black artwork rule against silver. All four offline sides retain 61 stable positions. Twelve unmarked source crops were inspected before native transfer; these positions and straight-line shares were frozen before that run.",
+  "points": {
+    "left": [[397.377,1054.681],[398.588,1374.044],[399.759,1693.407]],
+    "top": [[1043.043,573.065],[1475.889,572.826],[1908.739,575.144]],
+    "right": [[2555.701,1049.492],[2557.627,1368.081],[2559.106,1686.670]],
+    "bottom": [[1048.742,2168.566],[1480.880,2166.863],[1913.018,2165.276]]
+  },
+  "straightLineSharesWithUnchangedPhysicalQuad": {"left": 51.6017454654, "top": 20.1037870200},
+  "limitation": "Agreement across implementations on the same image does not certify the physical cut, absolute calibration or grading. The artwork is intentionally high on this design. Historical annotations are unchanged."
+}

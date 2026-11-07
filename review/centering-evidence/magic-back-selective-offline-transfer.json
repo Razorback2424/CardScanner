@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-07",
+  "file": "IMG_0810.HEIC",
+  "inputSHA256": "a30d9909b9dd0797261bd0bbf0fd2e714b59587a68683b7c67873710a6c114de",
+  "status": "Complete selective offline measurement accepted; native transfer and automatic integration pending",
+  "diagnosis": "The stronger-rule tracker replaced working existing detector proposals on the left. Wider averaging alone supports the wrong interior bottom rule at six reviewed stations. Treating all eight boundaries as needing the same replacement was unnecessary.",
+  "method": {
+    "leftTopRight": "Existing detector search centers; six local RGB-gradient trials with unchanged strength, range and agreement criteria",
+    "bottom": "Uniform exterior referenced to independently measured physical cut at 24\u201348px inward; three widths identify the same seam, six existing erf/logistic RGB region fits place it",
+    "physical": "Previously observed background-contrast paths"
+  },
+  "printedSupport": {
+    "left": 36,
+    "top": 61,
+    "right": 61,
+    "bottom": 47
+  },
+  "physicalSupport": {
+    "left": 61,
+    "top": 61,
+    "right": 61,
+    "bottom": 61
+  },
+  "frozenComparisons": 344,
+  "pairedAccepted": true,
+  "shares": {
+    "leftShare": 45.00008784893276,
+    "topShare": 51.765894397841734
+  },
+  "bottomSeedPerturbations": {
+    "-8": {
+      "directCount": 47,
+      "maxCorrespondingDiscrepancyPixels": 3.893823836317591e-08,
+      "sameSupportMask": true
+    },
+    "0": {
+      "directCount": 47,
+      "maxCorrespondingDiscrepancyPixels": 0.0,
+      "sameSupportMask": true
+    },
+    "8": {
+      "directCount": 47,
+      "maxCorrespondingDiscrepancyPixels": 1.5873803335656026e-06,
+      "sameSupportMask": true
+    }
+  },
+  "stopped": {
+    "widerRegionWithoutIdentity": "55 supported points but wrong decorative rule near left end; rejected",
+    "newLeftIdentityRoute": "Physical-anchored proposal only 28 positions, below unchanged 30-point gate; do not replace working detector identity",
+    "publisherRegistration": "Official 265x370 raster: 23 matches, 18 inliers, three quadrants; gradient alternative six matches. Rejected; no app reference added."
+  },
+  "next": "Transfer the selective method natively: preserve existing stronger proposals, add physical-anchored region fitting for weak bottom, verify all frozen paths before automatic routing.",
+  "limitations": [
+    "No new native test or automatic pass in this checkpoint.",
+    "Bottom seed perturbations exercise the new bottom route only, not full-pipeline invariance.",
+    "Photo comparisons are not independently calibrated physical accuracy.",
+    "Automatic reporting still requires confirmation; all 44 acceptance remains open."
+  ]
+}

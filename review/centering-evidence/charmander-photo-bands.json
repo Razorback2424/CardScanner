@@ -1,0 +1,18 @@
+{
+  "fixture": "IMG_0348",
+  "status": "Single-reader visual photo review; not blind, independent-observer, or calibrated physical truth",
+  "method": "Unmarked native crops at five positions per side, inspected before reading candidate coordinates in this pass. Reader has seen earlier detector results. Intervals describe visible transition ambiguity, not statistical confidence. Interpolation between samples is an additional assumption.",
+  "coordinates": "Oriented native pixels. Each row is [along-axis coordinate, lower boundary coordinate, upper boundary coordinate]. Horizontal sides use x along and y boundary; vertical sides use y along and x boundary.",
+  "outer": {
+    "top": [[700,131,135],[1100,123,129],[1500,123,130],[1900,124,131],[2300,131,138]],
+    "bottom": [[700,3816,3828],[1100,3816,3832],[1500,3819,3836],[1900,3817,3834],[2300,3809,3822]],
+    "left": [[900,235,244],[1500,236,247],[2100,238,250],[2700,242,253],[3300,247,256]],
+    "right": [[900,2864,2870],[1500,2863,2873],[2100,2863,2873],[2700,2863,2873],[3300,2865,2874]]
+  },
+  "inner": {
+    "top": [[700,219,223],[1100,214,219],[1500,214,220],[1900,219,224],[2300,226,230]],
+    "bottom": [[700,3708,3712],[1100,3708,3714],[1500,3704,3712],[1900,3702,3710],[2300,3698,3704]],
+    "left": [[900,326,331],[1500,327,333],[2100,331,337],[2700,336,341],[3300,338,344]],
+    "right": [[900,2759,2764],[1500,2759,2764],[2100,2759,2764],[2700,2758,2763],[3300,2758,2764]]
+  }
+}

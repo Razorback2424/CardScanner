@@ -1,0 +1,10 @@
+{
+  "status": "Provider-only artwork reference; not physical truth",
+  "printing": "TMT EN 0177 The Ooze",
+  "url": "https://cards.scryfall.io/png/front/1/f/1f9bd4da-4626-40ba-95f4-14e3de36f989.png?1783904067",
+  "sha256": "6387ffecd61ad61f8a7fe635f3b9e27b44cee3560673db56756637f4739a4d48",
+  "displayedCut": [[-0.5,-0.5],[743.5,-0.5],[743.5,1039.5],[-0.5,1039.5]],
+  "art": [[54.5,114.5],[687.5,114.5],[687.5,579.5],[54.5,579.5]],
+  "boundaryReview": "Native provider cross sections show the black-rule/silver transitions between pixels 54/55, 114/115, 687/688 and 579/580. The surrounding stripe is brighter than the rule on all four sides.",
+  "limitation": "Measures the artwork rule against the physical cut and compares its intentional placement with the matching design. It does not assume symmetric artwork margins or establish a professional grade."
+}

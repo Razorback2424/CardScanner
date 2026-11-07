@@ -33,6 +33,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     @Published private(set) var levelOffset: CGSize = .zero
     @Published private(set) var isLevel = false
     @Published private(set) var capturedData: Data?
+    @Published private(set) var isCapturing = false
     /// The lens that produced the current camera capture. The image data still
     /// carries its own EXIF metadata; this field makes the capture path
     /// explicit for the centering evidence and device checks.
@@ -87,6 +88,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 
     func stop() {
         captureLifecycleID = UUID()
+        isCapturing = false
         motionManager?.stopDeviceMotionUpdates()
         sessionQueue.async { [weak self] in
             guard let self else { return }
@@ -98,9 +100,18 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     func capture() {
+        guard !isCapturing else { return }
+        isCapturing = true
         let lifecycleID = captureLifecycleID
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning, self.activeCapture == nil else { return }
+            guard let self else { return }
+            guard self.session.isRunning, self.activeCapture == nil else {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self, self.captureLifecycleID == lifecycleID else { return }
+                    self.isCapturing = false
+                }
+                return
+            }
             let settings = AVCapturePhotoSettings()
             self.activeCapture = (settings.uniqueID, lifecycleID)
             settings.photoQualityPrioritization = .quality
@@ -134,6 +145,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
                 self.activeCapture = nil
                 DispatchQueue.main.async { [weak self] in
                     guard let self, self.captureLifecycleID == capture.lifecycleID else { return }
+                    self.isCapturing = false
                     self.cameraIssue = .configurationFailed
                 }
                 return
@@ -339,9 +351,15 @@ struct CenteringCameraView: View {
                         .frame(width: 72, height: 72)
                         .overlay {
                             Circle().stroke(.black.opacity(0.75), lineWidth: 2).padding(5)
+                            if camera.isCapturing {
+                                ProgressView()
+                                    .tint(.black)
+                                    .accessibilityHidden(true)
+                            }
                         }
                 }
-                .accessibilityLabel("Take photo")
+                .disabled(camera.isCapturing)
+                .accessibilityLabel(camera.isCapturing ? "Capturing photo" : "Take photo")
                 .padding(.top, 12)
                 .padding(.bottom, 28)
             }

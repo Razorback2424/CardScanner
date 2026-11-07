@@ -34,7 +34,7 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
     case unavailable, unverified
     case pokemonClassicBack, magicClassicBack
 #if DEBUG
-    case matchedArtwork
+    case matchedArtwork, matchedPrintedBorder
 #endif
     case userPrintedBorder, userArtwork, userOther
 
@@ -49,6 +49,7 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
         case .magicClassicBack: "Magic classic back border"
 #if DEBUG
         case .matchedArtwork: "Published artwork frame"
+        case .matchedPrintedBorder: "Published printed frame"
 #endif
         case .userPrintedBorder: "Printed border"
         case .userArtwork: "Artwork frame"
@@ -62,6 +63,7 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
         case .userArtwork: .artwork
 #if DEBUG
         case .matchedArtwork: .artwork
+        case .matchedPrintedBorder: .printedBorder
 #endif
         default: .unknown
         }
@@ -131,6 +133,9 @@ struct CardCenteringBoundaryCandidate: Codable, Equatable, Identifiable {
     let selectionReason: CardCenteringBoundarySelectionReason
     let reason: String
     var observedPoints: [CardCenteringPoint]? = nil
+    /// Station indices remain separate from the fitted guide; omitted samples
+    /// are not observations and must not be silently filled in.
+    var observedPointStations: [Int]? = nil
 }
 
 struct CardCenteringSelectedLine: Codable, Equatable {
@@ -164,7 +169,8 @@ extension CardCenteringMeasurement {
     }
 
     var selectedLines: [CardCenteringSelectedLine] {
-        CardCenteringPrecisionFrame.allCases.flatMap { frame in
+        guard !hasObservedPaths else { return [] }
+        return CardCenteringPrecisionFrame.allCases.flatMap { frame in
             guard let quad = frame == .outer ? geometryOuterQuad : geometryInnerQuad else { return [CardCenteringSelectedLine]() }
             let native = coordinateMapping?.nativeQuad(fromWorking: quad) ?? quad
             return CardCenteringPrecisionSide.allCases.map { side in

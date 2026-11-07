@@ -1,0 +1,205 @@
+{
+  "date": "2026-11-07",
+  "checkout": "main at 11ff208 plus uncommitted changes; source hashes retained with native receipt",
+  "status": "Native physical paths accepted on two backs; printed paths accepted only for offline research measurement; no new automatic whole-card pass",
+  "native": {
+    "tests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "testDurationSeconds": 2.862,
+    "comparisons": 376,
+    "worstDiscrepancyPixels": 0.6486078944755604
+  },
+  "performance": {
+    "lastLibraryWarmUpperMedianSeconds": 0.817294,
+    "lastLibraryWarmMaxSeconds": 4.962528,
+    "optimization": "deferred",
+    "limitation": "Prior Saga library receipt; not an isolated benchmark. Native physical test duration is not per-card app latency."
+  },
+  "entries": [
+    {
+      "file": "IMG_0798.HEIC",
+      "inputSHA256": "22d284246e63c2bc289db81af6ceef7c68192dd2cc14170c8c713c3190f713a9",
+      "nativePhysical": {
+        "left": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.5991254574385039
+        },
+        "top": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.605797477567819
+        },
+        "right": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.5710274298444347
+        },
+        "bottom": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.6247441894679469
+        }
+      },
+      "printedColor": {
+        "left": {
+          "directCount": 45,
+          "worstAgreementWithScalarPixels": 0.3317136913537923
+        },
+        "top": {
+          "directCount": 60,
+          "worstAgreementWithScalarPixels": 0.3982382267713592
+        },
+        "right": {
+          "directCount": 61,
+          "worstAgreementWithScalarPixels": 0.3778526410460475
+        },
+        "bottom": {
+          "directCount": 60,
+          "worstAgreementWithScalarPixels": 0.22725814580904538
+        }
+      },
+      "pairedResearch": {
+        "dense-color": {
+          "accepted": true,
+          "leftShare": 49.99250201725149,
+          "topShare": 52.38531086243384
+        },
+        "scalar": {
+          "accepted": true,
+          "leftShare": 50.00271521290271,
+          "topShare": 52.386518258143475
+        }
+      },
+      "stoppedSimpleDirectGradient": {
+        "accepted": false,
+        "reason": "fewer than 30 directly supported observations",
+        "support": {
+          "left": 16,
+          "top": 35,
+          "right": 19,
+          "bottom": 48
+        }
+      }
+    },
+    {
+      "file": "IMG_0800.HEIC",
+      "inputSHA256": "6472bbf0bc028d9180aaa8ed757da5bf43379b1a77a33142d4a0309781aa2ca2",
+      "nativePhysical": {
+        "left": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.6216433215274719
+        },
+        "top": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.6486078944755604
+        },
+        "right": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.6019495247892337
+        },
+        "bottom": {
+          "directCount": 61,
+          "comparedCount": 47,
+          "worstDiscrepancyPixels": 0.6035584050550824
+        }
+      },
+      "printedColor": {
+        "left": {
+          "directCount": 60,
+          "worstAgreementWithScalarPixels": 0.410938995424624
+        },
+        "top": {
+          "directCount": 61,
+          "worstAgreementWithScalarPixels": 0.8150379210710698
+        },
+        "right": {
+          "directCount": 61,
+          "worstAgreementWithScalarPixels": 0.18663010001198488
+        },
+        "bottom": {
+          "directCount": 61,
+          "worstAgreementWithScalarPixels": 0.27218024805151786
+        }
+      },
+      "pairedResearch": {
+        "dense-color": {
+          "accepted": true,
+          "leftShare": 48.080403720552745,
+          "topShare": 47.92584136954997
+        },
+        "scalar": {
+          "accepted": true,
+          "leftShare": 48.08575135654951,
+          "topShare": 47.92704454947963
+        }
+      },
+      "stoppedSimpleDirectGradient": {
+        "accepted": false,
+        "reason": "fewer than 30 directly supported observations",
+        "support": {
+          "left": 26,
+          "top": 46,
+          "right": 34,
+          "bottom": 48
+        }
+      }
+    }
+  ],
+  "next": "Transfer continuity-assisted printed-path selection with local multi-scale observations to native research, then validate full paired measurements and shared-design selection before app integration.",
+  "limitation": "Frozen same-capture observations establish implementation transfer, not independent calibration or physical grading. Automatic reporting remains confirmation-gated.",
+  "stoppedPublisherProfile": {
+    "reason": "Shared design identity matches; rendered border contrast differs from photographed print. Both signed and unsigned profile transfer fail four-side acceptance.",
+    "signedSupportL_TR_B": {
+      "IMG_0798": [
+        19,
+        54,
+        15,
+        51
+      ],
+      "IMG_0800": [
+        18,
+        54,
+        15,
+        50
+      ]
+    },
+    "unsignedSupportL_TR_B": {
+      "IMG_0798": [
+        10,
+        2,
+        2,
+        37
+      ],
+      "IMG_0800": [
+        15,
+        20,
+        3,
+        24
+      ]
+    }
+  },
+  "simpleDirectGradientRecipe": {
+    "searchRadiusPixels": 24,
+    "stripHalfWidths": [
+      4,
+      8,
+      16
+    ],
+    "denseTangentSampling": true,
+    "gaussianSigma": [
+      1,
+      2
+    ],
+    "minimumStrength": 2.5,
+    "competitorSeparationPixels": 8,
+    "competitorRelativeStrength": 0.5,
+    "requiredTrials": 6,
+    "maxTrialDisagreementPixels": 4,
+    "decision": "Stopped after both captures failed existing support requirements; no thresholds relaxed."
+  }
+}

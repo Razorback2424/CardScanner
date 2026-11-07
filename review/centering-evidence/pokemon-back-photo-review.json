@@ -1,0 +1,97 @@
+{
+  "status": "Observed development failures; no new automatic pass",
+  "method": "Existing detector seeds; physical paths use independently observed background contrast. Printed candidates use negative outward polarity and a 16-pixel positional scale. Unmarked crops at three stations per side and all-path overlays were inspected.",
+  "scope": "Physical left-edge errors are clear despite plausible thumbnail guides. Printed-path candidates still need further identity/stability review; support alone is not physical truth.",
+  "entries": [
+    {
+      "file": "IMG_0798.HEIC",
+      "inputSHA256": "22d284246e63c2bc289db81af6ceef7c68192dd2cc14170c8c713c3190f713a9",
+      "physical": {
+        "left": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 28.728022666645717,
+          "medianBaselineDiscrepancyPixels": 19.252975282381385
+        },
+        "top": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 7.705460325421873,
+          "medianBaselineDiscrepancyPixels": 5.768319128141642
+        },
+        "right": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 4.816492674428757,
+          "medianBaselineDiscrepancyPixels": 1.5288268506484026
+        },
+        "bottom": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 5.978473676986871,
+          "medianBaselineDiscrepancyPixels": 2.2434314031618845
+        }
+      },
+      "printedCandidate": {
+        "left": {
+          "supportedCount": 48,
+          "worstBaselineDiscrepancyPixels": 9.80556109781942
+        },
+        "top": {
+          "supportedCount": 59,
+          "worstBaselineDiscrepancyPixels": 2.650022802495933
+        },
+        "right": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 6.044027394104052
+        },
+        "bottom": {
+          "supportedCount": 59,
+          "worstBaselineDiscrepancyPixels": 2.5788931580303975
+        }
+      }
+    },
+    {
+      "file": "IMG_0800.HEIC",
+      "inputSHA256": "6472bbf0bc028d9180aaa8ed757da5bf43379b1a77a33142d4a0309781aa2ca2",
+      "physical": {
+        "left": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 24.247045370829824,
+          "medianBaselineDiscrepancyPixels": 20.979605074187965
+        },
+        "top": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 10.948048465208036,
+          "medianBaselineDiscrepancyPixels": 8.279123829917289
+        },
+        "right": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 2.6582073094334966,
+          "medianBaselineDiscrepancyPixels": 1.6128340094335751
+        },
+        "bottom": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 6.64451272398575,
+          "medianBaselineDiscrepancyPixels": 4.421308963204981
+        }
+      },
+      "printedCandidate": {
+        "left": {
+          "supportedCount": 59,
+          "worstBaselineDiscrepancyPixels": 1.4022678751415425
+        },
+        "top": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 4.622509130252952
+        },
+        "right": {
+          "supportedCount": 60,
+          "worstBaselineDiscrepancyPixels": 4.540426444889965
+        },
+        "bottom": {
+          "supportedCount": 61,
+          "worstBaselineDiscrepancyPixels": 6.238346283413177
+        }
+      }
+    }
+  ],
+  "next": "Transfer independent physical-edge refinement to shared back designs, then validate printed boundaries separately. Preserve working geometry and all confirmation requirements.",
+  "limitation": "Same-capture photo comparisons, not independent physical calibration. Raw paths and review images are retained on the external SSD in CardScanner-BackReview-20261107."
+}

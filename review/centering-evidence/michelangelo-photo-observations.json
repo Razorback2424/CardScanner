@@ -1,0 +1,20 @@
+{
+  "status": "Frozen photo-path comparison, not calibrated ground truth",
+  "file": "IMG_0811.HEIC",
+  "inputSHA256": "8e2adabc21e6572a3af4084efa923d2500fc314c6e35567054d3a39d50358ad2",
+  "method": "Provider-pattern identity followed by six local photo-gradient trials. All twelve unmarked artwork crops and twelve physical crops were inspected before native execution. Broad signed search jumped to decoration on left/top/right and the neighboring lower rule on bottom; all four were rejected despite passing sample-count checks. The bottom's median displacement from the intended rule is 23.530 native pixels despite 61/61 supported samples and a 0.391-pixel straight-line residual. Profile artwork L/T/R/B supports 60/60/61/60 observations; independent physical paths support 61 each. No threshold was relaxed.",
+  "inner": {
+    "left": [[426.057,1103.546],[425.616,1421.950],[425.170,1740.253]],
+    "top": [[1074.357,629.637],[1506.210,631.893],[1937.057,634.229]],
+    "right": [[2581.140,1113.310],[2581.218,1429.867],[2580.365,1746.322]],
+    "bottom": [[1072.396,2218.148],[1503.912,2218.231],[1934.424,2218.334]]
+  },
+  "outer": {
+    "left": [[228.130,1274.470],[230.106,1986.794],[233.221,2699.119]],
+    "top": [[984.237,219.797],[1492.274,223.095],[2000.285,229.264]],
+    "right": [[2763.174,1288.443],[2764.407,1994.905],[2766.644,2701.366]],
+    "bottom": [[984.841,3759.374],[1495.191,3758.399],[2005.545,3758.716]]
+  },
+  "offlinePairedShares": {"left": 51.57191125232871, "top": 21.050788696611964},
+  "limitation": "Same-capture transfer agreement does not certify physical calibration or grading. The artwork's deliberately high placement is preserved. Unsupported observations remain gaps; projected provider edges are never substituted for photo measurements."
+}

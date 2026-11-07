@@ -1,0 +1,29 @@
+{
+  "status": "Frozen native-photo path observations, not calibrated ground truth",
+  "method": "Previously saved background-polarity physical paths. All four sides pass existing span/gap support; source overlays were inspected before native physical refinement. Three fixed stations per side are retained here for cross-implementation comparison.",
+  "captures": [
+    {
+      "file": "IMG_0802.HEIC",
+      "inputSHA256": "3caea8bf423ceb6c04817937cef46f26297be203f26cdc4ce4e6c8a94ae008f7",
+      "points": {
+        "left": [[210.370,1285.117],[211.615,1995.327],[216.968,2705.509]],
+        "top": [[954.248,229.726],[1462.163,231.931],[1970.081,233.865]],
+        "right": [[2734.410,1292.093],[2736.918,1997.475],[2738.935,2702.859]],
+        "bottom": [[974.751,3764.485],[1480.917,3763.274],[1987.083,3761.923]]
+      },
+      "sharesWithSavedNativeArtwork": {"left": 51.6263862890, "top": 20.0921903505}
+    },
+    {
+      "file": "IMG_0809.HEIC",
+      "inputSHA256": "7d3795627e458a42a1e193539b30be2dea19b6314263666c1356ee0dc88146ca",
+      "points": {
+        "left": [[207.743,1252.910],[213.090,1967.348],[219.275,2681.784]],
+        "top": [[957.416,197.967],[1461.678,198.062],[1965.923,202.924]],
+        "right": [[2737.292,1253.642],[2738.030,1963.178],[2745.534,2672.625]],
+        "bottom": [[976.877,3743.646],[1488.991,3741.331],[2001.098,3738.080]]
+      },
+      "sharesWithSavedNativeArtwork": {"left": 51.1094108456, "top": 19.1606104623}
+    }
+  ],
+  "limitation": "Shared-capture measurements do not establish independent physical calibration. Shadows, sleeves and curved cuts need separate evidence; historical annotations are unchanged."
+}

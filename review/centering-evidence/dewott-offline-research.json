@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-07",
+  "file": "IMG_0795.HEIC",
+  "inputSHA256": "83badb6339eb919d517f36ec915a5d777d0de0ed43a18fc7cacdcfa5600d68bf",
+  "status": "Offline candidates only; physical identity and printed bottom require further work",
+  "registration": {"inliers": 883, "quadrants": 4, "bottomFifthInliers": 0},
+  "printedSupport": {"left": 58, "top": 46, "right": 60, "bottom": 56},
+  "physicalSupport": {"left": 58, "top": 60, "right": 61, "bottom": 61},
+  "pairedNumericalSupport": true,
+  "pairedSharesNotAccepted": {"leftShare": 47.98798405053387, "topShare": 45.42912727776876},
+  "diagnosis": "Despite high support, seven bottom printed candidates follow card-number decoration. A robust line through 49 other points follows the visible photo boundary, but its early extension remains inferred. The proposed physical-border identity gate also accepts a known wrong edge and is unsafe.",
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-Dewott-20261107/",
+  "limitations": ["No native or automatic accuracy pass.", "Same-photo visual evidence is not independent physical calibration.", "Reporting remains confirmation-gated."]
+}

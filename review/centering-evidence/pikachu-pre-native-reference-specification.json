@@ -1,0 +1,12 @@
+{
+  "status": "Provider-only native reference preparation; not photographed-card truth",
+  "printing": "Pikachu ex Prismatic Evolutions 179/131",
+  "url": "https://assets.tcgdex.net/en/sv/sv08.5/179/high.png",
+  "sha256": "c87ba845b32eedd8711d6454f972e2cd38f7544b03c94ead268af7c98fc814cb",
+  "displayedCut": [[-0.5,-0.5],[599.5,-0.5],[599.5,824.5],[-0.5,824.5]],
+  "kind": "printedBorder",
+  "printedBorder": [[23,23],[576,23],[576,803],[23,803]],
+  "artworkInterior": [80,150,520,440],
+  "includeChromaticity": true,
+  "limitation": "The intended panel has decorative artwork overlaps. Signal alternatives and additional landmarks are prepared from the provider raster alone, not selected from capture matches."
+}

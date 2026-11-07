@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-07",
+  "file": "Document_2026-06-06_151610.png",
+  "inputSHA256": "0bad4576e4d40cfd57f3bc0e4d1df3cac5d45004b1cdd5613f21a11d8eaeff34",
+  "status": "Two bounded right-edge trials rejected; previous partial native candidate remains unchanged",
+  "trials": {
+    "uniformExteriorRegion": {"identityProposals": 0, "directCount": 0},
+    "widerRGBRegion": {"stripHalfWidths": [16, 32, 64], "directCount": 4, "supportedIndices": [7, 8, 54, 60]}
+  },
+  "priorNativeWorstReviewedRightPixels": 11.949165316652854,
+  "decision": "Stop these methods for this edge without changing support or agreement limits. Do not claim a new automatic pass.",
+  "evidenceRoot": "/Volumes/T7/CodexBuilds/CardScanner-PrismaticPikachu-20261107/",
+  "artifacts": ["uniform-border-right-v1.json", "wide-region-right-v1.json"],
+  "limitations": ["Same-photo evidence is not independent physical calibration.", "Automatic reporting remains confirmation-gated."]
+}

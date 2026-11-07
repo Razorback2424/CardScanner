@@ -942,6 +942,10 @@ enum CardCenteringAnalyzer {
 
     @TaskLocal private static var activeDiagnostics: DiagnosticContext?
     @TaskLocal static var activePrintReference: CardCenteringPrintReference?
+    @TaskLocal static var activePrintReferences: [CardCenteringPrintReference] = []
+    @TaskLocal static var activeSelectiveBorderRepair = ProcessInfo.processInfo.arguments.contains("-ui_debug_selective_border_repair")
+    @TaskLocal static var activeShadowContactSides: [CardCenteringPrecisionSide] =
+        ProcessInfo.processInfo.arguments.contains("-ui_debug_shadow_contact_candidates") ? [.bottom] : []
     private static var profileDiagnosticSink: ((CardCenteringProfileDiagnostic) -> Void)? { activeDiagnostics?.options.profileDiagnosticSink }
     private static var analysisDiagnosticSink: ((CardCenteringAnalysisDiagnostic) -> Void)? { activeDiagnostics?.options.analysisDiagnosticSink }
     private static var profileFailureDiagnosticSink: ((CardCenteringProfileFailureDiagnostic) -> Void)? { activeDiagnostics?.options.profileFailureDiagnosticSink }
@@ -1979,23 +1983,36 @@ enum CardCenteringAnalyzer {
             nativeSourceData: data
         )
 #if DEBUG
-        // A registered back has its own verified reference. For a possible
-        // front, defer the extra profile scan until the publisher content matches.
-        if registeredBackTemplateResult == nil, let reference = activePrintReference,
+        // Back-layout registration can produce front false positives. Let a
+        // supplied design provide independent identity evidence; missing or
+        // ambiguous matches retain the entire ordinary result, including backs.
+        // Defer the extra profile scan until publisher content matches.
+        let references = activePrintReference.map { [$0] } ?? activePrintReferences
+        var result = analysis
+        if !references.isEmpty,
            let sha = measurement.inputRecord?.sha256 {
-            return CardCenteringPrintMatcher.apply(reference, baseline: analysis, source: source) {
+            result = CardCenteringPrintMatcher.apply(references, baseline: analysis, source: source) { reference in
                 let lab: [Pixel]
                 if let profilePixels { lab = profilePixels }
                 else if let scalar, scalar.evidenceWidth == width, scalar.evidenceHeight == height { lab = scalar.lab }
                 else if let rgb = workingRGBPixels { lab = labPixels(from: rgb) }
                 else { lab = labPixels(from: try pixels(from: prepared)) }
-                return scanReferenceWindow(plan: .landscapeArtworkWindow, sha: sha,
+                return scanReferenceWindow(plan: reference.isPrintedBorder ? .perimeterPrintedFrame : .landscapeArtworkWindow, sha: sha,
                     outerNative: coordinateMapping.nativeQuad(fromWorking: measurement.geometryOuterQuad),
                     mapping: detectorMapping, lab: lab, width: width, height: height, recordProfiles: false).candidates
             }
         }
-#endif
+        if activeSelectiveBorderRepair {
+            result = CardCenteringPrintMatcher.applySelectiveMagicRepair(baseline:result,source:source)
+        }
+        if !activeShadowContactSides.isEmpty {
+            result = CardCenteringPrintMatcher.appendingShadowContactCandidates(
+                baseline:result,source:source,sides:activeShadowContactSides)
+        }
+        return result
+#else
         return analysis
+#endif
     }
 
     private static func confidence(
